@@ -57,10 +57,5 @@ namespace Character
 
         }
 
-        public void Update()
-        {
-
-        }
-
     }
 }
