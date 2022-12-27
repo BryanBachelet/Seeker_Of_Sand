@@ -26,7 +26,6 @@ namespace Character
                 Resolution currentResolution = Screen.currentResolution;
                 m_aimInputValue = new Vector2(m_aimInputValue.x - (currentResolution.width / 2.0f), m_aimInputValue.y - (currentResolution.height / 2.0f));
                 m_aimInputValue = new Vector2(m_aimInputValue.x / (currentResolution.width / 2.0f), m_aimInputValue.y / (currentResolution.height / 2.0f));
-
             }
 
         }
