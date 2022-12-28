@@ -3,23 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+namespace Enemies
 {
-    [SerializeField] private Transform m_target;
-    private NavMeshAgent m_navAgent;
-
-    private void Start()
+    public class Enemy : MonoBehaviour
     {
-        m_navAgent = GetComponent<NavMeshAgent>();
-    }
+        [SerializeField] private Transform m_target;
+        private EnemyManager m_enemyManager;
+        private NavMeshAgent m_navAgent;
 
-    private void Update()
-    {
-        m_navAgent.destination = m_target.position;
-    }
+        private void Start()
+        {
+            m_navAgent = GetComponent<NavMeshAgent>();
+        }
 
-    public void GetDestroy()
-    {
-        // Call Enemy Manager
+        private void Update()
+        {
+            m_navAgent.destination = m_target.position;
+        }
+
+        public Enemy(Transform targetTranform, EnemyManager manager)
+        {
+            m_target = targetTranform;
+            m_enemyManager = manager;
+        }
+
+        public void SetTarget(Transform targetTranform)
+        {
+            m_target = targetTranform;
+        }
+
+        public void SetManager(EnemyManager manager)
+        {
+            m_enemyManager = manager;
+        }
+
+        public void GetDestroy()
+        {
+            m_enemyManager.DestroyEnemy(this);
+        }
     }
 }
