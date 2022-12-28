@@ -16,14 +16,14 @@ public class Projectile : MonoBehaviour
         Duration();
     }
 
-    public void SetDirection(Vector3 direction ) 
-    { 
+    public void SetDirection(Vector3 direction)
+    {
         m_direction = direction;
     }
     private void Move()
     {
 
-        if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer ))
+        if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
             Destroy(this.gameObject);
         }
@@ -41,5 +41,15 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            other.GetComponent<Enemies.Enemy>().GetDestroy();
+            Debug.Log("Hit");
+        }
+
+
+    }
 
 }
