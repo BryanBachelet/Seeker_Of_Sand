@@ -13,6 +13,7 @@ namespace Character
         public int projectileNumber;
         public float shootTime;
         public GameObject projectileGO;
+        public AudioSource m_shootSounds;
 
         private float m_shootTimer;
         private bool m_canShoot;
@@ -39,7 +40,7 @@ namespace Character
                 projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
                 angle = -angle;
             }
-
+            m_shootSounds.Play();
             m_canShoot = false;
         }
 
