@@ -12,9 +12,11 @@ namespace Character
         [SerializeField][Range(0.0f,1.0f)] private  float inputAim = 0.6f;
         private PlayerInput m_playerInput;
         private Vector2 m_aimInputValue;
+        private CharacterMouvement m_characterMouvement;
         private void Start()
         {
             m_playerInput = GetComponent<PlayerInput>();
+            m_characterMouvement = GetComponent<CharacterMouvement>();
         }
         public void AimInput(InputAction.CallbackContext ctx)
         {
@@ -32,11 +34,15 @@ namespace Character
 
         public Vector3 GetAim()
         {
-            if(m_aimInputValue.magnitude > inputAim) return new Vector3(m_aimInputValue.normalized.x, 0, m_aimInputValue.normalized.y);
+            if (m_aimInputValue.magnitude > inputAim)
+            { 
+                // Orient Aim
+                return new Vector3(m_aimInputValue.normalized.x, 0, m_aimInputValue.normalized.y);
+            }
 
             // GetCloserTarget
 
-            return transform.forward;
+            return m_characterMouvement.currentDirection;
         }
 
         private bool IsGamepad()

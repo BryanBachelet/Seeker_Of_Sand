@@ -43,12 +43,15 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Enemy")
-        {
-            other.GetComponent<Enemies.Enemy>().GetDestroy();
-            Destroy(this.gameObject);
+        if (other.tag != "Enemy") return;
+        
+        Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
 
-        }
+        if (enemyTouch.IsDestroing()) return;
+
+        other.GetComponent<Enemies.Enemy>().GetDestroy();
+        Destroy(this.gameObject);
+
 
 
     }

@@ -10,6 +10,7 @@ namespace Enemies
         [SerializeField] private Transform m_target;
         private EnemyManager m_enemyManager;
         private NavMeshAgent m_navAgent;
+        private bool m_isDestroy;
 
         private void Start()
         {
@@ -37,8 +38,14 @@ namespace Enemies
             m_enemyManager = manager;
         }
 
+
+        public bool IsDestroing()
+        {
+            return m_isDestroy;
+        }
         public void GetDestroy()
         {
+            m_isDestroy = true;
             m_enemyManager.DestroyEnemy(this);
         }
     }

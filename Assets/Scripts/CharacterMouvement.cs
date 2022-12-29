@@ -12,6 +12,7 @@ namespace Character
         public float speed = 10.0f;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
+        public Vector3 currentDirection { get; private set; }
         private void Start()
         {
             InitComponent();
@@ -53,6 +54,7 @@ namespace Character
             transform.rotation *= Quaternion.AngleAxis(angleDir , Vector3.up);
 
             m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
+            currentDirection = direction;
             m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed);
 
         }
