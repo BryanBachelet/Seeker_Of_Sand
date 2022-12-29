@@ -46,7 +46,8 @@ public class Projectile : MonoBehaviour
         if (other.tag == "Enemy")
         {
             other.GetComponent<Enemies.Enemy>().GetDestroy();
-            Debug.Log("Hit");
+            Destroy(this.gameObject);
+
         }
 
 
