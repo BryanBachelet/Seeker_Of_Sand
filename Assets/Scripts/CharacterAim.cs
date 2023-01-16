@@ -9,15 +9,31 @@ namespace Character
     public class CharacterAim : MonoBehaviour
     {
 
-        [SerializeField][Range(0.0f,1.0f)] private  float inputAim = 0.6f;
+        [SerializeField] [Range(0.0f, 1.0f)] private float inputAim = 0.6f;
         private PlayerInput m_playerInput;
         private Vector2 m_aimInputValue;
         private CharacterMouvement m_characterMouvement;
+        [SerializeField] private Texture2D m_cursorTex;
         private void Start()
         {
+            Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
         }
+
+
+        private void Update()
+        {
+            if (m_aimInputValue.magnitude < inputAim)
+            {
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.visible = true;
+            }
+        }
+
         public void AimInput(InputAction.CallbackContext ctx)
         {
             if (ctx.performed) m_aimInputValue = ctx.ReadValue<Vector2>();
@@ -35,7 +51,7 @@ namespace Character
         public Vector3 GetAim()
         {
             if (m_aimInputValue.magnitude > inputAim)
-            { 
+            {
                 // Orient Aim
                 return new Vector3(m_aimInputValue.normalized.x, 0, m_aimInputValue.normalized.y);
             }
