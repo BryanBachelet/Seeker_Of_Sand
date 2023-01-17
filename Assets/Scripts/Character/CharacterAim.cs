@@ -14,6 +14,8 @@ namespace Character
         private Vector2 m_aimInputValue;
         private CharacterMouvement m_characterMouvement;
         [SerializeField] private Texture2D m_cursorTex;
+        [SerializeField] private LineRenderer m_lineRenderer;
+        [SerializeField] private Transform m_transformHead;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
@@ -31,6 +33,23 @@ namespace Character
             else
             {
                 Cursor.visible = true;
+            }
+           
+
+            m_lineRenderer.SetPosition(0, transform.position);
+            if (m_aimInputValue.magnitude > inputAim)
+            {
+                    Vector3 direction = new Vector3(m_aimInputValue.normalized.x, 0, m_aimInputValue.normalized.y);
+                float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction.normalized, Vector3.up);
+                Quaternion rot = Quaternion.AngleAxis(angleDir, Vector3.up);
+                direction = rot * direction.normalized;
+                m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+                    // Orient Aim
+                m_lineRenderer.SetPosition(1, transform.position +direction * 70);
+            }else
+            {
+                m_transformHead.localRotation = Quaternion.identity;
+                m_lineRenderer.SetPosition(1, transform.position +  transform.forward * 70);
             }
         }
 
@@ -53,11 +72,12 @@ namespace Character
             if (m_aimInputValue.magnitude > inputAim)
             {
                 // Orient Aim
-                return new Vector3(m_aimInputValue.normalized.x, 0, m_aimInputValue.normalized.y);
+                Vector3 direction = new Vector3(m_aimInputValue.normalized.x, 0, m_aimInputValue.normalized.y);
+                return direction;
             }
 
             // GetCloserTarget
-
+            
             return m_characterMouvement.currentDirection;
         }
 
