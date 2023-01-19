@@ -8,6 +8,8 @@ namespace Enemies
     public class Enemy : MonoBehaviour
     {
         [SerializeField] private Transform m_target;
+        [SerializeField] private float m_minSpeed = 3.0f;
+        [SerializeField] private float m_maxSpeed = 4.0f;
         private EnemyManager m_enemyManager;
         private NavMeshAgent m_navAgent;
         private bool m_isDestroy;
@@ -16,7 +18,9 @@ namespace Enemies
 
         private void Start()
         {
+            
             m_navAgent = GetComponent<NavMeshAgent>();
+            m_navAgent.speed = Random.Range(m_minSpeed, m_maxSpeed);
             m_rigidbody = GetComponent<Rigidbody>();
         }
 
@@ -50,8 +54,10 @@ namespace Enemies
         public void GetDestroy(Vector3 direction,float power)
         {
             m_navAgent.enabled = false;
-            float magnitude = Random.Range(0, 1); 
-            m_rigidbody.AddForce(direction.normalized* magnitude * power, ForceMode.Impulse);
+            float magnitude = Random.Range(0.5f, 1.0f);
+            m_rigidbody.isKinematic = false;
+            m_rigidbody.constraints = RigidbodyConstraints.None;
+            m_rigidbody.AddForce(direction.normalized  * power, ForceMode.Impulse);
             StartCoroutine(Death());
         }
 

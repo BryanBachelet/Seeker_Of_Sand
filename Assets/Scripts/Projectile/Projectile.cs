@@ -53,8 +53,6 @@ public class Projectile : MonoBehaviour
         other.GetComponent<Enemies.Enemy>().GetDestroy(other.transform.position - transform.position, m_power);
         Destroy(this.gameObject);
 
-
-
     }
 
 }
