@@ -37,7 +37,7 @@ namespace Character
         private void AimFeedback()
         {
             m_lineRenderer.SetPosition(0, transform.position);
-            if (m_aimDirection.magnitude > inputAim)
+            if (m_aimInputValue.magnitude > inputAim)
             {
                 Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
                 float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
@@ -69,7 +69,7 @@ namespace Character
         {
             if (m_aimInputValue.magnitude > inputAim)
             {
-                return m_aimDirection;
+                return m_aimDirection.normalized;
             }
 
             // GetCloserTarget
@@ -77,19 +77,25 @@ namespace Character
             return m_characterMouvement.currentDirection;
         }
 
+        public float GetAimMagnitude() { return m_aimInputValue.magnitude; }
+
+
         private Vector3 GetAimPoint()
         {
             if (!IsGamepad())
             {
                 Resolution currentResolution = Screen.currentResolution;
                 m_aimInputValue = new Vector2(m_aimInputValue.x , m_aimInputValue.y);
-               
                 Ray aimRay = Camera.main.ScreenPointToRay(m_aimInputValue);
+                m_aimInputValue = new Vector2(m_aimInputValue.x - (currentResolution.width/2.0f), m_aimInputValue.y-(currentResolution.height / 2.0f));
+                m_aimInputValue = new Vector2(m_aimInputValue.x / (currentResolution.width/2.0f), m_aimInputValue.y/(currentResolution.height / 2.0f));
+
+               
                 cameRay = aimRay;
                 RaycastHit hit = new RaycastHit();
                 if (Physics.Raycast(cameRay, out hit,150.0f,m_aimLayer.value))
                 {
-                    return ((hit.point+Vector3.up) - transform.position).normalized;
+                    return ((hit.point+Vector3.up) - transform.position);
                 }
                 return m_characterMouvement.currentDirection;
             }

@@ -36,8 +36,8 @@ public class CameraShake : MonoBehaviour
             Vector3 pos = new Vector3();
 
             pos.x = m_shakeOffsetX * m_shakeAmount * Random.Range(-1.0f, 1.0f);
-            pos.x = m_shakeOffsetY * m_shakeAmount * Random.Range(-1.0f, 1.0f);
-            pos.x = m_shakeOffsetZ * m_shakeAmount * Random.Range(-1.0f, 1.0f);
+            pos.y = m_shakeOffsetY * m_shakeAmount * Random.Range(-1.0f, 1.0f);
+            pos.z = m_shakeOffsetZ * m_shakeAmount * Random.Range(-1.0f, 1.0f);
 
             m_shakeOffset = pos;
 

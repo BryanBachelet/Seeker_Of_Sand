@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 898435386039766564}
   - component: {fileID: 898435386039766566}
   - component: {fileID: 898435386039766567}
+  - component: {fileID: 1231885401}
+  - component: {fileID: 8870188415779612043}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -26,14 +28,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898435386039766562}
-  m_LocalRotation: {x: 0.38661167, y: -0.047002975, z: 0.019733628, w: 0.92083263}
+  m_LocalRotation: {x: 0.38661, y: -0.047001865, z: 0.019733638, w: 0.9208334}
   m_LocalPosition: {x: 4.8595467, y: 16.784523, z: -3.741519}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 28.022, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45.55, y: -5.844, z: 0}
 --- !u!20 &898435386039766564
 Camera:
   m_ObjectHideFlags: 0
@@ -216,3 +218,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_targetTransform: {fileID: 0}
   m_distanceToTarget: 20
+  m_offsetPos: {x: 0, y: 0, z: 0}
+--- !u!114 &1231885401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898435386039766562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c55d26779ffdf2d4f86ebec07d7f54c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_shakeAmount: 0.059
+  m_shakeYaw: 1.4
+  m_shakeRoll: 2.4
+  m_shakePitch: 3.2
+  m_shakeOffsetX: 1
+  m_shakeOffsetY: 1
+  m_shakeOffsetZ: 1
+--- !u!114 &8870188415779612043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898435386039766562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e18d6854e09cf43abc3e1b1dbdab5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_sizeDistance: 2
+  m_characterAim: {fileID: 0}
