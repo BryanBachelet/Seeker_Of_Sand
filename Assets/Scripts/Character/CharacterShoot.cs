@@ -17,6 +17,7 @@ namespace Character
 
         private float m_shootTimer;
         private bool m_canShoot;
+        private bool m_shootInput;
         private CharacterAim m_characterAim;
 
         private void Start()
@@ -24,9 +25,22 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
         }
 
+        private void Update()
+        {
+            if (m_shootInput) Shoot();
+            ReloadWeapon();
+        }
+
         public void ShootInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.started) Shoot();
+            if (ctx.performed)
+            {
+                m_shootInput = true;
+            }
+            if (ctx.canceled)
+            {
+                m_shootInput = false;
+            }
         }
 
         private void Shoot()
@@ -42,11 +56,6 @@ namespace Character
             }
             m_shootSounds.Play();
             m_canShoot = false;
-        }
-
-        private void Update()
-        {
-            ReloadWeapon();
         }
 
         private void ReloadWeapon()
