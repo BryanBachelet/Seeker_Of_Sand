@@ -8,17 +8,45 @@ namespace Render.Camera
     {
         [SerializeField] private Transform m_targetTransform;
         [SerializeField] private float m_distanceToTarget;
-        private Vector3 cameraDirection;
+        [HideInInspector] public Vector3 m_offsetPos;
+
+        private Vector3 m_cameraDirection;
+        private Vector3 m_baseAngle;
+
+        private Vector3 m_finalPosition;
+        private Vector3 m_finalRotation;
+
+        private CameraShake m_cameraShake;
         // Start is called before the first frame update
         void Start()
         {
-            cameraDirection =  transform.position - m_targetTransform.position;
+            m_cameraShake = GetComponent<CameraShake>();
+            m_cameraDirection =  transform.position - m_targetTransform.position;
+            m_baseAngle = transform.rotation.eulerAngles;
         }
 
-        // Update is called once per frame
         void Update()
         {
-            transform.position = m_targetTransform.position + cameraDirection.normalized * m_distanceToTarget;
+            SetCameraRotation();
+            SetCameraPosition();
+            Apply();
+        }
+
+        private void SetCameraRotation()
+        {
+            m_finalRotation = m_baseAngle;
+            m_finalRotation += m_cameraShake.GetShakeEuleurAngle();
+        }
+        private void SetCameraPosition()
+        {
+            m_finalPosition = m_targetTransform.position;
+            m_finalPosition += m_cameraDirection.normalized * m_distanceToTarget;
+            m_finalPosition += m_cameraShake.GetShakeOffset();
+        }
+        void Apply()
+        {
+            transform.position = m_finalPosition;
+            transform.rotation =Quaternion.Euler( m_finalRotation);
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Character
         private bool m_canShoot;
         private bool m_shootInput;
         private CharacterAim m_characterAim;
+        [SerializeField] private CameraShake m_cameraShake;
+        [SerializeField] private float m_shakeDuration = 0.1f;
 
         private void Start()
         {
@@ -46,6 +48,8 @@ namespace Character
         private void Shoot()
         {
             if (!m_canShoot) return;
+
+            StartCoroutine( m_cameraShake.ShakeEffect(m_shakeDuration));
             float angle = m_shootAngle / projectileNumber;
             int mod = projectileNumber % 2 == 1 ? 0 : 1;
             for (int i = mod; i < projectileNumber + mod; i++)

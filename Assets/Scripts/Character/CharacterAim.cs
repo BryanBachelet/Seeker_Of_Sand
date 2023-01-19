@@ -89,13 +89,10 @@ namespace Character
                 RaycastHit hit = new RaycastHit();
                 if (Physics.Raycast(cameRay, out hit,150.0f,m_aimLayer.value))
                 {
-                    Debug.Log("Hit :" + hit.point.ToString());
                     return ((hit.point+Vector3.up) - transform.position).normalized;
                 }
-                Debug.Log("No Hit ");
                 return m_characterMouvement.currentDirection;
             }
-            Debug.Log("No Hit 2");
             return m_aimInputValue;
         }
 
