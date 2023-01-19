@@ -55,7 +55,8 @@ namespace Character
             for (int i = mod; i < projectileNumber + mod; i++)
             {
                 GameObject projectileCreate = GameObject.Instantiate(projectileGO, transform.position, transform.rotation);
-                projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
+                if(projectileCreate.GetComponent<Projectile>())  projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
+                if (projectileCreate.GetComponent<ProjectileExplosif>()) projectileCreate.GetComponent<ProjectileExplosif>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
                 angle = -angle;
             }
             m_shootSounds.Play();
