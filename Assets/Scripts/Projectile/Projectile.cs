@@ -8,6 +8,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float m_speed;
     [SerializeField] private float m_lifeTime;
     [SerializeField] private LayerMask m_layer;
+    [SerializeField] private float m_power;
     private float m_lifeTimer;
 
     void Update()
@@ -49,10 +50,8 @@ public class Projectile : MonoBehaviour
 
         if (enemyTouch.IsDestroing()) return;
 
-        other.GetComponent<Enemies.Enemy>().GetDestroy();
+        other.GetComponent<Enemies.Enemy>().GetDestroy(other.transform.position - transform.position, m_power);
         Destroy(this.gameObject);
-
-
 
     }
 
