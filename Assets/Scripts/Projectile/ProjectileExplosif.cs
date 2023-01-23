@@ -47,8 +47,11 @@ public class ProjectileExplosif : MonoBehaviour
             if(m_stickTransform == null)
             {
                 m_isStick = false;
+            }else
+            { 
+                transform.position = m_stickTransform.position + m_stickPosition; 
             }
-            transform.position = m_stickTransform.position + m_stickPosition;
+           
             ScaleByTime();
             return;
         }

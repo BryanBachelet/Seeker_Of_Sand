@@ -16,11 +16,18 @@ namespace Enemies
         [SerializeField] private Vector3 position;
         [SerializeField] private float m_spawnTime = 3.0f;
         [SerializeField] private int m_maxUnitPerGroup = 3;
+        [SerializeField] private int m_minUnitPerGroup = 2;
         private float m_spawnCooldown;
+        private EnemyKillRatio m_enemyKillRatio;
         // Array of enemy
         private List<Enemy> m_enemiesArray = new List<Enemy>();
         // Destroy Enemy
 
+
+        private void Start()
+        {
+            m_enemyKillRatio = GetComponent<EnemyKillRatio>();
+        }
 
         public void Update()
         {
@@ -51,10 +58,10 @@ namespace Enemies
 
         private void SpawnCooldown()
         {
+            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, m_maxUnitPerGroup, m_enemyKillRatio.GetRatioValue() /90.0f);
             float spawTiming =(m_spawnTime * ((Mathf.Sin(Time.time/2.0f))+1.3f) /2.0f) ;
-            int number = Mathf.FloorToInt((m_maxUnitPerGroup * ((Mathf.Sin(Time.time/2.0f +7.5f))+1.3f) /2.0f));
+            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time/2.0f +7.5f))+1.3f) /2.0f));
             number = number <= 0 ? 1 : number;
-            Debug.Log(number);
             if (m_spawnCooldown > spawTiming)
             {
                 position = FindPosition();
@@ -94,6 +101,8 @@ namespace Enemies
         public void DestroyEnemy(Enemy enemy)
         {
             if (!m_enemiesArray.Contains(enemy)) return;
+
+            m_enemyKillRatio.AddEnemiKill();
 
             m_enemiesArray.Remove(enemy);
             Destroy(enemy.gameObject);
