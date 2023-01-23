@@ -9,7 +9,6 @@ namespace Enemies
 
     public class EnemyManager : MonoBehaviour
     {
-        //Enemy
         [SerializeField] private Transform m_playerTranform;
         [SerializeField] private GameObject m_enemyGO;
         [SerializeField] private Vector3 m_offsetSpawnPos;
@@ -17,11 +16,11 @@ namespace Enemies
         [SerializeField] private float m_spawnTime = 3.0f;
         [SerializeField] private int m_maxUnitPerGroup = 3;
         [SerializeField] private int m_minUnitPerGroup = 2;
-        private float m_spawnCooldown;
+        
         private EnemyKillRatio m_enemyKillRatio;
-        // Array of enemy
+        private float m_spawnCooldown;
+        
         private List<Enemy> m_enemiesArray = new List<Enemy>();
-        // Destroy Enemy
 
 
         private void Start()
@@ -32,8 +31,8 @@ namespace Enemies
         public void Update()
         {
             SpawnCooldown();
-
         }
+
         private Vector3 FindPosition()
         {
             float magnitude = (m_playerTranform.position - Camera.main.transform.position).magnitude;
@@ -55,22 +54,33 @@ namespace Enemies
             return Vector3.zero;
         }
 
+        private float GetTimeSpawn()
+        {
+           return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
+        }
+
+        private int GetNumberToSpawn()
+        {
+            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, m_maxUnitPerGroup, m_enemyKillRatio.GetRatioValue());
+            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            number = number <= 0 ? 1 : number;
+            return number;
+        }
+
+        private void SpawEnemiesGroup()
+        {
+            position = FindPosition();
+            for (int i = 0; i < GetNumberToSpawn(); i++)
+            {
+                SpawnEnemy(position + Random.insideUnitSphere * 5f);
+            }
+        }
 
         private void SpawnCooldown()
         {
-            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, m_maxUnitPerGroup, m_enemyKillRatio.GetRatioValue() /90.0f);
-            float spawTiming =(m_spawnTime * ((Mathf.Sin(Time.time/2.0f))+1.3f) /2.0f) ;
-            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time/2.0f +7.5f))+1.3f) /2.0f));
-            number = number <= 0 ? 1 : number;
-            if (m_spawnCooldown > spawTiming)
+            if (m_spawnCooldown > GetTimeSpawn())
             {
-                position = FindPosition();
-                for (int i = 0; i < number; i++)
-                {
-
-                    SpawnEnemy(position + Random.insideUnitSphere*5f);
-                }
-               
+                SpawEnemiesGroup();
                 m_spawnCooldown = 0;
             }
             else

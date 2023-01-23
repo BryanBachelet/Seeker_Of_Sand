@@ -8,6 +8,7 @@ public class EnemyKillRatio : MonoBehaviour
     [Header("Enemy Kill Ratio Parameter")]
     [SerializeField] private float m_killRatioTime = 60;
     [SerializeField] private Text m_textFeedbackUI;
+    [SerializeField] private int m_maxKillPerMinute = 70;
     private List<float> m_enemyCount = new List<float>();
 
 
@@ -37,12 +38,12 @@ public class EnemyKillRatio : MonoBehaviour
 
     private void DrawUI()
     {
-        m_textFeedbackUI.text = GetRatioValue().ToString();
+        m_textFeedbackUI.text = m_enemyCount.Count.ToString();
     }
 
-    public int GetRatioValue()
+    public float GetRatioValue()
     {
-        return m_enemyCount.Count;
+        return ((float)m_enemyCount.Count / (float)m_maxKillPerMinute);
     }
 
     public void AddEnemiKill()
