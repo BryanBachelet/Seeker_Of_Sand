@@ -19,6 +19,7 @@ namespace Character
         [SerializeField] private Transform m_transformHead;
         [SerializeField] private LayerMask m_aimLayer;
 
+        public GameObject projectorVisorObject;
         private Ray cameRay;
         private void Start()
         {
@@ -58,10 +59,10 @@ namespace Character
             if (ctx.performed)
             {
                 m_aimInputValue = ctx.ReadValue<Vector2>();
-               
+
             }
             if (ctx.canceled) m_aimInputValue = Vector2.zero;
-            
+
             m_aimDirection = GetAimPoint();
         }
 
@@ -85,17 +86,22 @@ namespace Character
             if (!IsGamepad())
             {
                 Resolution currentResolution = Screen.currentResolution;
-                m_aimInputValue = new Vector2(m_aimInputValue.x , m_aimInputValue.y);
+                m_aimInputValue = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
                 Ray aimRay = Camera.main.ScreenPointToRay(m_aimInputValue);
-                m_aimInputValue = new Vector2(m_aimInputValue.x - (currentResolution.width/2.0f), m_aimInputValue.y-(currentResolution.height / 2.0f));
-                m_aimInputValue = new Vector2(m_aimInputValue.x / (currentResolution.width/2.0f), m_aimInputValue.y/(currentResolution.height / 2.0f));
+                m_aimInputValue = new Vector2(m_aimInputValue.x - (currentResolution.width / 2.0f), m_aimInputValue.y - (currentResolution.height / 2.0f));
+                m_aimInputValue = new Vector2(m_aimInputValue.x / (currentResolution.width / 2.0f), m_aimInputValue.y / (currentResolution.height / 2.0f));
 
-               
+
                 cameRay = aimRay;
                 RaycastHit hit = new RaycastHit();
-                if (Physics.Raycast(cameRay, out hit,150.0f,m_aimLayer.value))
+                if (Physics.Raycast(cameRay, out hit, 150.0f, m_aimLayer.value))
                 {
-                    return ((hit.point+Vector3.up) - transform.position);
+                    if (projectorVisorObject)                                               // Decal Projector for visor positionning 
+                    {                                                                       //
+                        projectorVisorObject.transform.position = hit.point;                // 
+                    }                                                                       //
+                    return ((hit.point + Vector3.up) - transform.position);
+
                 }
                 return m_characterMouvement.currentDirection;
             }
@@ -109,7 +115,7 @@ namespace Character
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawRay(cameRay.origin,cameRay.direction*100.0f);
+            Gizmos.DrawRay(cameRay.origin, cameRay.direction * 100.0f);
         }
     }
 }

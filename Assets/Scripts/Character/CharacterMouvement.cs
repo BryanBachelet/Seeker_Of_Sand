@@ -10,6 +10,7 @@ namespace Character
     public class CharacterMouvement : MonoBehaviour
     {
         public float speed = 10.0f;
+        public float initialSpeed = 10.0f;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
         public Vector3 currentDirection { get; private set; }
@@ -21,6 +22,7 @@ namespace Character
         private void InitComponent()
         {
             m_rigidbody = GetComponent<Rigidbody>();
+            initialSpeed = speed;
         }
 
 
