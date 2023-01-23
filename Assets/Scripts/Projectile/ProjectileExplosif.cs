@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProjectileExplosif : MonoBehaviour
 {
-    [SerializeField] private const float m_timeBeforeExplosion = 1.0f;
+    [SerializeField] private float m_timeBeforeExplosion = 1.0f; //Remove const declaration
     [SerializeField] private float m_explosionSize;
     [SerializeField] private Vector3 m_direction;
     [SerializeField] private float m_speed;
@@ -12,11 +12,24 @@ public class ProjectileExplosif : MonoBehaviour
     [SerializeField] private LayerMask m_layer;
     [SerializeField] private float m_power;
     [SerializeField] private LayerMask m_explosionMask;
+    [SerializeField] private Material m_explosionMatToUse;
     private bool m_isStick;
     private Transform m_stickTransform;
     private Vector3 m_stickPosition;
     private float m_lifeTimer;
+    private Transform m_transform;
+    private Material m_mat_explosion;
+    public AnimationCurve scaleByTime_Curve;
+    public AnimationCurve coloriseByTime_Curve;
+    public Color baseEmissiveColor;
 
+    private void Start()
+    {
+        m_transform = gameObject.GetComponent<Transform>();
+        m_mat_explosion = new Material(m_explosionMatToUse);
+        gameObject.GetComponent<MeshRenderer>().material = m_mat_explosion;
+
+    }
     void Update()
     {
         Move();
@@ -31,7 +44,12 @@ public class ProjectileExplosif : MonoBehaviour
     {
         if (m_isStick)
         {
+            if(m_stickTransform == null)
+            {
+                m_isStick = false;
+            }
             transform.position = m_stickTransform.position + m_stickPosition;
+            ScaleByTime();
             return;
         }
 
@@ -39,6 +57,7 @@ public class ProjectileExplosif : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
         transform.position += m_direction.normalized * m_speed * Time.deltaTime;
 
     }
@@ -79,6 +98,7 @@ public class ProjectileExplosif : MonoBehaviour
     private void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
+        GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
@@ -88,5 +108,15 @@ public class ProjectileExplosif : MonoBehaviour
         }
         Destroy(this.gameObject);
     }
+
+    private void ScaleByTime()
+    {
+        m_lifeTimer += Time.deltaTime;
+        float scaleByTime = scaleByTime_Curve.Evaluate(m_lifeTimer / m_timeBeforeExplosion) / 2;
+        m_transform.localScale = new Vector3(scaleByTime, scaleByTime, scaleByTime);
+        m_mat_explosion.SetColor("_EmissiveColor", baseEmissiveColor * coloriseByTime_Curve.Evaluate(m_lifeTimer / m_timeBeforeExplosion));
+        //m_mat_explosion.SetFloat("_EmissiveIntensity", 1.3f * scaleByTime * 200);
+    }
+
 
 }
