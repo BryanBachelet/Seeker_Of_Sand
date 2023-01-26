@@ -46,11 +46,7 @@ namespace Character
             RaycastHit hit = new RaycastHit();
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
-            if(inputDirection == Vector3.zero)
-            {
-                m_rigidbody.velocity = Vector3.zero;
-                return;
-            }
+     
 
             if (OnGround(ref hit))
             {
@@ -60,10 +56,20 @@ namespace Character
                     m_rigidbody.velocity = Vector3.zero;
                     return;
                 }
+                if (inputDirection == Vector3.zero)
+                {
+                    m_rigidbody.velocity = Vector3.zero;
+                    return;
+                }
                 Move(direction);
             }else
             {
                 AirMove(inputDirection);
+                if (inputDirection == Vector3.zero)
+                {
+                    m_rigidbody.velocity = new Vector3(0, m_rigidbody.velocity.y, 0);
+                    return;
+                }
             }
         }
 
