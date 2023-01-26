@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{4164a38e-77d9-41a3-b3cb-d4ee41563dcd}">
 		<property name="name">
-			<value>New Event</value>
+			<value>ExplosionActive</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>
@@ -121,7 +121,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{76e5c2a0-4fd1-46c5-8006-5ec37e554ca4}">
 		<property name="volume">
-			<value>-8.5</value>
+			<value>-19.5</value>
 		</property>
 		<property name="name">
 			<value>Audio 3</value>
@@ -150,6 +150,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{b2a4b131-b37f-4270-b067-78f76999e40a}">
+		<property name="volume">
+			<value>-12</value>
+		</property>
 		<property name="name">
 			<value>Audio 2</value>
 		</property>
@@ -167,6 +170,7 @@
 		<relationship name="effects">
 			<destination>{c1511f65-d8bf-45e9-9036-a0deaa10369e}</destination>
 			<destination>{e6ef9578-7461-48a4-a2bc-a01532b03efe}</destination>
+			<destination>{98944142-2736-4211-9ddb-d7713604dc86}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{571a69e3-c915-49d4-838c-8cdb50bc47f6}" />
@@ -217,6 +221,11 @@
 		</property>
 		<property name="maximumDistance">
 			<value>100</value>
+		</property>
+	</object>
+	<object class="ThreeEQEffect" id="{98944142-2736-4211-9ddb-d7713604dc86}">
+		<property name="highGain">
+			<value>-20</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{f4eaf5cb-7d4b-4027-ad87-3af5b6b2a6bd}" />
