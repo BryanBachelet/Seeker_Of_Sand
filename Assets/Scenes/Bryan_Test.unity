@@ -929,6 +929,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc1f0b4e07e48a4ab5293114dac1374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1983534966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22613994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8192628a9017201459acd34812e00fd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bonusProjectileNumber: 4
+  defaultAngle: 15
+--- !u!114 &1983534967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22613994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f4ec930ace00f4d9989ca923e48d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bonusShotNumber: 1
+  defaultTimeBetweenShoot: 0.2
 --- !u!1001 &2013132148
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1460,6 +1488,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1678966290, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1678966290, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_playerPosition
       value: 
       objectReference: {fileID: 1983534964}
@@ -1485,7 +1517,15 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: chainEffects.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: weaponOrder.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponOrder.Array.data[1]
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
@@ -1502,6 +1542,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 787a88a10819bef42a38175726343126,
         type: 2}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: chainEffects.Array.data[0]
+      value: 
+      objectReference: {fileID: 1983534967}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: chainEffects.Array.data[1]
+      value: 
+      objectReference: {fileID: 1983534966}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: weaponStats.Array.data[0].projectileNumber
       value: 5
