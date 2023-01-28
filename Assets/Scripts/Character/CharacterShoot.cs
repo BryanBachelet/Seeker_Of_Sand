@@ -4,15 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+[Serializable]
+public struct WeaponStat
+{
+   public int projectileNumber;
+   public float shootAngle;
+}
+
 namespace Character
 {
-
     public class CharacterShoot : MonoBehaviour
     {
-        [SerializeField] [Range(0, 90.0f)] private float m_shootAngle = 90.0f;
-        public int projectileNumber;
+        //[SerializeField] [Range(0, 90.0f)] private float m_shootAngle = 90.0f;
+        [HideInInspector] public int projectileNumber;
         public float shootTime;
-        public GameObject projectileGO;
+        public GameObject[] projectileGO;
+        public WeaponStat[] weaponStats;
         public AudioSource m_shootSounds;
 
         private float m_shootTimer;
@@ -22,6 +30,7 @@ namespace Character
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
+        private int currentProjectileIndex;
 
         private void Start()
         {
@@ -52,19 +61,26 @@ namespace Character
         private void Shoot()
         {
             if (!m_canShoot) return;
-            GlobalSoundManager.PlayOneShot(1, Vector3.zero);
-            StartCoroutine( m_cameraShake.ShakeEffect(m_shakeDuration));
-            float angle = m_shootAngle / projectileNumber;
-            int mod = projectileNumber % 2 == 1 ? 0 : 1;
-            for (int i = mod; i < projectileNumber + mod; i++)
+            // GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
+            float angle = weaponStats[currentProjectileIndex].shootAngle / weaponStats[currentProjectileIndex].projectileNumber;
+            int mod = weaponStats[currentProjectileIndex].projectileNumber % 2 == 1 ? 0 : 1;
+            for (int i = mod; i < weaponStats[currentProjectileIndex].projectileNumber + mod; i++)
             {
-                GameObject projectileCreate = GameObject.Instantiate(projectileGO, transform.position, transform.rotation);
-                if(projectileCreate.GetComponent<Projectile>())  projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
-                if(projectileCreate.GetComponent<ProjectileExplosif>()) projectileCreate.GetComponent<ProjectileExplosif>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
+                GameObject projectileCreate = GameObject.Instantiate(projectileGO[currentProjectileIndex], transform.position, transform.rotation);
+                if (projectileCreate.GetComponent<Projectile>()) projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
+                if (projectileCreate.GetComponent<ProjectileExplosif>()) projectileCreate.GetComponent<ProjectileExplosif>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
                 angle = -angle;
             }
             m_shootSounds.Play();
             m_canShoot = false;
+            currentProjectileIndex = ChangeProjecileIndex();
+        }
+
+        private int ChangeProjecileIndex()
+        {
+            if (currentProjectileIndex == projectileGO.Length - 1) return 0;
+            else return currentProjectileIndex + 1;
         }
 
         private void ReloadWeapon()
