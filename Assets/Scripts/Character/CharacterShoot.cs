@@ -13,14 +13,17 @@ namespace Character
         //[SerializeField] [Range(0, 90.0f)] private float m_shootAngle = 90.0f;
         [HideInInspector] public int projectileNumber;
         public float shootTime;
+        public float reloadTime;
         public GameObject[] projectileGO;
         public WeaponStats[] weaponStats;
         public int[] weaponOrder;
         public AudioSource m_shootSounds;
 
         private float m_shootTimer;
+        private float m_reloadTimer;
         private bool m_canShoot;
         private bool m_shootInput;
+        private bool m_isReloading;
         private CharacterAim m_characterAim;
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private CameraShake m_cameraShake;
@@ -36,6 +39,7 @@ namespace Character
         private void Update()
         {
             if (m_shootInput) Shoot();
+            ReloadShot();
             ReloadWeapon();
         }
 
@@ -99,13 +103,20 @@ namespace Character
 
         private int ChangeProjecileIndex()
         {
-            if (currentProjectileIndex == weaponOrder.Length - 1) return 0;
-            else return currentProjectileIndex + 1;
+            if (currentProjectileIndex == weaponOrder.Length - 1)
+            {
+                m_isReloading = true;
+                return 0;
+            }
+            else
+            {
+                return currentProjectileIndex + 1;
+            }
         }
 
-        private void ReloadWeapon()
+        private void ReloadShot()
         {
-            if (m_canShoot) return;
+            if (m_canShoot || m_isReloading) return;
 
             if (m_shootTimer > shootTime)
             {
@@ -116,6 +127,24 @@ namespace Character
             else
             {
                 m_shootTimer += Time.deltaTime;
+            }
+        }
+
+
+        private void ReloadWeapon()
+        {
+            if (m_canShoot || !m_isReloading) return;
+
+            if (m_reloadTimer > reloadTime)
+            {
+                m_canShoot = true;
+                m_isReloading = false;
+                m_reloadTimer = 0;
+                return;
+            }
+            else
+            {
+                m_reloadTimer += Time.deltaTime;
             }
         }
     }
