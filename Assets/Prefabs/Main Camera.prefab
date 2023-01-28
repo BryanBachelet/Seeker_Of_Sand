@@ -32,7 +32,8 @@ Transform:
   m_LocalPosition: {x: 4.8595467, y: 16.784523, z: -3.741519}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7287188395083420317}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 45.55, y: -5.844, z: 0}
@@ -252,3 +253,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_sizeDistance: 2
   m_characterAim: {fileID: 0}
+--- !u!1 &6398785996441288091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7287188395083420317}
+  - component: {fileID: 4925182484056978154}
+  m_Layer: 0
+  m_Name: ---SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7287188395083420317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398785996441288091}
+  m_LocalRotation: {x: -0.38661167, y: 0.047002975, z: -0.019733628, w: 0.92083263}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 898435386039766565}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4925182484056978154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398785996441288091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac9195a4f7014c4793453815f5e0206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OneS_Sound_Attribution:
+  - Guid:
+      Data1: 1097114510
+      Data2: 1101232089
+      Data3: -288044109
+      Data4: -851618239
+    Path: event:/Player/Weapon/ExplosiveBuble/ExplosionActive
+  - Guid:
+      Data1: -1089972668
+      Data2: 1116814226
+      Data3: 221942696
+      Data4: 79564935
+    Path: event:/Player/Weapon/ShotGun/Fire&Reload
+  Globalsound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class ProjectileExplosif : MonoBehaviour
 {
     [SerializeField] private float m_timeBeforeExplosion = 1.0f; //Remove const declaration
@@ -47,8 +49,11 @@ public class ProjectileExplosif : MonoBehaviour
             if(m_stickTransform == null)
             {
                 m_isStick = false;
+            }else
+            { 
+                transform.position = m_stickTransform.position + m_stickPosition; 
             }
-            transform.position = m_stickTransform.position + m_stickPosition;
+           
             ScaleByTime();
             return;
         }
@@ -98,7 +103,7 @@ public class ProjectileExplosif : MonoBehaviour
     private void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
-        GlobalSoundManager.PlayOneShot(0, transform.position);
+       // GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
