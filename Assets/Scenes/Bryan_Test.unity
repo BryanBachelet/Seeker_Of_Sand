@@ -552,16 +552,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 847b463a68fa31847aade1c2947dfe5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_activeEffect: 1
-  m_RadiusFloat: 138.12
-  m_ShowGizmo: 1
-  m_maxCloud: 20
-  cloudObject:
-  - {fileID: 9031372737402064897, guid: bc7c6607b6bf30345ab75c2fa819ef73, type: 3}
-  - {fileID: 9031372737402064897, guid: bc7c6607b6bf30345ab75c2fa819ef73, type: 3}
-  - {fileID: 9031372737402064897, guid: bc7c6607b6bf30345ab75c2fa819ef73, type: 3}
-  m_playerPosition: {fileID: 1983534964}
-  cloudSpawnList: []
 --- !u!4 &1678966291
 Transform:
   m_ObjectHideFlags: 0
@@ -1073,15 +1063,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bcbd55902edc9469390830cea6dfb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_activeEffect: 1
-  m_RadiusFloat: 20
-  m_ShowGizmo: 1
-  m_timeBtwnWind: 6
-  windObject:
-  - {fileID: 2399824382345575869, guid: 4703307556665964d81aef92f4569db0, type: 3}
-  - {fileID: 2103459572889485369, guid: a84fac8de8b6e364ba7889208c1480c0, type: 3}
-  - {fileID: 602255588162419519, guid: d73633c8cbed9594e85cafbbfad23ce1, type: 3}
-  m_playerPosition: {fileID: 1983534964}
 --- !u!1 &2061072914
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,7 +1236,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2144382762}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71dc0af37f20d504da48affbf6a62d21, type: 3}
+  m_Script: {fileID: 11500000, guid: cac9195a4f7014c4793453815f5e0206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   OneS_Sound_Attribution:
@@ -1499,6 +1480,36 @@ PrefabInstance:
       propertyPath: m_cameraShake
       value: 
       objectReference: {fileID: 1231885401}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponStats.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: projectileGO.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: projectileGO.Array.data[0]
+      value: 
+      objectReference: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
+        type: 3}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: projectileGO.Array.data[1]
+      value: 
+      objectReference: {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0,
+        type: 3}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponStats.Array.data[0].shootAngle
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponStats.Array.data[0].projectileNumber
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponStats.Array.data[1].projectileNumber
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1983534971, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: projectorVisorObject
       value: 
