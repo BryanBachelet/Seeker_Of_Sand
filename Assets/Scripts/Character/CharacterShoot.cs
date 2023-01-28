@@ -99,7 +99,7 @@ namespace Character
 
         private int ChangeProjecileIndex()
         {
-            if (currentProjectileIndex == projectileGO.Length - 1) return 0;
+            if (currentProjectileIndex == weaponOrder.Length - 1) return 0;
             else return currentProjectileIndex + 1;
         }
 
