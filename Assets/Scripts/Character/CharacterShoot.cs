@@ -11,19 +11,31 @@ namespace Character
         //[SerializeField] [Range(0, 90.0f)] private float m_shootAngle = 90.0f;
         [HideInInspector] public int projectileNumber;
         public float shootTime;
+        public float reloadTime;
         public GameObject[] projectileGO;
-        public WeaponStats[] weaponStats;
+        public WeaponProfile[] weaponStats;
+        public ChainEffect[] chainEffects;
         public int[] weaponOrder;
         public AudioSource m_shootSounds;
 
         private float m_shootTimer;
+        private float m_reloadTimer;
+        private float m_timeBetweenShoot;
+
         private bool m_canShoot;
+        private bool m_isShooting;
         private bool m_shootInput;
+        private bool m_isReloading;
+
+        private WeaponStats currentWeaponStats;
+        private int currentShotNumber;
+        private int currentIndexWeapon;
+        private int currentProjectileIndex;
+
         private CharacterAim m_characterAim;
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
-        private int currentProjectileIndex;
 
         private Loader_Behavior m_LoaderInUI;
         private void Start()
@@ -36,7 +48,23 @@ namespace Character
 
         private void Update()
         {
-            if (m_shootInput) Shoot();
+            if (m_shootInput)
+            {
+                if (!m_isShooting) Shoot();
+            }
+            if (m_isShooting)
+            {
+                if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+                {
+                    Shoot();
+                    m_timeBetweenShoot = 0.0f;
+                }
+                else
+                {
+                    m_timeBetweenShoot += Time.deltaTime;
+                }
+            }
+            ReloadShot();
             ReloadWeapon();
         }
 
@@ -58,13 +86,13 @@ namespace Character
         {
             if (!m_canShoot) return;
 
-            int index = weaponOrder[currentProjectileIndex];
-            float angle = GetShootAngle(index);
-            int mod = GetStartIndexProjectile(index);
+            if (currentShotNumber == 0) StartShoot();
+            float angle = GetShootAngle(currentWeaponStats);
+            int mod = GetStartIndexProjectile(currentWeaponStats);
 
-            for (int i = mod; i < weaponStats[index].projectileNumber + mod; i++)
+            for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
-                GameObject projectileCreate = GameObject.Instantiate(projectileGO[index], transform.position, transform.rotation);
+                GameObject projectileCreate = GameObject.Instantiate(projectileGO[currentIndexWeapon], transform.position, transform.rotation);
                 if (projectileCreate.GetComponent<Projectile>()) projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
                 if (projectileCreate.GetComponent<ProjectileExplosif>()) projectileCreate.GetComponent<ProjectileExplosif>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
                 angle = -angle;
@@ -74,17 +102,39 @@ namespace Character
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
             m_LoaderInUI.RemoveCapsule();
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
-            currentProjectileIndex = ChangeProjecileIndex();
-            
-            m_canShoot = false;
+            currentShotNumber++;
 
+            if (currentShotNumber == currentWeaponStats.shootNumber) EndShoot();
+
+        }
+
+        private void StartShoot()
+        {
+            currentIndexWeapon = weaponOrder[currentProjectileIndex];
+            currentWeaponStats = weaponStats[currentIndexWeapon].stats;
+           
+            if (currentProjectileIndex != 0)
+            {
+                int prevWeapon = weaponOrder[currentProjectileIndex - 1];
+                currentWeaponStats = chainEffects[prevWeapon].Active(currentWeaponStats);
+            }
+
+                m_isShooting = true;
+        }
+
+        private void EndShoot()
+        {
+            currentShotNumber = 0;
+            currentProjectileIndex = ChangeProjecileIndex();
+            m_canShoot = false;
+            m_isShooting = false;
         }
 
         #region Shoot Function
 
-        private float GetShootAngle(int index)
+        private float GetShootAngle(WeaponStats weaponStats)
         {
-            return weaponStats[index].shootAngle / weaponStats[index].projectileNumber;
+            return weaponStats.shootAngle / weaponStats.projectileNumber;
         }
 
         /// <summary>
@@ -92,22 +142,29 @@ namespace Character
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private int GetStartIndexProjectile(int index)
+        private int GetStartIndexProjectile(WeaponStats weaponStats)
         {
-            return weaponStats[index].projectileNumber % 2 == 1 ? 0 : 1;
+            return weaponStats.projectileNumber % 2 == 1 ? 0 : 1;
         }
 
         #endregion
 
         private int ChangeProjecileIndex()
         {
-            if (currentProjectileIndex == weaponOrder.Length - 1) return 0;
-            else return currentProjectileIndex + 1;
+            if (currentProjectileIndex == weaponOrder.Length - 1)
+            {
+                m_isReloading = true;
+                return 0;
+            }
+            else
+            {
+                return currentProjectileIndex + 1;
+            }
         }
 
-        private void ReloadWeapon()
+        private void ReloadShot()
         {
-            if (m_canShoot) return;
+            if (m_canShoot || m_isReloading) return;
 
             if (m_shootTimer > shootTime)
             {
@@ -118,6 +175,24 @@ namespace Character
             else
             {
                 m_shootTimer += Time.deltaTime;
+            }
+        }
+
+
+        private void ReloadWeapon()
+        {
+            if (m_canShoot || !m_isReloading) return;
+
+            if (m_reloadTimer > reloadTime)
+            {
+                m_canShoot = true;
+                m_isReloading = false;
+                m_reloadTimer = 0;
+                return;
+            }
+            else
+            {
+                m_reloadTimer += Time.deltaTime;
             }
         }
     }
