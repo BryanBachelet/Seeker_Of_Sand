@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour
@@ -27,10 +25,13 @@ namespace Character
         [SerializeField] private float m_shakeDuration = 0.1f;
         private int currentProjectileIndex;
 
+        private Loader_Behavior m_LoaderInUI;
         private void Start()
         {
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
+            m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
+            m_LoaderInUI.SetCapsuleOrder(weaponOrder);
         }
 
         private void Update()
@@ -71,6 +72,7 @@ namespace Character
 
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            m_LoaderInUI.RemoveCapsule();
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentProjectileIndex = ChangeProjecileIndex();
             

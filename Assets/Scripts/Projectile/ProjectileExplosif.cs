@@ -103,7 +103,7 @@ public class ProjectileExplosif : MonoBehaviour
     private void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
-       // GlobalSoundManager.PlayOneShot(0, transform.position);
+        GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
