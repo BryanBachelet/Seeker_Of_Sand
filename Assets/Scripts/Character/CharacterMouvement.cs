@@ -46,8 +46,6 @@ namespace Character
             RaycastHit hit = new RaycastHit();
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
-     
-
             if (OnGround(ref hit))
             {
                 Vector3 direction =  GetForwardDirection(hit.normal);

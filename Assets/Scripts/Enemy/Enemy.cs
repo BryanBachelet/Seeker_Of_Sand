@@ -63,8 +63,8 @@ namespace Enemies
 
         private IEnumerator Death()
         {
-            yield return new WaitForSeconds(2);
             m_isDestroy = true;
+            yield return new WaitForSeconds(2);
             m_enemyManager.DestroyEnemy(this);
         }
     }

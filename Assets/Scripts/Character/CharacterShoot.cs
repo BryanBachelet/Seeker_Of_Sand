@@ -28,6 +28,7 @@ namespace Character
         private bool m_isReloading;
 
         private WeaponStats currentWeaponStats;
+        public WeaponStats weaponStat { get { return currentWeaponStats; } private set { } }
         private int currentShotNumber;
         private int currentIndexWeapon;
         private int currentProjectileIndex;
@@ -65,6 +66,8 @@ namespace Character
             ReloadWeapon();
         }
 
+        
+
         public void ShootInput(InputAction.CallbackContext ctx)
         {
             if (ctx.performed)
@@ -90,8 +93,12 @@ namespace Character
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
                 GameObject projectileCreate = GameObject.Instantiate(projectileGO[currentIndexWeapon], transform.position, transform.rotation);
-                if (projectileCreate.GetComponent<Projectile>()) projectileCreate.GetComponent<Projectile>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
-                if (projectileCreate.GetComponent<ProjectileExplosif>()) projectileCreate.GetComponent<ProjectileExplosif>().SetDirection(Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim());
+                ProjectileData data = new ProjectileData();
+                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
+                data.speed = currentWeaponStats.speed;
+                data.lifeTime = currentWeaponStats.life;
+
+                projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
 

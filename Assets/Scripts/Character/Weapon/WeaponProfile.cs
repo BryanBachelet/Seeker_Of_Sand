@@ -11,6 +11,8 @@ public struct WeaponStats
     public float shootAngle;
     public float shootNumber ;
     public float timeBetweenShot;
+    public float life;
+    public float speed;
 }
 
 
