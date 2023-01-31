@@ -10,7 +10,7 @@ public struct WeaponStats
     public int projectileNumber;
     public float shootAngle;
     public float shootNumber ;
-    public float timeBetweenShot ;
+    public float timeBetweenShot;
 }
 
 

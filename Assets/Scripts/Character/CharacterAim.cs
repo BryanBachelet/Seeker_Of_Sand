@@ -43,7 +43,7 @@ namespace Character
                 Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
                 float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
                 m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
-                m_lineRenderer.SetPosition(1, transform.position + m_aimDirection * 70);
+                m_lineRenderer.SetPosition(1, transform.position + m_aimDirection);
                 Cursor.visible = true;
             }
             else
