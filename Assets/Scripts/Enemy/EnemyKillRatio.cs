@@ -10,10 +10,15 @@ public class EnemyKillRatio : MonoBehaviour
     [SerializeField] private Text m_textFeedbackUI;
     [SerializeField] private int m_maxKillPerMinute = 70;
     private List<float> m_enemyCount = new List<float>();
+    [SerializeField] private Experience_System m_PlayerExperienceRef;
 
 
     private void Start()
     {
+        if(m_PlayerExperienceRef==null)
+        {
+            m_PlayerExperienceRef = GameObject.Find("Player").GetComponent<Experience_System>();
+        }
         DrawUI();
     }
 
@@ -49,6 +54,7 @@ public class EnemyKillRatio : MonoBehaviour
     public void AddEnemiKill()
     {
         m_enemyCount.Add(m_killRatioTime);
+        //m_PlayerExperienceRef.OnEnemyKilled();
         DrawUI();
     }
 }

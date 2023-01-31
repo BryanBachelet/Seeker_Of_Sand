@@ -16,7 +16,6 @@ namespace Character
         public WeaponProfile[] weaponStats;
         public ChainEffect[] chainEffects;
         public int[] weaponOrder;
-        public AudioSource m_shootSounds;
 
         private float m_shootTimer;
         private float m_reloadTimer;
@@ -100,7 +99,7 @@ namespace Character
 
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
-            m_LoaderInUI.RemoveCapsule();
+            if(!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
 

@@ -20,12 +20,14 @@ public class Projectile : MonoBehaviour
     public void SetDirection(Vector3 direction)
     {
         m_direction = direction;
+
     }
     private void Move()
     {
 
         if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
+
             Destroy(this.gameObject);
         }
         transform.position += m_direction.normalized * m_speed * Time.deltaTime;
@@ -34,6 +36,7 @@ public class Projectile : MonoBehaviour
     {
         if (m_lifeTimer > m_lifeTime)
         {
+
             Destroy(this.gameObject);
         }
         else

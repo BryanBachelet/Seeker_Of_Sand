@@ -10,7 +10,7 @@ public class Loader_Behavior : MonoBehaviour
     [SerializeField] private int m_currentCapsule = 0;
     private Transform m_Objeect;
     private Animator m_animator;
-
+    private bool m_reloading = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,9 +30,11 @@ public class Loader_Behavior : MonoBehaviour
         m_currentCapsule += 1;
         if(m_currentCapsule >= m_capsuleObject.Length)
         {
+            m_reloading = true;
             ReloadCapsule();
             return;
         }
+        GlobalSoundManager.PlayOneShot(4, Vector3.zero);
         m_Objeect.rotation *= Quaternion.Euler(0, 0, 60);
     }
 
@@ -52,13 +54,20 @@ public class Loader_Behavior : MonoBehaviour
         {
             m_capsuleObject[i].SetActive(true);
         }
+        m_reloading = false;
     }
 
     public void SetCapsuleOrder(int[] weaponOrder)
     {
         for(int i = 0; i < weaponOrder.Length; i++)
         {
-            m_capsuleObject[i] = Instantiate(m_capsuleDisplayPrefab[weaponOrder[i]], m_capsulePosition[i].position, Quaternion.identity, m_Objeect);
+            m_capsuleObject[i] = Instantiate(m_capsuleDisplayPrefab[weaponOrder[i]], m_capsulePosition[i].position, Quaternion.identity, this.transform);
+            //m_capsuleObject[i].transform.parent = m_Objeect;
         }
+    }
+
+    public bool GetReloadingstate()
+    {
+        return m_reloading;
     }
 }
