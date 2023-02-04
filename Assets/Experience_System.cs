@@ -19,16 +19,16 @@ public class Experience_System : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        Collider[] experienceTouched = Physics.OverlapSphere(transform.position, m_RadiusPickupXp, m_ExperienceLayer); 
-        if(experienceTouched.Length > 0)
+        Collider[] experienceTouched = Physics.OverlapSphere(transform.position, m_RadiusPickupXp, m_ExperienceLayer);
+        if (experienceTouched.Length > 0)
         {
-            for(int i = 0; i < experienceTouched.Length; i++)
+            for (int i = 0; i < experienceTouched.Length; i++)
             {
                 experienceTouched[i].GetComponent<ExperienceMouvement>().playerPosition = this.transform;
             }
@@ -39,7 +39,7 @@ public class Experience_System : MonoBehaviour
     {
         m_NumberEnemyKilled += 1;
         float levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
-        if (levelProgress > m_CurrentLevel +1)
+        if (levelProgress > m_CurrentLevel + 1)
         {
             LevelUp((int)m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled));
         }
@@ -53,7 +53,7 @@ public class Experience_System : MonoBehaviour
 
     public void LevelUp(int newLevel)
     {
-        for(int i = 0; i < newLevel - m_CurrentLevel; i++)
+        for (int i = 0; i < newLevel - m_CurrentLevel; i++)
         {
             ChooseUpgrade(m_CurrentLevel + i);
         }
@@ -74,7 +74,7 @@ public class Experience_System : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if(collision.gameObject.tag == "Experience")
+        if (collision.gameObject.tag == "Experience")
         {
             Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
