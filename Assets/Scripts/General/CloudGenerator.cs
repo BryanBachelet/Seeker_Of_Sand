@@ -27,10 +27,10 @@ public class CloudGenerator : MonoBehaviour
         //transform.position = m_playerPosition.position + new Vector3(0, 60, 0);
         if (m_tempsEcouleSpawn > 2f && cloudSpawnList.Count < 20)
         {
-            int rndWindObject = Random.Range(0, 3);
+            int rndCloudObject = Random.Range(0, 3);
             Vector2 rndPositionSpawnObject = Random.insideUnitCircle * m_RadiusFloat;
             int rndY = Random.Range(0, 16);
-            GameObject lastCloudGenerated = Instantiate(cloudObject[rndWindObject], new Vector3(generatorPosition.position.x + rndPositionSpawnObject.x, generatorPosition.position.y + rndY, generatorPosition.position.z + rndPositionSpawnObject.y), Quaternion.identity);
+            GameObject lastCloudGenerated = Instantiate(cloudObject[rndCloudObject], new Vector3(generatorPosition.position.x + rndPositionSpawnObject.x, generatorPosition.position.y + rndY, generatorPosition.position.z + rndPositionSpawnObject.y), Quaternion.identity);
             CloudID lastCloudIDGenerated = lastCloudGenerated.GetComponent<CloudID>();
             lastCloudIDGenerated.m_playerTransform = m_playerPosition;
             lastCloudIDGenerated.m_CloudGenerator = this;

@@ -10,6 +10,7 @@ namespace Enemies
         [SerializeField] private Transform m_target;
         [SerializeField] private float m_minSpeed = 3.0f;
         [SerializeField] private float m_maxSpeed = 4.0f;
+        [SerializeField] private GameObject m_ExperiencePrefab;
         private EnemyManager m_enemyManager;
         private NavMeshAgent m_navAgent;
         private bool m_isDestroy;
@@ -57,6 +58,7 @@ namespace Enemies
             float magnitude = Random.Range(0.5f, 1.0f);
             m_rigidbody.isKinematic = false;
             m_rigidbody.constraints = RigidbodyConstraints.None;
+            Instantiate(m_ExperiencePrefab, transform.position, transform.rotation);
             m_rigidbody.AddForce(direction.normalized  * power, ForceMode.Impulse);
             StartCoroutine(Death());
         }
