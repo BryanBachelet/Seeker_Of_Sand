@@ -16,7 +16,6 @@ namespace Character
         public WeaponProfile[] weaponStats;
         public ChainEffect[] chainEffects;
         public int[] weaponOrder;
-        public AudioSource m_shootSounds;
 
         private float m_shootTimer;
         private float m_reloadTimer;
@@ -37,6 +36,7 @@ namespace Character
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
+        private Loader_Behavior m_LoaderInUI;
 
 
         public void InitComponentStat(CharacterStat stat)
@@ -49,6 +49,8 @@ namespace Character
         {
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
+            m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
+            m_LoaderInUI.SetCapsuleOrder(weaponOrder);
         }
 
         private void Update()
@@ -111,6 +113,7 @@ namespace Character
 
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            if(!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
 
