@@ -16,10 +16,12 @@ public class Experience_System : MonoBehaviour
     [SerializeField] private float m_posXInit = -930;
     [SerializeField] private float m_posXFinal = 950;
     [SerializeField] private RectTransform m_xpPointer;
+
+    private CharacterUpgrade m_characterUpgrade;
     // Start is called before the first frame update
     void Start()
     {
-
+        m_characterUpgrade = GetComponent<CharacterUpgrade>();
     }
 
     // Update is called once per frame
@@ -59,11 +61,13 @@ public class Experience_System : MonoBehaviour
         }
         m_CurrentLevel = newLevel;
         m_LevelDisplay.text = "" + m_CurrentLevel;
+
     }
 
     public void ChooseUpgrade(int level)
     {
         Debug.Log("Add new upgrade : " + level);
+        m_characterUpgrade.GainLevel();
     }
 
     private void OnDrawGizmos()

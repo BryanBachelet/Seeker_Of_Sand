@@ -31,7 +31,7 @@ public class Projectile : MonoBehaviour
     {
         m_direction = data.direction;
         m_speed = data.speed;
-        m_lifeTime = data.lifeTime;
+        m_lifeTime = data.life;
     }
     protected virtual void Move()
     {

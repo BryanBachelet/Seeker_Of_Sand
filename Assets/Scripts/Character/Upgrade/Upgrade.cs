@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Upgrade Profile", order = 3)]
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Upgrade_Profile", order = 3)]
+[Serializable]
 public class UpgradeProfile : ScriptableObject
 {
     public CharacterStat statGain;

@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CharacterUpgrade : MonoBehaviour
 {
     public List<Upgrade> m_avatarUpgrade;
     public int upgradePoint = 1;
     public GameObject upgradeUiGO;
+    public Text m_upgradePoint;
 
     private UpgradeManager m_upgradeManager;
     private UpgradeUI m_upgradeUi;
@@ -35,19 +37,23 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeManager = FindObjectOfType<UpgradeManager>();
         m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
+        m_upgradePoint.text = upgradePoint.ToString();
     }
+
     public void GetNewUpgrade()
     {
         if (upgradePoint == 0) return;
 
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
-        upgradePoint--;
+       
     }
 
     public void ChooseUpgrade(int indexChoice)
     {
         m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
         m_characterProfil.ApplyStat(CalculateStat(m_characterProfil.m_baseStat));
+        upgradePoint--;
+        m_upgradePoint.text = upgradePoint.ToString();
         if (upgradePoint == 0)
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
@@ -61,6 +67,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void GainLevel()
     {
         upgradePoint++;
+        m_upgradePoint.text = upgradePoint.ToString();
     }
 
     private CharacterStat CalculateStat(CharacterStat stats)

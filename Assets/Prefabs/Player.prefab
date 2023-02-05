@@ -269,7 +269,6 @@ GameObject:
   - component: {fileID: 1983534970}
   - component: {fileID: 1983534971}
   - component: {fileID: -826629266032382904}
-  - component: {fileID: 6753711209206917089}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -511,6 +510,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0b96f4c3-6046-4920-bdd3-ce8b69ab4712
     m_ActionName: Player/Aim[/XInputControllerWindows/rightStick,/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 20568960-3558-47db-8ca1-116511693681
+    m_ActionName: Player/Upgrade[/Keyboard/g,/XInputControllerWindows/select]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -725,15 +728,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileNumber: 5
   shootTime: 0.5
+  reloadTime: 0
   projectileGO:
   - {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133, type: 3}
   - {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0, type: 3}
   weaponStats:
-  - projectileNumber: 5
-    shootAngle: 35
-  - projectileNumber: 1
-    shootAngle: 0
-  m_shootSounds: {fileID: 1983534978}
+  - {fileID: 0}
+  - {fileID: 0}
+  chainEffects: []
+  weaponOrder: 
   m_cameraShake: {fileID: 0}
   m_shakeDuration: 0.1
 --- !u!114 &1983534971
@@ -757,19 +760,6 @@ MonoBehaviour:
     m_Bits: 8
   projectorVisorObject: {fileID: 0}
 --- !u!114 &-826629266032382904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6959514789458403795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attenuationObject: {fileID: 0}
---- !u!114 &6753711209206917089
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
