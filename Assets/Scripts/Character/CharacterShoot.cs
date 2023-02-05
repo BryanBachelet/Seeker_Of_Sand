@@ -6,11 +6,11 @@ using UnityEngine.InputSystem;
 
 namespace Character
 {
-    public class CharacterShoot : MonoBehaviour
+    public class CharacterShoot : MonoBehaviour , CharacterComponent
     {
         //[SerializeField] [Range(0, 90.0f)] private float m_shootAngle = 90.0f;
         [HideInInspector] public int projectileNumber;
-        public float shootTime;
+        [HideInInspector] public float shootTime;
         public float reloadTime;
         public GameObject[] projectileGO;
         public WeaponProfile[] weaponStats;
@@ -38,7 +38,14 @@ namespace Character
         [SerializeField] private CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
 
-        private void Start()
+
+        public void InitComponentStat(CharacterStat stat)
+        {
+            shootTime = stat.baseStat.attackSpeed;
+            InitComponent();
+        }
+
+        private void InitComponent()
         {
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script

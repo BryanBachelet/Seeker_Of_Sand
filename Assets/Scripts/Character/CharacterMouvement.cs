@@ -7,23 +7,24 @@ namespace Character
 {
 
     [RequireComponent(typeof(Rigidbody))]
-    public class CharacterMouvement : MonoBehaviour
+    public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
-        public float speed = 10.0f;
-        public float initialSpeed = 10.0f;
+        [HideInInspector] public float speed = 10.0f;
+        [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
-        
+
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
-        
+
         public Vector3 currentDirection { get; private set; }
-        private void Start()
+
+        public void InitComponentStat(CharacterStat stat)
         {
+            speed = stat.baseStat.speed;
             InitComponent();
         }
-
         private void InitComponent()
         {
             m_rigidbody = GetComponent<Rigidbody>();
@@ -48,7 +49,7 @@ namespace Character
 
             if (OnGround(ref hit))
             {
-                Vector3 direction =  GetForwardDirection(hit.normal);
+                Vector3 direction = GetForwardDirection(hit.normal);
                 if (GetSlopeAngle(direction) >= m_maxGroundSlopeAngle)
                 {
                     m_rigidbody.velocity = Vector3.zero;
@@ -60,7 +61,8 @@ namespace Character
                     return;
                 }
                 Move(direction);
-            }else
+            }
+            else
             {
                 AirMove(inputDirection);
                 if (inputDirection == Vector3.zero)
@@ -84,7 +86,7 @@ namespace Character
 
         private Vector3 GetForwardDirection(Vector3 normal)
         {
-            return Vector3.Cross(transform.right,normal);
+            return Vector3.Cross(transform.right, normal);
         }
 
         private float GetSlopeAngle(Vector3 direction)

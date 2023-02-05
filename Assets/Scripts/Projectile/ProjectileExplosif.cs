@@ -20,7 +20,6 @@ public class ProjectileExplosif : Projectile
 
     private Transform m_stickTransform;
     private Vector3 m_stickPosition;
-    private float m_lifeTimer;
     private Transform m_transform;
     private Material m_mat_explosion;
 

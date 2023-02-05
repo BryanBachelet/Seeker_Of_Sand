@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float m_lifeTime;
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
-    private float m_lifeTimer;
+    protected float m_lifeTimer;
 
     void  Update()
     {
