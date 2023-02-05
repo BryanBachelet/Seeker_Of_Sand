@@ -6,7 +6,7 @@ public struct ProjectileData
 {
     public Vector3 direction;
     public float speed;
-    public float lifeTime;
+    public float life;
 }
 
 
