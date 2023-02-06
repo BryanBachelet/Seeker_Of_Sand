@@ -9,7 +9,7 @@ public class UpgradeUI : MonoBehaviour
     [SerializeField] private CharacterUpgrade m_upgradeCharacter ;
 
 
-    public void OpenUpgrade(Upgrade[] upgrades)
+    public void UpdateUpgradeDisplay(Upgrade[] upgrades)
     {
         for (int i = 0; i < upgrades.Length; i++)
         {

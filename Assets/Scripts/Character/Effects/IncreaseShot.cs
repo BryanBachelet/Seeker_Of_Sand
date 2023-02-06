@@ -7,11 +7,11 @@ public class IncreaseShot : ChainEffect
 
    [SerializeField] private int bonusShotNumber = 1;
    [SerializeField] private float defaultTimeBetweenShoot = 0.2f;
-    public override WeaponStats Active(WeaponStats stats)
+    public override CapsuleStats Active(CapsuleStats stats, LauncherStats launcherStats)
     {
-        base.Active(stats);
+        base.Active(stats,launcherStats) ;
         stats.shootNumber += bonusShotNumber;
-        if (stats.timeBetweenShot == 0) stats.timeBetweenShot = defaultTimeBetweenShoot;
+        if (launcherStats.timeBetweenCapsule == 0) launcherStats.timeBetweenCapsule = defaultTimeBetweenShoot;
         return stats;
     }
 }

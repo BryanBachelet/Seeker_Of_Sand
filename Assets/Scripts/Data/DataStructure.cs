@@ -8,7 +8,9 @@ public struct AgentStat
 {
     public int healthMax;
     public float speed;
-    public float attackSpeed;
+    public int armor;
+    public float regeneration;
+    public float damage;
 
 };
 

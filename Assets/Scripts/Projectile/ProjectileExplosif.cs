@@ -93,8 +93,8 @@ public class ProjectileExplosif : Projectile
             m_stickPosition = other.transform.position - transform.position;
         }
         if (m_isStick) return;
-        m_isStick = true;
         StartCoroutine(TimeToExplose());
+        m_isStick = true;
     }
 
     private IEnumerator TimeToExplose()

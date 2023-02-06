@@ -46,7 +46,7 @@ namespace Character
                 float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
                 m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
                 RaycastHit hit = new RaycastHit();
-                float distance = m_characterShoot.weaponStat.life * m_characterShoot.weaponStat.speed;
+                float distance = m_characterShoot.weaponStat.range * m_characterShoot.weaponStat.speed;
                 if (Physics.Raycast(transform.position, m_aimDirection.normalized * distance, out hit, m_aimLayer))
                 {
                     distance = (hit.point - transform.position).magnitude;
@@ -60,7 +60,7 @@ namespace Character
                 Cursor.visible = false;
                 m_transformHead.localRotation = Quaternion.identity;
                 RaycastHit hit = new RaycastHit();
-                float distance = m_characterShoot.weaponStat.life * m_characterShoot.weaponStat.speed;
+                float distance = m_characterShoot.weaponStat.range;
                 if (Physics.Raycast(transform.position, transform.forward * distance, out hit, m_aimLayer))
                 {
                     distance = (hit.point - transform.position).magnitude;

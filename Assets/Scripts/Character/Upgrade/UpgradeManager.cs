@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour
 {
-    public UpgradeProfile[] upgradeList;
+    public UpgradeProfil[] upgradeList;
 
     public Upgrade[] RandomUpgrade(int count)
     {
@@ -12,8 +12,22 @@ public class UpgradeManager : MonoBehaviour
         Upgrade[] upgrades = new Upgrade[count];
         for (int i = 0; i < count; i++)
         {
-            UpgradeProfile nxtProfil = upgradeList[index[i]];
-            upgrades[i] = new Upgrade(nxtProfil);
+            UpgradeProfil nxtProfil = upgradeList[index[i]];
+            switch (upgradeList[index[i]].type)
+            {
+                case UpgradeType.CHARACTER:
+                    upgrades[i] = new UpgradeCharacter(nxtProfil);
+                    break;
+                case UpgradeType.LAUNCHER:
+                    upgrades[i] = new UpgradeLauncher(nxtProfil);
+                    break;
+                case UpgradeType.CAPSULE:
+                    upgrades[i] = new UpgradeCapsule(nxtProfil);
+                    break;
+                default:
+                    break;
+            }
+            
         }
         return upgrades;
     }

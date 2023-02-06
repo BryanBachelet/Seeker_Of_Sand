@@ -9,7 +9,7 @@ namespace Character
     [RequireComponent(typeof(Rigidbody))]
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
-        [HideInInspector] public float speed = 10.0f;
+        public float speed = 10.0f;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
         [SerializeField] private float m_groundDistance = 2.0f;

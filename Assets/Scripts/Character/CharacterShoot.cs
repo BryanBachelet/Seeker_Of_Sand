@@ -1,19 +1,19 @@
 using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Character
 {
-    public class CharacterShoot : MonoBehaviour , CharacterComponent
+    public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
-        //[SerializeField] [Range(0, 90.0f)] private float m_shootAngle = 90.0f;
         [HideInInspector] public int projectileNumber;
-        [HideInInspector] public float shootTime;
+        public float shootTime;
         public float reloadTime;
         public GameObject[] projectileGO;
-        public WeaponProfile[] weaponStats;
+        public LauncherProfil launcherProfil;
+        public CapsuleProfil[] capsuleStats;
         public ChainEffect[] chainEffects;
         public int[] weaponOrder;
 
@@ -26,8 +26,10 @@ namespace Character
         private bool m_shootInput;
         private bool m_isReloading;
 
-        private WeaponStats currentWeaponStats;
-        public WeaponStats weaponStat { get { return currentWeaponStats; } private set { } }
+        private CapsuleStats currentWeaponStats;
+        [HideInInspector] public LauncherStats launcherStats;
+        [HideInInspector] public CapsuleStats[] capsuleStatsAlone;
+        public CapsuleStats weaponStat { get { return currentWeaponStats; } private set { } }
         private int currentShotNumber;
         private int currentIndexWeapon;
         private int currentProjectileIndex;
@@ -38,15 +40,27 @@ namespace Character
         [SerializeField] private float m_shakeDuration = 0.1f;
         private Loader_Behavior m_LoaderInUI;
 
+        private void Start()
+        {
+            InitComponent();
+            launcherStats = launcherProfil.stats;
 
+        }
         public void InitComponentStat(CharacterStat stat)
         {
-            shootTime = stat.baseStat.attackSpeed;
-            InitComponent();
+          
+            reloadTime = launcherStats.reloadTime;
+            shootTime = launcherStats.timeBetweenCapsule;
+
         }
 
         private void InitComponent()
         {
+            capsuleStatsAlone = new CapsuleStats[capsuleStats.Length];
+            for (int i = 0; i < capsuleStats.Length; i++)
+            {
+                capsuleStatsAlone[i] = capsuleStats[i].stats;
+            }
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
             m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
@@ -75,7 +89,7 @@ namespace Character
             ReloadWeapon();
         }
 
-        
+
 
         public void ShootInput(InputAction.CallbackContext ctx)
         {
@@ -105,7 +119,7 @@ namespace Character
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
                 data.speed = currentWeaponStats.speed;
-                data.life = currentWeaponStats.life;
+                data.life = currentWeaponStats.range / currentWeaponStats.speed;
 
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
@@ -113,7 +127,7 @@ namespace Character
 
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
-            if(!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
+            if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
 
@@ -124,15 +138,15 @@ namespace Character
         private void StartShoot()
         {
             currentIndexWeapon = weaponOrder[currentProjectileIndex];
-            currentWeaponStats = weaponStats[currentIndexWeapon].stats;
-           
+            currentWeaponStats = capsuleStats[currentIndexWeapon].stats;
+
             if (currentProjectileIndex != 0)
             {
                 int prevWeapon = weaponOrder[currentProjectileIndex - 1];
-                currentWeaponStats = chainEffects[prevWeapon].Active(currentWeaponStats);
+                //currentWeaponStats = chainEffects[prevWeapon].Active(currentWeaponStats,launcherProfil.stats) ;
             }
 
-                m_isShooting = true;
+            m_isShooting = true;
         }
 
         private void EndShoot()
@@ -145,7 +159,7 @@ namespace Character
 
         #region Shoot Function
 
-        private float GetShootAngle(WeaponStats weaponStats)
+        private float GetShootAngle(CapsuleStats weaponStats)
         {
             return weaponStats.shootAngle / weaponStats.projectileNumber;
         }
@@ -155,7 +169,7 @@ namespace Character
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private int GetStartIndexProjectile(WeaponStats weaponStats)
+        private int GetStartIndexProjectile(CapsuleStats weaponStats)
         {
             return weaponStats.projectileNumber % 2 == 1 ? 0 : 1;
         }

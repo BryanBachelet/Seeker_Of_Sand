@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ChainEffect :MonoBehaviour
 {
-    public virtual WeaponStats Active(WeaponStats stats)
+    public virtual CapsuleStats Active(CapsuleStats stats, LauncherStats launcherStats)
     {
         return stats;
     }

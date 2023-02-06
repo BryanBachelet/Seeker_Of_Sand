@@ -14,6 +14,7 @@ public class CharacterUpgrade : MonoBehaviour
     private UpgradeManager m_upgradeManager;
     private UpgradeUI m_upgradeUi;
     private CharacterProfile m_characterProfil;
+    private Character.CharacterShoot m_characterShoot;
 
     private Upgrade[] m_upgradeToChoose = new Upgrade[3];
 
@@ -23,29 +24,38 @@ public class CharacterUpgrade : MonoBehaviour
         if (ctx.started)
         {
             if (upgradePoint == 0) return;
-            // Input Function 
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             if (upgradeUiGO.activeSelf == false) return;
             GetNewUpgrade();
-            m_upgradeUi.OpenUpgrade(m_upgradeToChoose);
+            m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
 
         }
     }
-
+    #region Init Script
     public void Start()
+    {
+        InitComponents();
+        m_upgradePoint.text = upgradePoint.ToString();
+    }
+
+    private void InitComponents()
     {
         m_upgradeManager = FindObjectOfType<UpgradeManager>();
         m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
-        m_upgradePoint.text = upgradePoint.ToString();
+        m_characterShoot = GetComponent<Character.CharacterShoot>();
     }
+    #endregion
 
     public void GetNewUpgrade()
     {
         if (upgradePoint == 0) return;
 
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
-       
+        for (int i = 0; i < 3; i++)
+        {
+            m_upgradeToChoose[i].Setup(m_characterShoot.weaponOrder.Length);
+        }
     }
 
     public void ChooseUpgrade(int indexChoice)
@@ -60,7 +70,7 @@ public class CharacterUpgrade : MonoBehaviour
             return;
         }
         GetNewUpgrade();
-        m_upgradeUi.OpenUpgrade(m_upgradeToChoose);
+        m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
     }
 
 
@@ -76,9 +86,27 @@ public class CharacterUpgrade : MonoBehaviour
 
         for (int i = 0; i < m_avatarUpgrade.Count; i++)
         {
-            m_avatarUpgrade[i].Apply(ref newStats);
+            ApplyUpgrade(i, ref newStats);
         }
 
         return newStats;
+    }
+
+    private void ApplyUpgrade(int index, ref CharacterStat stat)
+    {
+        switch (m_avatarUpgrade[index].gain.type)
+        {
+            case UpgradeType.CHARACTER:
+                m_avatarUpgrade[index].Apply(ref stat);
+                break;
+            case UpgradeType.LAUNCHER:
+                m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats) ;
+                break;
+            case UpgradeType.CAPSULE:
+                m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex]);
+                break;
+            default:
+                break;
+        }
     }
 }
