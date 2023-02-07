@@ -23,12 +23,6 @@ public class Loader_Behavior : MonoBehaviour
         relativePositionOfLoader = this.GetComponent<RectTransform>().anchoredPosition;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void RemoveCapsule()
     {
         m_capsuleObject[m_currentCapsule].SetActive(false);

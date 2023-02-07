@@ -14,6 +14,7 @@ namespace Character
         private Vector2 m_aimInputValue;
         private Vector3 m_aimDirection;
         private CharacterMouvement m_characterMouvement;
+        private CharacterShoot m_characterShoot;
         [SerializeField] private Texture2D m_cursorTex;
         [SerializeField] private LineRenderer m_lineRenderer;
         [SerializeField] private Transform m_transformHead;
@@ -26,6 +27,7 @@ namespace Character
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
+            m_characterShoot = GetComponent<CharacterShoot>();
         }
 
 
@@ -43,14 +45,28 @@ namespace Character
                 Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
                 float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
                 m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
-                m_lineRenderer.SetPosition(1, transform.position + m_aimDirection);
+                RaycastHit hit = new RaycastHit();
+                float distance = m_characterShoot.weaponStat.range * m_characterShoot.weaponStat.speed;
+                if (Physics.Raycast(transform.position, m_aimDirection.normalized * distance, out hit, m_aimLayer))
+                {
+                    distance = (hit.point - transform.position).magnitude;
+                }
+
+                m_lineRenderer.SetPosition(1, transform.position + m_aimDirection.normalized * distance);
                 Cursor.visible = true;
             }
             else
             {
                 Cursor.visible = false;
                 m_transformHead.localRotation = Quaternion.identity;
-                m_lineRenderer.SetPosition(1, transform.position + transform.forward * 70);
+                RaycastHit hit = new RaycastHit();
+                float distance = m_characterShoot.weaponStat.range;
+                if (Physics.Raycast(transform.position, transform.forward * distance, out hit, m_aimLayer))
+                {
+                    distance = (hit.point - transform.position).magnitude;
+                }
+
+                m_lineRenderer.SetPosition(1, transform.position + transform.forward * distance);
             }
         }
 
