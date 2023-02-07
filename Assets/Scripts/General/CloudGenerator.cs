@@ -25,7 +25,7 @@ public class CloudGenerator : MonoBehaviour
         if (!m_activeEffect) return;
 
         //transform.position = m_playerPosition.position + new Vector3(0, 60, 0);
-        if (m_tempsEcouleSpawn > 2f && cloudSpawnList.Count < 20)
+        if (m_tempsEcouleSpawn > 2f && cloudSpawnList.Count < m_maxCloud)
         {
             int rndCloudObject = Random.Range(0, 3);
             Vector2 rndPositionSpawnObject = Random.insideUnitCircle * m_RadiusFloat;
