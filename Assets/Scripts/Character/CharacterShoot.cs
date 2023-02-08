@@ -40,7 +40,7 @@ namespace Character
         [SerializeField] private float m_shakeDuration = 0.1f;
         private Loader_Behavior m_LoaderInUI;
 
-        private void Start()
+        private void Awake()
         {
             InitComponent();
             launcherStats = launcherProfil.stats;

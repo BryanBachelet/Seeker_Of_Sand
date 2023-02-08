@@ -12,4 +12,5 @@ public class UpgradeProfil : ScriptableObject
     public LauncherStats weaponStats;
     public CapsuleStats capsulsStats;
     public string description;
+    public Sprite icon_Associat;
 }

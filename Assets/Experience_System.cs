@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Experience_System : MonoBehaviour
+public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
     [SerializeField] private float m_NumberEnemyKilled = 0;
@@ -18,10 +18,17 @@ public class Experience_System : MonoBehaviour
     [SerializeField] private RectTransform m_xpPointer;
 
     private CharacterUpgrade m_characterUpgrade;
+    private CharacterProfile m_characterProfile;
     // Start is called before the first frame update
     void Start()
     {
         m_characterUpgrade = GetComponent<CharacterUpgrade>();
+        m_characterProfile = GetComponent<CharacterProfile>();
+    }
+
+    public void InitComponentStat(CharacterStat stat)
+    {
+        m_RadiusPickupXp = stat.attrackness;
     }
 
     // Update is called once per frame
@@ -84,5 +91,10 @@ public class Experience_System : MonoBehaviour
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
             OnEnemyKilled();
         }
+    }
+
+    private void UpdateMagnet(ref CharacterStat playerStat)
+    {
+        m_RadiusPickupXp = playerStat.attrackness;
     }
 }

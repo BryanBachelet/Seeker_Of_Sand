@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1866458878302752471}
   - component: {fileID: 1866458878302752456}
+  - component: {fileID: 1224385586}
+  - component: {fileID: 1224385589}
   m_Layer: 0
   m_Name: Enemy Manager
   m_TagString: Untagged
@@ -50,10 +52,40 @@ MonoBehaviour:
   m_offsetSpawnPos: {x: 0, y: 0, z: 11.81}
   position: {x: 0, y: 0, z: 0}
   m_spawnTime: 3
-  m_maxUnitPerGroup: 10
-  m_spawnTimeCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  m_maxUnitPerGroup: 13
+  m_minUnitPerGroup: 5
+--- !u!114 &1224385586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6820d9d4436acbf449e4ae6179112027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_killRatioTime: 25
+  m_textFeedbackUI: {fileID: 0}
+  m_maxKillPerMinute: 70
+  m_PlayerExperienceRef: {fileID: 0}
+--- !u!114 &1224385589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eb5fff29bb0555438c1d4abb990fe30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradeList:
+  - {fileID: 11400000, guid: 2a28e4c8108daf540b0b64e21fa05475, type: 2}
+  - {fileID: 11400000, guid: 4f9b973e975a1d24e8372c5a30aed829, type: 2}
+  - {fileID: 11400000, guid: a849ecc7c569754439862f1a72689135, type: 2}
+  - {fileID: 11400000, guid: b6f832352ea10d947b2659d8cb100e4a, type: 2}
+  - {fileID: 11400000, guid: 9d049c6591082d2429bf91c44c004683, type: 2}
+  - {fileID: 11400000, guid: 7ca57301418d5b64d97ff1a9eb5dfdd2, type: 2}
