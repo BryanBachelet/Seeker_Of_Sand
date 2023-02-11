@@ -25,7 +25,11 @@ public class CharacterUpgrade : MonoBehaviour
         {
             if (upgradePoint == 0) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            if (upgradeUiGO.activeSelf == false) return;
+            if (upgradeUiGO.activeSelf == false) 
+            {
+                DestroyAllUpgrade();
+                return;
+            }
             GetNewUpgrade();
             m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
 
@@ -58,17 +62,28 @@ public class CharacterUpgrade : MonoBehaviour
         }
     }
 
+    public void DestroyAllUpgrade()
+    {
+        for (int i = 0; i < m_upgradeToChoose.Length; i++)
+        {
+            m_upgradeToChoose[i].Destroy();
+            m_upgradeToChoose[i] = null;
+        }
+       
+    }
     public void ChooseUpgrade(int indexChoice)
     {
         m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
         m_characterProfil.ApplyStat(CalculateStat(m_characterProfil.m_baseStat));
         upgradePoint--;
         m_upgradePoint.text = upgradePoint.ToString();
+        DestroyAllUpgrade();
         if (upgradePoint == 0)
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             return;
         }
+       
         GetNewUpgrade();
         m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
     }
