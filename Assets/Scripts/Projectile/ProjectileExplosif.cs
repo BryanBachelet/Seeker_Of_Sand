@@ -112,7 +112,7 @@ public class ProjectileExplosif : Projectile
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
             if (enemyTouch.IsDestroing()) return;
 
-            enemyTouch.GetDestroy(enemyTouch.transform.position - transform.position, m_power);
+            enemyTouch.HitEnemy(m_damage,enemyTouch.transform.position - transform.position, m_power);
         }
         Destroy(this.gameObject);
     }
