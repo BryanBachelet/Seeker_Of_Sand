@@ -13,7 +13,8 @@ namespace Enemies
         [SerializeField] private Transform m_target;
         [SerializeField] private float m_speedThreshold;
         [SerializeField] private GameObject m_ExperiencePrefab;
-        private HealthSystem m_healthSystem = new HealthSystem();
+        private HealthSystem m_healthSystem;
+        private ArmorSystem m_armorSystem;
         private EnemyManager m_enemyManager;
         private HealthManager m_healthManager;
         private NavMeshAgent m_navAgent;
@@ -23,11 +24,11 @@ namespace Enemies
         private void Start()
         {
             m_healthSystem = new HealthSystem();
+            m_armorSystem = new ArmorSystem();
             m_navAgent = GetComponent<NavMeshAgent>();
             m_navAgent.speed = Random.Range(m_agentStat.speed -m_speedThreshold, m_agentStat.speed - m_speedThreshold);
             m_rigidbody = GetComponent<Rigidbody>();
             m_healthSystem.Setup(m_agentStat.healthMax);
-
         }
 
         private void Update()
@@ -55,6 +56,7 @@ namespace Enemies
 
         public void HitEnemy(float damage, Vector3 direction,float power)
         {
+            damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage);
 

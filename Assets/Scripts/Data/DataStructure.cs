@@ -59,6 +59,16 @@ public class HealthSystem
 
 }
 
+public class ArmorSystem
+{ 
+    public float ApplyArmor(float damage, float armor)
+    {
+        damage -= armor;
+        if (damage <= 0) damage = 1;
+        return damage;
+    }
+}
+
 
 
 
