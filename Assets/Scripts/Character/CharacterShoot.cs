@@ -120,6 +120,7 @@ namespace Character
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.range / currentWeaponStats.speed;
+                data.damage = currentWeaponStats.damage+1;
 
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;

@@ -2,27 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 namespace Enemies
 {
     public class Enemy : MonoBehaviour
     {
+        
+        [SerializeField] private AgentStat m_agentStat = new AgentStat();
         [SerializeField] private Transform m_target;
-        [SerializeField] private float m_minSpeed = 3.0f;
-        [SerializeField] private float m_maxSpeed = 4.0f;
+        [SerializeField] private float m_speedThreshold;
         [SerializeField] private GameObject m_ExperiencePrefab;
+        private HealthSystem m_healthSystem;
+        private ArmorSystem m_armorSystem;
         private EnemyManager m_enemyManager;
+        private HealthManager m_healthManager;
         private NavMeshAgent m_navAgent;
         private bool m_isDestroy;
         private Rigidbody m_rigidbody;
 
-
         private void Start()
         {
-            
+            m_healthSystem = new HealthSystem();
+            m_armorSystem = new ArmorSystem();
             m_navAgent = GetComponent<NavMeshAgent>();
-            m_navAgent.speed = Random.Range(m_minSpeed, m_maxSpeed);
+            m_navAgent.speed = Random.Range(m_agentStat.speed -m_speedThreshold, m_agentStat.speed - m_speedThreshold);
             m_rigidbody = GetComponent<Rigidbody>();
+            m_healthSystem.Setup(m_agentStat.healthMax);
         }
 
         private void Update()
@@ -42,17 +48,31 @@ namespace Enemies
             m_target = targetTranform;
         }
 
-        public void SetManager(EnemyManager manager)
+        public void SetManager(EnemyManager manager, HealthManager healthManager)
         {
             m_enemyManager = manager;
+            m_healthManager = healthManager;
         }
 
+        public void HitEnemy(float damage, Vector3 direction,float power)
+        {
+            damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
+            m_healthSystem.ChangeCurrentHealth(-damage);
+            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage);
+
+
+            if (m_healthSystem.health != 0) return;
+           
+            GetDestroy(direction, power);
+        }
+
+       
 
         public bool IsDestroing()
         {
             return m_isDestroy;
         }
-        public void GetDestroy(Vector3 direction,float power)
+        private void GetDestroy(Vector3 direction,float power)
         {
             m_navAgent.enabled = false;
             float magnitude = Random.Range(0.5f, 1.0f);

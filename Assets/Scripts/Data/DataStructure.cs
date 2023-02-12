@@ -6,7 +6,7 @@ using System;
 [Serializable]
 public struct AgentStat
 {
-    public int healthMax;
+    public float healthMax;
     public float speed;
     public int armor;
     public float regeneration;
@@ -29,28 +29,44 @@ public class AgentProfile : ScriptableObject
 }
 
 
+
 public class HealthSystem
 {
-    int m_currentHealth;
+    float m_currentHealth;
 
-    public int health { get { return m_currentHealth; } private set { } }
+    public float health { get { return m_currentHealth; } private set { } }
 
-    public delegate void HealthUpdateEvent(int currentHealth);
-    public HealthUpdateEvent healthUpdate;
+    public delegate void HealthUpdateEvent(float currentHealth);
+    public event HealthUpdateEvent healthUpdate;
+
+    public void Setup(float maxHealth)
+    {
+        m_currentHealth = maxHealth;
+    }
 
     public void SetMaxHealth(int maxHealth)
     {
         m_currentHealth = maxHealth;
-        healthUpdate.Invoke(m_currentHealth);
+        healthUpdate?.Invoke(m_currentHealth);
     }
 
-    public void ChangeCurrentHealth(int value)
+    public void ChangeCurrentHealth(float value)
     {
         m_currentHealth += value;
-        healthUpdate.Invoke(m_currentHealth);
+        healthUpdate?.Invoke(m_currentHealth);
     }
 
 
+}
+
+public class ArmorSystem
+{ 
+    public float ApplyArmor(float damage, float armor)
+    {
+        damage -= armor;
+        if (damage <= 0) damage = 1;
+        return damage;
+    }
 }
 
 

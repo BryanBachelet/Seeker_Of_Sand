@@ -16,6 +16,7 @@ namespace Enemies
         [SerializeField] private float m_spawnTime = 3.0f;
         [SerializeField] private int m_maxUnitPerGroup = 3;
         [SerializeField] private int m_minUnitPerGroup = 2;
+        [SerializeField] private HealthManager m_healthManager;
         
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
@@ -101,7 +102,7 @@ namespace Enemies
         {
             GameObject enemySpawn = GameObject.Instantiate(m_enemyGO, positionSpawn, transform.rotation);
             Enemy enemy = enemySpawn.GetComponent<Enemy>();
-            enemy.SetManager(this);
+            enemy.SetManager(this, m_healthManager);
             enemy.SetTarget(m_playerTranform);
             m_enemiesArray.Add(enemy);
         }

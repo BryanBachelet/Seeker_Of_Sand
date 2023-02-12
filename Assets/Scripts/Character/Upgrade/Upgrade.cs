@@ -29,6 +29,10 @@ public class Upgrade
     {
     }
 
+    public virtual void Destroy()
+    {
+
+    }
     public virtual void Apply(ref CharacterStat playerStat)
     {
 
@@ -103,6 +107,11 @@ public class UpgradeCapsule : Upgrade
         playerStat.range += gain.capsulsStats.range;
         playerStat.shootAngle += gain.capsulsStats.shootAngle;
         playerStat.shootNumber += gain.capsulsStats.shootNumber;
+        gain.description = m_baseString;
+    }
+
+    public override void Destroy()
+    {
         gain.description = m_baseString;
     }
 }

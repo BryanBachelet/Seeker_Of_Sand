@@ -7,6 +7,7 @@ public struct ProjectileData
     public Vector3 direction;
     public float speed;
     public float life;
+    public float damage;
 }
 
 
@@ -18,6 +19,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float m_lifeTime;
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
+    [SerializeField] protected float m_damage = 1;
     protected float m_lifeTimer;
 
     void  Update()
@@ -32,10 +34,10 @@ public class Projectile : MonoBehaviour
         m_direction = data.direction;
         m_speed = data.speed;
         m_lifeTime = data.life;
+        m_damage = data.damage;
     }
     protected virtual void Move()
     {
-
         if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
 
@@ -69,7 +71,7 @@ public class Projectile : MonoBehaviour
 
         if (enemyTouch.IsDestroing()) return;
 
-        other.GetComponent<Enemies.Enemy>().GetDestroy(other.transform.position - transform.position, m_power);
+        other.GetComponent<Enemies.Enemy>().HitEnemy(m_damage,other.transform.position - transform.position, m_power);
         Destroy(this.gameObject);
     }
 
