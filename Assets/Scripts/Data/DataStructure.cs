@@ -56,7 +56,6 @@ public class HealthSystem
         healthUpdate?.Invoke(m_currentHealth);
     }
 
-
 }
 
 public class ArmorSystem
