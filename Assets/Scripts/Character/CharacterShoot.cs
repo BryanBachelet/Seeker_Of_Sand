@@ -115,7 +115,7 @@ namespace Character
 
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
-                GameObject projectileCreate = GameObject.Instantiate(projectileGO[currentIndexWeapon], transform.position, transform.rotation);
+                GameObject projectileCreate = GameObject.Instantiate(projectileGO[currentIndexWeapon], transform.position,  Quaternion.AngleAxis(90.0f, m_characterAim.GetTransformHead().right));
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
                 data.speed = currentWeaponStats.speed;

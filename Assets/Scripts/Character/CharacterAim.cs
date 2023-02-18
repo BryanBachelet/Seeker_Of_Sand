@@ -36,7 +36,10 @@ namespace Character
             AimFeedback();
         }
 
-
+        public Transform GetTransformHead()
+        {
+            return m_transformHead;
+        }
         private void AimFeedback()
         {
             m_lineRenderer.SetPosition(0, transform.position);

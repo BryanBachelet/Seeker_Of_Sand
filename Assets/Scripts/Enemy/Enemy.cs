@@ -20,6 +20,7 @@ namespace Enemies
         private NavMeshAgent m_navAgent;
         private bool m_isDestroy;
         private Rigidbody m_rigidbody;
+        private bool m_activeBehavior = true;
 
         private void Start()
         {
@@ -29,13 +30,16 @@ namespace Enemies
             m_navAgent.speed = Random.Range(m_agentStat.speed -m_speedThreshold, m_agentStat.speed - m_speedThreshold);
             m_rigidbody = GetComponent<Rigidbody>();
             m_healthSystem.Setup(m_agentStat.healthMax);
+            m_activeBehavior = true;
         }
 
         private void Update()
         {
-            if(m_navAgent.enabled)
+            if(m_navAgent.enabled && m_activeBehavior)
                 m_navAgent.destination = m_target.position;
         }
+    
+        public void ChangeActiveBehavior(bool state) { m_activeBehavior = state; }
 
         public Enemy(Transform targetTranform, EnemyManager manager)
         {
@@ -61,7 +65,7 @@ namespace Enemies
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage);
 
 
-            if (m_healthSystem.health != 0) return;
+            if (m_healthSystem.health > 0) return;
            
             GetDestroy(direction, power);
         }
@@ -80,12 +84,12 @@ namespace Enemies
             m_rigidbody.constraints = RigidbodyConstraints.None;
             Instantiate(m_ExperiencePrefab, transform.position, transform.rotation);
             m_rigidbody.AddForce(direction.normalized  * power, ForceMode.Impulse);
+            m_isDestroy = true;
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
-            m_isDestroy = true;
             yield return new WaitForSeconds(2);
             m_enemyManager.DestroyEnemy(this);
         }
