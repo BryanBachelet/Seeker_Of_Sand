@@ -110,9 +110,13 @@ public class ProjectileExplosif : Projectile
         for (int i = 0; i < enemies.Length; i++)
         {
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
-            if (enemyTouch.IsDestroing()) return;
-
-            enemyTouch.HitEnemy(m_damage,enemyTouch.transform.position - transform.position, m_power);
+            if (enemyTouch.IsDestroing())
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+                
+                enemyTouch.HitEnemy(m_damage,enemyTouch.transform.position - transform.position, m_power);
         }
         Destroy(this.gameObject);
     }
