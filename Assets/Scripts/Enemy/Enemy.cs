@@ -13,6 +13,8 @@ namespace Enemies
         [SerializeField] private Transform m_target;
         [SerializeField] private float m_speedThreshold;
         [SerializeField] private GameObject m_ExperiencePrefab;
+        [SerializeField] private int m_xpDrop = 1;
+        [SerializeField] private bool m_debugActive = false;
         private HealthSystem m_healthSystem;
         private ArmorSystem m_armorSystem;
         private EnemyManager m_enemyManager;
@@ -21,20 +23,33 @@ namespace Enemies
         private bool m_isDestroy;
         private Rigidbody m_rigidbody;
 
+
+
         private void Start()
         {
             m_healthSystem = new HealthSystem();
             m_armorSystem = new ArmorSystem();
-            m_navAgent = GetComponent<NavMeshAgent>();
-            m_navAgent.speed = Random.Range(m_agentStat.speed -m_speedThreshold, m_agentStat.speed - m_speedThreshold);
+            if(!m_debugActive)
+            {
+                m_navAgent = GetComponent<NavMeshAgent>();
+                m_navAgent.speed = Random.Range(m_agentStat.speed - m_speedThreshold, m_agentStat.speed - m_speedThreshold);
+            }
+            else
+            {
+                m_healthManager = GameObject.Find("Enemy Manager").GetComponent<HealthManager>();
+            }
             m_rigidbody = GetComponent<Rigidbody>();
             m_healthSystem.Setup(m_agentStat.healthMax);
         }
 
         private void Update()
         {
-            if(m_navAgent.enabled)
-                m_navAgent.destination = m_target.position;
+            if(!m_debugActive)
+            {
+                if (m_navAgent.enabled)
+                    m_navAgent.destination = m_target.position;
+            }
+
         }
 
         public Enemy(Transform targetTranform, EnemyManager manager)
@@ -78,7 +93,11 @@ namespace Enemies
             float magnitude = Random.Range(0.5f, 1.0f);
             m_rigidbody.isKinematic = false;
             m_rigidbody.constraints = RigidbodyConstraints.None;
-            Instantiate(m_ExperiencePrefab, transform.position, transform.rotation);
+            for(int i = 0; i < m_xpDrop; i++)
+            {
+                Instantiate(m_ExperiencePrefab, transform.position, transform.rotation);
+            }
+
             m_rigidbody.AddForce(direction.normalized  * power, ForceMode.Impulse);
             StartCoroutine(Death());
         }

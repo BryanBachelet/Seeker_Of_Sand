@@ -62,10 +62,9 @@ public class Projectile : MonoBehaviour
     {
         CollisionEvent(other);
     }
-
     protected virtual void CollisionEvent(Collider other)
     {
-        if (other.tag != "Enemy") return;
+        if (other.gameObject.tag != "Enemy") return;
 
         Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
 
