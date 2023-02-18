@@ -128,7 +128,7 @@ namespace Character
 
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
-            if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
+          
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
 
@@ -140,7 +140,7 @@ namespace Character
         {
             currentIndexWeapon = weaponOrder[currentProjectileIndex];
             currentWeaponStats = capsuleStats[currentIndexWeapon].stats;
-
+            if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
             if (currentProjectileIndex != 0)
             {
                 int prevWeapon = weaponOrder[currentProjectileIndex - 1];
@@ -196,12 +196,14 @@ namespace Character
 
             if (m_shootTimer > shootTime)
             {
+              
                 m_canShoot = true;
                 m_shootTimer = 0;
                 return;
             }
             else
             {
+               
                 m_shootTimer += Time.deltaTime;
             }
         }
