@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 5533.127, g: 5454.876, b: 5417.157, a: 1}
+  m_IndirectSpecularColor: {r: 0.03546989, g: 0.052313328, b: 0.07709926, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1088,7 +1088,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446711731}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
@@ -1099,7 +1099,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.2
@@ -1150,7 +1150,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446711731}
-  m_LocalRotation: {x: -0.25881907, y: 0.00000004222196, z: -0.9659258, w: -0.000000011313341}
+  m_LocalRotation: {x: 0.18301274, y: -0.6830127, z: 0.6830127, w: 0.18301274}
   m_LocalPosition: {x: 0, y: 38, z: 0}
   m_LocalScale: {x: 1.0000002, y: 1.0000004, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1406,10 +1406,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eb4b66058c01a34bb45d632245ac97f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timeOfDay: 6
+  m_timeOfDay: 24
   m_sun: {fileID: 1889437989}
   m_moon: {fileID: 446711733}
-  m_SettingDurationDay: 2
+  m_SettingDurationDay: 5
   m_orbitSpeed: 1
   m_ClockNeedle: {fileID: 556937242}
 --- !u!4 &519862980
@@ -1729,6 +1729,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 917632637219819005, guid: 8883c8b8e0e5a62408eeb57a8958c438,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 917632637219819007, guid: 8883c8b8e0e5a62408eeb57a8958c438,
         type: 3}
       propertyPath: m_upgradeCharacter
@@ -1849,11 +1854,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 429677758}
-    - target: {fileID: 917632638665610992, guid: 8883c8b8e0e5a62408eeb57a8958c438,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -633.998
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8883c8b8e0e5a62408eeb57a8958c438, type: 3}
 --- !u!1 &654217195
@@ -6064,7 +6064,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.2
@@ -6115,7 +6115,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889437988}
-  m_LocalRotation: {x: 0, y: -0.9659258, z: 0, w: 0.25881907}
+  m_LocalRotation: {x: 0.18301274, y: 0.6830127, z: 0.6830127, w: -0.18301274}
   m_LocalPosition: {x: 0, y: 38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6450,6 +6450,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9e937a5ad85446247a4fdebd516a201b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2557e0bb927d76745a066db6c577ee0a, type: 3}
+--- !u!1 &1962145959 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 917632637302687807, guid: 8883c8b8e0e5a62408eeb57a8958c438,
+    type: 3}
+  m_PrefabInstance: {fileID: 632110850}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1966840136 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 917632638517683053, guid: 8883c8b8e0e5a62408eeb57a8958c438,
@@ -7721,6 +7727,18 @@ PrefabInstance:
       propertyPath: m_cameraShake
       value: 
       objectReference: {fileID: 1231885401}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponOrder.Array.data[1]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponOrder.Array.data[2]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: weaponOrder.Array.data[4]
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1983534971, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: projectorVisorObject
       value: 
@@ -7735,6 +7753,11 @@ PrefabInstance:
       propertyPath: m_upgradePoint
       value: 
       objectReference: {fileID: 1180305856}
+    - target: {fileID: 83947686645128913, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: uiLoaderDisplay
+      value: 
+      objectReference: {fileID: 1962145959}
     - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
       propertyPath: m_RootOrder

@@ -9,8 +9,10 @@ public class CharacterUpgrade : MonoBehaviour
     public List<Upgrade> m_avatarUpgrade;
     public int upgradePoint = 1;
     public GameObject upgradeUiGO;
+    public GameObject uiLoaderDisplay;
     public Text m_upgradePoint;
 
+    private Loader_Behavior m_loaderBehavior;
     private UpgradeManager m_upgradeManager;
     private UpgradeUI m_upgradeUi;
     private CharacterProfile m_characterProfil;
@@ -25,6 +27,8 @@ public class CharacterUpgrade : MonoBehaviour
         {
             if (upgradePoint == 0) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+            //uiLoaderDisplay.SetActive(false);
+            m_loaderBehavior.UpdateLoaderInUpgrade(false);
             if (upgradeUiGO.activeSelf == false) 
             {
                 DestroyAllUpgrade();
@@ -32,7 +36,7 @@ public class CharacterUpgrade : MonoBehaviour
             }
             GetNewUpgrade();
             m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
-
+            Time.timeScale = 0.02f;
         }
     }
     #region Init Script
@@ -48,6 +52,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
         m_characterShoot = GetComponent<Character.CharacterShoot>();
+        m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
     }
     #endregion
 
@@ -81,6 +86,9 @@ public class CharacterUpgrade : MonoBehaviour
         if (upgradePoint == 0)
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+            //uiLoaderDisplay.SetActive(true);
+            m_loaderBehavior.UpdateLoaderInUpgrade(true);
+            Time.timeScale = 1;
             return;
         }
        

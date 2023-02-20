@@ -54,7 +54,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         }
         else
         {
-            Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
+            //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
             m_LevelDisplayFill.fillAmount = (levelProgress - m_CurrentLevel);
             m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), 515, 0);
         }
@@ -73,7 +73,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
     public void ChooseUpgrade(int level)
     {
-        Debug.Log("Add new upgrade : " + level);
+        //Debug.Log("Add new upgrade : " + level);
         m_characterUpgrade.GainLevel();
     }
 

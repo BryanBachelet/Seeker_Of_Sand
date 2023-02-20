@@ -12,9 +12,11 @@ public class Loader_Behavior : MonoBehaviour
     [SerializeField] private RectTransform[] m_NumberSlotPosition = new RectTransform[6];
     [SerializeField] private Text[] m_TextObjectNumberSlot = new Text[6];
     [SerializeField] private Vector2 relativePositionOfLoader;
+    [SerializeField] private GameObject[] Reload_ObjectActivation = new GameObject[3];
     private Transform m_Objeect;
     private Animator m_animator;
     private bool m_reloading = false;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +72,14 @@ public class Loader_Behavior : MonoBehaviour
     public bool GetReloadingstate()
     {
         return m_reloading;
+    }
+
+    public void UpdateLoaderInUpgrade(bool activate)
+    {
+        for(int i = 0; i < Reload_ObjectActivation.Length; i++)
+        {
+            Reload_ObjectActivation[i].SetActive(activate);
+        }
     }
 
     public void ReplaceNumberSlotText(int currentIndex)
