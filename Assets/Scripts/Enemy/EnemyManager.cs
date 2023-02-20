@@ -10,7 +10,7 @@ namespace Enemies
     public class EnemyManager : MonoBehaviour
     {
         [SerializeField] private Transform m_playerTranform;
-        [SerializeField] private GameObject m_enemyGO;
+        [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
         [SerializeField] private Vector3 m_offsetSpawnPos;
         [SerializeField] private Vector3 position;
         [SerializeField] private float m_spawnTime = 3.0f;
@@ -100,7 +100,16 @@ namespace Enemies
 
         private void SpawnEnemy(Vector3 positionSpawn)
         {
-            GameObject enemySpawn = GameObject.Instantiate(m_enemyGO, positionSpawn, transform.rotation);
+            int rnd = Random.Range(0, 100);
+            GameObject enemySpawn;
+            if (rnd < 95)
+            {
+                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
+            }
+            else
+            {
+                enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
+            }
             Enemy enemy = enemySpawn.GetComponent<Enemy>();
             enemy.SetManager(this, m_healthManager);
             enemy.SetTarget(m_playerTranform);
