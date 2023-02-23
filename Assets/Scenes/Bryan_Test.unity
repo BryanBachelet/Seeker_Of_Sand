@@ -141,74 +141,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6191376547830507922}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &262313270 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1866458878302752457, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
+--- !u!114 &262313276 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
     type: 3}
   m_PrefabInstance: {fileID: 1866458877916994663}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &262313275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 262313270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b88d9453e78a8bb4ba7c94b3f324d87e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_damageHealthFDs:
-  - {fileID: 15246435}
-  - {fileID: 407047671}
-  - {fileID: 1632904367}
-  - {fileID: 624753904}
-  - {fileID: 1825041622}
---- !u!114 &262313276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 262313270}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 568fa5ed5d3722541a1b840681007ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capsules:
-  - name: 
-    type: 0
-  - name: 
-    type: 0
-  - name: 
-    type: 0
-  - name: 
-    type: 0
-  - name: 
-    type: 2
-  attackInfo:
-  - name: Shot Gun
-    projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
-      type: 3}
-    stats: {fileID: 11400000, guid: a6212585ac02118449476ac4c1f279a8, type: 2}
-  - name: Zeri Traillet
-    projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
-      type: 3}
-    stats: {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
-  - name: Harpon
-    projectile: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
-      type: 3}
-    stats: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88, type: 2}
-  - name: Bombe Sentex
-    projectile: {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0,
-      type: 3}
-    stats: {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
-  buffInfos:
-  - name: Steroids
-    stats: {fileID: 11400000, guid: 511f8043386203e41b797e45a5b20c1e, type: 2}
-    duration: 1
 --- !u!114 &407047671 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2358415954156770678, guid: d8d31bd1b52706c439c112e6a5c156f4,
@@ -1086,18 +1030,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06bf697e4350dd4cb0b52ea5071dcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1983534973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22613994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18abdb49e432bb4186ac332a1b7385b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2013132148
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1914,6 +1846,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[0]
+      value: 
+      objectReference: {fileID: 15246435}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[1]
+      value: 
+      objectReference: {fileID: 407047671}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1632904367}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[3]
+      value: 
+      objectReference: {fileID: 624753904}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[4]
+      value: 
+      objectReference: {fileID: 1825041622}
     - target: {fileID: 1224385586, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
       propertyPath: m_textFeedbackUI
       value: 
@@ -1924,32 +1876,9 @@ PrefabInstance:
       objectReference: {fileID: 1983534969}
     - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
         type: 3}
-      propertyPath: m_healthManager
-      value: 
-      objectReference: {fileID: 262313275}
-    - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
-        type: 3}
       propertyPath: m_playerTranform
       value: 
       objectReference: {fileID: 1983534964}
-    - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
-        type: 3}
-      propertyPath: m_enemyGO.Array.data[0]
-      value: 
-      objectReference: {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0,
-        type: 3}
-    - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
-        type: 3}
-      propertyPath: m_enemyGO.Array.data[1]
-      value: 
-      objectReference: {fileID: 3294013781257085869, guid: fa9aa3f083e13df4c8594e5b87417bbf,
-        type: 3}
-    - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
-        type: 3}
-      propertyPath: m_enemyGO.Array.data[2]
-      value: 
-      objectReference: {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0,
-        type: 3}
     - target: {fileID: 1866458878302752457, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
         type: 3}
       propertyPath: m_Name
@@ -2039,54 +1968,6 @@ PrefabInstance:
       propertyPath: m_capsuleManager
       value: 
       objectReference: {fileID: 262313276}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.data[0]
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.data[1]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.data[2]
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.data[3]
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.data[4]
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleIndex.Array.data[5]
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleStats.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88,
-        type: 2}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: capsuleStats.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88,
-        type: 2}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: projectileGO.Array.data[0]
-      value: 
-      objectReference: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
-        type: 3}
-    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: projectileGO.Array.data[1]
-      value: 
-      objectReference: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
-        type: 3}
     - target: {fileID: 1983534971, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: projectorVisorObject
       value: 

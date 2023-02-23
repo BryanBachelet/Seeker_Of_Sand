@@ -324,6 +324,7 @@ GameObject:
   - component: {fileID: 1983534969}
   - component: {fileID: 5635426079325464019}
   - component: {fileID: 83947686645128913}
+  - component: {fileID: 1983534973}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -701,23 +702,10 @@ MonoBehaviour:
   projectileNumber: 5
   shootTime: 0.5
   reloadTime: 2
-  projectileGO:
-  - {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0, type: 3}
-  - {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133, type: 3}
-  - {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133, type: 3}
-  - {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0, type: 3}
-  - {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133, type: 3}
-  - {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133, type: 3}
   launcherProfil: {fileID: 11400000, guid: f034fd120e5bbc449b7b41ba84a30217, type: 2}
-  capsuleStats:
-  - {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
-  - {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
-  - {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
-  - {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
-  - {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
-  - {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
   chainEffects: []
-  weaponOrder: 010000000000000000000000010000000000000000000000
+  capsuleIndex: 000000000100000003000000040000000200000002000000
+  m_capsuleManager: {fileID: 0}
   launcherStats:
     slotCapsule: 0
     timeBetweenCapsule: 0
@@ -727,6 +715,8 @@ MonoBehaviour:
   capsuleStatsAlone: []
   m_cameraShake: {fileID: 0}
   m_shakeDuration: 0.1
+  m_buffManager: {fileID: 0}
+  m_chracterProfil: {fileID: 0}
 --- !u!114 &1983534971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -885,4 +875,17 @@ MonoBehaviour:
   m_avatarUpgrade: []
   upgradePoint: 0
   upgradeUiGO: {fileID: 0}
+  uiLoaderDisplay: {fileID: 0}
   m_upgradePoint: {fileID: 0}
+--- !u!114 &1983534973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18abdb49e432bb4186ac332a1b7385b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
