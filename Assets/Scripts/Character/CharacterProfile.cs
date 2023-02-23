@@ -16,11 +16,20 @@ public class CharacterProfile : MonoBehaviour
     [SerializeField] public CharacterStat stats;
     [HideInInspector] public CharacterStat m_baseStat;
     private CharacterComponent[] m_characterComponent = new CharacterComponent[0];
+    private Buff.BuffsManager m_buffManager;
 
     private void Start()
     {
         m_characterComponent = GetComponents<CharacterComponent>();
         m_baseStat = stats;
+        m_buffManager = GetComponent<Buff.BuffsManager>();
+        ApplyStat(stats);
+    }
+
+    public void Update()
+    {
+        stats = m_baseStat;
+        m_buffManager.ApplyBuffCharacter(ref stats);
         ApplyStat(stats);
     }
 

@@ -53,7 +53,6 @@ namespace Enemies
             }
 
         }
-        }
     
         public void ChangeActiveBehavior(bool state) { m_activeBehavior = state; }
 
