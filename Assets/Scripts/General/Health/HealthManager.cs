@@ -5,8 +5,8 @@ using UnityEngine;
 public class HealthManager : MonoBehaviour
 {
     [SerializeField] private DamageHealthFD[] m_damageHealthFDs;
-    [SerializeField] private List<DamageHealthFD> m_inactiveText;
-    [SerializeField] private List<DamageHealthFD> m_activeText;
+    private List<DamageHealthFD> m_inactiveText;
+    private List<DamageHealthFD> m_activeText;
 
     private int m_damageFDMax;
     private int m_textActiveCount =1;

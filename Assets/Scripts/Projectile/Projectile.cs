@@ -13,8 +13,8 @@ public struct ProjectileData
 
 
 public class Projectile : MonoBehaviour
-{
-    [SerializeField] protected Vector3 m_direction;
+{   
+    protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
     [SerializeField] protected float m_lifeTime;
     [SerializeField] protected LayerMask m_layer;
@@ -57,6 +57,7 @@ public class Projectile : MonoBehaviour
             m_lifeTimer += Time.deltaTime;
         }
     }
+     
 
     private void OnTriggerEnter(Collider other)
     {
@@ -70,7 +71,7 @@ public class Projectile : MonoBehaviour
 
         if (enemyTouch.IsDestroing()) return;
 
-        other.GetComponent<Enemies.Enemy>().HitEnemy(m_damage,other.transform.position - transform.position, m_power);
+        enemyTouch.HitEnemy(m_damage,other.transform.position - transform.position, m_power);
         Destroy(this.gameObject);
     }
 

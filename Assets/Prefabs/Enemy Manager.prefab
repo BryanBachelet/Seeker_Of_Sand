@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1866458878302752456}
   - component: {fileID: 1224385586}
   - component: {fileID: 1224385589}
+  - component: {fileID: 262313275}
+  - component: {fileID: 262313276}
   m_Layer: 0
   m_Name: Enemy Manager
   m_TagString: Untagged
@@ -47,13 +49,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerTranform: {fileID: 0}
-  m_enemyGO: {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0,
-    type: 3}
+  m_enemyGO:
+  - {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0, type: 3}
+  - {fileID: 3294013781257085869, guid: fa9aa3f083e13df4c8594e5b87417bbf, type: 3}
+  - {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0, type: 3}
   m_offsetSpawnPos: {x: 0, y: 0, z: 11.81}
   position: {x: 0, y: 0, z: 0}
   m_spawnTime: 3
   m_maxUnitPerGroup: 13
   m_minUnitPerGroup: 5
+  m_healthManager: {fileID: 262313275}
 --- !u!114 &1224385586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,3 +94,65 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b6f832352ea10d947b2659d8cb100e4a, type: 2}
   - {fileID: 11400000, guid: 9d049c6591082d2429bf91c44c004683, type: 2}
   - {fileID: 11400000, guid: 7ca57301418d5b64d97ff1a9eb5dfdd2, type: 2}
+--- !u!114 &262313275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b88d9453e78a8bb4ba7c94b3f324d87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_damageHealthFDs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &262313276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 568fa5ed5d3722541a1b840681007ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsules:
+  - name: 
+    type: 0
+  - name: 
+    type: 0
+  - name: 
+    type: 0
+  - name: 
+    type: 0
+  - name: 
+    type: 2
+  attackInfo:
+  - name: Shot Gun
+    projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
+      type: 3}
+    stats: {fileID: 11400000, guid: a6212585ac02118449476ac4c1f279a8, type: 2}
+  - name: Zeri Traillet
+    projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
+      type: 3}
+    stats: {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
+  - name: Harpon
+    projectile: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
+      type: 3}
+    stats: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88, type: 2}
+  - name: Bombe Sentex
+    projectile: {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0,
+      type: 3}
+    stats: {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
+  buffInfos:
+  - name: Steroids
+    stats: {fileID: 11400000, guid: 511f8043386203e41b797e45a5b20c1e, type: 2}
+    duration: 1

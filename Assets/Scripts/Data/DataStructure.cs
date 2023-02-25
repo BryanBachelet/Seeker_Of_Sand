@@ -12,6 +12,17 @@ public struct AgentStat
     public float regeneration;
     public float damage;
 
+   public static AgentStat operator +(AgentStat a ,AgentStat b)
+    {
+        AgentStat result = new AgentStat();
+        result.armor = a.armor + b.armor;
+        result.healthMax = a.healthMax + b.healthMax;
+        result.speed = a.speed + b.speed;
+        result.regeneration = a.regeneration + b.regeneration;
+        result.damage = a.damage + b.damage;
+        return result;
+    }
+
 };
 
 [Serializable]
@@ -20,6 +31,15 @@ public struct CharacterStat
     public AgentStat baseStat;
     public float attrackness;
     public float luck;
+
+    public static CharacterStat operator +(CharacterStat a, CharacterStat b)
+    {
+        CharacterStat result = new CharacterStat();
+        result.baseStat = a.baseStat + b.baseStat;
+        result.attrackness = a.attrackness + b.attrackness;
+        result.luck = a.luck + b.luck;
+        return result;
+    }
 };
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Agent Profile", order = 1)]
@@ -55,7 +75,6 @@ public class HealthSystem
         m_currentHealth += value;
         healthUpdate?.Invoke(m_currentHealth);
     }
-
 
 }
 

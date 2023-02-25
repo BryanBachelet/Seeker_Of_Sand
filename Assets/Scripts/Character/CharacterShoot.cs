@@ -11,11 +11,16 @@ namespace Character
         [HideInInspector] public int projectileNumber;
         public float shootTime;
         public float reloadTime;
-        public GameObject[] projectileGO;
         public LauncherProfil launcherProfil;
-        public CapsuleProfil[] capsuleStats;
         public ChainEffect[] chainEffects;
-        public int[] weaponOrder;
+
+
+        private CapsuleSystem.Capsule[] capsulesPosses;
+        private int m_currentIndexCapsule = 0;
+
+        public int[] capsuleIndex;
+
+        public CapsuleManager m_capsuleManager;
 
         private float m_shootTimer;
         private float m_reloadTimer;
@@ -31,40 +36,64 @@ namespace Character
         [HideInInspector] public CapsuleStats[] capsuleStatsAlone;
         public CapsuleStats weaponStat { get { return currentWeaponStats; } private set { } }
         private int currentShotNumber;
-        private int currentIndexWeapon;
-        private int currentProjectileIndex;
+        //    private int currentIndexWeapon;
 
         private CharacterAim m_characterAim;
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
+        [SerializeField] private Buff.BuffsManager m_buffManager;
+        [SerializeField] private CharacterProfile m_chracterProfil;
         private Loader_Behavior m_LoaderInUI;
+
+
+        private CapsuleSystem.CapsuleType m_currentType;
 
         private void Awake()
         {
-            InitComponent();
             launcherStats = launcherProfil.stats;
+        }
 
+        private void Start()
+        {
+            InitCapsule();
+            InitComponent();
         }
         public void InitComponentStat(CharacterStat stat)
         {
-          
             reloadTime = launcherStats.reloadTime;
             shootTime = launcherStats.timeBetweenCapsule;
-
         }
 
         private void InitComponent()
         {
-            capsuleStatsAlone = new CapsuleStats[capsuleStats.Length];
-            for (int i = 0; i < capsuleStats.Length; i++)
+            capsuleStatsAlone = new CapsuleStats[capsulesPosses.Length];
+            for (int i = 0; i < capsulesPosses.Length; i++)
             {
-                capsuleStatsAlone[i] = capsuleStats[i].stats;
+                if (capsulesPosses[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                {
+                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)capsulesPosses[i];
+                    capsuleStatsAlone[i] = currentCap.stats.stats;
+                }
+                else
+                    capsuleStatsAlone[i] = new CapsuleStats();
             }
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
             m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
-            m_LoaderInUI.SetCapsuleOrder(weaponOrder);
+            m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
+
+            m_buffManager = GetComponent<Buff.BuffsManager>();
+            m_chracterProfil = GetComponent<CharacterProfile>();
+        }
+
+        private void InitCapsule()
+        {
+            capsulesPosses = new CapsuleSystem.Capsule[capsuleIndex.Length];
+            for (int i = 0; i < capsuleIndex.Length; i++)
+            {
+                capsulesPosses[i] = m_capsuleManager.capsules[capsuleIndex[i]];
+            }
         }
 
         private void Update()
@@ -109,51 +138,70 @@ namespace Character
         {
             if (!m_canShoot) return;
 
-            if (currentShotNumber == 0) StartShoot();
+            if (currentShotNumber == 0) StartShoot();  
+
+            if(m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                ShootAttack();
+            }
+            if(m_currentType == CapsuleSystem.CapsuleType.BUFF)
+            {
+                ShootBuff(((CapsuleSystem.CapsuleBuff)capsulesPosses[m_currentIndexCapsule]));
+                EndShoot();
+            }
+         
+        }
+
+        private void ShootAttack()
+        {
             float angle = GetShootAngle(currentWeaponStats);
             int mod = GetStartIndexProjectile(currentWeaponStats);
 
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
-                GameObject projectileCreate = GameObject.Instantiate(projectileGO[currentIndexWeapon], transform.position, transform.rotation);
+
+                GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).projectile
+                    , transform.position, Quaternion.AngleAxis(90.0f, m_characterAim.GetTransformHead().right));
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.range / currentWeaponStats.speed;
-                data.damage = currentWeaponStats.damage+1;
+                data.damage = currentWeaponStats.damage;
 
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
 
-
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
-            if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
+
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
-
             if (currentShotNumber == currentWeaponStats.shootNumber) EndShoot();
+        }
 
+        private void ShootBuff(CapsuleSystem.CapsuleBuff capsuleBuff)
+        {
+            Buff.BuffCharacter buff = new Buff.BuffCharacter(capsuleBuff.profil, capsuleBuff.duration);
+            m_buffManager.AddBuff(buff);
+            GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
         }
 
         private void StartShoot()
         {
-            currentIndexWeapon = weaponOrder[currentProjectileIndex];
-            currentWeaponStats = capsuleStats[currentIndexWeapon].stats;
-
-            if (currentProjectileIndex != 0)
+            m_currentType = capsulesPosses[m_currentIndexCapsule].type;
+            if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
+            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                int prevWeapon = weaponOrder[currentProjectileIndex - 1];
-                //currentWeaponStats = chainEffects[prevWeapon].Active(currentWeaponStats,launcherProfil.stats) ;
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
             }
-
-            m_isShooting = true;
+                m_isShooting = true;
         }
 
         private void EndShoot()
         {
             currentShotNumber = 0;
-            currentProjectileIndex = ChangeProjecileIndex();
+            m_currentIndexCapsule = ChangeProjecileIndex();
             m_canShoot = false;
             m_isShooting = false;
         }
@@ -179,14 +227,14 @@ namespace Character
 
         private int ChangeProjecileIndex()
         {
-            if (currentProjectileIndex == weaponOrder.Length - 1)
+            if (m_currentIndexCapsule == capsulesPosses.Length - 1)
             {
                 m_isReloading = true;
                 return 0;
             }
             else
             {
-                return currentProjectileIndex + 1;
+                return m_currentIndexCapsule + 1;
             }
         }
 
@@ -196,12 +244,14 @@ namespace Character
 
             if (m_shootTimer > shootTime)
             {
+
                 m_canShoot = true;
                 m_shootTimer = 0;
                 return;
             }
             else
             {
+
                 m_shootTimer += Time.deltaTime;
             }
         }

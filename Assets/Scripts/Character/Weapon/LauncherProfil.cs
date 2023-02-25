@@ -21,9 +21,17 @@ public struct CapsuleStats
     public float range;
     public float damage;
     public float projectileNumber;
-    public float timeBetweenShot;
+    public float totalShotTime;
     public float shootAngle;
     public float shootNumber;
+    [HideInInspector] public float timeBetweenShot 
+    { 
+        get 
+        {   if (shootNumber == 1) return 0.2f;
+            if (totalShotTime < 1) { Debug.LogError("Total Shot Time has a non valid time"); return 0.2f; }
+            return (totalShotTime / shootNumber); } 
+        private set { } 
+    }
 }
 
 

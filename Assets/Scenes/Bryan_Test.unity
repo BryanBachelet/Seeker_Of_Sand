@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 262.38354, g: 325.1084, b: 430.30957, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -141,32 +141,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6191376547830507922}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &262313270 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1866458878302752457, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
+--- !u!114 &262313276 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
     type: 3}
   m_PrefabInstance: {fileID: 1866458877916994663}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &262313275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 262313270}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b88d9453e78a8bb4ba7c94b3f324d87e, type: 3}
+  m_Script: {fileID: 11500000, guid: 568fa5ed5d3722541a1b840681007ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_damageHealthFDs:
-  - {fileID: 15246435}
-  - {fileID: 407047671}
-  - {fileID: 1632904367}
-  - {fileID: 624753904}
-  - {fileID: 1825041622}
-  m_inactiveText: []
-  m_activeText: []
 --- !u!114 &407047671 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2358415954156770678, guid: d8d31bd1b52706c439c112e6a5c156f4,
@@ -392,6 +378,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &620185799 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 917632637302687807, guid: 8883c8b8e0e5a62408eeb57a8958c438,
+    type: 3}
+  m_PrefabInstance: {fileID: 917632639053854865}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &624753904 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2358415954815033686, guid: d8d31bd1b52706c439c112e6a5c156f4,
@@ -1715,6 +1707,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 917632637219819005, guid: 8883c8b8e0e5a62408eeb57a8958c438,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 917632637219819007, guid: 8883c8b8e0e5a62408eeb57a8958c438,
         type: 3}
       propertyPath: m_upgradeCharacter
@@ -1849,6 +1846,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[0]
+      value: 
+      objectReference: {fileID: 15246435}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[1]
+      value: 
+      objectReference: {fileID: 407047671}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1632904367}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[3]
+      value: 
+      objectReference: {fileID: 624753904}
+    - target: {fileID: 262313275, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: m_damageHealthFDs.Array.data[4]
+      value: 
+      objectReference: {fileID: 1825041622}
     - target: {fileID: 1224385586, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
       propertyPath: m_textFeedbackUI
       value: 
@@ -1857,11 +1874,6 @@ PrefabInstance:
       propertyPath: m_PlayerExperienceRef
       value: 
       objectReference: {fileID: 1983534969}
-    - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
-        type: 3}
-      propertyPath: m_healthManager
-      value: 
-      objectReference: {fileID: 262313275}
     - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
         type: 3}
       propertyPath: m_playerTranform
@@ -1952,6 +1964,10 @@ PrefabInstance:
       propertyPath: m_cameraShake
       value: 
       objectReference: {fileID: 1231885401}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_capsuleManager
+      value: 
+      objectReference: {fileID: 262313276}
     - target: {fileID: 1983534971, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: projectorVisorObject
       value: 
@@ -1966,6 +1982,11 @@ PrefabInstance:
       propertyPath: m_upgradePoint
       value: 
       objectReference: {fileID: 2093545910}
+    - target: {fileID: 83947686645128913, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: uiLoaderDisplay
+      value: 
+      objectReference: {fileID: 620185799}
     - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
       propertyPath: m_RootOrder

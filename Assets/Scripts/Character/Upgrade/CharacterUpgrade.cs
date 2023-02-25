@@ -64,7 +64,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            m_upgradeToChoose[i].Setup(m_characterShoot.weaponOrder.Length);
+            m_upgradeToChoose[i].Setup(m_characterShoot.capsuleIndex.Length);
         }
     }
 
