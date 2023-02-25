@@ -51,6 +51,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         if (levelProgress > m_CurrentLevel + 1)
         {
             LevelUp((int)m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled));
+            GlobalSoundManager.PlayOneShot(7, Vector3.zero);
         }
         else
         {

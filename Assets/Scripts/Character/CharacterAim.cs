@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEngine.InputSystem;
 
 namespace Character
@@ -19,12 +20,13 @@ namespace Character
         [SerializeField] private LineRenderer m_lineRenderer;
         [SerializeField] private Transform m_transformHead;
         [SerializeField] private LayerMask m_aimLayer;
-
+        [SerializeField] private RectTransform m_cursor;
         public GameObject projectorVisorObject;
         private Ray cameRay;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
+            //Cursor.visible = false;
             m_playerInput = GetComponent<PlayerInput>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterShoot = GetComponent<CharacterShoot>();
@@ -33,6 +35,10 @@ namespace Character
 
         private void Update()
         {
+            if(m_cursor != null)
+            {
+                m_cursor.position = Input.mousePosition;
+            }
             AimFeedback();
         }
 
@@ -133,5 +139,6 @@ namespace Character
         {
             Gizmos.DrawRay(cameRay.origin, cameRay.direction * 100.0f);
         }
+
     }
 }

@@ -45,6 +45,7 @@ public class UpgradeUI : MonoBehaviour
                 SelectionIcon[i].SetActive(false);
                 selectionAnimator[i].SetBool("Selected", false);
                 upgradeButton[i].SetBool("Selected", false);
+                GlobalSoundManager.PlayOneShot(5, Camera.main.transform.position);
             }
             else
             {
