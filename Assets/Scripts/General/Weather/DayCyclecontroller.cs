@@ -27,9 +27,13 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 0;
         }
-        else if(m_timeOfDay > 5.1f && m_timeOfDay < 5.45f)
+        else if(m_timeOfDay > 5.1f && m_timeOfDay < 6f)
         {
-            m_timeOfDay += Time.deltaTime * m_orbitSpeed * 10;
+            m_timeOfDay = 6;
+        }
+        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
+        {
+            m_timeOfDay = 18.5f;
         }
         else
         {
