@@ -35,7 +35,7 @@ public class Loader_Behavior : MonoBehaviour
             ReloadCapsule();
             return;
         }
-        GlobalSoundManager.PlayOneShot(4, Vector3.zero);
+       // GlobalSoundManager.PlayOneShot(4, Vector3.zero);
         m_Objeect.rotation *= Quaternion.Euler(0, 0, 60);
         ReplaceNumberSlotText(m_currentCapsule);
     }

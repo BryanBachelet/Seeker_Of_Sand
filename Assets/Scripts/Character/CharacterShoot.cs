@@ -159,14 +159,15 @@ namespace Character
 
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
-
+                Quaternion rot = m_characterAim.GetTransformHead().rotation;
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).projectile
-                    , transform.position, Quaternion.AngleAxis(90.0f, m_characterAim.GetTransformHead().right));
+                    , transform.position, rot);
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.range / currentWeaponStats.speed;
                 data.damage = currentWeaponStats.damage;
+                data.destination = m_characterAim.GetAimDestination();
 
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;

@@ -13,9 +13,15 @@ public class Harpon : Projectile
     private bool m_firstHit;
     private float m_currentDistance;
 
+    public void Start()
+    {
+        transform.rotation *= Quaternion.AngleAxis(90, Vector3.right);
+    }
+
     protected override void Move()
     {
-        if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
+        RaycastHit hit = new RaycastHit();
+        if (Physics.Raycast(transform.position, m_direction.normalized,out hit, m_speed * Time.deltaTime, m_layer))
         {
             if (m_firstHit)
             {

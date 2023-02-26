@@ -8,6 +8,7 @@ public class ProjectileExplosif : Projectile
 {
     [SerializeField] private float m_timeBeforeExplosion = 1.0f;
     [SerializeField] private float m_explosionSize;
+    [SerializeField] private float m_angleTrajectory = 45.0f;
     [SerializeField] private LayerMask m_explosionMask;
     [SerializeField] private Material m_explosionMatToUse;
 
@@ -23,13 +24,43 @@ public class ProjectileExplosif : Projectile
     private Transform m_transform;
     private Material m_mat_explosion;
 
+    private float m_gravityForce;
+    private float m_distanceDest;
+
     private void Start()
     {
         m_transform = gameObject.GetComponent<Transform>();
         m_mat_explosion = new Material(m_explosionMatToUse);
         gameObject.GetComponent<MeshRenderer>().material = m_mat_explosion;
 
+        Vector3 posHorizontal = new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 destHorizontal = new Vector3(m_destination.x, 0, m_destination.z);
+        m_distanceDest = Vector3.Distance(posHorizontal, destHorizontal);
+        m_direction = destHorizontal - posHorizontal;
+        m_direction.Normalize();
+        m_speed = GetSpeed(m_distanceDest, m_lifeTime-0.1f, m_angleTrajectory);
+        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, transform.position.y - m_destination.y );
     }
+
+    #region Physics Function
+    public float GetSpeed(float distance, float timeMax, float angle)
+    {
+        angle = Mathf.Deg2Rad * angle;
+        float speedZero = distance / (timeMax * Mathf.Cos(angle));
+        return speedZero;
+    }
+
+    float GetGravity(float speed, float timeMax, float angle, float deltaHeight)
+    {
+        angle = Mathf.Deg2Rad * angle;
+        float gravitySpeed = 2 * (speed * Mathf.Sin(angle) * timeMax + deltaHeight);
+        gravitySpeed = gravitySpeed / (timeMax * timeMax);
+
+        return gravitySpeed;
+
+    }
+    #endregion
+
     void Update()
     {
         Move();
@@ -42,15 +73,14 @@ public class ProjectileExplosif : Projectile
     {
         if (m_isStick) return;
 
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, m_direction.normalized,out hit, m_speed * Time.deltaTime, m_layer))
-        {
-            m_stickPosition = hit.point;
-            m_isStick = true;
-            StartCoroutine(TimeToExplose());
-        }
+        float speedX = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad);
+        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * Time.deltaTime;
 
-        transform.position += m_direction.normalized * m_speed * Time.deltaTime;
+        float speedY = (-m_gravityForce * m_lifeTimer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad));
+        float yPos = (-m_gravityForce * m_lifeTimer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad)) * Time.deltaTime;
+
+        Vector3 pos = m_direction.normalized * xPos + new Vector3(0.0f, yPos, 0.0f);
+        transform.position += pos;
     }
 
     private void StickBehavior()
@@ -103,6 +133,11 @@ public class ProjectileExplosif : Projectile
         Explosion();
     }
 
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, m_destination);
+    }
     private void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
