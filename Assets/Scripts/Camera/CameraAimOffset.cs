@@ -19,7 +19,6 @@ public class CameraAimOffset : MonoBehaviour
         Vector3 aimDirection = m_characterAim.GetAim();
         aimDirection = new Vector3(aimDirection.x, 0, aimDirection.z);
         float magnitude = m_characterAim.GetAimMagnitude();
-        Debug.Log("Dist = " + magnitude); 
          m_offsetAim = aimDirection.normalized * magnitude * m_sizeDistance;
     }
 }

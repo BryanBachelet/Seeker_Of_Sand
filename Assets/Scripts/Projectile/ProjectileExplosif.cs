@@ -113,7 +113,7 @@ public class ProjectileExplosif : Projectile
         CollisionEvent(other);
     }
 
-    protected override void CollisionEvent(Collider other)
+    public override void CollisionEvent(Collider other)
     {
         if (m_isStick && m_onEnemy || other.tag == "Player") return;
         if (other.tag == "Enemy")

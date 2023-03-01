@@ -67,7 +67,7 @@ public class Projectile : MonoBehaviour
     {
         CollisionEvent(other);
     }
-    protected virtual void CollisionEvent(Collider other)
+    public virtual void CollisionEvent(Collider other)
     {
         if (other.gameObject.tag != "Enemy") return;
 

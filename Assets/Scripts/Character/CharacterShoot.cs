@@ -167,7 +167,11 @@ namespace Character
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.range / currentWeaponStats.speed;
                 data.damage = currentWeaponStats.damage;
-                data.destination = m_characterAim.GetAimDestination();
+                Vector3 dest = m_characterAim.GetAimDestination();
+                if (dest.magnitude > currentWeaponStats.range)
+                    dest = (dest - transform.position).normalized * currentWeaponStats.range;
+
+                data.destination = dest;
 
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;

@@ -23,6 +23,9 @@ namespace Character
 
         public GameObject projectorVisorObject;
         private Ray cameRay;
+
+        private Vector3 mouseHitPointWorldSpace;
+        private bool search;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
@@ -35,6 +38,7 @@ namespace Character
         private void Update()
         {
             AimFeedback();
+          if(search)  search = false;
         }
 
         public Transform GetTransformHead()
@@ -82,16 +86,19 @@ namespace Character
 
         public Vector3 GetAimDestination()
         {
-
+            if (search) return mouseHitPointWorldSpace;
             Vector3 aimValue = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
+            search = true;
             Ray aimRay = Camera.main.ScreenPointToRay(aimValue);
             RaycastHit hit = new RaycastHit();
             if (Physics.Raycast(aimRay, out hit, 150.0f, m_aimLayer.value))
             {
-                return hit.point;
+                mouseHitPointWorldSpace = hit.point;
+                return mouseHitPointWorldSpace;
             }
             else
             {
+                mouseHitPointWorldSpace = transform.position + GetAim() * m_characterShoot.weaponStat.range;
                 return  transform.position+  GetAim() * m_characterShoot.weaponStat.range;
             }
         }

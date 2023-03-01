@@ -43,7 +43,7 @@ public class Harpon : Projectile
 
 
 
-    protected override void CollisionEvent(Collider other)
+    public override void CollisionEvent(Collider other)
     {
         EnemyCollision(other);
     }
