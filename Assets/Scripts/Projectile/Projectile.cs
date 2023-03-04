@@ -8,6 +8,7 @@ public struct ProjectileData
     public float speed;
     public float life;
     public float damage;
+    public Vector3 destination;
 }
 
 
@@ -20,6 +21,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
     [SerializeField] protected float m_damage = 1;
+     protected Vector3 m_destination;
     protected float m_lifeTimer;
 
     void  Update()
@@ -35,9 +37,11 @@ public class Projectile : MonoBehaviour
         m_speed = data.speed;
         m_lifeTime = data.life;
         m_damage = data.damage;
+        m_destination = data.destination;
     }
     protected virtual void Move()
     {
+        Debug.Log("Test");
         if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
 
@@ -63,7 +67,7 @@ public class Projectile : MonoBehaviour
     {
         CollisionEvent(other);
     }
-    protected virtual void CollisionEvent(Collider other)
+    public virtual void CollisionEvent(Collider other)
     {
         if (other.gameObject.tag != "Enemy") return;
 
