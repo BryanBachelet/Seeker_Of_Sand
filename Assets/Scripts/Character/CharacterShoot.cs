@@ -49,6 +49,9 @@ namespace Character
 
         private CapsuleSystem.CapsuleType m_currentType;
 
+        // Temp 
+        private Vector3 pos;
+
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
@@ -65,19 +68,45 @@ namespace Character
             shootTime = launcherStats.timeBetweenCapsule;
         }
 
-        private void InitComponent()
+        // ================= TEMP =====================
+        public void IncreaseCapsuleIndex(InputAction.CallbackContext ctx)
         {
-            capsuleStatsAlone = new CapsuleStats[capsulesPosses.Length];
-            for (int i = 0; i < capsulesPosses.Length; i++)
+            if (ctx.started) SwitchCapsuleChange(true);
+        }
+
+        public void DecreaseCapsuleIndex(InputAction.CallbackContext ctx)
+        {
+            if (ctx.started) SwitchCapsuleChange(false);
+        }
+
+        private void SwitchCapsuleChange(bool increase)
+        {
+            for (int i = 0; i < capsuleIndex.Length; i++)
             {
-                if (capsulesPosses[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                if (increase)
                 {
-                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)capsulesPosses[i];
-                    capsuleStatsAlone[i] = currentCap.stats.stats;
+                    capsuleIndex[i]++;
+                    if (capsuleIndex[i] != m_capsuleManager.capsules.Length) continue;
+                    
+                    capsuleIndex[i] = 0;
                 }
                 else
-                    capsuleStatsAlone[i] = new CapsuleStats();
+                {
+                    capsuleIndex[i]--;
+                    
+                    if (capsuleIndex[i] >=0) continue ;
+
+                    capsuleIndex[i] = m_capsuleManager.capsules.Length-1;
+                }
             }
+            InitCapsule();
+        }
+
+        // ==============================================================
+
+        private void InitComponent()
+        {
+
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
             m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
@@ -94,7 +123,23 @@ namespace Character
             {
                 capsulesPosses[i] = m_capsuleManager.capsules[capsuleIndex[i]];
             }
+
+            capsuleStatsAlone = new CapsuleStats[capsulesPosses.Length];
+            for (int i = 0; i < capsulesPosses.Length; i++)
+            {
+                if (capsulesPosses[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                {
+                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)capsulesPosses[i];
+                    capsuleStatsAlone[i] = currentCap.stats.stats;
+                }
+                else
+                    capsuleStatsAlone[i] = new CapsuleStats();
+            }
+            if (m_LoaderInUI == null) return;
+            m_LoaderInUI.CleanCapsule();
+            m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
         }
+
 
         private void Update()
         {
@@ -138,18 +183,18 @@ namespace Character
         {
             if (!m_canShoot) return;
 
-            if (currentShotNumber == 0) StartShoot();  
+            if (currentShotNumber == 0) StartShoot();
 
-            if(m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
                 ShootAttack();
             }
-            if(m_currentType == CapsuleSystem.CapsuleType.BUFF)
+            if (m_currentType == CapsuleSystem.CapsuleType.BUFF)
             {
                 ShootBuff(((CapsuleSystem.CapsuleBuff)capsulesPosses[m_currentIndexCapsule]));
                 EndShoot();
             }
-         
+
         }
 
         private void ShootAttack()
@@ -168,10 +213,11 @@ namespace Character
                 data.life = currentWeaponStats.range / currentWeaponStats.speed;
                 data.damage = currentWeaponStats.damage;
                 Vector3 dest = m_characterAim.GetAimDestination();
-                if (dest.magnitude > currentWeaponStats.range)
-                    dest = (dest - transform.position).normalized * currentWeaponStats.range;
+                if ((dest - transform.position).magnitude > currentWeaponStats.range)
+                    dest = transform.position - (Vector3.up * 0.5f) + (dest - transform.position).normalized * currentWeaponStats.range;
 
                 data.destination = dest;
+                pos = dest;
 
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
@@ -200,7 +246,7 @@ namespace Character
             {
                 currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
             }
-                m_isShooting = true;
+            m_isShooting = true;
         }
 
         private void EndShoot()
@@ -229,6 +275,7 @@ namespace Character
         }
 
         #endregion
+
 
         private int ChangeProjecileIndex()
         {
