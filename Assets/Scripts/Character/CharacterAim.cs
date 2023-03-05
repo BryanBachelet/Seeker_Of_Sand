@@ -10,6 +10,7 @@ namespace Character
     {
 
         [SerializeField] [Range(0.0f, 1.0f)] private float inputAim = 0.6f;
+        [SerializeField] private Camera m_camera;
         private PlayerInput m_playerInput;
         private Vector2 m_aimInputValue;
         private Vector2 m_aimValueTransform;
@@ -89,9 +90,9 @@ namespace Character
             if (search) return mouseHitPointWorldSpace;
             Vector3 aimValue = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
             search = true;
-            Ray aimRay = Camera.main.ScreenPointToRay(aimValue);
+            Ray aimRay = m_camera.ScreenPointToRay(aimValue);
             RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(aimRay, out hit, 150.0f, m_aimLayer.value))
+            if (Physics.Raycast(aimRay, out hit, 1000.0f, m_aimLayer.value))
             {
                 mouseHitPointWorldSpace = hit.point;
                 return mouseHitPointWorldSpace;
@@ -111,7 +112,7 @@ namespace Character
             {
                 Resolution currentResolution = Screen.currentResolution;
                 m_aimValueTransform = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
-                Ray aimRay = Camera.main.ScreenPointToRay(m_aimValueTransform);
+                Ray aimRay = m_camera.ScreenPointToRay(m_aimValueTransform);
                 m_aimValueTransform = new Vector2(m_aimValueTransform.x - (currentResolution.width / 2.0f), m_aimValueTransform.y - (currentResolution.height / 2.0f));
                 m_aimValueTransform = new Vector2(m_aimValueTransform.x / (currentResolution.width / 2.0f), m_aimValueTransform.y / (currentResolution.height / 2.0f));
 
@@ -140,6 +141,9 @@ namespace Character
         private void OnDrawGizmos()
         {
             Gizmos.DrawLine(transform.position,GetAimDestination());
+            Vector3 aimValue = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
+            Ray aimRay = m_camera.ScreenPointToRay(aimValue);
+            Gizmos.DrawRay(m_camera.transform.position, aimRay.direction * 1000.0f);
         }
     }
 }

@@ -69,6 +69,14 @@ public class Loader_Behavior : MonoBehaviour
         }
     }
 
+    public void CleanCapsule()
+    {
+        for (int i = 0; i < m_capsuleObject.Length; i++)
+        {
+            Destroy(m_capsuleObject[i]);
+        }
+    }
+
     public bool GetReloadingstate()
     {
         return m_reloading;
