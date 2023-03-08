@@ -7,6 +7,8 @@ public class UpgradeUI : MonoBehaviour
 {
     public Text[] m_upgradeDescription = new Text[3];
     public Image[] m_upgradeIcon = new Image[3];
+    public Image[] m_upgradeTypeIcon = new Image[3];
+    public Sprite[] m_TypeIcon = new Sprite[3];
     public GameObject[] SelectionIcon = new GameObject[3];
     private Animator[] selectionAnimator = new Animator[3];
     public Animator[] upgradeButton = new Animator[3];
@@ -26,6 +28,20 @@ public class UpgradeUI : MonoBehaviour
         {
             m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
+            switch (upgrades[i].gain.type)
+            {
+                case UpgradeType.CHARACTER:
+                    m_upgradeTypeIcon[i].sprite = m_TypeIcon[0];
+                    break;
+                case UpgradeType.LAUNCHER:
+                    m_upgradeTypeIcon[i].sprite = m_TypeIcon[1];
+                    break;
+                case UpgradeType.CAPSULE:
+                    m_upgradeTypeIcon[i].sprite = m_TypeIcon[2];
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -45,6 +61,7 @@ public class UpgradeUI : MonoBehaviour
                 SelectionIcon[i].SetActive(false);
                 selectionAnimator[i].SetBool("Selected", false);
                 upgradeButton[i].SetBool("Selected", false);
+                GlobalSoundManager.PlayOneShot(5, Camera.main.transform.position);
             }
             else
             {

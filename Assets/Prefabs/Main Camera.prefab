@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 898435386039766567}
   - component: {fileID: 1231885401}
   - component: {fileID: 8870188415779612043}
+  - component: {fileID: 1231885407}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -68,7 +69,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -128,7 +129,7 @@ MonoBehaviour:
   invertFaceCulling: 0
   probeLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   hasPersistentHistory: 0
   allowDeepLearningSuperSampling: 1
   deepLearningSuperSamplingUseCustomQualitySettings: 0
@@ -251,8 +252,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e18d6854e09cf43abc3e1b1dbdab5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_sizeDistance: 2
+  m_sizeDistance: 3.5
   m_characterAim: {fileID: 0}
+--- !u!114 &1231885407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898435386039766562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &6398785996441288091
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,15 +319,57 @@ MonoBehaviour:
       Data4: -851618239
     Path: event:/Player/Weapon/ExplosiveBuble/ExplosionActive
   - Guid:
-      Data1: -1089972668
-      Data2: 1116814226
-      Data3: 221942696
-      Data4: 79564935
-    Path: event:/Player/Weapon/ShotGun/Fire&Reload
+      Data1: -1876534202
+      Data2: 1306382818
+      Data3: 1463424950
+      Data4: 845407891
+    Path: event:/Player/Weapon/ShotGun/Fire&Reload 2
+  - Guid:
+      Data1: 164377641
+      Data2: 1077480975
+      Data3: 1252230805
+      Data4: 523445946
+    Path: event:/Player/Weapon/Reloading
+  - Guid:
+      Data1: -1613121923
+      Data2: 1327130626
+      Data3: 673095077
+      Data4: 420336844
+    Path: event:/Player/Experience/GetExp
+  - Guid:
+      Data1: 1141897697
+      Data2: 1105974156
+      Data3: -1783589231
+      Data4: -777965080
+    Path: event:/Player/Weapon/NextBullet
+  - Guid:
+      Data1: 557676691
+      Data2: 1147173079
+      Data3: 1363783045
+      Data4: 342507346
+    Path: event:/Player/Experience/Upgrade/MouseOverUpgrade
+  - Guid:
+      Data1: -1774468233
+      Data2: 1140182936
+      Data3: 834222752
+      Data4: -2099642297
+    Path: event:/Player/Experience/ChooseUpgrade
+  - Guid:
+      Data1: -14662067
+      Data2: 1176773681
+      Data3: 709979822
+      Data4: 1874502298
+    Path: event:/Player/Experience/Levelup
+  - Guid:
+      Data1: -1275453258
+      Data2: 1313903384
+      Data3: 1778480259
+      Data4: 10823304
+    Path: event:/Player/Weapon/Buff
   Globalsound:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 234366381
+      Data2: 1247820395
+      Data3: 1329684622
+      Data4: 764994159
+    Path: event:/Ambiant/Desert/GlobalWind&Aer

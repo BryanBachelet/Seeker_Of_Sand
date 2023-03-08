@@ -27,9 +27,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 1d64af84bdc970c4fae0c1e06dd95b73, type: 3}
   m_ValidKeywords:
   - _COLORMAP
+  - _EMISSIVEMAP
   - _MATERIAL_AFFECTS_ALBEDO
-  - _MATERIAL_AFFECTS_MASKMAP
-  - _MATERIAL_AFFECTS_NORMAL
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
@@ -52,7 +51,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseColorMap:
-        m_Texture: {fileID: 2800000, guid: 1a129cd8c3e14b648a22a54b92ab7c2a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9af92acda2d9b2b48a1ea4cc4ccedf16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BentNormalMap:
@@ -76,7 +75,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveColorMap:
-        m_Texture: {fileID: 2800000, guid: 0f26a877fc9a7904182dfa182f42be16, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9af92acda2d9b2b48a1ea4cc4ccedf16, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _HeightMap:
@@ -152,10 +151,10 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AffectAO: 0
     - _AffectAlbedo: 1
-    - _AffectEmission: 0
-    - _AffectMetal: 1
-    - _AffectNormal: 1
-    - _AffectSmoothness: 1
+    - _AffectEmission: 1
+    - _AffectMetal: 0
+    - _AffectNormal: 0
+    - _AffectSmoothness: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
     - _AlphaCutoffEnable: 0
@@ -174,9 +173,9 @@ Material:
     - _Cutoff: 0.5
     - _DecalBlend: 0.783
     - _DecalColorMask0: 15
-    - _DecalColorMask1: 15
-    - _DecalColorMask2: 11
-    - _DecalColorMask3: 8
+    - _DecalColorMask1: 0
+    - _DecalColorMask2: 0
+    - _DecalColorMask3: 0
     - _DecalMaskMapBlueScale: 0.458
     - _DecalMeshBiasType: 0
     - _DecalMeshDepthBias: 0
@@ -199,7 +198,7 @@ Material:
     - _DstBlend: 0
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
-    - _EmissiveIntensity: 9.54
+    - _EmissiveIntensity: 129.51042
     - _EmissiveIntensityUnit: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
@@ -221,7 +220,7 @@ Material:
     - _LinkDetailsWithBase: 1
     - _MaskBlendSrc: 0
     - _MaterialID: 1
-    - _Metallic: 1
+    - _Metallic: 0
     - _MetallicRemapMax: 1
     - _MetallicRemapMin: 0
     - _NormalBlendSrc: 0
@@ -283,9 +282,9 @@ Material:
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissiveColor: {r: 766.9961, g: 766.9961, b: 766.9961, a: 9.54}
-    - _EmissiveColorHDR: {r: 766.9961, g: 766.9961, b: 766.9961, a: 9.54}
-    - _EmissiveColorLDR: {r: 0.88031507, g: 0.88031507, b: 0.88031507, a: 1}
+    - _EmissiveColor: {r: 0, g: 0.3764706, b: 1.5058824, a: 129.51042}
+    - _EmissiveColorHDR: {r: 0, g: 0.3764706, b: 1.5058824, a: 129.51042}
+    - _EmissiveColorLDR: {r: 0, g: 0.46182454, b: 0.88031507, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

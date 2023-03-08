@@ -27,6 +27,7 @@ public class CharacterUpgrade : MonoBehaviour
         {
             if (upgradePoint == 0) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+            GlobalSoundManager.PlayOneShot(6, Vector3.zero);
             //uiLoaderDisplay.SetActive(false);
             m_loaderBehavior.UpdateLoaderInUpgrade(false);
             if (upgradeUiGO.activeSelf == false) 

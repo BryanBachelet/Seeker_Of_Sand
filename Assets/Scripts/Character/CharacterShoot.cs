@@ -234,7 +234,7 @@ namespace Character
         {
             Buff.BuffCharacter buff = new Buff.BuffCharacter(capsuleBuff.profil, capsuleBuff.duration);
             m_buffManager.AddBuff(buff);
-            GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            GlobalSoundManager.PlayOneShot(8, Vector3.zero);
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
         }
 

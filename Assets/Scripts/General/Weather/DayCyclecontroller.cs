@@ -11,6 +11,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la durée d'une journée in-game, de base 10 minutes
     [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds à la vitesse d'écoulement du temps in-game. 1 reviens à avoir une journée de 24 secondes IRL
     [SerializeField] public RectTransform m_ClockNeedle;
+    [SerializeField] private GlobalSoundManager m_GSM;
     private bool isNight = false;
     // Start is called before the first frame update
     void Start()
@@ -26,13 +27,26 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 0;
         }
-        else if(m_timeOfDay > 5.1f && m_timeOfDay < 5.45f)
+        else if(m_timeOfDay > 5.1f && m_timeOfDay < 6f)
         {
-            m_timeOfDay += Time.deltaTime * m_orbitSpeed * 10;
+            m_timeOfDay = 6;
+        }
+        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
+        {
+            m_timeOfDay = 18.5f;
         }
         else
         {
             m_timeOfDay += Time.deltaTime * m_orbitSpeed;
+            if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
+            {
+                m_GSM.UpdateParameter(1, "DayOrNight");
+            }
+            else
+            {
+                m_GSM.UpdateParameter(0, "DayOrNight");
+            }
+            
         }
         UpdateTime();   
     }
@@ -91,6 +105,7 @@ public class DayCyclecontroller : MonoBehaviour
         isNight = false;
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
+        m_GSM.UpdateParameter(0, "DayOrNight");
     }
 
     private void StartNight()
