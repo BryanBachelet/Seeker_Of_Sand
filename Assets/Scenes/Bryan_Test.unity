@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 262.38354, g: 325.1084, b: 430.30957, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1733,7 +1733,7 @@ PrefabInstance:
     - target: {fileID: 917632637302687778, guid: 8883c8b8e0e5a62408eeb57a8958c438,
         type: 3}
       propertyPath: m_capsuleDisplayPrefab.Array.size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 917632637302687778, guid: 8883c8b8e0e5a62408eeb57a8958c438,
         type: 3}
@@ -1750,6 +1750,12 @@ PrefabInstance:
     - target: {fileID: 917632637302687778, guid: 8883c8b8e0e5a62408eeb57a8958c438,
         type: 3}
       propertyPath: m_capsuleDisplayPrefab.Array.data[7]
+      value: 
+      objectReference: {fileID: 1586110372556395981, guid: 29b6dc55f11dc8a4ab034e5c774b6a3e,
+        type: 3}
+    - target: {fileID: 917632637302687778, guid: 8883c8b8e0e5a62408eeb57a8958c438,
+        type: 3}
+      propertyPath: m_capsuleDisplayPrefab.Array.data[8]
       value: 
       objectReference: {fileID: 1586110372556395981, guid: 29b6dc55f11dc8a4ab034e5c774b6a3e,
         type: 3}
@@ -1902,6 +1908,28 @@ PrefabInstance:
       propertyPath: m_damageHealthFDs.Array.data[4]
       value: 
       objectReference: {fileID: 1825041622}
+    - target: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: capsules.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: attackInfo.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: attackInfo.Array.data[7].name
+      value: Mine
+      objectReference: {fileID: 0}
+    - target: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: attackInfo.Array.data[7].stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 1a893981abd33834e8867b5f0d741fba,
+        type: 2}
+    - target: {fileID: 262313276, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
+      propertyPath: attackInfo.Array.data[7].projectile
+      value: 
+      objectReference: {fileID: 6397006724863419028, guid: ca57b3bcf3b623b4f8f8492fe75f6eb6,
+        type: 3}
     - target: {fileID: 1224385586, guid: 2f4f565a178b7c6449e98bb679ac0e9b, type: 3}
       propertyPath: m_textFeedbackUI
       value: 
@@ -1984,6 +2012,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 86779937, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1072871537, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1678966289, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_Camera
       value: 
@@ -2066,27 +2106,27 @@ PrefabInstance:
       objectReference: {fileID: 262313276}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: capsuleIndex.Array.data[0]
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: capsuleIndex.Array.data[1]
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: capsuleIndex.Array.data[2]
-      value: 1
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: capsuleIndex.Array.data[3]
-      value: 1
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: capsuleIndex.Array.data[4]
-      value: 2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: capsuleIndex.Array.data[5]
-      value: 2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1983534971, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_camera
@@ -2096,6 +2136,10 @@ PrefabInstance:
       propertyPath: projectorVisorObject
       value: 
       objectReference: {fileID: 2061072914}
+    - target: {fileID: 2120833563, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 83947686645128913, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
       propertyPath: upgradeUiGO
@@ -2111,6 +2155,11 @@ PrefabInstance:
       propertyPath: uiLoaderDisplay
       value: 
       objectReference: {fileID: 620185799}
+    - target: {fileID: 919132148298006110, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
       propertyPath: m_RootOrder
@@ -2170,6 +2219,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6959514789458403795, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}

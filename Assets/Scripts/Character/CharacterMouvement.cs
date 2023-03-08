@@ -18,6 +18,10 @@ namespace Character
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
 
+        private bool m_onProjection;
+
+
+
         public Vector3 currentDirection { get; private set; }
 
         public void InitComponentStat(CharacterStat stat)
@@ -41,7 +45,7 @@ namespace Character
         {
             RotateCharacter();
         }
-
+        
         public void FixedUpdate()
         {
             RaycastHit hit = new RaycastHit();
@@ -49,6 +53,11 @@ namespace Character
 
             if (OnGround(ref hit))
             {
+                if (m_onProjection)
+                {
+                  
+                    return;
+                }    
                 Vector3 direction = GetForwardDirection(hit.normal);
                 if (GetSlopeAngle(direction) >= m_maxGroundSlopeAngle)
                 {
@@ -64,10 +73,15 @@ namespace Character
             }
             else
             {
+                if (m_onProjection)
+                {
+                    m_onProjection = false;
+                }
                 AirMove(inputDirection);
                 if (inputDirection == Vector3.zero)
                 {
-                    m_rigidbody.velocity = new Vector3(0, m_rigidbody.velocity.y, 0);
+                    // Possible probleme but necessary for the bump;
+                    m_rigidbody.velocity = new Vector3(m_rigidbody.velocity.x, m_rigidbody.velocity.y, m_rigidbody.velocity.z);
                     return;
                 }
             }
@@ -82,6 +96,13 @@ namespace Character
             m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
             currentDirection = direction;
             m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed);
+        }
+
+        public void Projection(Vector3 dir, ForceMode mode)
+        {
+           
+            m_rigidbody.AddForce(dir, mode);
+            m_onProjection = true;
         }
 
         private Vector3 GetForwardDirection(Vector3 normal)

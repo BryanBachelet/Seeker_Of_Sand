@@ -212,7 +212,7 @@ namespace Character
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.range / currentWeaponStats.speed;
                 data.damage = currentWeaponStats.damage;
-                Vector3 dest = m_characterAim.GetAimDestination();
+                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up)* m_characterAim.GetAimDestination();
                 if ((dest - transform.position).magnitude > currentWeaponStats.range)
                     dest = transform.position - (Vector3.up * 0.5f) + (dest - transform.position).normalized * currentWeaponStats.range;
 
