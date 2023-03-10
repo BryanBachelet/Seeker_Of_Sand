@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class ProjectileExplosif : Projectile
 {
-    [SerializeField] private float m_timeBeforeExplosion = 1.0f;
-    [SerializeField] private float m_explosionSize;
+    [SerializeField] protected float m_timeBeforeExplosion = 1.0f;
+    [SerializeField] protected float m_explosionSize;
     [SerializeField] private float m_angleTrajectory = 45.0f;
-    [SerializeField] private LayerMask m_explosionMask;
+    [SerializeField] protected LayerMask m_explosionMask;
     [SerializeField] private Material m_explosionMatToUse;
 
     public AnimationCurve scaleByTime_Curve;
@@ -33,24 +31,29 @@ public class ProjectileExplosif : Projectile
         m_mat_explosion = new Material(m_explosionMatToUse);
         gameObject.GetComponent<MeshRenderer>().material = m_mat_explosion;
 
+        InitTrajectory();
+    }
+
+    protected virtual void InitTrajectory()
+    {
         Vector3 posHorizontal = new Vector3(transform.position.x, 0, transform.position.z);
         Vector3 destHorizontal = new Vector3(m_destination.x, 0, m_destination.z);
         m_distanceDest = Vector3.Distance(posHorizontal, destHorizontal);
         m_direction = destHorizontal - posHorizontal;
         m_direction.Normalize();
-        m_speed = GetSpeed(m_distanceDest, m_lifeTime-0.1f, m_angleTrajectory);
-        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, transform.position.y - m_destination.y );
+        m_speed = GetSpeed(m_distanceDest, m_lifeTime - 0.1f, m_angleTrajectory);
+        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, transform.position.y - m_destination.y);
     }
 
     #region Physics Function
-    public float GetSpeed(float distance, float timeMax, float angle)
+    protected virtual float GetSpeed(float distance, float timeMax, float angle)
     {
         angle = Mathf.Deg2Rad * angle;
         float speedZero = distance / (timeMax * Mathf.Cos(angle));
         return speedZero;
     }
 
-    float GetGravity(float speed, float timeMax, float angle, float deltaHeight)
+    protected virtual float GetGravity(float speed, float timeMax, float angle, float deltaHeight)
     {
         angle = Mathf.Deg2Rad * angle;
         float gravitySpeed = 2 * (speed * Mathf.Sin(angle) * timeMax + deltaHeight);
@@ -73,6 +76,11 @@ public class ProjectileExplosif : Projectile
     {
         if (m_isStick) return;
 
+        CurveTrajectory();
+    }
+
+    protected virtual void CurveTrajectory()
+    {
         float speedX = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad);
         float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * Time.deltaTime;
 
@@ -123,13 +131,13 @@ public class ProjectileExplosif : Projectile
             m_stickPosition = other.transform.position - transform.position;
         }
         if (m_isStick) return;
-        StartCoroutine(TimeToExplose());
+        StartCoroutine(TimeToExplose(m_timeBeforeExplosion));
         m_isStick = true;
     }
 
-    private IEnumerator TimeToExplose()
+    protected virtual IEnumerator TimeToExplose(float timer)
     {
-        yield return new WaitForSeconds(m_timeBeforeExplosion);
+        yield return new WaitForSeconds(timer);
         Explosion();
     }
 
@@ -138,7 +146,7 @@ public class ProjectileExplosif : Projectile
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, m_destination);
     }
-    private void Explosion()
+    protected virtual void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
         GlobalSoundManager.PlayOneShot(0, transform.position);
