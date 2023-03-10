@@ -28,6 +28,7 @@ namespace Character
 
         private Vector3 mouseHitPointWorldSpace;
         private bool search;
+        private Material projectorVisorMat;
         private void Start()
         {
             //Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
@@ -35,6 +36,7 @@ namespace Character
             m_playerInput = GetComponent<PlayerInput>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterShoot = GetComponent<CharacterShoot>();
+            if(projectorVisorObject != null) { projectorVisorMat = projectorVisorObject.GetComponent<UnityEngine.Rendering.HighDefinition.DecalProjector>().material; }
         }
 
 
@@ -67,10 +69,18 @@ namespace Character
             }
             if (projectorVisorObject)                                               // Decal Projector for visor positionning 
             {                                                                       //
-                projectorVisorObject.transform.position = transform.position + m_aimDirection.normalized * distance;                // 
+                projectorVisorObject.transform.position = transform.position + new Vector3(0,1,0) + m_aimDirection.normalized * distance; // 
+                if(DayCyclecontroller.staticTimeOfTheDay > 6 && DayCyclecontroller.staticTimeOfTheDay < 18)
+                {
+                    projectorVisorMat.SetColor("_EmissiveColor", new Color(0, 0.5f, 1) * 18);
+                }
+                else
+                {
+                    projectorVisorMat.SetColor("_EmissiveColor", new Color(0, 0.5f, 1) * 3.8f);
+                }
             }
             m_lineRenderer.SetPosition(1, transform.position + m_aimDirection.normalized * distance);
-            Cursor.visible = true;
+            //Cursor.visible = true;
 
         }
 
@@ -104,6 +114,7 @@ namespace Character
             if (Physics.Raycast(aimRay, out hit, 1000.0f, m_aimLayer.value))
             {
                 mouseHitPointWorldSpace = hit.point;
+                Debug.Log("Hit terrain at : " + mouseHitPointWorldSpace);
                 return mouseHitPointWorldSpace;
             }
             else

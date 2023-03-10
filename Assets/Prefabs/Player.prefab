@@ -411,10 +411,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.7069557
+  m_Height: 4.1343
   m_Direction: 1
-  m_Center: {x: 0, y: 0.47, z: 0}
+  m_Center: {x: 0.009304285, y: 0.74728394, z: 0}
 --- !u!54 &7646386487780707507
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -584,6 +584,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 20568960-3558-47db-8ca1-116511693681
     m_ActionName: Player/Upgrade[/Keyboard/g,/XInputControllerWindows/select]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1983534970}
+        m_TargetAssemblyTypeName: Character.CharacterShoot, Assembly-CSharp
+        m_MethodName: IncreaseCapsuleIndex
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b425bea8-f807-4f0b-9f3e-8375a1ff901c
+    m_ActionName: Player/Increase[/Keyboard/p]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1983534970}
+        m_TargetAssemblyTypeName: Character.CharacterShoot, Assembly-CSharp
+        m_MethodName: DecreaseCapsuleIndex
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4d8682b9-7ee7-447e-8251-b18ba3b23602
+    m_ActionName: Player/Decrease[/Keyboard/o]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -907,17 +939,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 50.502003
+      value: 85.08321
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 50.502003
+      value: 85.08321
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 50.502003
+      value: 85.08321
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
@@ -927,12 +959,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.76942897
+      value: 0.73519
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.0908103
+      value: -0.091489
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
@@ -973,7 +1005,37 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 8d39a0056fe3c3244b49b3f09756eadd, type: 2}
+      objectReference: {fileID: 2100000, guid: 54ae12b42f776a04aa999c96a74d97ff, type: 2}
+    - target: {fileID: -7511558181221131132, guid: f9646b32c1b908247985903d3d1f126a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 470fb06ef69169147bf22e76a942c6f0, type: 2}
+    - target: {fileID: -7511558181221131132, guid: f9646b32c1b908247985903d3d1f126a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 179e15509892b7b4d8508e9d7823226d, type: 2}
+    - target: {fileID: -7511558181221131132, guid: f9646b32c1b908247985903d3d1f126a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: a0e53ba33da62ec48ae9c35ae7c4383e, type: 2}
+    - target: {fileID: -7511558181221131132, guid: f9646b32c1b908247985903d3d1f126a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[6]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4e8bc5a3632aee343944a58a9a6a2347, type: 2}
+    - target: {fileID: -7511558181221131132, guid: f9646b32c1b908247985903d3d1f126a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[9]
+      value: 
+      objectReference: {fileID: 2100000, guid: 68901429de8ca204fa18233ff75cffe8, type: 2}
+    - target: {fileID: -7511558181221131132, guid: f9646b32c1b908247985903d3d1f126a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[10]
+      value: 
+      objectReference: {fileID: 2100000, guid: ec70c653148c89b449c0556bb945f602, type: 2}
     - target: {fileID: 919132149155446097, guid: f9646b32c1b908247985903d3d1f126a,
         type: 3}
       propertyPath: m_Name

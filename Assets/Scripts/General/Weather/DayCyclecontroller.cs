@@ -6,6 +6,7 @@ public class DayCyclecontroller : MonoBehaviour
 {
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
+    static public float staticTimeOfTheDay;
     [SerializeField] private Light m_sun;
     [SerializeField] private Light m_moon;
     [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la durée d'une journée in-game, de base 10 minutes
@@ -48,6 +49,7 @@ public class DayCyclecontroller : MonoBehaviour
             }
             
         }
+        staticTimeOfTheDay = m_timeOfDay;
         UpdateTime();   
     }
 
