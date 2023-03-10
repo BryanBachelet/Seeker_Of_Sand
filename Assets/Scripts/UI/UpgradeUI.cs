@@ -8,7 +8,7 @@ public class UpgradeUI : MonoBehaviour
     public Text[] m_upgradeDescription = new Text[3];
     public Image[] m_upgradeIcon = new Image[3];
     public Image[] m_upgradeTypeIcon = new Image[3];
-    public Sprite[] m_TypeIcon = new Sprite[3];
+    public Material[] m_TypeIcon = new Material[3];
     public GameObject[] SelectionIcon = new GameObject[3];
     private Animator[] selectionAnimator = new Animator[3];
     public Animator[] upgradeButton = new Animator[3];
@@ -31,13 +31,13 @@ public class UpgradeUI : MonoBehaviour
             switch (upgrades[i].gain.type)
             {
                 case UpgradeType.CHARACTER:
-                    m_upgradeTypeIcon[i].sprite = m_TypeIcon[0];
+                    m_upgradeTypeIcon[i].material = m_TypeIcon[0];
                     break;
                 case UpgradeType.LAUNCHER:
-                    m_upgradeTypeIcon[i].sprite = m_TypeIcon[1];
+                    m_upgradeTypeIcon[i].material = m_TypeIcon[1];
                     break;
                 case UpgradeType.CAPSULE:
-                    m_upgradeTypeIcon[i].sprite = m_TypeIcon[2];
+                    m_upgradeTypeIcon[i].material = m_TypeIcon[2];
                     break;
                 default:
                     break;

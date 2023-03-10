@@ -41,7 +41,7 @@ public class Projectile : MonoBehaviour
     }
     protected virtual void Move()
     {
-        Debug.Log("Test");
+        //Debug.Log("Test");
         if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
 

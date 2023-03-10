@@ -30,8 +30,8 @@ namespace Character
         private bool search;
         private void Start()
         {
-            Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
-            //Cursor.visible = false;
+            //Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
+            Cursor.visible = false;
             m_playerInput = GetComponent<PlayerInput>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterShoot = GetComponent<CharacterShoot>();
@@ -65,7 +65,10 @@ namespace Character
             {
                 distance = (hit.point - transform.position).magnitude;
             }
-
+            if (projectorVisorObject)                                               // Decal Projector for visor positionning 
+            {                                                                       //
+                projectorVisorObject.transform.position = transform.position + m_aimDirection.normalized * distance;                // 
+            }
             m_lineRenderer.SetPosition(1, transform.position + m_aimDirection.normalized * distance);
             Cursor.visible = true;
 
@@ -126,11 +129,7 @@ namespace Character
                 cameRay = aimRay;
                 RaycastHit hit = new RaycastHit();
                 if (Physics.Raycast(cameRay, out hit, 150.0f, m_aimLayer.value))
-                {
-                    if (projectorVisorObject)                                               // Decal Projector for visor positionning 
-                    {                                                                       //
-                        projectorVisorObject.transform.position = hit.point;                // 
-                    }                                                                       //
+                {                                                                    //
                     return ((hit.point + Vector3.up) - transform.position);
 
                 }
