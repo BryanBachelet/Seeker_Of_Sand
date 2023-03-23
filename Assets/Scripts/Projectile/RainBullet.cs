@@ -14,6 +14,7 @@ public class RainBullet : Projectile
     public void Start()
     {
         m_collider = GetComponent<SphereCollider>();
+        GlobalSoundManager.PlayOneShot(11, transform.position);
     }
 
     public void Update()

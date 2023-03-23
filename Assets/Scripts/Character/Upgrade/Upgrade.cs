@@ -20,7 +20,6 @@ public class Upgrade
 {
     [Tooltip("Stats give by the upgrade")]
     public UpgradeProfil gain;
-  
     [HideInInspector] public int capsuleIndex;
 
     public  Upgrade(UpgradeProfil profil) { gain = profil; }

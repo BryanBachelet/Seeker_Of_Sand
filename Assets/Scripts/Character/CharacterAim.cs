@@ -24,6 +24,7 @@ namespace Character
         [SerializeField] private LayerMask m_aimLayer;
         [SerializeField] private RectTransform m_cursor;
         public GameObject projectorVisorObject;
+        public Transform projectorVisorPivotObject;
         private Ray cameRay;
 
         private Vector3 mouseHitPointWorldSpace;
@@ -61,6 +62,7 @@ namespace Character
             Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
             float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
             m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            if(projectorVisorPivotObject != null) { projectorVisorPivotObject.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up); }
             RaycastHit hit = new RaycastHit();
             float distance = m_characterShoot.weaponStat.range;
             if (Physics.Raycast(transform.position, m_aimDirection.normalized * distance, out hit, m_aimLayer))
@@ -114,7 +116,7 @@ namespace Character
             if (Physics.Raycast(aimRay, out hit, 1000.0f, m_aimLayer.value))
             {
                 mouseHitPointWorldSpace = hit.point;
-                Debug.Log("Hit terrain at : " + mouseHitPointWorldSpace);
+                //Debug.Log("Hit terrain at : " + mouseHitPointWorldSpace);
                 return mouseHitPointWorldSpace;
             }
             else

@@ -57,7 +57,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         {
             //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
             m_LevelDisplayFill.fillAmount = (levelProgress - m_CurrentLevel);
-            m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), 515, 0);
+            m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
     }
 

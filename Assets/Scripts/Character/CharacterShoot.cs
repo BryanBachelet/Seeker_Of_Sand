@@ -325,6 +325,12 @@ namespace Character
                 m_reloadTimer += Time.deltaTime;
             }
         }
+
+        public void Debug_NewLoadout(int[] NewCapsule)
+        {
+            capsuleIndex = NewCapsule;
+            InitCapsule();
+        }
     }
 
 }

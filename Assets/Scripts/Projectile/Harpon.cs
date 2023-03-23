@@ -52,6 +52,8 @@ public class Harpon : Projectile
     {
         if (other.tag != "Enemy") return;
 
+        GlobalSoundManager.PlayOneShot(9, transform.position);
+        Debug.Log("HarponcollisionTest");
         Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
         if (enemyTouch.IsDestroing()) return;
 
