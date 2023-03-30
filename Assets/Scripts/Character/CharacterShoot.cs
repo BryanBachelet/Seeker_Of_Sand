@@ -104,6 +104,8 @@ namespace Character
 
         // ==============================================================
 
+        public float GetPodRange() { return currentWeaponStats.range; }
+        public CapsuleStats GetPod() { return currentWeaponStats; }
         private void InitComponent()
         {
 
@@ -114,6 +116,11 @@ namespace Character
 
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
+
+            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+            }
         }
 
         private void InitCapsule()
@@ -253,6 +260,10 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
+            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+            }
             m_canShoot = false;
             m_isShooting = false;
         }
