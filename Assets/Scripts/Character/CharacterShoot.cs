@@ -215,20 +215,21 @@ namespace Character
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).projectile
                     , transform.position, rot);
                 ProjectileData data = new ProjectileData();
-                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
+                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAimDirection();
                 data.speed = currentWeaponStats.speed;
-                data.life = currentWeaponStats.range / currentWeaponStats.speed;
+                data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
-                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up)* m_characterAim.GetAimDestination();
+                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up)* m_characterAim.GetAimFinalPoint();
                 if ((dest - transform.position).magnitude > currentWeaponStats.range)
                     dest = transform.position - (Vector3.up * 0.5f) + (dest - transform.position).normalized * currentWeaponStats.range;
 
-                data.destination = dest;
+                data.destination = m_characterAim.GetAimFinalPoint();
                 pos = dest;
-
+                
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
+
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
 

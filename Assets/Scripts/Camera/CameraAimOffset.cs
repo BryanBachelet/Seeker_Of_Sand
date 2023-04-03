@@ -16,9 +16,11 @@ public class CameraAimOffset : MonoBehaviour
 
     public void Update()
     {
-        Vector3 aimDirection = m_characterAim.GetAim();
+        Vector3 aimDirection = m_characterAim.GetAimDirection();
         aimDirection = new Vector3(aimDirection.x, 0, aimDirection.z);
-        float magnitude = m_characterAim.GetAimMagnitude();
-         m_offsetAim = aimDirection.normalized * magnitude * m_sizeDistance;
+        float magnitude = m_characterAim.GetRangeFromPlayerToFinalPoint();
+       
+         // m_offsetAim = aimDirection.normalized * 1 * m_sizeDistance;
+          m_offsetAim = Vector3.zero;
     }
 }

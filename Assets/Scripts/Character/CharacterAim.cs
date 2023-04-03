@@ -44,7 +44,6 @@ namespace Character
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
-            //Cursor.visible = false;
             m_playerInput = GetComponent<PlayerInput>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterShoot = GetComponent<CharacterShoot>();
@@ -74,7 +73,7 @@ namespace Character
 
             CheckAimPointDistance();
 
-            m_aimFinalPoint = VerifyAimTrajectory();
+            m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetPod());
             m_aimDirection = (m_aimFinalPoint - transform.position).normalized;
             m_aimPointToPlayerDistance = (m_aimFinalPoint - transform.position).magnitude;
             m_aimInputPointUI = m_camera.WorldToScreenPoint(m_rawAimPoint);
@@ -83,6 +82,7 @@ namespace Character
             m_isNewTarget = false;
         }
 
+        #region Aim Test Function
         private void CheckAimPointDistance()
         {
             m_isInRange = true;
@@ -100,21 +100,12 @@ namespace Character
         /// <summary>
         ///   Check if any obstacle on the aim trajectory and adapt the aim final point
         /// </summary>
-        private Vector3 VerifyAimTrajectory()
+        private Vector3 VerifyAimTrajectory(CapsuleStats stats)
         {
-            Ray aimTrajectoryRay = new Ray(transform.position, m_aimDirection);
-            RaycastHit hit = new RaycastHit();
-            Debug.Log("Dist :" + m_characterShoot.GetPodRange());
-            if (Physics.Raycast(aimTrajectoryRay, out hit, m_characterShoot.GetPodRange(), m_aimLayer))
-            {
-
-                Debug.Log("Hit obstacle" + hit.collider.name);
-
-                m_aimPoint = hit.point;
-                m_aimFinalPointNormal = hit.normal;
-            }
-
-            return m_aimPoint;
+            if (stats.trajectory == TrajectoryType.CURVE)
+                return CheckCurveTrajectory();
+            else
+                return CheckLineTrajectory();
         }
 
         private Vector3 CheckLineTrajectory()
@@ -136,15 +127,51 @@ namespace Character
 
         private Vector3 CheckCurveTrajectory()
         {
+            float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad);
+            float gravity = m_characterShoot.GetPod().GetGravitySpeed(0, m_aimPointToPlayerDistance);
+            float height = ((speed * speed) / (2 * gravity));
+
+            Vector3 dir = m_aimDirection.normalized;
+            Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
+            Vector3 normalDirection = Quaternion.AngleAxis(-90, dirRight) * dir;
+
+            Vector3 newPos = transform.position + dir.normalized * m_aimPointToPlayerDistance * 0.5f;
+            Vector3 heightestPoint = newPos + normalDirection.normalized * height;
+
+            Ray aimTrajectoryRay = new Ray(transform.position, (heightestPoint - transform.position).normalized);
+            RaycastHit hit = new RaycastHit();
+
+            if (Physics.Raycast(aimTrajectoryRay, out hit, (heightestPoint - transform.position).magnitude, m_aimLayer))
+            {
+                Debug.Log("Hit obstacle" + hit.collider.name);
+                m_aimPoint = hit.point;
+                m_aimFinalPointNormal = hit.normal;
+                return m_aimPoint;
+            }
+
+            aimTrajectoryRay = new Ray(heightestPoint, (m_aimPoint - heightestPoint).normalized);
+            if (Physics.Raycast(aimTrajectoryRay, out hit, (m_aimPoint - heightestPoint).magnitude, m_aimLayer))
+            {
+                Debug.Log("Hit obstacle" + hit.collider.name);
+                m_aimPoint = hit.point;
+                m_aimFinalPointNormal = hit.normal;
+                return m_aimPoint;
+            }
+
             return m_aimPoint;
+
         }
+
+        #endregion
+
+        #region Public Functions
 
         /// <summary>
         /// Get the current aiming direction
         /// </summary>
         /// <returns></returns>
         public Vector3 GetAimDirection() { return m_aimDirection; }
-        
+
         /// <summary>
         /// Give the final location of aiming or the location of the collision if the sight is obstructed
         /// </summary>
@@ -175,14 +202,21 @@ namespace Character
         /// <returns></returns>
         public Vector2 GetAimInputPointUI() { return m_aimFinalPointNormal; }
 
+        /// <summary>
+        /// Give the range of between the avatar and the final aim point
+        /// </summary>
+        /// <returns></returns>
+        public float GetRangeFromPlayerToFinalPoint() { return m_aimPointToPlayerDistance; }
+
+        public Transform GetTransformHead() { return m_transformHead; }
+
+        #endregion 
 
         private void Update()
         {
-            // == New Version ===
             FindAimWorldPoint();
             CalculateAimInformation();
             AimFeedback();
-            // == old version
             if (m_cursor != null)
             {
                 m_cursor.position = Input.mousePosition;
@@ -190,27 +224,14 @@ namespace Character
             if (search) search = false;
         }
 
-        public Transform GetTransformHead()
-        {
-            return m_transformHead;
-        }
+
         private void AimFeedback()
         {
-             m_lineRenderer.SetPosition(0, transform.position);
+            FeedbackHeadRotation();
+            m_lineRenderer.SetPosition(0, transform.position);
             if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
             {
-                m_lineRenderer.positionCount = 2;
-                Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
-                float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
-                m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
-                RaycastHit hit = new RaycastHit();
-                float distance = m_characterShoot.weaponStat.range;
-                if (Physics.Raycast(transform.position, m_aimDirection.normalized * distance, out hit, m_aimLayer))
-                {
-                    distance = (hit.point - transform.position).magnitude;
-                }
-
-                m_lineRenderer.SetPosition(1, m_aimFinalPoint);
+                FeedbackLinearTrajectory();
             }
             else
             {
@@ -221,22 +242,38 @@ namespace Character
 
         }
 
+        private void FeedbackLinearTrajectory()
+        {
+            m_lineRenderer.positionCount = 2;
+            m_lineRenderer.SetPosition(1, m_aimFinalPoint);
+        }
+
+        private void FeedbackHeadRotation()
+        {
+            Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
+            float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
+            m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+        }
+
 
         private void FeedbackCurveTrajectory(CapsuleStats stats)
         {
-            float ratio = ((stats.lifetime-0.1f) / m_numberOfPointForCurveTrajectory);
+            float ratio = ((stats.lifetime - 0.1f) / (m_numberOfPointForCurveTrajectory + 1));
 
             Vector3 position = transform.position;
-            m_lineRenderer.positionCount = m_numberOfPointForCurveTrajectory;
+
+            m_lineRenderer.positionCount = m_numberOfPointForCurveTrajectory + 1;
             m_lineRenderer.SetPosition(0, position);
 
-            Vector3 dir = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
-            
-            for (int i = 1; i < m_numberOfPointForCurveTrajectory; i++)
+            Vector3 dir = m_aimDirection.normalized;
+            Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
+            Vector3 normalDirection = Quaternion.AngleAxis(-90, dirRight) * dir;
+
+            for (int i = 1; i < m_numberOfPointForCurveTrajectory + 1; i++)
             {
                 Vector3 newPos = Vector3.zero;
-                newPos = dir.normalized *  stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Cos(45 * Mathf.Deg2Rad) * ratio;
-                newPos.y = (-stats.GetGravitySpeed(transform.position.y-m_aimFinalPoint.y, m_aimPointToPlayerDistance) * ratio * i + stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Cos(45 * Mathf.Deg2Rad)) * ratio;
+                newPos = dir.normalized * stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Cos(45 * Mathf.Deg2Rad) * ratio;
+                newPos += normalDirection * (-stats.GetGravitySpeed(0, m_aimPointToPlayerDistance) * ratio * i + stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad)) * ratio;
                 m_lineRenderer.SetPosition(i, position + newPos);
                 position += newPos;
             }
@@ -251,64 +288,8 @@ namespace Character
             }
             if (ctx.canceled) m_aimInputValue = Vector2.zero;
 
-            m_aimDirection = GetAimPoint();
         }
 
-        public Vector3 GetAim()
-        {
-            return (GetAimDestination() - transform.position).normalized;
-        }
-
-        public float GetAimMagnitude() { return m_aimValueTransform.magnitude; }
-
-
-        public Vector3 GetAimDestination()
-        {
-            if (search) return mouseHitPointWorldSpace;
-            Vector3 aimValue = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
-            search = true;
-            Ray aimRay = m_camera.ScreenPointToRay(aimValue);
-            RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(aimRay, out hit, 1000.0f, m_aimLayer.value))
-            {
-                mouseHitPointWorldSpace = hit.point;
-                return mouseHitPointWorldSpace;
-            }
-            else
-            {
-                mouseHitPointWorldSpace = transform.position + GetAim() * m_characterShoot.weaponStat.range;
-                return transform.position + GetAim() * m_characterShoot.weaponStat.range;
-            }
-        }
-
-
-
-        private Vector3 GetAimPoint()
-        {
-            if (!IsGamepad())
-            {
-                Resolution currentResolution = Screen.currentResolution;
-                m_aimValueTransform = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
-                Ray aimRay = m_camera.ScreenPointToRay(m_aimValueTransform);
-                m_aimValueTransform = new Vector2(m_aimValueTransform.x - (currentResolution.width / 2.0f), m_aimValueTransform.y - (currentResolution.height / 2.0f));
-                m_aimValueTransform = new Vector2(m_aimValueTransform.x / (currentResolution.width / 2.0f), m_aimValueTransform.y / (currentResolution.height / 2.0f));
-
-
-                cameRay = aimRay;
-                RaycastHit hit = new RaycastHit();
-                if (Physics.Raycast(cameRay, out hit, 150.0f, m_aimLayer.value))
-                {
-                    if (projectorVisorObject)                                               // Decal Projector for visor positionning 
-                    {                                                                       //
-                        projectorVisorObject.transform.position = hit.point;                // 
-                    }                                                                       //
-                    return ((hit.point + Vector3.up) - transform.position);
-
-                }
-                return m_characterMouvement.currentDirection;
-            }
-            return m_aimInputValue;
-        }
 
         private bool IsGamepad()
         {
@@ -317,10 +298,25 @@ namespace Character
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawLine(transform.position, GetAimDestination());
-            Vector3 aimValue = new Vector2(m_aimInputValue.x, m_aimInputValue.y);
-            Ray aimRay = m_camera.ScreenPointToRay(aimValue);
-            Gizmos.DrawRay(m_camera.transform.position, aimRay.direction * 1000.0f);
+            if (Application.isPlaying)
+            {
+                float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad);
+                float gravity = m_characterShoot.GetPod().GetGravitySpeed(0, m_aimPointToPlayerDistance);
+                float height = ((speed * speed) / (2 * gravity));
+                Vector3 dir = m_aimDirection.normalized;
+                Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
+                Vector3 normalDirection = Quaternion.AngleAxis(-90, dirRight) * dir;
+
+                Vector3 newPos = transform.position + dir.normalized * m_aimPointToPlayerDistance * 0.5f;
+                Vector3 heightestPoint = newPos + normalDirection.normalized * height;
+
+                Ray aimTrajectoryRay = new Ray(transform.position, (heightestPoint - transform.position).normalized);
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(transform.position, m_aimFinalPoint);
+                Gizmos.color = Color.red;
+                Gizmos.DrawRay(aimTrajectoryRay.origin, aimTrajectoryRay.direction * (heightestPoint - transform.position).magnitude);
+                Gizmos.DrawLine(heightestPoint, m_aimPoint);
+            }
         }
 
     }
