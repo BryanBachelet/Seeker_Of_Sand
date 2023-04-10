@@ -25,6 +25,8 @@ public enum TrajectoryType
 public struct CapsuleStats
 {
     public float lifetime;
+    public float travelTime;
+    [SerializeField] public bool useTravelTime;
     public float speed;
     public float range;
     public float damage;
@@ -32,6 +34,7 @@ public struct CapsuleStats
     public float totalShotTime;
     public float shootAngle;
     public TrajectoryType trajectory;
+    public float angleTrajectory;
     public float shootNumber;
     [HideInInspector] public float timeBetweenShot 
     { 
@@ -44,22 +47,27 @@ public struct CapsuleStats
 
     public float GetSpeed(float rangeGive)
     {
-        float speed = (rangeGive / ((lifetime-0.1f) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+        float speed = (rangeGive / ((GetTravelTime()) * Mathf.Cos(angleTrajectory * Mathf.Deg2Rad)));
         return speed;
     }
 
     public float GetVerticalSpeed(float rangeGive)
     {
-        return GetSpeed(rangeGive) * Mathf.Sign(45 * Mathf.Deg2Rad);
+        return GetSpeed(rangeGive) * Mathf.Sign(angleTrajectory * Mathf.Deg2Rad);
     }
 
     public float GetGravitySpeed(float height, float rangeGive)
     {
         float speed = GetSpeed(rangeGive);
-        float angle =  45 * Mathf.Deg2Rad;
-        float gravity = 2 * (speed * Mathf.Sin(angle) * (lifetime - 0.1f) + height);
-        gravity = gravity / ((lifetime - 0.1f)* (lifetime-0.1f) );
+        float angle = angleTrajectory * Mathf.Deg2Rad;
+        float gravity = 2 * (speed * Mathf.Sin(angle) * (GetTravelTime()) + height);
+        gravity = gravity / ((GetTravelTime()) * (GetTravelTime()) );
         return gravity;
+    }
+
+    public float GetTravelTime()
+    {
+        return travelTime != 0 ? travelTime : lifetime;
     }
 }
 

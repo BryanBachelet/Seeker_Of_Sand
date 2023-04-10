@@ -127,7 +127,7 @@ namespace Character
 
         private Vector3 CheckCurveTrajectory()
         {
-            float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad);
+            float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad); // Angle
             float gravity = m_characterShoot.GetPod().GetGravitySpeed(0, m_aimPointToPlayerDistance);
             float height = ((speed * speed) / (2 * gravity));
 
@@ -258,7 +258,7 @@ namespace Character
 
         private void FeedbackCurveTrajectory(CapsuleStats stats)
         {
-            float ratio = ((stats.lifetime - 0.1f) / (m_numberOfPointForCurveTrajectory + 1));
+            float ratio = ((stats.GetTravelTime()) / (m_numberOfPointForCurveTrajectory + 1));
 
             Vector3 position = transform.position;
 
@@ -272,8 +272,8 @@ namespace Character
             for (int i = 1; i < m_numberOfPointForCurveTrajectory + 1; i++)
             {
                 Vector3 newPos = Vector3.zero;
-                newPos = dir.normalized * stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Cos(45 * Mathf.Deg2Rad) * ratio;
-                newPos += normalDirection * (-stats.GetGravitySpeed(0, m_aimPointToPlayerDistance) * ratio * i + stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad)) * ratio;
+                newPos = dir.normalized * stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Cos(m_characterShoot.GetPod().angleTrajectory * Mathf.Deg2Rad) * ratio; // Angle
+                newPos += normalDirection * (-stats.GetGravitySpeed(0, m_aimPointToPlayerDistance) * ratio * i + stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(m_characterShoot.GetPod().angleTrajectory * Mathf.Deg2Rad)) * ratio;
                 m_lineRenderer.SetPosition(i, position + newPos);
                 position += newPos;
             }
@@ -300,7 +300,7 @@ namespace Character
         {
             if (Application.isPlaying)
             {
-                float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad);
+                float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(m_characterShoot.GetPod().angleTrajectory * Mathf.Deg2Rad); // TODO 
                 float gravity = m_characterShoot.GetPod().GetGravitySpeed(0, m_aimPointToPlayerDistance);
                 float height = ((speed * speed) / (2 * gravity));
                 Vector3 dir = m_aimDirection.normalized;
