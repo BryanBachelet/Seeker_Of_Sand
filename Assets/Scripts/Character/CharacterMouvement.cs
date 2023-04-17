@@ -9,6 +9,7 @@ namespace Character
     [RequireComponent(typeof(Rigidbody))]
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
+        public Render.Camera.CameraBehavior cameraPlayer;
         public float speed = 10.0f;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
@@ -128,8 +129,8 @@ namespace Character
 
         private void RotateCharacter()
         {
-            Vector3 dir = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-            float angleDir = Vector3.SignedAngle(transform.forward, dir.normalized, Vector3.up);
+            Vector3 dir = Quaternion.Euler(0,cameraPlayer.GetAngle(),0)* new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            float angleDir =  Vector3.SignedAngle(transform.forward, dir.normalized, Vector3.up);
 
             Quaternion rot = Quaternion.AngleAxis(angleDir, Vector3.up);
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);

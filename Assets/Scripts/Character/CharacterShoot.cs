@@ -40,7 +40,7 @@ namespace Character
 
         private CharacterAim m_characterAim;
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
-        [SerializeField] private CameraShake m_cameraShake;
+        [SerializeField] private Render.Camera.CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;

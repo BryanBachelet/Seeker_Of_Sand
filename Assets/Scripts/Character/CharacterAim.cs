@@ -9,26 +9,24 @@ namespace Character
     public class CharacterAim : MonoBehaviour
     {
 
-        [SerializeField] [Range(0.0f, 1.0f)] private float inputAim = 0.6f;
         [SerializeField] private Camera m_camera;
-        private PlayerInput m_playerInput;
-        private Vector2 m_aimInputValue;
-        private Vector2 m_aimValueTransform;
-        private CharacterMouvement m_characterMouvement;
-        private CharacterShoot m_characterShoot;
-        [SerializeField] private Texture2D m_cursorTex;
-        [SerializeField] private LineRenderer m_lineRenderer;
         [SerializeField] private Transform m_transformHead;
         [SerializeField] private LayerMask m_aimLayer;
-        [SerializeField] private RectTransform m_cursor;
-        public GameObject projectorVisorObject;
-        private Ray cameRay;
 
-        private Vector3 mouseHitPointWorldSpace;
+        [Header("Aim Feedback")]
+        public GameObject projectorVisorObject;
+        [SerializeField] private Texture2D m_cursorTex;
+        [SerializeField] private RectTransform m_cursor;
+        [SerializeField] private LineRenderer m_lineRenderer;
+
+        private PlayerInput m_playerInput;
+        private CharacterShoot m_characterShoot;
+
         private bool search;
 
+        private Vector2 m_aimInputValue = Vector2.zero;
         private Vector2 m_aimScreenPoint = Vector2.zero;
-        private const float aimScreenToWorldDistance = 1000.0f;
+        private const float m_aimScreenToWorldDistance = 1000.0f;
         private Vector3 m_aimFinalPoint = Vector3.zero;
         private Vector3 m_aimPoint = Vector3.zero;
         private Vector3 m_rawAimPoint = Vector3.zero;
@@ -45,7 +43,6 @@ namespace Character
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
             m_playerInput = GetComponent<PlayerInput>();
-            m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterShoot = GetComponent<CharacterShoot>();
         }
 
@@ -58,7 +55,7 @@ namespace Character
             m_aimScreenPoint = m_aimInputValue;
             Ray aimRay = m_camera.ScreenPointToRay(m_aimScreenPoint);
             RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(aimRay, out hit, aimScreenToWorldDistance, m_aimLayer))
+            if (Physics.Raycast(aimRay, out hit, m_aimScreenToWorldDistance, m_aimLayer))
             {
                 m_rawAimPoint = m_aimPoint = hit.point;
 
