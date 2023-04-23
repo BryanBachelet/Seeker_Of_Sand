@@ -53,7 +53,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
         m_characterShoot = GetComponent<Character.CharacterShoot>();
-        m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
+        //m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
     }
     #endregion
 

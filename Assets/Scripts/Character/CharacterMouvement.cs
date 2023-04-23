@@ -14,7 +14,7 @@ namespace Character
         [SerializeField] private LayerMask m_groundLayerMask;
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
-
+        [SerializeField] private Animator m_CharacterAnim = null;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
 
@@ -32,13 +32,26 @@ namespace Character
         private void InitComponent()
         {
             m_rigidbody = GetComponent<Rigidbody>();
+            if (m_CharacterAnim == null) { m_CharacterAnim = GameObject.Find("Avatar_Model").GetComponent<Animator>(); }
             initialSpeed = speed;
         }
 
         public void MoveInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed) m_inputDirection = ctx.ReadValue<Vector2>();
-            if (ctx.canceled) m_inputDirection = Vector2.zero;
+            if (ctx.performed)
+            {
+                m_inputDirection = ctx.ReadValue<Vector2>();
+                m_CharacterAnim.SetBool("Running", true);
+                m_CharacterAnim.SetBool("Idle", false);
+                Debug.Log("JE COURS");
+            }
+            if (ctx.canceled)
+            {
+                m_inputDirection = Vector2.zero;
+                Debug.Log("JE STOP");
+                m_CharacterAnim.SetBool("Running", false);
+                m_CharacterAnim.SetBool("Idle", true);
+            }
         }
 
         public void Update()
@@ -50,7 +63,6 @@ namespace Character
         {
             RaycastHit hit = new RaycastHit();
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-
             if (OnGround(ref hit))
             {
                 if (m_onProjection)

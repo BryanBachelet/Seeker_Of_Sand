@@ -30,6 +30,7 @@ namespace Character
         private bool m_isShooting;
         private bool m_shootInput;
         private bool m_isReloading;
+        private bool m_isCasting;
 
         private CapsuleStats currentWeaponStats;
         [HideInInspector] public LauncherStats launcherStats;
@@ -109,8 +110,8 @@ namespace Character
 
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
-            m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
-            m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
+            //m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
+            //m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
 
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
@@ -241,7 +242,7 @@ namespace Character
         private void StartShoot()
         {
             m_currentType = capsulesPosses[m_currentIndexCapsule].type;
-            if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
+            //if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
@@ -330,6 +331,32 @@ namespace Character
         {
             capsuleIndex = NewCapsule;
             InitCapsule();
+        }
+
+        public void ManagedCastCapacity(bool stateCall)
+        {
+            if(stateCall)
+            {
+                if(!m_isCasting)
+                {
+                    m_isCasting = true;
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                if(m_isCasting)
+                {
+                    m_isCasting = false;
+                }
+                else
+                {
+
+                }
+            }
         }
     }
 
