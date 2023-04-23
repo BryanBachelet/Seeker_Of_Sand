@@ -24,6 +24,8 @@ public class ProjectileExplosif : Projectile
 
     private float m_gravityForce;
     private float m_distanceDest;
+    private Vector3 m_directionHeight;
+    private Vector3 prevPosition;
 
     private void Start()
     {
@@ -35,14 +37,18 @@ public class ProjectileExplosif : Projectile
     }
 
     protected virtual void InitTrajectory()
-    {
-        Vector3 posHorizontal = new Vector3(transform.position.x, 0, transform.position.z);
-        Vector3 destHorizontal = new Vector3(m_destination.x, 0, m_destination.z);
-        m_distanceDest = Vector3.Distance(posHorizontal, destHorizontal);
-        m_direction = destHorizontal - posHorizontal;
+    {   
+        Vector3 direction = (m_destination - transform.position);
+        m_distanceDest = direction.magnitude;
+        Vector3 rightDirection = Quaternion.AngleAxis(90, Vector3.up) * direction.normalized;
+        m_directionHeight = Quaternion.AngleAxis(-90, rightDirection.normalized) * direction.normalized;
+
+
+      
+        m_direction = direction.normalized;
         m_direction.Normalize();
         m_speed = GetSpeed(m_distanceDest, m_lifeTime - 0.1f, m_angleTrajectory);
-        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, transform.position.y - m_destination.y);
+        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory,0);
     }
 
     #region Physics Function
@@ -80,15 +86,14 @@ public class ProjectileExplosif : Projectile
     }
 
     protected virtual void CurveTrajectory()
-    {
-        float speedX = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad);
-        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * Time.deltaTime;
-
-        float speedY = (-m_gravityForce * m_lifeTimer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad));
-        float yPos = (-m_gravityForce * m_lifeTimer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad)) * Time.deltaTime;
-
-        Vector3 pos = m_direction.normalized * xPos + new Vector3(0.0f, yPos, 0.0f);
-        transform.position += pos;
+    { 
+        float timer = (m_lifeTimer * m_lifeTimer) / 2.0f;
+        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad)* m_lifeTimer;
+        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad)* m_lifeTimer;
+       
+        Vector3 pos = m_direction.normalized * xPos  + m_directionHeight.normalized *yPos ;
+        transform.position += (pos-prevPosition);
+        prevPosition = pos;
     }
 
     private void StickBehavior()
@@ -112,7 +117,6 @@ public class ProjectileExplosif : Projectile
     protected override void Duration()
     {
         if (m_isStick) return;
-
         base.Duration();
     }
 

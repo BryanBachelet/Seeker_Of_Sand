@@ -41,7 +41,7 @@ namespace Character
 
         private CharacterAim m_characterAim;
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
-        [SerializeField] private CameraShake m_cameraShake;
+        [SerializeField] private Render.Camera.CameraShake m_cameraShake;
         [SerializeField] private float m_shakeDuration = 0.1f;
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;
@@ -105,6 +105,8 @@ namespace Character
 
         // ==============================================================
 
+        public float GetPodRange() { return currentWeaponStats.range; }
+        public CapsuleStats GetPod() { return currentWeaponStats; }
         private void InitComponent()
         {
 
@@ -115,6 +117,11 @@ namespace Character
 
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
+
+            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+            }
         }
 
         private void InitCapsule()
@@ -209,20 +216,21 @@ namespace Character
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).projectile
                     , transform.position, rot);
                 ProjectileData data = new ProjectileData();
-                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAim();
+                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAimDirection();
                 data.speed = currentWeaponStats.speed;
-                data.life = currentWeaponStats.range / currentWeaponStats.speed;
+                data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
-                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up)* m_characterAim.GetAimDestination();
+                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up)* m_characterAim.GetAimFinalPoint();
                 if ((dest - transform.position).magnitude > currentWeaponStats.range)
                     dest = transform.position - (Vector3.up * 0.5f) + (dest - transform.position).normalized * currentWeaponStats.range;
 
-                data.destination = dest;
+                data.destination = m_characterAim.GetAimFinalPoint();
                 pos = dest;
-
+                
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
+
 
             GlobalSoundManager.PlayOneShot(1, Vector3.zero);
 
@@ -254,6 +262,10 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
+            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+            }
             m_canShoot = false;
             m_isShooting = false;
         }
