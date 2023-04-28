@@ -23,6 +23,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float m_damage = 1;
      protected Vector3 m_destination;
     protected float m_lifeTimer;
+    public int piercingMax;
+    private int piercingCount;
 
     void  Update()
     {
@@ -76,7 +78,12 @@ public class Projectile : MonoBehaviour
         if (enemyTouch.IsDestroing()) return;
 
         enemyTouch.HitEnemy(m_damage,other.transform.position - transform.position, m_power);
-        Destroy(this.gameObject);
+        piercingCount++;
+        if (piercingCount >= piercingMax)
+        {
+            Destroy(this.gameObject);
+        }
+
     }
 
 }

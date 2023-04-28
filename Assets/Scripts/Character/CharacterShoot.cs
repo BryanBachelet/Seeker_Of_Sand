@@ -8,6 +8,7 @@ namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
+        public bool activeRandom = false;
         [HideInInspector] public int projectileNumber;
         public float shootTime;
         public float reloadTime;
@@ -15,7 +16,7 @@ namespace Character
         public ChainEffect[] chainEffects;
 
 
-        private CapsuleSystem.Capsule[] capsulesPosses;
+        public CapsuleSystem.Capsule[] capsulesPosses;
         private int m_currentIndexCapsule = 0;
 
         public int[] capsuleIndex;
@@ -30,7 +31,7 @@ namespace Character
         private bool m_isShooting;
         private bool m_shootInput;
         private bool m_isReloading;
-        private bool m_isCasting;
+        public bool m_isCasting;
 
         private CapsuleStats currentWeaponStats;
         [HideInInspector] public LauncherStats launcherStats;
@@ -45,7 +46,13 @@ namespace Character
         [SerializeField] private float m_shakeDuration = 0.1f;
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;
+        [SerializeField] private Animator m_CircleAnimator;
+        [SerializeField] private Transform m_OuterCircleHolder;
+
+
         private Loader_Behavior m_LoaderInUI;
+        public List<Transform> SignPosition;
+        public List<UnityEngine.UI.Image> icon_Sprite;
 
 
         private CapsuleSystem.CapsuleType m_currentType;
@@ -60,6 +67,10 @@ namespace Character
 
         private void Start()
         {
+            if (activeRandom)
+            {
+                GenerateNewBuild();
+            }
             InitCapsule();
             InitComponent();
         }
@@ -82,22 +93,23 @@ namespace Character
 
         private void SwitchCapsuleChange(bool increase)
         {
+            if (m_isCasting) return;
             for (int i = 0; i < capsuleIndex.Length; i++)
             {
                 if (increase)
                 {
                     capsuleIndex[i]++;
                     if (capsuleIndex[i] != m_capsuleManager.capsules.Length) continue;
-                    
+
                     capsuleIndex[i] = 0;
                 }
                 else
                 {
                     capsuleIndex[i]--;
-                    
-                    if (capsuleIndex[i] >=0) continue ;
 
-                    capsuleIndex[i] = m_capsuleManager.capsules.Length-1;
+                    if (capsuleIndex[i] >= 0) continue;
+
+                    capsuleIndex[i] = m_capsuleManager.capsules.Length - 1;
                 }
             }
             InitCapsule();
@@ -131,7 +143,6 @@ namespace Character
             {
                 capsulesPosses[i] = m_capsuleManager.capsules[capsuleIndex[i]];
             }
-
             capsuleStatsAlone = new CapsuleStats[capsulesPosses.Length];
             for (int i = 0; i < capsulesPosses.Length; i++)
             {
@@ -143,6 +154,7 @@ namespace Character
                 else
                     capsuleStatsAlone[i] = new CapsuleStats();
             }
+            GetCircleInfo();
             if (m_LoaderInUI == null) return;
             m_LoaderInUI.CleanCapsule();
             m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
@@ -177,13 +189,19 @@ namespace Character
         {
             if (ctx.performed)
             {
-                m_shootInput = true;
-                m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed / 3; // Reduce speed while shooting 
+                if (ManagedCastCapacity(true))
+                {
+                    m_shootInput = true;
+                }
+                if (m_isCasting)
+                {
+                    //m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed / 3; // Reduce speed while shooting 
+                }
             }
             if (ctx.canceled)
             {
                 m_shootInput = false;
-                m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed;
+                //m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed;
             }
         }
 
@@ -202,6 +220,7 @@ namespace Character
                 ShootBuff(((CapsuleSystem.CapsuleBuff)capsulesPosses[m_currentIndexCapsule]));
                 EndShoot();
             }
+            m_CircleAnimator.SetBool("Shooting", true);
 
         }
 
@@ -212,21 +231,22 @@ namespace Character
 
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
+                Transform transformUsed = transform;
                 Quaternion rot = m_characterAim.GetTransformHead().rotation;
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).projectile
-                    , transform.position, rot);
+                    , transformUsed.position + new Vector3(0,1,0), rot);
                 ProjectileData data = new ProjectileData();
-                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up) * m_characterAim.GetAimDirection();
+                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
-                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transform.up)* m_characterAim.GetAimFinalPoint();
-                if ((dest - transform.position).magnitude > currentWeaponStats.range)
-                    dest = transform.position - (Vector3.up * 0.5f) + (dest - transform.position).normalized * currentWeaponStats.range;
+                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
+                if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
+                    dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
 
                 data.destination = m_characterAim.GetAimFinalPoint();
                 pos = dest;
-                
+
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
@@ -250,6 +270,8 @@ namespace Character
         private void StartShoot()
         {
             m_currentType = capsulesPosses[m_currentIndexCapsule].type;
+            icon_Sprite[m_currentIndexCapsule].color = Color.gray;
+            SignPosition[m_currentIndexCapsule].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 0);
             //if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
@@ -268,6 +290,7 @@ namespace Character
             }
             m_canShoot = false;
             m_isShooting = false;
+ 
         }
 
         #region Shoot Function
@@ -295,6 +318,7 @@ namespace Character
             if (m_currentIndexCapsule == capsulesPosses.Length - 1)
             {
                 m_isReloading = true;
+                ManagedCastCapacity(false);
                 return 0;
             }
             else
@@ -312,6 +336,7 @@ namespace Character
 
                 m_canShoot = true;
                 m_shootTimer = 0;
+                m_CircleAnimator.SetBool("Shooting", false);
                 return;
             }
             else
@@ -328,9 +353,9 @@ namespace Character
 
             if (m_reloadTimer > reloadTime)
             {
-                m_canShoot = true;
                 m_isReloading = false;
                 m_reloadTimer = 0;
+                GetCircleInfo();
                 return;
             }
             else
@@ -345,29 +370,83 @@ namespace Character
             InitCapsule();
         }
 
-        public void ManagedCastCapacity(bool stateCall)
+        public bool ManagedCastCapacity(bool stateCall)
         {
-            if(stateCall)
+            if (stateCall)
             {
-                if(!m_isCasting)
+                if (!m_isCasting)
                 {
+
                     m_isCasting = true;
+                    m_CircleAnimator.SetBool("Casting", true);
+                    m_canShoot = true;
+                    m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed / 3; // Reduce speed while shooting 
+                    return false;
                 }
                 else
                 {
-
+                    return true;
                 }
             }
             else
             {
-                if(m_isCasting)
+                if (m_isCasting)
                 {
                     m_isCasting = false;
+                    m_shootInput = false;
+                    m_CircleAnimator.SetBool("Casting", false);
+                    m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed;
+                    return false;
                 }
                 else
                 {
-
+                    return false;
                 }
+            }
+        }
+
+        public void GetCircleInfo()
+        {
+            SignPosition.Clear();
+            for (int i = 0; i < capsuleIndex.Length; i++)
+            {
+                SignPosition.Add(m_OuterCircleHolder.GetChild(i).transform);
+            }
+            ActiveIcon();
+        }
+
+        private void ActiveIcon()
+        {
+            for(int i = 0; i < icon_Sprite.Count; i++)
+            {
+                icon_Sprite[i].color = Color.white;
+                SignPosition[i].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 1);
+            }
+            RefreshActiveIcon(capsulesPosses);
+        }
+
+        public void RefreshActiveIcon(CapsuleSystem.Capsule[] capsuleState)
+        {
+            for(int i = 0; i < capsuleState.Length; i++)
+            {
+                if(capsulesPosses[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                {
+                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleAttack)capsulesPosses[i]).sprite;
+                }
+                else if(capsulesPosses[i].type == CapsuleSystem.CapsuleType.BUFF)
+                {
+                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleBuff)capsulesPosses[i]).sprite;
+                }
+                SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
+            }
+        }
+
+        public void GenerateNewBuild()
+        {
+            for(int i = 0; i < capsuleIndex.Length; i ++)
+            {
+                int RndCapsule = UnityEngine.Random.Range(0, 8);
+                capsuleIndex[i] = RndCapsule;
             }
         }
     }

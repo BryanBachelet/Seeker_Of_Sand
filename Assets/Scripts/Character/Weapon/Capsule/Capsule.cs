@@ -11,6 +11,7 @@ namespace CapsuleSystem
         public string name;
         public GameObject projectile;
         public CapsuleProfil stats;
+        public Sprite sprite;
     }
 
     [Serializable]
@@ -19,6 +20,7 @@ namespace CapsuleSystem
         public string name;
         public CharacterData stats;
         public float duration;
+        public Sprite sprite;
     }
 
     [Serializable]
@@ -43,7 +45,9 @@ namespace CapsuleSystem
             name = info.name;
             projectile = info.projectile;
             stats = info.stats;
+            sprite = info.sprite;
         }
+        public Sprite sprite;
         public GameObject projectile;
         public CapsuleProfil stats;
     }
@@ -56,8 +60,9 @@ namespace CapsuleSystem
             profil = info.stats;
             type = CapsuleType.BUFF;
             duration = info.duration;
+            sprite = info.sprite;
         }
-
+        public Sprite sprite;
         public CharacterData profil;
         public float duration;
     }

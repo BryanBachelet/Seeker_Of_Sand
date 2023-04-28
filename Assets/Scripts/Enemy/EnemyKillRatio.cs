@@ -9,7 +9,10 @@ public class EnemyKillRatio : MonoBehaviour
     [SerializeField] private float m_killRatioTime = 60;
     [SerializeField] private Text m_textFeedbackUI;
     [SerializeField] private int m_maxKillPerMinute = 70;
-    private List<float> m_enemyCount = new List<float>();
+
+    [HideInInspector]
+    public List<float> m_enemyCount = new List<float>();
+
     [SerializeField] private Experience_System m_PlayerExperienceRef;
 
 

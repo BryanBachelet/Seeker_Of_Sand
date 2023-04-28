@@ -23,7 +23,9 @@ namespace Enemies
         private bool m_isDestroy;
         private Rigidbody m_rigidbody;
         private bool m_activeBehavior = true;
-
+        private float distanceRefresh = 30f;
+        [SerializeField] private float m_TimeBtwRefresh;
+        private float tempsEcouleRefresh = 0;
 
 
         private void Start()
@@ -48,8 +50,20 @@ namespace Enemies
         {
             if(!m_debugActive)
             {
-                if (m_navAgent.enabled && m_activeBehavior)
-                    m_navAgent.destination = m_target.position;
+                if(tempsEcouleRefresh < m_TimeBtwRefresh && Vector3.Distance(transform.position, m_target.position) > distanceRefresh)
+                {
+                    tempsEcouleRefresh += Time.deltaTime;
+                }
+                else
+                {
+                    if (m_navAgent.enabled && m_activeBehavior)
+                    {
+                        m_navAgent.destination = m_target.position;
+
+                    }
+                    tempsEcouleRefresh = 0;
+                }
+
             }
 
         }

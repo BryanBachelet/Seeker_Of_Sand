@@ -16,12 +16,14 @@ namespace Enemies
         [SerializeField] private float m_spawnTime = 3.0f;
         [SerializeField] private int m_maxUnitPerGroup = 3;
         [SerializeField] private int m_minUnitPerGroup = 2;
+        [SerializeField] private int m_maxUnittotal = 400;
         [SerializeField] private HealthManager m_healthManager;
+        [SerializeField] private float m_radiusspawn;
         
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
         
-        private List<Enemy> m_enemiesArray = new List<Enemy>();
+        public List<Enemy> m_enemiesArray = new List<Enemy>();
 
 
         private void Start()
@@ -45,6 +47,8 @@ namespace Enemies
                 sign = Mathf.Sign(Random.Range(-1.0f, 1.0f));
                 pos.x = sign * Random.Range(1.0f, 1.6f);
                 Vector3 v3Pos = Camera.main.ViewportToWorldPoint(new Vector3(pos.x, pos.y, magnitude));
+                v3Pos = Random.onUnitSphere * m_radiusspawn + m_playerTranform.position;
+                v3Pos.y = 50;
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(v3Pos, out hit, Mathf.Infinity, NavMesh.AllAreas))
                 {
@@ -81,7 +85,11 @@ namespace Enemies
         {
             if (m_spawnCooldown > GetTimeSpawn())
             {
-                SpawEnemiesGroup();
+                if(m_enemiesArray.Count < m_maxUnittotal)
+                {
+                    SpawEnemiesGroup();
+                }
+
                 m_spawnCooldown = 0;
             }
             else
