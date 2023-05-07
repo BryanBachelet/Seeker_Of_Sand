@@ -10,7 +10,8 @@ namespace Character
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
         public Render.Camera.CameraBehavior cameraPlayer;
-        public float speed = 10.0f;
+        public float speed = 7.0f;
+        public bool combatState;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
         [SerializeField] private float m_groundDistance = 2.0f;
@@ -18,7 +19,7 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnim = null;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
-
+        
         private bool m_onProjection;
 
 
@@ -44,12 +45,12 @@ namespace Character
                 m_inputDirection = ctx.ReadValue<Vector2>();
                 m_CharacterAnim.SetBool("Running", true);
                 m_CharacterAnim.SetBool("Idle", false);
-                Debug.Log("JE COURS");
+                //Debug.Log("JE COURS");
             }
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
-                Debug.Log("JE STOP");
+                //Debug.Log("JE STOP");
                 m_CharacterAnim.SetBool("Running", false);
                 m_CharacterAnim.SetBool("Idle", true);
             }
@@ -82,7 +83,7 @@ namespace Character
                     m_rigidbody.velocity = Vector3.zero;
                     return;
                 }
-                Move(direction);
+                Move(inputDirection);
             }
             else
             {
@@ -106,9 +107,18 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
-            m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
+            Debug.Log("Basic Move, dir = " + direction);
+            if(combatState)
+            {
+                m_rigidbody.AddForce(direction * speed / 2, ForceMode.Impulse);
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed / 2);
+            }
+            else
+            {
+                m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed);
+            }
             currentDirection = direction;
-            m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed);
         }
 
         public void Projection(Vector3 dir, ForceMode mode)
@@ -131,6 +141,7 @@ namespace Character
 
         private void AirMove(Vector3 direction)
         {
+            Debug.Log("Air Move");
             m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
             Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
             horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, speed);

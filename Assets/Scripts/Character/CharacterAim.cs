@@ -109,11 +109,11 @@ namespace Character
         {
             Ray aimTrajectoryRay = new Ray(transform.position, m_aimDirection);
             RaycastHit hit = new RaycastHit();
-            Debug.Log("Dist :" + m_characterShoot.GetPodRange());
+            //Debug.Log("Dist :" + m_characterShoot.GetPodRange());
             if (Physics.Raycast(aimTrajectoryRay, out hit, m_characterShoot.GetPodRange(), m_aimLayer))
             {
 
-                Debug.Log("Hit obstacle" + hit.collider.name);
+                //Debug.Log("Hit obstacle" + hit.collider.name);
 
                 m_aimPoint = hit.point;
                 m_aimFinalPointNormal = hit.normal;

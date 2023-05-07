@@ -15,6 +15,7 @@ namespace Enemies
         [SerializeField] private GameObject m_ExperiencePrefab;
         [SerializeField] private int m_xpDrop = 1;
         [SerializeField] private bool m_debugActive = false;
+        [SerializeField] private GameObject m_hitVfx;
         private HealthSystem m_healthSystem;
         private ArmorSystem m_armorSystem;
         private EnemyManager m_enemyManager;
@@ -26,12 +27,13 @@ namespace Enemies
         private float distanceRefresh = 30f;
         [SerializeField] private float m_TimeBtwRefresh;
         private float tempsEcouleRefresh = 0;
-
+        private Animator myAnimator;
 
         private void Start()
         {
             m_healthSystem = new HealthSystem();
             m_armorSystem = new ArmorSystem();
+            myAnimator = this.GetComponent<Animator>();
             if(!m_debugActive)
             {
                 m_navAgent = GetComponent<NavMeshAgent>();
@@ -50,11 +52,19 @@ namespace Enemies
         {
             if(!m_debugActive)
             {
-                if(tempsEcouleRefresh < m_TimeBtwRefresh && Vector3.Distance(transform.position, m_target.position) > distanceRefresh)
+                if(Vector3.Distance(transform.position, m_target.position) > distanceRefresh)
                 {
                     tempsEcouleRefresh += Time.deltaTime;
                 }
                 else
+                {
+                    if (m_navAgent.enabled && m_activeBehavior)
+                    {
+                        m_navAgent.destination = m_target.position;
+
+                    }
+                }
+                if(tempsEcouleRefresh > m_TimeBtwRefresh)
                 {
                     if (m_navAgent.enabled && m_activeBehavior)
                     {
@@ -89,6 +99,8 @@ namespace Enemies
 
         public void HitEnemy(float damage, Vector3 direction,float power)
         {
+            Instantiate(m_hitVfx, transform.position, Quaternion.identity);
+            myAnimator.SetTrigger("TakeDamage");
             damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage);

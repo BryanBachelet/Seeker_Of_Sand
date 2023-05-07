@@ -78,6 +78,7 @@ public class Projectile : MonoBehaviour
         if (enemyTouch.IsDestroing()) return;
 
         enemyTouch.HitEnemy(m_damage,other.transform.position - transform.position, m_power);
+
         piercingCount++;
         if (piercingCount >= piercingMax)
         {

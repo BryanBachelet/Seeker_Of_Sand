@@ -656,23 +656,23 @@ if (LIGHTFEATUREFLAGS_PUNCTUAL)
 	float3 RTD_CA = RT_CA( color * SSAmOc + GLO_OUT);
 
 //SSOL
-//#ifdef UNITY_COLORSPACE_GAMMA//SSOL
-//_OutlineColor=float4(LinearToGamma22(_OutlineColor.rgb),_OutlineColor.a);//SSOL
-//#endif//SSOL
-//#if N_F_O_ON//SSOL
-//float3 SSOLi=(float3)EdgDet(sceneUVs.xy,input.positionCS);//SSOL
-//#if N_F_O_MOTTSO_ON//SSOL
-//float3 Init_FO=(RTD_CA*RTD_SON_CHE_1)*lerp((float3)1.0,_OutlineColor.rgb,SSOLi);//SSOL
-//float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP
-//#else//SSOL
-//float3 Init_FO=lerp((RTD_CA*RTD_SON_CHE_1),_OutlineColor.rgb,SSOLi);//SSOL
-//float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP2
-//#endif//SSOL
-//#else//SSOL
-//float4 finalRGBA=float4((RTD_CA*RTD_SON_CHE_1),Trans_Val);//FOP
-//#endif//SSOL
+#ifdef UNITY_COLORSPACE_GAMMA//SSOL
+_OutlineColor=float4(LinearToGamma22(_OutlineColor.rgb),_OutlineColor.a);//SSOL
+#endif//SSOL
+#if N_F_O_ON//SSOL
+float3 SSOLi=(float3)EdgDet(sceneUVs.xy,input.positionCS);//SSOL
+#if N_F_O_MOTTSO_ON//SSOL
+float3 Init_FO=(RTD_CA*RTD_SON_CHE_1)*lerp((float3)1.0,_OutlineColor.rgb,SSOLi);//SSOL
+float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP
+#else//SSOL
+float3 Init_FO=lerp((RTD_CA*RTD_SON_CHE_1),_OutlineColor.rgb,SSOLi);//SSOL
+float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP2
+#endif//SSOL
+#else//SSOL
+float4 finalRGBA=float4((RTD_CA*RTD_SON_CHE_1),Trans_Val);//FOP
+#endif//SSOL
 
-float4 finalRGBA=float4(RTD_CA*RTD_SON_CHE_1,Trans_Val);//FOP
+//float4 finalRGBA=float4(RTD_CA*RTD_SON_CHE_1,Trans_Val);//FOP
 
 	//RT_NFD
 	#ifdef N_F_NFD_ON
@@ -686,4 +686,4 @@ float4 finalRGBA=float4(RTD_CA*RTD_SON_CHE_1,Trans_Val);//FOP
 	return EL_AT_SC(posInput, viewDirection, finalRGBA);
 }
 
-//SSOL_NU
+//SSOL_U

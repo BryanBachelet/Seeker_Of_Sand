@@ -50,9 +50,9 @@ string srp_mode = "HDRP";
 bool del_skw = false;
 static bool aruskw = false;
 
-static bool UseSSOL = true;
-static string UseSSOLStat = "Use Screen Space Outline";
-static string OLType = "Traditional";
+static bool UseSSOL = false;
+static string UseSSOLStat = "Use Traditional Outline";
+static string OLType = "Screen Space";
 
 static bool remoout = true;
 static string remooutstat = "Remove Outline";

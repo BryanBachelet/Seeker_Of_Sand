@@ -380,7 +380,7 @@ namespace Character
                     m_isCasting = true;
                     m_CircleAnimator.SetBool("Casting", true);
                     m_canShoot = true;
-                    m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed / 3; // Reduce speed while shooting 
+                    m_CharacterMouvement.combatState = true;
                     return false;
                 }
                 else
@@ -395,7 +395,7 @@ namespace Character
                     m_isCasting = false;
                     m_shootInput = false;
                     m_CircleAnimator.SetBool("Casting", false);
-                    m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed;
+                    m_CharacterMouvement.combatState = false;
                     return false;
                 }
                 else
@@ -410,7 +410,7 @@ namespace Character
             SignPosition.Clear();
             for (int i = 0; i < capsuleIndex.Length; i++)
             {
-                SignPosition.Add(m_OuterCircleHolder.GetChild(i).transform);
+                SignPosition.Add(m_OuterCircleHolder.GetChild(i).GetChild(0).transform);
             }
             ActiveIcon();
         }
