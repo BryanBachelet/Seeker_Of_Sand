@@ -12,7 +12,7 @@ public class CharacterUpgrade : MonoBehaviour
     public GameObject uiLoaderDisplay;
     public Text m_upgradePoint;
 
-    private Loader_Behavior m_loaderBehavior;
+    //private Loader_Behavior m_loaderBehavior;
     private UpgradeManager m_upgradeManager;
     private UpgradeUI m_upgradeUi;
     private CharacterProfile m_characterProfil;
@@ -29,7 +29,7 @@ public class CharacterUpgrade : MonoBehaviour
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
             //uiLoaderDisplay.SetActive(false);
-            m_loaderBehavior.UpdateLoaderInUpgrade(false);
+            //m_loaderBehavior.UpdateLoaderInUpgrade(false);
             if (upgradeUiGO.activeSelf == false) 
             {
                 DestroyAllUpgrade();
@@ -88,7 +88,7 @@ public class CharacterUpgrade : MonoBehaviour
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             //uiLoaderDisplay.SetActive(true);
-            m_loaderBehavior.UpdateLoaderInUpgrade(true);
+            //m_loaderBehavior.UpdateLoaderInUpgrade(true);
             Time.timeScale = 1;
             return;
         }
