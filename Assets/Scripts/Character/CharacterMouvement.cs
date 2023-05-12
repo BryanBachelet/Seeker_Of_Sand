@@ -83,7 +83,7 @@ namespace Character
                     m_rigidbody.velocity = Vector3.zero;
                     return;
                 }
-                Move(direction);
+                Move(inputDirection);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
-            //Debug.Log("Basic Move, dir = " + direction);
+            Debug.Log("Basic Move, dir = " + direction);
             if(combatState)
             {
                 m_rigidbody.AddForce(direction * speed / 2, ForceMode.Impulse);

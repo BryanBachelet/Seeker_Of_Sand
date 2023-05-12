@@ -42,7 +42,6 @@ namespace Character
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
-            //Cursor.visible = false;
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
         }
@@ -226,7 +225,6 @@ namespace Character
         private void AimFeedback()
         {
             FeedbackHeadRotation();
-            projectorVisorObject.transform.position = GetAimFinalPoint();
             m_lineRenderer.SetPosition(0, transform.position);
             if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
             {
