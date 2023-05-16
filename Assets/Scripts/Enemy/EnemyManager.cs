@@ -25,10 +25,14 @@ namespace Enemies
         
         public List<Enemy> m_enemiesArray = new List<Enemy>();
 
+        static public bool EnemyTargetPlayer = true;
 
+        public Transform altarObject;
+        private AlatarHealthSysteme alatarRefScript;
         private void Start()
         {
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
+            if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
@@ -120,7 +124,14 @@ namespace Enemies
             }
             Enemy enemy = enemySpawn.GetComponent<Enemy>();
             enemy.SetManager(this, m_healthManager);
-            enemy.SetTarget(m_playerTranform);
+            if(EnemyTargetPlayer)
+            {
+                enemy.SetTarget(m_playerTranform);
+            }
+            else
+            {
+                enemy.SetTarget(altarObject);
+            }
             m_enemiesArray.Add(enemy);
         }
 
@@ -131,7 +142,7 @@ namespace Enemies
             if (!m_enemiesArray.Contains(enemy)) return;
 
             m_enemyKillRatio.AddEnemiKill();
-
+            if(!EnemyTargetPlayer) { alatarRefScript.IncreaseKillCount(); }
             m_enemiesArray.Remove(enemy);
             Destroy(enemy.gameObject);
         }

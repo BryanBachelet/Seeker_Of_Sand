@@ -59,15 +59,15 @@ public class UpgradeUI : MonoBehaviour
             if(upgradeOvered != i)
             {
                 SelectionIcon[i].SetActive(false);
-                selectionAnimator[i].SetBool("Selected", false);
-                upgradeButton[i].SetBool("Selected", false);
+               // selectionAnimator[i].SetBool("Selected", false);
+                //upgradeButton[i].SetBool("Selected", false);
                 GlobalSoundManager.PlayOneShot(5, Camera.main.transform.position);
             }
             else
             {
                 SelectionIcon[i].SetActive(true);
-                selectionAnimator[i].SetBool("Selected", true);
-                upgradeButton[i].SetBool("Selected", true);
+                //selectionAnimator[i].SetBool("Selected", true);
+                //upgradeButton[i].SetBool("Selected", true);
                 Debug.Log("Active numero : || " + i);
                 lastUpgradeSelected = i;
             }
