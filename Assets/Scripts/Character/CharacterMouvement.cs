@@ -17,6 +17,8 @@ namespace Character
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
+        [Range(0,1)]
+        [SerializeField] private float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
         
@@ -83,7 +85,7 @@ namespace Character
                     m_rigidbody.velocity = Vector3.zero;
                     return;
                 }
-                Move(inputDirection);
+                Move(direction);
             }
             else
             {
@@ -110,8 +112,8 @@ namespace Character
             Debug.Log("Basic Move, dir = " + direction);
             if(combatState)
             {
-                m_rigidbody.AddForce(direction * speed / 2, ForceMode.Impulse);
-                m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed / 2);
+                m_rigidbody.AddForce(direction * speed * m_SpeedReduce, ForceMode.Impulse);
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed * m_SpeedReduce);
             }
             else
             {

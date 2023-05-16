@@ -21,6 +21,7 @@ namespace CapsuleSystem
         public CharacterData stats;
         public float duration;
         public Sprite sprite;
+        public GameObject vfx;
     }
 
     [Serializable]
@@ -61,9 +62,11 @@ namespace CapsuleSystem
             type = CapsuleType.BUFF;
             duration = info.duration;
             sprite = info.sprite;
+            vfx = info.vfx;
         }
         public Sprite sprite;
         public CharacterData profil;
         public float duration;
+        public GameObject vfx;
     }
 }

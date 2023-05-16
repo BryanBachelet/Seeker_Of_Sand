@@ -262,6 +262,7 @@ namespace Character
         private void ShootBuff(CapsuleSystem.CapsuleBuff capsuleBuff)
         {
             Buff.BuffCharacter buff = new Buff.BuffCharacter(capsuleBuff.profil, capsuleBuff.duration);
+            if(capsuleBuff.vfx) { GameObject vfxObject = Instantiate(capsuleBuff.vfx, transform.position, Quaternion.identity); }
             m_buffManager.AddBuff(buff);
             GlobalSoundManager.PlayOneShot(8, Vector3.zero);
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));

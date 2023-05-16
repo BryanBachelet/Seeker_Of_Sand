@@ -8,6 +8,7 @@ namespace Buff
     {
         public float m_buffDuration;
         protected float m_buffTimer;
+        [SerializeField] private GameObject m_buffObjectVfx;
 
         public bool IsBuffFinish()
         {
@@ -24,6 +25,7 @@ namespace Buff
     public class BuffCharacter : Buff
     {
         CharacterStat buffStat;
+
 
         public BuffCharacter(CharacterData data, float duration)
         {
