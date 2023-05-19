@@ -61,7 +61,6 @@ namespace Enemies
                     if (m_navAgent.enabled && m_activeBehavior)
                     {
                         m_navAgent.destination = m_target.position;
-
                     }
                 }
                 if(tempsEcouleRefresh > m_TimeBtwRefresh)
@@ -69,11 +68,10 @@ namespace Enemies
                     if (m_navAgent.enabled && m_activeBehavior)
                     {
                         m_navAgent.destination = m_target.position;
-
                     }
                     tempsEcouleRefresh = 0;
                 }
-
+                        
             }
 
         }

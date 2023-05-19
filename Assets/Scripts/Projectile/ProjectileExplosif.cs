@@ -37,18 +37,18 @@ public class ProjectileExplosif : Projectile
     }
 
     protected virtual void InitTrajectory()
-    {   
+    {
         Vector3 direction = (m_destination - transform.position);
         m_distanceDest = direction.magnitude;
         Vector3 rightDirection = Quaternion.AngleAxis(90, Vector3.up) * direction.normalized;
         m_directionHeight = Quaternion.AngleAxis(-90, rightDirection.normalized) * direction.normalized;
 
 
-      
+
         m_direction = direction.normalized;
         m_direction.Normalize();
         m_speed = GetSpeed(m_distanceDest, m_lifeTime - 0.1f, m_angleTrajectory);
-        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory,0);
+        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, 0);
     }
 
     #region Physics Function
@@ -86,13 +86,13 @@ public class ProjectileExplosif : Projectile
     }
 
     protected virtual void CurveTrajectory()
-    { 
+    {
         float timer = (m_lifeTimer * m_lifeTimer) / 2.0f;
-        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad)* m_lifeTimer;
-        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad)* m_lifeTimer;
-       
-        Vector3 pos = m_direction.normalized * xPos  + m_directionHeight.normalized *yPos ;
-        transform.position += (pos-prevPosition);
+        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * m_lifeTimer;
+        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad) * m_lifeTimer;
+
+        Vector3 pos = m_direction.normalized * xPos + m_directionHeight.normalized * yPos;
+        transform.position += (pos - prevPosition);
         prevPosition = pos;
     }
 
@@ -152,19 +152,23 @@ public class ProjectileExplosif : Projectile
     }
     protected virtual void Explosion()
     {
+        Enemies.Enemy stickyEnemy = m_stickTransform.GetComponent<Enemies.Enemy>();
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
         GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
-            if (enemyTouch.IsDestroing())
+            if (enemyTouch == null) continue;
+   
+            if (stickyEnemy.IsDestroing())
             {
                 Destroy(this.gameObject);
                 return;
             }
-                
-                enemyTouch.HitEnemy(m_damage,enemyTouch.transform.position - transform.position, m_power);
+            if (enemyTouch != stickyEnemy )
+                enemyTouch.HitEnemy(m_damage, enemyTouch.transform.position - transform.position, m_power);
         }
+        stickyEnemy.HitEnemy(m_damage, stickyEnemy.transform.position - transform.position, m_power);
         Destroy(this.gameObject);
     }
 
