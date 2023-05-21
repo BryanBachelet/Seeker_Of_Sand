@@ -1285,6 +1285,7 @@ GameObject:
   - component: {fileID: 83947686645128913}
   - component: {fileID: 1983534973}
   - component: {fileID: 1983534981}
+  - component: {fileID: 6996988297367249947}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1412,6 +1413,7 @@ MonoBehaviour:
   m_groundDistance: 3
   m_maxGroundSlopeAngle: 60
   m_CharacterAnim: {fileID: 1961776742}
+  m_SpeedReduce: 0
 --- !u!114 &1983534965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1594,6 +1596,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d1741e41-58e2-411c-8a20-2efea3929e65
     m_ActionName: Player/RotationCamera[/Keyboard/q,/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6996988297367249947}
+        m_TargetAssemblyTypeName: InteractionEvent, Assembly-CSharp
+        m_MethodName: ActionInteraction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d1f71946-bdc8-40b9-8ced-c5ebdaec5026
+    m_ActionName: Player/Interact[/Keyboard/f]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1932,6 +1950,25 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &6996988297367249947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3015ff9ddca3fe24cb1f0345af74236b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radiusInteraction: 10
+  InteractibleObject:
+    serializedVersion: 2
+    m_Bits: 8192
+  intervalCheckInteraction: 1
+  currentInteractibleObject: {fileID: 0}
+  ui_HintInteractionObject: {fileID: 0}
 --- !u!1 &7409673259591215286
 GameObject:
   m_ObjectHideFlags: 0

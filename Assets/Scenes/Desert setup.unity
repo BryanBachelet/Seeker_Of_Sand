@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 7277.5225, g: 2453.7246, b: 1191.8496, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1282,7 +1282,7 @@ MonoBehaviour:
   clearDepth: 1
   volumeLayerMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 0
   volumeAnchorOverride: {fileID: 1925422906}
   antialiasing: 0
   SMAAQuality: 2
@@ -4351,7 +4351,7 @@ MonoBehaviour:
   m_Center: {x: 27.075928, y: 246.38252, z: 21.788086}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8191
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_IgnoreNavMeshAgent: 1
@@ -4993,7 +4993,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 982659896}
   m_LocalRotation: {x: -0.028488843, y: -0.22874744, z: -0.12025966, w: 0.96560895}
-  m_LocalPosition: {x: -9.5, y: -29.1, z: 0}
+  m_LocalPosition: {x: -9.1, y: -32, z: 0.5}
   m_LocalScale: {x: 8.5986, y: 42.993, z: 8.5986}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9319,25 +9319,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06bf697e4350dd4cb0b52ea5071dcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1983534982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22613994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3015ff9ddca3fe24cb1f0345af74236b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radiusInteraction: 10
-  InteractibleObject:
-    serializedVersion: 2
-    m_Bits: 8192
-  intervalCheckInteraction: 1
-  currentInteractibleObject: {fileID: 0}
-  ui_HintInteractionObject: {fileID: 398925926}
 --- !u!1 &1990533867
 GameObject:
   m_ObjectHideFlags: 0
@@ -10059,6 +10040,11 @@ PrefabInstance:
       propertyPath: volumeAnchorOverride
       value: 
       objectReference: {fileID: 1925422906}
+    - target: {fileID: 898435386039766566, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: volumeLayerMask.m_Bits
+      value: 4097
+      objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
       propertyPath: m_targetTransform
@@ -10485,49 +10471,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1231885408}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.size
-      value: 19
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_ActionId
-      value: d1f71946-bdc8-40b9-8ced-c5ebdaec5026
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_ActionName
-      value: Player/Interact[/Keyboard/f]
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[17].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1556041119}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1983534982}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ActionInteraction
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: InteractionEvent, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
-      propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 1983534969, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_xpPointer
       value: 
@@ -10799,6 +10745,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6996988297367249947, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: ui_HintInteractionObject
+      value: 
+      objectReference: {fileID: 398925926}
     - target: {fileID: 7928283582513202955, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
       propertyPath: m_LocalScale.x
