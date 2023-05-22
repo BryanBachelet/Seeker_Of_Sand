@@ -14,15 +14,18 @@ public class AlatarHealthSysteme : MonoBehaviour
     [SerializeField] private GameObject[] xpObject;
     [SerializeField] private float m_ImpusleForceXp;
     public float tempsEcouleInvulnerability;
-    public bool bool_Invulnerrable;
+    private bool bool_Invulnerrable;
     public bool bool_ActiveEvent;
-    public bool bool_Activable = true;
+    private bool bool_Activable = true;
+    private bool bool_EventEnCour;
     private Animator m_myAnimator;
 
     public EventDisplay displayAnimator;
 
     private Text displayTextDescription1;
     private Text displayTextDescription2;
+
+    public float radiusEjection;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +45,7 @@ public class AlatarHealthSysteme : MonoBehaviour
     {
         
         if(bool_ActiveEvent) { ActiveEvent(); }
-        if(m_MaxKillEnemys <= m_CurrentKillCount)
+        if(m_MaxKillEnemys <= m_CurrentKillCount && bool_EventEnCour)
         {
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
@@ -84,6 +87,7 @@ public class AlatarHealthSysteme : MonoBehaviour
             bool_Invulnerrable = false;
             bool_ActiveEvent = false;
             bool_Activable = false;
+            bool_EventEnCour = true;
         }
         else
         {
@@ -98,20 +102,26 @@ public class AlatarHealthSysteme : MonoBehaviour
 
     public void GiveRewardXp()
     {
-        for(int i = 0; i < XpQuantity; i++)
+        bool_EventEnCour = false;
+        for (int i = 0; i < XpQuantity; i++)
         {
             int rnd = Random.Range(0, 100);
             Vector2 rndVariant = new Vector2(Random.Range(-1, 1), Random.Range(-1, 1));
             GameObject xpGenerated;
             if (rnd < 95)
             {
-                xpGenerated = Instantiate(xpObject[0], transform.position, Quaternion.identity);
+                xpGenerated = Instantiate(xpObject[0], transform.position + new Vector3(rndVariant.x * radiusEjection, transform.position.y, rndVariant.y * radiusEjection), Quaternion.identity);
             }
             else
             {
                 xpGenerated = Instantiate(xpObject[1], transform.position, Quaternion.identity);
             }
-            xpGenerated.GetComponent<Rigidbody>().AddForce(new Vector3(rndVariant.x, 1 * m_ImpusleForceXp, rndVariant.y) , ForceMode.Impulse);
+            //xpGenerated.GetComponent<Rigidbody>().AddForce(new Vector3(rndVariant.x, 1 * m_ImpusleForceXp, rndVariant.y) , ForceMode.Impulse);
         }
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, radiusEjection);
     }
 }
