@@ -29,10 +29,12 @@ namespace Enemies
 
         public Transform altarObject;
         private AlatarHealthSysteme alatarRefScript;
+        public List<Transform> altarTransformList = new List<Transform>();
+        private List<AlatarHealthSysteme> altarScriptList = new List<AlatarHealthSysteme>();
         private void Start()
         {
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
-            if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
+            //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
@@ -114,6 +116,15 @@ namespace Enemies
         {
             int rnd = Random.Range(0, 100);
             GameObject enemySpawn;
+            if(!EnemyTargetPlayer)
+            {
+                if (altarTransformList.Count <= 0) { return; }
+                int rndAltar = Random.Range(0, altarTransformList.Count);
+                altarObject = altarTransformList[rndAltar];
+                altarScriptList.Add(altarObject.GetComponent<AlatarHealthSysteme>());
+
+            }
+
             if (rnd < 95)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
@@ -142,9 +153,53 @@ namespace Enemies
             if (!m_enemiesArray.Contains(enemy)) return;
 
             m_enemyKillRatio.AddEnemiKill();
-            if(!EnemyTargetPlayer) { alatarRefScript.IncreaseKillCount(); }
+            if(!EnemyTargetPlayer) 
+            {
+                CheckDistanceAltar(enemy.transform.position);
+                //alatarRefScript.IncreaseKillCount(); 
+
+            }
             m_enemiesArray.Remove(enemy);
             Destroy(enemy.gameObject);
+        }
+
+        public void CheckDistanceAltar(Vector3 position)
+        {
+            float distancePlusProche = 10000;
+            if(altarTransformList.Count <= 0) { return; }
+            AlatarHealthSysteme altarSript = altarTransformList[0].GetComponent<AlatarHealthSysteme>();
+            for (int i = 0; i < altarTransformList.Count; i++)
+            {
+                float distanceAltar = Vector3.Distance(position, altarTransformList[i].position);
+                if(distanceAltar < distancePlusProche)
+                {
+                    distancePlusProche = distanceAltar;
+                    altarSript = altarTransformList[i].GetComponent<AlatarHealthSysteme>();
+                }
+            }
+            altarSript.IncreaseKillCount();
+        }
+
+        public void AddAltarEvent(Transform Altar)
+        {
+            altarTransformList.Add(Altar);
+            altarScriptList.Add(Altar.GetComponent<AlatarHealthSysteme>());
+            EnemyTargetPlayer = false;
+        }
+
+        public void RemoveAltarEvent(Transform Altar)
+        {
+            altarTransformList.Remove(Altar);
+            altarScriptList.Remove(Altar.GetComponent<AlatarHealthSysteme>());
+
+            if(altarTransformList.Count <= 0)
+            {
+                EnemyTargetPlayer = true;
+            }
+            else
+            {
+                EnemyTargetPlayer = false;
+            }
         }
     }
 }

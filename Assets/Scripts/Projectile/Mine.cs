@@ -91,7 +91,7 @@ public class Mine : ProjectileExplosif
     protected override void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
-        GlobalSoundManager.PlayOneShot(0, transform.position);
+        //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
             if (enemies[i] == null) continue;

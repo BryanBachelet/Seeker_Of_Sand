@@ -252,7 +252,7 @@ namespace Character
             }
 
 
-            GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            //GlobalSoundManager.PlayOneShot(1, Vector3.zero);
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
