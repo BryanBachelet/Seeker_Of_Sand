@@ -10,6 +10,7 @@ public class EventDisplay : MonoBehaviour
 
     public Text m_textDescription1;
     public Text m_textDescription2;
+    public Image Buttonimage;
     // Start is called before the first frame update
     void Start()
     {

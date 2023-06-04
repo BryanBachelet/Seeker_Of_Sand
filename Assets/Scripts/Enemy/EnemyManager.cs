@@ -19,10 +19,10 @@ namespace Enemies
         [SerializeField] private int m_maxUnittotal = 400;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
-        
+
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
-        
+
         public List<Enemy> m_enemiesArray = new List<Enemy>();
 
         static public bool EnemyTargetPlayer = true;
@@ -67,7 +67,7 @@ namespace Enemies
 
         private float GetTimeSpawn()
         {
-           return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
+            return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
         }
 
         private int GetNumberToSpawn()
@@ -91,7 +91,7 @@ namespace Enemies
         {
             if (m_spawnCooldown > GetTimeSpawn())
             {
-                if(m_enemiesArray.Count < m_maxUnittotal)
+                if (m_enemiesArray.Count < m_maxUnittotal)
                 {
                     SpawEnemiesGroup();
                 }
@@ -116,12 +116,12 @@ namespace Enemies
         {
             int rnd = Random.Range(0, 100);
             GameObject enemySpawn;
-            if(!EnemyTargetPlayer)
+            if (!EnemyTargetPlayer)
             {
                 if (altarTransformList.Count <= 0) { return; }
-                int rndAltar = Random.Range(0, altarTransformList.Count);
-                altarObject = altarTransformList[rndAltar];
-                altarScriptList.Add(altarObject.GetComponent<AlatarHealthSysteme>());
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(positionSpawn);
+                altarObject = nearestAltar.transform;
+                altarScriptList.Add(nearestAltar);
 
             }
 
@@ -135,7 +135,7 @@ namespace Enemies
             }
             Enemy enemy = enemySpawn.GetComponent<Enemy>();
             enemy.SetManager(this, m_healthManager);
-            if(EnemyTargetPlayer)
+            if (EnemyTargetPlayer)
             {
                 enemy.SetTarget(m_playerTranform);
             }
@@ -153,9 +153,13 @@ namespace Enemies
             if (!m_enemiesArray.Contains(enemy)) return;
 
             m_enemyKillRatio.AddEnemiKill();
-            if(!EnemyTargetPlayer) 
+            if (!EnemyTargetPlayer)
             {
-                CheckDistanceAltar(enemy.transform.position);
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(enemy.transform.position);
+                if (nearestAltar != null && Vector3.Distance(enemy.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
+                {
+                    nearestAltar.IncreaseKillCount();
+                }
                 //alatarRefScript.IncreaseKillCount(); 
 
             }
@@ -163,21 +167,21 @@ namespace Enemies
             Destroy(enemy.gameObject);
         }
 
-        public void CheckDistanceAltar(Vector3 position)
+        public AlatarHealthSysteme CheckDistanceAltar(Vector3 position)
         {
             float distancePlusProche = 10000;
-            if(altarTransformList.Count <= 0) { return; }
+            if (altarTransformList.Count <= 0) { return null; }
             AlatarHealthSysteme altarSript = altarTransformList[0].GetComponent<AlatarHealthSysteme>();
             for (int i = 0; i < altarTransformList.Count; i++)
             {
                 float distanceAltar = Vector3.Distance(position, altarTransformList[i].position);
-                if(distanceAltar < distancePlusProche)
+                if (distanceAltar < distancePlusProche)
                 {
-                    distancePlusProche = distanceAltar;
                     altarSript = altarTransformList[i].GetComponent<AlatarHealthSysteme>();
+                    distancePlusProche = distanceAltar;
                 }
             }
-            altarSript.IncreaseKillCount();
+            return altarSript;
         }
 
         public void AddAltarEvent(Transform Altar)
@@ -192,7 +196,7 @@ namespace Enemies
             altarTransformList.Remove(Altar);
             altarScriptList.Remove(Altar.GetComponent<AlatarHealthSysteme>());
 
-            if(altarTransformList.Count <= 0)
+            if (altarTransformList.Count <= 0)
             {
                 EnemyTargetPlayer = true;
             }

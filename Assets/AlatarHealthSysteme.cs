@@ -27,16 +27,27 @@ public class AlatarHealthSysteme : MonoBehaviour
 
     public float radiusEjection;
     public GameObject displayEventDetail;
+    public GameObject displayArrowEvent;
     private GameObject ownDisplayEventDetail;
+    private GameObject ownArrowDisplayEventDetail;
 
     private RectTransform canvasPrincipal;
     private Enemies.EnemyManager m_EnemyManagerScript;
-    
+
+    public int rangeEvent = 100;
+    static int altarCount = 0;
+    private int ownNumber = 0;
+    public Color myColor;
     // Start is called before the first frame update
     void Start()
     {
+        ownNumber = altarCount;
+        altarCount++;
+        myColor = GetColorByID(ownNumber);
         InitComponent();
         m_CurrentHealth = m_MaxHealth;
+        DisableColor();
+
     }
 
     private void InitComponent()
@@ -44,6 +55,8 @@ public class AlatarHealthSysteme : MonoBehaviour
         m_EnemyManagerScript = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
         canvasPrincipal = GameObject.Find("MainUI_EventDisplayHolder").GetComponent<RectTransform>();
         ownDisplayEventDetail = Instantiate(displayEventDetail, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal);
+        ownArrowDisplayEventDetail = Instantiate(displayArrowEvent, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal.parent);
+        ownArrowDisplayEventDetail.GetComponent<UI_ArrowPointingEvent>().refGo = this.gameObject;
         displayAnimator = ownDisplayEventDetail.GetComponent<EventDisplay>();
         m_myAnimator = this.GetComponent<Animator>();
         displayTextDescription1 = displayAnimator.m_textDescription1;
@@ -94,6 +107,7 @@ public class AlatarHealthSysteme : MonoBehaviour
             this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
+            ActiveColor();
             GlobalSoundManager.PlayOneShot(13, transform.position);
             displayAnimator.InvertDisplayStatus(1);
             bool_Invulnerrable = false;
@@ -121,15 +135,15 @@ public class AlatarHealthSysteme : MonoBehaviour
         for (int i = 0; i < XpQuantity; i++)
         {
             int rnd = Random.Range(0, 100);
-            Vector2 rndVariant = new Vector2(Random.Range(-1, 1), Random.Range(-1, 1));
+            Vector2 rndVariant = new Vector2((float)Random.Range(-2, 2), (float)Random.Range(-2, 2));
             GameObject xpGenerated;
             if (rnd < 95)
             {
-                xpGenerated = Instantiate(xpObject[0], transform.position + new Vector3(rndVariant.x * radiusEjection, transform.position.y, rndVariant.y * radiusEjection), Quaternion.identity);
+                xpGenerated = Instantiate(xpObject[0], transform.position + new Vector3(rndVariant.x * radiusEjection, 0, rndVariant.y * radiusEjection), Quaternion.identity);
             }
             else
             {
-                xpGenerated = Instantiate(xpObject[1], transform.position + new Vector3(rndVariant.x * radiusEjection, transform.position.y, rndVariant.y * radiusEjection), Quaternion.identity);
+                xpGenerated = Instantiate(xpObject[1], transform.position + new Vector3(rndVariant.x * radiusEjection, 0, rndVariant.y * radiusEjection), Quaternion.identity);
             }
             //xpGenerated.GetComponent<Rigidbody>().AddForce(new Vector3(rndVariant.x, 1 * m_ImpusleForceXp, rndVariant.y) , ForceMode.Impulse);
         }
@@ -139,6 +153,9 @@ public class AlatarHealthSysteme : MonoBehaviour
     public void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, radiusEjection);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, rangeEvent);
     }
 
     public void ResetAltarEvent()
@@ -146,6 +163,7 @@ public class AlatarHealthSysteme : MonoBehaviour
         this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         m_myAnimator.SetBool("ActiveEvent", false);
+        DisableColor();
         displayAnimator.InvertDisplayStatus(2);
         bool_Invulnerrable = false;
         bool_ActiveEvent = false;
@@ -160,5 +178,30 @@ public class AlatarHealthSysteme : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         ResetAltarEvent();
+    }
+
+    public Color GetColorByID(int ID)
+    {
+        if(ID == 0) { return Color.red; }
+        else if (ID == 1) { return Color.blue; }
+        else if (ID == 2) { return Color.green; }
+        else if (ID == 3) { return Color.cyan; }
+        else if (ID == 4) { return Color.yellow; }
+        else if (ID == 5) { return Color.magenta; }
+        else if (ID == 6) { return Color.grey; }
+        else { return Color.white; }
+    }
+
+
+    public void ActiveColor()
+    {
+        ownDisplayEventDetail.GetComponent<EventDisplay>().Buttonimage.color = myColor;
+        ownArrowDisplayEventDetail.GetComponent<Image>().color = myColor;
+    }
+
+    public void DisableColor()
+    {
+        ownDisplayEventDetail.GetComponent<EventDisplay>().Buttonimage.color = Color.gray;
+        ownArrowDisplayEventDetail.GetComponent<Image>().color = Color.gray;
     }
 }
