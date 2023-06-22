@@ -226,17 +226,17 @@ namespace Character
         private void AimFeedback()
         {
             FeedbackHeadRotation();
-            m_lineRenderer.SetPosition(0, transform.position);
-            if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
-            {
-                FeedbackLinearTrajectory();
-            }
-            else
-            {
-
-                FeedbackCurveTrajectory(m_characterShoot.GetPod());
-            }
-            Cursor.visible = true;
+            //m_lineRenderer.SetPosition(0, transform.position);
+            //if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
+            //{
+            //    FeedbackLinearTrajectory();
+            //}
+            //else
+            //{
+            //
+            //    FeedbackCurveTrajectory(m_characterShoot.GetPod());
+            //}
+            //Cursor.visible = true;
 
         }
 

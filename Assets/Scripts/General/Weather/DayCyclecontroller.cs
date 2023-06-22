@@ -64,7 +64,7 @@ public class DayCyclecontroller : MonoBehaviour
         float moonRotation = sunRotation - 180;
         float clockRotation = Mathf.Lerp(0, -360, alpha);
 
-        m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation);
+        m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
         if(m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
