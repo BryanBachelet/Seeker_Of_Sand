@@ -29,7 +29,7 @@ public class CharacterUpgrade : MonoBehaviour
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
             //uiLoaderDisplay.SetActive(false);
-            m_loaderBehavior.UpdateLoaderInUpgrade(false);
+            //m_loaderBehavior.UpdateLoaderInUpgrade(false);
             if (upgradeUiGO.activeSelf == false) 
             {
                 DestroyAllUpgrade();
@@ -88,7 +88,7 @@ public class CharacterUpgrade : MonoBehaviour
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             //uiLoaderDisplay.SetActive(true);
-            m_loaderBehavior.UpdateLoaderInUpgrade(true);
+            //m_loaderBehavior.UpdateLoaderInUpgrade(true);
             Time.timeScale = 1;
             return;
         }

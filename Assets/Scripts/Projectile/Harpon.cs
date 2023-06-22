@@ -55,13 +55,13 @@ public class Harpon : Projectile
         GlobalSoundManager.PlayOneShot(9, transform.position);
         Debug.Log("HarponcollisionTest");
         Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
-        if (enemyTouch.IsDestroing()) return;
+        //if (enemyTouch.IsDestroing()) return;
 
         if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
         {
             enemyTouch.HitEnemy(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
 
-            if (enemyTouch.IsDestroing()) return;
+            //if (enemyTouch.IsDestroing()) return;
 
             m_firstHit = true;
             m_enemyImpale = enemyTouch;

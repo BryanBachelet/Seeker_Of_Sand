@@ -61,7 +61,6 @@ namespace Enemies
                     if (m_navAgent.enabled && m_activeBehavior)
                     {
                         m_navAgent.destination = m_target.position;
-
                     }
                 }
                 if(tempsEcouleRefresh > m_TimeBtwRefresh)
@@ -69,11 +68,10 @@ namespace Enemies
                     if (m_navAgent.enabled && m_activeBehavior)
                     {
                         m_navAgent.destination = m_target.position;
-
                     }
                     tempsEcouleRefresh = 0;
                 }
-
+                        
             }
 
         }
@@ -100,6 +98,7 @@ namespace Enemies
         public void HitEnemy(float damage, Vector3 direction,float power)
         {
             Instantiate(m_hitVfx, transform.position, Quaternion.identity);
+            GlobalSoundManager.PlayOneShot(12, transform.position);
             myAnimator.SetTrigger("TakeDamage");
             damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);

@@ -20,6 +20,7 @@ namespace Character
         private int m_currentIndexCapsule = 0;
 
         public int[] capsuleIndex;
+        [SerializeField] private ChooseSkillManualy[] debugCapsule = new ChooseSkillManualy[4];
 
         public CapsuleManager m_capsuleManager;
 
@@ -47,6 +48,7 @@ namespace Character
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;
         [SerializeField] private Animator m_CircleAnimator;
+        [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
 
 
@@ -56,7 +58,7 @@ namespace Character
 
 
         private CapsuleSystem.CapsuleType m_currentType;
-
+        private PauseMenu pauseScript;
         // Temp 
         private Vector3 pos;
 
@@ -124,6 +126,7 @@ namespace Character
 
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
+            pauseScript = GetComponent<PauseMenu>();
             //m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
             //m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
 
@@ -136,7 +139,7 @@ namespace Character
             }
         }
 
-        private void InitCapsule()
+        public void InitCapsule()
         {
             capsulesPosses = new CapsuleSystem.Capsule[capsuleIndex.Length];
             for (int i = 0; i < capsuleIndex.Length; i++)
@@ -163,6 +166,7 @@ namespace Character
 
         private void Update()
         {
+            if(PauseMenu.gameState) { return; }
             if (m_shootInput)
             {
                 if (!m_isShooting) Shoot();
@@ -221,6 +225,7 @@ namespace Character
                 EndShoot();
             }
             m_CircleAnimator.SetBool("Shooting", true);
+            m_CharacterAnimator.SetBool("Shooting", true);
 
         }
 
@@ -252,7 +257,7 @@ namespace Character
             }
 
 
-            GlobalSoundManager.PlayOneShot(1, Vector3.zero);
+            //GlobalSoundManager.PlayOneShot(1, Vector3.zero);
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
@@ -338,6 +343,7 @@ namespace Character
                 m_canShoot = true;
                 m_shootTimer = 0;
                 m_CircleAnimator.SetBool("Shooting", false);
+                m_CharacterAnimator.SetBool("Shooting", false);
                 return;
             }
             else
@@ -379,6 +385,7 @@ namespace Character
                 {
 
                     m_isCasting = true;
+                    m_CharacterAnimator.SetBool("Casting", true);
                     m_CircleAnimator.SetBool("Casting", true);
                     m_canShoot = true;
                     m_CharacterMouvement.combatState = true;
@@ -395,6 +402,7 @@ namespace Character
                 {
                     m_isCasting = false;
                     m_shootInput = false;
+                    m_CharacterAnimator.SetBool("Casting", false);
                     m_CircleAnimator.SetBool("Casting", false);
                     m_CharacterMouvement.combatState = false;
                     return false;
@@ -448,6 +456,14 @@ namespace Character
             {
                 int RndCapsule = UnityEngine.Random.Range(0, 8);
                 capsuleIndex[i] = RndCapsule;
+            }
+        }
+
+        public void ManuallyChangeCapsule(int indexNumber)
+        {
+            for(int i = 0; i < capsuleIndex.Length; i++)
+            {
+
             }
         }
     }
