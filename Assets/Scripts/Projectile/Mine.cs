@@ -91,7 +91,7 @@ public class Mine : ProjectileExplosif
     protected override void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
-        GlobalSoundManager.PlayOneShot(0, transform.position);
+        //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
             if (enemies[i] == null) continue;
@@ -103,6 +103,8 @@ public class Mine : ProjectileExplosif
             }
             
             Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
+           
+            if (enemyTouch == null) continue;
 
             if (enemyTouch.IsDestroing()) continue;
              enemyTouch.HitEnemy(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized , m_power);

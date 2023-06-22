@@ -48,7 +48,7 @@ public class Loader_Behavior : MonoBehaviour
 
     public IEnumerator DelayReload()
     {
-        GlobalSoundManager.PlayOneShot(2, Vector3.zero);
+        //GlobalSoundManager.PlayOneShot(2, Vector3.zero);
         yield return new WaitForSeconds(1.1f);
         m_Objeect.rotation = Quaternion.Euler(0, 0, 0);
         m_currentCapsule = 0;

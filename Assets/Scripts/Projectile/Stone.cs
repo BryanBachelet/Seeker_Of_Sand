@@ -64,7 +64,7 @@ public class Stone : Projectile
     public override void CollisionEvent(Collider other)
     {
         if (other.gameObject.tag != "Enemy") return;
-        GlobalSoundManager.PlayOneShot(10, transform.position);
+        //GlobalSoundManager.PlayOneShot(10, transform.position);
         Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
 
         if (enemyTouch.IsDestroing()) return;

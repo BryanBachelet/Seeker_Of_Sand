@@ -1,20 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.VFX;
 public class RainBullet : Projectile
 {
     [SerializeField] private float m_timeDamageTick = 0.3f;
-    private float m_timerDamageTick;
+    private float m_timerDamageTick = 0;
 
     [SerializeField] private float m_radiusArea = 2.0f;
     private List<Enemies.Enemy> m_enemiesList = new List<Enemies.Enemy>();
-    private SphereCollider m_collider;
-
+    public SphereCollider m_collider;
+    private VisualEffect m_VisualEffect;
+    private int[] m_EventNameIdentifier;
     public void Start()
     {
         m_collider = GetComponent<SphereCollider>();
-        GlobalSoundManager.PlayOneShot(11, transform.position);
+        //m_VisualEffect = transform.GetComponentInChildren<VisualEffect>();
+        //m_EventNameIdentifier[0] = Shader.PropertyToID("StartPluie");
+        //m_EventNameIdentifier[1] = Shader.PropertyToID("StopPluie");
+        //StartCoroutine(LaunchingPluieVfx());
+        //GlobalSoundManager.PlayOneShot(11, transform.position);
     }
 
     public void Update()
@@ -87,5 +92,12 @@ public class RainBullet : Projectile
     {
         Gizmos.DrawWireSphere(transform.position, (m_collider.radius/ 2.0f));
         Gizmos.DrawWireSphere(transform.position, (m_collider.radius -m_radiusArea)/2.0f);
+    }
+
+    public IEnumerator LaunchingPluieVfx()
+    {
+        var eventAttribute = m_VisualEffect.CreateVFXEventAttribute();
+        yield return new WaitForSeconds(0.1f);
+        m_VisualEffect.SendEvent(m_EventNameIdentifier[0], eventAttribute);
     }
 }

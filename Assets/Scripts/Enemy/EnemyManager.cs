@@ -19,25 +19,47 @@ namespace Enemies
         [SerializeField] private int m_maxUnittotal = 400;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
-        
+
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
-        
+
         public List<Enemy> m_enemiesArray = new List<Enemy>();
 
         static public bool EnemyTargetPlayer = true;
 
         public Transform altarObject;
         private AlatarHealthSysteme alatarRefScript;
+        public List<Transform> altarTransformList = new List<Transform>();
+        private List<AlatarHealthSysteme> altarScriptList = new List<AlatarHealthSysteme>();
+
+        public UnityEngine.UI.Text ui_DangerLevelObject;
+        [SerializeField] private float m_tempsEntrePause;
+        [SerializeField] private float m_tempsPause;
+        private float tempsEcoulePause = 0;
+        private bool spawningPhase = true;
         private void Start()
         {
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
-            if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
+            ui_DangerLevelObject.text = "Medium";
+            ui_DangerLevelObject.color = Color.red;
+            //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
         {
-            SpawnCooldown();
+            if(spawningPhase)
+            {
+                SpawnCooldown();
+                if(tempsEcoulePause < m_tempsEntrePause)
+                {
+                    tempsEcoulePause += Time.deltaTime;
+                }
+                else
+                {
+                    StartCoroutine(ChangeSpawningPhase(m_tempsPause));
+                }
+            }
+            
         }
 
         private Vector3 FindPosition()
@@ -65,7 +87,7 @@ namespace Enemies
 
         private float GetTimeSpawn()
         {
-           return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
+            return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
         }
 
         private int GetNumberToSpawn()
@@ -89,7 +111,7 @@ namespace Enemies
         {
             if (m_spawnCooldown > GetTimeSpawn())
             {
-                if(m_enemiesArray.Count < m_maxUnittotal)
+                if (m_enemiesArray.Count < m_maxUnittotal)
                 {
                     SpawEnemiesGroup();
                 }
@@ -114,17 +136,30 @@ namespace Enemies
         {
             int rnd = Random.Range(0, 100);
             GameObject enemySpawn;
-            if (rnd < 95)
+            if (!EnemyTargetPlayer)
+            {
+                if (altarTransformList.Count <= 0) { return; }
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(positionSpawn);
+                altarObject = nearestAltar.transform;
+                altarScriptList.Add(nearestAltar);
+
+            }
+
+            if (rnd < 90)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
-            else
+            else if( rnd < 97)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
             }
+            else
+            {
+                enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation);
+            }
             Enemy enemy = enemySpawn.GetComponent<Enemy>();
             enemy.SetManager(this, m_healthManager);
-            if(EnemyTargetPlayer)
+            if (EnemyTargetPlayer)
             {
                 enemy.SetTarget(m_playerTranform);
             }
@@ -142,9 +177,69 @@ namespace Enemies
             if (!m_enemiesArray.Contains(enemy)) return;
 
             m_enemyKillRatio.AddEnemiKill();
-            if(!EnemyTargetPlayer) { alatarRefScript.IncreaseKillCount(); }
+            if (!EnemyTargetPlayer)
+            {
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(enemy.transform.position);
+                if (nearestAltar != null && Vector3.Distance(enemy.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
+                {
+                    nearestAltar.IncreaseKillCount();
+                }
+                //alatarRefScript.IncreaseKillCount(); 
+
+            }
             m_enemiesArray.Remove(enemy);
             Destroy(enemy.gameObject);
+        }
+
+        public AlatarHealthSysteme CheckDistanceAltar(Vector3 position)
+        {
+            float distancePlusProche = 10000;
+            if (altarTransformList.Count <= 0) { return null; }
+            AlatarHealthSysteme altarSript = altarTransformList[0].GetComponent<AlatarHealthSysteme>();
+            for (int i = 0; i < altarTransformList.Count; i++)
+            {
+                float distanceAltar = Vector3.Distance(position, altarTransformList[i].position);
+                if (distanceAltar < distancePlusProche)
+                {
+                    altarSript = altarTransformList[i].GetComponent<AlatarHealthSysteme>();
+                    distancePlusProche = distanceAltar;
+                }
+            }
+            return altarSript;
+        }
+
+        public void AddAltarEvent(Transform Altar)
+        {
+            altarTransformList.Add(Altar);
+            altarScriptList.Add(Altar.GetComponent<AlatarHealthSysteme>());
+            EnemyTargetPlayer = false;
+        }
+
+        public void RemoveAltarEvent(Transform Altar)
+        {
+            altarTransformList.Remove(Altar);
+            altarScriptList.Remove(Altar.GetComponent<AlatarHealthSysteme>());
+
+            if (altarTransformList.Count <= 0)
+            {
+                EnemyTargetPlayer = true;
+            }
+            else
+            {
+                EnemyTargetPlayer = false;
+            }
+        }
+
+        public IEnumerator ChangeSpawningPhase(float tempsPause)
+        {
+            spawningPhase = false;
+            ui_DangerLevelObject.text = "Peaceful";
+            ui_DangerLevelObject.color = Color.white;
+            yield return new WaitForSeconds(tempsPause);
+            tempsEcoulePause = 0;
+            spawningPhase = true;
+            ui_DangerLevelObject.text = "Medium";
+            ui_DangerLevelObject.color = Color.red;
         }
     }
 }

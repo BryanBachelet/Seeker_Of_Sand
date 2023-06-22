@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 781cc897cf8675041a751163b51f97dd, type: 3}
   m_Name: HDRenderPipelineGlobalSettings
   m_EditorClassIdentifier: 
-  m_DefaultVolumeProfile: {fileID: 11400000, guid: 44202297caf00004bb7a3eb8a83b2303,
+  m_DefaultVolumeProfile: {fileID: 11400000, guid: e8d4625c487b95d4ea20f2868062356b,
     type: 2}
   m_LookDevVolumeProfile: {fileID: 11400000, guid: 4594f4a3fb14247e192bcca6dc23c8ed,
     type: 2}
@@ -68,7 +68,9 @@ MonoBehaviour:
   beforePostProcessCustomPostProcesses: []
   afterPostProcessBlursCustomPostProcesses: []
   afterPostProcessCustomPostProcesses: []
-  beforeTAACustomPostProcesses: []
+  beforeTAACustomPostProcesses:
+  - RealToon.Effects.DeNorSobOutline, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   lightLayerName0: Light Layer default
   lightLayerName1: Light Layer 1
   lightLayerName2: Light Layer 2
@@ -77,9 +79,9 @@ MonoBehaviour:
   lightLayerName5: Light Layer 5
   lightLayerName6: Light Layer 6
   lightLayerName7: Light Layer 7
-  decalLayerName0: Decal Layer default
-  decalLayerName1: Decal Layer 1
-  decalLayerName2: Decal Layer 2
+  decalLayerName0: Light Layer 1
+  decalLayerName1: Decal Personnage
+  decalLayerName2: Decal GroundDecor
   decalLayerName3: Decal Layer 3
   decalLayerName4: Decal Layer 4
   decalLayerName5: Decal Layer 5
