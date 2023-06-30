@@ -109,7 +109,7 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
-            Debug.Log("Basic Move, dir = " + direction);
+            
             if(combatState)
             {
                 m_rigidbody.AddForce(direction * speed * m_SpeedReduce, ForceMode.Impulse);
@@ -143,7 +143,7 @@ namespace Character
 
         private void AirMove(Vector3 direction)
         {
-            Debug.Log("Air Move");
+            
             m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
             Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
             horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, speed);

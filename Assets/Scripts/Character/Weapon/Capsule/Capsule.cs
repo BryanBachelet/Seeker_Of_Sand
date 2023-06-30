@@ -12,6 +12,7 @@ namespace CapsuleSystem
         public GameObject projectile;
         public CapsuleProfil stats;
         public Sprite sprite;
+
     }
 
     [Serializable]
@@ -22,6 +23,7 @@ namespace CapsuleSystem
         public float duration;
         public Sprite sprite;
         public GameObject vfx;
+
     }
 
     [Serializable]
@@ -37,6 +39,7 @@ namespace CapsuleSystem
     {
         public string name;
         public CapsuleType type;
+
     }
     [Serializable]
     public class CapsuleAttack: Capsule
@@ -47,10 +50,13 @@ namespace CapsuleSystem
             projectile = info.projectile;
             stats = info.stats;
             sprite = info.sprite;
+  
+            
         }
         public Sprite sprite;
         public GameObject projectile;
         public CapsuleProfil stats;
+
     }
     [Serializable]
     public class CapsuleBuff : Capsule
@@ -63,10 +69,12 @@ namespace CapsuleSystem
             duration = info.duration;
             sprite = info.sprite;
             vfx = info.vfx;
+
         }
         public Sprite sprite;
         public CharacterData profil;
         public float duration;
         public GameObject vfx;
+
     }
 }

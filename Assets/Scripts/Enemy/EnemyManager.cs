@@ -134,7 +134,7 @@ namespace Enemies
 
         private void SpawnEnemy(Vector3 positionSpawn)
         {
-            int rnd = Random.Range(0, 100);
+            int rnd = Random.Range(0, 500);
             GameObject enemySpawn;
             if (!EnemyTargetPlayer)
             {
@@ -145,11 +145,11 @@ namespace Enemies
 
             }
 
-            if (rnd < 90)
+            if (rnd < 450)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
-            else if( rnd < 97)
+            else if( rnd < 495)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
             }

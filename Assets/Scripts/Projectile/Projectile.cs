@@ -9,6 +9,7 @@ public struct ProjectileData
     public float life;
     public float damage;
     public Vector3 destination;
+    public GameObject area_Feedback;
 }
 
 
@@ -21,15 +22,26 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
     [SerializeField] protected float m_damage = 1;
-     protected Vector3 m_destination;
+
+    protected Vector3 m_destination;
     protected float m_lifeTimer;
     public int piercingMax;
     private int piercingCount;
 
+    private float spawnTime;
+    private bool checkSpawnTime = false;
+    [SerializeField] private float m_deltaTimeMove;
     void  Update()
     {
-        Move();
-        Duration();
+        if(!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; }
+        else
+        {
+            if(Time.time > spawnTime + m_deltaTimeMove)
+            {
+                Move();
+                Duration();
+            }
+        }
     }
 
 
@@ -40,6 +52,8 @@ public class Projectile : MonoBehaviour
         m_lifeTime = data.life;
         m_damage = data.damage;
         m_destination = data.destination;
+
+
     }
     protected virtual void Move()
     {
