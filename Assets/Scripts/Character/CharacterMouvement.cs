@@ -75,8 +75,6 @@ namespace Character
 
         public void FixedUpdate()
         {
-            float time2 = Time.realtimeSinceStartup;
-            
             RaycastHit hit = new RaycastHit();
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             if (OnGround(ref hit))
@@ -113,9 +111,6 @@ namespace Character
                     return;
                 }
             }
-            // Code Mesure
-            float time1 = Time.realtimeSinceStartup;
-             Debug.Log("Duration :" + (Mathf.Pow(10, 3) * (time1 - time2)).ToString());
         }
 
         private bool OnGround(ref RaycastHit hit)
