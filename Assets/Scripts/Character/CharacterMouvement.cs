@@ -99,6 +99,7 @@ namespace Character
             }
             else
             {
+                Debug.Log("Air move ");
                 if (m_onProjection)
                 {
                     m_onProjection = false;
@@ -149,6 +150,12 @@ namespace Character
                     isSliding = false;
                     m_currentSlideSpeed = 0.0f;
                 }
+
+            }
+            else
+            {
+                isSliding = false;
+                m_currentSlideSpeed = 0;
             }
             currentDirection = direction;
         }
