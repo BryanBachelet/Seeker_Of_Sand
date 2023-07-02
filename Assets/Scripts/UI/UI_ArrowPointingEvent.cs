@@ -38,7 +38,7 @@ public class UI_ArrowPointingEvent : MonoBehaviour
         Vector3 direction = mainCam.WorldToScreenPoint(refGo.transform.position);
 
         myTransform.position = direction;
-        Debug.Log(myTransform.localPosition.x);
+        
         if (myTransform.localPosition.x > posMaxOnScreen.x)
         {
             myTransform.localPosition = new Vector3(posMaxOnScreen.x, myTransform.localPosition.y, myTransform.localPosition.z);

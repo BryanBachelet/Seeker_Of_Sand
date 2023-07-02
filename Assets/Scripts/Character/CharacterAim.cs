@@ -18,6 +18,8 @@ namespace Character
         [SerializeField] private Texture2D m_cursorTex;
         [SerializeField] private RectTransform m_cursor;
         [SerializeField] private LineRenderer m_lineRenderer;
+        [SerializeField] private GameObject m_AreaFeedbackHolder;
+        private GameObject currentFeedbackInUse;
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
@@ -28,6 +30,7 @@ namespace Character
         private Vector2 m_aimScreenPoint = Vector2.zero;
         private const float m_aimScreenToWorldDistance = 1000.0f;
         private Vector3 m_aimFinalPoint = Vector3.zero;
+        private Vector3 m_aimFinalPointFeedbackOffSet_Y = new Vector3(0, 10, 0);
         private Vector3 m_aimPoint = Vector3.zero;
         private Vector3 m_rawAimPoint = Vector3.zero;
         private Vector3 m_aimDirection = Vector3.zero;
@@ -149,7 +152,7 @@ namespace Character
             aimTrajectoryRay = new Ray(heightestPoint, (m_aimPoint - heightestPoint).normalized);
             if (Physics.Raycast(aimTrajectoryRay, out hit, (m_aimPoint - heightestPoint).magnitude, m_aimLayer))
             {
-                Debug.Log("Hit obstacle" + hit.collider.name);
+                //Debug.Log("Hit obstacle" + hit.collider.name);
                 m_aimPoint = hit.point;
                 m_aimFinalPointNormal = hit.normal;
                 return m_aimPoint;
@@ -226,6 +229,7 @@ namespace Character
         private void AimFeedback()
         {
             FeedbackHeadRotation();
+            
             //m_lineRenderer.SetPosition(0, transform.position);
             //if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
             //{

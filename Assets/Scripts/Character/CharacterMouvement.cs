@@ -17,13 +17,23 @@ namespace Character
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
-        [Range(0,1)]
+        [Range(0, 1)]
         [SerializeField] private float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
-        
+
         private bool m_onProjection;
 
+        
+        public bool isSliding;
+        private float m_currentSlideSpeed;
+        [Header("Slide")]
+        public float accelerationSlide = 3.0f;
+        public float maxSpeed = 30.0f;
+        public float maxSlope = 60.0f;
+        public float minSlope = 5.0f;
+        public float minDecceleration = 2.0f;
+        public float angularSpeed;
 
 
         public Vector3 currentDirection { get; private set; }
@@ -46,23 +56,23 @@ namespace Character
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
                 m_CharacterAnim.SetBool("Running", true);
-                m_CharacterAnim.SetBool("Idle", false);
-                //Debug.Log("JE COURS");
+                 m_CharacterAnim.SetBool("Idle", false);
             }
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
-                //Debug.Log("JE STOP");
-                m_CharacterAnim.SetBool("Running", false);
+               m_CharacterAnim.SetBool("Running", false);
                 m_CharacterAnim.SetBool("Idle", true);
             }
         }
 
         public void Update()
         {
-            RotateCharacter();
+
+            if (!isSliding) RotateCharacter();
+            else SlideRotationCharacter();
         }
-        
+
         public void FixedUpdate()
         {
             RaycastHit hit = new RaycastHit();
@@ -71,24 +81,25 @@ namespace Character
             {
                 if (m_onProjection)
                 {
-                  
                     return;
-                }    
+                }
                 Vector3 direction = GetForwardDirection(hit.normal);
-                if (GetSlopeAngle(direction) >= m_maxGroundSlopeAngle)
+                if (GetSlopeAngleAbs(direction) >= m_maxGroundSlopeAngle)
                 {
                     m_rigidbody.velocity = Vector3.zero;
                     return;
                 }
-                if (inputDirection == Vector3.zero)
+                if (inputDirection == Vector3.zero && !isSliding)
                 {
                     m_rigidbody.velocity = Vector3.zero;
                     return;
                 }
+                Slide(direction, GetSlopeAngle(direction));
                 Move(direction);
             }
             else
             {
+                Debug.Log("Air move ");
                 if (m_onProjection)
                 {
                     m_onProjection = false;
@@ -109,8 +120,8 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
-            Debug.Log("Basic Move, dir = " + direction);
-            if(combatState)
+            if (isSliding) return;
+            if (combatState)
             {
                 m_rigidbody.AddForce(direction * speed * m_SpeedReduce, ForceMode.Impulse);
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed * m_SpeedReduce);
@@ -123,9 +134,35 @@ namespace Character
             currentDirection = direction;
         }
 
-        public void Projection(Vector3 dir, ForceMode mode)
+        private void Slide(Vector3 direction, float slope)
         {
            
+            if (!combatState && slope > minSlope || !combatState && isSliding)
+            {
+          
+                isSliding = true;
+                if (slope < minSlope) m_currentSlideSpeed -= minDecceleration * Time.deltaTime;
+                m_currentSlideSpeed += accelerationSlide * slope / maxSlope * Time.deltaTime;
+                m_rigidbody.AddForce(direction * (speed + m_currentSlideSpeed), ForceMode.Impulse);
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, speed);
+                if (m_currentSlideSpeed < -speed)
+                {
+                    isSliding = false;
+                    m_currentSlideSpeed = 0.0f;
+                }
+
+            }
+            else
+            {
+                isSliding = false;
+                m_currentSlideSpeed = 0;
+            }
+            currentDirection = direction;
+        }
+
+        public void Projection(Vector3 dir, ForceMode mode)
+        {
+
             m_rigidbody.AddForce(dir, mode);
             m_onProjection = true;
         }
@@ -135,15 +172,20 @@ namespace Character
             return Vector3.Cross(transform.right, normal);
         }
 
-        private float GetSlopeAngle(Vector3 direction)
+        private float GetSlopeAngleAbs(Vector3 direction)
         {
             Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
             return Mathf.Abs(Vector3.SignedAngle(rotTest * Vector3.forward, direction, transform.right));
         }
+        private float GetSlopeAngle(Vector3 direction)
+        {
+            Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+            return Vector3.SignedAngle(rotTest * Vector3.forward, direction, transform.right);
+        }
 
         private void AirMove(Vector3 direction)
         {
-            Debug.Log("Air Move");
+           
             m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
             Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
             horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, speed);
@@ -154,15 +196,21 @@ namespace Character
 
         private void RotateCharacter()
         {
-            Vector3 dir = Quaternion.Euler(0,cameraPlayer.GetAngle(),0)* new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-            float angleDir =  Vector3.SignedAngle(transform.forward, dir.normalized, Vector3.up);
-
-            Quaternion rot = Quaternion.AngleAxis(angleDir, Vector3.up);
-            transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            float angleDir = Vector3.SignedAngle(Vector3.forward, new Vector3(m_inputDirection.x, 0, m_inputDirection.y), Vector3.up);
+            transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
         }
 
 
+        private void SlideRotationCharacter()
+        {
+            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            float angleDir = Vector3.SignedAngle(transform.forward, new Vector3(m_inputDirection.x, 0, m_inputDirection.y), Vector3.up);
+            angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
+            transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+        }
         #endregion
+
 
 
     }
