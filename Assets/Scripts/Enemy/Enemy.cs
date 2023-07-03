@@ -8,7 +8,8 @@ namespace Enemies
 {
     public class Enemy : MonoBehaviour
     {
-        
+
+        private ObjectState state ;
         [SerializeField] private AgentStat m_agentStat = new AgentStat();
         [SerializeField] private Transform m_target;
         [SerializeField] private float m_speedThreshold;
@@ -31,6 +32,8 @@ namespace Enemies
 
         private void Start()
         {
+            state = new ObjectState();
+            GameState.AddObject(state);
             m_healthSystem = new HealthSystem();
             m_armorSystem = new ArmorSystem();
             myAnimator = this.GetComponent<Animator>();
@@ -50,6 +53,14 @@ namespace Enemies
 
         private void Update()
         {
+            if(!state.isPlaying)
+            {
+                m_navAgent.isStopped = true;
+                return;
+            }else
+            {
+                m_navAgent.isStopped = false;
+            }
             if(!m_debugActive)
             {
                 if(Vector3.Distance(transform.position, m_target.position) > distanceRefresh)
@@ -118,6 +129,7 @@ namespace Enemies
         }
         private void GetDestroy(Vector3 direction,float power)
         {
+           
             m_navAgent.enabled = false;
             float magnitude = Random.Range(0.5f, 1.0f);
             m_rigidbody.isKinematic = false;
@@ -135,6 +147,7 @@ namespace Enemies
         private IEnumerator Death()
         {
             yield return new WaitForSeconds(2);
+            GameState.RemoveObject(state);
             m_enemyManager.DestroyEnemy(this);
         }
     }

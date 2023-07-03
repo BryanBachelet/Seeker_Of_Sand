@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
+
     [SerializeField] private DamageHealthFD[] m_damageHealthFDs;
     private List<DamageHealthFD> m_inactiveText;
     private List<DamageHealthFD> m_activeText;
@@ -16,6 +17,7 @@ public class HealthManager : MonoBehaviour
     }
 
 
+  
     private void InitTextFeedback()
     {
         m_damageFDMax = m_damageHealthFDs.Length;
