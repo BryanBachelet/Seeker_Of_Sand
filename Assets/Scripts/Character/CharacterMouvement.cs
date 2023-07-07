@@ -24,7 +24,9 @@ namespace Character
 
         private bool m_onProjection;
 
-        
+        private ObjectState state;
+
+
         public bool isSliding;
         private float m_currentSlideSpeed;
         [Header("Slide")]
@@ -36,6 +38,14 @@ namespace Character
         public float angularSpeed;
 
 
+        private bool m_isSave;
+        private Vector3 m_saveVeloctiy;
+        private bool m_saveStateSliding;
+
+        // TODO : 
+        // Need to save the current speed and the direction of the player
+
+
         public Vector3 currentDirection { get; private set; }
 
         public void InitComponentStat(CharacterStat stat)
@@ -45,6 +55,9 @@ namespace Character
         }
         private void InitComponent()
         {
+            state = new ObjectState();
+            GameState.AddObject(state);
+
             m_rigidbody = GetComponent<Rigidbody>();
             if (m_CharacterAnim == null) { m_CharacterAnim = GameObject.Find("Avatar_Model").GetComponent<Animator>(); }
             initialSpeed = speed;
@@ -52,29 +65,48 @@ namespace Character
 
         public void MoveInput(InputAction.CallbackContext ctx)
         {
+
+            // ========== Need to be clean ================
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
                 m_CharacterAnim.SetBool("Running", true);
-                 m_CharacterAnim.SetBool("Idle", false);
+                m_CharacterAnim.SetBool("Idle", false);
             }
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
-               m_CharacterAnim.SetBool("Running", false);
+                m_CharacterAnim.SetBool("Running", false);
+                m_CharacterAnim.SetBool("Idle", true);
+            }
+            if (!state.isPlaying)
+            {
+                m_CharacterAnim.SetBool("Running", false);
                 m_CharacterAnim.SetBool("Idle", true);
             }
         }
 
         public void Update()
         {
-
+            if (!state.isPlaying) return;
             if (!isSliding) RotateCharacter();
             else SlideRotationCharacter();
         }
 
         public void FixedUpdate()
         {
+            if (!state.isPlaying && m_isSave) return;
+
+            if (!state.isPlaying && !m_isSave)
+            {
+                StartPause();
+                return;
+            }
+            if (state.isPlaying && m_isSave)
+            {
+                EndPause();
+            }
+
             RaycastHit hit = new RaycastHit();
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             if (OnGround(ref hit))
@@ -114,6 +146,21 @@ namespace Character
             }
         }
 
+        private void StartPause()
+        {
+            m_isSave = true;
+            m_saveVeloctiy = m_rigidbody.velocity;
+            m_rigidbody.velocity = Vector3.zero;
+            m_saveStateSliding = isSliding;
+        }
+
+        private void EndPause()
+        {
+            m_rigidbody.velocity = m_saveVeloctiy;
+            isSliding = m_saveStateSliding;
+            m_isSave = false;
+
+        }
         private bool OnGround(ref RaycastHit hit)
         {
             return Physics.Raycast(transform.position, -Vector3.up, out hit, m_groundDistance, m_groundLayerMask);
@@ -136,10 +183,10 @@ namespace Character
 
         private void Slide(Vector3 direction, float slope)
         {
-           
+
             if (!combatState && slope > minSlope || !combatState && isSliding)
             {
-          
+
                 isSliding = true;
                 if (slope < minSlope) m_currentSlideSpeed -= minDecceleration * Time.deltaTime;
                 m_currentSlideSpeed += accelerationSlide * slope / maxSlope * Time.deltaTime;
@@ -185,7 +232,7 @@ namespace Character
 
         private void AirMove(Vector3 direction)
         {
-           
+
             m_rigidbody.AddForce(direction * speed, ForceMode.Impulse);
             Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
             horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, speed);

@@ -59,6 +59,8 @@ namespace Character
 
         private CapsuleSystem.CapsuleType m_currentType;
         private PauseMenu pauseScript;
+        private ObjectState state;
+
         // Temp 
         private Vector3 pos;
 
@@ -69,6 +71,8 @@ namespace Character
 
         private void Start()
         {
+            state = new ObjectState();
+            GameState.AddObject(state);
             if (activeRandom)
             {
                 GenerateNewBuild();
@@ -85,12 +89,12 @@ namespace Character
         // ================= TEMP =====================
         public void IncreaseCapsuleIndex(InputAction.CallbackContext ctx)
         {
-            if (ctx.started) SwitchCapsuleChange(true);
+            if (ctx.started && state.isPlaying) SwitchCapsuleChange(true);
         }
 
         public void DecreaseCapsuleIndex(InputAction.CallbackContext ctx)
         {
-            if (ctx.started) SwitchCapsuleChange(false);
+            if (ctx.started && state.isPlaying) SwitchCapsuleChange(false);
         }
 
         private void SwitchCapsuleChange(bool increase)
@@ -166,7 +170,7 @@ namespace Character
 
         private void Update()
         {
-            if(PauseMenu.gameState) { return; }
+            if(PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_shootInput)
             {
                 if (!m_isShooting) Shoot();
@@ -191,7 +195,7 @@ namespace Character
 
         public void ShootInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed)
+            if (ctx.performed && state.isPlaying)
             {
                 if (ManagedCastCapacity(true))
                 {
@@ -202,7 +206,7 @@ namespace Character
                     //m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed / 3; // Reduce speed while shooting 
                 }
             }
-            if (ctx.canceled)
+            if (ctx.canceled && state.isPlaying)
             {
                 m_shootInput = false;
                 //m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed;

@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class health_Player : MonoBehaviour
 {
     [SerializeField] private bool activeDeath = false;
+    [SerializeField] private GameObject m_gameOverMenu;
+
     private bool isActivate = false;
     [SerializeField] private float m_MaxHealthQuantity;
     [SerializeField] private float[] m_CurrentQuarterMaxHealth;
@@ -39,7 +41,8 @@ public class health_Player : MonoBehaviour
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
             GameState.ChangeState();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            //  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            m_gameOverMenu.SetActive(true);
             isActivate = true;
             return;
         }
@@ -48,7 +51,7 @@ public class health_Player : MonoBehaviour
             GetDamageLeger(damageSend);
 
         }
-      
+
     }
 
     public void GetDamageLeger(float damage)

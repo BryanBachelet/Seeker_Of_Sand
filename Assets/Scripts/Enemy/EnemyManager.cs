@@ -9,6 +9,7 @@ namespace Enemies
 
     public class EnemyManager : MonoBehaviour
     {
+        private ObjectState state;
         [SerializeField] private Transform m_playerTranform;
         [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
         [SerializeField] private Vector3 m_offsetSpawnPos;
@@ -39,6 +40,8 @@ namespace Enemies
         private bool spawningPhase = true;
         private void Start()
         {
+            state = new ObjectState();
+            GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
             ui_DangerLevelObject.text = "Medium";
             ui_DangerLevelObject.color = Color.red;
@@ -47,10 +50,12 @@ namespace Enemies
 
         public void Update()
         {
-            if(spawningPhase)
+            if (!state.isPlaying) return; 
+
+            if (spawningPhase)
             {
                 SpawnCooldown();
-                if(tempsEcoulePause < m_tempsEntrePause)
+                if (tempsEcoulePause < m_tempsEntrePause)
                 {
                     tempsEcoulePause += Time.deltaTime;
                 }
@@ -59,7 +64,15 @@ namespace Enemies
                     StartCoroutine(ChangeSpawningPhase(m_tempsPause));
                 }
             }
-            
+
+        }
+
+        public void ChangePauseState(bool state)
+        {
+            for (int i = 0; i < m_enemiesArray.Count; i++)
+            {
+                m_enemiesArray[i].UpdateGameState(state);
+            }
         }
 
         private Vector3 FindPosition()
@@ -149,7 +162,7 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
-            else if( rnd < 495)
+            else if (rnd < 495)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
             }
