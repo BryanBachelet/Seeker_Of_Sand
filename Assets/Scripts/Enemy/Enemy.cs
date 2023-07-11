@@ -58,7 +58,7 @@ namespace Enemies
                 return;
             }else
             {
-                m_navAgent.isStopped = false;
+                if(m_navAgent.isActiveAndEnabled) m_navAgent.isStopped = false;
             }
             if(!m_debugActive)
             {

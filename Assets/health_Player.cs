@@ -143,7 +143,7 @@ public class health_Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Hit an Object !");
+      //  Debug.Log("Hit an Object !");
         if (collision.transform.tag != "Enemy") return;
         Debug.Log("Object was an Enemy !");
         GetDamageLeger(2);
