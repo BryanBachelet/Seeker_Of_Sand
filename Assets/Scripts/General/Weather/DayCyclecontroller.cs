@@ -13,11 +13,15 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds à la vitesse d'écoulement du temps in-game. 1 reviens à avoir une journée de 24 secondes IRL
     [SerializeField] public RectTransform m_ClockNeedle;
     [SerializeField] private GlobalSoundManager m_GSM;
+    [SerializeField] static public float durationDay;
+    [SerializeField] static public float durationNight;
     private bool isNight = false;
     // Start is called before the first frame update
     void Start()
     {
         m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'écouler IRL.  On multiplie le nombre de minutes réglée dans l'inspector par 60 pour le convertire en seconde.
+        durationNight = m_SettingDurationDay / 3;
+        durationDay = durationNight * 2;
     }
 
     // Update is called once per frame
@@ -38,7 +42,14 @@ public class DayCyclecontroller : MonoBehaviour
         }
         else
         {
-            m_timeOfDay += Time.deltaTime * m_orbitSpeed;
+            if(isNight)
+            {
+                m_timeOfDay += Time.deltaTime * m_orbitSpeed * 2;
+            }
+            else
+            {
+                m_timeOfDay += Time.deltaTime * m_orbitSpeed;
+            }
             if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
             {
                 m_GSM.UpdateParameter(1, "DayOrNight");

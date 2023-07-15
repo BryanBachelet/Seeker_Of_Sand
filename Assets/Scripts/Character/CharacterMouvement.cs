@@ -17,6 +17,7 @@ namespace Character
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
+        [SerializeField] private GameObject m_slidingEffect;
         [Range(0, 1)]
         [SerializeField] private float m_SpeedReduce;
         private Rigidbody m_rigidbody;
@@ -141,6 +142,8 @@ namespace Character
             {
           
                 isSliding = true;
+                m_CharacterAnim.SetBool("Sliding", true);
+                m_slidingEffect.SetActive(true);
                 if (slope < minSlope) m_currentSlideSpeed -= minDecceleration * Time.deltaTime;
                 m_currentSlideSpeed += accelerationSlide * slope / maxSlope * Time.deltaTime;
                 m_rigidbody.AddForce(direction * (speed + m_currentSlideSpeed), ForceMode.Impulse);
@@ -148,6 +151,8 @@ namespace Character
                 if (m_currentSlideSpeed < -speed)
                 {
                     isSliding = false;
+                    m_CharacterAnim.SetBool("Sliding", false);
+                    m_slidingEffect.SetActive(false);
                     m_currentSlideSpeed = 0.0f;
                 }
 
@@ -155,6 +160,8 @@ namespace Character
             else
             {
                 isSliding = false;
+                m_CharacterAnim.SetBool("Sliding", false);
+                m_slidingEffect.SetActive(false);
                 m_currentSlideSpeed = 0;
             }
             currentDirection = direction;

@@ -50,7 +50,8 @@ namespace Character
         [SerializeField] private Animator m_CircleAnimator;
         [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
-
+        [SerializeField] private GameObject m_SkillBarHolder;
+        private Animator m_AnimatorSkillBar;
 
         private Loader_Behavior m_LoaderInUI;
         public List<Transform> SignPosition;
@@ -127,6 +128,7 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
             pauseScript = GetComponent<PauseMenu>();
+            m_AnimatorSkillBar = m_SkillBarHolder.GetComponent<Animator>();
             //m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
             //m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
 
@@ -213,7 +215,10 @@ namespace Character
         {
             if (!m_canShoot) return;
 
-            if (currentShotNumber == 0) StartShoot();
+            if (currentShotNumber == 0)
+            {
+                StartShoot();
+            }
 
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
@@ -282,6 +287,9 @@ namespace Character
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+                //Debug.Log("" + ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).vfx.name);
+                Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).vfx, transform.position, m_characterAim.GetTransformHead().rotation);
+                
             }
             m_isShooting = true;
         }
@@ -387,6 +395,7 @@ namespace Character
                     m_isCasting = true;
                     m_CharacterAnimator.SetBool("Casting", true);
                     m_CircleAnimator.SetBool("Casting", true);
+                    m_AnimatorSkillBar.SetBool("IsCasting", true);
                     m_canShoot = true;
                     m_CharacterMouvement.combatState = true;
                     return false;
@@ -404,6 +413,7 @@ namespace Character
                     m_shootInput = false;
                     m_CharacterAnimator.SetBool("Casting", false);
                     m_CircleAnimator.SetBool("Casting", false);
+                    m_AnimatorSkillBar.SetBool("IsCasting", false);
                     m_CharacterMouvement.combatState = false;
                     return false;
                 }
