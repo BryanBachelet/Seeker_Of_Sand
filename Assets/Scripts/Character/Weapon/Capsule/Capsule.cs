@@ -10,6 +10,7 @@ namespace CapsuleSystem
     {
         public string name;
         public GameObject projectile;
+        public GameObject vfx;
         public CapsuleProfil stats;
         public Sprite sprite;
 
@@ -50,11 +51,12 @@ namespace CapsuleSystem
             projectile = info.projectile;
             stats = info.stats;
             sprite = info.sprite;
-  
+            vfx = info.vfx;
             
         }
         public Sprite sprite;
         public GameObject projectile;
+        public GameObject vfx;
         public CapsuleProfil stats;
 
     }
