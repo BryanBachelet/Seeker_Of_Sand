@@ -82,7 +82,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
         m_characterProfil.ApplyStat(CalculateStat(m_characterProfil.m_baseStat));
         upgradePoint--;
-        m_upgradePoint.text = upgradePoint.ToString() + " Upgrade point available ('G' to open)";
+        m_upgradePoint.text = upgradePoint.ToString();
         DestroyAllUpgrade();
         if (upgradePoint == 0)
         {
@@ -101,7 +101,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void GainLevel()
     {
         upgradePoint++;
-        m_upgradePoint.text = upgradePoint.ToString() + " Upgrade point available ('G' to open)";
+        m_upgradePoint.text = upgradePoint.ToString();
     }
 
     private CharacterStat CalculateStat(CharacterStat stats)
