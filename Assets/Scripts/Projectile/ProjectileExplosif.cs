@@ -14,6 +14,8 @@ public class ProjectileExplosif : Projectile
     public AnimationCurve coloriseByTime_Curve;
     public Color baseEmissiveColor;
 
+    [SerializeField] private bool m_ActivationVFX;
+    [SerializeField] private GameObject m_VFXObject;
     private bool m_isStick;
     private bool m_onEnemy;
 
@@ -131,12 +133,15 @@ public class ProjectileExplosif : Projectile
         if (other.tag == "Enemy")
         {
             m_onEnemy = true;
+            if (m_ActivationVFX) { Instantiate(m_VFXObject, transform.position, transform.rotation, transform); }
             m_stickTransform = other.transform;
             m_stickPosition = other.transform.position - transform.position;
         }
         if (m_isStick) return;
         StartCoroutine(TimeToExplose(m_timeBeforeExplosion));
         m_isStick = true;
+
+
     }
 
     protected virtual IEnumerator TimeToExplose(float timer)
