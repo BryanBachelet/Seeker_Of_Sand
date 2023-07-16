@@ -198,11 +198,11 @@ public class Locomotive : MonoBehaviour
 
         Vector3 origin = CalculateVector(CalculateVector(item.position, item.direction.normalized * halflengthOfLocomotive), Vector3.up * 2.0f);
        
-        if (!Physics.Raycast(origin, Vector3.down, out hit, 20, rayGround)) return Vector3.up;
+        if (!Physics.Raycast(origin, Vector3.down, out hit, 100, rayGround)) return Vector3.up;
         normal = hit.normal;
         origin = CalculateVector(origin, -item.direction.normalized * halflengthOfLocomotive * 2);
 
-        if (!Physics.Raycast(origin, Vector3.down, out hit, 20, rayGround)) return Vector3.up;
+        if (!Physics.Raycast(origin, Vector3.down, out hit, 100, rayGround)) return Vector3.up;
         normal = CalculateVector(hit.normal, normal.normalized).normalized;
 
         Quaternion test = Quaternion.FromToRotation(Vector3.up, normal.normalized);

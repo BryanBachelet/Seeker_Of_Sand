@@ -28,6 +28,7 @@ namespace Character
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
+        [SerializeField] private GameObject m_slidingEffect;
         [Range(0, 1)]
         [SerializeField] private float m_SpeedReduce;
         private Rigidbody m_rigidbody;
@@ -130,10 +131,74 @@ namespace Character
 
         public void Update()
         {
+
+
+
             if (!state.isPlaying) return;
             if (!isSliding) RotateCharacter();
             else SlideRotationCharacter();
         }
+
+        #region State
+
+        public void ChangeState(MouvementState newState)
+        {
+            if (newState == mouvementState) return;
+            BeforeChangeState(mouvementState);
+            mouvementState = newState;
+            AfterChangeState(mouvementState);
+        }
+
+        public void BeforeChangeState(MouvementState prevState)
+        {
+        
+            switch (prevState)
+            {
+                case MouvementState.None:
+
+                    m_CharacterAnim.SetBool("Idle", false);
+                    break;
+                case MouvementState.Classic:
+                    m_CharacterAnim.SetBool("Running", false);
+                    break;
+                case MouvementState.Slide:
+                    m_CharacterAnim.SetBool("Sliding", false);
+                    m_slidingEffect.SetActive(false);
+                    break;
+                case MouvementState.Glide:
+                    m_CharacterAnim.SetBool("Shooting", false);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void AfterChangeState(MouvementState newState)
+        {
+
+           
+            switch (newState)
+            {
+                case MouvementState.None:
+                   
+                    m_CharacterAnim.SetBool("Idle", true);
+                    break;
+                case MouvementState.Classic:
+                    m_CharacterAnim.SetBool("Running", true);
+                    break;
+                case MouvementState.Slide:
+                    m_CharacterAnim.SetBool("Sliding", true);
+                    m_slidingEffect.SetActive(true);
+                    break;
+                case MouvementState.Glide:
+                    m_CharacterAnim.SetBool("Shooting", true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #endregion
 
         private void CheckPlayerMouvement()
         {
@@ -142,7 +207,7 @@ namespace Character
             RaycastHit hit = new RaycastHit();
             if (!OnGround(ref hit))
             {
-                mouvementState = MouvementState.Glide;
+                ChangeState(MouvementState.Glide);
                 AirMove(inputDirection);
                 m_timerBeforeSliding = 0;
                 return;
@@ -156,14 +221,14 @@ namespace Character
 
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
-                mouvementState = MouvementState.None;
+                ChangeState(MouvementState.None);
                 return;
             }
 
 
             if (isSliding && !combatState)
             {
-                mouvementState = MouvementState.Slide;
+                ChangeState(MouvementState.Slide);
                 Slide(direction);
                 return;
             }
@@ -171,7 +236,7 @@ namespace Character
             {
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
-                mouvementState = MouvementState.None;
+                ChangeState(MouvementState.None);
                 return;
             }
 
@@ -179,7 +244,7 @@ namespace Character
             if (combatState)
             {
                 isSliding = false;
-                mouvementState = MouvementState.Classic;
+                ChangeState( MouvementState.Classic);
                 Move(direction);
                 return;
             }
@@ -192,17 +257,17 @@ namespace Character
                 {
                     m_timerBeforeSliding += Time.deltaTime;
                     if (m_timerBeforeSliding >= timeBeforeSliding)
-                        mouvementState = MouvementState.Slide;
-                    mouvementState = MouvementState.Classic;
+                        ChangeState(MouvementState.Slide);
+                    ChangeState(MouvementState.Classic);
                     Move(direction);
                     return;
                 }
-                mouvementState = MouvementState.Slide;
+                ChangeState(MouvementState.Slide);
                 Slide(direction);
                 return;
             }
 
-            mouvementState = MouvementState.Classic;
+            ChangeState(MouvementState.Classic);
             Move(direction);
             return;
         }

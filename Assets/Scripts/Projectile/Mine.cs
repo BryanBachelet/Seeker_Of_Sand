@@ -9,6 +9,7 @@ public class Mine : ProjectileExplosif
     [SerializeField] private float m_setupDuration = 1.0f;
     private float m_setupTimer = 0.0f;
     [SerializeField] private float powerPlayerProjection = 25.0f;
+    private Animator m_animator;
 
     private bool m_isOnGround;
     private bool m_isActive;
@@ -19,6 +20,7 @@ public class Mine : ProjectileExplosif
     {
         SetupNewDestination();
         InitTrajectory();
+        m_animator = this.GetComponent<Animator>();
     }
 
     private void SetupNewDestination()
@@ -91,6 +93,7 @@ public class Mine : ProjectileExplosif
     protected override void Explosion()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
+        m_animator.SetTrigger("Activation");
         //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
@@ -108,13 +111,9 @@ public class Mine : ProjectileExplosif
 
             if (enemyTouch.IsDestroing()) continue;
              enemyTouch.HitEnemy(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized , m_power);
-
-          
-
         }
-        Destroy(this.gameObject);
+        StartCoroutine(DelayDestroy(2));
     }
-
 
 
 }

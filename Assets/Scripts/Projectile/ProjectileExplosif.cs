@@ -169,7 +169,7 @@ public class ProjectileExplosif : Projectile
                 enemyTouch.HitEnemy(m_damage, enemyTouch.transform.position - transform.position, m_power);
         }
         stickyEnemy.HitEnemy(m_damage, stickyEnemy.transform.position - transform.position, m_power);
-        Destroy(this.gameObject);
+        StartCoroutine(DelayDestroy(2));
     }
 
     private void ScaleByTime()
@@ -180,5 +180,10 @@ public class ProjectileExplosif : Projectile
         m_mat_explosion.SetColor("_EmissiveColor", baseEmissiveColor * coloriseByTime_Curve.Evaluate(m_lifeTimer / m_timeBeforeExplosion));
     }
 
+    public IEnumerator DelayDestroy(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(this.gameObject);
+    }
 
 }
