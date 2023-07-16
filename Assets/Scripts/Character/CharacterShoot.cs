@@ -128,13 +128,10 @@ namespace Character
         public CapsuleStats GetPod() { return currentWeaponStats; }
         private void InitComponent()
         {
-
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
             pauseScript = GetComponent<PauseMenu>();
             m_AnimatorSkillBar = m_SkillBarHolder.GetComponent<Animator>();
-            //m_LoaderInUI = GameObject.Find("LoaderDisplay").GetComponent<Loader_Behavior>();
-            //m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
 
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
@@ -203,15 +200,10 @@ namespace Character
                 {
                     m_shootInput = true;
                 }
-                if (m_isCasting)
-                {
-                    //m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed / 3; // Reduce speed while shooting 
-                }
             }
             if (ctx.canceled && state.isPlaying)
             {
                 m_shootInput = false;
-                //m_CharacterMouvement.speed = m_CharacterMouvement.initialSpeed;
             }
         }
 
@@ -287,11 +279,10 @@ namespace Character
             m_currentType = capsulesPosses[m_currentIndexCapsule].type;
             icon_Sprite[m_currentIndexCapsule].color = Color.gray;
             SignPosition[m_currentIndexCapsule].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 0);
-            //if (!m_LoaderInUI.GetReloadingstate()) m_LoaderInUI.RemoveCapsule();
+           
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
-                //Debug.Log("" + ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).vfx.name);
+                currentWeaponStats = (capsuleStatsAlone[m_currentIndexCapsule]);
                 Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).vfx, transform.position, m_characterAim.GetTransformHead().rotation);
                 
             }
@@ -337,6 +328,7 @@ namespace Character
             if (m_currentIndexCapsule == capsulesPosses.Length - 1)
             {
                 m_isReloading = true;
+              
                 ManagedCastCapacity(false);
                 return 0;
             }
@@ -352,6 +344,10 @@ namespace Character
 
             if (m_shootTimer > shootTime)
             {
+                for (int i = 0; i < icon_Sprite.Count; i++)
+                {
+                    icon_Sprite[m_currentIndexCapsule].color = Color.white;
+                }
 
                 m_canShoot = true;
                 m_shootTimer = 0;

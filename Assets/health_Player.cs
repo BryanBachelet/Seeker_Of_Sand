@@ -145,7 +145,7 @@ public class health_Player : MonoBehaviour
     {
       //  Debug.Log("Hit an Object !");
         if (collision.transform.tag != "Enemy") return;
-        Debug.Log("Object was an Enemy !");
+       // Debug.Log("Object was an Enemy !");
         GetDamageLeger(2);
     }
 

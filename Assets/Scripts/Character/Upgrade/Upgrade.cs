@@ -109,7 +109,7 @@ public class UpgradeCapsule : Upgrade
         playerStat.shootAngle += gain.capsulsStats.shootAngle;
         playerStat.shootNumber += gain.capsulsStats.shootNumber;
         Debug.Log(playerStat.shootNumber + "=  Shoot Number  |" + playerStat.projectileNumber + "=  Projectil Number");
-        gain.description = m_baseString;
+        //gain.description = m_baseString;
     }
 
     public override void Destroy()

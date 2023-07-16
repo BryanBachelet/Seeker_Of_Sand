@@ -128,9 +128,6 @@ namespace Character
 
         public void Update()
         {
-
-
-
             if (!state.isPlaying) return;
             if (!isSliding) RotateCharacter();
             else SlideRotationCharacter();
