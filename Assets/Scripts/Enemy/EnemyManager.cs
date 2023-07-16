@@ -38,6 +38,7 @@ namespace Enemies
         [SerializeField] private float m_tempsPause;
         private float tempsEcoulePause = 0;
         private bool spawningPhase = true;
+
         private void Start()
         {
             state = new ObjectState();

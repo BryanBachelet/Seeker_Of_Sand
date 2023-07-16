@@ -22,6 +22,16 @@ public struct AgentStat
         result.damage = a.damage + b.damage;
         return result;
     }
+    public static AgentStat operator -(AgentStat a, AgentStat b)
+    {
+        AgentStat result = new AgentStat();
+        result.armor = a.armor - b.armor;
+        result.healthMax = a.healthMax - b.healthMax;
+        result.speed = a.speed - b.speed;
+        result.regeneration = a.regeneration - b.regeneration;
+        result.damage = a.damage - b.damage;
+        return result;
+    }
 
 };
 
@@ -38,6 +48,14 @@ public struct CharacterStat
         result.baseStat = a.baseStat + b.baseStat;
         result.attrackness = a.attrackness + b.attrackness;
         result.luck = a.luck + b.luck;
+        return result;
+    }
+    public static CharacterStat operator -(CharacterStat a, CharacterStat b)
+    {
+        CharacterStat result = new CharacterStat();
+        result.baseStat = a.baseStat - b.baseStat;
+        result.attrackness = a.attrackness - b.attrackness;
+        result.luck = a.luck - b.luck;
         return result;
     }
 };

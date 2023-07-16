@@ -294,6 +294,7 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
+            m_currentType = capsulesPosses[m_currentIndexCapsule].type;
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;

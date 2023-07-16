@@ -54,7 +54,7 @@ namespace Enemies
         {
             if(!state.isPlaying)
             {
-                m_navAgent.isStopped = true;
+                if (m_navAgent.isActiveAndEnabled) m_navAgent.isStopped = true;
                 return;
             }else
             {

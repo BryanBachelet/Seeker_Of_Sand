@@ -28,8 +28,9 @@ public class CharacterProfile : MonoBehaviour
 
     public void Update()
     {
-        stats = m_baseStat;
+     
         m_buffManager.ApplyBuffCharacter(ref stats);
+        m_buffManager.ManageBuffs(ref stats);
         ApplyStat(stats);
     }
 

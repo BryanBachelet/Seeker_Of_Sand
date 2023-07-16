@@ -178,6 +178,7 @@ namespace Character
 
             if (combatState)
             {
+                isSliding = false;
                 mouvementState = MouvementState.Classic;
                 Move(direction);
                 return;

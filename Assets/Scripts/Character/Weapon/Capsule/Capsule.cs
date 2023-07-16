@@ -39,7 +39,7 @@ namespace CapsuleSystem
     {
         public string name;
         public CapsuleType type;
-
+        public Sprite sprite;
     }
     [Serializable]
     public class CapsuleAttack: Capsule
@@ -53,7 +53,7 @@ namespace CapsuleSystem
   
             
         }
-        public Sprite sprite;
+       
         public GameObject projectile;
         public CapsuleProfil stats;
 
@@ -71,7 +71,7 @@ namespace CapsuleSystem
             vfx = info.vfx;
 
         }
-        public Sprite sprite;
+        
         public CharacterData profil;
         public float duration;
         public GameObject vfx;
