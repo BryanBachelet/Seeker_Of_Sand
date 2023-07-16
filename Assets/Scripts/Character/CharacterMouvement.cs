@@ -113,19 +113,16 @@ namespace Character
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
-                m_CharacterAnim.SetBool("Running", true);
-                m_CharacterAnim.SetBool("Idle", false);
+
             }
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
-                m_CharacterAnim.SetBool("Running", false);
-                m_CharacterAnim.SetBool("Idle", true);
+             
             }
             if (!state.isPlaying)
             {
-                m_CharacterAnim.SetBool("Running", false);
-                m_CharacterAnim.SetBool("Idle", true);
+                ChangeState(MouvementState.None);
             }
         }
 
