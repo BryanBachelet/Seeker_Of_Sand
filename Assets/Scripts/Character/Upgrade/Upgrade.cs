@@ -24,8 +24,9 @@ public class Upgrade
 
     public  Upgrade(UpgradeProfil profil) { gain = profil; }
 
-    public virtual void Setup(int capsuleCount)
+    public virtual void Setup(int capsuleCount, Sprite sprite)
     {
+    
     }
 
     public virtual void Destroy()
@@ -91,11 +92,12 @@ public class UpgradeCapsule : Upgrade
         m_baseString = gain.description;
     }
 
-    public override void Setup(int capsuleCount)
+    public override void Setup(int capsuleCount, Sprite sprite)
     {
-        base.Setup(capsuleCount);
-        capsuleIndex = UnityEngine.Random.Range(0, capsuleCount);
+        base.Setup(capsuleCount,sprite);
+        capsuleIndex = capsuleCount;
         gain.description += " " + capsuleIndex.ToString();
+        gain.icon_Associat = sprite;
     }
 
     public override void Apply(ref CapsuleStats playerStat)
@@ -107,7 +109,7 @@ public class UpgradeCapsule : Upgrade
         playerStat.shootAngle += gain.capsulsStats.shootAngle;
         playerStat.shootNumber += gain.capsulsStats.shootNumber;
         Debug.Log(playerStat.shootNumber + "=  Shoot Number  |" + playerStat.projectileNumber + "=  Projectil Number");
-        gain.description = m_baseString;
+        //gain.description = m_baseString;
     }
 
     public override void Destroy()

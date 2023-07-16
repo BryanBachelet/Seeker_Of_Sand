@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 [ExecuteInEditMode]
 public class health_Player : MonoBehaviour
 {
+    [SerializeField] private bool activeDeath = false;
+    [SerializeField] private GameObject m_gameOverMenu;
+
+    private bool isActivate = false;
     [SerializeField] private float m_MaxHealthQuantity;
     [SerializeField] private float[] m_CurrentQuarterMaxHealth;
     [SerializeField] private float[] m_CurrentQuarterMinHealth;
@@ -32,11 +38,20 @@ public class health_Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(updateHealthValues)
+        if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
+        {
+            GameState.ChangeState();
+            //  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            m_gameOverMenu.SetActive(true);
+            isActivate = true;
+            return;
+        }
+        if (updateHealthValues)
         {
             GetDamageLeger(damageSend);
 
         }
+
     }
 
     public void GetDamageLeger(float damage)
@@ -46,7 +61,7 @@ public class health_Player : MonoBehaviour
         else
         {
             StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
-            if (m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter-1])
+            if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;
                 m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
@@ -103,7 +118,7 @@ public class health_Player : MonoBehaviour
         //m_CurrentHealth = m_MaxHealthQuantity;
         m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
         m_CurrentQuarter = (int)Mathf.Ceil(m_CurrentHealth / m_MaxHealthQuantity * m_QuarterNumber);
-        for(int i = 0; i < m_CurrentQuarterMaxHealth.Length; i++)
+        for (int i = 0; i < m_CurrentQuarterMaxHealth.Length; i++)
         {
             m_CurrentQuarterMinHealth[i] = m_QuarterHealthQuantity * i;
             m_CurrentQuarterMaxHealth[i] = m_QuarterHealthQuantity * i + m_QuarterHealthQuantity;
@@ -128,9 +143,9 @@ public class health_Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Hit an Object !");
+      //  Debug.Log("Hit an Object !");
         if (collision.transform.tag != "Enemy") return;
-        Debug.Log("Object was an Enemy !");
+       // Debug.Log("Object was an Enemy !");
         GetDamageLeger(2);
     }
 
