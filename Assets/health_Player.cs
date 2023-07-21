@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-[ExecuteInEditMode]
+
 public class health_Player : MonoBehaviour
 {
     [SerializeField] private bool activeDeath = false;
@@ -20,8 +20,11 @@ public class health_Player : MonoBehaviour
     [SerializeField] private float m_CurrentHealth;
     [SerializeField] private float m_invulerableLegerTime;
     [SerializeField] private float m_invulerableLourdTime;
-    [SerializeField] private Image m_SliderCurrentHealth;
-    [SerializeField] private Image m_SliderCurrentQuarter;
+    [SerializeField] private Image m_SliderCurrentHealthHigh;
+    [SerializeField] private Image m_SliderCurrentQuarterHigh;
+    [SerializeField] private Image m_SliderCurrentHealthLow;
+    [SerializeField] private Image m_SliderCurrentQuarterLow;
+
     private bool m_isInvulnerableLeger = false;
     private bool m_isInvulnerableLourd = false;
     private float m_lastHitTime = 0;
@@ -71,8 +74,10 @@ public class health_Player : MonoBehaviour
                 m_CurrentHealth -= damage;
             }
 
-            m_SliderCurrentHealth.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            m_SliderCurrentQuarter.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+                m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+                m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+
+
         }
         updateHealthValues = false;
 
@@ -94,8 +99,8 @@ public class health_Player : MonoBehaviour
                 m_CurrentHealth -= damage;
             }
 
-            m_SliderCurrentHealth.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            m_SliderCurrentQuarter.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+            m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+            m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
         }
         updateHealthValues = false;
     }
@@ -126,8 +131,8 @@ public class health_Player : MonoBehaviour
         //Calculer la valeur d'un quart de vie
         //Actualiser m_CurrentQuarterMaxHealth && m_CurrentQuarterMinHealth
         //Actualiser m_CurrentQuarter
-        m_SliderCurrentHealth.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-        m_SliderCurrentQuarter.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+        m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
         m_CurrentHealth = m_MaxHealthQuantity;
         updateHealthValues = false;
         m_isInvulnerableLeger = false;
