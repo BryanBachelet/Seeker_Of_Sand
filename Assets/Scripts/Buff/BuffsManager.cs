@@ -8,6 +8,7 @@ namespace Buff
     {
         public float m_buffDuration;
         protected float m_buffTimer;
+       public bool isApply = false;
         [SerializeField] private GameObject m_buffObjectVfx;
 
         public bool IsBuffFinish()
@@ -25,6 +26,7 @@ namespace Buff
     public class BuffCharacter : Buff
     {
         CharacterStat buffStat;
+       
 
 
         public BuffCharacter(CharacterData data, float duration)
@@ -37,6 +39,10 @@ namespace Buff
         {
             profil += buffStat;
         }
+        public void RemoveBuff(ref CharacterStat profil)
+        {
+            profil -= buffStat;
+        }
     }
 
 
@@ -45,21 +51,22 @@ namespace Buff
     {
         private List<Buff> m_buffs = new List<Buff>(0);
 
-        public void Update()
-        {
-            ManageBuffs();
-        }
 
         public void AddBuff(Buff newBuff)
         {
             m_buffs.Add(newBuff);
         }
-        public void ManageBuffs()
+        public void ManageBuffs(ref CharacterStat stats)
         {
             for (int i = 0; i < m_buffs.Count; i++)
             {
                 if(m_buffs[i].IsBuffFinish())
                 {
+                    if (m_buffs[i] is BuffCharacter)
+                    {
+                        BuffCharacter buff = (BuffCharacter)m_buffs[i];
+                        buff.RemoveBuff(ref stats);
+                    }
                     m_buffs.RemoveAt(i);
                     continue;
                 }
@@ -74,7 +81,11 @@ namespace Buff
                 if (m_buffs[i] is BuffCharacter)
                 {
                     BuffCharacter buff = (BuffCharacter)m_buffs[i];
-                    buff.GetBuff(ref stats);
+                    if(!m_buffs[i].isApply)
+                    {
+                        buff.GetBuff(ref stats);
+                        buff.isApply = true;
+                    }
                 }
             }
         }

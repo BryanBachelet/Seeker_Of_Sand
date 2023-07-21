@@ -7,10 +7,12 @@ using UnityEngine.UI;
 public class CharacterUpgrade : MonoBehaviour
 {
     public List<Upgrade> m_avatarUpgrade;
-    public int upgradePoint = 1;
+    public int upgradePoint = 0;
     public GameObject upgradeUiGO;
     public GameObject uiLoaderDisplay;
     public Text m_upgradePoint;
+    [SerializeField] private Text m_LevelDisplay;
+    [SerializeField] private int m_CurrentLevel = 1;
 
     private Loader_Behavior m_loaderBehavior;
     private UpgradeManager m_upgradeManager;
@@ -37,7 +39,7 @@ public class CharacterUpgrade : MonoBehaviour
             }
             GetNewUpgrade();
             m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
-            Time.timeScale = 0.02f;
+          // Time.timeScale = 0.02f;
         }
     }
     #region Init Script
@@ -64,7 +66,8 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            m_upgradeToChoose[i].Setup(m_characterShoot.capsuleIndex.Length);
+            int index = Random.Range(0, m_characterShoot.capsuleIndex.Length);
+            m_upgradeToChoose[i].Setup(index ,m_characterShoot.capsulesPosses[index].sprite);
         }
     }
 
@@ -82,6 +85,8 @@ public class CharacterUpgrade : MonoBehaviour
         m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
         m_characterProfil.ApplyStat(CalculateStat(m_characterProfil.m_baseStat));
         upgradePoint--;
+        m_CurrentLevel++;
+        m_LevelDisplay.text = "" + m_CurrentLevel;
         m_upgradePoint.text = upgradePoint.ToString();
         DestroyAllUpgrade();
         if (upgradePoint == 0)

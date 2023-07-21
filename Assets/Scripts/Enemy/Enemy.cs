@@ -8,7 +8,8 @@ namespace Enemies
 {
     public class Enemy : MonoBehaviour
     {
-        
+
+        public ObjectState state ;
         [SerializeField] private AgentStat m_agentStat = new AgentStat();
         [SerializeField] private Transform m_target;
         [SerializeField] private float m_speedThreshold;
@@ -27,13 +28,14 @@ namespace Enemies
         private float distanceRefresh = 30f;
         [SerializeField] private float m_TimeBtwRefresh;
         private float tempsEcouleRefresh = 0;
-        private Animator myAnimator;
+        public Animator myAnimator;
 
         private void Start()
         {
+            state = new ObjectState();
             m_healthSystem = new HealthSystem();
             m_armorSystem = new ArmorSystem();
-            myAnimator = this.GetComponent<Animator>();
+          //  myAnimator = this.GetComponent<Animator>();
             if(!m_debugActive)
             {
                 m_navAgent = GetComponent<NavMeshAgent>();
@@ -50,6 +52,14 @@ namespace Enemies
 
         private void Update()
         {
+            if(!state.isPlaying)
+            {
+                if (m_navAgent.isActiveAndEnabled) m_navAgent.isStopped = true;
+                return;
+            }else
+            {
+                if(m_navAgent.isActiveAndEnabled) m_navAgent.isStopped = false;
+            }
             if(!m_debugActive)
             {
                 if(Vector3.Distance(transform.position, m_target.position) > distanceRefresh)
@@ -110,7 +120,22 @@ namespace Enemies
             GetDestroy(direction, power);
         }
 
-       
+        public void UpdateGameState(bool newState)
+        {
+            state.isPlaying = newState;
+            if(newState)
+            {
+                m_navAgent.isStopped = newState;
+                myAnimator.speed = 1;
+               // myAnimator.enabled = newState;
+            }
+            else
+            {
+                m_navAgent.isStopped = newState;
+                myAnimator.speed = 0;
+              //  myAnimator.enabled = newState;
+            }
+        }
 
         public bool IsDestroing()
         {
@@ -118,6 +143,7 @@ namespace Enemies
         }
         private void GetDestroy(Vector3 direction,float power)
         {
+           
             m_navAgent.enabled = false;
             float magnitude = Random.Range(0.5f, 1.0f);
             m_rigidbody.isKinematic = false;

@@ -51,7 +51,6 @@ public class AlatarHealthSysteme : MonoBehaviour
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
         DisableColor();
-
     }
 
     private void InitComponent()

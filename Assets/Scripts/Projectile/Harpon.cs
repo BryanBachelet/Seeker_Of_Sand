@@ -20,10 +20,14 @@ public class Harpon : Projectile
 
     protected override void Move()
     {
+        if(m_enemyImpale == null)
+        {
+            m_enemyImpale = null;
+        }
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(transform.position, m_direction.normalized,out hit, m_speed * Time.deltaTime, m_layer))
         {
-            if (m_firstHit)
+            if (m_firstHit )
             {
                 m_enemyImpale.HitEnemy(m_damage * m_impalementDamageRatio, m_enemyImpale.transform.position - transform.position, m_power);
                 m_enemyImpale.ChangeActiveBehavior(true);
@@ -33,7 +37,7 @@ public class Harpon : Projectile
 
         transform.position += m_direction.normalized * m_speed * Time.deltaTime;
         m_currentDistance += m_speed * Time.deltaTime;
-        if (m_firstHit)
+        if (m_firstHit && m_enemyImpale != null)
             m_enemyImpale.transform.position = transform.position;
     }
     private void OnTriggerEnter(Collider other)
@@ -53,7 +57,6 @@ public class Harpon : Projectile
         if (other.tag != "Enemy") return;
 
         GlobalSoundManager.PlayOneShot(9, transform.position);
-        Debug.Log("HarponcollisionTest");
         Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
         //if (enemyTouch.IsDestroing()) return;
 
