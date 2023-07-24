@@ -58,7 +58,15 @@ MonoBehaviour:
   m_spawnTime: 1
   m_maxUnitPerGroup: 13
   m_minUnitPerGroup: 5
+  m_maxUnittotal: 400
   m_healthManager: {fileID: 1224385587}
+  m_radiusspawn: 0
+  m_enemiesArray: []
+  altarObject: {fileID: 0}
+  altarTransformList: []
+  ui_DangerLevelObject: {fileID: 0}
+  m_tempsEntrePause: 0
+  m_tempsPause: 0
 --- !u!114 &1224385586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +82,7 @@ MonoBehaviour:
   m_killRatioTime: 25
   m_textFeedbackUI: {fileID: 0}
   m_maxKillPerMinute: 70
+  m_enemyCount: []
   m_PlayerExperienceRef: {fileID: 0}
 --- !u!114 &1224385589
 MonoBehaviour:
@@ -121,63 +130,96 @@ MonoBehaviour:
   capsules:
   - name: 
     type: 0
+    sprite: {fileID: 0}
   - name: 
     type: 0
+    sprite: {fileID: 0}
   - name: 
     type: 0
+    sprite: {fileID: 0}
   - name: 
     type: 0
-  - name: 
-    type: 2
-  - name: 
-    type: 0
+    sprite: {fileID: 0}
   - name: 
     type: 0
+    sprite: {fileID: 0}
   - name: 
     type: 0
+    sprite: {fileID: 0}
   - name: 
     type: 0
+    sprite: {fileID: 0}
+  - name: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    type: 0
+    sprite: {fileID: 0}
   attackInfo:
   - name: Shot Gun
     projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
       type: 3}
+    vfx: {fileID: 8678430117243443168, guid: c5ef715d3bb47b447a187fe4daa76af6, type: 3}
     stats: {fileID: 11400000, guid: a6212585ac02118449476ac4c1f279a8, type: 2}
+    sprite: {fileID: 21300000, guid: 94ade2a5ed42f0242ab1a4c7e8fa5679, type: 3}
   - name: Zeri Traillet
-    projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
+    projectile: {fileID: 529003561376632028, guid: ca87ce2dea036dc41ac35615e45109e6,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
+    sprite: {fileID: 21300000, guid: c3dfff8f60831ea46a43238fc222b830, type: 3}
   - name: Harpon
     projectile: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88, type: 2}
+    sprite: {fileID: 21300000, guid: 7c4b878b880e5884fab7fe7fd55cafef, type: 3}
   - name: Bombe Sentex
     projectile: {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
-  - name: Lance Scie
-    projectile: {fileID: 1815569696630512008, guid: f057a63b8d2da49439a39cb90135695b,
+    sprite: {fileID: 21300000, guid: 54e61c6be40a6e54e916867967bf79a4, type: 3}
+  - name: Phoenix
+    projectile: {fileID: 1815569696630512008, guid: 0247554d5f9a13f46bdb3d6723ebe7b3,
       type: 3}
-    stats: {fileID: 11400000, guid: a42bd52d1b610304aa4e4d7eb2b6fe1e, type: 2}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 469318e19a7d9d948926cec287c969d8, type: 2}
+    sprite: {fileID: 21300000, guid: 3ed9739dfd1d68a429c5a6586a915b9a, type: 3}
   - name: Lance Stone
     projectile: {fileID: 6035077377685851194, guid: 3a7353eeadaea574bbceaf04c0087e2c,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: 0f37784471302fb4e9ad64defdeda5fc, type: 2}
+    sprite: {fileID: 21300000, guid: 2220aea81a6408a4c8fb5426e44e289c, type: 3}
   - name: Rain Bullet
     projectile: {fileID: 6333615331467375570, guid: 5c8f9c3aaecab7c46a27ee43f28e42ae,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: 2219ec8c5eb11c44d873e65c9866d1cb, type: 2}
+    sprite: {fileID: 21300000, guid: c01e2015e21d27c43bda5ba96141c2ff, type: 3}
   - name: Mine
     projectile: {fileID: 6397006724863419028, guid: ca57b3bcf3b623b4f8f8492fe75f6eb6,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: 1a893981abd33834e8867b5f0d741fba, type: 2}
+    sprite: {fileID: 21300000, guid: e5c5bafdfb333bb46baf4243c27192e2, type: 3}
   - name: Lighting
     projectile: {fileID: 1834853944460758612, guid: e4a0655fa9ce9f6489d50230d2c98258,
       type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
     stats: {fileID: 11400000, guid: 9d1925bfc01dcda498126d55c0601740, type: 2}
-  buffInfos:
-  - name: Steroids
-    stats: {fileID: 11400000, guid: 511f8043386203e41b797e45a5b20c1e, type: 2}
-    duration: 1
+    sprite: {fileID: 21300000, guid: 783a1ee3f95ff5543be0247b2e25ae5e, type: 3}
+  - name: Missile Souris
+    projectile: {fileID: 1815569696630512008, guid: f057a63b8d2da49439a39cb90135695b,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: a42bd52d1b610304aa4e4d7eb2b6fe1e, type: 2}
+    sprite: {fileID: 21300000, guid: 244f8cd63640466429a0d062958dc49e, type: 3}
+  buffInfos: []
 --- !u!114 &6895622059654923546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +235,7 @@ MonoBehaviour:
   m_killRatioTime: 25
   m_textFeedbackUI: {fileID: 0}
   m_maxKillPerMinute: 70
+  m_enemyCount: []
   m_PlayerExperienceRef: {fileID: 0}
 --- !u!114 &1224385587
 MonoBehaviour:
