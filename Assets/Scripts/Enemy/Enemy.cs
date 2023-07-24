@@ -55,10 +55,14 @@ namespace Enemies
             if(!state.isPlaying)
             {
                 if (m_navAgent.isActiveAndEnabled) m_navAgent.isStopped = true;
+                m_rigidbody.isKinematic = true;
+
                 return;
             }else
             {
                 if(m_navAgent.isActiveAndEnabled) m_navAgent.isStopped = false;
+                m_rigidbody.isKinematic = false;
+
             }
             if(!m_debugActive)
             {
