@@ -71,7 +71,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            int index = Random.Range(0, m_characterShoot.capsuleIndex.Length);
+            int index = Random.Range(0, m_characterShoot.capsuleIndex.Count);
             m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[index].sprite);
         }
     }
