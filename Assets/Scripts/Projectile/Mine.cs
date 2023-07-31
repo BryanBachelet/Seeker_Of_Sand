@@ -94,6 +94,7 @@ public class Mine : ProjectileExplosif
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
         m_animator.SetTrigger("Activation");
+        Debug.Log("Debut fonction");
         //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
@@ -101,7 +102,8 @@ public class Mine : ProjectileExplosif
            
             if (enemies[i].tag == "Player")
             {
-                enemies[i].GetComponent<Character.CharacterMouvement>().Projection((Vector3.up + (enemies[i].transform.position -transform.position ).normalized).normalized * powerPlayerProjection, ForceMode.Impulse);
+                enemies[i].GetComponent<Character.CharacterMouvement>().Projection((Vector3.up + (enemies[i].transform.position -transform.position ).normalized).normalized * powerPlayerProjection, ForceMode.VelocityChange);
+                Debug.Log("Player explosion fonction");
                 continue;
             }
             

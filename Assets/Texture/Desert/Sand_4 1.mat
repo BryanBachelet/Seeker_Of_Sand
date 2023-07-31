@@ -26,18 +26,19 @@ Material:
   m_Name: Sand_4 1
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_ValidKeywords:
-  - N_F_CS_ON
+  - N_F_ESSAO_ON
   - N_F_ESSGI_ON
   - N_F_ESSR_ON
   - N_F_ESSS_ON
-  - N_F_HDLS_ON
   - N_F_NFD_ON
   - N_F_O_MOTTSO_ON
   - N_F_O_ON
   - N_F_PAL_ON
   - N_F_RELGI_ON
   - N_F_RL_ON
+  - N_F_SL_ON
   - N_F_SS_ON
+  - N_F_USETLB_ON
   m_InvalidKeywords:
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
@@ -128,8 +129,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskSelfLit:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: f13e33ea84bbf6a40acc4a6c8e054c78, type: 3}
+        m_Scale: {x: 15, y: 15}
         m_Offset: {x: 0, y: 0}
     - _MaskTransparency:
         m_Texture: {fileID: 0}
@@ -296,7 +297,7 @@ Material:
     - _LigIgnoYNorDir: 0
     - _LightAffectOutlineColor: 0
     - _LightAffectRimLightColor: 0
-    - _LightAffectShadow: 0
+    - _LightAffectShadow: 1
     - _LightFalloffAffectShadowT: 0
     - _LightFalloffSoftness: 1
     - _LightIntensity: 1
@@ -319,16 +320,16 @@ Material:
     - _N_F_CLD: 0
     - _N_F_CO: 0
     - _N_F_COEDGL: 0
-    - _N_F_CS: 1
+    - _N_F_CS: 0
     - _N_F_DCS: 0
-    - _N_F_ESSAO: 0
+    - _N_F_ESSAO: 1
     - _N_F_ESSGI: 1
     - _N_F_ESSR: 1
     - _N_F_ESSS: 1
     - _N_F_FR: 0
     - _N_F_GLO: 0
     - _N_F_GLOT: 0
-    - _N_F_HDLS: 1
+    - _N_F_HDLS: 0
     - _N_F_HPSAS: 0
     - _N_F_MC: 0
     - _N_F_MSSOLTFO: 1
@@ -342,7 +343,7 @@ Material:
     - _N_F_R: 0
     - _N_F_RL: 1
     - _N_F_SCT: 0
-    - _N_F_SL: 0
+    - _N_F_SL: 1
     - _N_F_SON: 0
     - _N_F_SS: 1
     - _N_F_ST: 0
@@ -369,7 +370,7 @@ Material:
     - _PPDPrimitiveWidth: 1
     - _PSGLOTEX: 0
     - _PTexturePower: 1
-    - _PointSpotlightIntensity: 0
+    - _PointSpotlightIntensity: 37.2
     - _RELG: 1
     - _RTGIShaFallo: 0
     - _RayTracing: 0
@@ -396,8 +397,8 @@ Material:
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
-    - _SelfLitIntensity: 0
-    - _SelfLitPower: 50
+    - _SelfLitIntensity: 0.204
+    - _SelfLitPower: 680.55
     - _SelfShadowAffectedByLightShadowStrength: 0
     - _SelfShadowHardness: 0.66
     - _SelfShadowRealTimeShadowColorPower: 1
@@ -436,7 +437,7 @@ Material:
     - _SubsurfaceMask: 1
     - _SupportDecals: 1
     - _SurfaceType: 0
-    - _TEXMCOLINT: 0
+    - _TEXMCOLINT: 170.62
     - _TOAO: 1
     - _TRANSMODE: 0
     - _TexWorldScale: 1
@@ -458,7 +459,7 @@ Material:
     - _UseEmissiveIntensity: 0
     - _UseSecondaryCutoutOnly: 0
     - _UseShadowThreshold: 0
-    - _UseTLB: 0
+    - _UseTLB: 1
     - _VertexColorBlueAffectOutlineWitdh: 0
     - _VertexColorGreenControlSelfShadowThreshold: 0
     - _VertexColorRedControlSmoothObjectNormal: 0

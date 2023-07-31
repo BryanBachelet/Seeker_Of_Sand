@@ -148,7 +148,7 @@ namespace Enemies
 
         private void SpawnEnemy(Vector3 positionSpawn)
         {
-            int rnd = Random.Range(0, 500);
+            int rnd = Random.Range(0, 520);
             GameObject enemySpawn;
             if (!EnemyTargetPlayer)
             {
@@ -163,13 +163,25 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
-            else if (rnd < 495)
+            else if (rnd < 495 && rnd >= 450)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
             }
-            else
+            else if(rnd >= 496 && rnd < 501)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation);
+            }
+            else if(rnd > 500 && rnd <= 510)
+            {
+                enemySpawn = GameObject.Instantiate(m_enemyGO[3], positionSpawn, transform.rotation);
+            }
+            else if (rnd > 510)
+            {
+                enemySpawn = GameObject.Instantiate(m_enemyGO[4], positionSpawn, transform.rotation);
+            }
+            else
+            {
+                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
             Enemy enemy = enemySpawn.GetComponent<Enemy>();
             enemy.SetManager(this, m_healthManager);
