@@ -408,7 +408,7 @@ namespace Character
                     m_isCasting = true;
                     m_CharacterAnimator.SetBool("Casting", true);
                     m_CircleAnimator.SetBool("Casting", true);
-                    m_AnimatorSkillBar.SetBool("IsCasting", true);
+                    //m_AnimatorSkillBar.SetBool("IsCasting", true);
                     m_canShoot = true;
                     m_CharacterMouvement.combatState = true;
                     return false;
@@ -426,7 +426,7 @@ namespace Character
                     m_shootInput = false;
                     m_CharacterAnimator.SetBool("Casting", false);
                     m_CircleAnimator.SetBool("Casting", false);
-                    m_AnimatorSkillBar.SetBool("IsCasting", false);
+                    //m_AnimatorSkillBar.SetBool("IsCasting", false);
                     m_CharacterMouvement.combatState = false;
                     return false;
                 }

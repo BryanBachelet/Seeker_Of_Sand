@@ -8,7 +8,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
     [SerializeField] private float m_NumberEnemyKilled = 0;
     [SerializeField] private int m_CurrentLevel = 1;
-    [SerializeField] private Text m_LevelDisplay;
+
     [SerializeField] private Image m_LevelDisplayFill;
     [SerializeField] private float m_RadiusPickupXp;
     [SerializeField] private bool m_ActiveGizmo;
@@ -57,7 +57,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         {
             //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
             m_LevelDisplayFill.fillAmount = (levelProgress - m_CurrentLevel);
-            m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
+            //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
     }
 
@@ -68,7 +68,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             ChooseUpgrade(m_CurrentLevel + i);
         }
         m_CurrentLevel = newLevel;
-        m_LevelDisplay.text = "Level : " + m_CurrentLevel;
 
     }
 

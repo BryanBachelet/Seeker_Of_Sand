@@ -7,10 +7,12 @@ using UnityEngine.UI;
 public class CharacterUpgrade : MonoBehaviour
 {
     public List<Upgrade> m_avatarUpgrade;
-    public int upgradePoint = 1;
+    public int upgradePoint = 0;
     public GameObject upgradeUiGO;
     public GameObject uiLoaderDisplay;
     public Text m_upgradePoint;
+    [SerializeField] private Text m_LevelDisplay;
+    [SerializeField] private int m_CurrentLevel = 1;
 
     private Loader_Behavior m_loaderBehavior;
     private UpgradeManager m_upgradeManager;

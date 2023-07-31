@@ -27,6 +27,7 @@ public class UiSpellGrimoire : MonoBehaviour
     private Vector2 m_mousePosition;
     private bool m_isSpellSelected;
     private UnityEngine.Events.UnityAction<int> m_spellIndexFunction;
+    private UnityEngine.Events.UnityAction<int> m_spellBarIndexFunction;
     private int m_spellEquipIndex;
     private int m_indexSpellDrag;
 
@@ -56,12 +57,11 @@ public class UiSpellGrimoire : MonoBehaviour
             m_spellsOwnImage[i].GetComponent<Button>().onClick.AddListener(() => m_spellIndexFunction.Invoke(value));
         }
 
-        m_spellIndexFunction -= ActiveFocusSpell;
-        m_spellIndexFunction += ActiveFocusSpellBar;
+        m_spellBarIndexFunction += ActiveFocusSpellBar;
         for (int i = 0; i < m_playerSpellEquip.Length; i++) // Setup function on event for the spell bar
         {
             int value = i;
-            m_playerSpellEquip[i].GetComponent<Button>().onClick.AddListener(() => m_spellIndexFunction.Invoke(value));
+            m_playerSpellEquip[i].GetComponent<Button>().onClick.AddListener(() => m_spellBarIndexFunction.Invoke(value));
         }
     }
 

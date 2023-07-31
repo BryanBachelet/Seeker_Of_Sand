@@ -29,7 +29,7 @@ namespace Enemies
         [SerializeField] private float m_TimeBtwRefresh;
         private float tempsEcouleRefresh = 0;
         public Animator myAnimator;
-
+        [SerializeField] private bool m_ActiveDeathAnim;
         private void Start()
         {
             state = new ObjectState();
@@ -147,17 +147,26 @@ namespace Enemies
         }
         private void GetDestroy(Vector3 direction,float power)
         {
-           
-            m_navAgent.enabled = false;
-            float magnitude = Random.Range(0.5f, 1.0f);
-            m_rigidbody.isKinematic = false;
-            m_rigidbody.constraints = RigidbodyConstraints.None;
+            if(m_ActiveDeathAnim)
+            {
+                m_navAgent.isStopped = true;
+                myAnimator.SetTrigger("Death");
+            }
+            else
+            {
+                m_navAgent.enabled = false;
+                float magnitude = Random.Range(0.5f, 1.0f);
+                m_rigidbody.isKinematic = false;
+                m_rigidbody.constraints = RigidbodyConstraints.None;
+                m_rigidbody.AddForce(direction.normalized * power, ForceMode.Impulse);
+            }
+
             for(int i = 0; i < m_xpDrop; i++)
             {
                 Instantiate(m_ExperiencePrefab, transform.position, transform.rotation);
             }
 
-            m_rigidbody.AddForce(direction.normalized  * power, ForceMode.Impulse);
+
             m_isDestroy = true;
             StartCoroutine(Death());
         }

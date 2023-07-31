@@ -84,60 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
   m_SpriteSortPoint: 0
---- !u!1 &86779937
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 86779938}
-  - component: {fileID: 86779939}
-  m_Layer: 0
-  m_Name: ThumbleWeedSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &86779938
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 86779937}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4333526769792634081}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &86779939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 86779937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c221a59d37263dc428c6e0a3bfe0b640, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_activeEffect: 1
-  m_RadiusFloat: 6
-  m_ShowGizmo: 1
-  m_maxWeed: 10
-  WeedObject:
-  - {fileID: 3396968137620048931, guid: eeea3910f8369f44bacfe0dff5cd045c, type: 3}
-  - {fileID: 3396968137620048931, guid: eeea3910f8369f44bacfe0dff5cd045c, type: 3}
-  - {fileID: 3396968137620048931, guid: eeea3910f8369f44bacfe0dff5cd045c, type: 3}
-  m_playerPosition: {fileID: 4333526769792634081}
-  weedSpawnedList: []
 --- !u!1 &199885392
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,7 +342,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1482432450}
-  - {fileID: 1706859804}
   m_Father: {fileID: 2120833564}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -838,64 +783,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
   m_SpriteSortPoint: 0
---- !u!1 &1706859803
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1706859804}
-  - component: {fileID: 1706859805}
-  m_Layer: 0
-  m_Name: Decal (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1706859804
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1706859803}
-  m_LocalRotation: {x: 0.70710707, y: -0, z: -0, w: 0.70710653}
-  m_LocalPosition: {x: -0.01, y: -0, z: 3.94}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 925421624}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &1706859805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1706859803}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f19d9143a39eb3b46bc4563e9889cfbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 519639f78c45d084ab108d88a31ab375, type: 2}
-  m_DrawDistance: 1000
-  m_FadeScale: 1
-  m_StartAngleFade: 180
-  m_EndAngleFade: 180
-  m_UVScale: {x: 1, y: 1}
-  m_UVBias: {x: 0, y: 0}
-  m_AffectsTransparency: 0
-  m_DecalLayerMask: 3
-  m_ScaleMode: 0
-  m_Offset: {x: 0, y: 0, z: 2.54}
-  m_Size: {x: 5, y: 5, z: 7.66}
-  m_FadeFactor: 1
-  m_Version: 2
 --- !u!1 &1711048452
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +897,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4333526769792634081}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!212 &1717169530
 SpriteRenderer:
@@ -1483,7 +1370,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2120833564}
-  - {fileID: 86779938}
   - {fileID: 1717169529}
   - {fileID: 619502402739912476}
   m_Father: {fileID: 0}
@@ -1582,7 +1468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPlayer: {fileID: 0}
-  speed: 8
+  runSpeed: 7
   combatState: 0
   initialSpeed: 10
   m_groundLayerMask:
@@ -1591,14 +1477,25 @@ MonoBehaviour:
   m_groundDistance: 3
   m_maxGroundSlopeAngle: 60
   m_CharacterAnim: {fileID: 7434426885052270770}
+  m_slidingEffect: {fileID: 0}
   m_SpeedReduce: 0.5
   isSliding: 0
+  m_glideSpeed: 4
   accelerationSlide: 5
   maxSpeed: 30
   maxSlope: 60
   minSlope: 5
   minDecceleration: 5
   angularSpeed: 60
+  timeAfterSliding: 0.5
+  timeBeforeSliding: 0.3
+  combatDeccelerationSpeed: 6
+  mouvementState: 0
+  m_speedData:
+    currentSpeed: 0
+    referenceSpeed: []
+    IsFlexibleSpeed: 0
+    direction: {x: 0, y: 0, z: 0}
 --- !u!114 &1983534965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1650,6 +1547,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1983534970}
         m_TargetAssemblyTypeName: CharacterShoot, Assembly-CSharp
         m_MethodName: ShootInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UiSpellGrimoire, Assembly-CSharp
+        m_MethodName: GetMouseRightClick
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1845,6 +1754,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d795b543-b8de-46e8-9bcf-c1c3328ca650
     m_ActionName: Player/Dash[/Keyboard/leftShift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1983534970}
+        m_TargetAssemblyTypeName: Character.CharacterShoot, Assembly-CSharp
+        m_MethodName: OpenGrimoire
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0f869031-8d78-4f18-b01f-bda4c56a0ba5
+    m_ActionName: Player/SpellMenu[/Keyboard/n]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1966,8 +1891,9 @@ MonoBehaviour:
   shootTime: 0.5
   reloadTime: 3
   launcherProfil: {fileID: 11400000, guid: f034fd120e5bbc449b7b41ba84a30217, type: 2}
-  chainEffects: []
-  capsulesPosses: []
+  spellGrimoire: {fileID: 0}
+  bookOfSpell: []
+  spellEquip: 
   capsuleIndex: 00000000000000000000000001000000
   debugCapsule:
   - {fileID: 0}
@@ -1990,7 +1916,7 @@ MonoBehaviour:
   m_CircleAnimator: {fileID: 833201099}
   m_CharacterAnimator: {fileID: 7434426885052270770}
   m_OuterCircleHolder: {fileID: 561152201}
-  SignPosition: []
+  m_SkillBarHolder: {fileID: 0}
   icon_Sprite:
   - {fileID: 0}
   - {fileID: 0}
@@ -2101,7 +2027,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_NumberEnemyKilled: 0
   m_CurrentLevel: 1
-  m_LevelDisplay: {fileID: 0}
   m_LevelDisplayFill: {fileID: 0}
   m_RadiusPickupXp: 15
   m_ActiveGizmo: 1
@@ -2158,6 +2083,8 @@ MonoBehaviour:
   upgradeUiGO: {fileID: 0}
   uiLoaderDisplay: {fileID: 0}
   m_upgradePoint: {fileID: 0}
+  m_LevelDisplay: {fileID: 0}
+  m_CurrentLevel: 1
 --- !u!114 &1983534973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2236,6 +2163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9691b326cf1b5c5409c1701382f3727d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activeDeath: 0
+  m_gameOverMenu: {fileID: 0}
   m_MaxHealthQuantity: 100
   m_CurrentQuarterMaxHealth:
   - 25
@@ -2253,8 +2182,10 @@ MonoBehaviour:
   m_CurrentHealth: 100
   m_invulerableLegerTime: 0.75
   m_invulerableLourdTime: 1
-  m_SliderCurrentHealth: {fileID: 0}
-  m_SliderCurrentQuarter: {fileID: 0}
+  m_SliderCurrentHealthHigh: {fileID: 0}
+  m_SliderCurrentQuarterHigh: {fileID: 0}
+  m_SliderCurrentHealthLow: {fileID: 0}
+  m_SliderCurrentQuarterLow: {fileID: 0}
   updateHealthValues: 0
   damageSend: 10
 --- !u!1 &7409673259591215286
@@ -2463,7 +2394,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cf0912352e9260f4890c24578ab72fbb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf0912352e9260f4890c24578ab72fbb,
         type: 3}
