@@ -43,7 +43,6 @@ public class UiSpellGrimoire : MonoBehaviour
     public void Awake()
     {
         FindUIElement();
-
         SetupSpellButtonFunction();
     }
 
