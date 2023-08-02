@@ -1,7 +1,5 @@
-using System;
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Character
@@ -13,13 +11,15 @@ namespace Character
         public float shootTime;
         public float reloadTime;
         public LauncherProfil launcherProfil;
-        public ChainEffect[] chainEffects;
+        public UiSpellGrimoire spellGrimoire;
 
-
-        public CapsuleSystem.Capsule[] capsulesPosses;
+        [HideInInspector]
+        public List<CapsuleSystem.Capsule> bookOfSpell = new List<CapsuleSystem.Capsule>();
+        public int[] spellEquip;
         private int m_currentIndexCapsule = 0;
+        private int m_currentRotationIndex = 0;
 
-        public int[] capsuleIndex;
+        public List<int> capsuleIndex;
         [SerializeField] private ChooseSkillManualy[] debugCapsule = new ChooseSkillManualy[4];
 
         public CapsuleManager m_capsuleManager;
@@ -54,7 +54,6 @@ namespace Character
         private Animator m_AnimatorSkillBar;
 
         private Loader_Behavior m_LoaderInUI;
-        public List<Transform> SignPosition;
         public List<UnityEngine.UI.Image> icon_Sprite;
 
 
@@ -101,7 +100,7 @@ namespace Character
         private void SwitchCapsuleChange(bool increase)
         {
             if (m_isCasting) return;
-            for (int i = 0; i < capsuleIndex.Length; i++)
+            for (int i = 0; i < capsuleIndex.Count; i++)
             {
                 if (increase)
                 {
@@ -138,38 +137,53 @@ namespace Character
 
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;
             }
         }
 
         public void InitCapsule()
         {
-            capsulesPosses = new CapsuleSystem.Capsule[capsuleIndex.Length];
-            for (int i = 0; i < capsuleIndex.Length; i++)
+
+            for (int i = 0; i < 5; i++)
             {
-                capsulesPosses[i] = m_capsuleManager.capsules[capsuleIndex[i]];
+                bookOfSpell.Add(m_capsuleManager.capsules[capsuleIndex[i]]);
             }
-            capsuleStatsAlone = new CapsuleStats[capsulesPosses.Length];
-            for (int i = 0; i < capsulesPosses.Length; i++)
+            capsuleStatsAlone = new CapsuleStats[bookOfSpell.Count];
+            for (int i = 0; i < bookOfSpell.Count; i++)
             {
-                if (capsulesPosses[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                if (bookOfSpell[i].type == CapsuleSystem.CapsuleType.ATTACK)
                 {
-                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)capsulesPosses[i];
+                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[i];
                     capsuleStatsAlone[i] = currentCap.stats.stats;
                 }
                 else
                     capsuleStatsAlone[i] = new CapsuleStats();
             }
+            spellEquip = new int[4];
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                spellEquip[i] = i;
+            }
+            m_currentIndexCapsule = spellEquip[0];
             GetCircleInfo();
             if (m_LoaderInUI == null) return;
             m_LoaderInUI.CleanCapsule();
-            m_LoaderInUI.SetCapsuleOrder(capsuleIndex);
+            m_LoaderInUI.SetCapsuleOrder(capsuleIndex.ToArray());
         }
 
+        public void GenerateNewBuild()
+        {
+
+            for (int i = 0; i < 5; i++)
+            {
+                int RndCapsule = UnityEngine.Random.Range(0, 8);
+                capsuleIndex.Add(RndCapsule);
+            }
+        }
 
         private void Update()
         {
-            if(PauseMenu.gameState && !state.isPlaying) { return; }
+            if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_shootInput)
             {
                 if (!m_isShooting) Shoot();
@@ -189,8 +203,6 @@ namespace Character
             ReloadShot();
             ReloadWeapon();
         }
-
-
 
         public void ShootInput(InputAction.CallbackContext ctx)
         {
@@ -222,7 +234,7 @@ namespace Character
             }
             if (m_currentType == CapsuleSystem.CapsuleType.BUFF)
             {
-                ShootBuff(((CapsuleSystem.CapsuleBuff)capsulesPosses[m_currentIndexCapsule]));
+                ShootBuff(((CapsuleSystem.CapsuleBuff)bookOfSpell[m_currentIndexCapsule]));
                 EndShoot();
             }
             m_CircleAnimator.SetBool("Shooting", true);
@@ -239,8 +251,8 @@ namespace Character
             {
                 Transform transformUsed = transform;
                 Quaternion rot = m_characterAim.GetTransformHead().rotation;
-                GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).projectile
-                    , transformUsed.position + new Vector3(0,1,0), rot);
+                GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
+                    , transformUsed.position + new Vector3(0, 1, 0), rot);
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
                 data.speed = currentWeaponStats.speed;
@@ -268,7 +280,7 @@ namespace Character
         private void ShootBuff(CapsuleSystem.CapsuleBuff capsuleBuff)
         {
             Buff.BuffCharacter buff = new Buff.BuffCharacter(capsuleBuff.profil, capsuleBuff.duration);
-            if(capsuleBuff.vfx) { GameObject vfxObject = Instantiate(capsuleBuff.vfx, transform.position, Quaternion.identity); }
+            if (capsuleBuff.vfx) { GameObject vfxObject = Instantiate(capsuleBuff.vfx, transform.position, Quaternion.identity); }
             m_buffManager.AddBuff(buff);
             GlobalSoundManager.PlayOneShot(8, Vector3.zero);
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
@@ -276,15 +288,15 @@ namespace Character
 
         private void StartShoot()
         {
-            m_currentType = capsulesPosses[m_currentIndexCapsule].type;
-            icon_Sprite[m_currentIndexCapsule].color = Color.gray;
-            SignPosition[m_currentIndexCapsule].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 0);
-           
+            m_currentType = bookOfSpell[m_currentIndexCapsule].type;
+            icon_Sprite[m_currentRotationIndex].color = Color.gray;
+           // SignPosition[m_currentRotationIndex].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 0);
+
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = (capsuleStatsAlone[m_currentIndexCapsule]);
-                Instantiate(((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).vfx, transform.position, m_characterAim.GetTransformHead().rotation);
-                
+                Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).vfx, transform.position, m_characterAim.GetTransformHead().rotation);
+
             }
             m_isShooting = true;
         }
@@ -293,14 +305,14 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
-            m_currentType = capsulesPosses[m_currentIndexCapsule].type;
+            m_currentType = bookOfSpell[m_currentIndexCapsule].type;
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)capsulesPosses[m_currentIndexCapsule]).stats.stats;
+                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;
             }
             m_canShoot = false;
             m_isShooting = false;
- 
+
         }
 
         #region Shoot Function
@@ -322,19 +334,19 @@ namespace Character
 
         #endregion
 
-
         private int ChangeProjecileIndex()
         {
-            if (m_currentIndexCapsule == capsulesPosses.Length - 1)
+            if (m_currentRotationIndex == spellEquip.Length - 1)
             {
                 m_isReloading = true;
-              
+                m_currentRotationIndex = 0;
                 ManagedCastCapacity(false);
-                return 0;
+                return spellEquip[0];
             }
             else
             {
-                return m_currentIndexCapsule + 1;
+                m_currentRotationIndex++;
+                return spellEquip[m_currentRotationIndex];
             }
         }
 
@@ -346,7 +358,7 @@ namespace Character
             {
                 for (int i = 0; i < icon_Sprite.Count; i++)
                 {
-                    icon_Sprite[m_currentIndexCapsule].color = Color.white;
+                    icon_Sprite[m_currentRotationIndex].color = Color.white;
                 }
 
                 m_canShoot = true;
@@ -382,7 +394,7 @@ namespace Character
 
         public void Debug_NewLoadout(int[] NewCapsule)
         {
-            capsuleIndex = NewCapsule;
+            // capsuleIndex = NewCapsule;
             InitCapsule();
         }
 
@@ -427,56 +439,88 @@ namespace Character
 
         public void GetCircleInfo()
         {
-            SignPosition.Clear();
-            for (int i = 0; i < capsuleIndex.Length; i++)
-            {
-                SignPosition.Add(m_OuterCircleHolder.GetChild(i).GetChild(0).transform);
-            }
             ActiveIcon();
         }
 
         private void ActiveIcon()
         {
-            for(int i = 0; i < icon_Sprite.Count; i++)
+            for (int i = 0; i < icon_Sprite.Count; i++)
             {
                 icon_Sprite[i].color = Color.white;
-                SignPosition[i].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 1);
+                //SignPosition[i].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 1);
             }
-            RefreshActiveIcon(capsulesPosses);
+            RefreshActiveIcon(bookOfSpell.ToArray());
         }
 
         public void RefreshActiveIcon(CapsuleSystem.Capsule[] capsuleState)
         {
-            for(int i = 0; i < capsuleState.Length; i++)
+            for (int i = 0; i < spellEquip.Length; i++)
             {
-                if(capsulesPosses[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                int index = spellEquip[i];
+                if (capsuleState[index].type == CapsuleSystem.CapsuleType.ATTACK)
                 {
-                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleAttack)capsulesPosses[i]).sprite;
+                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleAttack)capsuleState[index]).sprite;
                 }
-                else if(capsulesPosses[i].type == CapsuleSystem.CapsuleType.BUFF)
+                else if (capsuleState[index].type == CapsuleSystem.CapsuleType.BUFF)
                 {
-                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleBuff)capsulesPosses[i]).sprite;
+                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleBuff)capsuleState[index]).sprite;
                 }
-                SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
+                //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
         }
 
-        public void GenerateNewBuild()
+
+
+        #region Spell Functions
+        public void AddSpell(int index)
         {
-            for(int i = 0; i < capsuleIndex.Length; i ++)
-            {
-                int RndCapsule = UnityEngine.Random.Range(0, 8);
-                capsuleIndex[i] = RndCapsule;
-            }
+            capsuleIndex.Add(index);
+            bookOfSpell.Add(m_capsuleManager.capsules[index]);
         }
 
-        public void ManuallyChangeCapsule(int indexNumber)
+        public void OpenGrimoire(InputAction.CallbackContext ctx)
         {
-            for(int i = 0; i < capsuleIndex.Length; i++)
+            if (ctx.started)
             {
+                if (!spellGrimoire.isOpen)
+                {
+                    Sprite[] iconArray = new Sprite[bookOfSpell.Count];
+                    for (int i = 0; i < iconArray.Length; i++)
+                    {
+                        iconArray[i] = bookOfSpell[i].sprite;
+                    }
+
+                    spellGrimoire.OpenUI(iconArray,spellEquip);
+                    return;
+                }
+                spellGrimoire.CloseUI();
 
             }
         }
+
+        public bool IsSpellAlreadyUse(int indexSpell)
+        {
+
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                if (indexSpell == spellEquip[i]) return true;
+            }
+            return false;
+        }
+
+        public void ChangeSpell(int spellSlot, int indexSpell)
+        {
+            spellEquip[spellSlot] = indexSpell;
+            RefreshActiveIcon(bookOfSpell.ToArray());
+        }
+        public CapsuleSystem.Capsule GetCapsuleInfo(int index) { return bookOfSpell[index]; }
+
+        public int GetIndexFromSpellBar(int indexSpellBar ) { return spellEquip[indexSpellBar]; }
+
+        #endregion
+
+
     }
+
 
 }

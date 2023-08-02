@@ -9,6 +9,8 @@ namespace CapsuleSystem
     public struct CapsuleAttackInfo
     {
         public string name;
+        [TextArea]
+        public string description;
         public GameObject projectile;
         public GameObject vfx;
         public CapsuleProfil stats;
@@ -20,6 +22,8 @@ namespace CapsuleSystem
     public struct CapsuleBuffInfo
     {
         public string name;
+        [TextArea]
+        public string description;
         public CharacterData stats;
         public float duration;
         public Sprite sprite;
@@ -39,6 +43,8 @@ namespace CapsuleSystem
     public class Capsule 
     {
         public string name;
+        [TextArea]
+        public string description;
         public CapsuleType type;
         public Sprite sprite;
     }
@@ -48,6 +54,7 @@ namespace CapsuleSystem
         public CapsuleAttack(CapsuleAttackInfo info)
         {
             name = info.name;
+            description = info.description;
             projectile = info.projectile;
             stats = info.stats;
             sprite = info.sprite;
@@ -66,6 +73,7 @@ namespace CapsuleSystem
         public CapsuleBuff(CapsuleBuffInfo info)
         {
             name = info.name;
+            description = info.description;
             profil = info.stats;
             type = CapsuleType.BUFF;
             duration = info.duration;

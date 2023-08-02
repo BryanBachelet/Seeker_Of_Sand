@@ -3,8 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System;
+
+[Serializable]
+public struct UpgradeButton
+{
+    public int upgradeLink;
+    public int numberOfUpgrade;
+    public Button button;
+}
+
 public class UpgradeUI : MonoBehaviour
 {
+
+    public UpgradeButton[] upgradeButtons = new UpgradeButton[9];
+    public UnityEngine.Events.UnityAction<int, int> m_upgradeButtonFunction;
     public Text[] m_upgradeDescription = new Text[3];
     public Image[] m_upgradeIcon = new Image[3];
     public Image[] m_upgradeTypeIcon = new Image[3];
@@ -17,7 +30,8 @@ public class UpgradeUI : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 0; i < SelectionIcon.Length; i++)
+       
+        for (int i = 0; i < SelectionIcon.Length; i++)
         {
             selectionAnimator[i] = SelectionIcon[i].GetComponent<Animator>();
         }
@@ -45,9 +59,9 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    public void ChooseUpgrade(int index)
+    public void ChooseUpgrade(int index, int number)
     {
-        m_upgradeCharacter.ChooseUpgrade(index);
+        m_upgradeCharacter.ChooseUpgrade(index,number);
     }
 
     public void UpdateCursorOver(int upgradeOvered)
