@@ -174,7 +174,7 @@ namespace Enemies
         private IEnumerator Death()
         {
             yield return new WaitForSeconds(2);
-            m_enemyManager.DestroyEnemy(this);
+            //m_enemyManager.DestroyEnemy(this);
         }
     }
 }

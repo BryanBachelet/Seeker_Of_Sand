@@ -70,7 +70,7 @@ public class AgentProfile : ScriptableObject
 
 public class HealthSystem
 {
-    float m_currentHealth;
+   private float m_currentHealth;
 
     public float health { get { return m_currentHealth; } private set { } }
 

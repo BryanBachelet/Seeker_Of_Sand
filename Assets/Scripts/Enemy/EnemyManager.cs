@@ -20,11 +20,11 @@ namespace Enemies
         [SerializeField] private int m_maxUnittotal = 400;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
-
+        [SerializeField] private GameObject m_ExperiencePrefab;
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
 
-        public List<Enemy> m_enemiesArray = new List<Enemy>();
+        public List<NpcHealthComponent> m_enemiesArray = new List<NpcHealthComponent>();
 
         static public bool EnemyTargetPlayer = true;
 
@@ -72,7 +72,8 @@ namespace Enemies
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
-                m_enemiesArray[i].UpdateGameState(state);
+                if (state) m_enemiesArray[i].SetPauseState();
+                else m_enemiesArray[i].RemovePauseState();
             }
         }
 
@@ -183,38 +184,49 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
-            Enemy enemy = enemySpawn.GetComponent<Enemy>();
-            enemy.SetManager(this, m_healthManager);
+            NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
+            npcHealth.SetInitialData( m_healthManager, this);
+
+            NpcMouvementComponent npcMouvement = enemySpawn.GetComponent<NpcMouvementComponent>();
             if (EnemyTargetPlayer)
             {
-                enemy.SetTarget(m_playerTranform);
+                npcMouvement.SetTarget(m_playerTranform);
             }
             else
             {
-                enemy.SetTarget(altarObject);
+                npcMouvement.SetTarget(altarObject);
             }
-            m_enemiesArray.Add(enemy);
+            m_enemiesArray.Add(npcHealth);
         }
 
 
-
-        public void DestroyEnemy(Enemy enemy)
+        public void SpawnExp(Vector3 position ,int count )
         {
-            if (!m_enemiesArray.Contains(enemy)) return;
+            for (int i = 0; i < count; i++)
+            {
+                Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
+            }
+        }
+        
+        public void DestroyEnemy(NpcHealthComponent npcHealth)
+        {
+
+            if (!m_enemiesArray.Contains( npcHealth)) return;
+            
 
             m_enemyKillRatio.AddEnemiKill();
             if (!EnemyTargetPlayer)
             {
-                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(enemy.transform.position);
-                if (nearestAltar != null && Vector3.Distance(enemy.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(npcHealth.transform.position);
+                if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
                 {
                     nearestAltar.IncreaseKillCount();
                 }
                 //alatarRefScript.IncreaseKillCount(); 
 
             }
-            m_enemiesArray.Remove(enemy);
-            Destroy(enemy.gameObject);
+            m_enemiesArray.Remove(npcHealth);
+            Destroy(npcHealth.gameObject);
         }
 
         public AlatarHealthSysteme CheckDistanceAltar(Vector3 position)
