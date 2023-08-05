@@ -26,6 +26,7 @@ namespace Enemies
         public void Start()
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_npcHealthComponent.destroyEvent += OnDeath;
             m_targetTransform = m_npcHealthComponent.target;
         }
 
@@ -85,6 +86,11 @@ namespace Enemies
         public void OnDrawGizmos()
         {
             Gizmos.DrawWireSphere(m_monsterBodyTransform.position, radiusOfAttack);
+        }
+
+        public void OnDeath( Vector3 direction,float power)
+        {
+            this.enabled = false;
         }
 
 
