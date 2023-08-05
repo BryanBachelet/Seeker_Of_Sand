@@ -57,22 +57,22 @@ public class Harpon : Projectile
         if (other.tag != "Enemy") return;
 
         GlobalSoundManager.PlayOneShot(9, transform.position);
-        Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
+        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
         //if (enemyTouch.IsDestroing()) return;
 
         if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
         {
-            enemyTouch.HitEnemy(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
+            enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
 
             //if (enemyTouch.IsDestroing()) return;
 
             m_firstHit = true;
-            m_enemyImpale = enemyTouch;
+            //m_enemyImpale = enemyTouch;
             m_enemyImpale.ChangeActiveBehavior(false);
         }
         if (m_firstHit || m_currentDistance > m_minRangeToImpale)
         {
-            enemyTouch.HitEnemy(m_damage, enemyTouch.transform.position - transform.position, m_power);
+            enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
         }
 
     }
