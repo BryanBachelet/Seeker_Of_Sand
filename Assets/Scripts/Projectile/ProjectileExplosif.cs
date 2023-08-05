@@ -159,25 +159,25 @@ public class ProjectileExplosif : Projectile
     {
         if (m_stickTransform != null)
         {
-            Enemies.Enemy stickyEnemy = m_stickTransform.GetComponent<Enemies.Enemy>();
+            Enemies.NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<Enemies.NpcHealthComponent>();
             Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
 
             for (int i = 0; i < enemies.Length; i++)
             {
-                Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
+                Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
                 if (enemyTouch == null) continue;
 
-                if (stickyEnemy.IsDestroing())
+                if (enemyTouch.npcState == Enemies.NpcState.DEATH)
                 {
                     Destroy(this.gameObject);
                     return;
                 }
                 if (enemyTouch != stickyEnemy)
-                    enemyTouch.HitEnemy(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
             }
 
 
-            stickyEnemy.HitEnemy(m_damage, stickyEnemy.transform.position - transform.position, m_power);
+            stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power);
         }
         StartCoroutine(DelayDestroy(2));
     }

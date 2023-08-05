@@ -146,7 +146,7 @@ public class UiSpellGrimoire : MonoBehaviour
         m_isSpellSelected = true;
     }
 
-    public void GetMouseRightClick(InputAction.CallbackContext ctx)
+    public void GetMouseLeftClick(InputAction.CallbackContext ctx)
     {
         if (ctx.canceled)
         {
