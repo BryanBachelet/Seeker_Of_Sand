@@ -30,6 +30,7 @@ namespace Enemies
         public int xpToDrop;
         private int m_previousNpcState;
 
+        [HideInInspector] public Transform target;
 
         public delegate void DestroyEvent(Vector3 direction, float power);
         public event DestroyEvent destroyEvent;

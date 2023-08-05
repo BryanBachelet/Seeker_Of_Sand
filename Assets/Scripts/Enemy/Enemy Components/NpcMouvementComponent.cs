@@ -43,6 +43,7 @@ namespace Enemies
         public void Start()
         {
             InitComponent();
+            SetTarget(m_npcHealthComponent.target);
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
@@ -72,12 +73,22 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-            if (isAffectedBySlope)
-            {
-                m_navMeshAgent.speed = CalculateSlopeSpeed();
-            }
 
-            Move();
+            if (m_npcHealthComponent.npcState == NpcState.MOVE)
+            {
+                if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
+
+                if (isAffectedBySlope)
+                {
+                    m_navMeshAgent.speed = CalculateSlopeSpeed();
+                }
+
+                Move();
+            }
+            else
+            {
+                if (m_navMeshAgent.isActiveAndEnabled) m_navMeshAgent.isStopped = true;
+            }
         }
 
         public void SetupPause()
@@ -93,10 +104,10 @@ namespace Enemies
             float currentSlope = GetSlopeAngle(direction);
 
             float ratio = maxVariation;
-            if (currentSlope < 0) ratio = minVariation;
-
-
-            float speed = m_baseSpeed * ((currentSlope / m_maxAngle)* ratio);
+            if (currentSlope < 0) ratio = -minVariation;
+            float ratioSlope = (currentSlope / m_maxAngle);
+            float ratioSpeed = Mathf.Lerp(0, ratio, Mathf.Abs(ratioSlope));
+            float speed = m_baseSpeed+   m_baseSpeed * ratioSpeed;
             return speed;
         }
 

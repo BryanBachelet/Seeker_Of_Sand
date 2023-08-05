@@ -187,14 +187,13 @@ namespace Enemies
             NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
             npcHealth.SetInitialData( m_healthManager, this);
 
-            NpcMouvementComponent npcMouvement = enemySpawn.GetComponent<NpcMouvementComponent>();
             if (EnemyTargetPlayer)
             {
-                npcMouvement.SetTarget(m_playerTranform);
+                npcHealth.target  = m_playerTranform;
             }
             else
             {
-                npcMouvement.SetTarget(altarObject);
+                npcHealth.target =  altarObject;
             }
             m_enemiesArray.Add(npcHealth);
         }
