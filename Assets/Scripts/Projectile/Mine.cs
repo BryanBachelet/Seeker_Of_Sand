@@ -107,12 +107,12 @@ public class Mine : ProjectileExplosif
                 continue;
             }
             
-            Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
+            Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
            
             if (enemyTouch == null) continue;
 
-            if (enemyTouch.IsDestroing()) continue;
-             enemyTouch.HitEnemy(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized , m_power);
+            if (enemyTouch.npcState == Enemies.NpcState.DEATH) continue;
+             enemyTouch.ReceiveDamage(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized , m_power);
         }
         StartCoroutine(DelayDestroy(2));
     }
