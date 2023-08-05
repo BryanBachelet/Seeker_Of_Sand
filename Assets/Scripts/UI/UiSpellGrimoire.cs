@@ -158,6 +158,7 @@ public class UiSpellGrimoire : MonoBehaviour
             {
                 m_characterShoot.ChangeSpell(m_spellEquipIndex, m_indexSpellDrag);
                 m_playerSpellEquip[m_spellEquipIndex].sprite = m_imageComponentDragAndDrop.sprite;
+                m_spellEquipIndex = -1;
             }
         }
     }
