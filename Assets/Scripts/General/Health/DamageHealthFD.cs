@@ -31,6 +31,7 @@ public class DamageHealthFD : MonoBehaviour
 
         gameObject.SetActive(true);
         gameObject.transform.position = position;
+        gameObject.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
         m_text.text = damage.ToString("F0");
 
         m_animation.Play();

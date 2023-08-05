@@ -36,7 +36,8 @@ public class ChooseSkillManualy : MonoBehaviour
 
     public void InitialyseSkill()
     {
-        currentSkill = characterShootScript.capsuleIndex[m_skillNumber];
+        // TODO : Fix
+       // currentSkill = characterShootScript.capsuleIndex[m_skillNumber];
         m_slider.value = currentSkill;
         m_txtNumberSkill.text = "" + currentSkill;
     }

@@ -96,7 +96,6 @@ public class UpgradeCapsule : Upgrade
     {
         base.Setup(capsuleCount,sprite);
         capsuleIndex = capsuleCount;
-        gain.description += " " + capsuleIndex.ToString();
         gain.icon_Associat = sprite;
     }
 
@@ -108,7 +107,7 @@ public class UpgradeCapsule : Upgrade
         playerStat.range += gain.capsulsStats.range;
         playerStat.shootAngle += gain.capsulsStats.shootAngle;
         playerStat.shootNumber += gain.capsulsStats.shootNumber;
-        Debug.Log(playerStat.shootNumber + "=  Shoot Number  |" + playerStat.projectileNumber + "=  Projectil Number");
+        
         //gain.description = m_baseString;
     }
 

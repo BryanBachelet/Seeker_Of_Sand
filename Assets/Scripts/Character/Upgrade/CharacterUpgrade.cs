@@ -30,22 +30,29 @@ public class CharacterUpgrade : MonoBehaviour
             if (upgradePoint == 0) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
-            //uiLoaderDisplay.SetActive(false);
-            //m_loaderBehavior.UpdateLoaderInUpgrade(false);
-            if (upgradeUiGO.activeSelf == false) 
+            if (upgradeUiGO.activeSelf == false)
             {
+                GameState.ChangeState();
                 DestroyAllUpgrade();
                 return;
             }
             GetNewUpgrade();
             m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
-          // Time.timeScale = 0.02f;
+            GameState.ChangeState();
+            // Time.timeScale = 0.02f;
         }
     }
     #region Init Script
     public void Start()
     {
         InitComponents();
+        m_upgradeUi.m_upgradeButtonFunction += ChooseUpgrade;
+        for (int i = 0; i < m_upgradeUi.upgradeButtons.Length ; i++)
+        {
+            int upgradeLink = m_upgradeUi.upgradeButtons[i].upgradeLink;
+            int upgradeNumber = m_upgradeUi.upgradeButtons[i].numberOfUpgrade;
+            m_upgradeUi.upgradeButtons[i].button.onClick.AddListener(() => m_upgradeUi.m_upgradeButtonFunction.Invoke(upgradeLink, upgradeNumber));
+        }
         m_upgradePoint.text = upgradePoint.ToString();
     }
 
@@ -66,8 +73,8 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            int index = Random.Range(0, m_characterShoot.capsuleIndex.Length);
-            m_upgradeToChoose[i].Setup(index ,m_characterShoot.capsulesPosses[index].sprite);
+            int index = Random.Range(0, m_characterShoot.capsuleIndex.Count);
+            m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[index].sprite);
         }
     }
 
@@ -78,28 +85,30 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradeToChoose[i].Destroy();
             m_upgradeToChoose[i] = null;
         }
-       
+
     }
-    public void ChooseUpgrade(int indexChoice)
+    public void ChooseUpgrade(int indexChoice, int numberUpgrade)
     {
-        m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
-        m_characterProfil.ApplyStat(CalculateStat(m_characterProfil.m_baseStat));
-        upgradePoint--;
-        m_CurrentLevel++;
-        m_LevelDisplay.text = "" + m_CurrentLevel;
-        m_upgradePoint.text = upgradePoint.ToString();
+
+        Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+        for (int i = 0; i < numberUpgrade; i++)
+        {
+            m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
+            ApplyUpgrade(indexChoice);
+            upgradePoint--;
+        }
+
         DestroyAllUpgrade();
         if (upgradePoint == 0)
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            //uiLoaderDisplay.SetActive(true);
-            //m_loaderBehavior.UpdateLoaderInUpgrade(true);
-            Time.timeScale = 1;
+            m_upgradePoint.text = upgradePoint.ToString();
             return;
         }
-       
+
         GetNewUpgrade();
         m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
+        m_upgradePoint.text = upgradePoint.ToString();
     }
 
 
@@ -129,12 +138,28 @@ public class CharacterUpgrade : MonoBehaviour
                 m_avatarUpgrade[index].Apply(ref stat);
                 break;
             case UpgradeType.LAUNCHER:
-                m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats) ;
+                m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
                 m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex]);
                 break;
             default:
+                break;
+        }
+    }
+
+    private void ApplyUpgrade(int indexChoose)
+    {
+        switch (m_upgradeToChoose[indexChoose].gain.type)
+        {
+            case UpgradeType.CHARACTER:
+                m_upgradeToChoose[indexChoose].Apply(ref m_characterProfil.stats);
+                break;
+            case UpgradeType.LAUNCHER:
+                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.launcherStats);
+                break;
+            case UpgradeType.CAPSULE:
+                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex]);
                 break;
         }
     }

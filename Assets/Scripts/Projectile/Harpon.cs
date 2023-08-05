@@ -20,14 +20,14 @@ public class Harpon : Projectile
 
     protected override void Move()
     {
-        if(m_enemyImpale == null)
+        if(m_enemyImpale == null || m_enemyImpale.IsDestroing())
         {
             m_enemyImpale = null;
         }
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(transform.position, m_direction.normalized,out hit, m_speed * Time.deltaTime, m_layer))
         {
-            if (m_firstHit )
+            if (m_enemyImpale != null && m_firstHit && !m_enemyImpale.IsDestroing() )
             {
                 m_enemyImpale.HitEnemy(m_damage * m_impalementDamageRatio, m_enemyImpale.transform.position - transform.position, m_power);
                 m_enemyImpale.ChangeActiveBehavior(true);

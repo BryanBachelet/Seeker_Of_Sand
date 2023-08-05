@@ -1556,6 +1556,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UiSpellGrimoire, Assembly-CSharp
+        m_MethodName: GetMouseRightClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 854a250b-03fe-43f1-b8f9-89a08b909c18
     m_ActionName: Player/Fire[/XInputControllerWindows/rightTrigger,/Mouse/leftButton]
   - m_PersistentCalls:
@@ -1742,6 +1754,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d795b543-b8de-46e8-9bcf-c1c3328ca650
     m_ActionName: Player/Dash[/Keyboard/leftShift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1983534970}
+        m_TargetAssemblyTypeName: Character.CharacterShoot, Assembly-CSharp
+        m_MethodName: OpenGrimoire
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0f869031-8d78-4f18-b01f-bda4c56a0ba5
+    m_ActionName: Player/SpellMenu[/Keyboard/n]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1863,8 +1891,9 @@ MonoBehaviour:
   shootTime: 0.5
   reloadTime: 3
   launcherProfil: {fileID: 11400000, guid: f034fd120e5bbc449b7b41ba84a30217, type: 2}
-  chainEffects: []
-  capsulesPosses: []
+  spellGrimoire: {fileID: 0}
+  bookOfSpell: []
+  spellEquip: 
   capsuleIndex: 00000000000000000000000001000000
   debugCapsule:
   - {fileID: 0}
@@ -1888,7 +1917,6 @@ MonoBehaviour:
   m_CharacterAnimator: {fileID: 7434426885052270770}
   m_OuterCircleHolder: {fileID: 561152201}
   m_SkillBarHolder: {fileID: 0}
-  SignPosition: []
   icon_Sprite:
   - {fileID: 0}
   - {fileID: 0}
