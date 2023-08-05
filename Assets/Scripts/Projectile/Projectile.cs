@@ -87,11 +87,11 @@ public class Projectile : MonoBehaviour
     {
         if (other.gameObject.tag != "Enemy") return;
 
-        Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
+        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-        if (enemyTouch.IsDestroing()) return;
+        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
 
-        enemyTouch.HitEnemy(m_damage,other.transform.position - transform.position, m_power);
+        enemyTouch.ReceiveDamage(m_damage,other.transform.position - transform.position, m_power);
 
         piercingCount++;
         if (piercingCount >= piercingMax)
