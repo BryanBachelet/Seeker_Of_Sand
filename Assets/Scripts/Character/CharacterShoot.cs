@@ -144,7 +144,7 @@ namespace Character
         public void InitCapsule()
         {
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < capsuleIndex.Count; i++)
             {
                 bookOfSpell.Add(m_capsuleManager.capsules[capsuleIndex[i]]);
             }

@@ -22,6 +22,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
     [SerializeField] protected float m_damage = 1;
+    [SerializeField] private int m_indexSFX;
 
     protected Vector3 m_destination;
     protected float m_lifeTimer;
@@ -33,7 +34,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float m_deltaTimeMove;
     void  Update()
     {
-        if(!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; }
+        if(!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
         else
         {
             if(Time.time > spawnTime + m_deltaTimeMove)
