@@ -45,8 +45,6 @@ public class ProjectileExplosif : Projectile
         Vector3 rightDirection = Quaternion.AngleAxis(90, Vector3.up) * direction.normalized;
         m_directionHeight = Quaternion.AngleAxis(-90, rightDirection.normalized) * direction.normalized;
 
-
-
         m_direction = direction.normalized;
         m_direction.Normalize();
         m_speed = GetSpeed(m_distanceDest, m_lifeTime - 0.1f, m_angleTrajectory);
