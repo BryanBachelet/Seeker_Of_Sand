@@ -50,6 +50,7 @@ public class RainBullet : Projectile
     }
     private void ApplyDamage(Enemies.NpcHealthComponent enemy)
     {
+        if (enemy == null) return;
         if (Vector3.Distance(enemy.transform.position, transform.position) > ((m_collider.radius/2.0f) - m_radiusArea))
         {
             enemy.ReceiveDamage(m_damage, (enemy.transform.position - transform.position).normalized, m_power);
@@ -75,7 +76,7 @@ public class RainBullet : Projectile
 
         Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-        if (enemyTouch.npcState != Enemies.NpcState.DEATH) return;
+        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
         m_enemiesList.Add(enemyTouch);
     }
 
@@ -85,7 +86,7 @@ public class RainBullet : Projectile
 
         Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-        if (enemyTouch.npcState != Enemies.NpcState.DEATH) return;
+        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
         m_enemiesList.Remove(enemyTouch);
     }
 
