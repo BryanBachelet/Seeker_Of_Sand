@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2176.7559, g: 1368.5508, b: 1291.4602, a: 1}
+  m_IndirectSpecularColor: {r: 1981.5352, g: 1245.2393, b: 1225.6863, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7831,17 +7831,17 @@ PrefabInstance:
     - target: {fileID: 2522525237747954506, guid: c6ad81311f7daab48a3c4571fe430553,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[5].m_Value.x
-      value: 1
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 2522525237747954506, guid: c6ad81311f7daab48a3c4571fe430553,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[5].m_Value.y
-      value: 1
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 2522525237747954506, guid: c6ad81311f7daab48a3c4571fe430553,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[5].m_Value.z
-      value: 1
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 2522525237747954506, guid: c6ad81311f7daab48a3c4571fe430553,
         type: 3}
@@ -9041,7 +9041,6 @@ GameObject:
   - component: {fileID: 1560303680}
   - component: {fileID: 1560303683}
   - component: {fileID: 1560303682}
-  - component: {fileID: 1560303681}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -9064,20 +9063,6 @@ Transform:
   m_Father: {fileID: 2061072916}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -105, y: 0, z: 0}
---- !u!64 &1560303681
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1560303679}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1560303682
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13579,7 +13564,7 @@ PrefabInstance:
     - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
       propertyPath: OneS_Sound_Attribution.Array.size
-      value: 26
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
@@ -13690,6 +13675,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OneS_Sound_Attribution.Array.data[25].Path
       value: event:/Player/Weapon_Pack2/Water/VFX_Water_Scie
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: OneS_Sound_Attribution.Array.data[26].Path
+      value: event:/Player/Weapon_Pack2/Air/VFX_Air_Harpon
       objectReference: {fileID: 0}
     - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
@@ -13990,6 +13980,26 @@ PrefabInstance:
         type: 3}
       propertyPath: OneS_Sound_Attribution.Array.data[25].Guid.Data4
       value: 1563761187
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: OneS_Sound_Attribution.Array.data[26].Guid.Data1
+      value: 15578549
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: OneS_Sound_Attribution.Array.data[26].Guid.Data2
+      value: 1095221871
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: OneS_Sound_Attribution.Array.data[26].Guid.Data3
+      value: 1928684954
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925182484056978154, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: OneS_Sound_Attribution.Array.data[26].Guid.Data4
+      value: 1285361150
       objectReference: {fileID: 0}
     - target: {fileID: 6398785996441288091, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
@@ -14339,6 +14349,10 @@ PrefabInstance:
       propertyPath: m_slidingEffect
       value: 
       objectReference: {fileID: 128437676}
+    - target: {fileID: 1983534959, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_groundDistance
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1983534959, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: minDecceleration
       value: 20
@@ -17048,6 +17062,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.000021432585
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880599752284656772, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 30000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880599752284656772, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_LightUnit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880599752284656772, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_VolumetricDimmer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880599752284656772, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_VolumetricShadowDimmer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1884068386503564177, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
@@ -20286,6 +20320,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -12
       objectReference: {fileID: 0}
@@ -21168,6 +21217,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5051966494936625334, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 2387.324
       objectReference: {fileID: 0}
     - target: {fileID: 5052076976986874761, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
@@ -23718,6 +23772,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -46.358612
+      objectReference: {fileID: 0}
+    - target: {fileID: 7005379959069255136, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7005379959069255136, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.225
       objectReference: {fileID: 0}
     - target: {fileID: 7012281344605223786, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
@@ -26691,4 +26755,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1983534981, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+    - {fileID: 1072871539, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+    - {fileID: 2120833565, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}

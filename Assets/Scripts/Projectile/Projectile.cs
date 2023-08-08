@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
     [SerializeField] protected float m_damage = 1;
-    [SerializeField] private int m_indexSFX;
+    [SerializeField] public int m_indexSFX;
 
     protected Vector3 m_destination;
     protected float m_lifeTimer;

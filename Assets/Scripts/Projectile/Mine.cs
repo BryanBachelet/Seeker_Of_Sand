@@ -9,6 +9,7 @@ public class Mine : ProjectileExplosif
     [SerializeField] private float m_setupDuration = 1.0f;
     private float m_setupTimer = 0.0f;
     [SerializeField] private float powerPlayerProjection = 25.0f;
+    [SerializeField] private int indexSFXExplosion;
     private Animator m_animator;
 
     private bool m_isOnGround;
@@ -21,6 +22,7 @@ public class Mine : ProjectileExplosif
         SetupNewDestination();
         InitTrajectory();
         m_animator = this.GetComponent<Animator>();
+        GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position);
     }
 
     private void SetupNewDestination()
@@ -95,6 +97,7 @@ public class Mine : ProjectileExplosif
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
         m_animator.SetTrigger("Activation");
         Debug.Log("Debut fonction");
+        GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
         //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {

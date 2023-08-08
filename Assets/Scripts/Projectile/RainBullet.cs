@@ -15,6 +15,7 @@ public class RainBullet : Projectile
     public void Start()
     {
         m_collider = GetComponent<SphereCollider>();
+        GlobalSoundManager.PlayOneShot(24, transform.position);
         //m_VisualEffect = transform.GetComponentInChildren<VisualEffect>();
         //m_EventNameIdentifier[0] = Shader.PropertyToID("StartPluie");
         //m_EventNameIdentifier[1] = Shader.PropertyToID("StopPluie");

@@ -16,6 +16,7 @@ public class ProjectileExplosif : Projectile
 
     [SerializeField] private bool m_ActivationVFX;
     [SerializeField] private GameObject m_VFXObject;
+    [SerializeField] private int indexSFXExplosion;
     private bool m_isStick;
     private bool m_onEnemy;
 
@@ -34,7 +35,7 @@ public class ProjectileExplosif : Projectile
         m_transform = gameObject.GetComponent<Transform>();
         m_mat_explosion = new Material(m_explosionMatToUse);
         gameObject.GetComponent<MeshRenderer>().material = m_mat_explosion;
-
+        GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position);
         InitTrajectory();
     }
 
@@ -161,7 +162,7 @@ public class ProjectileExplosif : Projectile
         {
             Enemies.NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<Enemies.NpcHealthComponent>();
             Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
-
+            GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
             for (int i = 0; i < enemies.Length; i++)
             {
                 Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
