@@ -16,12 +16,14 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
     private bool isNight = false;
+    public float timescale;
     // Start is called before the first frame update
     void Start()
     {
         m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'écouler IRL.  On multiplie le nombre de minutes réglée dans l'inspector par 60 pour le convertire en seconde.
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
+        Time.timeScale = timescale;
     }
 
     // Update is called once per frame

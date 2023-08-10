@@ -17,7 +17,11 @@ public class GlobalSoundManager : MonoBehaviour
     public EventReference Globalsound;
     public EventInstance globalinstance;
 
-    public 
+
+    public EventReference GlobalMusic;
+    public EventInstance globalMusicInstance;
+
+    public bool changing = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +29,8 @@ public class GlobalSoundManager : MonoBehaviour
         OneS_Sound = OneS_Sound_Attribution;
         globalinstance = FMODUnity.RuntimeManager.CreateInstance(Globalsound);
         globalinstance.start();
+        globalMusicInstance = FMODUnity.RuntimeManager.CreateInstance(GlobalMusic);
+        globalMusicInstance.start();
     }
 
     public static void PlayOneShot(int sNumber, Vector3 position)
@@ -50,5 +56,6 @@ public class GlobalSoundManager : MonoBehaviour
     {
         globalinstance.setParameterByName(parameterName, parameterValue);
     }
+
 
 }

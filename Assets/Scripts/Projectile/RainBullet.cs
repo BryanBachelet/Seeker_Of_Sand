@@ -8,13 +8,14 @@ public class RainBullet : Projectile
     private float m_timerDamageTick = 0;
 
     [SerializeField] private float m_radiusArea = 2.0f;
-    private List<Enemies.Enemy> m_enemiesList = new List<Enemies.Enemy>();
+    private List<Enemies.NpcHealthComponent> m_enemiesList = new List<Enemies.NpcHealthComponent>();
     public SphereCollider m_collider;
     private VisualEffect m_VisualEffect;
     private int[] m_EventNameIdentifier;
     public void Start()
     {
         m_collider = GetComponent<SphereCollider>();
+        GlobalSoundManager.PlayOneShot(24, transform.position);
         //m_VisualEffect = transform.GetComponentInChildren<VisualEffect>();
         //m_EventNameIdentifier[0] = Shader.PropertyToID("StartPluie");
         //m_EventNameIdentifier[1] = Shader.PropertyToID("StopPluie");
@@ -47,13 +48,14 @@ public class RainBullet : Projectile
             return false;
         }
     }
-    private void ApplyDamage(Enemies.Enemy enemy)
+    private void ApplyDamage(Enemies.NpcHealthComponent enemy)
     {
+        if (enemy == null) return;
         if (Vector3.Distance(enemy.transform.position, transform.position) > ((m_collider.radius/2.0f) - m_radiusArea))
         {
-            enemy.HitEnemy(m_damage, (enemy.transform.position - transform.position).normalized, m_power);
+            enemy.ReceiveDamage(m_damage, (enemy.transform.position - transform.position).normalized, m_power);
             
-            if (enemy.IsDestroing())
+            if (enemy.npcState == Enemies.NpcState.DEATH)
                 m_enemiesList.Remove(enemy);
         }
     }
@@ -72,9 +74,9 @@ public class RainBullet : Projectile
     {
         if (other.gameObject.tag != "Enemy") return;
 
-        Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
+        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-        if (enemyTouch.IsDestroing()) return;
+        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
         m_enemiesList.Add(enemyTouch);
     }
 
@@ -82,9 +84,9 @@ public class RainBullet : Projectile
     {
         if (other.gameObject.tag != "Enemy") return;
 
-        Enemies.Enemy enemyTouch = other.GetComponent<Enemies.Enemy>();
+        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-        if (enemyTouch.IsDestroing()) return;
+        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
         m_enemiesList.Remove(enemyTouch);
     }
 

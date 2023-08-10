@@ -9,7 +9,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject buttonHolder;
     private Animator animatorMenu;
     private Animator buttonAnimator;
-    [SerializeField] Animator m_DebugSkillAnimator;
+    //[SerializeField] Animator m_DebugSkillAnimator;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +38,7 @@ public class PauseMenu : MonoBehaviour
             gameState = true;
         }
         animatorMenu.SetBool("MenuOpen", gameState);
-        m_DebugSkillAnimator.SetBool("OpenDebugMenu", gameState);
+        //m_DebugSkillAnimator.SetBool("OpenDebugMenu", gameState);
         //menuObject.SetActive(gameState);
         if (gameState)
         {

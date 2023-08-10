@@ -20,11 +20,11 @@ namespace Enemies
         [SerializeField] private int m_maxUnittotal = 400;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
-
+        [SerializeField] private GameObject m_ExperiencePrefab;
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
 
-        public List<Enemy> m_enemiesArray = new List<Enemy>();
+        public List<NpcHealthComponent> m_enemiesArray = new List<NpcHealthComponent>();
 
         static public bool EnemyTargetPlayer = true;
 
@@ -39,13 +39,16 @@ namespace Enemies
         private float tempsEcoulePause = 0;
         private bool spawningPhase = true;
 
+        public GlobalSoundManager gsm;
         private void Start()
         {
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
+            gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
             ui_DangerLevelObject.text = "Medium";
             ui_DangerLevelObject.color = Color.red;
+           
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -72,7 +75,8 @@ namespace Enemies
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
-                m_enemiesArray[i].UpdateGameState(state);
+                if (state) m_enemiesArray[i].SetPauseState();
+                else m_enemiesArray[i].RemovePauseState();
             }
         }
 
@@ -183,38 +187,48 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
-            Enemy enemy = enemySpawn.GetComponent<Enemy>();
-            enemy.SetManager(this, m_healthManager);
+            NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
+            npcHealth.SetInitialData( m_healthManager, this);
+
             if (EnemyTargetPlayer)
             {
-                enemy.SetTarget(m_playerTranform);
+                npcHealth.target  = m_playerTranform;
             }
             else
             {
-                enemy.SetTarget(altarObject);
+                npcHealth.target =  altarObject;
             }
-            m_enemiesArray.Add(enemy);
+            m_enemiesArray.Add(npcHealth);
         }
 
 
-
-        public void DestroyEnemy(Enemy enemy)
+        public void SpawnExp(Vector3 position ,int count )
         {
-            if (!m_enemiesArray.Contains(enemy)) return;
+            for (int i = 0; i < count; i++)
+            {
+                Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
+            }
+        }
+        
+        public void DestroyEnemy(NpcHealthComponent npcHealth)
+        {
+
+            if (!m_enemiesArray.Contains( npcHealth)) return;
+            
 
             m_enemyKillRatio.AddEnemiKill();
             if (!EnemyTargetPlayer)
             {
-                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(enemy.transform.position);
-                if (nearestAltar != null && Vector3.Distance(enemy.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(npcHealth.transform.position);
+                if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
                 {
                     nearestAltar.IncreaseKillCount();
                 }
                 //alatarRefScript.IncreaseKillCount(); 
 
             }
-            m_enemiesArray.Remove(enemy);
-            Destroy(enemy.gameObject);
+            m_enemiesArray.Remove(npcHealth);
+            Destroy(npcHealth.gameObject);
         }
 
         public AlatarHealthSysteme CheckDistanceAltar(Vector3 position)
@@ -261,11 +275,15 @@ namespace Enemies
             spawningPhase = false;
             ui_DangerLevelObject.text = "Peaceful";
             ui_DangerLevelObject.color = Color.white;
+            gsm.globalMusicInstance.setParameterByName("Repos", 1);
+            Debug.Log("monte le son batard");
             yield return new WaitForSeconds(tempsPause);
             tempsEcoulePause = 0;
             spawningPhase = true;
             ui_DangerLevelObject.text = "Medium";
             ui_DangerLevelObject.color = Color.red;
+            gsm.globalMusicInstance.setParameterByName("Repos", 0);
+            Debug.Log("c'est trop fort là");
         }
     }
 }

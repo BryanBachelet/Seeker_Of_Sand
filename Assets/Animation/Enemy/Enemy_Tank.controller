@@ -62,6 +62,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 8167413892872398222}
+  - {fileID: 427583288601589405}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -71,7 +72,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -2903920241591932824, guid: 7a5a8e8ecffc45346aed394bfc778888,
+  m_Motion: {fileID: -2903920241591932824, guid: 5e0f752892ba20b43a0054851dc6f1db,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -100,7 +101,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -5991901774363838767, guid: 9b9a3a2000202a04cb4b588c95c85998,
+  m_Motion: {fileID: -5991901774363838767, guid: 5e0f752892ba20b43a0054851dc6f1db,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -141,6 +142,31 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!1101 &427583288601589405
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Death
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 709836755643768649}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.8853211
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1102 &709836755643768649
 AnimatorState:
   serializedVersion: 6
@@ -161,7 +187,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 2160215987777073829, guid: 7a5a8e8ecffc45346aed394bfc778888,
+  m_Motion: {fileID: 2160215987777073829, guid: 5e0f752892ba20b43a0054851dc6f1db,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -185,7 +211,7 @@ AnimatorStateMachine:
     m_Position: {x: 281.20782, y: 327.6841, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4289570830422837408}
-    m_Position: {x: 30, y: 340, z: 0}
+    m_Position: {x: 30, y: 320, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

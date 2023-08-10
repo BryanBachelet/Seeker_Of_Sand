@@ -16,6 +16,7 @@ public class ProjectileExplosif : Projectile
 
     [SerializeField] private bool m_ActivationVFX;
     [SerializeField] private GameObject m_VFXObject;
+    [SerializeField] public int indexSFXExplosion;
     private bool m_isStick;
     private bool m_onEnemy;
 
@@ -34,7 +35,7 @@ public class ProjectileExplosif : Projectile
         m_transform = gameObject.GetComponent<Transform>();
         m_mat_explosion = new Material(m_explosionMatToUse);
         gameObject.GetComponent<MeshRenderer>().material = m_mat_explosion;
-
+        GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position);
         InitTrajectory();
     }
 
@@ -44,8 +45,6 @@ public class ProjectileExplosif : Projectile
         m_distanceDest = direction.magnitude;
         Vector3 rightDirection = Quaternion.AngleAxis(90, Vector3.up) * direction.normalized;
         m_directionHeight = Quaternion.AngleAxis(-90, rightDirection.normalized) * direction.normalized;
-
-
 
         m_direction = direction.normalized;
         m_direction.Normalize();
@@ -159,25 +158,25 @@ public class ProjectileExplosif : Projectile
     {
         if (m_stickTransform != null)
         {
-            Enemies.Enemy stickyEnemy = m_stickTransform.GetComponent<Enemies.Enemy>();
+            Enemies.NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<Enemies.NpcHealthComponent>();
             Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
-
+            GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
             for (int i = 0; i < enemies.Length; i++)
             {
-                Enemies.Enemy enemyTouch = enemies[i].GetComponent<Enemies.Enemy>();
+                Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
                 if (enemyTouch == null) continue;
 
-                if (stickyEnemy.IsDestroing())
+                if (enemyTouch.npcState == Enemies.NpcState.DEATH)
                 {
                     Destroy(this.gameObject);
                     return;
                 }
                 if (enemyTouch != stickyEnemy)
-                    enemyTouch.HitEnemy(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
             }
 
 
-            stickyEnemy.HitEnemy(m_damage, stickyEnemy.transform.position - transform.position, m_power);
+            stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power);
         }
         StartCoroutine(DelayDestroy(2));
     }
