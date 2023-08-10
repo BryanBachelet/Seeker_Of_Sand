@@ -50,7 +50,9 @@ namespace Enemies
         {
             m_healthSystem = new HealthSystem();
             m_healthSystem.Setup(m_maxLife);
-            m_entityAnimator = GetComponent<Animator>();
+            m_entityAnimator = GetComponentInChildren<Animator>();
+
+
         }
         public void SetInitialData(HealthManager healthManager, EnemyManager enemyManager)
         {
@@ -75,6 +77,8 @@ namespace Enemies
         public void GetDestroy(Vector3 direction, float power)
         {
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
+
+            this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             StartCoroutine(Death());

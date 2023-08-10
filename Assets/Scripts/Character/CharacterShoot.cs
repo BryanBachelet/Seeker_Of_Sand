@@ -47,7 +47,6 @@ namespace Character
         [SerializeField] private float m_shakeDuration = 0.1f;
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;
-        [SerializeField] private Animator m_CircleAnimator;
         [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
         [SerializeField] private GameObject m_SkillBarHolder;
@@ -237,7 +236,6 @@ namespace Character
                 ShootBuff(((CapsuleSystem.CapsuleBuff)bookOfSpell[m_currentIndexCapsule]));
                 EndShoot();
             }
-            m_CircleAnimator.SetBool("Shooting", true);
             m_CharacterAnimator.SetBool("Shooting", true);
 
         }
@@ -363,7 +361,6 @@ namespace Character
 
                 m_canShoot = true;
                 m_shootTimer = 0;
-                m_CircleAnimator.SetBool("Shooting", false);
                 m_CharacterAnimator.SetBool("Shooting", false);
                 return;
             }
@@ -407,7 +404,6 @@ namespace Character
 
                     m_isCasting = true;
                     m_CharacterAnimator.SetBool("Casting", true);
-                    m_CircleAnimator.SetBool("Casting", true);
                     //m_AnimatorSkillBar.SetBool("IsCasting", true);
                     m_canShoot = true;
                     m_CharacterMouvement.combatState = true;
@@ -425,7 +421,6 @@ namespace Character
                     m_isCasting = false;
                     m_shootInput = false;
                     m_CharacterAnimator.SetBool("Casting", false);
-                    m_CircleAnimator.SetBool("Casting", false);
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
                     m_CharacterMouvement.combatState = false;
                     return false;

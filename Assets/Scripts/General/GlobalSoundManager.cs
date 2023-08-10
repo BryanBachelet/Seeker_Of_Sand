@@ -20,6 +20,8 @@ public class GlobalSoundManager : MonoBehaviour
 
     public EventReference GlobalMusic;
     public EventInstance globalMusicInstance;
+
+    public bool changing = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,5 +56,6 @@ public class GlobalSoundManager : MonoBehaviour
     {
         globalinstance.setParameterByName(parameterName, parameterValue);
     }
+
 
 }

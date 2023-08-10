@@ -9,7 +9,7 @@ public class Mine : ProjectileExplosif
     [SerializeField] private float m_setupDuration = 1.0f;
     private float m_setupTimer = 0.0f;
     [SerializeField] private float powerPlayerProjection = 25.0f;
-    [SerializeField] private int indexSFXExplosion;
+    //[SerializeField] private int indexSFXExplosion;
     private Animator m_animator;
 
     private bool m_isOnGround;

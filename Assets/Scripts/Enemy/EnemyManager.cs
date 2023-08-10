@@ -39,13 +39,16 @@ namespace Enemies
         private float tempsEcoulePause = 0;
         private bool spawningPhase = true;
 
+        public GlobalSoundManager gsm;
         private void Start()
         {
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
+            gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
             ui_DangerLevelObject.text = "Medium";
             ui_DangerLevelObject.color = Color.red;
+           
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -272,11 +275,15 @@ namespace Enemies
             spawningPhase = false;
             ui_DangerLevelObject.text = "Peaceful";
             ui_DangerLevelObject.color = Color.white;
+            gsm.globalMusicInstance.setParameterByName("Repos", 1);
+            Debug.Log("monte le son batard");
             yield return new WaitForSeconds(tempsPause);
             tempsEcoulePause = 0;
             spawningPhase = true;
             ui_DangerLevelObject.text = "Medium";
             ui_DangerLevelObject.color = Color.red;
+            gsm.globalMusicInstance.setParameterByName("Repos", 0);
+            Debug.Log("c'est trop fort là");
         }
     }
 }

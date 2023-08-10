@@ -16,7 +16,7 @@ public class ProjectileExplosif : Projectile
 
     [SerializeField] private bool m_ActivationVFX;
     [SerializeField] private GameObject m_VFXObject;
-    [SerializeField] private int indexSFXExplosion;
+    [SerializeField] public int indexSFXExplosion;
     private bool m_isStick;
     private bool m_onEnemy;
 
