@@ -97,9 +97,9 @@ public class AlatarHealthSysteme : MonoBehaviour
     public IEnumerator TakeDamage(float time)
     {
         bool_Invulnerrable = true;
-        m_myAnimator.SetTrigger("TakeHit");
+        //m_myAnimator.SetTrigger("TakeHit");
         yield return new WaitForSeconds(time);
-        m_myAnimator.ResetTrigger("TakeHit");
+        //m_myAnimator.ResetTrigger("TakeHit");
         bool_Invulnerrable = false;
     }
 
@@ -135,6 +135,7 @@ public class AlatarHealthSysteme : MonoBehaviour
     {
         m_EnemyManagerScript.RemoveAltarEvent(this.transform);
         bool_EventEnCour = false;
+        m_myAnimator.SetBool("IsDone", true);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)

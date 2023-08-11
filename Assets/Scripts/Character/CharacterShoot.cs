@@ -50,6 +50,7 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
         [SerializeField] private GameObject m_SkillBarHolder;
+        [SerializeField] private Transform avatarTransform;
         private Animator m_AnimatorSkillBar;
 
         private Loader_Behavior m_LoaderInUI;
@@ -183,6 +184,10 @@ namespace Character
         private void Update()
         {
             if (PauseMenu.gameState && !state.isPlaying) { return; }
+            if(m_isCasting)
+            {
+                avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
+            }
             if (m_shootInput)
             {
                 if (!m_isShooting) Shoot();
@@ -421,6 +426,7 @@ namespace Character
                     m_isCasting = false;
                     m_shootInput = false;
                     m_CharacterAnimator.SetBool("Casting", false);
+                    avatarTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
                     m_CharacterMouvement.combatState = false;
                     return false;
