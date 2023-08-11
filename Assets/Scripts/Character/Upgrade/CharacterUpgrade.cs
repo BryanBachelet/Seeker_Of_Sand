@@ -103,6 +103,7 @@ public class CharacterUpgrade : MonoBehaviour
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             m_upgradePoint.text = upgradePoint.ToString();
+            GameState.ChangeState();
             return;
         }
 

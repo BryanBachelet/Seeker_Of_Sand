@@ -19,7 +19,7 @@ namespace Enemies
         [Header("Slope Parameters")]
         public bool isAffectedBySlope = false;
         [Range(1.0f, 3.00f)] public float maxVariation = 1.5f;
-        [Range(0.001f, 1.00f)] public float minVariation =0.5f;
+        [Range(0.001f, 1.00f)] public float minVariation = 0.5f;
         public float m_maxAngle = 60.0f;
 
         [SerializeField] private float m_groundDistance = 3.0f;
@@ -100,14 +100,14 @@ namespace Enemies
         {
             RaycastHit hit = new RaycastHit();
             Physics.Raycast(transform.position, -Vector3.up, out hit, m_groundDistance, m_groundLayerMask);
-            Vector3 direction  = Vector3.Cross(transform.right, hit.normal);
+            Vector3 direction = Vector3.Cross(transform.right, hit.normal);
             float currentSlope = GetSlopeAngle(direction);
 
             float ratio = maxVariation;
             if (currentSlope < 0) ratio = -minVariation;
             float ratioSlope = (currentSlope / m_maxAngle);
             float ratioSpeed = Mathf.Lerp(0, ratio, Mathf.Abs(ratioSlope));
-            float speed = m_baseSpeed+   m_baseSpeed * ratioSpeed;
+            float speed = m_baseSpeed + m_baseSpeed * ratioSpeed;
             return speed;
         }
 
@@ -134,12 +134,14 @@ namespace Enemies
 
         public void OnDeath(Vector3 direction, float power)
         {
+
             m_navMeshAgent.enabled = false;
+
             if (!m_npcHealthComponent.hasDeathAnimation)
             {
-              
-   
-                m_rigidbody.AddForce(direction.normalized * power, ForceMode.Impulse);
+
+                //m_rigidbody.isKinematic = false;
+                m_rigidbody.AddForce((direction.normalized + Vector3.up).normalized * power, ForceMode.Impulse);
             }
 
             this.enabled = false;

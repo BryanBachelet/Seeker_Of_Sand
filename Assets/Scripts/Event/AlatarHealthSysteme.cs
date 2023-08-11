@@ -18,7 +18,7 @@ public class AlatarHealthSysteme : MonoBehaviour
     public bool bool_ActiveEvent;
     private bool bool_Activable = true;
     private bool bool_EventEnCour;
-    private Animator m_myAnimator;
+    public Animator m_myAnimator;
 
     public EventDisplay displayAnimator;
 
@@ -50,21 +50,21 @@ public class AlatarHealthSysteme : MonoBehaviour
         myColor = GetColorByID(ownNumber);
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
-        DisableColor();
+        //DisableColor();
     }
 
     private void InitComponent()
     {
         m_EnemyManagerScript = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
-        canvasPrincipal = GameObject.Find("MainUI_EventDisplayHolder").GetComponent<RectTransform>();
-        ownDisplayEventDetail = Instantiate(displayEventDetail, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal);
-        ownArrowDisplayEventDetail = Instantiate(displayArrowEvent, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal.parent);
-        ownArrowDisplayEventDetail.GetComponent<UI_ArrowPointingEvent>().refGo = this.gameObject;
-        displayAnimator = ownDisplayEventDetail.GetComponent<EventDisplay>();
-        m_myAnimator = this.GetComponent<Animator>();
-        displayTextDescription1 = displayAnimator.m_textDescription1;
-        displayTextDescription2 = displayAnimator.m_textDescription2;
-        eventTextName = displayAnimator.m_textEventName;
+        //canvasPrincipal = GameObject.Find("MainUI_EventDisplayHolder").GetComponent<RectTransform>();
+        //ownDisplayEventDetail = Instantiate(displayEventDetail, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal);
+        //ownArrowDisplayEventDetail = Instantiate(displayArrowEvent, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal.parent);
+        //ownArrowDisplayEventDetail.GetComponent<UI_ArrowPointingEvent>().refGo = this.gameObject;
+        //displayAnimator = ownDisplayEventDetail.GetComponent<EventDisplay>();
+        //m_myAnimator = this.GetComponentInChildren<Animator>();
+        //displayTextDescription1 = displayAnimator.m_textDescription1;
+        //displayTextDescription2 = displayAnimator.m_textDescription2;
+        //eventTextName = displayAnimator.m_textEventName;
 
     }
     // Update is called once per frame
@@ -76,12 +76,12 @@ public class AlatarHealthSysteme : MonoBehaviour
         {
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
-            displayAnimator.InvertDisplayStatus(2);
+            //displayAnimator.InvertDisplayStatus(2);
         }
         else
         {
-            displayTextDescription1.text = m_CurrentHealth + "/" + m_MaxHealth;
-            displayTextDescription2.text = (m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1))) - m_CurrentKillCount + " Remaining";
+            //displayTextDescription1.text = m_CurrentHealth + "/" + m_MaxHealth;
+            //displayTextDescription2.text = (m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1))) - m_CurrentKillCount + " Remaining";
         }
     }
 
@@ -98,7 +98,7 @@ public class AlatarHealthSysteme : MonoBehaviour
     {
         bool_Invulnerrable = true;
         m_myAnimator.SetTrigger("TakeHit");
-        yield return new WaitForSeconds(time / 2);
+        yield return new WaitForSeconds(time);
         m_myAnimator.ResetTrigger("TakeHit");
         bool_Invulnerrable = false;
     }
@@ -108,13 +108,13 @@ public class AlatarHealthSysteme : MonoBehaviour
         if(bool_Activable)
         {
             m_EnemyManagerScript.AddAltarEvent(this.transform);
-            this.transform.GetChild(0).gameObject.SetActive(true);
+            //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
-            ActiveColor();
+            //ActiveColor();
             GlobalSoundManager.PlayOneShot(13, transform.position);
-            displayAnimator.InvertDisplayStatus(1);
-            eventTextName.text = txt_EventName + " (+" + resetNumber + ")";
+            //displayAnimator.InvertDisplayStatus(1);
+            //eventTextName.text = txt_EventName + " (+" + resetNumber + ")";
             bool_Invulnerrable = false;
             bool_ActiveEvent = false;
             bool_Activable = false;
@@ -139,17 +139,9 @@ public class AlatarHealthSysteme : MonoBehaviour
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
         {
-            int rnd = Random.Range(0, 100);
             Vector2 rndVariant = new Vector2((float)Random.Range(-2, 2), (float)Random.Range(-2, 2));
             GameObject xpGenerated;
-            if (rnd < 95)
-            {
                 xpGenerated = Instantiate(xpObject[0], transform.position + new Vector3(rndVariant.x * radiusEjection, 0, rndVariant.y * radiusEjection), Quaternion.identity);
-            }
-            else
-            {
-                xpGenerated = Instantiate(xpObject[1], transform.position + new Vector3(rndVariant.x * radiusEjection, 0, rndVariant.y * radiusEjection), Quaternion.identity);
-            }
             //xpGenerated.GetComponent<Rigidbody>().AddForce(new Vector3(rndVariant.x, 1 * m_ImpusleForceXp, rndVariant.y) , ForceMode.Impulse);
         }
         StartCoroutine(ResetEventWithDelay(3));
@@ -165,13 +157,13 @@ public class AlatarHealthSysteme : MonoBehaviour
 
     public void ResetAltarEvent()
     {
-        this.transform.GetChild(0).gameObject.SetActive(false);
+        //this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         m_myAnimator.SetBool("ActiveEvent", false);
-        eventTextName.text = "Ready !";
+        //eventTextName.text = "Ready !";
         resetNumber++;
-        DisableColor();
-        displayAnimator.InvertDisplayStatus(2);
+        //DisableColor();
+        //displayAnimator.InvertDisplayStatus(2);
         bool_Invulnerrable = false;
         bool_ActiveEvent = false;
         bool_Activable = true;
@@ -183,7 +175,7 @@ public class AlatarHealthSysteme : MonoBehaviour
 
     public IEnumerator ResetEventWithDelay(float time)
     {
-        eventTextName.text = "Finish !";
+        //eventTextName.text = "Finish !";
         yield return new WaitForSeconds(time);
         ResetAltarEvent();
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using System.IO;
 public class CameraPaparazie : MonoBehaviour
 {
     public int resWidth = 2550;
@@ -21,6 +21,10 @@ public class CameraPaparazie : MonoBehaviour
     public void Start()
     {
         target = transform.parent;
+        if (!Directory.Exists(Application.dataPath + "/screenshots"))
+        {
+            Directory.CreateDirectory(Application.dataPath + "/screenshots");
+        }
     }
     public static string ScreenShotName(int width, int height)
     {

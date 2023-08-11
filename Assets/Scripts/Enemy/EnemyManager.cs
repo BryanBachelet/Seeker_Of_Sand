@@ -75,7 +75,7 @@ namespace Enemies
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
-                if (state) m_enemiesArray[i].SetPauseState();
+                if (!state) m_enemiesArray[i].SetPauseState();
                 else m_enemiesArray[i].RemovePauseState();
             }
         }
