@@ -30,7 +30,7 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
         [Range(0, 1)]
-        [SerializeField] private float m_SpeedReduce;
+        [SerializeField] public float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
 
@@ -340,6 +340,7 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
+            
             if (combatState)
             {
                 m_speedData.referenceSpeed[(int)mouvementState] = runSpeed * m_SpeedReduce;

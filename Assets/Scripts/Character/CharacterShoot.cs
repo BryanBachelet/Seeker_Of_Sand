@@ -226,7 +226,8 @@ namespace Character
         private void Shoot()
         {
             if (!m_canShoot) return;
-
+            m_CharacterMouvement.m_SpeedReduce = 0.25f;
+            Debug.Log("[" + m_CharacterMouvement.runSpeed + "] Run speed ");
             if (currentShotNumber == 0)
             {
                 StartShoot();
@@ -242,6 +243,7 @@ namespace Character
                 EndShoot();
             }
             m_CharacterAnimator.SetBool("Shooting", true);
+
 
         }
 
@@ -316,6 +318,8 @@ namespace Character
             m_canShoot = false;
             m_isShooting = false;
 
+
+
         }
 
         #region Shoot Function
@@ -367,6 +371,8 @@ namespace Character
                 m_canShoot = true;
                 m_shootTimer = 0;
                 m_CharacterAnimator.SetBool("Shooting", false);
+                m_CharacterMouvement.m_SpeedReduce = 1;
+                Debug.Log("[" + m_CharacterMouvement.runSpeed + "] Run speed ");
                 return;
             }
             else

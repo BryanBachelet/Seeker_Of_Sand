@@ -39,9 +39,12 @@ public class Locomotive : MonoBehaviour
     private RaycastHit hit = new RaycastHit();
     public LayerMask rayGround;
 
-    private Vector3 m_destination;
+    public Vector3 m_destination;
     private Vector3 m_direction;
     private bool m_isMooving;
+
+    [SerializeField] private Vector2 m_X_Border;
+    [SerializeField] private Vector2 m_Y_Border;
     
     private void Start()
     {
@@ -118,7 +121,9 @@ public class Locomotive : MonoBehaviour
     {
         m_isMooving = false;
         Vector3 pos = new Vector3(transform.position.x, 0, transform.position.z);
-        if (Vector3.Distance(m_destination, pos) < 0.5f) return;
+        Vector3 distinationEqual = new Vector3(m_destination.x, 0, m_destination.z);
+        if (Vector3.Distance(distinationEqual, pos) < 0.5f) { AddDestination(Vector3.zero); return; }
+
 
         m_direction = m_destination - pos;
         m_isMooving = true;
@@ -180,8 +185,11 @@ public class Locomotive : MonoBehaviour
 
     void AddDestination(Vector3 destination)
     {
-
-        m_destination = destination;
+        Vector3 newDestination = Vector2.zero;
+        newDestination.x = Random.Range(m_X_Border.x, m_X_Border.y);
+        newDestination.z = Random.Range(m_Y_Border.x, m_Y_Border.y);
+        newDestination.y = 0;
+        m_destination = newDestination;
     }
 
     Vector3 CalculateVector(Vector3 one, Vector3 two)
@@ -208,6 +216,13 @@ public class Locomotive : MonoBehaviour
         Quaternion test = Quaternion.FromToRotation(Vector3.up, normal.normalized);
         return normal;
 
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(new Vector3(0, 0, 0), new Vector3(m_X_Border.x - m_X_Border.y, 25, m_Y_Border.x - m_Y_Border.y));
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(m_destination, 25);
     }
 }
 
