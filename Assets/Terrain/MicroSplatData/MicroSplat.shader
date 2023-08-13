@@ -15,9 +15,6 @@ Shader "Terrain_1_1"
    Properties
    {
             [HideInInspector] _Control0 ("Control0", 2D) = "red" {}
-      [HideInInspector] _Control1 ("Control1", 2D) = "black" {}
-      [HideInInspector] _Control2 ("Control2", 2D) = "black" {}
-      [HideInInspector] _Control3 ("Control3", 2D) = "black" {}
       
 
       // Splats
@@ -93,7 +90,7 @@ Shader "Terrain_1_1"
    }
    SubShader
    {
-            Tags {"RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" "Queue" = "Geometry+255" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "16"}
+            Tags {"RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" "Queue" = "Geometry+255" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "4"}
 
       
               Pass
@@ -185,15 +182,13 @@ Shader "Terrain_1_1"
             
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -4848,15 +4843,13 @@ float3 GetTessFactors ()
 
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -9344,15 +9337,13 @@ float3 GetTessFactors ()
         
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -13908,15 +13899,13 @@ float3 GetTessFactors ()
             
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -18446,15 +18435,13 @@ float3 GetTessFactors ()
         
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -22938,15 +22925,13 @@ float3 GetTessFactors ()
         
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -27426,15 +27411,13 @@ float3 GetTessFactors ()
             
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -31943,15 +31926,13 @@ float3 GetTessFactors ()
             
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -36491,15 +36472,13 @@ void Frag(  VertexToPixel v2f
             
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -41001,15 +40980,13 @@ float3 GetTessFactors ()
             
             
       #define _MICROSPLAT 1
+      #define _MICROTERRAIN 1
+      #define _HYBRIDHEIGHTBLEND 1
+      #define _USEGRADMIP 1
+      #define _MAX4TEXTURES 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _USEGRADMIP 1
-      #define _MICROTERRAIN 1
-      #define _MSRENDERLOOP_UNITYHD 1
-      #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
-      #define _MSRENDERLOOP_UNITYHDRP2022 1
-      #define _HYBRIDHEIGHTBLEND 1
       #define _MSRENDERLOOP_UNITYHD 1
       #define _MSRENDERLOOP_UNITYHDRP2020 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
@@ -45406,7 +45383,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base-1731106853"
-   Fallback "Hidden/Terrain_1_1_Base-1731106853"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base638056365"
+   Fallback "Hidden/Terrain_1_1_Base638056365"
    CustomEditor "MicroSplatShaderGUI"
 }
