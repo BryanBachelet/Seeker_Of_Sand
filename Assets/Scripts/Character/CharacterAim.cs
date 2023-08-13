@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Linq;
 
 namespace Character
 {
@@ -19,6 +20,7 @@ namespace Character
         [SerializeField] private RectTransform m_cursor;
         [SerializeField] private LineRenderer m_lineRenderer;
         [SerializeField] private GameObject m_AreaFeedbackHolder;
+        [SerializeField] private LayerMask enemyLayer;
         private GameObject currentFeedbackInUse;
 
         private PlayerInput m_playerInput;
@@ -42,6 +44,8 @@ namespace Character
         private bool m_isNewTarget = false;
         private bool m_isInRange = false;
 
+        public float rangeDebug;
+        public Collider[] colProche;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
@@ -55,7 +59,23 @@ namespace Character
         /// </summary>
         private void FindAimWorldPoint()
         {
-            m_aimScreenPoint = m_aimInputValue;
+            if(m_characterShoot.autoAimActive && m_characterShoot.m_isCasting)
+            {
+                Collider[] col = Physics.OverlapSphere(transform.position, m_characterShoot.GetPodRange(), enemyLayer);
+                if (col.Length > 0)
+                {
+                    Vector3 nearestEnemyPos = NearestEnemy(col);
+                    nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
+                    Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
+                    m_aimScreenPoint = convertPos;
+                }
+
+            }
+            else
+            {
+                m_aimScreenPoint = m_aimInputValue;
+            }
+
             Ray aimRay = m_camera.ScreenPointToRay(m_aimScreenPoint);
             RaycastHit hit = new RaycastHit();
             if (Physics.Raycast(aimRay, out hit, m_aimScreenToWorldDistance, m_aimLayer))
@@ -292,7 +312,12 @@ namespace Character
 
         }
 
-
+        public Vector3 NearestEnemy(Collider[] enemysPos)
+        {
+            var nClosest = enemysPos.OrderBy(t => (t.transform.position - transform.position).sqrMagnitude)
+                           .FirstOrDefault();   //or use .FirstOrDefault();  if you need just one
+            return nClosest.transform.position;
+        }
         private bool IsGamepad()
         {
             return m_playerInput.currentControlScheme == "Gamepad";

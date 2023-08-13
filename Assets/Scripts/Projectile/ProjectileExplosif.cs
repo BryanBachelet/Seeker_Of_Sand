@@ -139,6 +139,7 @@ public class ProjectileExplosif : Projectile
         if (m_isStick) return;
         StartCoroutine(TimeToExplose(m_timeBeforeExplosion));
         m_isStick = true;
+        Debug.Log(other.name + " [Has been hit by exlosion]");
 
 
     }

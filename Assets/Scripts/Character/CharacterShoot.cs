@@ -64,6 +64,7 @@ namespace Character
         // Temp 
         private Vector3 pos;
 
+        [SerializeField] public bool autoAimActive;
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
@@ -183,25 +184,46 @@ namespace Character
 
         private void Update()
         {
+
             if (PauseMenu.gameState && !state.isPlaying) { return; }
-            if(m_isCasting)
+            if (m_isCasting)
             {
                 avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
-            }
-            if (m_shootInput)
-            {
-                if (!m_isShooting) Shoot();
-            }
-            if (m_isShooting)
-            {
-                if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+                if (autoAimActive)
                 {
-                    Shoot();
-                    m_timeBetweenShoot = 0.0f;
+
+                    if (!m_isShooting) Shoot();
+                    if (m_isShooting)
+                    {
+                        if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+                        {
+                            Shoot();
+                            m_timeBetweenShoot = 0.0f;
+                        }
+                        else
+                        {
+                            m_timeBetweenShoot += Time.deltaTime;
+                        }
+                    }
                 }
-                else
+            }
+            if(!autoAimActive)
+            {
+                if (m_shootInput)
                 {
-                    m_timeBetweenShoot += Time.deltaTime;
+                    if (!m_isShooting) Shoot();
+                }
+                if (m_isShooting)
+                {
+                    if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+                    {
+                        Shoot();
+                        m_timeBetweenShoot = 0.0f;
+                    }
+                    else
+                    {
+                        m_timeBetweenShoot += Time.deltaTime;
+                    }
                 }
             }
             ReloadShot();
@@ -427,6 +449,7 @@ namespace Character
             }
             else
             {
+                if (autoAimActive) return true;
                 if (m_isCasting)
                 {
                     m_isCasting = false;
@@ -477,7 +500,15 @@ namespace Character
         }
 
 
-
+        public void StopCasting()
+        {
+            m_isCasting = false;
+            m_shootInput = false;
+            m_CharacterAnimator.SetBool("Casting", false);
+            avatarTransform.localRotation = Quaternion.identity;
+            //m_AnimatorSkillBar.SetBool("IsCasting", false);
+            m_CharacterMouvement.combatState = false;
+        }
         #region Spell Functions
         public void AddSpell(int index)
         {
@@ -528,6 +559,7 @@ namespace Character
 
 
     }
+
 
 
 }

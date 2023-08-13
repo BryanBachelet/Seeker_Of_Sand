@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Rendering;
 public class DayCyclecontroller : MonoBehaviour
 {
     [Range(0, 24)]
@@ -15,6 +15,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private GlobalSoundManager m_GSM;
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
+    [SerializeField] private Volume m_LocalNightVolume;
     private bool isNight = false;
     public float timescale;
     // Start is called before the first frame update
@@ -120,12 +121,14 @@ public class DayCyclecontroller : MonoBehaviour
         isNight = false;
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
+        m_LocalNightVolume.enabled = false;
         m_GSM.UpdateParameter(0, "DayOrNight");
     }
 
     private void StartNight()
     {
         isNight = true;
+        m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
     }
