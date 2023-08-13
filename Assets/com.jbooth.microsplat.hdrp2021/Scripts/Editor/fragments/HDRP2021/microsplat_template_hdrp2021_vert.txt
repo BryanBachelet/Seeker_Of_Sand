@@ -1,0 +1,180 @@
+﻿
+
+#if (SHADERPASS == SHADERPASS_LIGHT_TRANSPORT)
+
+   // This was not in constant buffer in original unity, so keep outiside. But should be in as ShaderRenderPass frequency
+   float unity_OneOverOutputBoost;
+   float unity_MaxOutputValue;
+
+   CBUFFER_START(UnityMetaPass)
+   // x = use uv1 as raster position
+   // y = use uv2 as raster position
+   bool4 unity_MetaVertexControl;
+
+   // x = return albedo
+   // y = return normal
+   bool4 unity_MetaFragmentControl;
+   CBUFFER_END
+
+   VertexToPixel Vert(VertexData inputMesh)
+   {
+       VertexToPixel output;
+       ZERO_INITIALIZE(VertexToPixel, output);
+       UNITY_SETUP_INSTANCE_ID(inputMesh);
+       UNITY_TRANSFER_INSTANCE_ID(inputMesh, output);
+       UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+
+       // Output UV coordinate in vertex shader
+       float2 uv = float2(0.0, 0.0);
+
+       #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
+         float2 uv1 = inputMesh.texcoord1.xy;
+         float2 uv2 = inputMesh.texcoord2.xy;
+       #else
+         float2 uv1 = inputMesh.texcoord0.xy;
+         float2 uv2 = uv1;
+       #endif
+
+       if (unity_MetaVertexControl.x)
+       {
+           uv = uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+       }
+       else if (unity_MetaVertexControl.y)
+       {
+           uv = uv2 * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+       }
+
+       // OpenGL right now needs to actually use the incoming vertex position
+       // so we create a fake dependency on it here that haven't any impact.
+       output.pos = float4(uv * 2.0 - 1.0, inputMesh.vertex.z > 0 ? 1.0e-4 : 0.0, 1.0);
+
+   #ifdef VARYINGS_NEED_POSITION_WS
+       output.worldPos = TransformObjectToWorld(inputMesh.vertex);
+   #endif
+
+   #ifdef VARYINGS_NEED_TANGENT_TO_WORLD
+       // Normal is required for triplanar mapping
+       output.worldNormal = TransformObjectToWorldNormal(inputMesh.normal);
+       // Not required but assign to silent compiler warning
+       output.worldTangent = float4(1.0, 0.0, 0.0, 0.0);
+   #endif
+
+       output.texcoord0 = inputMesh.texcoord0;
+       #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
+          output.texcoord1 = inputMesh.texcoord1;
+          output.texcoord2 = inputMesh.texcoord2;
+       #endif
+       %V2FUV3% output.texCoord3 = inputMesh.texcoord3;
+       %V2FVERTEXCOLOR% output.vertexColor = inputMesh.vertexColor;
+
+       return output;
+   }
+#else
+
+   #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
+      #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariablesMatrixDefsHDCamera.hlsl"
+
+      void MotionVectorPositionZBias(VertexToPixel input)
+      {
+      #if UNITY_REVERSED_Z
+          input.pos.z -= unity_MotionVectorsParams.z * input.pos.w;
+      #else
+          input.pos.z += unity_MotionVectorsParams.z * input.pos.w;
+      #endif
+      }
+
+   #endif
+
+   VertexToPixel Vert(VertexData input)
+   {
+       VertexToPixel output;
+       ZERO_INITIALIZE(VertexToPixel, output);
+
+       UNITY_SETUP_INSTANCE_ID(input);
+       UNITY_TRANSFER_INSTANCE_ID(input, output);
+       UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+
+       #if !_TESSDISTANCE
+       ChainModifyVertex(input, output);
+       #endif
+
+       // This return the camera relative position (if enable)
+       float3 positionRWS = TransformObjectToWorld(input.vertex.xyz);
+       float3 normalWS = TransformObjectToWorldNormal(input.normal);
+       output.worldPos = GetAbsolutePositionWS(positionRWS);
+       output.pos = TransformWorldToHClip(positionRWS);
+       output.worldNormal = normalWS;
+       
+       // MS Only
+       ApplyTerrainTangent(output);
+
+       output.texcoord0 = input.texcoord0;
+      #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
+       output.texcoord1 = input.texcoord1;
+       output.texcoord2 = input.texcoord2;
+       output.worldTangent = float4(TransformObjectToWorldDir(input.tangent.xyz), input.tangent.w);
+      #endif
+       %V2FUV3% output.texcoord3 = input.texcoord3;
+       %V2FVERTEXCOLOR% output.vertexColor = input.vertexColor;
+       %SCREENPOS% output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+
+   
+       #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
+
+          #if !defined(TESSELLATION_ON)
+            MotionVectorPositionZBias(output);
+          #endif
+
+          output.motionVectorCS = mul(UNITY_MATRIX_UNJITTERED_VP, float4(positionRWS.xyz, 1.0));
+          // Note: unity_MotionVectorsParams.y is 0 is forceNoMotion is enabled
+          bool forceNoMotion = unity_MotionVectorsParams.y == 0.0;
+          if (forceNoMotion)
+          {
+              output.previousPositionCS = float4(0.0, 0.0, 0.0, 1.0);
+          }
+          else
+          {
+            bool hasDeformation = unity_MotionVectorsParams.x > 0.0; // Skin or morph target
+
+            float3 effectivePositionOS = (hasDeformation ? input.previousPositionOS : input.vertex.xyz);
+            #if defined(_ADD_PRECOMPUTED_VELOCITY)
+               effectivePositionOS -= input.precomputedVelocity;
+            #endif
+
+
+            VertexData previousMesh = input;
+            previousMesh.vertex = float4(effectivePositionOS, 1);
+            VertexToPixel dummy = (VertexToPixel)0;
+            // Remap time to old time
+            float4 oldTime = _Time;
+            _Time.y = _LastTimeParameters.x;
+            _Time.x = _LastTimeParameters.x / 20;
+            _Time.z = _LastTimeParameters.x * 2;
+            _Time.w = _LastTimeParameters.x * 3;
+            #if !_TESSDISTANCE
+            ChainModifyVertex(previousMesh, dummy);
+            #endif
+            _Time = oldTime;
+
+            float3 previousPositionRWS = TransformPreviousObjectToWorld(previousMesh.vertex.xyz);
+
+            float3 normalWS = TransformPreviousObjectToWorldNormal(input.normal).xyz;
+
+            #ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
+            if (_TransparentCameraOnlyMotionVectors > 0)
+            {
+               previousPositionRWS = positionRWS.xyz;
+            }
+            #endif // _WRITE_TRANSPARENT_MOTION_VECTOR
+
+            output.previousPositionCS = mul(UNITY_MATRIX_PREV_VP, float4(previousPositionRWS, 1.0));
+         }
+       #endif // _HDRP && _PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR))
+
+
+       return output;
+   }
+
+
+#endif
+
