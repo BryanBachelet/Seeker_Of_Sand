@@ -4,13 +4,13 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.16f1
+//   Unity Version: 2021.3.15f1
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
 
 
-Shader "Terrain_2_4"
+Shader "Terrain_(-991.00, 0.00, -1005.00)"
 {
    Properties
    {
@@ -35,6 +35,7 @@ Shader "Terrain_2_4"
       _TerrainHeightmapTexture("", 2D) = "black" {}
       _TerrainNormalmapTexture("", 2D) = "bump" {}
       _HybridHeightBlendDistance("Hybrid Blend Distance", Float) = 300
+
 
 
 
@@ -45406,7 +45407,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_2_4_Base-1731106853"
-   Fallback "Hidden/Terrain_2_4_Base-1731106853"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_(-991.00, 0.00, -1005.00)_Base-1731106853"
+   Fallback "Hidden/Terrain_(-991.00, 0.00, -1005.00)_Base-1731106853"
    CustomEditor "MicroSplatShaderGUI"
 }
