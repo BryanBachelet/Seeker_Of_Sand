@@ -107,7 +107,8 @@ public class UpgradeCapsule : Upgrade
         playerStat.range += gain.capsulsStats.range;
         playerStat.shootAngle += gain.capsulsStats.shootAngle;
         playerStat.shootNumber += gain.capsulsStats.shootNumber;
-        
+        playerStat.timeInterval += gain.capsulsStats.timeInterval;
+
         //gain.description = m_baseString;
     }
 

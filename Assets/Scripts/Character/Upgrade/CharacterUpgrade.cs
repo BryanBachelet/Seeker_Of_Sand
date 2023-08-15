@@ -73,7 +73,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            int index = Random.Range(0, m_characterShoot.capsuleIndex.Count);
+            int index = Random.Range(0, 4);
             m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[index].sprite);
         }
     }
@@ -90,7 +90,8 @@ public class CharacterUpgrade : MonoBehaviour
     public void ChooseUpgrade(int indexChoice, int numberUpgrade)
     {
 
-        Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+        //Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+        if (numberUpgrade > upgradePoint) return;
         for (int i = 0; i < numberUpgrade; i++)
         {
             m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);

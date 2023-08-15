@@ -36,6 +36,7 @@ public struct CapsuleStats
     public TrajectoryType trajectory;
     public float angleTrajectory;
     public float shootNumber;
+    public float timeInterval;
 
     [HideInInspector] public float timeBetweenShot 
     { 

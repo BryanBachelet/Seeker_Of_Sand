@@ -118,18 +118,22 @@ public class DayCyclecontroller : MonoBehaviour
 
     private void StartDay()
     {
+        m_sun.gameObject.SetActive(true);
         isNight = false;
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
-        m_LocalNightVolume.enabled = false;
+        //m_LocalNightVolume.enabled = false;
         m_GSM.UpdateParameter(0, "DayOrNight");
+        m_moon.gameObject.SetActive(false);
     }
 
     private void StartNight()
     {
+        m_moon.gameObject.SetActive(true);
         isNight = true;
-        m_LocalNightVolume.enabled = true;
+        //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
+        m_sun.gameObject.SetActive(false);
     }
 }
