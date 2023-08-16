@@ -139,7 +139,11 @@ namespace Character
 
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
+            for(int i = 0; i < icon_Sprite.Count; i++)
+            {
+                m_spellGlobalCooldown[i].sprite = icon_Sprite[i].sprite;
 
+            }
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;

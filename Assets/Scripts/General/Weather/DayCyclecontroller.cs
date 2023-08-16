@@ -16,6 +16,8 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
     [SerializeField] private Volume m_LocalNightVolume;
+    [SerializeField] private float time;
+    [SerializeField] private UnityEngine.UI.Text m_DayPhases;
     private bool isNight = false;
     public float timescale;
     // Start is called before the first frame update
@@ -30,21 +32,10 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        time = Time.time / 60;
+        CheckPhase(m_timeOfDay);
 
-        if(m_timeOfDay > 24)
-        {
-            m_timeOfDay = 0;
-        }
-        else if(m_timeOfDay > 5.1f && m_timeOfDay < 6f)
-        {
-            m_timeOfDay = 6;
-        }
-        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
-        {
-            m_timeOfDay = 18.5f;
-        }
-        else
-        {
+
             if(isNight)
             {
                 m_timeOfDay += Time.deltaTime * m_orbitSpeed * 2;
@@ -61,8 +52,7 @@ public class DayCyclecontroller : MonoBehaviour
             {
                 m_GSM.UpdateParameter(0, "DayOrNight");
             }
-            
-        }
+
         staticTimeOfTheDay = m_timeOfDay;
         UpdateTime();   
     }
@@ -135,5 +125,55 @@ public class DayCyclecontroller : MonoBehaviour
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
         m_sun.gameObject.SetActive(false);
+    }
+
+    public void CheckPhase(float hour)
+    {
+        if (hour > 0f && hour < 4f)
+        {
+            m_DayPhases.text = "Nuit";
+        }
+        if (hour >= 4f && hour < 6f)
+        {
+            m_DayPhases.text = "Aube";
+        }
+        else if(hour >= 6 && hour <= 8)
+        {
+            m_DayPhases.text = "Aurore";
+        }
+        else if (hour > 8 && hour <= 11.5f)
+        {
+            m_DayPhases.text = "Matinée";
+        }
+        else if (hour > 11.5f && hour <= 13.5f)
+        {
+            m_DayPhases.text = "Zénith";
+        }
+        else if (hour > 13.5f && hour <= 17f)
+        {
+            m_DayPhases.text = "Après-midi";
+        }
+        else if (hour > 17.5f && hour <= 21f)
+        {
+            m_DayPhases.text = "Crépuscule";
+        }
+        else if (hour > 21f && hour <= 24f)
+        {
+            m_DayPhases.text = "Nuit";
+        }
+
+        if(m_timeOfDay >= 24)
+        {
+            m_timeOfDay = 0;
+        }
+        else if (m_timeOfDay > 5.1f && m_timeOfDay < 6f)
+        {
+            m_timeOfDay = 6;
+        }
+        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
+        {
+            m_timeOfDay = 18.5f;
+        }
+
     }
 }

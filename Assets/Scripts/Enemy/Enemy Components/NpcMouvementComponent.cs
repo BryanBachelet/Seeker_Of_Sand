@@ -39,7 +39,7 @@ namespace Enemies
         private Transform m_targetTransform;
         private NavMeshAgent m_navMeshAgent;
         private NpcHealthComponent m_npcHealthComponent;
-
+        public EnemyManager enemymanage;
         public void Start()
         {
             InitComponent();
@@ -120,13 +120,18 @@ namespace Enemies
 
         public void Move()
         {
-            if (Vector3.Distance(transform.position, m_targetTransform.position) > minDistanceToFullyActive)
+            float distancePos = Vector3.Distance(transform.position, m_targetTransform.position);
+            if (distancePos > minDistanceToFullyActive)
             {
                 if (m_timerBetweenNavRefresh < timeBetweenNavRefresh)
                 {
                     m_timerBetweenNavRefresh += Time.deltaTime;
                     return;
                 }
+            }
+            else if(distancePos >  120)
+            {
+                enemymanage.ReplaceFarEnemy(this.gameObject);
             }
             m_navMeshAgent.destination = m_targetTransform.position;
             m_timerBetweenNavRefresh = 0;
