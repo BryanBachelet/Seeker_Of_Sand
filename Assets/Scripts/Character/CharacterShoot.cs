@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.UI;
+using TMPro;
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
@@ -51,10 +52,13 @@ namespace Character
         [SerializeField] private Transform m_OuterCircleHolder;
         [SerializeField] private GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
+
         private Animator m_AnimatorSkillBar;
 
         private Loader_Behavior m_LoaderInUI;
-        public List<UnityEngine.UI.Image> icon_Sprite;
+        [SerializeField] private List<Image> icon_Sprite;
+        [SerializeField] private List<Image> m_spellGlobalCooldown;
+        [SerializeField] private List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
 
         private CapsuleSystem.CapsuleType m_currentType;
@@ -384,11 +388,13 @@ namespace Character
             if (m_canShoot || m_isReloading) return;
             m_CharacterAnimator.SetBool("Shooting", false);
             m_CharacterMouvement.m_SpeedReduce = 1;
-            if (m_shootTimer > shootTime + currentWeaponStats.timeInterval)
+            float totalShootTime = shootTime + currentWeaponStats.timeInterval;
+            if (m_shootTimer > totalShootTime)
             {
                 for (int i = 0; i < icon_Sprite.Count; i++)
                 {
                     icon_Sprite[m_currentRotationIndex].color = Color.white;
+                    m_TextSpellGlobalCooldown[i].text = "";
                 }
 
                 m_canShoot = true;
@@ -397,8 +403,14 @@ namespace Character
             }
             else
             {
-
                 m_shootTimer += Time.deltaTime;
+                for (int i = m_currentRotationIndex; i < m_spellGlobalCooldown.Count; i++)
+                {
+                    m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_shootTimer) / totalShootTime;
+                    m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_shootTimer).ToString(".#");
+                }
+
+
             }
         }
 
