@@ -36,7 +36,7 @@ namespace Enemies
         [SerializeField] private float m_tempsEntrePause;
         [SerializeField] private float m_tempsPause;
         private float tempsEcoulePause = 0;
-        private bool spawningPhase = true;
+        public bool spawningPhase = true;
 
         public GlobalSoundManager gsm;
         private void Start()
@@ -56,14 +56,6 @@ namespace Enemies
             if (spawningPhase)
             {
                 SpawnCooldown();
-                if (tempsEcoulePause < m_tempsEntrePause)
-                {
-                    tempsEcoulePause += Time.deltaTime;
-                }
-                else
-                {
-                    StartCoroutine(ChangeSpawningPhase(m_tempsPause));
-                }
             }
 
         }
@@ -276,16 +268,11 @@ namespace Enemies
             }
         }
 
-        public IEnumerator ChangeSpawningPhase(float tempsPause)
+        public void ChangeSpawningPhase(bool spawning)
         {
-            spawningPhase = false;
-            gsm.globalMusicInstance.setParameterByName("Repos", 1);
-            Debug.Log("monte le son batard");
-            yield return new WaitForSeconds(tempsPause);
-            tempsEcoulePause = 0;
-            spawningPhase = true;
-            gsm.globalMusicInstance.setParameterByName("Repos", 0);
-            Debug.Log("c'est trop fort là");
+            spawningPhase = spawning;
+            if(spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); }
+            else { gsm.globalMusicInstance.setParameterByName("Repos", 1); }
         }
     }
 }

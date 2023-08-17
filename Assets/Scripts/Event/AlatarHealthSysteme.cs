@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class AlatarHealthSysteme : MonoBehaviour
 {
+    [Range(0, 3)]
+    [SerializeField] int eventElementType = 0;
+    [SerializeField] private Color[] colorEvent;
     [SerializeField] private float m_TimeInvulnerability;
     [SerializeField] private float m_MaxHealth;
     [SerializeField] private int m_CurrentHealth;
@@ -45,6 +48,8 @@ public class AlatarHealthSysteme : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        eventElementType = Random.Range(0, 4);
+        GetComponentInChildren<Light>().color = colorEvent[eventElementType];
         ownNumber = altarCount;
         altarCount++;
         myColor = GetColorByID(ownNumber);

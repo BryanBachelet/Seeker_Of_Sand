@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 public class DayCyclecontroller : MonoBehaviour
 {
     [Range(0, 24)]
@@ -16,10 +17,23 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
     [SerializeField] private Volume m_LocalNightVolume;
+    [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
-    [SerializeField] private UnityEngine.UI.Text m_DayPhases;
+    [SerializeField] private Text m_DayPhases;
+    [SerializeField] private Slider m_daySlider;
     private bool isNight = false;
     public float timescale;
+
+    [SerializeField] float[] tempsChaquePhase;
+    [SerializeField] string[] nomChaquePhase;
+    [SerializeField] float[] heureChaquePhase;
+    [SerializeField] string[] nomHeureChaquePhase;
+    [SerializeField] int currentPhase = 0;
+    [SerializeField] float m_TimeTransitionLastPhase;
+    [SerializeField] float m_TimeProchainePhase;
+
+    private string dayprogress;
+    private string phaseprogress;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,26 +46,24 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time = Time.time / 60;
+        time = Time.time;
         CheckPhase(m_timeOfDay);
-
-
-            if(isNight)
-            {
-                m_timeOfDay += Time.deltaTime * m_orbitSpeed * 2;
-            }
-            else
-            {
-                m_timeOfDay += Time.deltaTime * m_orbitSpeed;
-            }
-            if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
-            {
-                m_GSM.UpdateParameter(1, "DayOrNight");
-            }
-            else
-            {
-                m_GSM.UpdateParameter(0, "DayOrNight");
-            }
+        //if(isNight)
+        //{
+        //    m_timeOfDay += Time.deltaTime * m_orbitSpeed * 2;
+        //}
+        //else
+        //{
+        //    m_timeOfDay += Time.deltaTime * m_orbitSpeed;
+        //}
+        if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
+        {
+           m_GSM.UpdateParameter(1, "DayOrNight");
+        }
+       else
+        {
+           m_GSM.UpdateParameter(0, "DayOrNight");
+        }
 
         staticTimeOfTheDay = m_timeOfDay;
         UpdateTime();   
@@ -60,6 +72,7 @@ public class DayCyclecontroller : MonoBehaviour
     private void OnValidate()
     {
         UpdateTime();
+
     }
     private void UpdateTime()
     {
@@ -129,40 +142,70 @@ public class DayCyclecontroller : MonoBehaviour
 
     public void CheckPhase(float hour)
     {
-        if (hour > 0f && hour < 4f)
-        {
-            m_DayPhases.text = "Nuit";
-        }
-        if (hour >= 4f && hour < 6f)
-        {
-            m_DayPhases.text = "Aube";
-        }
-        else if(hour >= 6 && hour <= 8)
-        {
-            m_DayPhases.text = "Aurore";
-        }
-        else if (hour > 8 && hour <= 11.5f)
-        {
-            m_DayPhases.text = "Matinée";
-        }
-        else if (hour > 11.5f && hour <= 13.5f)
-        {
-            m_DayPhases.text = "Zénith";
-        }
-        else if (hour > 13.5f && hour <= 17f)
-        {
-            m_DayPhases.text = "Après-midi";
-        }
-        else if (hour > 17.5f && hour <= 21f)
-        {
-            m_DayPhases.text = "Crépuscule";
-        }
-        else if (hour > 21f && hour <= 24f)
-        {
-            m_DayPhases.text = "Nuit";
-        }
+        UpdatePhaseInfo();
+       //if (isNight) { }
+       //if (hour > 0f && hour < 4f)
+       //{
+       //    dayprogress = "Nuit";
+       //}
+       //if (hour >= 4f && hour < 6f)
+       //{
+       //    dayprogress = "Aube";
+       //}
+       //else if(hour >= 6 && hour <= 8)
+       //{
+       //    dayprogress = "Aurore";
+       //}
+       //else if (hour > 8 && hour <= 11.5f)
+       //{
+       //    dayprogress = "Matinée";
+       //}
+       //else if (hour > 11.5f && hour <= 13.5f)
+       //{
+       //    dayprogress = "Zénith";
+       //}
+       //else if (hour > 13.5f && hour <= 17f)
+       //{
+       //    dayprogress = "Après-midi";
+       //}
+       //else if (hour > 17.5f && hour < 21f)
+       //{
+       //    dayprogress = "Crépuscule";
+       //}
+       //else if (hour >= 21f && hour <= 24f)
+       //{
+       //    dayprogress = "Nuit";
+       //}
 
-        if(m_timeOfDay >= 24)
+
+
+        m_DayPhases.text = dayprogress + " - " + phaseprogress;
+
+    }
+
+    public void UpdatePhaseInfo()
+    {
+        if(time > m_TimeProchainePhase)
+        {
+            currentPhase += 1;
+            if(currentPhase > tempsChaquePhase.Length)
+            {
+                currentPhase = 0;
+            }
+            m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
+            m_TimeTransitionLastPhase = time;
+            phaseprogress = nomChaquePhase[currentPhase];
+            dayprogress = nomHeureChaquePhase[currentPhase];
+            m_DayPhases.text = dayprogress + " - " + phaseprogress;
+            
+        }
+        float sliderValue =1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
+        if (sliderValue <= 1 && sliderValue >= 0)
+        {
+            m_daySlider.value = sliderValue;
+        }
+        m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
+        if (m_timeOfDay >= 24)
         {
             m_timeOfDay = 0;
         }
@@ -174,6 +217,10 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 18.5f;
         }
+        Debug.Log("["+sliderValue+"]");
+        if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
+        else { m_EnemyManager.ChangeSpawningPhase(false); }
+
 
     }
 }

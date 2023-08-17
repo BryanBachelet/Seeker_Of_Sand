@@ -69,6 +69,7 @@ namespace Character
         private Vector3 pos;
 
         [SerializeField] public bool autoAimActive;
+        [SerializeField] private bool globalCD;
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
@@ -217,11 +218,11 @@ namespace Character
             }
             if(!autoAimActive)
             {
-                if (m_shootInput)
+                if (m_shootInput && !globalCD)
                 {
                     if (!m_isShooting) Shoot();
                 }
-                if (m_isShooting)
+                if (m_isShooting && !globalCD)
                 {
                     if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
                     {
@@ -235,7 +236,7 @@ namespace Character
                 }
             }
             ReloadShot();
-            ReloadWeapon();
+            ReloadWeapon(1.5f);
         }
 
         public void ShootInput(InputAction.CallbackContext ctx)
@@ -417,22 +418,64 @@ namespace Character
 
             }
         }
-
-
-        private void ReloadWeapon()
+        private void ReloadShotCast(float time)
         {
-            if (m_canShoot || !m_isReloading) return;
-
-            if (m_reloadTimer > reloadTime)
+            m_CharacterAnimator.SetBool("Shooting", false);
+            m_CharacterMouvement.m_SpeedReduce = 1;
+            float totalShootTime = time + currentWeaponStats.timeInterval;
+            if (m_shootTimer > totalShootTime)
             {
-                m_isReloading = false;
-                m_reloadTimer = 0;
-                GetCircleInfo();
+                
+
+               
+                globalCD = false;
+                m_shootTimer = 0;
+                m_canShoot = true;
                 return;
             }
             else
             {
+                m_shootTimer += Time.deltaTime;
+
+
+
+            }
+        }
+
+        private void ReloadWeapon(float time)
+        {
+            if (m_canShoot || !m_isReloading) return;
+
+            m_isCasting = false;
+            m_shootInput = false;
+            m_CharacterAnimator.SetBool("Casting", false);
+            avatarTransform.localRotation = Quaternion.identity;
+            //m_AnimatorSkillBar.SetBool("IsCasting", false);
+            m_CharacterMouvement.combatState = false;
+            float totalShootTime = time + currentWeaponStats.timeInterval;
+            if (m_reloadTimer > totalShootTime)
+            {
+                m_isReloading = false;
+                globalCD = false;
+                m_reloadTimer = 0;
+                GetCircleInfo();
+                for (int i = 0; i < icon_Sprite.Count; i++)
+                {
+                    icon_Sprite[i].color = Color.white;
+                    m_TextSpellGlobalCooldown[i].text = "";
+                }
+                return;
+            }
+            else
+            {
+
                 m_reloadTimer += Time.deltaTime;
+                for (int i = 0; i < m_spellGlobalCooldown.Count; i++)
+                {
+                    m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_reloadTimer) / totalShootTime;
+                    m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_reloadTimer).ToString(".#");
+                }
+                globalCD = true;
             }
         }
 
@@ -446,13 +489,15 @@ namespace Character
         {
             if (stateCall)
             {
-                if (!m_isCasting)
+                if (!m_isCasting && !globalCD)
                 {
 
                     m_isCasting = true;
+                    ReloadWeapon(1.5f);
+
                     m_CharacterAnimator.SetBool("Casting", true);
                     //m_AnimatorSkillBar.SetBool("IsCasting", true);
-                    m_canShoot = true;
+                    //m_canShoot = true;
                     m_CharacterMouvement.combatState = true;
                     return false;
                 }
@@ -468,6 +513,7 @@ namespace Character
                 {
                     m_isCasting = false;
                     m_shootInput = false;
+
                     m_CharacterAnimator.SetBool("Casting", false);
                     avatarTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
@@ -516,12 +562,20 @@ namespace Character
 
         public void StopCasting()
         {
-            m_isCasting = false;
-            m_shootInput = false;
-            m_CharacterAnimator.SetBool("Casting", false);
-            avatarTransform.localRotation = Quaternion.identity;
-            //m_AnimatorSkillBar.SetBool("IsCasting", false);
-            m_CharacterMouvement.combatState = false;
+            if(m_isCasting)
+            {
+                m_isCasting = false;
+                m_shootInput = false;
+                m_canShoot = false;
+                m_isReloading = true;
+                m_CharacterAnimator.SetBool("Casting", false);
+                avatarTransform.localRotation = Quaternion.identity;
+                //m_AnimatorSkillBar.SetBool("IsCasting", false);
+                m_CharacterMouvement.combatState = false;
+                ReloadWeapon(5f);
+                m_currentRotationIndex = 0;
+            }
+
         }
         #region Spell Functions
         public void AddSpell(int index)
