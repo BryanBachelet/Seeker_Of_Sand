@@ -193,7 +193,7 @@ namespace Character
 
         private void Update()
         {
-
+            if(m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.Train) { this.enabled = false;  return; }
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {

@@ -27,9 +27,9 @@ public class GlobalSoundManager : MonoBehaviour
     {
         everyEvent = everyEvent_Attribution;
         OneS_Sound = OneS_Sound_Attribution;
-        globalinstance = FMODUnity.RuntimeManager.CreateInstance(Globalsound);
+        globalinstance = RuntimeManager.CreateInstance(Globalsound);
         globalinstance.start();
-        globalMusicInstance = FMODUnity.RuntimeManager.CreateInstance(GlobalMusic);
+        globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
         globalMusicInstance.start();
     }
 
