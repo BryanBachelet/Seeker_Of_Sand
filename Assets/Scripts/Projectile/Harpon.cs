@@ -15,7 +15,9 @@ public class Harpon : Projectile
 
     public void Start()
     {
+        Vector3 scale = transform.localScale;
         transform.rotation *= Quaternion.AngleAxis(90, Vector3.right);
+        transform.localScale = new Vector3(scale.x, scale.y, scale.z );
     }
 
     protected override void Move()

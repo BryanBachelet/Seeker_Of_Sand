@@ -52,6 +52,8 @@ namespace Character
         [SerializeField] private Transform m_OuterCircleHolder;
         [SerializeField] private GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
+        [SerializeField] private List<UnityEngine.VFX.VisualEffect> m_SpellReady = new List<UnityEngine.VFX.VisualEffect>();
+        private Rigidbody m_rigidbody;
 
         private Animator m_AnimatorSkillBar;
 
@@ -137,7 +139,7 @@ namespace Character
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
             pauseScript = GetComponent<PauseMenu>();
             m_AnimatorSkillBar = m_SkillBarHolder.GetComponent<Animator>();
-
+            m_rigidbody = GetComponent<Rigidbody>();
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
             for(int i = 0; i < icon_Sprite.Count; i++)
@@ -293,7 +295,7 @@ namespace Character
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale * (currentWeaponStats.size * currentWeaponStats.sizeMultiplicatorFactor);
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
-                data.speed = currentWeaponStats.speed;
+                data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
                 data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
                 
@@ -406,6 +408,7 @@ namespace Character
                 }
 
                 m_canShoot = true;
+                m_SpellReady[m_currentIndexCapsule].Play();
                 m_shootTimer = 0;
                 return;
             }
