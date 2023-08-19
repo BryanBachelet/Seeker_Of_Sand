@@ -32,6 +32,7 @@ namespace Render.Camera
 
 
         private CameraEffect[] cameraEffects;
+        public Transform sun;
         // Start is called before the first frame update
         void Start()
         {
@@ -67,7 +68,9 @@ namespace Render.Camera
             {
                 //transform.parent = cameraTrainTransform;
                 transform.position = cameraTrainTransform.position;
-                transform.rotation = Quaternion.Euler(15, 108, 0);
+                Vector3 directionsun = sun.position;
+                directionsun.y = m_targetTransform.position.y;
+                transform.LookAt(directionsun);
             }
 
         }

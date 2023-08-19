@@ -21,6 +21,8 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty angleTrajectoryProperty;
     SerializedProperty shootNumberProperty;
     SerializedProperty TimeIntervalProperty;
+    SerializedProperty sizeProperty;
+    SerializedProperty sizeMultiplicatorFactorProperty;
 
     public void OnEnable()
     {
@@ -37,6 +39,9 @@ public class CapsuleProfil_UI : Editor
         angleTrajectoryProperty = serializedObject.FindProperty("stats.angleTrajectory");
         shootNumberProperty = serializedObject.FindProperty("stats.shootNumber");
         TimeIntervalProperty = serializedObject.FindProperty("stats.timeInterval");
+        sizeProperty = serializedObject.FindProperty("stats.size");
+        sizeMultiplicatorFactorProperty = serializedObject.FindProperty("stats.sizeMultiplicatorFactor");
+
     }
 
     public override void OnInspectorGUI()
@@ -63,6 +68,8 @@ public class CapsuleProfil_UI : Editor
         }
         shootNumberProperty.floatValue = EditorGUILayout.FloatField(shootNumberProperty.displayName, shootNumberProperty.floatValue);
         TimeIntervalProperty.floatValue = EditorGUILayout.FloatField(TimeIntervalProperty.displayName, TimeIntervalProperty.floatValue);
+        sizeProperty.floatValue = EditorGUILayout.FloatField(sizeProperty.displayName, sizeProperty.floatValue);
+        sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
 
         serializedObject.ApplyModifiedProperties();
     }

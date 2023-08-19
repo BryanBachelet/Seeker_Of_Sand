@@ -86,10 +86,12 @@ public class UpgradeLauncher : Upgrade
 public class UpgradeCapsule : Upgrade
 {
     private string m_baseString;
+    private string m_baseStringDescription;
     public UpgradeCapsule(UpgradeProfil profil) : base(profil)
     {
         gain.type = UpgradeType.CAPSULE;
-        m_baseString = gain.description;
+        m_baseString = gain.nameUgrade;
+        m_baseStringDescription = gain.description;
     }
 
     public override void Setup(int capsuleCount, Sprite sprite)
@@ -108,13 +110,16 @@ public class UpgradeCapsule : Upgrade
         playerStat.shootAngle += gain.capsulsStats.shootAngle;
         playerStat.shootNumber += gain.capsulsStats.shootNumber;
         playerStat.timeInterval += gain.capsulsStats.timeInterval;
+        playerStat.size += gain.capsulsStats.size;
+        playerStat.sizeMultiplicatorFactor += gain.capsulsStats.sizeMultiplicatorFactor;
 
         //gain.description = m_baseString;
     }
 
     public override void Destroy()
     {
-        gain.description = m_baseString;
+        gain.description = m_baseStringDescription;
+        gain.nameUgrade = m_baseString;
     }
 }
 

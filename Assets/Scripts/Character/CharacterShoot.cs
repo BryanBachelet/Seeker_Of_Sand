@@ -257,6 +257,7 @@ namespace Character
         private void Shoot()
         {
             if (!m_canShoot) return;
+            GlobalSoundManager.PlayOneShot(27,transform.position);
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
             //Debug.Log("[" + m_CharacterMouvement.runSpeed + "] Run speed ");
             if (currentShotNumber == 0)
@@ -288,12 +289,14 @@ namespace Character
                 Transform transformUsed = transform;
                 Quaternion rot = m_characterAim.GetTransformHead().rotation;
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
-                    , transformUsed.position + new Vector3(0, 1, 0), rot);
+                    , transformUsed.position + new Vector3(0, 3, 0), rot);
+                projectileCreate.transform.localScale = projectileCreate.transform.localScale * (currentWeaponStats.size * currentWeaponStats.sizeMultiplicatorFactor);
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
                 data.speed = currentWeaponStats.speed;
                 data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
+                
                 Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
                 if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
                     dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
