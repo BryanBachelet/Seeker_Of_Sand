@@ -56,12 +56,18 @@
 			<destination>{01c4e95a-f29c-4f25-8e52-d1c03adde702}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{5b91f9c8-47aa-4e84-b2df-354482e52aa9}" />
+	<object class="EventAutomatableProperties" id="{5b91f9c8-47aa-4e84-b2df-354482e52aa9}">
+		<property name="maxVoices">
+			<value>5</value>
+		</property>
+		<property name="voiceStealing">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{17635c23-e667-4c1a-962d-eee415acd5c6}" />
 	<object class="GroupTrack" id="{9be426f1-c452-41cc-be02-4cd5814f1407}">
 		<relationship name="modules">
 			<destination>{aea9416b-1049-4394-b9c1-fdcb36683d96}</destination>
-			<destination>{717fba92-e321-4102-82c0-5e0b300787ac}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{e182044c-ff95-451e-84a3-6fe84282c83d}</destination>
@@ -70,7 +76,6 @@
 	<object class="Timeline" id="{5594533f-2f0f-45f3-a200-e73f1d8c5232}">
 		<relationship name="modules">
 			<destination>{aea9416b-1049-4394-b9c1-fdcb36683d96}</destination>
-			<destination>{717fba92-e321-4102-82c0-5e0b300787ac}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{384343c6-8eca-4dd6-aeaf-f40b2e9a546a}">
@@ -92,27 +97,13 @@
 	<object class="MixerBusPanner" id="{785028ae-c382-4d99-8973-7a39f2c4b9de}" />
 	<object class="SingleSound" id="{aea9416b-1049-4394-b9c1-fdcb36683d96}">
 		<property name="length">
-			<value>0.90000000000000002</value>
+			<value>1.4500000000000002</value>
 		</property>
 		<property name="timelockedOffset">
 			<value>0.17999999999999999</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{c28ddc44-8a40-4113-997d-41a02e04fd98}</destination>
-		</relationship>
-	</object>
-	<object class="SingleSound" id="{717fba92-e321-4102-82c0-5e0b300787ac}">
-		<property name="start">
-			<value>0.90000000000000002</value>
-		</property>
-		<property name="length">
-			<value>1.4979591836734691</value>
-		</property>
-		<property name="timelockedOffset">
-			<value>0.20000000000000007</value>
-		</property>
-		<relationship name="audioFile">
-			<destination>{6c104862-f3cf-4452-85a9-2bca5d8562ec}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{e182044c-ff95-451e-84a3-6fe84282c83d}">

@@ -33,11 +33,10 @@ namespace Enemies
         public List<Transform> altarTransformList = new List<Transform>();
         private List<AlatarHealthSysteme> altarScriptList = new List<AlatarHealthSysteme>();
 
-        public UnityEngine.UI.Text ui_DangerLevelObject;
         [SerializeField] private float m_tempsEntrePause;
         [SerializeField] private float m_tempsPause;
         private float tempsEcoulePause = 0;
-        private bool spawningPhase = true;
+        public bool spawningPhase = true;
 
         public GlobalSoundManager gsm;
         private void Start()
@@ -46,8 +45,6 @@ namespace Enemies
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
             gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
-            ui_DangerLevelObject.text = "Medium";
-            ui_DangerLevelObject.color = Color.red;
            
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -59,14 +56,6 @@ namespace Enemies
             if (spawningPhase)
             {
                 SpawnCooldown();
-                if (tempsEcoulePause < m_tempsEntrePause)
-                {
-                    tempsEcoulePause += Time.deltaTime;
-                }
-                else
-                {
-                    StartCoroutine(ChangeSpawningPhase(m_tempsPause));
-                }
             }
 
         }
@@ -103,6 +92,11 @@ namespace Enemies
             return Vector3.zero;
         }
 
+        public void ReplaceFarEnemy(GameObject enemy)
+        {
+            enemy.transform.position = FindPosition();
+            Debug.Log("Repositioned at [" + enemy.transform.position + "]");
+        }
         private float GetTimeSpawn()
         {
             return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
@@ -188,7 +182,10 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
+
             NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
+            NpcMouvementComponent npcMove = enemySpawn.GetComponent<NpcMouvementComponent>();
+            npcMove.enemymanage = this;
             npcHealth.SetInitialData( m_healthManager, this);
 
             if (EnemyTargetPlayer)
@@ -271,20 +268,11 @@ namespace Enemies
             }
         }
 
-        public IEnumerator ChangeSpawningPhase(float tempsPause)
+        public void ChangeSpawningPhase(bool spawning)
         {
-            spawningPhase = false;
-            ui_DangerLevelObject.text = "Peaceful";
-            ui_DangerLevelObject.color = Color.white;
-            gsm.globalMusicInstance.setParameterByName("Repos", 1);
-            Debug.Log("monte le son batard");
-            yield return new WaitForSeconds(tempsPause);
-            tempsEcoulePause = 0;
-            spawningPhase = true;
-            ui_DangerLevelObject.text = "Medium";
-            ui_DangerLevelObject.color = Color.red;
-            gsm.globalMusicInstance.setParameterByName("Repos", 0);
-            Debug.Log("c'est trop fort là");
+            spawningPhase = spawning;
+            if(spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); }
+            else { gsm.globalMusicInstance.setParameterByName("Repos", 1); }
         }
     }
 }

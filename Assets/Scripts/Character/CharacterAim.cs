@@ -46,6 +46,8 @@ namespace Character
 
         public float rangeDebug;
         public Collider[] colProche;
+        [SerializeField] private float aimAssist = 1;
+        public Collider NearestCol;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
@@ -61,7 +63,7 @@ namespace Character
         {
             if(m_characterShoot.autoAimActive && m_characterShoot.m_isCasting)
             {
-                Collider[] col = Physics.OverlapSphere(transform.position, m_characterShoot.GetPodRange(), enemyLayer);
+                Collider[] col = Physics.OverlapSphere(GetAimFinalPoint(), m_characterShoot.GetPodRange(), enemyLayer);
                 if (col.Length > 0)
                 {
                     Vector3 nearestEnemyPos = NearestEnemy(col);
@@ -84,6 +86,7 @@ namespace Character
 
                 m_isNewTarget = true;
                 m_aimFinalPointNormal = hit.normal;
+
             }
         }
 
@@ -140,6 +143,12 @@ namespace Character
 
                 m_aimPoint = hit.point;
                 m_aimFinalPointNormal = hit.normal;
+                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimFinalPointNormal, aimAssist, enemyLayer);
+
+                if (nearestAimedEnemy.Length > 0)
+                {
+                    m_aimFinalPointNormal = NearestEnemy(nearestAimedEnemy);
+                }
             }
 
             return m_aimPoint;
@@ -316,6 +325,7 @@ namespace Character
         {
             var nClosest = enemysPos.OrderBy(t => (t.transform.position - transform.position).sqrMagnitude)
                            .FirstOrDefault();   //or use .FirstOrDefault();  if you need just one
+            NearestCol = nClosest;
             return nClosest.transform.position;
         }
         private bool IsGamepad()
@@ -343,6 +353,8 @@ namespace Character
                 Gizmos.color = Color.red;
                 Gizmos.DrawRay(aimTrajectoryRay.origin, aimTrajectoryRay.direction * (heightestPoint - transform.position).magnitude);
                 Gizmos.DrawLine(heightestPoint, m_aimPoint);
+
+                Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssist);
             }
         }
 

@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 public class MenuPrincipal_Controller : MonoBehaviour
 {
     [SerializeField] private GameObject buttonHolder;
+    GlobalSoundManager gsm;
     private Animator buttonAnimator;
     // Start is called before the first frame update
     void Start()
     {
         buttonAnimator = buttonHolder.GetComponent<Animator>();
+        gsm = GameObject.Find("---SoundManager").GetComponent<GlobalSoundManager>();
     }
 
     // Update is called once per frame
@@ -24,7 +26,7 @@ public class MenuPrincipal_Controller : MonoBehaviour
         // This is particularly good for creating loading screens.
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
-
+        gsm.globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SceneNumber);
 
         // Wait until the asynchronous scene fully loads
@@ -37,6 +39,7 @@ public class MenuPrincipal_Controller : MonoBehaviour
     public void SelectionScene(int SceneNumber)
     {
         StartCoroutine(LoadYourAsyncScene(SceneNumber));
+
     }
     public void ChangeMenuPlayLayout(int State)
     {
