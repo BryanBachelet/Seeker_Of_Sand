@@ -298,7 +298,7 @@ namespace Character
                 data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
                 data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
-                
+                data.piercingMax = currentWeaponStats.piercingMax;
                 Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
                 if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
                     dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;

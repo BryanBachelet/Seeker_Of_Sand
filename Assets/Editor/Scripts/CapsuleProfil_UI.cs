@@ -23,6 +23,7 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty TimeIntervalProperty;
     SerializedProperty sizeProperty;
     SerializedProperty sizeMultiplicatorFactorProperty;
+    SerializedProperty piercingMaxProperty;
 
     public void OnEnable()
     {
@@ -41,6 +42,7 @@ public class CapsuleProfil_UI : Editor
         TimeIntervalProperty = serializedObject.FindProperty("stats.timeInterval");
         sizeProperty = serializedObject.FindProperty("stats.size");
         sizeMultiplicatorFactorProperty = serializedObject.FindProperty("stats.sizeMultiplicatorFactor");
+        piercingMaxProperty = serializedObject.FindProperty("stats.piercingMax");
 
     }
 
@@ -70,7 +72,7 @@ public class CapsuleProfil_UI : Editor
         TimeIntervalProperty.floatValue = EditorGUILayout.FloatField(TimeIntervalProperty.displayName, TimeIntervalProperty.floatValue);
         sizeProperty.floatValue = EditorGUILayout.FloatField(sizeProperty.displayName, sizeProperty.floatValue);
         sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
-
+        piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
         serializedObject.ApplyModifiedProperties();
     }
 }
