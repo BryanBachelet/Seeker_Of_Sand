@@ -6,6 +6,8 @@ namespace Render.Camera
 {
     public class CameraBehavior : MonoBehaviour
     {
+        [SerializeField] private Transform cameraTrainTransform;
+        [SerializeField] private Character.CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;
         [SerializeField] private float m_distanceToTarget;
         [HideInInspector] public Vector3 m_offsetPos;
@@ -26,9 +28,11 @@ namespace Render.Camera
         private bool m_isLerping = false;
         private float m_lerpTime = 0.3f;
         private float m_lerpTimer = 0.0f;
+        private bool attachedToTrain = false;
 
 
         private CameraEffect[] cameraEffects;
+        public Transform sun;
         // Start is called before the first frame update
         void Start()
         {
@@ -39,24 +43,36 @@ namespace Render.Camera
 
         void Update()
         {
-            if (m_isLerping)
+            if(playerMove.mouvementState != Character.CharacterMouvement.MouvementState.Train)
             {
-                if (m_lerpTimer > m_lerpTime)
+                if (m_isLerping)
                 {
-                    m_prevRot = m_nextRot;
-                    m_prevAngle = m_nextAngle;
-                    m_lerpTimer = 0.0f;
-                    m_isLerping = false;
+                    if (m_lerpTimer > m_lerpTime)
+                    {
+                        m_prevRot = m_nextRot;
+                        m_prevAngle = m_nextAngle;
+                        m_lerpTimer = 0.0f;
+                        m_isLerping = false;
+                    }
+                    else
+                    {
+                        m_lerpTimer += Time.deltaTime;
+                    }
                 }
-                else
-                {
-                    m_lerpTimer += Time.deltaTime;
-                }
+
+                SetCameraRotation();
+                SetCameraPosition();
+                Apply();
+            }
+            else
+            {
+                //transform.parent = cameraTrainTransform;
+                transform.position = cameraTrainTransform.position;
+                Vector3 directionsun = sun.position;
+                directionsun.y = m_targetTransform.position.y;
+                transform.LookAt(directionsun);
             }
 
-            SetCameraRotation();
-            SetCameraPosition();
-            Apply();
         }
 
         public float GetAngle()

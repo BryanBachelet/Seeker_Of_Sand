@@ -10,6 +10,7 @@ public struct ProjectileData
     public float damage;
     public Vector3 destination;
     public GameObject area_Feedback;
+    public int piercingMax;
 }
 
 
@@ -22,10 +23,11 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
     [SerializeField] protected float m_damage = 1;
+    [SerializeField] public int m_indexSFX;
 
     protected Vector3 m_destination;
     protected float m_lifeTimer;
-    public int piercingMax;
+    public int m_piercingMax;
     private int piercingCount;
 
     private float spawnTime;
@@ -33,7 +35,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float m_deltaTimeMove;
     void  Update()
     {
-        if(!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; }
+        if(!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
         else
         {
             if(Time.time > spawnTime + m_deltaTimeMove)
@@ -52,6 +54,9 @@ public class Projectile : MonoBehaviour
         m_lifeTime = data.life;
         m_damage = data.damage;
         m_destination = data.destination;
+        m_piercingMax = data.piercingMax;
+
+
 
 
     }
@@ -94,8 +99,9 @@ public class Projectile : MonoBehaviour
         enemyTouch.ReceiveDamage(m_damage,other.transform.position - transform.position, m_power);
 
         piercingCount++;
-        if (piercingCount >= piercingMax)
+        if (piercingCount >= m_piercingMax)
         {
+            
             Destroy(this.gameObject);
         }
 

@@ -1,0 +1,178 @@
+﻿        Pass
+        {
+            Name "TransparentDepthPrepass"
+            Tags
+            {
+               "LightMode" = "TransparentDepthPrepass"
+            }
+            
+            // Render State
+            Cull [_CullMode]
+            Blend One Zero
+            ZWrite On
+            Stencil
+               {
+                  WriteMask [_StencilWriteMaskDepth]
+                  Ref [_StencilRefDepth]
+                  CompFront Always
+                  PassFront Replace
+                  CompBack Always
+                  PassBack Replace
+               }
+    
+
+            %PASSDEPTH%
+            
+            //-------------------------------------------------------------------------------------
+            // End Render Modes
+            //-------------------------------------------------------------------------------------
+        
+            HLSLPROGRAM
+        
+            #pragma target %SHADERTARGET%
+            #pragma only_renderers d3d11 playstation xboxone xboxseries vulkan metal switch
+            #pragma multi_compile_instancing
+            #pragma multi_compile_local _ _ALPHATEST_ON
+            //#pragma instancing_options renderinglayer// breaks terrain instancing
+
+            #pragma shader_feature _ _SURFACE_TYPE_TRANSPARENT
+            #pragma shader_feature_local _BLENDMODE_OFF _BLENDMODE_ALPHA _BLENDMODE_ADD _BLENDMODE_PRE_MULTIPLY
+            #pragma shader_feature_local _ _DOUBLESIDED_ON
+            #pragma shader_feature_local _ _ADD_PRECOMPUTED_VELOCITY
+            #pragma shader_feature_local _ _TRANSPARENT_WRITES_MOTION_VEC
+            #pragma shader_feature_local _ _DISABLE_DECALS
+            #pragma shader_feature_local _ _DISABLE_SSR
+            #pragma shader_feature_local _ _DISABLE_SSR_TRANSPARENT
+            #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
+            #pragma multi_compile _ WRITE_DECAL_BUFFER
+                
+        
+  
+
+            #define SHADERPASS SHADERPASS_TRANSPARENT_DEPTH_PREPASS
+                #define RAYTRACING_SHADER_GRAPH_DEFAULT
+
+            
+            %DEFINES%
+
+            %PRAGMAS%
+
+            %HDRPINCLUDE%
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/NormalSurfaceGradient.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitDecalData.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderGraphFunctions.hlsl"
+    
+
+            %TEMPLATE_SHARED%
+
+            %CUSTOMCBUFFER%
+
+            %CUSTOMINSTANCEPROPS%
+
+            %CODE%
+
+            %SHADERDESC%
+
+            %VERT%
+
+            %TESSELLATION%
+
+            %HDRPSHARED%
+
+
+                     void Frag(  VertexToPixel v2f
+                          #if defined(SCENESELECTIONPASS) || defined(SCENEPICKINGPASS)
+                          , out float4 outColor : SV_Target0
+                          #else
+                          #ifdef WRITE_MSAA_DEPTH
+                            // We need the depth color as SV_Target0 for alpha to coverage
+                            , out float4 depthColor : SV_Target0
+                                #ifdef WRITE_NORMAL_BUFFER
+                                , out float4 outNormalBuffer : SV_Target1
+                                #endif
+                            #else
+                                #ifdef WRITE_NORMAL_BUFFER
+                                , out float4 outNormalBuffer : SV_Target0
+                                #endif
+                            #endif
+
+                            // Decal buffer must be last as it is bind but we can optionally write into it (based on _DISABLE_DECALS)
+                            #if defined(WRITE_DECAL_BUFFER) && !defined(_DISABLE_DECALS)
+                            , out float4 outDecalBuffer : SV_TARGET_DECAL
+                            #endif
+                        #endif
+
+                        #if defined(_DEPTHOFFSET_ON) && !defined(SCENEPICKINGPASS)
+                        , out float outputDepth : SV_Depth
+                        #endif
+                      )
+              {
+                  UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(v2f);
+                  FragInputs input = BuildFragInputs(v2f);
+
+                  // input.positionSS is SV_Position
+                  PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS);
+
+                  #ifdef VARYINGS_NEED_POSITION_WS
+                     float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
+                  #else
+                     // Unused
+                     float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
+                  #endif
+
+                  SurfaceData surfaceData;
+                  BuiltinData builtinData;
+                  Surface l;
+                  ShaderData d;
+                  GetSurfaceAndBuiltinData(v2f, input, V, posInput, surfaceData, builtinData, l, d);
+
+
+                  #ifdef _DEPTHOFFSET_ON
+                     outputDepth = l.outputDepth;
+                  #endif
+
+                  #ifdef SCENESELECTIONPASS
+                      // We use depth prepass for scene selection in the editor, this code allow to output the outline correctly
+                      outColor = float4(_ObjectId, _PassValue, 1.0, 1.0);
+                  #elif defined(SCENEPICKINGPASS)
+                      outColor = _SelectionID;
+                  #else
+                     #ifdef WRITE_MSAA_DEPTH
+                       // In case we are rendering in MSAA, reading the an MSAA depth buffer is way too expensive. To avoid that, we export the depth to a color buffer
+                       depthColor = v2f.pos.z;
+
+                       #ifdef _ALPHATOMASK_ON
+                          // Alpha channel is used for alpha to coverage
+                          depthColor.a = SharpenAlpha(builtinData.opacity, builtinData.alphaClipTreshold);
+                       #endif // alphatomask
+                     #endif // msaa_depth
+                  #endif
+
+                   #if defined(WRITE_NORMAL_BUFFER)
+                      EncodeIntoNormalBuffer(ConvertSurfaceDataToNormalData(surfaceData), outNormalBuffer);
+                   #endif
+
+                   #if defined(WRITE_DECAL_BUFFER) && !defined(_DISABLE_DECALS)
+                      DecalPrepassData decalPrepassData;
+                      // We don't have the right to access SurfaceData in a shaderpass.
+                      // However it would be painful to have to add a function like ConvertSurfaceDataToDecalPrepassData() to every Material to return geomNormalWS anyway
+                      // Here we will put the constrain that any Material requiring to support Decal, will need to have geomNormalWS as member of surfaceData (and we already require normalWS anyway)
+                      decalPrepassData.geomNormalWS = surfaceData.geomNormalWS;
+                      decalPrepassData.decalLayerMask = GetMeshRenderingDecalLayer();
+                      EncodeIntoDecalPrepassBuffer(decalPrepassData, outDecalBuffer);
+                   #endif
+
+
+              }
+
+
+
+            ENDHLSL
+         }

@@ -20,6 +20,10 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty trajectoryProperty;
     SerializedProperty angleTrajectoryProperty;
     SerializedProperty shootNumberProperty;
+    SerializedProperty TimeIntervalProperty;
+    SerializedProperty sizeProperty;
+    SerializedProperty sizeMultiplicatorFactorProperty;
+    SerializedProperty piercingMaxProperty;
 
     public void OnEnable()
     {
@@ -35,6 +39,11 @@ public class CapsuleProfil_UI : Editor
         trajectoryProperty = serializedObject.FindProperty("stats.trajectory");
         angleTrajectoryProperty = serializedObject.FindProperty("stats.angleTrajectory");
         shootNumberProperty = serializedObject.FindProperty("stats.shootNumber");
+        TimeIntervalProperty = serializedObject.FindProperty("stats.timeInterval");
+        sizeProperty = serializedObject.FindProperty("stats.size");
+        sizeMultiplicatorFactorProperty = serializedObject.FindProperty("stats.sizeMultiplicatorFactor");
+        piercingMaxProperty = serializedObject.FindProperty("stats.piercingMax");
+
     }
 
     public override void OnInspectorGUI()
@@ -60,8 +69,10 @@ public class CapsuleProfil_UI : Editor
             angleTrajectoryProperty.floatValue = EditorGUILayout.FloatField(angleTrajectoryProperty.displayName, angleTrajectoryProperty.floatValue);
         }
         shootNumberProperty.floatValue = EditorGUILayout.FloatField(shootNumberProperty.displayName, shootNumberProperty.floatValue);
-
-
+        TimeIntervalProperty.floatValue = EditorGUILayout.FloatField(TimeIntervalProperty.displayName, TimeIntervalProperty.floatValue);
+        sizeProperty.floatValue = EditorGUILayout.FloatField(sizeProperty.displayName, sizeProperty.floatValue);
+        sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
+        piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
         serializedObject.ApplyModifiedProperties();
     }
 }

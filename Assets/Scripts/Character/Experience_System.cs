@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.VFX;
 public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
@@ -16,6 +16,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private float m_posXInit = -930;
     [SerializeField] private float m_posXFinal = 950;
     [SerializeField] private RectTransform m_xpPointer;
+    [SerializeField] private VisualEffect levelUpEffect;
+    [SerializeField] private VisualEffect levelUpEffectUi;
 
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
@@ -51,6 +53,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         if (levelProgress > m_CurrentLevel + 1)
         {
             LevelUp((int)m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled));
+            levelUpEffect.Play();
+            levelUpEffectUi.Play();
             GlobalSoundManager.PlayOneShot(7, Vector3.zero);
         }
         else

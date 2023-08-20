@@ -1,0 +1,159 @@
+﻿        Pass
+        {
+            // based on HDLitPass.template
+            Name "SceneSelectionPass"
+            Tags { "LightMode" = "SceneSelectionPass" }
+        
+            Cull Off
+            ColorMask 0
+
+            %PASSSELECT%
+
+            HLSLPROGRAM
+        
+            #pragma target %SHADERTARGET%
+            #pragma only_renderers d3d11 playstation xboxone xboxseries vulkan metal switch
+            #pragma multi_compile_instancing
+            #pragma editor_sync_compilation
+            #pragma multi_compile_local _ _ALPHATEST_ON
+            //#pragma instancing_options renderinglayer// breaks terrain instancing
+
+
+            #pragma shader_feature _ _SURFACE_TYPE_TRANSPARENT
+            #pragma shader_feature_local _BLENDMODE_OFF _BLENDMODE_ALPHA _BLENDMODE_ADD _BLENDMODE_PRE_MULTIPLY
+            #pragma shader_feature_local _ _DOUBLESIDED_ON
+            #pragma shader_feature_local _ _ADD_PRECOMPUTED_VELOCITY
+            #pragma shader_feature_local _ _TRANSPARENT_WRITES_MOTION_VEC
+            #pragma shader_feature_local _ _DISABLE_DECALS
+            #pragma shader_feature_local _ _DISABLE_SSR
+            #pragma shader_feature_local _ _DISABLE_SSR_TRANSPARENT
+            #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
+                
+            //-------------------------------------------------------------------------------------
+            // Variant Definitions (active field translations to HDRP defines)
+            //-------------------------------------------------------------------------------------
+            // #define _MATERIAL_FEATURE_SUBSURFACE_SCATTERING 1
+            // #define _MATERIAL_FEATURE_TRANSMISSION 1
+            // #define _MATERIAL_FEATURE_ANISOTROPY 1
+            // #define _MATERIAL_FEATURE_IRIDESCENCE 1
+            // #define _MATERIAL_FEATURE_SPECULAR_COLOR 1
+            #define _ENABLE_FOG_ON_TRANSPARENT 1
+            #define _AMBIENT_OCCLUSION 1
+            #define _SPECULAR_OCCLUSION_FROM_AO 1
+            // #define _SPECULAR_OCCLUSION_FROM_AO_BENT_NORMAL 1
+            // #define _SPECULAR_OCCLUSION_CUSTOM 1
+            #define _ENERGY_CONSERVING_SPECULAR 1
+            // #define _ENABLE_GEOMETRIC_SPECULAR_AA 1
+            // #define _HAS_REFRACTION 1
+            // #define _REFRACTION_PLANE 1
+            // #define _REFRACTION_SPHERE 1
+            // #define _DISABLE_DECALS 1
+            // #define _DISABLE_SSR 1
+            // #define _ADD_PRECOMPUTED_VELOCITY
+            // #define _WRITE_TRANSPARENT_MOTION_VECTOR 1
+            // #define _DEPTHOFFSET_ON 1
+            // #define _BLENDMODE_PRESERVE_SPECULAR_LIGHTING 1
+        
+            %DEFINES%
+
+            %PRAGMAS%
+        
+            #define SHADERPASS SHADERPASS_DEPTH_ONLY
+            #define RAYTRACING_SHADER_GRAPH_DEFAULT
+            #define SCENESELECTIONPASS
+
+        
+            %HDRPINCLUDE%
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/NormalSurfaceGradient.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitDecalData.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderGraphFunctions.hlsl"
+    
+  
+            %TEMPLATE_SHARED%
+
+            %CUSTOMCBUFFER%
+
+            %CUSTOMINSTANCEPROPS%
+
+            %CODE%
+
+            %SHADERDESC%
+
+            %VERT%
+
+            %TESSELLATION%
+
+            %HDRPSHARED%
+        
+
+            
+            void Frag(  VertexToPixel IN
+            #ifdef WRITE_NORMAL_BUFFER
+            , out float4 outNormalBuffer : SV_Target0
+                #ifdef WRITE_MSAA_DEPTH
+                , out float1 depthColor : SV_Target1
+                #endif
+            #elif defined(WRITE_MSAA_DEPTH) // When only WRITE_MSAA_DEPTH is define and not WRITE_NORMAL_BUFFER it mean we are Unlit and only need depth, but we still have normal buffer binded
+            , out float4 outNormalBuffer : SV_Target0
+            , out float1 depthColor : SV_Target1
+            #elif defined(SCENESELECTIONPASS)
+            , out float4 outColor : SV_Target0
+            #endif
+
+            #ifdef _DEPTHOFFSET_ON
+            , out float outputDepth : SV_Depth
+            #endif
+        )
+         {
+             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+             FragInputs input = BuildFragInputs(IN);
+
+             // input.positionSS is SV_Position
+             PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS);
+
+         #ifdef VARYINGS_NEED_POSITION_WS
+             float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
+         #else
+             // Unused
+             float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
+         #endif
+
+            SurfaceData surfaceData;
+            BuiltinData builtinData;
+            Surface l;
+            ShaderData d;
+            GetSurfaceAndBuiltinData(IN, input, V, posInput, surfaceData, builtinData, l, d);
+
+
+         #ifdef _DEPTHOFFSET_ON
+             outputDepth = l.outputDepth;
+         #endif
+
+         #ifdef WRITE_NORMAL_BUFFER
+             EncodeIntoNormalBuffer(ConvertSurfaceDataToNormalData(surfaceData), posInput.positionSS, outNormalBuffer);
+             #ifdef WRITE_MSAA_DEPTH
+             // In case we are rendering in MSAA, reading the an MSAA depth buffer is way too expensive. To avoid that, we export the depth to a color buffer
+             depthColor = v2f.pos.z;
+             #endif
+         #elif defined(WRITE_MSAA_DEPTH) // When we are MSAA depth only without normal buffer
+             // Due to the binding order of these two render targets, we need to have them both declared
+             outNormalBuffer = float4(0.0, 0.0, 0.0, 1.0);
+             // In case we are rendering in MSAA, reading the an MSAA depth buffer is way too expensive. To avoid that, we export the depth to a color buffer
+             depthColor = v2f.pos.z;
+         #elif defined(SCENESELECTIONPASS)
+             // We use depth prepass for scene selection in the editor, this code allow to output the outline correctly
+             outColor = float4(_ObjectId, _PassValue, 1.0, 1.0);
+         #endif
+         }
+
+         ENDHLSL
+     }
+
+        

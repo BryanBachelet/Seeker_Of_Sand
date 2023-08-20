@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 8516650264320600679}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2051574075684525830}
@@ -120,6 +120,7 @@ MonoBehaviour:
     m_Bits: 8
   m_power: 25
   m_damage: 1
+  m_indexSFX: 15
   piercingMax: 10
   m_deltaTimeMove: 0
   m_timeBeforeExplosion: 1
@@ -361,6 +362,7 @@ MonoBehaviour:
   m_ActivationVFX: 1
   m_VFXObject: {fileID: 5020720905071893825, guid: 936baacb42343ca4688233ba9d6080b9,
     type: 3}
+  indexSFXExplosion: 16
 --- !u!54 &1584883544344779847
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -479,6 +481,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6099103992776111164, guid: f9354cfa73f5acb468da72d0ac29ed49,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2027662fb8d75394d9b89b2e89b6a324, type: 2}
     - target: {fileID: 6982365112249696257, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
       propertyPath: m_Name
@@ -492,17 +499,17 @@ PrefabInstance:
     - target: {fileID: 6982365112249696258, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6982365112249696258, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6982365112249696258, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6982365112249696258, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}

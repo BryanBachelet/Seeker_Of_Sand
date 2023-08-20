@@ -22,6 +22,7 @@ public class ExperienceMouvement : MonoBehaviour
             if(!checkDistance)
             {
                 transform.position = Vector3.MoveTowards(transform.position, playerPosition.position, m_speed * Time.deltaTime);
+                m_speed += (float)(10 * Time.deltaTime);
             }
             else
             {

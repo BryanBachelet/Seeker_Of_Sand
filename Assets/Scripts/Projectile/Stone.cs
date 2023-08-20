@@ -8,12 +8,14 @@ public class Stone : Projectile
     [SerializeField] private float m_damagePerSpeed = 0.5f;
     private Rigidbody m_rigidbody;
     private bool m_hasRoll;
-
+    [SerializeField] private float initialForce = 50; 
     // Start is called before the first frame update
     void Start()
     {
         m_rigidbody = GetComponentInChildren<Rigidbody>();
         transform.position += m_direction.normalized * 1.5f;
+        GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position);
+        m_rigidbody.AddForce(Vector3.forward * initialForce, ForceMode.Impulse);
     }
 
 

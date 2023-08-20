@@ -22,12 +22,12 @@ public class CharacterUpgrade : MonoBehaviour
 
     private Upgrade[] m_upgradeToChoose = new Upgrade[3];
 
-
+    private bool had5level = false;
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
         {
-            if (upgradePoint == 0) return;
+            if (upgradePoint == 0 || had5level) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
             if (upgradeUiGO.activeSelf == false)
@@ -42,12 +42,29 @@ public class CharacterUpgrade : MonoBehaviour
             // Time.timeScale = 0.02f;
         }
     }
+
+    public void UpgradeWindowLevel5()
+    {
+        had5level = true;
+        upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+        GlobalSoundManager.PlayOneShot(6, Vector3.zero);
+        if (upgradeUiGO.activeSelf == false)
+        {
+            GameState.ChangeState();
+            DestroyAllUpgrade();
+            return;
+        }
+        GetNewUpgrade();
+        m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
+        GameState.ChangeState();
+        // Time.timeScale = 0.02f;
+    }
     #region Init Script
     public void Start()
     {
         InitComponents();
         m_upgradeUi.m_upgradeButtonFunction += ChooseUpgrade;
-        for (int i = 0; i < m_upgradeUi.upgradeButtons.Length ; i++)
+        for (int i = 0; i < m_upgradeUi.upgradeButtons.Length; i++)
         {
             int upgradeLink = m_upgradeUi.upgradeButtons[i].upgradeLink;
             int upgradeNumber = m_upgradeUi.upgradeButtons[i].numberOfUpgrade;
@@ -73,7 +90,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            int index = Random.Range(0, m_characterShoot.capsuleIndex.Count);
+            int index = Random.Range(0, 4);
             m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[index].sprite);
         }
     }
@@ -90,7 +107,8 @@ public class CharacterUpgrade : MonoBehaviour
     public void ChooseUpgrade(int indexChoice, int numberUpgrade)
     {
 
-        Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+        //Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+        if (numberUpgrade > upgradePoint) return;
         for (int i = 0; i < numberUpgrade; i++)
         {
             m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
@@ -99,10 +117,12 @@ public class CharacterUpgrade : MonoBehaviour
         }
 
         DestroyAllUpgrade();
-        if (upgradePoint == 0)
+        if (upgradePoint == 0 )
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             m_upgradePoint.text = upgradePoint.ToString();
+            GameState.ChangeState();
+            if(had5level) { had5level = false; }
             return;
         }
 
@@ -116,6 +136,7 @@ public class CharacterUpgrade : MonoBehaviour
     {
         upgradePoint++;
         m_upgradePoint.text = upgradePoint.ToString();
+        if (upgradePoint >= 5) { UpgradeWindowLevel5(); }
     }
 
     private CharacterStat CalculateStat(CharacterStat stats)

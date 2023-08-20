@@ -26,6 +26,8 @@ namespace Enemies
 
         private Transform m_targetTransform;
         private NpcHealthComponent m_npcHealthComponent;
+
+        private Animator animator;
     
 
 
@@ -34,6 +36,7 @@ namespace Enemies
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_targetTransform = m_npcHealthComponent.target;
+            animator = GetComponentInChildren<Animator>();
 
         }
 
@@ -81,6 +84,7 @@ namespace Enemies
 
         public void Attack()
         {
+            animator.SetTrigger("Attacking");
             GameObject projectileInstance = Instantiate(m_projectileThrow, transform.position, Quaternion.identity);
             ProjectileCurveData data = new ProjectileCurveData();
             data.damage = damage;
@@ -98,6 +102,7 @@ namespace Enemies
             ProjectileMortar m_projectileMortar = projectileInstance.GetComponent<ProjectileMortar>();
             m_projectileMortar.InitProjectile(data);
             m_npcHealthComponent.npcState = NpcState.RECUPERATION;
+            animator.ResetTrigger("Attacking");
         }
 
         public void OnDeath(Vector3 direction, float power)

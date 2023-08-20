@@ -243,7 +243,7 @@ Transform:
   m_GameObject: {fileID: 6397006724863419028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.214058, y: 4.92, z: 13.396144}
-  m_LocalScale: {x: 4.5, y: 4.5, z: 4.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8842936476119645122}
@@ -334,6 +334,7 @@ MonoBehaviour:
     m_Bits: 8
   m_power: 25
   m_damage: 1
+  m_indexSFX: 21
   piercingMax: 1
   m_deltaTimeMove: 0
   m_timeBeforeExplosion: 0.25
@@ -359,6 +360,7 @@ MonoBehaviour:
   m_ActivationVFX: 0
   m_VFXObject: {fileID: 4238928819444298018, guid: a7ea9a81a37e4544f93318a214f56fd6,
     type: 3}
+  indexSFXExplosion: 22
   m_setupDuration: 1
   powerPlayerProjection: 30
 --- !u!95 &7339334848954211579
@@ -481,6 +483,11 @@ PrefabInstance:
     - target: {fileID: 4238928819444298019, guid: a7ea9a81a37e4544f93318a214f56fd6,
         type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238928819444298019, guid: a7ea9a81a37e4544f93318a214f56fd6,
+        type: 3}
+      propertyPath: m_CastShadows
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

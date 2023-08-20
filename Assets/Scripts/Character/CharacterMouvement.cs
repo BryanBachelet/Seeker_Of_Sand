@@ -21,6 +21,7 @@ namespace Character
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
         public Render.Camera.CameraBehavior cameraPlayer;
+        [SerializeField] private Transform positionInTrain;
         public float runSpeed = 7.0f;
         public bool combatState;
         [HideInInspector] public float initialSpeed = 10.0f;
@@ -30,7 +31,7 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
         [Range(0, 1)]
-        [SerializeField] private float m_SpeedReduce;
+        [SerializeField] public float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
 
@@ -69,6 +70,7 @@ namespace Character
             Classic,
             Slide,
             Glide,
+            Train,
         }
 
         public MouvementState mouvementState;
@@ -129,6 +131,13 @@ namespace Character
         public void Update()
         {
             if (!state.isPlaying) return;
+            if(mouvementState == MouvementState.Train) 
+            { 
+                transform.position = positionInTrain.localPosition; 
+                m_rigidbody.velocity = Vector3.zero;
+                m_rigidbody.useGravity = false;
+                return;
+            }
             if (!isSliding) RotateCharacter();
             else SlideRotationCharacter();
         }
@@ -340,6 +349,7 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
+            
             if (combatState)
             {
                 m_speedData.referenceSpeed[(int)mouvementState] = runSpeed * m_SpeedReduce;

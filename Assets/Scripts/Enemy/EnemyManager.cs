@@ -33,19 +33,19 @@ namespace Enemies
         public List<Transform> altarTransformList = new List<Transform>();
         private List<AlatarHealthSysteme> altarScriptList = new List<AlatarHealthSysteme>();
 
-        public UnityEngine.UI.Text ui_DangerLevelObject;
         [SerializeField] private float m_tempsEntrePause;
         [SerializeField] private float m_tempsPause;
         private float tempsEcoulePause = 0;
-        private bool spawningPhase = true;
+        public bool spawningPhase = true;
 
+        public GlobalSoundManager gsm;
         private void Start()
         {
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
-            ui_DangerLevelObject.text = "Medium";
-            ui_DangerLevelObject.color = Color.red;
+            gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
+           
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -56,14 +56,6 @@ namespace Enemies
             if (spawningPhase)
             {
                 SpawnCooldown();
-                if (tempsEcoulePause < m_tempsEntrePause)
-                {
-                    tempsEcoulePause += Time.deltaTime;
-                }
-                else
-                {
-                    StartCoroutine(ChangeSpawningPhase(m_tempsPause));
-                }
             }
 
         }
@@ -72,7 +64,7 @@ namespace Enemies
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
-                if (state) m_enemiesArray[i].SetPauseState();
+                if (!state) m_enemiesArray[i].SetPauseState();
                 else m_enemiesArray[i].RemovePauseState();
             }
         }
@@ -100,6 +92,11 @@ namespace Enemies
             return Vector3.zero;
         }
 
+        public void ReplaceFarEnemy(GameObject enemy)
+        {
+            enemy.transform.position = FindPosition();
+            Debug.Log("Repositioned at [" + enemy.transform.position + "]");
+        }
         private float GetTimeSpawn()
         {
             return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
@@ -107,7 +104,8 @@ namespace Enemies
 
         private int GetNumberToSpawn()
         {
-            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, m_maxUnitPerGroup, m_enemyKillRatio.GetRatioValue());
+            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup + Time.time / 10), m_enemyKillRatio.GetRatioValue()); 
+            Debug.Log("[" + currentMaxUnit + "]" + " Max unit spawn at [" + Time.time + "]" );
             int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time / 2.0f + 7.5f)) + 1.3f) / 2.0f));
             number = number <= 0 ? 1 : number;
             return number;
@@ -184,7 +182,10 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
             }
+
             NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
+            NpcMouvementComponent npcMove = enemySpawn.GetComponent<NpcMouvementComponent>();
+            npcMove.enemymanage = this;
             npcHealth.SetInitialData( m_healthManager, this);
 
             if (EnemyTargetPlayer)
@@ -267,16 +268,11 @@ namespace Enemies
             }
         }
 
-        public IEnumerator ChangeSpawningPhase(float tempsPause)
+        public void ChangeSpawningPhase(bool spawning)
         {
-            spawningPhase = false;
-            ui_DangerLevelObject.text = "Peaceful";
-            ui_DangerLevelObject.color = Color.white;
-            yield return new WaitForSeconds(tempsPause);
-            tempsEcoulePause = 0;
-            spawningPhase = true;
-            ui_DangerLevelObject.text = "Medium";
-            ui_DangerLevelObject.color = Color.red;
+            spawningPhase = spawning;
+            if(spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); }
+            else { gsm.globalMusicInstance.setParameterByName("Repos", 1); }
         }
     }
 }

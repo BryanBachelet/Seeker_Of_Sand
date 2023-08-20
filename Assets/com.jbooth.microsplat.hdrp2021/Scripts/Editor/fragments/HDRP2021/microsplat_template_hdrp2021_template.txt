@@ -1,0 +1,80 @@
+﻿Shader "%SHADERNAME%"
+{
+   Properties
+   {
+      %PROPERTIES%
+
+      [HideInInspector]_RenderQueueType("Float", Float) = 1
+      [HideInInspector][ToggleUI]_AddPrecomputedVelocity("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_DepthOffsetEnable("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_TransparentWritingMotionVec("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_AlphaCutoffEnable("Boolean", Float) = 0
+      [HideInInspector]_TransparentSortPriority("_TransparentSortPriority", Float) = 0
+      [HideInInspector][ToggleUI]_UseShadowThreshold("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_DoubleSidedEnable("Boolean", Float) = 0
+      [HideInInspector][Enum(Flip, 0, Mirror, 1, None, 2)]_DoubleSidedNormalMode("Float", Float) = 2
+      [HideInInspector]_DoubleSidedConstants("Vector4", Vector) = (1, 1, -1, 0)
+      [HideInInspector][ToggleUI]_TransparentDepthPrepassEnable("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_TransparentDepthPostpassEnable("Boolean", Float) = 0
+      [HideInInspector]_SurfaceType("Float", Float) = 0
+      [HideInInspector]_BlendMode("Float", Float) = 0
+      [HideInInspector]_SrcBlend("Float", Float) = 1
+      [HideInInspector]_DstBlend("Float", Float) = 0
+      [HideInInspector]_AlphaSrcBlend("Float", Float) = 1
+      [HideInInspector]_AlphaDstBlend("Float", Float) = 0
+      [HideInInspector][ToggleUI]_AlphaToMask("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_AlphaToMaskInspectorValue("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_ZWrite("Boolean", Float) = 1
+      [HideInInspector][ToggleUI]_TransparentZWrite("Boolean", Float) = 0
+      [HideInInspector]_CullMode("Float", Float) = 2
+      [HideInInspector][ToggleUI]_EnableFogOnTransparent("Boolean", Float) = 1
+      [HideInInspector]_CullModeForward("Float", Float) = 2
+      [HideInInspector][Enum(Front, 1, Back, 2)]_TransparentCullMode("Float", Float) = 2
+      [HideInInspector][Enum(UnityEditor.Rendering.HighDefinition.OpaqueCullMode)]_OpaqueCullMode("Float", Float) = 2
+      [HideInInspector]_ZTestDepthEqualForOpaque("Float", Int) = 4
+      [HideInInspector][Enum(UnityEngine.Rendering.CompareFunction)]_ZTestTransparent("Float", Float) = 4
+      [HideInInspector][ToggleUI]_TransparentBackfaceEnable("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_RequireSplitLighting("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_ReceivesSSR("Boolean", Float) = 1
+      [HideInInspector][ToggleUI]_ReceivesSSRTransparent("Boolean", Float) = 0
+      [HideInInspector][ToggleUI]_EnableBlendModePreserveSpecularLighting("Boolean", Float) = 1
+      [HideInInspector][ToggleUI]_SupportDecals("Boolean", Float) = 1
+      [HideInInspector]_StencilRef("Float", Int) = 0
+      [HideInInspector]_StencilWriteMask("Float", Int) = 6
+      [HideInInspector]_StencilRefDepth("Float", Int) = 8
+      [HideInInspector]_StencilWriteMaskDepth("Float", Int) = 8
+      [HideInInspector]_StencilRefMV("Float", Int) = 40
+      [HideInInspector]_StencilWriteMaskMV("Float", Int) = 40
+      [HideInInspector]_StencilRefDistortionVec("Float", Int) = 4
+      [HideInInspector]_StencilWriteMaskDistortionVec("Float", Int) = 4
+      [HideInInspector]_StencilWriteMaskGBuffer("Float", Int) = 14
+      [HideInInspector]_StencilRefGBuffer("Float", Int) = 10
+      [HideInInspector]_ZTestGBuffer("Float", Int) = 4
+      [HideInInspector][ToggleUI]_RayTracing("Boolean", Float) = 0
+      [HideInInspector][Enum(None, 0, Box, 1, Sphere, 2, Thin, 3)]_RefractionModel("Float", Float) = 0
+      [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
+      [HideInInspector][NoScaleOffset]unity_LightmapsInd("unity_LightmapsInd", 2DArray) = "" {}
+      [HideInInspector][NoScaleOffset]unity_ShadowMasks("unity_ShadowMasks", 2DArray) = "" {}
+   }
+   SubShader
+   {
+      %TAGS%
+
+      %SUBSHADERTAGS%
+      %PASSFORWARD%
+      %PASSGBUFFER%
+      %PASSSHADOW%
+      %PASSDEPTHONLY%
+      %PASSMETA%
+      %PASSSCENESELECT%
+      %PASSSCENEPICKING%
+      %PASSMOTIONVECTOR%
+      %PASSTRANSPARENTDEPTHPREPASS%
+      %PASSFULLSCREENDEBUG%
+      %CUSTOMPREPASS%
+      
+   }
+   %DEPENDENCY%
+   %FALLBACK%
+   %CUSTOMEDITOR%
+}
