@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529003561376632028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2.833, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_power: 25
   m_damage: 1
   m_indexSFX: 17
-  piercingMax: 2
+  m_piercingMax: 0
   m_deltaTimeMove: 0
 --- !u!1001 &5410005717581452032
 PrefabInstance:
@@ -132,6 +132,11 @@ PrefabInstance:
     - target: {fileID: 792881324528163668, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 970971524760557848, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1440614803878104064, guid: d16993c6f36650c4498bb32df8445881,
@@ -207,17 +212,22 @@ PrefabInstance:
     - target: {fileID: 2615918274555636546, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3258966444288658613, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
       propertyPath: m_Name
       value: VFX_Zeritraillette
       objectReference: {fileID: 0}
+    - target: {fileID: 3258966444288658613, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7690279643116414101, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d16993c6f36650c4498bb32df8445881, type: 3}
@@ -336,6 +346,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7813860776215824587, guid: 48c0bc741f0443345b961978ca2318bc,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813860776215824587, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
       propertyPath: m_CastShadows
       value: 1
       objectReference: {fileID: 0}
@@ -343,6 +358,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Basic_Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813860776215824589, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c0bc741f0443345b961978ca2318bc, type: 3}
