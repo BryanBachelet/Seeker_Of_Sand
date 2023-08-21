@@ -316,7 +316,9 @@ namespace Character
                 }
                 else
                 {
-                    m_rigidbody.velocity = (m_directionKnockback.normalized *Mathf.Lerp(m_knockBackPower,0.0f,m_knockbackTimer/m_knockBackDuration));
+                    Vector3 vel = (m_directionKnockback.normalized * Mathf.Lerp(m_knockBackPower, 0.0f, m_knockbackTimer / m_knockBackDuration));
+                    vel.y = m_rigidbody.velocity.y -10 ;
+                    m_rigidbody.velocity = vel;
                     m_knockbackTimer += Time.deltaTime ;
                 }
 
