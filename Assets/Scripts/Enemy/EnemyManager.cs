@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 using UnityEngine.AI;
 
 
@@ -18,6 +19,7 @@ namespace Enemies
         [SerializeField] private int m_maxUnitPerGroup = 3;
         [SerializeField] private int m_minUnitPerGroup = 2;
         [SerializeField] private int m_maxUnittotal = 400;
+        [SerializeField] private AnimationCurve m_MaxUnitControl;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
         [SerializeField] private GameObject m_ExperiencePrefab;
@@ -39,22 +41,27 @@ namespace Enemies
         public bool spawningPhase = true;
 
         public GlobalSoundManager gsm;
+        private List<Vector3> posspawn = new List<Vector3>();
+
+        public int[] debugSpawnValue;
         private void Start()
         {
+            TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
             gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
-           
+
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
         {
-            if (!state.isPlaying) return; 
+            if (!state.isPlaying) return;
 
             if (spawningPhase)
             {
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(Time.time / 60) ;
                 SpawnCooldown();
             }
 
@@ -95,17 +102,17 @@ namespace Enemies
         public void ReplaceFarEnemy(GameObject enemy)
         {
             enemy.transform.position = FindPosition();
+
             Debug.Log("Repositioned at [" + enemy.transform.position + "]");
         }
         private float GetTimeSpawn()
         {
-            return (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f);
+            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f));
         }
 
         private int GetNumberToSpawn()
         {
-            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup + Time.time / 10), m_enemyKillRatio.GetRatioValue()); 
-            Debug.Log("[" + currentMaxUnit + "]" + " Max unit spawn at [" + Time.time + "]" );
+            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
             int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time / 2.0f + 7.5f)) + 1.3f) / 2.0f));
             number = number <= 0 ? 1 : number;
             return number;
@@ -114,6 +121,7 @@ namespace Enemies
         private void SpawEnemiesGroup()
         {
             position = FindPosition();
+            posspawn.Add(position);
             for (int i = 0; i < GetNumberToSpawn(); i++)
             {
                 SpawnEnemy(position + Random.insideUnitSphere * 5f);
@@ -143,6 +151,10 @@ namespace Enemies
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(position, 0.5f);
+            for (int i = 0; i < posspawn.Count; i++)
+            {
+                Gizmos.DrawSphere(posspawn[i], 1);
+            }
         }
 
         private void SpawnEnemy(Vector3 positionSpawn)
@@ -166,11 +178,11 @@ namespace Enemies
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
             }
-            else if(rnd >= 496 && rnd < 501)
+            else if (rnd >= 496 && rnd < 501)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation);
             }
-            else if(rnd > 500 && rnd <= 510)
+            else if (rnd > 500 && rnd <= 510)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[3], positionSpawn, transform.rotation);
             }
@@ -186,33 +198,33 @@ namespace Enemies
             NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
             NpcMouvementComponent npcMove = enemySpawn.GetComponent<NpcMouvementComponent>();
             npcMove.enemymanage = this;
-            npcHealth.SetInitialData( m_healthManager, this);
+            npcHealth.SetInitialData(m_healthManager, this);
 
             if (EnemyTargetPlayer)
             {
-                npcHealth.target  = m_playerTranform;
+                npcHealth.target = m_playerTranform;
             }
             else
             {
-                npcHealth.target =  altarObject;
+                npcHealth.target = altarObject;
             }
             m_enemiesArray.Add(npcHealth);
         }
 
 
-        public void SpawnExp(Vector3 position ,int count )
+        public void SpawnExp(Vector3 position, int count)
         {
             for (int i = 0; i < count; i++)
             {
                 Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
             }
         }
-        
+
         public void DestroyEnemy(NpcHealthComponent npcHealth)
         {
 
-            if (!m_enemiesArray.Contains( npcHealth)) return;
-            
+            if (!m_enemiesArray.Contains(npcHealth)) return;
+
 
             m_enemyKillRatio.AddEnemiKill();
             if (!EnemyTargetPlayer)
@@ -271,8 +283,78 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            if(spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); }
+            if (spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); }
             else { gsm.globalMusicInstance.setParameterByName("Repos", 1); }
+        }
+
+        public void CreateCurveSheet()
+        {
+            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (2).csv");
+            bool endOfFile = false;
+            while (!endOfFile)
+            {
+                string data_String = strReader.ReadLine();
+                if (data_String == null)
+                {
+                    endOfFile = true;
+                    Debug.Log("Read done");
+                    break;
+                }
+                var data_values = data_String.Split(',');
+                for (int i = 0; i < data_values.Length; i++)
+                {
+                    Debug.Log("value: " + i.ToString() + " " + data_values[i].ToString());
+
+                }
+                //Debug.Log(data_values[0].ToString() + " " + data_values[1].ToString() + " " + data_values[2].ToString() + " ");
+            }
+        }
+
+        static string ReadSpecificLine(string filePath, int lineNumber)
+        {
+            string content = null;
+
+            using (StreamReader file = new StreamReader(filePath))
+            {
+                for (int i = 1; i < lineNumber; i++)
+                {
+                    file.ReadLine();
+
+                    if (file.EndOfStream)
+                    {
+                        //Console.WriteLine($"End of file.  The file only contains {i} lines.");
+                        break;
+                    }
+                }
+                content = file.ReadLine();
+            }
+            return content;
+
+        }
+
+        public void TestReadDataSheet()
+        {
+            AnimationCurve tempAnimationCurve = new AnimationCurve();
+            string debugdata = "";
+            string filePath = "C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (3).csv";
+            int lineNumber = 5;
+
+            string lineContents = ReadSpecificLine(filePath, lineNumber);
+            string[] data_values = lineContents.Split(',');
+            int[] dataTransformed = new int[data_values.Length - 1];
+            for (int i = 0; i < dataTransformed.Length; i++)
+            {
+                dataTransformed[i] = int.Parse(data_values[i + 1]);
+                tempAnimationCurve.AddKey(i, dataTransformed[i]);
+                debugdata = debugdata + " , " + dataTransformed[i];
+
+            }
+            debugSpawnValue = dataTransformed;
+
+
+            m_MaxUnitControl = tempAnimationCurve;
+            Debug.Log(debugdata);
+
         }
     }
 }
