@@ -63,7 +63,7 @@ namespace Character
         private bool m_isSave;
         private Vector3 m_saveVeloctiy;
         private bool m_saveStateSliding;
-
+        private Vector3 m_directionKnockback;
         public enum MouvementState
         {
             None,
@@ -71,7 +71,14 @@ namespace Character
             Slide,
             Glide,
             Train,
+            Knockback,
         }
+
+        [Header("Knockback Parameters")]
+        [SerializeField] private float m_knockBackPower = 50.0f;
+        [SerializeField] private float m_knockBackDuration = 1.0f;
+        private float m_knockbackTimer;
+        private bool m_applyKnockback;
 
         public MouvementState mouvementState;
 
@@ -120,7 +127,7 @@ namespace Character
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
-             
+
             }
             if (!state.isPlaying)
             {
@@ -131,9 +138,9 @@ namespace Character
         public void Update()
         {
             if (!state.isPlaying) return;
-            if(mouvementState == MouvementState.Train) 
-            { 
-                transform.position = positionInTrain.localPosition; 
+            if (mouvementState == MouvementState.Train)
+            {
+                transform.position = positionInTrain.localPosition;
                 m_rigidbody.velocity = Vector3.zero;
                 m_rigidbody.useGravity = false;
                 return;
@@ -154,7 +161,7 @@ namespace Character
 
         public void BeforeChangeState(MouvementState prevState)
         {
-        
+
             switch (prevState)
             {
                 case MouvementState.None:
@@ -171,6 +178,9 @@ namespace Character
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
                     break;
+                case MouvementState.Knockback:
+                    m_CharacterAnim.SetBool("Shooting", false);
+                    break;
                 default:
                     break;
             }
@@ -179,11 +189,11 @@ namespace Character
         public void AfterChangeState(MouvementState newState)
         {
 
-           
+
             switch (newState)
             {
                 case MouvementState.None:
-                   
+
                     m_CharacterAnim.SetBool("Idle", true);
                     break;
                 case MouvementState.Classic:
@@ -196,6 +206,9 @@ namespace Character
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", true);
                     break;
+                case MouvementState.Knockback:
+                    m_CharacterAnim.SetBool("Shooting", false);
+                    break;
                 default:
                     break;
             }
@@ -205,6 +218,7 @@ namespace Character
 
         private void CheckPlayerMouvement()
         {
+            if (mouvementState == MouvementState.Knockback) return;
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
             RaycastHit hit = new RaycastHit();
@@ -247,7 +261,7 @@ namespace Character
             if (combatState)
             {
                 isSliding = false;
-                ChangeState( MouvementState.Classic);
+                ChangeState(MouvementState.Classic);
                 Move(direction);
                 return;
             }
@@ -282,6 +296,33 @@ namespace Character
         private void ApplyVelocity()
         {
 
+            if (mouvementState == MouvementState.Knockback)
+            {
+                if (m_applyKnockback)
+                {
+                    m_rigidbody.velocity = Vector3.zero;
+                    m_rigidbody.velocity += (m_directionKnockback);
+                
+                    m_applyKnockback = false;
+
+                    m_knockbackTimer = 0;
+                }
+                if (m_knockbackTimer > m_knockBackDuration)
+                {
+                    mouvementState = MouvementState.Classic;
+                    m_rigidbody.velocity = Vector3.zero;
+                    m_knockbackTimer = 0;
+                    m_directionKnockback = Vector3.zero;
+                }
+                else
+                {
+                    m_rigidbody.velocity = (m_directionKnockback.normalized *Mathf.Lerp(m_knockBackPower,0.0f,m_knockbackTimer/m_knockBackDuration));
+                    m_knockbackTimer += Time.deltaTime ;
+                }
+
+                return;
+            }
+
 
             float currentRefSpeed = m_speedData.referenceSpeed[(int)mouvementState];
             if (m_speedData.currentSpeed > currentRefSpeed)
@@ -302,6 +343,7 @@ namespace Character
             }
             m_rigidbody.AddForce(m_speedData.direction * m_speedData.currentSpeed, ForceMode.Impulse);
             m_rigidbody.velocity = Vector3.ClampMagnitude(m_speedData.direction * m_speedData.currentSpeed, currentRefSpeed);
+
 
 
 
@@ -349,7 +391,7 @@ namespace Character
         }
         private void Move(Vector3 direction)
         {
-            
+
             if (combatState)
             {
                 m_speedData.referenceSpeed[(int)mouvementState] = runSpeed * m_SpeedReduce;
@@ -412,11 +454,6 @@ namespace Character
         {
             m_speedData.direction = direction;
             m_speedData.IsFlexibleSpeed = false;
-
-            //m_rigidbody.AddForce(direction * runSpeed, ForceMode.Impulse);
-            //Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
-            //horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, runSpeed);
-            //m_rigidbody.velocity = new Vector3(horizontalVelocity.x, m_rigidbody.velocity.y, horizontalVelocity.z);
         }
 
         #region Rotation
@@ -439,6 +476,24 @@ namespace Character
         #endregion
 
 
+
+        #region Knockback
+
+        public void SetKnockback(Vector3 attackPosition)
+        {
+
+            if (mouvementState == MouvementState.Knockback) return;
+
+            Vector3 attackDirection = transform.position - attackPosition;
+            attackDirection = attackDirection.normalized;
+            attackDirection.y = 0.0f;
+            m_directionKnockback = attackDirection.normalized * 50.0f;
+            m_applyKnockback = true;
+            ChangeState(MouvementState.Knockback);
+            Debug.Log("Player is knockback");
+        }
+
+        #endregion
 
     }
 }

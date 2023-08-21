@@ -89,7 +89,7 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage);
+                    m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage,transform.position);
 
                 }
             }
@@ -109,7 +109,7 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage);
+                    m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage,transform.position);
                     
                 }
             }

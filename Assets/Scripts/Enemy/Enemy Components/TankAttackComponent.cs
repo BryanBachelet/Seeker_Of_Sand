@@ -74,7 +74,7 @@ namespace Enemies
             {
                 if (m_targetTransform.tag == "Player")
                 {
-                    m_targetTransform.GetComponent<health_Player>().GetDamageLeger(damage);
+                    m_targetTransform.GetComponent<health_Player>().GetDamageLeger(damage, transform.position);
                    
                 }
             }

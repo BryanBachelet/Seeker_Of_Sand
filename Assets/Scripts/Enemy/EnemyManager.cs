@@ -105,7 +105,7 @@ namespace Enemies
         private int GetNumberToSpawn()
         {
             int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup + Time.time / 10), m_enemyKillRatio.GetRatioValue()); 
-            Debug.Log("[" + currentMaxUnit + "]" + " Max unit spawn at [" + Time.time + "]" );
+       //     Debug.Log("[" + currentMaxUnit + "]" + " Max unit spawn at [" + Time.time + "]" );
             int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time / 2.0f + 7.5f)) + 1.3f) / 2.0f));
             number = number <= 0 ? 1 : number;
             return number;
