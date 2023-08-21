@@ -31,11 +31,14 @@ public class health_Player : MonoBehaviour
 
     public bool updateHealthValues = false;
 
+    private Character.CharacterMouvement m_characterMouvement;
+
     public float damageSend;
     // Start is called before the first frame update
     void Start()
     {
         InitializedHealthData();
+        m_characterMouvement = GetComponent<Character.CharacterMouvement>();
     }
 
     // Update is called once per frame
@@ -51,18 +54,19 @@ public class health_Player : MonoBehaviour
         }
         if (updateHealthValues)
         {
-            GetDamageLeger(damageSend);
+        //    GetDamageLeger(damageSend);
 
         }
 
     }
 
-    public void GetDamageLeger(float damage)
+    public void GetDamageLeger(float damage, Vector3 position)
     {
         if (m_isInvulnerableLourd) return;
         if (m_isInvulnerableLeger) return;
         else
         {
+
             StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
@@ -77,7 +81,7 @@ public class health_Player : MonoBehaviour
                 m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
                 m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
 
-
+            m_characterMouvement.SetKnockback(position);
         }
         updateHealthValues = false;
 
@@ -151,7 +155,7 @@ public class health_Player : MonoBehaviour
       //  Debug.Log("Hit an Object !");
         if (collision.transform.tag != "Enemy") return;
        // Debug.Log("Object was an Enemy !");
-        GetDamageLeger(2);
+        GetDamageLeger(2,collision.transform.position);
     }
 
 }

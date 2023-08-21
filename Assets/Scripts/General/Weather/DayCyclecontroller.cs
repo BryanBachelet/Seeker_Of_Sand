@@ -218,6 +218,7 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 18.5f;
         }
+    
         if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
         else { m_EnemyManager.ChangeSpawningPhase(false); }
 

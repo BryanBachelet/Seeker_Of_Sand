@@ -87,7 +87,7 @@ namespace Enemies
             }
             else
             {
-                if (m_navMeshAgent.isActiveAndEnabled) m_navMeshAgent.isStopped = true;
+                
             }
         }
 
