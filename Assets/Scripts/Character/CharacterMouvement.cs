@@ -46,6 +46,12 @@ namespace Character
         [Header("Glide Parameter")]
         [SerializeField] private float m_glideSpeed = 4;
 
+
+
+        [Header("Move Parameter")]
+        [SerializeField] private float m_accelerationSpeed = 4.0f;
+        private Vector3 m_velMovement;
+
         [Header("Slide Parameters")]
         public float accelerationSlide = 3.0f;
         public float maxSpeed = 30.0f;
@@ -79,6 +85,7 @@ namespace Character
         [SerializeField] private float m_knockBackDuration = 1.0f;
         private float m_knockbackTimer;
         private bool m_applyKnockback;
+        private float m_knockbackBaseGravityPower = 10.0f;
 
         public MouvementState mouvementState;
 
@@ -302,7 +309,7 @@ namespace Character
                 {
                     m_rigidbody.velocity = Vector3.zero;
                     m_rigidbody.velocity += (m_directionKnockback);
-                
+
                     m_applyKnockback = false;
 
                     m_knockbackTimer = 0;
@@ -317,9 +324,9 @@ namespace Character
                 else
                 {
                     Vector3 vel = (m_directionKnockback.normalized * Mathf.Lerp(m_knockBackPower, 0.0f, m_knockbackTimer / m_knockBackDuration));
-                    vel.y = m_rigidbody.velocity.y -10 ;
+                    vel.y = m_rigidbody.velocity.y - m_knockbackBaseGravityPower;
                     m_rigidbody.velocity = vel;
-                    m_knockbackTimer += Time.deltaTime ;
+                    m_knockbackTimer += Time.deltaTime;
                 }
 
                 return;
@@ -343,8 +350,8 @@ namespace Character
                 m_rigidbody.velocity = new Vector3(horizontalVelocity.x, m_rigidbody.velocity.y, horizontalVelocity.z);
                 return;
             }
-            m_rigidbody.AddForce(m_speedData.direction * m_speedData.currentSpeed, ForceMode.Impulse);
-            m_rigidbody.velocity = Vector3.ClampMagnitude(m_speedData.direction * m_speedData.currentSpeed, currentRefSpeed);
+            m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
+            m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
 
 
 
@@ -402,6 +409,9 @@ namespace Character
             {
                 m_speedData.referenceSpeed[(int)mouvementState] = runSpeed;
             }
+
+            m_velMovement += direction.normalized * m_speedData.referenceSpeed[(int)mouvementState] * m_accelerationSpeed * Time.deltaTime;
+            m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
             m_speedData.IsFlexibleSpeed = false;
 
             currentDirection = direction;
