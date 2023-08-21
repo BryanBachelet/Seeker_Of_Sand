@@ -291,7 +291,7 @@ namespace Character
                 Transform transformUsed = transform;
                 Quaternion rot = m_characterAim.GetTransformHead().rotation;
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
-                    , transformUsed.position + new Vector3(0, 3, 0), rot);
+                    , transformUsed.position + new Vector3(0, 3, 0), rot * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up));
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale * (currentWeaponStats.size * currentWeaponStats.sizeMultiplicatorFactor);
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
