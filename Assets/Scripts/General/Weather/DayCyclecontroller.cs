@@ -41,6 +41,7 @@ public class DayCyclecontroller : MonoBehaviour
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
         Time.timeScale = timescale;
+        m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
     }
 
     // Update is called once per frame
@@ -209,15 +210,15 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 0;
         }
-        else if (m_timeOfDay > 5.1f && m_timeOfDay < 6f)
+        else if (m_timeOfDay > 5.5f && m_timeOfDay < 6f)
         {
-            m_timeOfDay = 6;
+            m_timeOfDay = 6.1f;
         }
         else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
         {
             m_timeOfDay = 18.5f;
         }
-        Debug.Log("["+sliderValue+"]");
+    
         if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
         else { m_EnemyManager.ChangeSpawningPhase(false); }
 

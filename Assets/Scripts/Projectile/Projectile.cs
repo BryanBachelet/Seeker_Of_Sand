@@ -10,6 +10,7 @@ public struct ProjectileData
     public float damage;
     public Vector3 destination;
     public GameObject area_Feedback;
+    public int piercingMax;
 }
 
 
@@ -26,7 +27,7 @@ public class Projectile : MonoBehaviour
 
     protected Vector3 m_destination;
     protected float m_lifeTimer;
-    public int piercingMax;
+    public int m_piercingMax;
     private int piercingCount;
 
     private float spawnTime;
@@ -53,6 +54,9 @@ public class Projectile : MonoBehaviour
         m_lifeTime = data.life;
         m_damage = data.damage;
         m_destination = data.destination;
+        m_piercingMax = data.piercingMax;
+
+
 
 
     }
@@ -95,8 +99,9 @@ public class Projectile : MonoBehaviour
         enemyTouch.ReceiveDamage(m_damage,other.transform.position - transform.position, m_power);
 
         piercingCount++;
-        if (piercingCount >= piercingMax)
+        if (piercingCount >= m_piercingMax)
         {
+            
             Destroy(this.gameObject);
         }
 
