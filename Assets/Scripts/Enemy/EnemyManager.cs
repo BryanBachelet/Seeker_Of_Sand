@@ -59,6 +59,7 @@ namespace Enemies
         {
             if (!state.isPlaying) return;
 
+
             if (spawningPhase)
             {
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(Time.time / 60) ;
@@ -336,7 +337,7 @@ namespace Enemies
         {
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
-            string filePath = "C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (3).csv";
+            string filePath = "C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (5).csv";
             int lineNumber = 5;
 
             string lineContents = ReadSpecificLine(filePath, lineNumber);
