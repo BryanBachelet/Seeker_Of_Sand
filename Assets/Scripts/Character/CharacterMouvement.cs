@@ -261,6 +261,12 @@ namespace Character
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
+                m_velMovement = Vector3.zero;
+                if (m_rigidbody.velocity.magnitude > 0)
+                {
+                    m_rigidbody.velocity = m_rigidbody.velocity.normalized * (m_rigidbody.velocity.magnitude - (2 * Time.deltaTime));
+                }
+                
                 return;
             }
 

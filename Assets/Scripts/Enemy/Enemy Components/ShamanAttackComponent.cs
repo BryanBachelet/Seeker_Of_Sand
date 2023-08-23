@@ -35,7 +35,7 @@ namespace Enemies
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_npcHealthComponent.destroyEvent += OnDeath;
-            m_targetTransform = m_npcHealthComponent.target;
+            m_targetTransform = m_npcHealthComponent.targetData.target;
             animator = GetComponentInChildren<Animator>();
 
         }

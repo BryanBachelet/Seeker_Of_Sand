@@ -50,7 +50,7 @@ namespace Enemies
             m_agent = GetComponent<NavMeshAgent>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_capsuleCollider = GetComponent<CapsuleCollider>();
-            m_target = m_npcHealthComponent.target;
+            m_target = m_npcHealthComponent.targetData.target;
         }
 
 

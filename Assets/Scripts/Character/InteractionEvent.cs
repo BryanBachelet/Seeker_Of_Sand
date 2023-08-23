@@ -60,7 +60,7 @@ public class InteractionEvent : MonoBehaviour
 
     public void ActionInteraction()
     {
-        if(currentInteractibleObject != null) { currentInteractibleObject.GetComponent<AlatarHealthSysteme>().bool_ActiveEvent = true; }
+        if(currentInteractibleObject != null) { currentInteractibleObject.GetComponent<AlatarHealthSysteme>().ActiveEvent(); }
 
     }
     public void OnDrawGizmos()
