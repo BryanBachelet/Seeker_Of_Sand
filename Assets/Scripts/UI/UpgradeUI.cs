@@ -29,9 +29,10 @@ public class UpgradeUI : MonoBehaviour
     [SerializeField] private CharacterUpgrade m_upgradeCharacter ;
     public int lastUpgradeSelected = 0;
 
+    public UpgradeUIDecal m_uiDecalUpdaterDisplay;
     private void Start()
     {
-       
+        m_uiDecalUpdaterDisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>();
         for (int i = 0; i < SelectionIcon.Length; i++)
         {
             selectionAnimator[i] = SelectionIcon[i].GetComponent<Animator>();
@@ -39,6 +40,10 @@ public class UpgradeUI : MonoBehaviour
     }
     public void UpdateUpgradeDisplay(Upgrade[] upgrades)
     {
+        if(!UiSpellGrimoire.otherSceneGameObject[0].activeSelf) { UiSpellGrimoire.otherSceneGameObject[0].SetActive(true); }
+
+        if (m_uiDecalUpdaterDisplay == null) { m_uiDecalUpdaterDisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>(); }
+        m_uiDecalUpdaterDisplay.UpdateUpgradeDisplay(upgrades);
         for (int i = 0; i < upgrades.Length; i++)
         {
             m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
