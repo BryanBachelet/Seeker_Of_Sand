@@ -195,7 +195,6 @@ MonoBehaviour:
   hasDeathAnimation: 0
   npcState: 0
   xpToDrop: 3
-  target: {fileID: 0}
 --- !u!114 &-4669882926715339747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50837e8005842504697e4bb3f4d69c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 11
+  speed: 18
   speedThreshold: 1
   isAffectedBySlope: 0
   maxVariation: 1.5
@@ -220,6 +219,7 @@ MonoBehaviour:
     m_Bits: 0
   timeBetweenNavRefresh: 0.2
   minDistanceToFullyActive: 80
+  enemiesManager: {fileID: 0}
 --- !u!114 &3209565809213415622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,14 +235,14 @@ MonoBehaviour:
   attackRange: 65
   damage: 5
   timeOfCharge: 2
-  timeofRecuperation: 3
+  timeofRecuperation: 4
   vfxFeedback: {fileID: 2601523354375520922}
   layer:
     serializedVersion: 2
     m_Bits: 8
-  projectileLifeTime: 3
+  projectileLifeTime: 2
   angleTrajectory: 75
-  radiusOfAttack: 10
+  radiusOfAttack: 7.5
   m_projectileThrow: {fileID: 7985681068066480556, guid: c85f826f12ceb474d8182b404cb17d45,
     type: 3}
 --- !u!1001 &580041293520765996
@@ -1417,17 +1417,17 @@ PrefabInstance:
     - target: {fileID: 3138481731927937894, guid: d705d5b6d7a17f148b10281cb9dc8bdf,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.3116
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3138481731927937894, guid: d705d5b6d7a17f148b10281cb9dc8bdf,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.3116
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3138481731927937894, guid: d705d5b6d7a17f148b10281cb9dc8bdf,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.3116
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3138481731927937894, guid: d705d5b6d7a17f148b10281cb9dc8bdf,
         type: 3}

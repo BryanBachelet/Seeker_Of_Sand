@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
+using System.IO;
 public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
+    [SerializeField] private AnimationCurve m_ExperienceQuantityControl;
     [SerializeField] private float m_NumberEnemyKilled = 0;
     [SerializeField] private int m_CurrentLevel = 1;
 
@@ -26,6 +28,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         m_characterUpgrade = GetComponent<CharacterUpgrade>();
         m_characterProfile = GetComponent<CharacterProfile>();
+        TestReadDataSheet();
     }
 
     public void InitComponentStat(CharacterStat stat)
@@ -100,5 +103,51 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private void UpdateMagnet(ref CharacterStat playerStat)
     {
         m_RadiusPickupXp = playerStat.attrackness;
+    }
+
+    static string ReadSpecificLine(string filePath, int lineNumber)
+    {
+        string content = null;
+
+        using (StreamReader file = new StreamReader(filePath))
+        {
+            for (int i = 1; i < lineNumber; i++)
+            {
+                file.ReadLine();
+
+                if (file.EndOfStream)
+                {
+                    //Console.WriteLine($"End of file.  The file only contains {i} lines.");
+                    break;
+                }
+            }
+            content = file.ReadLine();
+        }
+        return content;
+
+    }
+
+    public void TestReadDataSheet()
+    {
+        AnimationCurve tempAnimationCurve = new AnimationCurve();
+        string debugdata = "";
+        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+        int lineNumber = 17;
+
+        string lineContents = ReadSpecificLine(filePath, lineNumber);
+        string[] data_values = lineContents.Split(',');
+        int[] dataTransformed = new int[data_values.Length - 1];
+        for (int i = 0; i < dataTransformed.Length; i++)
+        {
+            dataTransformed[i] = int.Parse(data_values[i + 1]);
+            tempAnimationCurve.AddKey(i, dataTransformed[i]);
+            debugdata = debugdata + " , " + dataTransformed[i];
+
+        }
+
+
+        m_ExperienceQuantityControl = tempAnimationCurve;
+        Debug.Log(debugdata);
+
     }
 }

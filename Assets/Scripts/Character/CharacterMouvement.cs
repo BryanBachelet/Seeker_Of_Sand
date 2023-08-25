@@ -348,7 +348,7 @@ namespace Character
             if (!m_speedData.IsFlexibleSpeed && m_speedData.currentSpeed < currentRefSpeed)
                 m_speedData.currentSpeed = currentRefSpeed;
 
-            m_rigidbody.AddForce(m_speedData.direction * m_speedData.currentSpeed, ForceMode.Impulse);
+            m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
             if (mouvementState == MouvementState.Glide)
             {
                 Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
@@ -357,7 +357,8 @@ namespace Character
                 return;
             }
             m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
-            m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+            m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed); 
+          
 
 
 
@@ -441,7 +442,7 @@ namespace Character
                 m_currentSlideSpeed = 0.0f;
                 m_timerBeforeSliding = 0;
             }
-
+            m_velMovement = direction.normalized * m_speedData.currentSpeed;
 
         }
 

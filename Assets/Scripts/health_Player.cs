@@ -150,7 +150,7 @@ public class health_Player : MonoBehaviour
         InitializedHealthData();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
       //  Debug.Log("Hit an Object !");
         if (collision.transform.tag != "Enemy") return;
