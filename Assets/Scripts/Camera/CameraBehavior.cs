@@ -33,6 +33,21 @@ namespace Render.Camera
 
         private CameraEffect[] cameraEffects;
         public Transform sun;
+
+        // Free Rotation Variable
+        [Header("Free Rotation Variables")]
+        [SerializeField] private float m_angularSpeed = 10;
+        private float m_currentAngle;
+        [SerializeField] private bool m_activateHeightDirectionMode = false;
+        [SerializeField] private bool m_mouseInputActivate = false;
+        private bool m_isRotationInputPress;
+        private float m_signValue;
+
+
+        // Free Rotation Steps : 
+        // - Change Input to Right click 
+        // - Clean Script
+
         // Start is called before the first frame update
         void Start()
         {
@@ -43,7 +58,7 @@ namespace Render.Camera
 
         void Update()
         {
-            if(playerMove.mouvementState != Character.CharacterMouvement.MouvementState.Train)
+            if (playerMove.mouvementState != Character.CharacterMouvement.MouvementState.Train)
             {
                 if (m_isLerping)
                 {
@@ -58,7 +73,10 @@ namespace Render.Camera
                     {
                         m_lerpTimer += Time.deltaTime;
                     }
+
                 }
+
+                if (!m_activateHeightDirectionMode  && m_isRotationInputPress) FreeRotation(m_signValue);
 
                 SetCameraRotation();
                 SetCameraPosition();
@@ -77,35 +95,78 @@ namespace Render.Camera
 
         public float GetAngle()
         {
-            return angleValue * indexDirection;
+            return m_currentAngle;
         }
         public void RotationInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.started && !m_isLerping)
+            if (ctx.performed && !m_mouseInputActivate)
             {
+
                 float value = ctx.ReadValue<float>();
-                if (value > 0) ChangeRotation(true);
-                if (value < 0) ChangeRotation(false);
+                m_signValue = value;
+                m_isRotationInputPress = true;
+                if (value > 0)
+                {
+                    if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(true);
+                   
+                }
+                if (value < 0)
+                {
+                    if (m_activateHeightDirectionMode   && !m_isLerping) ChangeRotation(false);
+                }
+            }
+
+            if (ctx.canceled &&  !m_mouseInputActivate)
+            {
+                m_isRotationInputPress = false;
+                float value = ctx.ReadValue<float>();
             }
         }
 
+        public void RotationAimInput(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed && m_mouseInputActivate)
+            {
+                m_signValue = ctx.ReadValue<Vector2>().x;
+               // m_signValue -= Screen.currentResolution.width /2.0f;
+            }
+        }
+
+        public void RotationMouseInput(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed && m_mouseInputActivate)
+            {
+                m_isRotationInputPress = true;
+            }
+            if(ctx.canceled && m_mouseInputActivate)
+            {
+                m_isRotationInputPress = false;
+            }
+        }
+
+            public Vector3 TurnDirectionForCamera(Vector3 direction)
+        {
+            return Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0) * direction;
+        }
+
+
         private void ChangeRotation(bool state)
         {
-           
+
 
             if (m_isLerping)
             {
                 m_lerpTimer = m_lerpTime / 1.5f;
             }
             else m_lerpTimer = 0.0f;
-           
+
 
             if (!m_isLerping)
             {
                 int prevIndex = indexDirection;
                 if (prevIndex + 1 == maxDirection)
-                   prevIndex = -1;
-                if (prevIndex -1 == -maxDirection)
+                    prevIndex = -1;
+                if (prevIndex - 1 == -maxDirection)
                     prevIndex = 1;
 
                 m_prevAngle = angleValue * prevIndex;
@@ -115,13 +176,30 @@ namespace Render.Camera
 
             if (state) indexDirection++;
             else indexDirection--;
-            
-            indexDirection = indexDirection % maxDirection;
-            
-            
 
+            indexDirection = indexDirection % maxDirection;
+            m_currentAngle = angleValue * indexDirection;
             m_nextRot = new Vector3(0.0f, angleValue * indexDirection, 0.0f);
             m_nextAngle = angleValue * indexDirection;
+        }
+
+
+        private void FreeRotation(float sign)
+        {
+            sign = Mathf.Sign(sign);
+
+            m_prevAngle = m_currentAngle;
+            m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+
+            m_currentAngle += sign * m_angularSpeed * Time.deltaTime;
+
+            m_nextAngle = m_currentAngle;
+            m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+            if (m_isLerping)
+            {
+                m_lerpTimer = m_lerpTime / 1.5f;
+            }
+            else m_lerpTimer = 0.0f;
         }
 
 

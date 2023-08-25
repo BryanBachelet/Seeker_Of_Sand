@@ -147,7 +147,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
 
         m_ExperienceQuantityControl = tempAnimationCurve;
-        Debug.Log(debugdata);
+      //  Debug.Log(debugdata);
 
     }
 }

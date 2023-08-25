@@ -373,7 +373,7 @@ namespace Enemies
 
 
             m_MaxUnitControl = tempAnimationCurve;
-            Debug.Log(debugdata);
+            //Debug.Log(debugdata);
 
         }
     }

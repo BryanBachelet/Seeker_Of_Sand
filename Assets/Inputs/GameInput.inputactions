@@ -139,6 +139,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RotationCameraMouse",
+                    "type": "Value",
+                    "id": "17b5e5a3-5088-49b6-ad75-53a905eb8d45",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -557,6 +566,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "StopFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41a5ecbb-0321-4369-bf25-f2a11f1d0356",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotationCameraMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
