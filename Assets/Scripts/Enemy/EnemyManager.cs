@@ -11,7 +11,7 @@ namespace Enemies
     public class EnemyManager : MonoBehaviour
     {
         private ObjectState state;
-        [SerializeField] private Transform m_playerTranform;
+        [SerializeField] public Transform m_playerTranform;
         [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
         [SerializeField] private Vector3 m_offsetSpawnPos;
         [SerializeField] private Vector3 position;
@@ -27,6 +27,7 @@ namespace Enemies
         private float m_spawnCooldown;
 
         public List<NpcHealthComponent> m_enemiesArray = new List<NpcHealthComponent>();
+        public List<NpcHealthComponent> m_enemiesFocusAltar = new List<NpcHealthComponent>();
 
         static public bool EnemyTargetPlayer = true;
 
@@ -44,7 +45,7 @@ namespace Enemies
         private List<Vector3> posspawn = new List<Vector3>();
 
         public int[] debugSpawnValue;
-        private void Start()
+        public void Awake()
         {
             TestReadDataSheet();
             state = new ObjectState();
@@ -198,26 +199,53 @@ namespace Enemies
 
             NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
             NpcMouvementComponent npcMove = enemySpawn.GetComponent<NpcMouvementComponent>();
-            npcMove.enemymanage = this;
+            npcMove.enemiesManager = this;
             npcHealth.SetInitialData(m_healthManager, this);
 
             if (EnemyTargetPlayer)
             {
-                npcHealth.target = m_playerTranform;
+                npcHealth.targetData.target = m_playerTranform;
+                npcHealth.targetData.isMoving = true;
             }
             else
             {
-                npcHealth.target = altarObject;
+                npcHealth.targetData.target = altarObject;
+                npcHealth.targetData.isMoving = false;
+                m_enemiesFocusAltar.Add(npcHealth);
             }
             m_enemiesArray.Add(npcHealth);
         }
 
+
+        public void RemoveAltarTarget()
+        {
+            for (int i = 0; i < m_enemiesFocusAltar.Count; i++)
+            {
+                NpcHealthComponent npcHealth = m_enemiesFocusAltar[i];
+                npcHealth.targetData.target = m_playerTranform;
+                npcHealth.targetData.isMoving = true;
+                npcHealth.ResetTarget();
+            }
+        }
 
         public void SpawnExp(Vector3 position, int count)
         {
             for (int i = 0; i < count; i++)
             {
                 Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
+            }
+        }
+
+        public void IncreseAlterEnemyCount(NpcHealthComponent npcHealth)
+        {
+            if (!EnemyTargetPlayer)
+            {
+                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(npcHealth.transform.position);
+                if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
+                {
+                    nearestAltar.IncreaseKillCount();
+                }
+
             }
         }
 
@@ -228,16 +256,7 @@ namespace Enemies
 
 
             m_enemyKillRatio.AddEnemiKill();
-            if (!EnemyTargetPlayer)
-            {
-                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(npcHealth.transform.position);
-                if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
-                {
-                    nearestAltar.IncreaseKillCount();
-                }
-                //alatarRefScript.IncreaseKillCount(); 
-
-            }
+            
             m_enemiesArray.Remove(npcHealth);
             Destroy(npcHealth.gameObject);
         }
@@ -337,7 +356,7 @@ namespace Enemies
         {
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
-            string filePath = "C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (5).csv";
+            string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
             int lineNumber = 5;
 
             string lineContents = ReadSpecificLine(filePath, lineNumber);
@@ -354,7 +373,7 @@ namespace Enemies
 
 
             m_MaxUnitControl = tempAnimationCurve;
-            Debug.Log(debugdata);
+            //Debug.Log(debugdata);
 
         }
     }

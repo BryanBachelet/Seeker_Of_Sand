@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 4201272780608832961}
   - component: {fileID: -1539951015226756814}
   - component: {fileID: -3186308383320918057}
+  - component: {fileID: -9025062962692320421}
   m_Layer: 6
   m_Name: Enemy_Runner
   m_TagString: Enemy
@@ -42,6 +43,7 @@ Transform:
   - {fileID: 3592488858502138113}
   - {fileID: 1109604901122803704}
   - {fileID: 6977063774069203192}
+  - {fileID: 2179709004933115519}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -215,7 +217,6 @@ MonoBehaviour:
   hasDeathAnimation: 0
   npcState: 0
   xpToDrop: 5
-  target: {fileID: 0}
 --- !u!114 &-3186308383320918057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,7 +241,63 @@ MonoBehaviour:
     m_Bits: 8
   timeBetweenNavRefresh: 0.2
   minDistanceToFullyActive: 80
-  enemymanage: {fileID: 0}
+  enemiesManager: {fileID: 0}
+--- !u!114 &-9025062962692320421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315f6f98d20f9684b902319f5859f642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
+  jumpDuration: 1
+  angleOfJump: 20
+  jumpDistance: 50
+  recuperationDistance: 20
+  groundMaxDistance: 3
+  m_layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  m_layerObstaclePlayer:
+    serializedVersion: 2
+    m_Bits: 264
+  m_basePlayer: {fileID: 2179709004933115519}
+--- !u!1 &4852806396939262081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2179709004933115519}
+  m_Layer: 0
+  m_Name: RefPlayerHeight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2179709004933115519
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4852806396939262081}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.1019635, y: -0.92, z: 0.13577911}
+  m_LocalScale: {x: 0.26666668, y: 0.26666668, z: 0.26666668}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3294013781257085864}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &580041293520765996
 PrefabInstance:
   m_ObjectHideFlags: 0

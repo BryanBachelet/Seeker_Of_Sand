@@ -92,6 +92,11 @@ public class ProjectileMortar : MonoBehaviour
                     m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage,transform.position);
 
                 }
+                if (m_projectileData.target.tag == "Altar")
+                {
+                    m_projectileData.target.GetComponent<AlatarHealthSysteme>().SendDamage((int)m_projectileData.damage);
+
+                }
             }
             Destroy(gameObject);
         }

@@ -50,7 +50,7 @@ namespace Enemies
             m_agent = GetComponent<NavMeshAgent>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_capsuleCollider = GetComponent<CapsuleCollider>();
-            m_target = m_npcHealthComponent.target;
+            m_target = m_npcHealthComponent.targetData.target;
         }
 
 
@@ -58,7 +58,7 @@ namespace Enemies
         {
             if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(transform.position, m_target.position) < jumpDistance / 2.0f)
             {
-                if (IsPlayerVisible())
+                if (!IsPlayerHide())
                 {
                     m_npcHealthComponent.npcState = NpcState.ATTACK;
                     StartAttack();
@@ -110,7 +110,7 @@ namespace Enemies
 
 
 
-        private bool IsPlayerVisible()
+        private bool IsPlayerHide()
         {
             Vector3 direction = (m_target.position - transform.position).normalized;
             return Physics.Raycast(transform.position, direction, jumpDistance, m_layerObstaclePlayer);

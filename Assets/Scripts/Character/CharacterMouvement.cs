@@ -26,6 +26,7 @@ namespace Character
         public bool combatState;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
+        [SerializeField] private LayerMask m_objstacleLayer;
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
@@ -45,6 +46,12 @@ namespace Character
 
         [Header("Glide Parameter")]
         [SerializeField] private float m_glideSpeed = 4;
+        [SerializeField] private float m_gravityForce = 50;
+
+
+        [Header("Move Parameter")]
+        [SerializeField] private float m_accelerationSpeed = 4.0f;
+        private Vector3 m_velMovement;
 
         [Header("Slide Parameters")]
         public float accelerationSlide = 3.0f;
@@ -63,7 +70,11 @@ namespace Character
         private bool m_isSave;
         private Vector3 m_saveVeloctiy;
         private bool m_saveStateSliding;
-        private Vector3 m_directionKnockback;
+
+
+        private bool m_isSlowdown;
+        private float m_speedLimit;
+
         public enum MouvementState
         {
             None,
@@ -79,6 +90,9 @@ namespace Character
         [SerializeField] private float m_knockBackDuration = 1.0f;
         private float m_knockbackTimer;
         private bool m_applyKnockback;
+        private float m_knockbackBaseGravityPower = 10.0f;
+        private Vector3 m_directionKnockback;
+
 
         public MouvementState mouvementState;
 
@@ -122,7 +136,7 @@ namespace Character
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
-
+                
             }
             if (ctx.canceled)
             {
@@ -198,13 +212,26 @@ namespace Character
                     break;
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", true);
+                    m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
+                    if (m_isSlowdown)
+                    {
+                        m_speedLimit = m_speedData.referenceSpeed[2];
+                    }
+
                     break;
+
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", true);
                     m_slidingEffect.SetActive(true);
+
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", true);
+                    m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
+                    if (m_isSlowdown)
+                    {
+                        m_speedLimit = m_speedData.referenceSpeed[2];
+                    }
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
@@ -219,7 +246,18 @@ namespace Character
         private void CheckPlayerMouvement()
         {
             if (mouvementState == MouvementState.Knockback) return;
+            
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
+            Debug.Log("Input Direction = " + inputDirection.ToString());
+
+            if (IsObstacle())
+            {
+                m_speedData.currentSpeed = 0;
+                m_velMovement = Vector3.zero;
+                m_rigidbody.velocity = Vector3.zero;
+
+            }
 
             RaycastHit hit = new RaycastHit();
             if (!OnGround(ref hit))
@@ -230,6 +268,7 @@ namespace Character
                 return;
             }
             Vector3 direction = GetForwardDirection(hit.normal);
+       
             m_speedData.direction = direction;
 
             m_slope = GetSlopeAngle(direction);
@@ -254,6 +293,12 @@ namespace Character
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
+                m_velMovement = Vector3.zero;
+                if (m_rigidbody.velocity.magnitude > 0)
+                {
+                    m_rigidbody.velocity = m_rigidbody.velocity.normalized * (m_rigidbody.velocity.magnitude - (2 * Time.deltaTime));
+                }
+
                 return;
             }
 
@@ -300,9 +345,10 @@ namespace Character
             {
                 if (m_applyKnockback)
                 {
+                    m_velMovement = Vector3.zero;
                     m_rigidbody.velocity = Vector3.zero;
                     m_rigidbody.velocity += (m_directionKnockback);
-                
+
                     m_applyKnockback = false;
 
                     m_knockbackTimer = 0;
@@ -316,8 +362,10 @@ namespace Character
                 }
                 else
                 {
-                    m_rigidbody.velocity = (m_directionKnockback.normalized *Mathf.Lerp(m_knockBackPower,0.0f,m_knockbackTimer/m_knockBackDuration));
-                    m_knockbackTimer += Time.deltaTime ;
+                    Vector3 vel = (m_directionKnockback.normalized * Mathf.Lerp(m_knockBackPower, 0.0f, m_knockbackTimer / m_knockBackDuration));
+                    vel.y = m_rigidbody.velocity.y - m_knockbackBaseGravityPower;
+                    m_rigidbody.velocity = vel;
+                    m_knockbackTimer += Time.deltaTime;
                 }
 
                 return;
@@ -325,30 +373,32 @@ namespace Character
 
 
             float currentRefSpeed = m_speedData.referenceSpeed[(int)mouvementState];
-            if (m_speedData.currentSpeed > currentRefSpeed)
+            if (m_isSlowdown && mouvementState == MouvementState.Classic)
             {
-                if (!combatState) m_speedData.currentSpeed -= minDecceleration * Time.deltaTime;
-                if (combatState) m_speedData.currentSpeed -= combatDeccelerationSpeed * Time.deltaTime;
+                m_speedLimit -= minDecceleration * Time.deltaTime;
+                m_speedLimit -= combatDeccelerationSpeed * Time.deltaTime;
+                currentRefSpeed = m_speedLimit;
+                m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
-            if (!m_speedData.IsFlexibleSpeed && m_speedData.currentSpeed < currentRefSpeed)
-                m_speedData.currentSpeed = currentRefSpeed;
 
-            m_rigidbody.AddForce(m_speedData.direction * m_speedData.currentSpeed, ForceMode.Impulse);
             if (mouvementState == MouvementState.Glide)
             {
-                Vector3 horizontalVelocity = new Vector3(m_rigidbody.velocity.x, 0, m_rigidbody.velocity.z);
-                horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, runSpeed);
-                m_rigidbody.velocity = new Vector3(horizontalVelocity.x, m_rigidbody.velocity.y, horizontalVelocity.z);
+                if (m_isSlowdown)
+                {
+                    currentRefSpeed = m_speedLimit;
+                }
+                m_rigidbody.AddForce(Vector3.down*m_gravityForce, ForceMode.Impulse);
+                m_velMovement += Vector3.down * m_gravityForce * Time.deltaTime;
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, currentRefSpeed);
+                m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                m_speedData.currentSpeed = m_rigidbody.velocity.magnitude;
                 return;
             }
-            m_rigidbody.AddForce(m_speedData.direction * m_speedData.currentSpeed, ForceMode.Impulse);
-            m_rigidbody.velocity = Vector3.ClampMagnitude(m_speedData.direction * m_speedData.currentSpeed, currentRefSpeed);
-
-
-
+            m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
+            m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+            m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
 
         }
-
 
         public void FixedUpdate()
         {
@@ -389,6 +439,24 @@ namespace Character
         {
             return Physics.Raycast(transform.position, -Vector3.up, out hit, m_groundDistance, m_groundLayerMask);
         }
+
+        private bool IsObstacle()
+        {
+            return Physics.Raycast(transform.position, transform.forward, 3, m_objstacleLayer);
+        }
+
+        // 1. When changing state to Classic, check the speed value 
+        // if the speed is upper the classic speed limit, make the boolean isSlowdown is true
+        // if the speed is lower the behavior is classic
+        // 2. When isSlowdown is active, the speed is reducing 
+        // 3. When the speed is lower the classic speed limit , isSlowdown is false
+
+        private bool IsFasterThanSpeedReference(float speedReference)
+        {
+            return m_velMovement.magnitude > speedReference;
+        }
+
+
         private void Move(Vector3 direction)
         {
 
@@ -400,9 +468,24 @@ namespace Character
             {
                 m_speedData.referenceSpeed[(int)mouvementState] = runSpeed;
             }
+
             m_speedData.IsFlexibleSpeed = false;
 
             currentDirection = direction;
+
+
+            if (!m_isSlowdown)
+            {
+                m_velMovement += direction.normalized * m_speedData.referenceSpeed[(int)mouvementState] * m_accelerationSpeed * Time.deltaTime;
+                m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
+            }
+            else
+            {
+
+                m_velMovement += direction.normalized * m_speedData.referenceSpeed[(int)mouvementState] * m_accelerationSpeed * Time.deltaTime;
+                m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
+            }
+
         }
 
         private void Slide(Vector3 direction)
@@ -423,7 +506,7 @@ namespace Character
                 m_currentSlideSpeed = 0.0f;
                 m_timerBeforeSliding = 0;
             }
-
+            m_velMovement = direction.normalized * m_speedData.currentSpeed;
 
         }
 
@@ -454,22 +537,31 @@ namespace Character
         {
             m_speedData.direction = direction;
             m_speedData.IsFlexibleSpeed = false;
+            if (m_isSlowdown)
+            {
+                m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
+            }
         }
 
         #region Rotation
 
         private void RotateCharacter()
         {
-            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-            float angleDir = Vector3.SignedAngle(Vector3.forward, new Vector3(m_inputDirection.x, 0, m_inputDirection.y), Vector3.up);
+            Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            
+
+            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
+            float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
             transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
         }
 
 
         private void SlideRotationCharacter()
         {
-            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-            float angleDir = Vector3.SignedAngle(transform.forward, new Vector3(m_inputDirection.x, 0, m_inputDirection.y), Vector3.up);
+            Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+           
+            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
+            float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
         }
@@ -489,6 +581,8 @@ namespace Character
             attackDirection.y = 0.0f;
             m_directionKnockback = attackDirection.normalized * 50.0f;
             m_applyKnockback = true;
+            m_velMovement = Vector3.zero;
+            m_rigidbody.velocity = Vector3.zero;
             ChangeState(MouvementState.Knockback);
             Debug.Log("Player is knockback");
         }

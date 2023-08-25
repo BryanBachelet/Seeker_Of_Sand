@@ -48,10 +48,14 @@ public class Attractor : MonoBehaviour
         float forceMagnitude = G * (rb.mass * rbToAttract.mass) / Mathf.Pow(distance, 2);
         Vector3 force = direction.normalized * forceMagnitude;
 
-        if (distance == 0)
-            force = force * 0;
+        if (distance <= 2f)
 
-        rbToAttract.AddForce(force);
+        {
+            force = force * 0;
+            rbToAttract.velocity = Vector3.zero;
+        }
+            
+            rbToAttract.AddForce(force);
 
     }
 

@@ -15,6 +15,11 @@ namespace Enemies
         PAUSE,
     }
 
+    public struct TargetData
+    {
+        public Transform target;
+        public bool isMoving;
+    }
 
     public class NpcHealthComponent : MonoBehaviour
     {
@@ -30,7 +35,7 @@ namespace Enemies
         public int xpToDrop;
         private int m_previousNpcState;
 
-        [HideInInspector] public Transform target;
+     public TargetData targetData;
 
         public delegate void DestroyEvent(Vector3 direction, float power);
         public event DestroyEvent destroyEvent;
@@ -54,6 +59,13 @@ namespace Enemies
 
 
         }
+
+        public void ResetTarget()
+        {
+            NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
+            npcMouvement.SetTarget(targetData);
+        }
+
         public void SetInitialData(HealthManager healthManager, EnemyManager enemyManager)
         {
             m_healthManager = healthManager;
@@ -81,6 +93,7 @@ namespace Enemies
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
+            m_enemyManager.IncreseAlterEnemyCount(this);
             StartCoroutine(Death());
         }
 
