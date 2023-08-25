@@ -12,33 +12,34 @@ public class AttackTrainingArea : MonoBehaviour
     public health_Player hpPlayer;
     private VisualEffect m_Vfx;
     public float tempsVie;
+    private DestroyAfterBasic destroyScript;
     // Start is called before the first frame update
 
     private void OnEnable()
     {
 
         m_Vfx = GetComponentInChildren<VisualEffect>();
-        m_Vfx.SetFloat("TempsRealese", tempsVie);
-        m_Vfx.SetFloat("Size", rangeHit * 3.33f);
-        DestroyAfterBasic destroyScript = this.gameObject.AddComponent<DestroyAfterBasic>();
-        destroyScript.m_DestroyAfterTime = tempsVie;
+        destroyScript = this.gameObject.AddComponent<DestroyAfterBasic>();
 
     }
     void Start()
     {
 
         debugCollider = activeDebugCollider;
-
+        if (playerTarget != null)
+        {
+            m_Vfx.SetFloat("Size", rangeHit * 3.33f);
+            hpPlayer = playerTarget.GetComponent<health_Player>();
+            destroyScript.m_DestroyAfterTime = tempsVie;
+            m_Vfx.SetFloat("TempsRealese", tempsVie);
+            m_Vfx.SendEvent("ActiveArea");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(playerTarget != null)
-        {
-            hpPlayer = playerTarget.GetComponent<health_Player>();
-            m_Vfx.SendEvent("ActiveArea");
-        }
+
         if(debugCollider)
         {
             positionOnDestroy = transform.position;
