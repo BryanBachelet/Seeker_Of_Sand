@@ -8,6 +8,7 @@ public class AlatarHealthSysteme : MonoBehaviour
     [Range(0, 3)]
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
+    [SerializeField] private Material[] materialEvent;
     [SerializeField] private float m_TimeInvulnerability;
     [SerializeField] private float m_MaxHealth;
     [SerializeField] private int m_CurrentHealth;
@@ -45,6 +46,9 @@ public class AlatarHealthSysteme : MonoBehaviour
 
     public string txt_EventName;
     int resetNumber = 0;
+
+    public MeshRenderer socleMesh;
+    public Material socleMaterial;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +59,8 @@ public class AlatarHealthSysteme : MonoBehaviour
         myColor = GetColorByID(ownNumber);
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
+        socleMesh.material.shader = Shader.Find("Intensity");
+        socleMesh.material = materialEvent[eventElementType];
         //DisableColor();
     }
 
@@ -77,8 +83,13 @@ public class AlatarHealthSysteme : MonoBehaviour
     {
         
         if(bool_ActiveEvent) { ActiveEvent(); }
-        if(m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1)) <= m_CurrentKillCount && bool_EventEnCour)
+
+        float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
+
+        if (ennemyTokill <= m_CurrentKillCount && bool_EventEnCour)
         {
+
+
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
             //displayAnimator.InvertDisplayStatus(2);
@@ -113,6 +124,7 @@ public class AlatarHealthSysteme : MonoBehaviour
         if(bool_Activable)
         {
             m_EnemyManagerScript.AddAltarEvent(this.transform);
+            socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f);
             //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
@@ -141,6 +153,7 @@ public class AlatarHealthSysteme : MonoBehaviour
         m_EnemyManagerScript.RemoveAltarEvent(this.transform);
         bool_EventEnCour = false;
         m_myAnimator.SetBool("IsDone", true);
+        socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
