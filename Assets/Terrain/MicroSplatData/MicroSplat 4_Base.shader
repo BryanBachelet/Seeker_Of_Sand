@@ -10,7 +10,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_1_1_Base2111627371"
+Shader "Hidden/Terrain_1_1_Base1885192084"
 {
    Properties
    {
@@ -33,6 +33,7 @@ Shader "Hidden/Terrain_1_1_Base2111627371"
       _TerrainNormalmapTexture("", 2D) = "bump" {}
       [NoScaleOffset]_EmissiveMetal ("Emissive Array", 2DArray) = "black" {}
       _EmissiveMult("Emissive Multiplier", Float) = 1
+      [NoScaleOffset]_Specular ("Specular Array", 2DArray) = "black" {}
       _HybridHeightBlendDistance("Hybrid Blend Distance", Float) = 300
 
       _TraxNormalStrength("Normal Shape Strength", Range(0, 2.5)) = 1
@@ -226,6 +227,7 @@ Shader "Hidden/Terrain_1_1_Base2111627371"
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -252,10 +254,14 @@ Shader "Hidden/Terrain_1_1_Base2111627371"
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -5561,6 +5567,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -5587,10 +5594,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -10729,6 +10740,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -10755,10 +10767,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -15965,6 +15981,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -15991,10 +16008,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -21175,6 +21196,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -21201,10 +21223,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -26339,6 +26365,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -26365,10 +26392,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -31499,6 +31530,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -31525,10 +31557,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -36688,6 +36724,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -36714,10 +36751,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -41908,6 +41949,7 @@ void Frag(  VertexToPixel v2f
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -41934,10 +41976,14 @@ void Frag(  VertexToPixel v2f
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
@@ -47090,6 +47136,7 @@ float3 GetTessFactors ()
       #define _MICROTERRAIN 1
       #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
+      #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
@@ -47116,10 +47163,14 @@ float3 GetTessFactors ()
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MSRENDERLOOP_UNITYHDRP2022 1
 
+      #define _SPECULAR_SETUP
 #pragma instancing_options assumeuniformscaling nomatrices nolightprobe nolightmap forwardadd
 
 
    #define _HDRP 1
+
+#define _USESPECULAR 1
+#define _MATERIAL_FEATURE_SPECULAR_COLOR 1
 
 
 
