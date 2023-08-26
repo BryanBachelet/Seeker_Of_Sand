@@ -309,7 +309,7 @@ namespace Enemies
 
         public void CreateCurveSheet()
         {
-            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (2).csv");
+            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (5).csv");
             bool endOfFile = false;
             while (!endOfFile)
             {
@@ -356,7 +356,7 @@ namespace Enemies
         {
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
-            string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+            string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
             int lineNumber = 5;
 
             string lineContents = ReadSpecificLine(filePath, lineNumber);

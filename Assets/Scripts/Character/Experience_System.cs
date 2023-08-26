@@ -131,7 +131,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         AnimationCurve tempAnimationCurve = new AnimationCurve();
         string debugdata = "";
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+        string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
         int lineNumber = 17;
 
         string lineContents = ReadSpecificLine(filePath, lineNumber);

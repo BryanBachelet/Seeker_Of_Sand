@@ -10,6 +10,8 @@ public class AlatarHealthSysteme : MonoBehaviour
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
+    [ColorUsage(showAlpha:true, hdr:true)]
+    [SerializeField] private Color[] colorEventTab;
     [SerializeField] private float m_TimeInvulnerability;
     [SerializeField] private float m_MaxHealth;
     [SerializeField] private int m_CurrentHealth;
@@ -57,7 +59,8 @@ public class AlatarHealthSysteme : MonoBehaviour
     public string txt_EventName;
     int resetNumber = 0;
 
-    public MeshRenderer socleMesh;
+    public MeshRenderer[] altarAllMesh;
+
     public Material socleMaterial;
     [HideInInspector] public bool isAltarDestroy = false;
 
@@ -71,9 +74,16 @@ public class AlatarHealthSysteme : MonoBehaviour
         myColor = GetColorByID(ownNumber);
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
-        socleMesh.material.shader = Shader.Find("Intensity");
-        socleMesh.material = materialEvent[eventElementType];
-        //DisableColor();
+
+        altarAllMesh[0].material.shader = Shader.Find("Intensity");
+        altarAllMesh[0].material.shader = Shader.Find("Color");
+        altarAllMesh[0].material = materialEvent[eventElementType];
+        for (int i = 0; i < altarAllMesh.Length; i++)
+        {
+           
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+        }
+        DisableColor();
         m_playerTransform = m_EnemyManagerScript.m_playerTranform;
     }
 
@@ -185,7 +195,10 @@ public class AlatarHealthSysteme : MonoBehaviour
         if (m_hasEventActivate || isAltarDestroy)
         {
             m_EnemyManagerScript.AddAltarEvent(this.transform);
-            socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f);
+            for(int i = 0; i < altarAllMesh.Length; i++)
+            {
+                altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f);
+            }
             //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
@@ -216,7 +229,10 @@ public class AlatarHealthSysteme : MonoBehaviour
         m_EnemyManagerScript.RemoveAltarEvent(this.transform);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
-        socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f);
+        for (int i = 0; i < altarAllMesh.Length; i++)
+        {
+            altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.32f);
+        }
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
