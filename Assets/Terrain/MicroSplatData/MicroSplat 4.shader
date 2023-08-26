@@ -4,7 +4,7 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.16f1
+//   Unity Version: 2021.3.15f1
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
@@ -31,6 +31,8 @@ Shader "Terrain_1_1"
 
       _TerrainHeightmapTexture("", 2D) = "black" {}
       _TerrainNormalmapTexture("", 2D) = "bump" {}
+      [NoScaleOffset]_EmissiveMetal ("Emissive Array", 2DArray) = "black" {}
+      _EmissiveMult("Emissive Multiplier", Float) = 1
       _HybridHeightBlendDistance("Hybrid Blend Distance", Float) = 300
 
       _TraxNormalStrength("Normal Shape Strength", Range(0, 2.5)) = 1
@@ -222,11 +224,14 @@ Shader "Terrain_1_1"
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -5553,11 +5558,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -10717,11 +10725,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -15949,11 +15960,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -21155,11 +21169,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -26315,11 +26332,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -31471,11 +31491,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -36656,11 +36679,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -41872,11 +41898,14 @@ void Frag(  VertexToPixel v2f
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -47050,11 +47079,14 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
+      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USEGRADMIP 1
+      #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXTINT 1
+      #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
@@ -52122,7 +52154,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base919825321"
-   Fallback "Hidden/Terrain_1_1_Base919825321"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base2111627371"
+   Fallback "Hidden/Terrain_1_1_Base2111627371"
    CustomEditor "MicroSplatShaderGUI"
 }
