@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UiSpellGrimoire : MonoBehaviour
 {
@@ -16,6 +17,11 @@ public class UiSpellGrimoire : MonoBehaviour
     public GameObject imageDragAndDrop;
     public GameObject arrowUp;
     public GameObject arrowDown;
+    public GameObject spellGalerieObj_Button;
+    public GameObject spellEquipObj_Button;
+    public GameObject imageDragAndDrop_DecalUi;
+    public GameObject arrowUp_DecalUi;
+    public GameObject arrowDown_DecalUi;
 
     [HideInInspector] public bool isOpen;
 
@@ -41,27 +47,48 @@ public class UiSpellGrimoire : MonoBehaviour
     private Image m_iconSpellSelected;
     private TMP_Text[] m_textDescription;
 
-    public void Awake()
+    public Scene sceneUIBook;
+    static public GameObject[] otherSceneGameObject;
+
+    private UpgradeUIDecal m_uiDecalUpdaterDisplay;
+    public void Start()
     {
+        sceneUIBook = SceneManager.GetSceneByBuildIndex(3);
+        otherSceneGameObject = sceneUIBook.GetRootGameObjects();
+        otherSceneGameObject[0].SetActive(true);
+        m_uiDecalUpdaterDisplay = otherSceneGameObject[0].GetComponent<UpgradeUIDecal>();
+        spellGalerieObj = GameObject.FindWithTag("SpellIcon");
+        spellEquipObj = GameObject.FindWithTag("SpellBar");
         FindUIElement();
         SetupSpellButtonFunction();
+        m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
+        otherSceneGameObject[0].SetActive(false);
+
+    }
+    public void Awake()
+    {
+
+
+
     }
 
 
     private void SetupSpellButtonFunction()
     {
+        Button[] m_spellButton = spellGalerieObj_Button.GetComponentsInChildren<Button>();
         m_spellIndexFunction += ActiveFocusSpell;
-        for (int i = 0; i < m_spellsOwnImage.Length; i++) // Setup function on event for the spell galery
+        for (int i = 0; i < m_spellButton.Length; i++) // Setup function on event for the spell galery
         {
             int value = i;
-            m_spellsOwnImage[i].GetComponent<Button>().onClick.AddListener(() => m_spellIndexFunction.Invoke(value));
+            m_spellButton[i].onClick.AddListener(() => m_spellIndexFunction.Invoke(value));
         }
 
         m_spellBarIndexFunction += ActiveFocusSpellBar;
-        for (int i = 0; i < m_playerSpellEquip.Length; i++) // Setup function on event for the spell bar
+        m_spellButton = spellEquipObj_Button.GetComponentsInChildren<Button>();
+        for (int i = 0; i < m_spellButton.Length; i++) // Setup function on event for the spell bar
         {
             int value = i;
-            m_playerSpellEquip[i].GetComponent<Button>().onClick.AddListener(() => m_spellBarIndexFunction.Invoke(value));
+            m_spellButton[i].onClick.AddListener(() => m_spellBarIndexFunction.Invoke(value));
         }
     }
 
@@ -84,6 +111,9 @@ public class UiSpellGrimoire : MonoBehaviour
         spellDescriptionObj.SetActive(false);
         m_inGameUIObj.SetActive(false);
         mainUIObject.SetActive(true);
+        otherSceneGameObject[0].SetActive(true);
+        m_uiDecalUpdaterDisplay.ChangeStateDisplay(true);
+
 
         isOpen = true;
         m_currentSpritsSpell = spriteSpell;
@@ -126,6 +156,7 @@ public class UiSpellGrimoire : MonoBehaviour
         CapsuleSystem.Capsule info = m_characterShoot.GetCapsuleInfo(index);
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
+        m_uiDecalUpdaterDisplay.SpellFocusDisplay(info);
     }
     public void ActiveFocusSpellBar(int indexSpellSlot)
     {
@@ -136,6 +167,7 @@ public class UiSpellGrimoire : MonoBehaviour
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
     }
+
 
     // Drag and Drop function
     public void ActiveDragAndDrop(int index)
@@ -184,6 +216,8 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         GameState.ChangeState();
         mainUIObject.SetActive(false);
+        otherSceneGameObject[0].SetActive(false);
+        m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
         isOpen = false;
         arrowUp.SetActive(false);
         arrowDown.SetActive(false);

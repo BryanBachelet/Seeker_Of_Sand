@@ -2207,11 +2207,47 @@ MonoBehaviour:
     m_ActionId: 995dd12b-6286-4ab6-9006-9a6fafb90092
     m_ActionName: Player/TakeScreenshot[/Keyboard/l]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1983534970}
+        m_TargetAssemblyTypeName: Character.CharacterShoot, Assembly-CSharp
+        m_MethodName: StopCasting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Render.Camera.CameraBehavior, Assembly-CSharp
+        m_MethodName: RotationMouseInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 42a1de34-e12c-48a4-a914-91b14be88cdd
-    m_ActionName: Player/StopFire[/Mouse/rightButton,/Keyboard/shift]
+    m_ActionName: Player/StopFire[/Mouse/rightButton]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Render.Camera.CameraBehavior, Assembly-CSharp
+        m_MethodName: RotationAimInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 17b5e5a3-5088-49b6-ad75-53a905eb8d45
     m_ActionName: Player/RotationCameraMouse[/Mouse/delta]
   m_NeverAutoSwitchControlSchemes: 0
@@ -2643,12 +2679,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96ba12f41df91f34ebe3c3ceb0dde7b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_dashDistance: 5
-  m_dashDuration: 0.5
+  m_dashDistance: 50
+  m_dashDuration: 0.3
+  m_dashCooldownDuration: 1
   m_obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 264
-  m_playerMesh: {fileID: 0}
+  m_playerMesh: {fileID: 275628373934368166}
+  m_cameraBehavior: {fileID: 0}
 --- !u!1 &7409673259591215286
 GameObject:
   m_ObjectHideFlags: 0

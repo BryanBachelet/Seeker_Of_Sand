@@ -7,7 +7,9 @@ public class AlatarHealthSysteme : MonoBehaviour
 {
     [Header("Event Parameters")]
     [Range(0, 3)]
-    [SerializeField] private int eventElementType = 0;
+    [SerializeField] int eventElementType = 0;
+    [SerializeField] private Color[] colorEvent;
+    [SerializeField] private Material[] materialEvent;
     [SerializeField] private float m_TimeInvulnerability;
     [SerializeField] private float m_MaxHealth;
     [SerializeField] private int m_CurrentHealth;
@@ -22,7 +24,6 @@ public class AlatarHealthSysteme : MonoBehaviour
     [SerializeField] private GameObject[] xpObject;
     [SerializeField] private float m_ImpusleForceXp;
 
-    [SerializeField] private Color[] colorEvent;
     
     private float m_invulnerabilityTimeCountdown;
 
@@ -56,7 +57,8 @@ public class AlatarHealthSysteme : MonoBehaviour
     public string txt_EventName;
     int resetNumber = 0;
 
-    // Destroy Parameter
+    public MeshRenderer socleMesh;
+    public Material socleMaterial;
     [HideInInspector] public bool isAltarDestroy = false;
 
     // Start is called before the first frame update
@@ -69,6 +71,8 @@ public class AlatarHealthSysteme : MonoBehaviour
         myColor = GetColorByID(ownNumber);
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
+        socleMesh.material.shader = Shader.Find("Intensity");
+        socleMesh.material = materialEvent[eventElementType];
         //DisableColor();
         m_playerTransform = m_EnemyManagerScript.m_playerTranform;
     }
@@ -90,9 +94,14 @@ public class AlatarHealthSysteme : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        if(m_isEventOccuring) { ActiveEvent(); }
+        float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
 
-        if (m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1)) <= m_CurrentKillCount && m_isEventOccuring)
+        if (ennemyTokill <= m_CurrentKillCount && m_isEventOccuring)
         {
+
+
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
             Debug.Log("End Event");
@@ -176,6 +185,9 @@ public class AlatarHealthSysteme : MonoBehaviour
         if (m_hasEventActivate || isAltarDestroy)
         {
             m_EnemyManagerScript.AddAltarEvent(this.transform);
+            socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f);
+            //this.transform.GetChild(0).gameObject.SetActive(true);
+            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
             m_isAltarInvulnerable = false;
@@ -204,6 +216,8 @@ public class AlatarHealthSysteme : MonoBehaviour
         m_EnemyManagerScript.RemoveAltarEvent(this.transform);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
+        socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f);
+        //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
         {

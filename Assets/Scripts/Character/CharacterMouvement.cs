@@ -256,7 +256,6 @@ namespace Character
             
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
-            Debug.Log("Input Direction = " + inputDirection.ToString());
 
             if (IsObstacle())
             {

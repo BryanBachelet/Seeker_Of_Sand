@@ -40,6 +40,7 @@ public struct CapsuleStats
     public float size;
     public float sizeMultiplicatorFactor;
     public int piercingMax;
+    public string description;
 
     [HideInInspector] public float timeBetweenShot 
     { 
