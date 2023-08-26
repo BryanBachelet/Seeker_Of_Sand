@@ -51,7 +51,7 @@ namespace Character
         private void StartDash() // Function call at the start of the dash
         {
             if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_isActiveCooldown) return;
-
+            GlobalSoundManager.PlayOneShot(28, transform.position);
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
