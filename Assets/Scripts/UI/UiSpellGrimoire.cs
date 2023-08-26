@@ -156,6 +156,7 @@ public class UiSpellGrimoire : MonoBehaviour
         CapsuleSystem.Capsule info = m_characterShoot.GetCapsuleInfo(index);
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
+        m_uiDecalUpdaterDisplay.SpellFocusDisplay(info);
     }
     public void ActiveFocusSpellBar(int indexSpellSlot)
     {
@@ -166,6 +167,7 @@ public class UiSpellGrimoire : MonoBehaviour
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
     }
+
 
     // Drag and Drop function
     public void ActiveDragAndDrop(int index)

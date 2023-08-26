@@ -24,7 +24,6 @@ public class AlatarHealthSysteme : MonoBehaviour
     [SerializeField] private GameObject[] xpObject;
     [SerializeField] private float m_ImpusleForceXp;
 
-    [SerializeField] private Color[] colorEvent;
     
     private float m_invulnerabilityTimeCountdown;
 
@@ -96,11 +95,10 @@ public class AlatarHealthSysteme : MonoBehaviour
     void Update()
     {
         
-        if(bool_ActiveEvent) { ActiveEvent(); }
-
+        if(m_isEventOccuring) { ActiveEvent(); }
         float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
 
-        if (ennemyTokill <= m_CurrentKillCount && bool_EventEnCour)
+        if (ennemyTokill <= m_CurrentKillCount && m_isEventOccuring)
         {
 
 

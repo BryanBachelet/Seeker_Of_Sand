@@ -37,6 +37,9 @@ namespace Render.Camera
         // Free Rotation Variable
         [Header("Free Rotation Variables")]
         [SerializeField] private float m_angularSpeed = 10;
+        private float initialAngularSpeed;
+        [SerializeField] private AnimationCurve angularSpeedAcceleration;
+        private float timeLastRotationInput;
         private float m_currentAngle;
         [SerializeField] private bool m_activateHeightDirectionMode = false;
         [SerializeField] private bool m_mouseInputActivate = false;
@@ -51,6 +54,7 @@ namespace Render.Camera
         // Start is called before the first frame update
         void Start()
         {
+            initialAngularSpeed = m_angularSpeed;
             cameraEffects = GetComponents<CameraEffect>();
             m_cameraDirection = transform.position - m_targetTransform.position;
             m_baseAngle = transform.rotation.eulerAngles;
@@ -105,6 +109,7 @@ namespace Render.Camera
                 float value = ctx.ReadValue<float>();
                 m_signValue = value;
                 m_isRotationInputPress = true;
+                timeLastRotationInput = Time.time;
                 if (value > 0)
                 {
                     if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(true);
@@ -187,7 +192,16 @@ namespace Render.Camera
         private void FreeRotation(float sign)
         {
             sign = Mathf.Sign(sign);
-
+            float deltaInputMove = Time.time - timeLastRotationInput;
+            if (deltaInputMove < 1)
+            {
+                m_angularSpeed = angularSpeedAcceleration.Evaluate(deltaInputMove);
+            }
+            else
+            {
+                m_angularSpeed = initialAngularSpeed;
+            }
+            Debug.Log("Angular speed [" + m_angularSpeed + "]");
             m_prevAngle = m_currentAngle;
             m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
 
