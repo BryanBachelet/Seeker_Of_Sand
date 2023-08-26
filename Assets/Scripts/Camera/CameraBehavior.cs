@@ -44,9 +44,7 @@ namespace Render.Camera
         private float m_signValue;
 
 
-        // Free Rotation Steps : 
-        // - Change Input to Right click 
-        // - Clean Script
+
 
         // Start is called before the first frame update
         void Start()
@@ -55,6 +53,9 @@ namespace Render.Camera
             m_cameraDirection = transform.position - m_targetTransform.position;
             m_baseAngle = transform.rotation.eulerAngles;
         }
+
+     
+
 
         void Update()
         {
@@ -76,7 +77,7 @@ namespace Render.Camera
 
                 }
 
-                if (!m_activateHeightDirectionMode  && m_isRotationInputPress) FreeRotation(m_signValue);
+                if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_signValue);
 
                 SetCameraRotation();
                 SetCameraPosition();
@@ -108,15 +109,15 @@ namespace Render.Camera
                 if (value > 0)
                 {
                     if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(true);
-                   
+
                 }
                 if (value < 0)
                 {
-                    if (m_activateHeightDirectionMode   && !m_isLerping) ChangeRotation(false);
+                    if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(false);
                 }
             }
 
-            if (ctx.canceled &&  !m_mouseInputActivate)
+            if (ctx.canceled && !m_mouseInputActivate)
             {
                 m_isRotationInputPress = false;
                 float value = ctx.ReadValue<float>();
@@ -128,7 +129,7 @@ namespace Render.Camera
             if (ctx.performed && m_mouseInputActivate)
             {
                 m_signValue = ctx.ReadValue<Vector2>().x;
-               // m_signValue -= Screen.currentResolution.width /2.0f;
+                // m_signValue -= Screen.currentResolution.width /2.0f;
             }
         }
 
@@ -138,13 +139,13 @@ namespace Render.Camera
             {
                 m_isRotationInputPress = true;
             }
-            if(ctx.canceled && m_mouseInputActivate)
+            if (ctx.canceled && m_mouseInputActivate)
             {
                 m_isRotationInputPress = false;
             }
         }
 
-            public Vector3 TurnDirectionForCamera(Vector3 direction)
+        public Vector3 TurnDirectionForCamera(Vector3 direction)
         {
             return Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0) * direction;
         }
@@ -214,7 +215,8 @@ namespace Render.Camera
         private void SetCameraPosition()
         {
             m_finalPosition = m_targetTransform.position;
-            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget;
+            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget; ;
+
             for (int i = 0; i < cameraEffects.Length; i++)
             {
                 m_finalPosition += cameraEffects[i].GetEffectPos();

@@ -83,6 +83,7 @@ namespace Character
             Glide,
             Train,
             Knockback,
+            Dash,
         }
 
         [Header("Knockback Parameters")]
@@ -136,7 +137,7 @@ namespace Character
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
-                
+
             }
             if (ctx.canceled)
             {
@@ -195,6 +196,9 @@ namespace Character
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
                     break;
+                case MouvementState.Dash:
+                    m_CharacterAnim.SetBool("Shooting", false);
+                    break;
                 default:
                     break;
             }
@@ -236,6 +240,9 @@ namespace Character
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
                     break;
+                case MouvementState.Dash:
+                    m_CharacterAnim.SetBool("Shooting", false);
+                    break;
                 default:
                     break;
             }
@@ -245,7 +252,7 @@ namespace Character
 
         private void CheckPlayerMouvement()
         {
-            if (mouvementState == MouvementState.Knockback) return;
+            if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash) return;
             
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
@@ -340,8 +347,14 @@ namespace Character
         /// </summary>
         private void ApplyVelocity()
         {
-
-            if (mouvementState == MouvementState.Knockback)
+            if (mouvementState == MouvementState.Dash)
+            {
+                m_rigidbody.velocity = Vector3.zero;
+                m_velMovement = Vector3.zero;
+                m_speedData.currentSpeed = 0.0f;
+                return;
+            }
+                if (mouvementState == MouvementState.Knockback)
             {
                 if (m_applyKnockback)
                 {
