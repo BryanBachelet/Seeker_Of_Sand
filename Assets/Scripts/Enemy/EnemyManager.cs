@@ -31,10 +31,13 @@ namespace Enemies
 
         static public bool EnemyTargetPlayer = true;
 
-        public Transform altarObject;
-        private AlatarHealthSysteme alatarRefScript;
-        public List<Transform> altarTransformList = new List<Transform>();
-        private List<AlatarHealthSysteme> altarScriptList = new List<AlatarHealthSysteme>();
+        public Transform m_targetTranform;
+        private ObjectHealthSystem m_targetScript;
+        public List<Transform> m_targetTransformLists = new List<Transform>();
+        private List<ObjectHealthSystem> m_targetList = new List<ObjectHealthSystem>();
+
+        private List<Transform> m_altarTransform = new List<Transform>();
+        private List<AltarBehaviorComponent> m_altarList = new List<AltarBehaviorComponent>();
 
         [SerializeField] private float m_tempsEntrePause;
         [SerializeField] private float m_tempsPause;
@@ -63,7 +66,7 @@ namespace Enemies
 
             if (spawningPhase)
             {
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(Time.time / 60) ;
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(Time.time / 60);
                 SpawnCooldown();
             }
 
@@ -165,10 +168,10 @@ namespace Enemies
             GameObject enemySpawn;
             if (!EnemyTargetPlayer)
             {
-                if (altarTransformList.Count <= 0) { return; }
-                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(positionSpawn);
-                altarObject = nearestAltar.transform;
-                altarScriptList.Add(nearestAltar);
+                if (m_targetTransformLists.Count <= 0) { return; }
+                ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
+                m_targetTranform = nearestAltar.transform;
+                m_targetList.Add(nearestAltar);
 
             }
 
@@ -209,7 +212,7 @@ namespace Enemies
             }
             else
             {
-                npcHealth.targetData.target = altarObject;
+                npcHealth.targetData.target = m_targetTranform;
                 npcHealth.targetData.isMoving = false;
                 m_enemiesFocusAltar.Add(npcHealth);
             }
@@ -217,15 +220,49 @@ namespace Enemies
         }
 
 
-        public void RemoveAltarTarget()
+        public void AddTarget(Transform target)
         {
+            m_targetTransformLists.Add(target);
+            m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
+            EnemyTargetPlayer = false;
+        }
+
+
+        public void RemoveTarget(Transform target)
+        {
+            m_targetTransformLists.Remove(target);
+            m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
             for (int i = 0; i < m_enemiesFocusAltar.Count; i++)
             {
                 NpcHealthComponent npcHealth = m_enemiesFocusAltar[i];
-                npcHealth.targetData.target = m_playerTranform;
-                npcHealth.targetData.isMoving = true;
-                npcHealth.ResetTarget();
+                if (npcHealth)
+                {
+                    npcHealth.targetData.target = m_playerTranform;
+                    npcHealth.targetData.isMoving = true;
+                    npcHealth.ResetTarget();
+                }
             }
+
+            if (m_targetTransformLists.Count <= 0)
+            {
+                EnemyTargetPlayer = true;
+            }
+            else
+            {
+                EnemyTargetPlayer = false;
+            }
+        }
+
+        public void AddAltar(Transform altarTarget)
+        {
+            m_altarTransform.Add(altarTarget);
+            m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
+        }
+
+        public void RemoveAltar(Transform altarTarget)
+        {
+            m_altarTransform.Remove(altarTarget);
+            m_altarList.Remove(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
         public void SpawnExp(Vector3 position, int count)
@@ -240,7 +277,7 @@ namespace Enemies
         {
             if (!EnemyTargetPlayer)
             {
-                AlatarHealthSysteme nearestAltar = CheckDistanceAltar(npcHealth.transform.position);
+                AltarBehaviorComponent nearestAltar = FindClosestAltar(npcHealth.transform.position);
                 if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
                 {
                     nearestAltar.IncreaseKillCount();
@@ -256,48 +293,43 @@ namespace Enemies
 
 
             m_enemyKillRatio.AddEnemiKill();
-            
+
             m_enemiesArray.Remove(npcHealth);
             Destroy(npcHealth.gameObject);
         }
 
-        public AlatarHealthSysteme CheckDistanceAltar(Vector3 position)
+        public AltarBehaviorComponent FindClosestAltar(Vector3 position)
+        {
+            float closestDistance = 10000;
+            if (m_altarList.Count <= 0) return null;
+            AltarBehaviorComponent altarScript = m_altarList[0];
+            for (int i = 0; i < m_altarTransform.Count; i++)
+            {
+                float distanceAltar = Vector3.Distance(position, m_altarTransform[i].position);
+                if (distanceAltar < closestDistance)
+                {
+                    altarScript = m_altarList[i];
+                    closestDistance = distanceAltar;
+                }
+            }
+            return altarScript;
+        }
+
+        public ObjectHealthSystem CheckDistanceTarget(Vector3 position)
         {
             float distancePlusProche = 10000;
-            if (altarTransformList.Count <= 0) { return null; }
-            AlatarHealthSysteme altarSript = altarTransformList[0].GetComponent<AlatarHealthSysteme>();
-            for (int i = 0; i < altarTransformList.Count; i++)
+            if (m_targetTransformLists.Count <= 0) { return null; }
+            ObjectHealthSystem altarSript = m_targetTransformLists[0].GetComponent<ObjectHealthSystem>();
+            for (int i = 0; i < m_targetTransformLists.Count; i++)
             {
-                float distanceAltar = Vector3.Distance(position, altarTransformList[i].position);
+                float distanceAltar = Vector3.Distance(position, m_targetTransformLists[i].position);
                 if (distanceAltar < distancePlusProche)
                 {
-                    altarSript = altarTransformList[i].GetComponent<AlatarHealthSysteme>();
+                    altarSript = m_targetTransformLists[i].GetComponent<ObjectHealthSystem>();
                     distancePlusProche = distanceAltar;
                 }
             }
             return altarSript;
-        }
-
-        public void AddAltarEvent(Transform Altar)
-        {
-            altarTransformList.Add(Altar);
-            altarScriptList.Add(Altar.GetComponent<AlatarHealthSysteme>());
-            EnemyTargetPlayer = false;
-        }
-
-        public void RemoveAltarEvent(Transform Altar)
-        {
-            altarTransformList.Remove(Altar);
-            altarScriptList.Remove(Altar.GetComponent<AlatarHealthSysteme>());
-
-            if (altarTransformList.Count <= 0)
-            {
-                EnemyTargetPlayer = true;
-            }
-            else
-            {
-                EnemyTargetPlayer = false;
-            }
         }
 
         public void ChangeSpawningPhase(bool spawning)

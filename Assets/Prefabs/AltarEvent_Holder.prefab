@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 598587347185913250}
   - component: {fileID: 1826572607}
   - component: {fileID: 3688518606914291261}
+  - component: {fileID: 6737637038821461463}
   m_Layer: 13
   m_Name: AltarEvent_Holder
   m_TagString: Untagged
@@ -305,9 +306,6 @@ MonoBehaviour:
   - {r: 0.67058825, g: 0.81960785, b: 0.98039216, a: 1}
   - {r: 0.98039216, g: 0.7372549, b: 0.67058825, a: 1}
   materialEvent: []
-  m_TimeInvulnerability: 0.5
-  m_MaxHealth: 100
-  m_CurrentHealth: 100
   m_MaxKillEnemys: 10
   m_CurrentKillCount: 0
   radiusEventActivePlayer: 300
@@ -338,6 +336,23 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 22.8
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6737637038821461463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598587347185913249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b77c3bbe71e9e4c95e82f03734ab56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxHealth: 100
+  m_currentHealth: 100
+  m_invicibleDuration: 0.5
+  m_isInvicible: 0
+  eventState: 1
 --- !u!1 &1647525743671366656
 GameObject:
   m_ObjectHideFlags: 0
