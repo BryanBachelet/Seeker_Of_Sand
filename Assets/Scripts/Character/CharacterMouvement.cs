@@ -248,6 +248,11 @@ namespace Character
             }
         }
 
+        public Vector3 GetMouvementDirection()
+        {
+            return new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+        }
+
         #endregion
 
         private void CheckPlayerMouvement()
@@ -457,11 +462,7 @@ namespace Character
             return Physics.Raycast(transform.position, transform.forward, 3, m_objstacleLayer);
         }
 
-        // 1. When changing state to Classic, check the speed value 
-        // if the speed is upper the classic speed limit, make the boolean isSlowdown is true
-        // if the speed is lower the behavior is classic
-        // 2. When isSlowdown is active, the speed is reducing 
-        // 3. When the speed is lower the classic speed limit , isSlowdown is false
+     
 
         private bool IsFasterThanSpeedReference(float speedReference)
         {
@@ -497,7 +498,7 @@ namespace Character
                 m_velMovement += direction.normalized * m_speedData.referenceSpeed[(int)mouvementState] * m_accelerationSpeed * Time.deltaTime;
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
-
+            m_speedData.currentSpeed = m_velMovement.magnitude;
         }
 
         private void Slide(Vector3 direction)

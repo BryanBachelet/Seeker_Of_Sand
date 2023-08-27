@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AlatarHealthSysteme : MonoBehaviour
+public class AltarBehaviorComponent : MonoBehaviour
 {
     [Header("Event Parameters")]
     [Range(0, 3)]
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
-    [SerializeField] private float m_TimeInvulnerability;
-    [SerializeField] private float m_MaxHealth;
-    [SerializeField] private int m_CurrentHealth;
     [SerializeField] private float m_MaxKillEnemys;
     [SerializeField] private int m_CurrentKillCount;
     public float radiusEventActivePlayer = 300;
@@ -24,10 +21,7 @@ public class AlatarHealthSysteme : MonoBehaviour
     [SerializeField] private GameObject[] xpObject;
     [SerializeField] private float m_ImpusleForceXp;
 
-    
-    private float m_invulnerabilityTimeCountdown;
 
-    private bool m_isAltarInvulnerable;
     private bool m_hasEventActivate = true;
     private bool m_isEventOccuring;
 
@@ -61,16 +55,18 @@ public class AlatarHealthSysteme : MonoBehaviour
     public Material socleMaterial;
     [HideInInspector] public bool isAltarDestroy = false;
 
+    private ObjectHealthSystem m_objectHealthSystem;
+
     // Start is called before the first frame update
     void Start()
     {
+      
         eventElementType = Random.Range(0, 4);
         GetComponentInChildren<Light>().color = colorEvent[eventElementType];
         ownNumber = altarCount;
         altarCount++;
         myColor = GetColorByID(ownNumber);
         InitComponent();
-        m_CurrentHealth = (int)m_MaxHealth;
         socleMesh.material.shader = Shader.Find("Intensity");
         socleMesh.material = materialEvent[eventElementType];
         //DisableColor();
@@ -79,6 +75,7 @@ public class AlatarHealthSysteme : MonoBehaviour
 
     private void InitComponent()
     {
+        m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_EnemyManagerScript = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
         //canvasPrincipal = GameObject.Find("MainUI_EventDisplayHolder").GetComponent<RectTransform>();
         //ownDisplayEventDetail = Instantiate(displayEventDetail, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal);
@@ -98,14 +95,12 @@ public class AlatarHealthSysteme : MonoBehaviour
         if(m_isEventOccuring) { ActiveEvent(); }
         float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
 
-        if (ennemyTokill <= m_CurrentKillCount && m_isEventOccuring)
+        if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
-
-
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
-            Debug.Log("End Event");
-           m_EnemyManagerScript.RemoveAltarTarget();
+            m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+            m_EnemyManagerScript.RemoveAltarTarget();
             //displayAnimator.InvertDisplayStatus(2);
         }
         else
@@ -115,62 +110,25 @@ public class AlatarHealthSysteme : MonoBehaviour
         }
 
 
-        if(m_isEventOccuring && Vector3.Distance(m_playerTransform.position,transform.position)> radiusEventActivePlayer)
+        if(m_objectHealthSystem.IsEventActive() && Vector3.Distance(m_playerTransform.position,transform.position)> radiusEventActivePlayer)
+        {
+            DestroyAltar();
+        }
+
+        if (m_objectHealthSystem.eventState == EventObjectState.Death)
         {
             DestroyAltar();
         }
 
 
+
     }
 
-    public void OnCollisionStay(Collision collision)
-    {
-        if (!m_isEventOccuring) return;
-        if (m_isAltarInvulnerable) return;
-        if (collision.gameObject.tag != "Enemy") return;
-
-        m_CurrentHealth--;
-        StartCoroutine(TakeDamage(m_TimeInvulnerability));
-    }
-
-    public void OnTriggerStay(Collider other)
-    {
-        if (!m_isEventOccuring) return;
-        if (m_isAltarInvulnerable) return;
-        if (other.gameObject.tag != "Enemy") return;
-
-        SendDamage(1);
-    }
-
-    public void SendDamage(int damage)
-    {
-        if (!m_isEventOccuring && m_isAltarInvulnerable) return;
-        m_CurrentHealth-=damage;
-        StartCoroutine(TakeDamage(m_TimeInvulnerability));
-
-        if(m_CurrentHealth <0)
-        {
-            DestroyAltar();
-        }
-    }
-
-    public IEnumerator TakeDamage(float time)
-    {
-        m_isAltarInvulnerable = true;
-
-        //m_myAnimator.SetTrigger("TakeHit");
-
-        yield return new WaitForSeconds(time);
-        m_isAltarInvulnerable = false;
-
-        //m_myAnimator.ResetTrigger("TakeHit");
-    }
-
-
+  
     private void DestroyAltar()
     {
+        m_objectHealthSystem.ChangeState(EventObjectState.Death);
         m_myAnimator.SetBool("ActiveEvent", false);
-        m_isAltarInvulnerable = false;
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         isAltarDestroy = true;
@@ -179,21 +137,21 @@ public class AlatarHealthSysteme : MonoBehaviour
     }
 
 
-
+    // Need to set active
     public void ActiveEvent()
     {
         if (m_hasEventActivate || isAltarDestroy)
         {
             m_EnemyManagerScript.AddAltarEvent(this.transform);
             socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f);
-            //this.transform.GetChild(0).gameObject.SetActive(true);
-            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
-            m_isAltarInvulnerable = false;
+            m_objectHealthSystem.ChangeState(EventObjectState.Active);
             m_hasEventActivate = false;
             m_isEventOccuring = true;
 
+            //this.transform.GetChild(0).gameObject.SetActive(true);
+            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             //displayAnimator.InvertDisplayStatus(1);
@@ -244,12 +202,13 @@ public class AlatarHealthSysteme : MonoBehaviour
     {
         m_myAnimator.SetBool("ActiveEvent", false);
         resetNumber++;
-        m_isAltarInvulnerable = false;
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         m_CurrentKillCount = 0;
-        m_MaxHealth = 100 * (1 - 0.1f * (resetNumber + 1));
-        m_CurrentHealth = (int)m_MaxHealth;
+        float maxHealth = 100 * (1 - 0.1f * (resetNumber + 1));
+        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
+        m_objectHealthSystem.ResetCurrentHealth();
+
 
         //this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;

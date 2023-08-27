@@ -50,18 +50,18 @@ namespace Character
 
         private void StartDash() // Function call at the start of the dash
         {
-            if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_isActiveCooldown) return;
+            if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_isActiveCooldown || m_isDashValid) return;
 
-            m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
+            m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
             m_dashTimer = 0.0f;
 
         }
 
         private bool CalculateDashEndPoint() // Function that test where the player should arrive
         {
-            Vector3 m_direction = m_characterAim.GetAimDirection();
+            Vector3 m_direction = m_characterMouvement.GetMouvementDirection();
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
