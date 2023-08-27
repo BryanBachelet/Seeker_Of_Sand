@@ -202,7 +202,6 @@ namespace Render.Camera
             {
                 m_angularSpeed = initialAngularSpeed;
             }
-            Debug.Log("Angular speed [" + m_angularSpeed + "]");
             m_prevAngle = m_currentAngle;
             m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
 
