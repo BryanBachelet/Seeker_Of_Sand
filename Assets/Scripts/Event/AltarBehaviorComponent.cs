@@ -193,7 +193,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public void GiveRewardXp()
     {
-        Debug.Log("Finish Event");
+
         m_EnemyManagerScript.RemoveTarget(transform);
         m_EnemyManagerScript.RemoveAltar(transform);
         m_isEventOccuring = false;
