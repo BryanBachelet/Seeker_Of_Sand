@@ -34,6 +34,15 @@ public class DayCyclecontroller : MonoBehaviour
 
     private string dayprogress;
     private string phaseprogress;
+
+    // Night Event
+    public delegate void NightBeginning();
+    public event NightBeginning nightStartEvent;
+    // Day Event
+    public delegate void DayBeginning();
+    public event DayBeginning dayStartEvent;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -124,6 +133,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_sun.gameObject.SetActive(true);
         isNight = false;
+        dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
         //m_LocalNightVolume.enabled = false;
@@ -135,6 +145,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
+        nightStartEvent.Invoke();
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;

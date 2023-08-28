@@ -46,8 +46,7 @@ public class health_Player : MonoBehaviour
     {
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
-            GameState.ChangeState();
-            //  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            GameState.DeathActivation();
             m_gameOverMenu.SetActive(true);
             isActivate = true;
             return;

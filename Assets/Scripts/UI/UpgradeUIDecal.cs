@@ -54,6 +54,7 @@ public class UpgradeUIDecal : MonoBehaviour
     {
         selectionPanelGameObject.SetActive(newState);
         spellEquipPanelGameObject.SetActive(newState);
+        spellselectDescriptionPanelGameObject.SetActive(newState);
     }
 
 }

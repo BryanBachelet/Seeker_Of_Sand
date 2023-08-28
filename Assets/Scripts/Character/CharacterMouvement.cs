@@ -72,7 +72,7 @@ namespace Character
         private bool m_saveStateSliding;
 
 
-        private bool m_isSlowdown;
+        public bool m_isSlowdown;
         private float m_speedLimit;
 
         public enum MouvementState
@@ -232,7 +232,7 @@ namespace Character
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", true);
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
-                    if (m_isSlowdown)
+                    if (m_isSlowdown )
                     {
                         m_speedLimit = m_speedData.referenceSpeed[2];
                     }
@@ -491,13 +491,13 @@ namespace Character
 
             if (!m_isSlowdown)
             {
-                m_velMovement += direction.normalized * m_speedData.referenceSpeed[(int)mouvementState] * m_accelerationSpeed * Time.deltaTime;
+                m_velMovement += direction.normalized  * m_accelerationSpeed * Time.deltaTime;
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
             }
             else
             {
 
-                m_velMovement += direction.normalized * m_speedData.referenceSpeed[(int)mouvementState] * m_accelerationSpeed * Time.deltaTime;
+                m_velMovement += direction.normalized * m_accelerationSpeed * Time.deltaTime;
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
             m_speedData.currentSpeed = m_velMovement.magnitude;
