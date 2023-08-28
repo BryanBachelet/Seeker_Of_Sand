@@ -106,7 +106,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     void Update()
     {
         
-        if(m_isEventOccuring) { ActiveEvent(); }
+     
         float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
@@ -114,7 +114,8 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-            m_EnemyManagerScript.RemoveAltarTarget();
+            m_EnemyManagerScript.RemoveTarget(transform);
+            m_EnemyManagerScript.RemoveAltar(transform);
             //displayAnimator.InvertDisplayStatus(2);
         }
         else
@@ -146,7 +147,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         isAltarDestroy = true;
-        m_EnemyManagerScript.RemoveAltarTarget();
+        m_EnemyManagerScript.RemoveTarget(transform);
+        m_EnemyManagerScript.RemoveAltar(transform);
         Debug.Log("Destroy event");
     }
 
@@ -154,9 +156,10 @@ public class AltarBehaviorComponent : MonoBehaviour
     // Need to set active
     public void ActiveEvent()
     {
-        if (m_hasEventActivate || isAltarDestroy)
+        if (!m_objectHealthSystem.IsEventActive())
         {
-            m_EnemyManagerScript.AddAltarEvent(this.transform);
+            m_EnemyManagerScript.AddTarget(this.transform);
+            m_EnemyManagerScript.AddAltar(transform);
             for(int i = 0; i < altarAllMesh.Length; i++)
             {
                 altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f);
@@ -190,7 +193,9 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public void GiveRewardXp()
     {
-        m_EnemyManagerScript.RemoveAltarEvent(this.transform);
+        Debug.Log("Finish Event");
+        m_EnemyManagerScript.RemoveTarget(transform);
+        m_EnemyManagerScript.RemoveAltar(transform);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
         for (int i = 0; i < altarAllMesh.Length; i++)
