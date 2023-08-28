@@ -53,7 +53,8 @@ public class UiSpellGrimoire : MonoBehaviour
     private UpgradeUIDecal m_uiDecalUpdaterDisplay;
     public void Start()
     {
-        sceneUIBook = SceneManager.GetSceneByBuildIndex(3);
+        sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
+        SceneManager.LoadScene(1, LoadSceneMode.Additive);
         otherSceneGameObject = sceneUIBook.GetRootGameObjects();
         otherSceneGameObject[0].SetActive(true);
         m_uiDecalUpdaterDisplay = otherSceneGameObject[0].GetComponent<UpgradeUIDecal>();

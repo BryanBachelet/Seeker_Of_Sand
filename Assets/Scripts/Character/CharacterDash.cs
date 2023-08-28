@@ -54,6 +54,7 @@ namespace Character
 
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
+			GlobalSoundManager.PlayOneShot(28, transform.position);
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
             m_dashTimer = 0.0f;
 

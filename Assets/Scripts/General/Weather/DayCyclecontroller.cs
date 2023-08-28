@@ -20,7 +20,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
     [SerializeField] private Text m_DayPhases;
-    [SerializeField] private Slider m_daySlider;
+    [SerializeField] private Image m_daySlider;
     private bool isNight = false;
     public float timescale;
 
@@ -155,42 +155,6 @@ public class DayCyclecontroller : MonoBehaviour
     public void CheckPhase(float hour)
     {
         UpdatePhaseInfo();
-       //if (isNight) { }
-       //if (hour > 0f && hour < 4f)
-       //{
-       //    dayprogress = "Nuit";
-       //}
-       //if (hour >= 4f && hour < 6f)
-       //{
-       //    dayprogress = "Aube";
-       //}
-       //else if(hour >= 6 && hour <= 8)
-       //{
-       //    dayprogress = "Aurore";
-       //}
-       //else if (hour > 8 && hour <= 11.5f)
-       //{
-       //    dayprogress = "Matinée";
-       //}
-       //else if (hour > 11.5f && hour <= 13.5f)
-       //{
-       //    dayprogress = "Zénith";
-       //}
-       //else if (hour > 13.5f && hour <= 17f)
-       //{
-       //    dayprogress = "Après-midi";
-       //}
-       //else if (hour > 17.5f && hour < 21f)
-       //{
-       //    dayprogress = "Crépuscule";
-       //}
-       //else if (hour >= 21f && hour <= 24f)
-       //{
-       //    dayprogress = "Nuit";
-       //}
-
-
-
         m_DayPhases.text = dayprogress + " - " + phaseprogress;
 
     }
@@ -214,7 +178,7 @@ public class DayCyclecontroller : MonoBehaviour
         float sliderValue =1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
         if (sliderValue <= 1 && sliderValue >= 0)
         {
-            m_daySlider.value = sliderValue;
+            m_daySlider.fillAmount = sliderValue;
         }
         m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
         if (m_timeOfDay >= 24)

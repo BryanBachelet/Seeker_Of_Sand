@@ -40,6 +40,10 @@ Material:
         m_Texture: {fileID: 18700000, guid: 75a58db16abaee94388caae6d58585d8, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissiveMetal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _GlitterWind:
         m_Texture: {fileID: 2800000, guid: 5c17d279ce2734171a1575aed76f85b8, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -59,6 +63,14 @@ Material:
     - _PerTexProps:
         m_Texture: {fileID: -2409402403257190019, guid: 5fe8a52a80e1a024e92d8c5498729da7,
           type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmoothAO:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TerrainHeightmapTexture:
@@ -101,13 +113,14 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 2
     - _DstBlend: 0
+    - _EmissiveMult: 1
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
     - _GlitterGraininess: 2
     - _GlitterShininess: 1
-    - _GlitterStrength: 0.912
-    - _GlitterThreshold: 0.57
-    - _GlitterViewDep: 0.417
+    - _GlitterStrength: 1
+    - _GlitterThreshold: 0.422
+    - _GlitterViewDep: 0
     - _HybridHeightBlendDistance: 300
     - _OpaqueCullMode: 2
     - _RayTracing: 0
@@ -151,7 +164,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _GlitterDistFade: {r: 5.27, g: 6.12, b: 0.807, a: 0.69}
+    - _GlitterDistFade: {r: 505.13, g: 6.12, b: 0.807, a: 0.69}
     - _GlitterUVScale: {r: 100, g: 100, b: 0, a: 0}
     - _SnowParticulateAngleMask: {r: -1, g: -1, b: 1, a: 1}
     - _SnowParticulateColor: {r: 1, g: 1, b: 1, a: 1}
@@ -164,7 +177,7 @@ Material:
     - _WindParticulateAngleMask: {r: -1, g: 20.21, b: 1, a: 1}
     - _WindParticulateColor: {r: 1, g: 1, b: 1, a: 1}
     - _WindParticulateHeightMask: {r: 0, g: 0, b: 99999, a: 99999}
-    - _WindParticulateParams: {r: -0.5, g: 0.5, b: 0.15, a: 0.11}
+    - _WindParticulateParams: {r: 0.5, g: 0.66, b: 0.15, a: 0.11}
     - _WindParticulateShadow: {r: 0.01, g: 1, b: 0, a: 0}
     - _WindParticulateShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _WindParticulateUpMask: {r: -1, g: -1, b: 1, a: 1}

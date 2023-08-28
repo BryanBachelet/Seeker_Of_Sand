@@ -10,6 +10,11 @@ public class AltarBehaviorComponent : MonoBehaviour
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
+    [ColorUsage(showAlpha:true, hdr:true)]
+    [SerializeField] private Color[] colorEventTab;
+    [SerializeField] private float m_TimeInvulnerability;
+    [SerializeField] private float m_MaxHealth;
+    [SerializeField] private int m_CurrentHealth;
     [SerializeField] private float m_MaxKillEnemys;
     [SerializeField] private int m_CurrentKillCount;
     public float radiusEventActivePlayer = 300;
@@ -51,7 +56,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     public string txt_EventName;
     int resetNumber = 0;
 
-    public MeshRenderer socleMesh;
+    public MeshRenderer[] altarAllMesh;
+
     public Material socleMaterial;
     [HideInInspector] public bool isAltarDestroy = false;
 
@@ -65,10 +71,17 @@ public class AltarBehaviorComponent : MonoBehaviour
         GetComponentInChildren<Light>().color = colorEvent[eventElementType];
         ownNumber = altarCount;
         altarCount++;
-        myColor = GetColorByID(ownNumber);
         InitComponent();
-        socleMesh.material.shader = Shader.Find("Intensity");
-        socleMesh.material = materialEvent[eventElementType];
+        m_CurrentHealth = (int)m_MaxHealth;
+
+        altarAllMesh[0].material.shader = Shader.Find("Intensity");
+        altarAllMesh[0].material.shader = Shader.Find("Color");
+        altarAllMesh[0].material = materialEvent[eventElementType];
+        for (int i = 0; i < altarAllMesh.Length; i++)
+        {
+           
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+        }
         //DisableColor();
         m_playerTransform = m_EnemyManagerScript.m_playerTranform;
     }
@@ -146,7 +159,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
-            socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f);
+            for(int i = 0; i < altarAllMesh.Length; i++)
+            {
+                altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f);
+            }
+            //this.transform.GetChild(0).gameObject.SetActive(true);
+            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
@@ -179,7 +197,10 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_EnemyManagerScript.RemoveAltar(transform);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
-        socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f);
+        for (int i = 0; i < altarAllMesh.Length; i++)
+        {
+            altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.32f);
+        }
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
@@ -218,7 +239,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         //this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         //eventTextName.text = "Ready !";
-        //DisableColor();
         //displayAnimator.InvertDisplayStatus(2);
     }
 
@@ -229,28 +249,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         ResetAltarEvent();
     }
 
-    public Color GetColorByID(int ID)
-    {
-        if (ID == 0) { return Color.red; }
-        else if (ID == 1) { return Color.blue; }
-        else if (ID == 2) { return Color.green; }
-        else if (ID == 3) { return Color.cyan; }
-        else if (ID == 4) { return Color.yellow; }
-        else if (ID == 5) { return Color.magenta; }
-        else if (ID == 6) { return Color.grey; }
-        else { return Color.white; }
-    }
 
 
-    public void ActiveColor()
-    {
-        ownDisplayEventDetail.GetComponent<EventDisplay>().Buttonimage.color = myColor;
-        ownArrowDisplayEventDetail.GetComponent<Image>().color = myColor;
-    }
-
-    public void DisableColor()
-    {
-        ownDisplayEventDetail.GetComponent<EventDisplay>().Buttonimage.color = Color.gray;
-        ownArrowDisplayEventDetail.GetComponent<Image>().color = Color.gray;
-    }
 }
