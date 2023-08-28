@@ -295,7 +295,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -165, y: 0, z: 180}
 --- !u!95 &833201099
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -312,7 +312,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &925421623
 GameObject:
   m_ObjectHideFlags: 0
@@ -1676,6 +1676,7 @@ GameObject:
   - component: {fileID: 1983534982}
   - component: {fileID: 1983534984}
   - component: {fileID: 1983534992}
+  - component: {fileID: 1012445203582757945}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -1801,6 +1802,9 @@ MonoBehaviour:
   m_groundLayerMask:
     serializedVersion: 2
     m_Bits: 8
+  m_objstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   m_groundDistance: 5
   m_maxGroundSlopeAngle: 60
   m_CharacterAnim: {fileID: 7434426885052270770}
@@ -1808,6 +1812,8 @@ MonoBehaviour:
   m_SpeedReduce: 0.5
   isSliding: 0
   m_glideSpeed: 4
+  m_gravityForce: 50
+  m_accelerationSpeed: 4
   accelerationSlide: 60
   maxSpeed: 240
   maxSlope: 60
@@ -2069,10 +2075,10 @@ MonoBehaviour:
     m_ActionName: Player/OpenMenu[/Keyboard/escape]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6959514789458403795}
-        m_TargetAssemblyTypeName: Character.CharacterMouvement, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
+      - m_Target: {fileID: 1012445203582757945}
+        m_TargetAssemblyTypeName: Character.CharacterDash, Assembly-CSharp
+        m_MethodName: DashInput
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2115,6 +2121,50 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 995dd12b-6286-4ab6-9006-9a6fafb90092
     m_ActionName: Player/TakeScreenshot[/Keyboard/l]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1983534970}
+        m_TargetAssemblyTypeName: Character.CharacterShoot, Assembly-CSharp
+        m_MethodName: StopCasting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Render.Camera.CameraBehavior, Assembly-CSharp
+        m_MethodName: RotationMouseInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 42a1de34-e12c-48a4-a914-91b14be88cdd
+    m_ActionName: Player/StopFire[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Render.Camera.CameraBehavior, Assembly-CSharp
+        m_MethodName: RotationAimInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 17b5e5a3-5088-49b6-ad75-53a905eb8d45
+    m_ActionName: Player/RotationCameraMouse[/Mouse/delta]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -2532,6 +2582,26 @@ MonoBehaviour:
   m_SliderCurrentQuarterLow: {fileID: 0}
   updateHealthValues: 0
   damageSend: 10
+--- !u!114 &1012445203582757945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96ba12f41df91f34ebe3c3ceb0dde7b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_dashDistance: 50
+  m_dashDuration: 0.3
+  m_dashCooldownDuration: 1
+  m_obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 264
+  m_playerMesh: {fileID: 275628373934368166}
+  m_cameraBehavior: {fileID: 0}
 --- !u!1 &7409673259591215286
 GameObject:
   m_ObjectHideFlags: 0
@@ -14797,7 +14867,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &7434426885052270770
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -14814,7 +14884,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!4 &619502402739912476 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cf0912352e9260f4890c24578ab72fbb,

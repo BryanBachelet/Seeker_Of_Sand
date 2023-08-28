@@ -20,7 +20,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
     [SerializeField] private Text m_DayPhases;
-    [SerializeField] private Slider m_daySlider;
+    [SerializeField] private Image m_daySlider;
     private bool isNight = false;
     public float timescale;
 
@@ -203,7 +203,7 @@ public class DayCyclecontroller : MonoBehaviour
         float sliderValue =1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
         if (sliderValue <= 1 && sliderValue >= 0)
         {
-            m_daySlider.value = sliderValue;
+            m_daySlider.fillAmount = sliderValue;
         }
         m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
         if (m_timeOfDay >= 24)

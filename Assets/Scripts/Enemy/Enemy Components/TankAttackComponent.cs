@@ -27,7 +27,7 @@ namespace Enemies
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_npcHealthComponent.destroyEvent += OnDeath;
-            m_targetTransform = m_npcHealthComponent.target;
+            m_targetTransform = m_npcHealthComponent.targetData.target;
         }
 
         public void Update()
@@ -76,6 +76,11 @@ namespace Enemies
                 {
                     m_targetTransform.GetComponent<health_Player>().GetDamageLeger(damage, transform.position);
                    
+                }
+                if (m_targetTransform.tag == "Altar")
+                {
+                    m_targetTransform.GetComponent<ObjectHealthSystem>().TakeDamage((int)damage);
+
                 }
             }
             m_npcHealthComponent.npcState = NpcState.RECUPERATION;

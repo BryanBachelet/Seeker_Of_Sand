@@ -131,7 +131,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         AnimationCurve tempAnimationCurve = new AnimationCurve();
         string debugdata = "";
-        string filePath = "C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (5).csv";
+        string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
         int lineNumber = 17;
 
         string lineContents = ReadSpecificLine(filePath, lineNumber);
@@ -147,7 +147,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
 
         m_ExperienceQuantityControl = tempAnimationCurve;
-        Debug.Log(debugdata);
+      //  Debug.Log(debugdata);
 
     }
 }

@@ -40,12 +40,13 @@ public struct CapsuleStats
     public float size;
     public float sizeMultiplicatorFactor;
     public int piercingMax;
+    public string description;
 
     [HideInInspector] public float timeBetweenShot 
     { 
         get 
         {   if (shootNumber == 1) return 0.2f;
-            if (totalShotTime < 1) { Debug.LogError("Total Shot Time has a non valid time"); return 0.2f; }
+            
             return (totalShotTime / shootNumber); } 
         private set { } 
     }

@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 namespace Enemies
 {
+
+
     public class NpcMouvementComponent : MonoBehaviour
     {
 
@@ -36,18 +38,24 @@ namespace Enemies
         private bool m_isPauseActive;
 
         private Rigidbody m_rigidbody;
-        private Transform m_targetTransform;
         private NavMeshAgent m_navMeshAgent;
         private NpcHealthComponent m_npcHealthComponent;
-        public EnemyManager enemymanage;
+        public EnemyManager enemiesManager;
+
+        public TargetData targetData;
+
         public void Start()
         {
             InitComponent();
-            SetTarget(m_npcHealthComponent.target);
+            SetTarget(m_npcHealthComponent.targetData);
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
+            if (!targetData.isMoving)
+                m_navMeshAgent.SetDestination(targetData.target.position);
         }
+
+
 
         public void InitComponent()
         {
@@ -56,9 +64,10 @@ namespace Enemies
             m_navMeshAgent = GetComponent<NavMeshAgent>();
         }
 
-        public void SetTarget(Transform target)
+        public void SetTarget(TargetData target)
         {
-            m_targetTransform = target;
+            targetData = target;
+
         }
 
         public void Update()
@@ -83,11 +92,11 @@ namespace Enemies
                     m_navMeshAgent.speed = CalculateSlopeSpeed();
                 }
 
-                Move();
+               if(targetData.isMoving) Move();
             }
             else
             {
-                
+
             }
         }
 
@@ -120,7 +129,7 @@ namespace Enemies
 
         public void Move()
         {
-            float distancePos = Vector3.Distance(transform.position, m_targetTransform.position);
+            float distancePos = Vector3.Distance(transform.position, targetData.target.position);
             if (distancePos > minDistanceToFullyActive)
             {
                 if (m_timerBetweenNavRefresh < timeBetweenNavRefresh)
@@ -129,11 +138,11 @@ namespace Enemies
                     return;
                 }
             }
-            else if(distancePos >  120)
+            else if (distancePos > 120)
             {
-                enemymanage.ReplaceFarEnemy(this.gameObject);
+                enemiesManager.ReplaceFarEnemy(this.gameObject);
             }
-            m_navMeshAgent.destination = m_targetTransform.position;
+            m_navMeshAgent.destination = targetData.target.position;
             m_timerBetweenNavRefresh = 0;
         }
 

@@ -4,7 +4,7 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.15f1
+//   Unity Version: 2021.3.16f1
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
