@@ -5,10 +5,17 @@ using UnityEngine.UI;
 public class UI_MainMenu_ButtonOver : MonoBehaviour
 {
     private bool buttonActive = false;
+    private static Main_UI_Controle mainControlScript;
     private Image buttonImage;
+
+    [SerializeField] private int IndexNumber;
     // Start is called before the first frame update
     void Start()
     {
+        if(mainControlScript == null)
+        {
+            mainControlScript = GameObject.Find("MainMenu").GetComponent<Main_UI_Controle>();
+        }
         buttonImage = this.GetComponent<Image>();
         //buttonImage.enabled = false;
     }
@@ -25,17 +32,18 @@ public class UI_MainMenu_ButtonOver : MonoBehaviour
         if(!buttonActive)
         {
             Debug.Log("TestUI 2!");
-            buttonImage.enabled = true;
+            mainControlScript.ButtonOver(IndexNumber);
             buttonActive = true;
         }
+
     }
 
     public void OnMouseExit()
     {
         if (buttonActive)
         {
-            buttonImage.enabled = false;
             buttonActive = false;
+            //mainControlScript.ButtonOver(-1);
         }
     }
 }
