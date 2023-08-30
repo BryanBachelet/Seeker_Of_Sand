@@ -62,16 +62,34 @@ MonoBehaviour:
   m_maxUnitPerGroup: 20
   m_minUnitPerGroup: 10
   m_maxUnittotal: 200
+  m_MaxUnitControl:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   m_healthManager: {fileID: 1224385587}
   m_radiusspawn: 100
   m_ExperiencePrefab: {fileID: 1278518001253408458, guid: 2c0c58b6d9328634eb9085bd7fb2127b,
     type: 3}
+  m_minimumRadiusOfSpawn: 175
+  m_maximumRadiusOfSpawn: 300
+  m_offsetToSpawnCenter: 20
+  m_minimumSpeedToRepositing: 30
+  m_bodylessEventTargetRate: 0.5
+  m_fullBodyEventTargetRate: 0.5
+  m_shamanEventTargetRate: 1
+  m_runnerEventTargetRate: 0
+  m_tankEventTargetRate: 0.25
   m_enemiesArray: []
-  altarObject: {fileID: 0}
-  altarTransformList: []
-  ui_DangerLevelObject: {fileID: 0}
+  m_enemiesFocusAltar: []
+  m_targetTranform: {fileID: 0}
+  m_targetTransformLists: []
   m_tempsEntrePause: 120
   m_tempsPause: 30
+  spawningPhase: 1
+  gsm: {fileID: 0}
+  debugSpawnValue: 
 --- !u!114 &1224385589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,3 +290,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea62e041be61074e9828e4543629e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_timeBetweenDeath: 0.8
+  m_indexScene: 0

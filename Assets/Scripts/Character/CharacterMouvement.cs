@@ -72,6 +72,7 @@ namespace Character
         private bool m_saveStateSliding;
 
 
+        public Vector3 forwardDirection;
         public bool m_isSlowdown;
         private float m_speedLimit;
 
@@ -164,6 +165,11 @@ namespace Character
             else SlideRotationCharacter();
         }
 
+
+        public float GetCurrentSpeed()
+        {
+            return m_speedData.currentSpeed;
+        }
         #region State
 
         public void ChangeState(MouvementState newState)
@@ -281,7 +287,7 @@ namespace Character
                 return;
             }
             Vector3 direction = GetForwardDirection(hit.normal);
-       
+            forwardDirection = direction;
             m_speedData.direction = direction;
 
             m_slope = GetSlopeAngle(direction);

@@ -35,7 +35,7 @@ public class CharacterUpgrade : MonoBehaviour
         {
             if (upgradePoint == 0 || had5level) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            UiSpellGrimoire.otherSceneGameObject[0].SetActive(!upgradeUiGO.activeSelf);
+            UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
             m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
@@ -56,7 +56,7 @@ public class CharacterUpgrade : MonoBehaviour
     {
         had5level = true;
         upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-        UiSpellGrimoire.otherSceneGameObject[0].SetActive(!upgradeUiGO.activeSelf);
+        UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
         m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
         m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
         GlobalSoundManager.PlayOneShot(6, Vector3.zero);
@@ -91,8 +91,8 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
         m_characterShoot = GetComponent<Character.CharacterShoot>();
-        m_upgradeUiGODisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
-        m_spellBookUIDisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>().gameObject;
+        m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
+        m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
         //m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
     }
     #endregion
@@ -135,8 +135,9 @@ public class CharacterUpgrade : MonoBehaviour
         if (upgradePoint == 0 )
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            UiSpellGrimoire.otherSceneGameObject[0].SetActive(!upgradeUiGO.activeSelf);
+            UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
+            m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
             m_upgradePoint.text = upgradePoint.ToString();
             GameState.ChangeState();
             if(had5level) { had5level = false; }

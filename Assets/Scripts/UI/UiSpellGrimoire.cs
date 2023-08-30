@@ -48,28 +48,34 @@ public class UiSpellGrimoire : MonoBehaviour
     private TMP_Text[] m_textDescription;
 
     public Scene sceneUIBook;
-    static public GameObject[] otherSceneGameObject;
+    static public GameObject bookDisplayRoot;
 
     private UpgradeUIDecal m_uiDecalUpdaterDisplay;
+
+
     public void Start()
     {
-        sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
-        SceneManager.LoadScene(1, LoadSceneMode.Additive);
-        otherSceneGameObject = sceneUIBook.GetRootGameObjects();
-        otherSceneGameObject[0].SetActive(true);
-        m_uiDecalUpdaterDisplay = otherSceneGameObject[0].GetComponent<UpgradeUIDecal>();
+        sceneUIBook = SceneManager.GetSceneByBuildIndex(0);
+        GameObject[] otherSceneGameObject = sceneUIBook.GetRootGameObjects();
+        for (int i = 0; i < otherSceneGameObject.Length; i++)
+        {
+           if(otherSceneGameObject[i].name  == "UIBookDisplay")
+            {
+                bookDisplayRoot = otherSceneGameObject[i];
+                break;
+            }
+
+        }
+        Debug.Assert(bookDisplayRoot != null);
+
+        bookDisplayRoot.SetActive(true);
+        m_uiDecalUpdaterDisplay = bookDisplayRoot.GetComponent<UpgradeUIDecal>();
         spellGalerieObj = GameObject.FindWithTag("SpellIcon");
         spellEquipObj = GameObject.FindWithTag("SpellBar");
         FindUIElement();
         SetupSpellButtonFunction();
         m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
-        otherSceneGameObject[0].SetActive(false);
-
-    }
-    public void Awake()
-    {
-
-
+        bookDisplayRoot.SetActive(false);
 
     }
 
@@ -112,7 +118,7 @@ public class UiSpellGrimoire : MonoBehaviour
         spellDescriptionObj.SetActive(false);
         m_inGameUIObj.SetActive(false);
         mainUIObject.SetActive(true);
-        otherSceneGameObject[0].SetActive(true);
+        bookDisplayRoot.SetActive(true);
         m_uiDecalUpdaterDisplay.ChangeStateDisplay(true);
 
 
@@ -217,7 +223,7 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         GameState.ChangeState();
         mainUIObject.SetActive(false);
-        otherSceneGameObject[0].SetActive(false);
+        bookDisplayRoot.SetActive(false);
         m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
         isOpen = false;
         arrowUp.SetActive(false);

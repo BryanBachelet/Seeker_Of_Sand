@@ -163,14 +163,15 @@ public class AltarBehaviorComponent : MonoBehaviour
             {
                 altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f);
             }
-            //this.transform.GetChild(0).gameObject.SetActive(true);
-            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
             m_hasEventActivate = false;
             m_isEventOccuring = true;
+            Debug.Log("Event has been Activate");
 
+            //this.transform.GetChild(0).gameObject.SetActive(true);
+            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             //this.transform.GetChild(0).gameObject.SetActive(true);
@@ -235,7 +236,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
 
-
+        Debug.Log("Event has been reset");
         //this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         //eventTextName.text = "Ready !";
