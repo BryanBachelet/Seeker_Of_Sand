@@ -11,7 +11,8 @@ public enum EventObjectState
 
 public class ObjectHealthSystem : MonoBehaviour
 {
-   
+
+
     [Header("Health Parameters")]
     [SerializeField] private float m_maxHealth;
     [SerializeField] private float m_currentHealth;
@@ -19,9 +20,14 @@ public class ObjectHealthSystem : MonoBehaviour
     [SerializeField] private bool m_isInvicible;
 
     private float m_invicibleTimer;
-
+    private ObjectState state =  new ObjectState();
     public EventObjectState eventState = EventObjectState.Deactive;
 
+
+    private void Start()
+    {
+        GameState.AddObject(state);
+    }
 
     public void Update()
     {
@@ -31,7 +37,7 @@ public class ObjectHealthSystem : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (m_isInvicible || eventState != EventObjectState.Active) return;
+        if (m_isInvicible || !state.isPlaying || eventState != EventObjectState.Active) return;
 
         m_currentHealth -= damage;
         m_isInvicible = true;

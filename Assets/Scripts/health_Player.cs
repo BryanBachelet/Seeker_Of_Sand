@@ -46,8 +46,7 @@ public class health_Player : MonoBehaviour
     {
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
-            GameState.ChangeState();
-            //  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            GameState.DeathActivation();
             m_gameOverMenu.SetActive(true);
             isActivate = true;
             return;
@@ -82,6 +81,11 @@ public class health_Player : MonoBehaviour
                 m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
 
             m_characterMouvement.SetKnockback(position);
+
+            if(m_CurrentHealth <= 0)
+            {
+                activeDeath = true;
+            }
         }
         updateHealthValues = false;
 
@@ -105,6 +109,11 @@ public class health_Player : MonoBehaviour
 
             m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+
+            if (m_CurrentHealth <= 0)
+            {
+                activeDeath = true;
+            }
         }
         updateHealthValues = false;
     }

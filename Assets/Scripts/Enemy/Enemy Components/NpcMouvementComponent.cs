@@ -32,6 +32,7 @@ namespace Enemies
         [Header("Navmesh Parameters")]
         public float timeBetweenNavRefresh;
         public float minDistanceToFullyActive;
+        [SerializeField] private float m_distanceBeforeRepositionning = 400;
 
         private float m_timerBetweenNavRefresh = 0;
 
@@ -51,8 +52,7 @@ namespace Enemies
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
-            if (!targetData.isMoving)
-                m_navMeshAgent.SetDestination(targetData.target.position);
+             m_navMeshAgent.SetDestination(targetData.target.position);
         }
 
 
@@ -92,7 +92,7 @@ namespace Enemies
                     m_navMeshAgent.speed = CalculateSlopeSpeed();
                 }
 
-               if(targetData.isMoving) Move();
+                if (targetData.isMoving) Move();
             }
             else
             {
@@ -129,7 +129,23 @@ namespace Enemies
 
         public void Move()
         {
+
+
             float distancePos = Vector3.Distance(transform.position, targetData.target.position);
+            if (distancePos > m_distanceBeforeRepositionning)
+            {
+
+                Debug.Log("Distance before repo = " + m_distanceBeforeRepositionning);
+                if (enemiesManager.ReplaceFarEnemy(this.gameObject))
+                {
+
+                    m_navMeshAgent.destination = targetData.target.position;
+                    m_navMeshAgent.nextPosition = transform.position;
+                    return;
+                }
+              
+
+            }
             if (distancePos > minDistanceToFullyActive)
             {
                 if (m_timerBetweenNavRefresh < timeBetweenNavRefresh)
@@ -138,10 +154,7 @@ namespace Enemies
                     return;
                 }
             }
-            else if (distancePos > 120)
-            {
-                enemiesManager.ReplaceFarEnemy(this.gameObject);
-            }
+
             m_navMeshAgent.destination = targetData.target.position;
             m_timerBetweenNavRefresh = 0;
         }

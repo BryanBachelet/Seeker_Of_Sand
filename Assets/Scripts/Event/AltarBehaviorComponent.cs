@@ -71,7 +71,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         GetComponentInChildren<Light>().color = colorEvent[eventElementType];
         ownNumber = altarCount;
         altarCount++;
-        myColor = GetColorByID(ownNumber);
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
 
@@ -83,7 +82,7 @@ public class AltarBehaviorComponent : MonoBehaviour
            
             altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
         }
-        DisableColor();
+        //DisableColor();
         m_playerTransform = m_EnemyManagerScript.m_playerTranform;
     }
 
@@ -164,14 +163,15 @@ public class AltarBehaviorComponent : MonoBehaviour
             {
                 altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f);
             }
-            //this.transform.GetChild(0).gameObject.SetActive(true);
-            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
             m_hasEventActivate = false;
             m_isEventOccuring = true;
+            Debug.Log("Event has been Activate");
 
+            //this.transform.GetChild(0).gameObject.SetActive(true);
+            //Enemies.EnemyManager.EnemyTargetPlayer = false;
             //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
             //this.transform.GetChild(0).gameObject.SetActive(true);
@@ -236,11 +236,10 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
 
-
+        Debug.Log("Event has been reset");
         //this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         //eventTextName.text = "Ready !";
-        //DisableColor();
         //displayAnimator.InvertDisplayStatus(2);
     }
 
@@ -251,28 +250,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         ResetAltarEvent();
     }
 
-    public Color GetColorByID(int ID)
-    {
-        if (ID == 0) { return Color.red; }
-        else if (ID == 1) { return Color.blue; }
-        else if (ID == 2) { return Color.green; }
-        else if (ID == 3) { return Color.cyan; }
-        else if (ID == 4) { return Color.yellow; }
-        else if (ID == 5) { return Color.magenta; }
-        else if (ID == 6) { return Color.grey; }
-        else { return Color.white; }
-    }
 
 
-    public void ActiveColor()
-    {
-        ownDisplayEventDetail.GetComponent<EventDisplay>().Buttonimage.color = myColor;
-        ownArrowDisplayEventDetail.GetComponent<Image>().color = myColor;
-    }
-
-    public void DisableColor()
-    {
-        ownDisplayEventDetail.GetComponent<EventDisplay>().Buttonimage.color = Color.gray;
-        ownArrowDisplayEventDetail.GetComponent<Image>().color = Color.gray;
-    }
 }

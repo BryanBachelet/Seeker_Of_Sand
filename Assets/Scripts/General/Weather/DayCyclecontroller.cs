@@ -34,6 +34,15 @@ public class DayCyclecontroller : MonoBehaviour
 
     private string dayprogress;
     private string phaseprogress;
+
+    // Night Event
+    public delegate void NightBeginning();
+    public event NightBeginning nightStartEvent;
+    // Day Event
+    public delegate void DayBeginning();
+    public event DayBeginning dayStartEvent;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -124,6 +133,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_sun.gameObject.SetActive(true);
         isNight = false;
+        dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
         //m_LocalNightVolume.enabled = false;
@@ -135,6 +145,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
+        nightStartEvent.Invoke();
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
@@ -144,42 +155,6 @@ public class DayCyclecontroller : MonoBehaviour
     public void CheckPhase(float hour)
     {
         UpdatePhaseInfo();
-       //if (isNight) { }
-       //if (hour > 0f && hour < 4f)
-       //{
-       //    dayprogress = "Nuit";
-       //}
-       //if (hour >= 4f && hour < 6f)
-       //{
-       //    dayprogress = "Aube";
-       //}
-       //else if(hour >= 6 && hour <= 8)
-       //{
-       //    dayprogress = "Aurore";
-       //}
-       //else if (hour > 8 && hour <= 11.5f)
-       //{
-       //    dayprogress = "Matinée";
-       //}
-       //else if (hour > 11.5f && hour <= 13.5f)
-       //{
-       //    dayprogress = "Zénith";
-       //}
-       //else if (hour > 13.5f && hour <= 17f)
-       //{
-       //    dayprogress = "Après-midi";
-       //}
-       //else if (hour > 17.5f && hour < 21f)
-       //{
-       //    dayprogress = "Crépuscule";
-       //}
-       //else if (hour >= 21f && hour <= 24f)
-       //{
-       //    dayprogress = "Nuit";
-       //}
-
-
-
         m_DayPhases.text = dayprogress + " - " + phaseprogress;
 
     }

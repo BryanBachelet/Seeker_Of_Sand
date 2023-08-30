@@ -23,6 +23,24 @@ namespace Enemies
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
         [SerializeField] private GameObject m_ExperiencePrefab;
+
+        [Header("Enemy Spawn Parameters")]
+        [SerializeField] private float m_minimumRadiusOfSpawn = 100;
+        [SerializeField] private float m_maximumRadiusOfSpawn = 300;
+        [SerializeField] private float m_offsetToSpawnCenter = 20.0f;
+        [SerializeField] private float m_minimumSpeedToRepositing = 30.0f;
+        private float m_upperStartPositionMagnitude = 50.0f;
+
+        [Header("Enemy Target Rate")]
+        [Range(0, 1.0f)] [SerializeField] private float m_bodylessEventTargetRate = .5f;
+        [Range(0, 1.0f)] [SerializeField] private float m_fullBodyEventTargetRate = .5f;
+        [Range(0, 1.0f)] [SerializeField] private float m_shamanEventTargetRate = 1f;
+        [Range(0, 1.0f)] [SerializeField] private float m_runnerEventTargetRate = 0.0f;
+        [Range(0, 1.0f)] [SerializeField] private float m_tankEventTargetRate = 0.25f;
+       
+
+
+
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
 
@@ -47,6 +65,8 @@ namespace Enemies
         public GlobalSoundManager gsm;
         private List<Vector3> posspawn = new List<Vector3>();
 
+        private Character.CharacterMouvement m_characterMouvement;
+
         public int[] debugSpawnValue;
         public void Awake()
         {
@@ -55,6 +75,8 @@ namespace Enemies
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
             gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
+
+            m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
 
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -72,6 +94,8 @@ namespace Enemies
 
         }
 
+      
+
         public void ChangePauseState(bool state)
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
@@ -81,22 +105,47 @@ namespace Enemies
             }
         }
 
+        // To be sure the enemy spwan is out of the screen 
+        // We gonna use the ScreenToWorldPoint but we still want to the position be at minimun and max distance'
+        // if the are not we search a new position again the 
+
+        private float GetPositionRandom(float minNegatif, float maxNegatif, float minPositif, float maxPositif)
+        {
+            bool isPositf = Random.Range(-1.0f, 1.0f) > 0;
+            if (isPositf)
+            {
+                return Random.Range(minPositif, maxPositif);
+            }
+            else
+            {
+                return Random.Range(minNegatif, maxNegatif);
+            }
+        }
+
+        private Vector3 GetRandomPosition()
+        {
+            Vector3 pos = Random.insideUnitCircle.normalized;
+            pos.z = pos.y;
+            pos.y = 0.0f;
+            float radius = Random.Range(m_minimumRadiusOfSpawn, m_maximumRadiusOfSpawn);
+            return pos * radius;
+        }
+
         private Vector3 FindPosition()
         {
             float magnitude = (m_playerTranform.position - Camera.main.transform.position).magnitude;
             for (int i = 0; i < 25; i++)
             {
-                Vector2 pos;
-                float sign = Mathf.Sign(Random.Range(-1.0f, 1.0f));
-                pos.y = sign * Random.Range(1.1f, 1.6f);
-                sign = Mathf.Sign(Random.Range(-1.0f, 1.0f));
-                pos.x = sign * Random.Range(1.0f, 1.6f);
-                Vector3 v3Pos = Camera.main.ViewportToWorldPoint(new Vector3(pos.x, pos.y, magnitude));
-                v3Pos = Random.onUnitSphere * m_radiusspawn + m_playerTranform.position;
-                v3Pos.y = 50;
+                Vector3 basePosition = m_playerTranform.transform.position + m_playerTranform.forward * m_offsetToSpawnCenter;
+                basePosition += Vector3.up * m_upperStartPositionMagnitude;
+                basePosition += GetRandomPosition();
+
+                Vector3 v3Pos = basePosition;
+
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(v3Pos, out hit, Mathf.Infinity, NavMesh.AllAreas))
                 {
+                  
                     return hit.position;
                 }
 
@@ -104,11 +153,16 @@ namespace Enemies
             return Vector3.zero;
         }
 
-        public void ReplaceFarEnemy(GameObject enemy)
+        public bool ReplaceFarEnemy(GameObject enemy)
         {
+            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing) 
+                return false;
+
             enemy.transform.position = FindPosition();
 
             Debug.Log("Repositioned at [" + enemy.transform.position + "]");
+            Debug.Log("Distance with player [" + Vector3.Distance(m_playerTranform.position, enemy.transform.position) + "]");
+            return true;
         }
         private float GetTimeSpawn()
         {
@@ -155,7 +209,8 @@ namespace Enemies
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(position, 0.5f);
+            Gizmos.DrawWireSphere(m_playerTranform.position,m_minimumRadiusOfSpawn);
+            Gizmos.DrawWireSphere(m_playerTranform.position,m_maximumRadiusOfSpawn);
             for (int i = 0; i < posspawn.Count; i++)
             {
                 Gizmos.DrawSphere(posspawn[i], 1);
@@ -166,38 +221,82 @@ namespace Enemies
         {
             int rnd = Random.Range(0, 520);
             GameObject enemySpawn;
+            float targetRate = 0.0f;
+            bool focusPlayer = false;
             if (!EnemyTargetPlayer)
             {
                 if (m_targetTransformLists.Count <= 0) { return; }
                 ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
                 m_targetTranform = nearestAltar.transform;
                 m_targetList.Add(nearestAltar);
-
+                targetRate = Random.Range(0.0f, 1.0f);
             }
-
+            
             if (rnd < 450)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
+                if (!EnemyTargetPlayer) 
+                {
+                    if(targetRate>m_bodylessEventTargetRate)
+                    {
+                        focusPlayer = true;
+                    }
+                }
             }
             else if (rnd < 495 && rnd >= 450)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
+                if (!EnemyTargetPlayer)
+                {
+                    if (targetRate > m_fullBodyEventTargetRate)
+                    {
+                        focusPlayer = true;
+                    }
+                }
             }
             else if (rnd >= 496 && rnd < 501)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation);
+                if (!EnemyTargetPlayer)
+                {
+                    if (targetRate > m_tankEventTargetRate)
+                    {
+                        focusPlayer = true;
+                    }
+                }
             }
             else if (rnd > 500 && rnd <= 510)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[3], positionSpawn, transform.rotation);
+                if (!EnemyTargetPlayer)
+                {
+                    if (targetRate > m_shamanEventTargetRate)
+                    {
+                        focusPlayer = true;
+                    }
+                }
             }
             else if (rnd > 510)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[4], positionSpawn, transform.rotation);
+                if (!EnemyTargetPlayer)
+                {
+                    if (targetRate > m_runnerEventTargetRate)
+                    {
+                        focusPlayer = true;
+                    }
+                }
             }
             else
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
+                if (!EnemyTargetPlayer)
+                {
+                    if (targetRate > m_bodylessEventTargetRate)
+                    {
+                        focusPlayer = true;
+                    }
+                }
             }
 
             NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
@@ -212,8 +311,18 @@ namespace Enemies
             }
             else
             {
-                npcHealth.targetData.target = m_targetTranform;
-                npcHealth.targetData.isMoving = false;
+               
+                if (focusPlayer)
+                {
+                    npcHealth.targetData.target = m_playerTranform;
+                    npcHealth.targetData.isMoving = true;
+
+                }
+                else
+                {
+                    npcHealth.targetData.target = m_targetTranform;
+                    npcHealth.targetData.isMoving = false;
+                }
                 m_enemiesFocusAltar.Add(npcHealth);
             }
             m_enemiesArray.Add(npcHealth);
@@ -388,7 +497,15 @@ namespace Enemies
         {
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
+#if UNITY_EDITOR
             string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
+#else
+
+        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+       
+
+#endif 
+
             int lineNumber = 5;
 
             string lineContents = ReadSpecificLine(filePath, lineNumber);
@@ -408,5 +525,8 @@ namespace Enemies
             //Debug.Log(debugdata);
 
         }
+
+       
     }
+
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UpgradeUIDecal : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class UpgradeUIDecal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       
+  
         m_iconSpellSelected = spellselectDescriptionPanelGameObject.GetComponentInChildren<Image>();
         m_textDescription = spellselectDescriptionPanelGameObject.GetComponentsInChildren<TMP_Text>();
     }
@@ -62,6 +65,7 @@ public class UpgradeUIDecal : MonoBehaviour
     {
         selectionPanelGameObject.SetActive(newState);
         spellEquipPanelGameObject.SetActive(newState);
+        spellselectDescriptionPanelGameObject.SetActive(newState);
     }
 
     public void FocusUpgrade(Upgrade upgradeSelected)

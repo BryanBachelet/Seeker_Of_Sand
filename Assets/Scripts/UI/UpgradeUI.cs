@@ -32,14 +32,17 @@ public class UpgradeUI : MonoBehaviour
     public UpgradeUIDecal m_uiDecalUpdaterDisplay;
     private void Start()
     {
-        m_uiDecalUpdaterDisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>();
-        
+        m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
+        for (int i = 0; i < SelectionIcon.Length; i++)
+        {
+            selectionAnimator[i] = SelectionIcon[i].GetComponent<Animator>();
+        }
     }
     public void UpdateUpgradeDisplay(Upgrade[] upgrades)
     {
-        if(!UiSpellGrimoire.otherSceneGameObject[0].activeSelf) { UiSpellGrimoire.otherSceneGameObject[0].SetActive(true); }
+        if(!UiSpellGrimoire.bookDisplayRoot.activeSelf) { UiSpellGrimoire.bookDisplayRoot.SetActive(true); }
 
-        if (m_uiDecalUpdaterDisplay == null) { m_uiDecalUpdaterDisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>(); }
+        if (m_uiDecalUpdaterDisplay == null) { m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>(); }
         m_uiDecalUpdaterDisplay.UpdateUpgradeDisplay(upgrades);
         for (int i = 0; i < upgrades.Length; i++)
         {

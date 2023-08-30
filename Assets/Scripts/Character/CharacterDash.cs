@@ -62,7 +62,7 @@ namespace Character
 
         private bool CalculateDashEndPoint() // Function that test where the player should arrive
         {
-            Vector3 m_direction = m_characterMouvement.GetMouvementDirection();
+            Vector3 m_direction = m_characterMouvement.forwardDirection;
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
