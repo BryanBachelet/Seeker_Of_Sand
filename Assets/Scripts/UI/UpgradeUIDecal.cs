@@ -16,11 +16,19 @@ public class UpgradeUIDecal : MonoBehaviour
     public GameObject selectionPanelGameObject;
     public GameObject spellEquipPanelGameObject;
     public GameObject spellselectDescriptionPanelGameObject;
+    public GameObject upgradeSelectedDetails;
 
     private Image m_iconSpellSelected;
     private TMP_Text[] m_textDescription;
 
     public GameObject upgradeScreenState;
+
+    public Image capacityAffectedIcon;
+    public TMP_Text capacityAffectedName;
+    public TMP_Text upgradeSelectedName;
+    public TMP_Text upgradeDescription;
+    public TMP_Text initialValue;
+    public TMP_Text newValue;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,6 +62,15 @@ public class UpgradeUIDecal : MonoBehaviour
     {
         selectionPanelGameObject.SetActive(newState);
         spellEquipPanelGameObject.SetActive(newState);
+    }
+
+    public void FocusUpgrade(Upgrade upgradeSelected)
+    {
+        if(!upgradeSelectedDetails.activeSelf) { upgradeSelectedDetails.SetActive(true); }
+
+        capacityAffectedIcon.sprite = upgradeSelected.gain.icon_Associat;
+        upgradeSelectedName.text = upgradeSelected.gain.name;
+        upgradeDescription.text = upgradeSelected.gain.description;
     }
 
 }

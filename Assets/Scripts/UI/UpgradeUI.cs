@@ -33,10 +33,7 @@ public class UpgradeUI : MonoBehaviour
     private void Start()
     {
         m_uiDecalUpdaterDisplay = UiSpellGrimoire.otherSceneGameObject[0].GetComponent<UpgradeUIDecal>();
-        for (int i = 0; i < SelectionIcon.Length; i++)
-        {
-            selectionAnimator[i] = SelectionIcon[i].GetComponent<Animator>();
-        }
+        
     }
     public void UpdateUpgradeDisplay(Upgrade[] upgrades)
     {
