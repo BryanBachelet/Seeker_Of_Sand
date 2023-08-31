@@ -37,6 +37,7 @@ namespace Enemies
         private float m_timerBetweenNavRefresh = 0;
 
         private bool m_isPauseActive;
+        private float m_directionMinDot = 0.45f;
 
         private Rigidbody m_rigidbody;
         private NavMeshAgent m_navMeshAgent;
@@ -52,7 +53,7 @@ namespace Enemies
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
-             m_navMeshAgent.SetDestination(targetData.target.position);
+            m_navMeshAgent.destination = (targetData.target.position);
         }
 
 
@@ -129,9 +130,12 @@ namespace Enemies
 
         public void Move()
         {
-
-
+            Vector3 directionToDestination = m_navMeshAgent.destination - transform.position; 
+            Vector3 directionToTarget = targetData.target.position - transform.position;
+            float dot = Vector3.Dot(directionToDestination.normalized, directionToTarget.normalized);
             float distancePos = Vector3.Distance(transform.position, targetData.target.position);
+
+            // Repositionning enemi when to far 
             if (distancePos > m_distanceBeforeRepositionning)
             {
 
@@ -143,20 +147,15 @@ namespace Enemies
                     m_navMeshAgent.nextPosition = transform.position;
                     return;
                 }
-              
+
 
             }
-            if (distancePos > minDistanceToFullyActive)
+            if(distancePos > minDistanceToFullyActive && dot > m_directionMinDot)
             {
-                if (m_timerBetweenNavRefresh < timeBetweenNavRefresh)
-                {
-                    m_timerBetweenNavRefresh += Time.deltaTime;
-                    return;
-                }
+                return;
             }
 
             m_navMeshAgent.destination = targetData.target.position;
-            m_timerBetweenNavRefresh = 0;
         }
 
         public void OnDeath(Vector3 direction, float power)

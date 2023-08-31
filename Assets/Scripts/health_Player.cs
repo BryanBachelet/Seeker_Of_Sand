@@ -47,7 +47,7 @@ public class health_Player : MonoBehaviour
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
             GameState.DeathActivation();
-            m_gameOverMenu.SetActive(true);
+      //      m_gameOverMenu.SetActive(true);
             isActivate = true;
             return;
         }

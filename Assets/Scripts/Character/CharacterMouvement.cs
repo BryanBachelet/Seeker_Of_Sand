@@ -416,7 +416,7 @@ namespace Character
                 m_velMovement += Vector3.down * m_gravityForce * Time.deltaTime;
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, currentRefSpeed);
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
-                m_speedData.currentSpeed = m_rigidbody.velocity.magnitude;
+                m_speedData.currentSpeed = m_velMovement.magnitude;
                 return;
             }
             m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
@@ -528,7 +528,7 @@ namespace Character
                 m_timerBeforeSliding = 0;
             }
             m_velMovement = direction.normalized * m_speedData.currentSpeed;
-
+            m_speedData.currentSpeed = m_velMovement.magnitude;
         }
 
         public void Projection(Vector3 dir, ForceMode mode)
@@ -558,6 +558,7 @@ namespace Character
         {
             m_speedData.direction = direction;
             m_speedData.IsFlexibleSpeed = false;
+            m_speedData.currentSpeed = m_velMovement.magnitude;
             if (m_isSlowdown)
             {
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
