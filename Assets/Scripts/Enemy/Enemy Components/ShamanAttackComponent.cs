@@ -60,7 +60,7 @@ namespace Enemies
                 return;
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange/2.0f )
+            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange )
             {
                 m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
                 m_navMeshAgent.isStopped = true;

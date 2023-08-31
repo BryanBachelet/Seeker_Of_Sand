@@ -80,6 +80,7 @@ namespace Enemies
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage);
             Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             m_entityAnimator.SetTrigger("TakeDamage");
+            GlobalSoundManager.PlayOneShot(12, transform.position);
 
             if (m_healthSystem.health > 0) return;
 
