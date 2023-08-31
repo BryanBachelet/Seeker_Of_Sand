@@ -29,6 +29,8 @@ public class CharacterUpgrade : MonoBehaviour
     private Upgrade[] m_upgradeToChoose = new Upgrade[3];
 
     private bool had5level = false;
+    private UpgradeUIDecal m_UpgradeUiDecal;
+
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -36,6 +38,7 @@ public class CharacterUpgrade : MonoBehaviour
             if (upgradePoint == 0 || had5level) return;
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
+
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
             m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
@@ -93,6 +96,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
         m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
+        m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
         //m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
     }
     #endregion
@@ -129,6 +133,7 @@ public class CharacterUpgrade : MonoBehaviour
             m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
             ApplyUpgrade(indexChoice);
             upgradePoint--;
+            m_UpgradeUiDecal.upgradAvailable.text = ""+ upgradePoint;
         }
 
         DestroyAllUpgrade();
@@ -153,6 +158,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void GainLevel()
     {
         upgradePoint++;
+        m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
         if (upgradePoint >= 5) { UpgradeWindowLevel5(); }
     }

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class UpgradeUIDecal : MonoBehaviour
 {
-    public Text[] m_upgradeName = new Text[3];
+    public TMP_Text[] m_upgradeName = new TMP_Text[3];
     public Text[] m_upgradeDescription = new Text[3];
     public Image[] m_upgradeIcon = new Image[3];
     public Image[] m_upgradeTypeIcon = new Image[3];
@@ -30,6 +30,8 @@ public class UpgradeUIDecal : MonoBehaviour
     public TMP_Text upgradeDescription;
     public TMP_Text initialValue;
     public TMP_Text newValue;
+
+    public TMP_Text upgradAvailable;
     // Start is called before the first frame update
     void Start()
     {

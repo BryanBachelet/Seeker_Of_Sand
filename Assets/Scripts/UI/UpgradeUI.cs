@@ -49,6 +49,10 @@ public class UpgradeUI : MonoBehaviour
             m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
             m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
+            m_uiDecalUpdaterDisplay.m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
+            m_uiDecalUpdaterDisplay.m_upgradeDescription[i].text = upgrades[i].gain.description;
+            m_uiDecalUpdaterDisplay.m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
+            //m_uiDecalUpdaterDisplay.capacityAffectedName.text = upgrades[i].gain.nameUgrade;
             switch (upgrades[i].gain.type)
             {
                 case UpgradeType.CHARACTER:
@@ -80,18 +84,25 @@ public class UpgradeUI : MonoBehaviour
             if(upgradeOvered != i)
             {
                 SelectionIcon[i].SetActive(false);
+
                // selectionAnimator[i].SetBool("Selected", false);
                 //upgradeButton[i].SetBool("Selected", false);
                 GlobalSoundManager.PlayOneShot(5, Camera.main.transform.position);
             }
             else
             {
+
                 SelectionIcon[i].SetActive(true);
+                m_uiDecalUpdaterDisplay.capacityAffectedName.text = m_upgradeDescription[i].text;
+                m_uiDecalUpdaterDisplay.capacityAffectedIcon.sprite = m_upgradeIcon[i].sprite;
+                Debug.Log(m_uiDecalUpdaterDisplay.capacityAffectedName.text);
                 //selectionAnimator[i].SetBool("Selected", true);
                 //upgradeButton[i].SetBool("Selected", true);
                 Debug.Log("Active numero : || " + i);
                 lastUpgradeSelected = i;
             }
         }
+
+
     }
 }

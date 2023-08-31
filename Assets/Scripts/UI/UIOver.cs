@@ -9,7 +9,7 @@ public class UIOver : MonoBehaviour
 
     private void Start()
     {
-        //upgradeUI_object = transform.parent.transform.parent.GetComponent<UpgradeUI>();
+        upgradeUI_object = transform.parent.transform.parent.GetComponent<UpgradeUI>();
     }
     private void OnMouseOver()
     {
