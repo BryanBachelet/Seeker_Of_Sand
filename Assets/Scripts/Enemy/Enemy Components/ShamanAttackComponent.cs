@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 namespace Enemies
 {
 
@@ -8,6 +10,7 @@ namespace Enemies
     {
         [Header("Attack Parameters")]
         public float attackRange = 50.0f;
+        public float minAttackRange = 10.0f;
         public float damage = 5.0f;
         public float timeOfCharge = 1.0f;
         public float timeofRecuperation = 0.5f;
@@ -26,6 +29,8 @@ namespace Enemies
 
         private Transform m_targetTransform;
         private NpcHealthComponent m_npcHealthComponent;
+        private NpcMouvementComponent m_npcMvtComponent;
+        private NavMeshAgent m_navMeshAgent;
 
         private Animator animator;
     
@@ -34,6 +39,8 @@ namespace Enemies
         void Start()
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_npcMvtComponent = GetComponent<NpcMouvementComponent>();
+            m_navMeshAgent = GetComponent<NavMeshAgent>();
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_targetTransform = m_npcHealthComponent.targetData.target;
             animator = GetComponentInChildren<Animator>();
@@ -43,9 +50,20 @@ namespace Enemies
         // Update is called once per frame
         void Update()
         {
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange)
+            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < minAttackRange)
+            {
+                Vector3 direction = transform.position - m_targetTransform.position;
+                Vector3 position = m_targetTransform.position + direction.normalized * minAttackRange * 2;
+                NavMeshHit hit = new NavMeshHit();
+                NavMesh.SamplePosition(position, out hit, 1000, NavMesh.AllAreas);
+                m_navMeshAgent.SetDestination(hit.position);
+                return;
+            }
+
+            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange/2.0f )
             {
                 m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
+                m_navMeshAgent.isStopped = true;
                // vfxFeedback.SetActive(true);
                 return;
             }
@@ -72,7 +90,18 @@ namespace Enemies
                 if (m_timerOfRecuperation > timeofRecuperation)
                 {
                     m_npcHealthComponent.npcState = NpcState.MOVE;
+                    if (Vector3.Distance(m_targetTransform.position, transform.position) < minAttackRange)
+                    {
+                        Vector3 direction = transform.position - m_targetTransform.position;
+                        Vector3 position = m_targetTransform.position + direction.normalized * minAttackRange * 2;
+                        NavMeshHit hit = new NavMeshHit();
+                        NavMesh.SamplePosition(position, out hit, 1000, NavMesh.AllAreas);
+                        m_navMeshAgent.SetDestination(hit.position);
+                      
+                    }
+                    m_navMeshAgent.SetDestination(m_targetTransform.position);
                     timeofRecuperation = 0;
+                    m_navMeshAgent.isStopped = false;
                 }
                 else
                 {

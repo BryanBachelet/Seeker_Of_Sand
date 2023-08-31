@@ -37,9 +37,13 @@ namespace Enemies
         [Range(0, 1.0f)] [SerializeField] private float m_shamanEventTargetRate = 1f;
         [Range(0, 1.0f)] [SerializeField] private float m_runnerEventTargetRate = 0.0f;
         [Range(0, 1.0f)] [SerializeField] private float m_tankEventTargetRate = 0.25f;
-       
+
+        [Header("Enemy Bonus")]
+        [SerializeField] private GameObject m_expBonus;
+        [Range(0, 1.0f)] [SerializeField] private float m_spawnRateExpBonus= 0.01f;
 
 
+        private Experience_System m_experienceSystemComponent;
 
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
@@ -77,7 +81,7 @@ namespace Enemies
             gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
 
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
-
+            m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -94,7 +98,7 @@ namespace Enemies
 
         }
 
-      
+
 
         public void ChangePauseState(bool state)
         {
@@ -145,7 +149,7 @@ namespace Enemies
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(v3Pos, out hit, Mathf.Infinity, NavMesh.AllAreas))
                 {
-                  
+
                     return hit.position;
                 }
 
@@ -155,7 +159,7 @@ namespace Enemies
 
         public bool ReplaceFarEnemy(GameObject enemy)
         {
-            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing) 
+            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing)
                 return false;
 
             enemy.transform.position = FindPosition();
@@ -209,8 +213,8 @@ namespace Enemies
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(m_playerTranform.position,m_minimumRadiusOfSpawn);
-            Gizmos.DrawWireSphere(m_playerTranform.position,m_maximumRadiusOfSpawn);
+            Gizmos.DrawWireSphere(m_playerTranform.position, m_minimumRadiusOfSpawn);
+            Gizmos.DrawWireSphere(m_playerTranform.position, m_maximumRadiusOfSpawn);
             for (int i = 0; i < posspawn.Count; i++)
             {
                 Gizmos.DrawSphere(posspawn[i], 1);
@@ -231,13 +235,13 @@ namespace Enemies
                 m_targetList.Add(nearestAltar);
                 targetRate = Random.Range(0.0f, 1.0f);
             }
-            
+
             if (rnd < 450)
             {
                 enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
-                if (!EnemyTargetPlayer) 
+                if (!EnemyTargetPlayer)
                 {
-                    if(targetRate>m_bodylessEventTargetRate)
+                    if (targetRate > m_bodylessEventTargetRate)
                     {
                         focusPlayer = true;
                     }
@@ -311,7 +315,7 @@ namespace Enemies
             }
             else
             {
-               
+
                 if (focusPlayer)
                 {
                     npcHealth.targetData.target = m_playerTranform;
@@ -378,7 +382,15 @@ namespace Enemies
         {
             for (int i = 0; i < count; i++)
             {
-                Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
+                GameObject expObj = Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
+                m_experienceSystemComponent.AddExpParticule(expObj.GetComponent<ExperienceMouvement>());
+            }
+
+            float rate = Random.Range(0.0f, 1.0f);
+            if (rate < m_spawnRateExpBonus)
+            {
+                Instantiate(m_expBonus, position, Quaternion.identity);
+              
             }
         }
 
@@ -526,7 +538,7 @@ namespace Enemies
 
         }
 
-       
+
     }
 
 }

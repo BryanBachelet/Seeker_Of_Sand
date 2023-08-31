@@ -92,6 +92,7 @@ namespace Enemies
             npcState = NpcState.DEATH;
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
+          
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);
             StartCoroutine(Death());

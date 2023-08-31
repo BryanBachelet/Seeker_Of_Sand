@@ -21,6 +21,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private VisualEffect levelUpEffect;
     [SerializeField] private VisualEffect levelUpEffectUi;
 
+
+    private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
     // Start is called before the first frame update
@@ -44,7 +46,9 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         {
             for (int i = 0; i < experienceTouched.Length; i++)
             {
-                experienceTouched[i].GetComponent<ExperienceMouvement>().playerPosition = this.transform;
+                ExperienceMouvement xpMvtScript  = experienceTouched[i].GetComponent<ExperienceMouvement>();
+                xpMvtScript.playerPosition = this.transform;
+                m_worldExp.Remove(xpMvtScript);
             }
         }
     }
@@ -77,6 +81,22 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_CurrentLevel = newLevel;
 
     }
+    // Add xp particule to the list
+    public void AddExpParticule(ExperienceMouvement xpMvtScript)
+    {
+        m_worldExp.Add(xpMvtScript);
+    }
+
+    public void ActiveExpHarvest()
+    {
+        ExperienceMouvement[] expArray = m_worldExp.ToArray();
+        for (int i = 0; i < expArray.Length; i++)
+        {
+            expArray[i].playerPosition = this.transform;
+        }
+
+        m_worldExp.Clear();
+    }
 
     public void ChooseUpgrade(int level)
     {
@@ -94,6 +114,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         if (collision.gameObject.tag == "Experience")
         {
+            
             Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
             OnEnemyKilled();
