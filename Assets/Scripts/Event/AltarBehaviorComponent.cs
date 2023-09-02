@@ -113,8 +113,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-            m_EnemyManagerScript.RemoveTarget(transform);
-            m_EnemyManagerScript.RemoveAltar(transform);
+
             //displayAnimator.InvertDisplayStatus(2);
         }
         else
@@ -141,7 +140,7 @@ public class AltarBehaviorComponent : MonoBehaviour
   
     private void DestroyAltar()
     {
-        m_objectHealthSystem.ChangeState(EventObjectState.Death);
+        m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
@@ -236,7 +235,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
 
-        Debug.Log("Event has been reset");
         //this.transform.GetChild(0).gameObject.SetActive(false);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         //eventTextName.text = "Ready !";

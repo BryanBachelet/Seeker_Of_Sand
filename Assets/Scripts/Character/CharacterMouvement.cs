@@ -606,7 +606,6 @@ namespace Character
             m_velMovement = Vector3.zero;
             m_rigidbody.velocity = Vector3.zero;
             ChangeState(MouvementState.Knockback);
-            Debug.Log("Player is knockback");
         }
 
         #endregion
