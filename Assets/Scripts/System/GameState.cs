@@ -22,7 +22,7 @@ public class GameState : MonoBehaviour
     [SerializeField] private int m_indexScene = 0;
     private bool m_isDeathProcessusActive;
     private float m_timerBetweenDeath = 0.0f;
-
+    private GameObject m_pauseMenuObj;
 
     public void Start()
     {
@@ -79,5 +79,10 @@ public class GameState : MonoBehaviour
     public static void RemoveObject(ObjectState state)
     {
         listObject.Remove(state);
+    }
+
+    public void OpenGameMenu(InputAction.CallbackContext ctx)
+    {
+        m_pauseMenuObj.SetActive(!m_pauseMenuObj.activeSelf);
     }
 }

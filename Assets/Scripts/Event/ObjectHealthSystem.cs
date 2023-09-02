@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum EventObjectState
 {
@@ -20,9 +21,10 @@ public class ObjectHealthSystem : MonoBehaviour
     [SerializeField] private bool m_isInvicible;
 
     private float m_invicibleTimer;
-    private ObjectState state =  new ObjectState();
+    private ObjectState state = new ObjectState();
     public EventObjectState eventState = EventObjectState.Deactive;
-
+    public Image m_eventLifeUIFeedback;
+    public GameObject m_eventLifeUIFeedbackObj;
 
     private void Start()
     {
@@ -42,11 +44,21 @@ public class ObjectHealthSystem : MonoBehaviour
         m_currentHealth -= damage;
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;
+        m_eventLifeUIFeedback.fillAmount = m_currentHealth / m_maxHealth;
+    }
+
+    public void ResetUIHealthBar()
+    {
+        m_eventLifeUIFeedback.fillAmount = 1;
+        m_eventLifeUIFeedbackObj.gameObject.SetActive(false);
+        m_eventLifeUIFeedbackObj = null;
+        m_eventLifeUIFeedback = null;
+
     }
 
     private void InvicibleCountdown()
     {
-        if(m_invicibleTimer>m_invicibleDuration)
+        if (m_invicibleTimer > m_invicibleDuration)
         {
             m_isInvicible = false;
         }
@@ -79,7 +91,7 @@ public class ObjectHealthSystem : MonoBehaviour
 
     public void CheckLifeState()
     {
-        if(m_currentHealth <0.0f)
+        if (m_currentHealth < 0.0f)
         {
             eventState = EventObjectState.Death;
         }
