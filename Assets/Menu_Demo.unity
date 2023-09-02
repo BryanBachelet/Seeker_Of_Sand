@@ -422,7 +422,6 @@ Transform:
   m_Children:
   - {fileID: 1751773822}
   - {fileID: 1686368669}
-  - {fileID: 281226164}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -934,6 +933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 281226164}
   - component: {fileID: 281226163}
+  - component: {fileID: 281226165}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -961,7 +961,7 @@ VideoPlayer:
   m_AspectRatio: 2
   m_DataSource: 0
   m_PlaybackSpeed: 1
-  m_AudioOutputMode: 2
+  m_AudioOutputMode: 0
   m_TargetAudioSources:
   - {fileID: 0}
   m_DirectAudioVolumes:
@@ -984,13 +984,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 281226162}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 69665520}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &281226165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281226162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b7c469cbc7a35347b10f6d96ae944fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &282901483
 GameObject:
   m_ObjectHideFlags: 0
@@ -3385,7 +3397,7 @@ RectTransform:
   m_Children:
   - {fileID: 1644950913}
   m_Father: {fileID: 1751773822}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4318,6 +4330,7 @@ GameObject:
   - component: {fileID: 1328324438}
   - component: {fileID: 1328324437}
   - component: {fileID: 1328324439}
+  - component: {fileID: 1328324440}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4508,6 +4521,19 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
+--- !u!114 &1328324440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328324435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &1340054154
 GameObject:
   m_ObjectHideFlags: 0
@@ -5001,7 +5027,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cac9195a4f7014c4793453815f5e0206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OneS_Sound_Attribution: []
+  OneS_Sound_Attribution:
+  - Guid:
+      Data1: 1596002598
+      Data2: 1218474688
+      Data3: -686853758
+      Data4: -1908085823
+    Path: event:/Ambiant/Desert/Guerhouba Intro
   Globalsound:
     Guid:
       Data1: 1860176341
@@ -5025,12 +5057,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1452551833}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.9208615, y: 1.5661831, z: -3.555326}
+  m_LocalPosition: {x: 1.4291382, y: 3.6261597, z: -1.7337008}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1751773822}
-  m_RootOrder: 6
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1491567617
 GameObject:
@@ -6223,7 +6255,6 @@ Transform:
   - {fileID: 223012682}
   - {fileID: 956438275}
   - {fileID: 30696880}
-  - {fileID: 1452551835}
   - {fileID: 1057314732}
   m_Father: {fileID: 69665520}
   m_RootOrder: 0
