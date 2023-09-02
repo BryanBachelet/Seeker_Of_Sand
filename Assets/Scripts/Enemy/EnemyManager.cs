@@ -163,12 +163,35 @@ namespace Enemies
             return Vector3.zero;
         }
 
+        private Vector3 FindPositionAroundTarget(Transform targetTransform)
+        {
+            float magnitude = (targetTransform.position - Camera.main.transform.position).magnitude;
+            for (int i = 0; i < 25; i++)
+            {
+                Vector3 basePosition = targetTransform.transform.position + targetTransform.forward * m_offsetToSpawnCenter;
+                basePosition += Vector3.up * m_upperStartPositionMagnitude;
+                basePosition += GetRandomPosition();
+
+                Vector3 v3Pos = basePosition;
+
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(v3Pos, out hit, Mathf.Infinity, NavMesh.AllAreas))
+                {
+
+                    return hit.position;
+                }
+
+            }
+            return Vector3.zero;
+        }
+
+
         public bool ReplaceFarEnemy(GameObject enemy)
         {
             if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing)
                 return false;
 
-            enemy.transform.position = FindPosition();
+            enemy.transform.position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
             return true;
         }
         private float GetTimeSpawn()
