@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 
 namespace Enemies
@@ -40,7 +41,7 @@ namespace Enemies
 
         [Header("Enemy Bonus")]
         [SerializeField] private GameObject m_expBonus;
-        [Range(0, 1.0f)] [SerializeField] private float m_spawnRateExpBonus= 0.01f;
+        [Range(0, 1.0f)] [SerializeField] private float m_spawnRateExpBonus = 0.01f;
 
 
         private Experience_System m_experienceSystemComponent;
@@ -48,10 +49,15 @@ namespace Enemies
         private EnemyKillRatio m_enemyKillRatio;
         private float m_spawnCooldown;
 
+
         public List<NpcHealthComponent> m_enemiesArray = new List<NpcHealthComponent>();
         public List<NpcHealthComponent> m_enemiesFocusAltar = new List<NpcHealthComponent>();
 
         static public bool EnemyTargetPlayer = true;
+
+        [Header("Events Parameters")]
+        public Image[] m_imageLifeEvents = new Image[3];
+        public GameObject[] m_imageLifeEventsObj = new GameObject[3];
 
         public Transform m_targetTranform;
         private ObjectHealthSystem m_targetScript;
@@ -157,15 +163,35 @@ namespace Enemies
             return Vector3.zero;
         }
 
+        private Vector3 FindPositionAroundTarget(Transform targetTransform)
+        {
+            float magnitude = (targetTransform.position - Camera.main.transform.position).magnitude;
+            for (int i = 0; i < 25; i++)
+            {
+                Vector3 basePosition = targetTransform.transform.position + targetTransform.forward * m_offsetToSpawnCenter;
+                basePosition += Vector3.up * m_upperStartPositionMagnitude;
+                basePosition += GetRandomPosition();
+
+                Vector3 v3Pos = basePosition;
+
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(v3Pos, out hit, Mathf.Infinity, NavMesh.AllAreas))
+                {
+
+                    return hit.position;
+                }
+
+            }
+            return Vector3.zero;
+        }
+
+
         public bool ReplaceFarEnemy(GameObject enemy)
         {
             if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing)
                 return false;
 
-            enemy.transform.position = FindPosition();
-
-            Debug.Log("Repositioned at [" + enemy.transform.position + "]");
-            Debug.Log("Distance with player [" + Vector3.Distance(m_playerTranform.position, enemy.transform.position) + "]");
+            enemy.transform.position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
             return true;
         }
         private float GetTimeSpawn()
@@ -232,7 +258,7 @@ namespace Enemies
                 if (m_targetTransformLists.Count <= 0) { return; }
                 ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
                 m_targetTranform = nearestAltar.transform;
-                m_targetList.Add(nearestAltar);
+     
                 targetRate = Random.Range(0.0f, 1.0f);
             }
 
@@ -335,8 +361,14 @@ namespace Enemies
 
         public void AddTarget(Transform target)
         {
+           ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
+            if (m_targetTransformLists.Contains(target) && m_targetList.Contains(healthSystem)) return;
             m_targetTransformLists.Add(target);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
+            target.GetComponent<ObjectHealthSystem>().m_eventLifeUIFeedback = m_imageLifeEvents[m_targetList.Count - 1];
+            target.GetComponent<ObjectHealthSystem>().m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[m_targetList.Count - 1];
+            m_imageLifeEventsObj[m_targetList.Count - 1].SetActive(true);
+            m_imageLifeEvents[m_targetList.Count - 1].gameObject.SetActive(true);
             EnemyTargetPlayer = false;
         }
 
@@ -345,6 +377,8 @@ namespace Enemies
         {
             m_targetTransformLists.Remove(target);
             m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
+            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
+            healthSystem.ResetUIHealthBar(); m_imageLifeEventsObj[m_targetList.Count - 1].SetActive(true);
             for (int i = 0; i < m_enemiesFocusAltar.Count; i++)
             {
                 NpcHealthComponent npcHealth = m_enemiesFocusAltar[i];
@@ -390,7 +424,7 @@ namespace Enemies
             if (rate < m_spawnRateExpBonus)
             {
                 Instantiate(m_expBonus, position, Quaternion.identity);
-              
+
             }
         }
 

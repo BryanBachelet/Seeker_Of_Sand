@@ -27,6 +27,8 @@ public class CameraIntroMouvement : MonoBehaviour
     {
         m_isActivate = true;
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
+
+        GameState.ChangeState();
     }
     public void Update()
     {
@@ -51,6 +53,7 @@ public class CameraIntroMouvement : MonoBehaviour
                 m_cameraScript.enabled = true;
                 m_isActivate = false;
                 m_fixInterface.SetActive(true);
+                 GameState.ChangeState();
                 return;
             }
             m_timerCamera = 0.0f;
