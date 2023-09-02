@@ -8,7 +8,7 @@ public class SceneSetuper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.LoadScene(1, LoadSceneMode.Additive);
+        SceneManager.LoadScene(2, LoadSceneMode.Additive);
         Debug.Log("Scene has been load");
     }
 
