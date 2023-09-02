@@ -163,9 +163,6 @@ namespace Enemies
                 return false;
 
             enemy.transform.position = FindPosition();
-
-            Debug.Log("Repositioned at [" + enemy.transform.position + "]");
-            Debug.Log("Distance with player [" + Vector3.Distance(m_playerTranform.position, enemy.transform.position) + "]");
             return true;
         }
         private float GetTimeSpawn()

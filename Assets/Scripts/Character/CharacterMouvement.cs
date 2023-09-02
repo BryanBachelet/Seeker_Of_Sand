@@ -362,8 +362,8 @@ namespace Character
             if (mouvementState == MouvementState.Dash)
             {
                 m_rigidbody.velocity = Vector3.zero;
-                m_velMovement = Vector3.zero;
-                m_speedData.currentSpeed = 0.0f;
+                //m_velMovement = Vector3.zero;
+                //m_speedData.currentSpeed = 0.0f;
                 return;
             }
                 if (mouvementState == MouvementState.Knockback)
