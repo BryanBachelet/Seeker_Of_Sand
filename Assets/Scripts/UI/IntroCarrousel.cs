@@ -25,13 +25,14 @@ public class IntroCarrousel : MonoBehaviour
             m_currentIndex++;
 
         m_panelInfo[m_currentIndex].SetActive(true);
+        Debug.Log("Change up !");
     }
 
     public void ChangeDown()
     {
         m_panelInfo[m_currentIndex].SetActive(false);
 
-        if (m_currentIndex - 1 == 0)
+        if (m_currentIndex - 1 == -1)
             m_currentIndex = m_panelInfo.Length-1;
         else
             m_currentIndex--;
