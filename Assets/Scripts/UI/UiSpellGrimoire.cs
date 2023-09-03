@@ -120,7 +120,7 @@ public class UiSpellGrimoire : MonoBehaviour
         mainUIObject.SetActive(true);
         bookDisplayRoot.SetActive(true);
         m_uiDecalUpdaterDisplay.ChangeStateDisplay(true);
-
+        GlobalSoundManager.PlayOneShot(6, transform.position);
 
         isOpen = true;
         m_currentSpritsSpell = spriteSpell;
@@ -230,6 +230,7 @@ public class UiSpellGrimoire : MonoBehaviour
         arrowDown.SetActive(false);
         m_inGameUIObj.SetActive(true);
         m_maxPage = m_currentPage = 0;
+        GlobalSoundManager.PlayOneShot(30, transform.position);
     }
 
 

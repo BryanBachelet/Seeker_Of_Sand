@@ -73,6 +73,7 @@ public class UpgradeUI : MonoBehaviour
     public void ChooseUpgrade(int index, int number)
     {
         m_upgradeCharacter.ChooseUpgrade(index,number);
+        GlobalSoundManager.PlayOneShot(31, transform.position);
     }
 
     public void UpdateCursorOver(int upgradeOvered)

@@ -10,7 +10,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
-    [ColorUsage(showAlpha:true, hdr:true)]
+    [ColorUsage(showAlpha: true, hdr: true)]
     [SerializeField] private Color[] colorEventTab;
     [SerializeField] private float m_TimeInvulnerability;
     [SerializeField] private float m_MaxHealth;
@@ -66,9 +66,14 @@ public class AltarBehaviorComponent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      
+
         eventElementType = Random.Range(0, 4);
         GetComponentInChildren<Light>().color = colorEvent[eventElementType];
+        Light[] lightToSwap = GetComponentsInChildren<Light>();
+        for (int i = 0; i < lightToSwap.Length; i++)
+        {
+            lightToSwap[i].color = colorEvent[eventElementType];
+        }
         ownNumber = altarCount;
         altarCount++;
         InitComponent();
@@ -79,7 +84,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         altarAllMesh[0].material = materialEvent[eventElementType];
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-           
+
             altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
         }
         //DisableColor();
@@ -104,8 +109,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-     
+
+
         float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
@@ -123,7 +128,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
 
 
-        if(m_objectHealthSystem.IsEventActive() && Vector3.Distance(m_playerTransform.position,transform.position)> radiusEventActivePlayer)
+        if (m_objectHealthSystem.IsEventActive() && Vector3.Distance(m_playerTransform.position, transform.position) > radiusEventActivePlayer)
         {
             DestroyAltar();
         }
@@ -137,7 +142,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     }
 
-  
+
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
@@ -158,9 +163,9 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
-            for(int i = 0; i < altarAllMesh.Length; i++)
+            for (int i = 0; i < altarAllMesh.Length; i++)
             {
-                altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f);
+                altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f * resetNumber);
             }
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
@@ -199,7 +204,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_myAnimator.SetBool("IsDone", true);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-            altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.32f);
+            altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.32f * resetNumber);
         }
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);

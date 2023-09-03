@@ -66,14 +66,14 @@ public class DayCyclecontroller : MonoBehaviour
         //{
         //    m_timeOfDay += Time.deltaTime * m_orbitSpeed;
         //}
-        if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
-        {
-           m_GSM.UpdateParameter(1, "DayOrNight");
-        }
-       else
-        {
-           m_GSM.UpdateParameter(0, "DayOrNight");
-        }
+       // if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
+       // {
+       //    m_GSM.UpdateParameter(1, "DayOrNight");
+       // }
+       //else
+       // {
+       //    m_GSM.UpdateParameter(0, "DayOrNight");
+       // }
 
         staticTimeOfTheDay = m_timeOfDay;
         UpdateTime();   
@@ -136,6 +136,7 @@ public class DayCyclecontroller : MonoBehaviour
         dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
+        m_GSM.UpdateParameter(1, "DayOrNight");
         //m_LocalNightVolume.enabled = false;
         m_GSM.UpdateParameter(0, "DayOrNight");
         m_moon.gameObject.SetActive(false);
@@ -146,6 +147,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_moon.gameObject.SetActive(true);
         isNight = true;
         nightStartEvent.Invoke();
+        m_GSM.UpdateParameter(0, "DayOrNight");
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;

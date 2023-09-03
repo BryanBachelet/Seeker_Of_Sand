@@ -65,7 +65,7 @@ public class health_Player : MonoBehaviour
         if (m_isInvulnerableLeger) return;
         else
         {
-
+            GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
@@ -96,6 +96,7 @@ public class health_Player : MonoBehaviour
         if (m_isInvulnerableLourd) return;
         else
         {
+            GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
             if (m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {

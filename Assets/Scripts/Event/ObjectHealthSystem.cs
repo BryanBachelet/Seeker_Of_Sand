@@ -45,6 +45,7 @@ public class ObjectHealthSystem : MonoBehaviour
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;
         m_eventLifeUIFeedback.fillAmount = m_currentHealth / m_maxHealth;
+        GlobalSoundManager.PlayOneShot(32, transform.position);
     }
 
     public void ResetUIHealthBar()
@@ -93,6 +94,7 @@ public class ObjectHealthSystem : MonoBehaviour
     {
         if (m_currentHealth < 0.0f)
         {
+            GlobalSoundManager.PlayOneShot(33, transform.position);
             eventState = EventObjectState.Death;
         }
     }

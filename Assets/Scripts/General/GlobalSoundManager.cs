@@ -55,6 +55,7 @@ public class GlobalSoundManager : MonoBehaviour
     public void UpdateParameter(float parameterValue, string parameterName)
     {
         globalinstance.setParameterByName(parameterName, parameterValue);
+        globalMusicInstance.setParameterByName(parameterName, parameterValue);
     }
 
     public IEnumerator StartAmbiant(float delay)
@@ -64,6 +65,12 @@ public class GlobalSoundManager : MonoBehaviour
         globalinstance.start();
         globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
         globalMusicInstance.start();
+    }
+
+    public void OnDisable()
+    {
+        globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
 }

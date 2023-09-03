@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
+using FMOD.Studio;
+using FMODUnity;
 
 namespace Character
 {
@@ -76,6 +78,8 @@ namespace Character
         public bool m_isSlowdown;
         private float m_speedLimit;
 
+        public EventInstance mouvementSoundInstance;
+        public EventReference MouvementSoundReference;
         public enum MouvementState
         {
             None,
@@ -129,6 +133,11 @@ namespace Character
             m_speedData.currentSpeed = 0;
 
             m_speedData.direction = Vector3.zero;
+
+            mouvementSoundInstance = RuntimeManager.CreateInstance(MouvementSoundReference);
+            RuntimeManager.AttachInstanceToGameObject(mouvementSoundInstance, this.transform);
+            mouvementSoundInstance.start();
+            Debug.Log("Mouvement Sound Started");
         }
 
         public void MoveInput(InputAction.CallbackContext ctx)
@@ -219,9 +228,11 @@ namespace Character
                 case MouvementState.None:
 
                     m_CharacterAnim.SetBool("Idle", true);
+                    UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", true);
+                    UpdateParameter(0.10f, "MouvementState");
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
                     if (m_isSlowdown)
                     {
@@ -232,11 +243,13 @@ namespace Character
 
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", true);
+                    UpdateParameter(1, "MouvementState");
                     m_slidingEffect.SetActive(true);
 
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", true);
+                    UpdateParameter(0f, "MouvementState");
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
                     if (m_isSlowdown )
                     {
@@ -245,9 +258,11 @@ namespace Character
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Dash:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    UpdateParameter(0f, "MouvementState");
                     break;
                 default:
                     break;
@@ -304,6 +319,7 @@ namespace Character
             if (isSliding && !combatState)
             {
                 ChangeState(MouvementState.Slide);
+
                 Slide(direction);
                 return;
             }
@@ -565,6 +581,15 @@ namespace Character
             }
         }
 
+        public void UpdateParameter(float parameterValue, string parameterName)
+        {
+            mouvementSoundInstance.setParameterByName(parameterName, parameterValue);
+        }
+
+        public void OnDisable()
+        {
+            mouvementSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        }
         #region Rotation
 
         private void RotateCharacter()
