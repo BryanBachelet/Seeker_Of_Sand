@@ -139,10 +139,9 @@ namespace Enemies
             if (distancePos > m_distanceBeforeRepositionning)
             {
 
-                Debug.Log("Distance before repo = " + m_distanceBeforeRepositionning);
+               
                 if (enemiesManager.ReplaceFarEnemy(this.gameObject))
                 {
-
                     m_navMeshAgent.destination = targetData.target.position;
                     m_navMeshAgent.nextPosition = transform.position;
                     return;

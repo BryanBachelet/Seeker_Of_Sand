@@ -78,6 +78,9 @@ namespace Enemies
         private Character.CharacterMouvement m_characterMouvement;
 
         public int[] debugSpawnValue;
+
+        private int repositionningLimit = 10;
+        private int repositionningCount;
         public void Awake()
         {
             TestReadDataSheet();
@@ -94,7 +97,7 @@ namespace Enemies
         public void Update()
         {
             if (!state.isPlaying) return;
-
+            repositionningCount = 0;
 
             if (spawningPhase)
             {
@@ -168,7 +171,7 @@ namespace Enemies
             float magnitude = (targetTransform.position - Camera.main.transform.position).magnitude;
             for (int i = 0; i < 25; i++)
             {
-                Vector3 basePosition = targetTransform.transform.position + targetTransform.forward * m_offsetToSpawnCenter;
+                Vector3 basePosition = targetTransform.transform.position ;
                 basePosition += Vector3.up * m_upperStartPositionMagnitude;
                 basePosition += GetRandomPosition();
 
@@ -188,10 +191,12 @@ namespace Enemies
 
         public bool ReplaceFarEnemy(GameObject enemy)
         {
-            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing)
+            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing || repositionningCount>= repositionningLimit)
                 return false;
 
+            repositionningCount++;
             enemy.transform.position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
+            Debug.Log("Distance before repo ");
             return true;
         }
         private float GetTimeSpawn()
@@ -425,7 +430,7 @@ namespace Enemies
             }
 
             float rate = Random.Range(0.0f, 1.0f);
-            if (rate < m_spawnRateExpBonus)
+            if (rate <= m_spawnRateExpBonus)
             {
                 Instantiate(m_expBonus, position, Quaternion.identity);
 

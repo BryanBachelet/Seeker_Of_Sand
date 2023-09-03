@@ -57,6 +57,8 @@ public class CharacterUpgrade : MonoBehaviour
 
     public void UpgradeWindowLevel5()
     {
+        if (upgradeUiGO.activeSelf == true) return;
+
         had5level = true;
         upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
         UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
@@ -160,7 +162,10 @@ public class CharacterUpgrade : MonoBehaviour
         upgradePoint++;
         m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
-        if (upgradePoint >= 5) { UpgradeWindowLevel5(); }
+        if (upgradePoint >= 5) 
+        { 
+            UpgradeWindowLevel5(); 
+        }
     }
 
     private CharacterStat CalculateStat(CharacterStat stats)
