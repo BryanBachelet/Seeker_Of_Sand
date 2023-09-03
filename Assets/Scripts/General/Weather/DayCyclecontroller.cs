@@ -46,6 +46,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        time = 0;
         m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'écouler IRL.  On multiplie le nombre de minutes réglée dans l'inspector par 60 pour le convertire en seconde.
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
@@ -56,7 +57,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time = Time.time;
+        time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
         //if(isNight)
         //{
