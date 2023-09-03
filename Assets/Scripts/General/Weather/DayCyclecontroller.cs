@@ -192,7 +192,15 @@ public class DayCyclecontroller : MonoBehaviour
             {
                 m_daySlider.fillAmount = sliderValue;
             }
+            if(currentPhase < tempsChaquePhase.Length)
+        {
             m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
+        }
+            else
+        {
+            m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[0], sliderValue);
+        }
+
             if (m_timeOfDay >= 24)
             {
                 m_timeOfDay = 0;
