@@ -32,6 +32,8 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] float m_TimeTransitionLastPhase;
     [SerializeField] float m_TimeProchainePhase;
 
+    [SerializeField] private GameObject m_EndUI;
+    [SerializeField] private int m_nightCount;
     private string dayprogress;
     private string phaseprogress;
 
@@ -66,17 +68,17 @@ public class DayCyclecontroller : MonoBehaviour
         //{
         //    m_timeOfDay += Time.deltaTime * m_orbitSpeed;
         //}
-       // if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
-       // {
-       //    m_GSM.UpdateParameter(1, "DayOrNight");
-       // }
-       //else
-       // {
-       //    m_GSM.UpdateParameter(0, "DayOrNight");
-       // }
+        // if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
+        // {
+        //    m_GSM.UpdateParameter(1, "DayOrNight");
+        // }
+        //else
+        // {
+        //    m_GSM.UpdateParameter(0, "DayOrNight");
+        // }
 
         staticTimeOfTheDay = m_timeOfDay;
-        UpdateTime();   
+        UpdateTime();
     }
 
     private void OnValidate()
@@ -94,7 +96,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
-        if(m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
+        if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
             {
@@ -113,11 +115,16 @@ public class DayCyclecontroller : MonoBehaviour
 
     private void CheckingNightDayTransition()
     {
-        if(isNight)
+        if (isNight)
         {
-            if(m_moon.transform.rotation.eulerAngles.x > 180)
+            if (m_moon.transform.rotation.eulerAngles.x > 180)
             {
                 StartDay();
+                if (m_nightCount == 3)
+                {
+                    GameState.ChangeState();
+                    m_EndUI.SetActive(true);
+                }
             }
         }
         else
@@ -125,80 +132,82 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_sun.transform.rotation.eulerAngles.x > 180)
             {
                 StartNight();
-            }
-        }
-    }
-
-    private void StartDay()
-    {
-        m_sun.gameObject.SetActive(true);
-        isNight = false;
-        dayStartEvent.Invoke();
-        m_sun.shadows = LightShadows.Soft;
-        m_moon.shadows = LightShadows.None;
-        m_GSM.UpdateParameter(1, "DayOrNight");
-        //m_LocalNightVolume.enabled = false;
-        m_GSM.UpdateParameter(0, "DayOrNight");
-        m_moon.gameObject.SetActive(false);
-    }
-
-    private void StartNight()
-    {
-        m_moon.gameObject.SetActive(true);
-        isNight = true;
-        nightStartEvent.Invoke();
-        m_GSM.UpdateParameter(0, "DayOrNight");
-        //m_LocalNightVolume.enabled = true;
-        m_sun.shadows = LightShadows.None;
-        m_moon.shadows = LightShadows.Soft;
-        m_sun.gameObject.SetActive(false);
-    }
-
-    public void CheckPhase(float hour)
-    {
-        UpdatePhaseInfo();
-        m_DayPhases.text = dayprogress + " - " + phaseprogress;
-
-    }
-
-    public void UpdatePhaseInfo()
-    {
-        if(time > m_TimeProchainePhase)
-        {
-            currentPhase += 1;
-            if(currentPhase > tempsChaquePhase.Length)
-            {
-                currentPhase = 0;
-            }
-            m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
-            m_TimeTransitionLastPhase = time;
-            phaseprogress = nomChaquePhase[currentPhase];
-            dayprogress = nomHeureChaquePhase[currentPhase];
-            m_DayPhases.text = dayprogress + " - " + phaseprogress;
+                m_nightCount++;
             
+            }
         }
-        float sliderValue =1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
-        if (sliderValue <= 1 && sliderValue >= 0)
-        {
-            m_daySlider.fillAmount = sliderValue;
-        }
-        m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
-        if (m_timeOfDay >= 24)
-        {
-            m_timeOfDay = 0;
-        }
-        else if (m_timeOfDay > 5.5f && m_timeOfDay < 6f)
-        {
-            m_timeOfDay = 6.1f;
-        }
-        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
-        {
-            m_timeOfDay = 18.5f;
-        }
-    
-        if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
-        else { m_EnemyManager.ChangeSpawningPhase(false); }
-
-
     }
-}
+
+        private void StartDay()
+        {
+            m_sun.gameObject.SetActive(true);
+            isNight = false;
+            dayStartEvent.Invoke();
+            m_sun.shadows = LightShadows.Soft;
+            m_moon.shadows = LightShadows.None;
+            m_GSM.UpdateParameter(1, "DayOrNight");
+            //m_LocalNightVolume.enabled = false;
+            m_GSM.UpdateParameter(0, "DayOrNight");
+            m_moon.gameObject.SetActive(false);
+        }
+
+        private void StartNight()
+        {
+            m_moon.gameObject.SetActive(true);
+            isNight = true;
+            nightStartEvent.Invoke();
+            m_GSM.UpdateParameter(0, "DayOrNight");
+            //m_LocalNightVolume.enabled = true;
+            m_sun.shadows = LightShadows.None;
+            m_moon.shadows = LightShadows.Soft;
+            m_sun.gameObject.SetActive(false);
+        }
+
+        public void CheckPhase(float hour)
+        {
+            UpdatePhaseInfo();
+            m_DayPhases.text = dayprogress + " - " + phaseprogress;
+
+        }
+
+        public void UpdatePhaseInfo()
+        {
+            if (time > m_TimeProchainePhase)
+            {
+                currentPhase += 1;
+                if (currentPhase > tempsChaquePhase.Length)
+                {
+                    currentPhase = 0;
+                }
+                m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
+                m_TimeTransitionLastPhase = time;
+                phaseprogress = nomChaquePhase[currentPhase];
+                dayprogress = nomHeureChaquePhase[currentPhase];
+                m_DayPhases.text = dayprogress + " - " + phaseprogress;
+
+            }
+            float sliderValue = 1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
+            if (sliderValue <= 1 && sliderValue >= 0)
+            {
+                m_daySlider.fillAmount = sliderValue;
+            }
+            m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
+            if (m_timeOfDay >= 24)
+            {
+                m_timeOfDay = 0;
+            }
+            else if (m_timeOfDay > 5.5f && m_timeOfDay < 6f)
+            {
+                m_timeOfDay = 6.1f;
+            }
+            else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
+            {
+                m_timeOfDay = 18.5f;
+            }
+
+            if (currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
+            else { m_EnemyManager.ChangeSpawningPhase(false); }
+
+
+        }
+    }
