@@ -88,6 +88,14 @@ namespace Enemies
 
         }
 
+        public void LateUpdate()
+        {
+            if (m_npcHealthComponent.m_hasChangeTarget)
+            {
+                m_targetTransform = m_npcHealthComponent.targetData.target;
+                m_npcHealthComponent.m_hasChangeTarget = false;
+            }
+        }
         public void OnDrawGizmos()
         {
             Gizmos.DrawWireSphere(m_monsterBodyTransform.position, radiusOfAttack);

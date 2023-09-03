@@ -18,7 +18,7 @@ namespace Enemies
         public LayerMask layer;
 
         [Header("Projectile Parameters")]
-        public float projectileLifeTime =1.5f;
+        public float projectileLifeTime = 1.5f;
         public float angleTrajectory = 45.0f;
         public float radiusOfAttack = 4.0f;
 
@@ -33,7 +33,7 @@ namespace Enemies
         private NavMeshAgent m_navMeshAgent;
 
         private Animator animator;
-    
+
 
 
         void Start()
@@ -50,6 +50,7 @@ namespace Enemies
         // Update is called once per frame
         void Update()
         {
+            
             if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < minAttackRange)
             {
                 Vector3 direction = transform.position - m_targetTransform.position;
@@ -60,11 +61,11 @@ namespace Enemies
                 return;
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange )
+            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange)
             {
                 m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
                 m_navMeshAgent.isStopped = true;
-               // vfxFeedback.SetActive(true);
+                // vfxFeedback.SetActive(true);
                 return;
             }
 
@@ -75,12 +76,12 @@ namespace Enemies
                     m_npcHealthComponent.npcState = NpcState.ATTACK;
                     m_timerOfCharge = 0;
                     Attack();
-                   // vfxFeedback.SetActive(false);
+                    // vfxFeedback.SetActive(false);
                 }
                 else
                 {
                     m_timerOfCharge += Time.deltaTime;
-                  //  vfxFeedback.transform.position = m_targetTransform.position;
+                    //  vfxFeedback.transform.position = m_targetTransform.position;
                 }
                 return;
             }
@@ -97,7 +98,7 @@ namespace Enemies
                         NavMeshHit hit = new NavMeshHit();
                         NavMesh.SamplePosition(position, out hit, 1000, NavMesh.AllAreas);
                         m_navMeshAgent.SetDestination(hit.position);
-                      
+
                     }
                     m_navMeshAgent.SetDestination(m_targetTransform.position);
                     timeofRecuperation = 0;
@@ -111,6 +112,15 @@ namespace Enemies
             }
         }
 
+
+        public void LateUpdate()
+        {
+            if (m_npcHealthComponent.m_hasChangeTarget)
+            {
+                m_targetTransform = m_npcHealthComponent.targetData.target;
+                m_npcHealthComponent.m_hasChangeTarget = false;
+            }
+        }
         public void Attack()
         {
             animator.SetTrigger("Attacking");
@@ -123,7 +133,7 @@ namespace Enemies
             data.target = m_targetTransform;
             data.radiusOfAttack = radiusOfAttack;
             RaycastHit hit = new RaycastHit();
-            if(Physics.Raycast(m_targetTransform.position,Vector3.down,out hit,10, layer))
+            if (Physics.Raycast(m_targetTransform.position, Vector3.down, out hit, 10, layer))
             {
                 data.destination = hit.point;
             }

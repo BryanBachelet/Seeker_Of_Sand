@@ -35,7 +35,8 @@ namespace Enemies
         public int xpToDrop;
         private int m_previousNpcState;
 
-     public TargetData targetData;
+        public TargetData targetData;
+        public bool m_hasChangeTarget;
 
         public delegate void DestroyEvent(Vector3 direction, float power);
         public event DestroyEvent destroyEvent;
@@ -62,6 +63,7 @@ namespace Enemies
 
         public void ResetTarget()
         {
+            m_hasChangeTarget = true;
             NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
             npcMouvement.SetTarget(targetData);
         }

@@ -90,7 +90,14 @@ namespace Enemies
 
 
         }
-
+        public void LateUpdate()
+        {
+            if (m_npcHealthComponent.m_hasChangeTarget)
+            {
+                m_target = m_npcHealthComponent.targetData.target;
+                m_npcHealthComponent.m_hasChangeTarget = false;
+            }
+        }
 
         private void AttackJumper()
         {
