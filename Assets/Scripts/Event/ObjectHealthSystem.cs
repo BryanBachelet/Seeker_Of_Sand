@@ -50,6 +50,8 @@ public class ObjectHealthSystem : MonoBehaviour
 
     public void ResetUIHealthBar()
     {
+        if (m_eventLifeUIFeedback == null && m_eventLifeUIFeedbackObj == null) return;
+
         m_eventLifeUIFeedback.fillAmount = 1;
         m_eventLifeUIFeedbackObj.gameObject.SetActive(false);
         m_eventLifeUIFeedbackObj = null;
@@ -92,7 +94,7 @@ public class ObjectHealthSystem : MonoBehaviour
 
     public void CheckLifeState()
     {
-        if (m_currentHealth < 0.0f)
+        if (m_currentHealth < 0.0f && eventState == EventObjectState.Active)
         {
             GlobalSoundManager.PlayOneShot(33, transform.position);
             eventState = EventObjectState.Death;

@@ -375,10 +375,13 @@ namespace Enemies
 
         public void RemoveTarget(Transform target)
         {
+            if (!m_targetTransformLists.Contains(target)) return;
             m_targetTransformLists.Remove(target);
+            int prevCount = m_targetList.Count;
             m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
-            healthSystem.ResetUIHealthBar(); m_imageLifeEventsObj[m_targetList.Count - 1].SetActive(true);
+            healthSystem.ResetUIHealthBar(); 
+            m_imageLifeEventsObj[prevCount - 1].SetActive(false);
             for (int i = 0; i < m_enemiesFocusAltar.Count; i++)
             {
                 NpcHealthComponent npcHealth = m_enemiesFocusAltar[i];
@@ -408,6 +411,7 @@ namespace Enemies
 
         public void RemoveAltar(Transform altarTarget)
         {
+            if (!m_altarTransform.Contains(altarTarget)) return;
             m_altarTransform.Remove(altarTarget);
             m_altarList.Remove(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
