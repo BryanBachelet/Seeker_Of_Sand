@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.VFX;
 public class AltarBehaviorComponent : MonoBehaviour
 {
     [Header("Event Parameters")]
@@ -52,7 +52,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private Color myColor;
     private Transform m_playerTransform;
 
-
+    public VisualEffect m_visualEffectActivation;
     public string txt_EventName;
     int resetNumber = 0;
 
@@ -82,6 +82,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         altarAllMesh[0].material.shader = Shader.Find("Intensity");
         altarAllMesh[0].material.shader = Shader.Find("Color");
         altarAllMesh[0].material = materialEvent[eventElementType];
+        m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
+        m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
 
@@ -163,6 +165,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
+            m_visualEffectActivation.Play();
             for (int i = 0; i < altarAllMesh.Length; i++)
             {
                 altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f * resetNumber);
