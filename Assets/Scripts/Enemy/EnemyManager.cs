@@ -171,7 +171,7 @@ namespace Enemies
             float magnitude = (targetTransform.position - Camera.main.transform.position).magnitude;
             for (int i = 0; i < 25; i++)
             {
-                Vector3 basePosition = targetTransform.transform.position ;
+                Vector3 basePosition = targetTransform.transform.position;
                 basePosition += Vector3.up * m_upperStartPositionMagnitude;
                 basePosition += GetRandomPosition();
 
@@ -191,7 +191,7 @@ namespace Enemies
 
         public bool ReplaceFarEnemy(GameObject enemy)
         {
-            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing || repositionningCount>= repositionningLimit)
+            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing || repositionningCount >= repositionningLimit)
                 return false;
 
             repositionningCount++;
@@ -263,7 +263,7 @@ namespace Enemies
                 if (m_targetTransformLists.Count <= 0) { return; }
                 ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
                 m_targetTranform = nearestAltar.transform;
-     
+
                 targetRate = Random.Range(0.0f, 1.0f);
             }
 
@@ -357,8 +357,9 @@ namespace Enemies
                 {
                     npcHealth.targetData.target = m_targetTranform;
                     npcHealth.targetData.isMoving = false;
+                    m_enemiesFocusAltar.Add(npcHealth);
                 }
-                m_enemiesFocusAltar.Add(npcHealth);
+
             }
             m_enemiesArray.Add(npcHealth);
         }
@@ -366,7 +367,7 @@ namespace Enemies
 
         public void AddTarget(Transform target)
         {
-           ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
+            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             if (m_targetTransformLists.Contains(target) && m_targetList.Contains(healthSystem)) return;
             m_targetTransformLists.Add(target);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
@@ -385,7 +386,7 @@ namespace Enemies
             int prevCount = m_targetList.Count;
             m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
-            healthSystem.ResetUIHealthBar(); 
+            healthSystem.ResetUIHealthBar();
             m_imageLifeEventsObj[prevCount - 1].SetActive(false);
             for (int i = 0; i < m_enemiesFocusAltar.Count; i++)
             {
@@ -457,7 +458,7 @@ namespace Enemies
 
 
             m_enemyKillRatio.AddEnemiKill();
-
+            if (m_enemiesFocusAltar.Contains(npcHealth)) m_enemiesFocusAltar.Remove(npcHealth);
             m_enemiesArray.Remove(npcHealth);
             Destroy(npcHealth.gameObject);
         }
