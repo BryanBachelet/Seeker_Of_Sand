@@ -63,6 +63,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     private ObjectHealthSystem m_objectHealthSystem;
 
+    [SerializeField] private string instructionOnActivation;
     // Start is called before the first frame update
     void Start()
     {
@@ -148,6 +149,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+        m_EnemyManagerScript.SendInstruction("Altar protection fail...", Color.red);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
@@ -165,6 +167,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
+            m_EnemyManagerScript.SendInstruction(instructionOnActivation, Color.white);
             m_visualEffectActivation.Play();
             for (int i = 0; i < altarAllMesh.Length; i++)
             {
@@ -175,7 +178,6 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
             m_hasEventActivate = false;
             m_isEventOccuring = true;
-            Debug.Log("Event has been Activate");
 
             //this.transform.GetChild(0).gameObject.SetActive(true);
             //Enemies.EnemyManager.EnemyTargetPlayer = false;
@@ -203,6 +205,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         m_EnemyManagerScript.RemoveTarget(transform);
         m_EnemyManagerScript.RemoveAltar(transform);
+        m_EnemyManagerScript.SendInstruction("Altar protection succeed ! Gain [" + (XpQuantity + 25 * resetNumber) + "] exp quantity", Color.green);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
         for (int i = 0; i < altarAllMesh.Length; i++)

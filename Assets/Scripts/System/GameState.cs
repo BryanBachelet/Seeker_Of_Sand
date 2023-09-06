@@ -26,6 +26,7 @@ public class GameState : MonoBehaviour
 
     public void Start()
     {
+        m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
     }
 
@@ -43,9 +44,10 @@ public class GameState : MonoBehaviour
 
             if(m_timerBetweenDeath>m_timeBetweenDeath)
             {
-                SceneManager.LoadScene(m_indexScene);
+
                 m_isDeath = false;
                 m_timerBetweenDeath = 0;
+                SceneManager.LoadScene(m_indexScene);
             }
             else
             {
