@@ -19,8 +19,9 @@ namespace Enemies
         [SerializeField] private float m_spawnTime = 3.0f;
         [SerializeField] private int m_maxUnitPerGroup = 3;
         [SerializeField] private int m_minUnitPerGroup = 2;
-        [SerializeField] private int m_maxUnittotal = 400;
+        [SerializeField] public int m_maxUnittotal = 400;
         [SerializeField] private AnimationCurve m_MaxUnitControl;
+        static float currentMaxUnitValue;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
         [SerializeField] private GameObject m_ExperiencePrefab;
@@ -58,6 +59,8 @@ namespace Enemies
         [Header("Events Parameters")]
         public Image[] m_imageLifeEvents = new Image[3];
         public GameObject[] m_imageLifeEventsObj = new GameObject[3];
+        public TMPro.TMP_Text[] m_textProgressEvent = new TMPro.TMP_Text[3];
+        public Image[] m_sliderProgressEvent = new Image[3];
 
         public Transform m_targetTranform;
         private ObjectHealthSystem m_targetScript;
@@ -374,10 +377,19 @@ namespace Enemies
             if (m_targetTransformLists.Contains(target) && m_targetList.Contains(healthSystem)) return;
             m_targetTransformLists.Add(target);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
-            target.GetComponent<ObjectHealthSystem>().m_eventLifeUIFeedback = m_imageLifeEvents[m_targetList.Count - 1];
-            target.GetComponent<ObjectHealthSystem>().m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[m_targetList.Count - 1];
-            m_imageLifeEventsObj[m_targetList.Count - 1].SetActive(true);
-            m_imageLifeEvents[m_targetList.Count - 1].gameObject.SetActive(true);
+            int indexTargetList = m_targetList.Count - 1;
+            ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
+            healthSystemReference.m_eventLifeUIFeedback = m_imageLifeEvents[indexTargetList];
+            healthSystemReference.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[indexTargetList];
+            healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
+            if(target.GetComponent<AltarBehaviorComponent>())
+            {
+                target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
+                m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
+            }
+            m_imageLifeEventsObj[indexTargetList].SetActive(true);
+            m_imageLifeEvents[indexTargetList].gameObject.SetActive(true);
+            m_textProgressEvent[indexTargetList].gameObject.SetActive(true);
             EnemyTargetPlayer = false;
         }
 
@@ -418,9 +430,9 @@ namespace Enemies
             m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
-        public void SendInstruction(string Instruction, Color colorText)
+        public void SendInstruction(string Instruction, Color colorText, string locationName)
         {
-            m_dayController.StartCoroutine(m_dayController.DisplayInstruction(Instruction, 2, colorText));
+            m_dayController.StartCoroutine(m_dayController.DisplayInstruction(Instruction, 2, colorText, locationName));
         }
         public void RemoveAltar(Transform altarTarget)
         {

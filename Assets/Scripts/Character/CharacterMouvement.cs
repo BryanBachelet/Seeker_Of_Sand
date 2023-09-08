@@ -49,7 +49,8 @@ namespace Character
         [Header("Glide Parameter")]
         [SerializeField] private float m_glideSpeed = 4;
         [SerializeField] private float m_gravityForce = 50;
-
+        [HideInInspector] public float m_lastTimeShot = 0;
+        [SerializeField] private float m_TimeAutoWalk = 2;
 
         [Header("Move Parameter")]
         [SerializeField] private float m_accelerationSpeed = 4.0f;
@@ -248,7 +249,7 @@ namespace Character
 
                     break;
                 case MouvementState.Glide:
-                    m_CharacterAnim.SetBool("Shooting", true);
+                    //m_CharacterAnim.SetBool("Shooting", true);
                     UpdateParameter(0f, "MouvementState");
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
                     if (m_isSlowdown )

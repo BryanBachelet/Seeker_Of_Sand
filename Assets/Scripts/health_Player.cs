@@ -69,7 +69,7 @@ public class health_Player : MonoBehaviour
         {
             if (Time.time - timeLastHit < tempsEffetHit)
             {
-                vignette.intensity.value = 0.35f * evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit);
+                vignette.intensity.value = ((0.35f + (0.05f * m_CurrentQuarter)) * evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit));
             }
             else
             {

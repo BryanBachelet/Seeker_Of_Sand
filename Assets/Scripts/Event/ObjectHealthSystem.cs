@@ -25,6 +25,8 @@ public class ObjectHealthSystem : MonoBehaviour
     public EventObjectState eventState = EventObjectState.Deactive;
     public Image m_eventLifeUIFeedback;
     public GameObject m_eventLifeUIFeedbackObj;
+    public TMPro.TMP_Text m_eventProgressUIFeedback;
+    public Image m_eventProgressionSlider;
 
     public LayerMask enemyLayer;
     public float rangeDegatAugmente;
@@ -48,6 +50,7 @@ public class ObjectHealthSystem : MonoBehaviour
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;
         m_eventLifeUIFeedback.fillAmount = m_currentHealth / m_maxHealth;
+        m_eventProgressUIFeedback.text = ((m_currentHealth / m_maxHealth) * 100) + "%"; 
         GlobalSoundManager.PlayOneShot(32, transform.position);
     }
 
