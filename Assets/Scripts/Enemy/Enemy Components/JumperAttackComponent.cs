@@ -33,6 +33,7 @@ namespace Enemies
         private Transform m_target;
         private NavMeshAgent m_agent;
         private NpcHealthComponent m_npcHealthComponent;
+        public Animator m_animator;
 
         // -------- Temps --------------
         private bool m_onlyOnce;
@@ -56,7 +57,16 @@ namespace Enemies
 
         public void Update()
         {
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(transform.position, m_target.position) < jumpDistance / 2.0f)
+            float distancePlayer = Vector3.Distance(transform.position, m_target.position);
+            if (distancePlayer < 100)
+            {
+                m_animator.SetBool("ClosefromPlayer", true);
+            }
+            else
+            {
+                m_animator.SetBool("ClosefromPlayer", false);
+            }
+            if (m_npcHealthComponent.npcState == NpcState.MOVE && distancePlayer < jumpDistance / 2.0f)
             {
                 if (!IsPlayerHide())
                 {
@@ -80,7 +90,14 @@ namespace Enemies
 
 
         }
-
+        public void LateUpdate()
+        {
+            if (m_npcHealthComponent.m_hasChangeTarget)
+            {
+                m_target = m_npcHealthComponent.targetData.target;
+                m_npcHealthComponent.m_hasChangeTarget = false;
+            }
+        }
 
         private void AttackJumper()
         {
@@ -124,6 +141,7 @@ namespace Enemies
 
             Vector3 finalDashPos = Vector3.zero;
             RaycastHit hit = new RaycastHit();
+            m_animator.SetTrigger("Attacking");
             m_direction = (m_target.position - m_basePlayer.position).normalized;
             if (Physics.Raycast(m_basePlayer.position, m_direction, out hit, jumpDistance, m_layerMask))
             {
@@ -167,9 +185,9 @@ namespace Enemies
             m_agent.enabled = true;
             NavMeshHit hitTest = new NavMeshHit();
             NavMesh.SamplePosition(transform.position, out hitTest, Mathf.Infinity, NavMesh.AllAreas);
-            
 
 
+            m_animator.ResetTrigger("Attacking");
             m_capsuleCollider.isTrigger = false;
             m_npcHealthComponent.npcState = NpcState.RECUPERATION;
             RaycastHit hit = new RaycastHit();

@@ -35,7 +35,8 @@ namespace Enemies
         public int xpToDrop;
         private int m_previousNpcState;
 
-     public TargetData targetData;
+        public TargetData targetData;
+        public bool m_hasChangeTarget;
 
         public delegate void DestroyEvent(Vector3 direction, float power);
         public event DestroyEvent destroyEvent;
@@ -62,6 +63,7 @@ namespace Enemies
 
         public void ResetTarget()
         {
+            m_hasChangeTarget = true;
             NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
             npcMouvement.SetTarget(targetData);
         }
@@ -80,6 +82,7 @@ namespace Enemies
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage);
             Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             m_entityAnimator.SetTrigger("TakeDamage");
+            GlobalSoundManager.PlayOneShot(12, transform.position);
 
             if (m_healthSystem.health > 0) return;
 
@@ -89,9 +92,10 @@ namespace Enemies
         public void GetDestroy(Vector3 direction, float power)
         {
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
-
+            npcState = NpcState.DEATH;
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
+          
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);
             StartCoroutine(Death());

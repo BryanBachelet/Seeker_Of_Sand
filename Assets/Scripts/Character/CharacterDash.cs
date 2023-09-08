@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Character
 {
@@ -14,6 +15,8 @@ namespace Character
         [SerializeField] private LayerMask m_obstacleLayerMask;
         [SerializeField] private GameObject m_playerMesh;
 
+        [Header("Dash UI Feedback")]
+        [SerializeField] private Image m_dashUI;
 
         private float m_dashTimer = 0.0f;
         private float m_dashCooldownTimer = 0.0f;
@@ -44,7 +47,7 @@ namespace Character
         {
             if (ctx.started)
             {
-               StartDash();
+                StartDash();
             }
         }
 
@@ -54,7 +57,7 @@ namespace Character
 
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
-			GlobalSoundManager.PlayOneShot(28, transform.position);
+            GlobalSoundManager.PlayOneShot(28, transform.position);
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
             m_dashTimer = 0.0f;
 
@@ -62,7 +65,7 @@ namespace Character
 
         private bool CalculateDashEndPoint() // Function that test where the player should arrive
         {
-            Vector3 m_direction = m_characterMouvement.GetMouvementDirection();
+            Vector3 m_direction = m_characterMouvement.forwardDirection;
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
@@ -79,7 +82,7 @@ namespace Character
                 // Check if a ground exist to dash on it
                 if (Physics.Raycast(frontPoint, Vector3.down, out hit, m_dashDistance, m_obstacleLayerMask))
                 {
-                    m_endPoint = hit.point + hit.normal*4.5f;
+                    m_endPoint = hit.point + hit.normal * 4.5f;
 
                     return true;
                 }
@@ -94,7 +97,7 @@ namespace Character
         {
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.None);
             m_isDashValid = false;
-           
+
             m_isActiveCooldown = true;
             m_dashCooldownTimer = 0.0f;
 
@@ -106,13 +109,13 @@ namespace Character
 
             if (m_dashTimer > m_dashDuration)
             {
-               // transform.position = m_endPoint;
                 EndDash();
             }
             else
             {
-               transform.position = Vector3.Lerp(m_startPoint, m_endPoint, m_dashTimer / m_dashDuration);
+                transform.position = Vector3.Lerp(m_startPoint, m_endPoint, m_dashTimer / m_dashDuration);
                 m_dashTimer += Time.deltaTime;
+              
             }
         }
 
@@ -121,17 +124,19 @@ namespace Character
         {
             DashMouvement();
 
-            if(m_isActiveCooldown)
+            if (m_isActiveCooldown)
             {
-                if(m_dashCooldownTimer > m_dashCooldownDuration)
+                if (m_dashCooldownTimer > m_dashCooldownDuration)
                 {
                     m_isActiveCooldown = false;
-                    
+
                 }
                 else
                 {
                     m_dashCooldownTimer += Time.deltaTime;
                 }
+
+                m_dashUI.fillAmount = m_dashCooldownTimer / m_dashCooldownDuration;
             }
         }
 

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -984922616853698352}
   - component: {fileID: -7824561366192684373}
   - component: {fileID: 4435284738777021273}
+  - component: {fileID: 2510152453898684457}
   m_Layer: 6
   m_Name: Enemy_BodyLess
   m_TagString: Enemy
@@ -192,7 +193,6 @@ MonoBehaviour:
   hasDeathAnimation: 0
   npcState: 0
   xpToDrop: 1
-  target: {fileID: 0}
 --- !u!114 &4435284738777021273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,8 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50837e8005842504697e4bb3f4d69c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 22
-  speedThreshold: 3
+  speed: 26
+  speedThreshold: 5
   isAffectedBySlope: 0
   maxVariation: 1.5
   minVariation: 0.5
@@ -217,7 +217,21 @@ MonoBehaviour:
     m_Bits: 0
   timeBetweenNavRefresh: 0.2
   minDistanceToFullyActive: 80
-  enemymanage: {fileID: 0}
+  m_distanceBeforeRepositionning: 400
+  enemiesManager: {fileID: 0}
+--- !u!114 &2510152453898684457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e53feec4833be2d48be2feba739aec15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_animator: {fileID: 8689520365587293952}
 --- !u!1001 &105517998707912369
 PrefabInstance:
   m_ObjectHideFlags: 0

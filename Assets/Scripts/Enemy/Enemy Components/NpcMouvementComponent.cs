@@ -32,10 +32,12 @@ namespace Enemies
         [Header("Navmesh Parameters")]
         public float timeBetweenNavRefresh;
         public float minDistanceToFullyActive;
+        [SerializeField] private float m_distanceBeforeRepositionning = 400;
 
         private float m_timerBetweenNavRefresh = 0;
 
         private bool m_isPauseActive;
+        private float m_directionMinDot = 0.45f;
 
         private Rigidbody m_rigidbody;
         private NavMeshAgent m_navMeshAgent;
@@ -51,8 +53,7 @@ namespace Enemies
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
-            if (!targetData.isMoving)
-                m_navMeshAgent.SetDestination(targetData.target.position);
+            m_navMeshAgent.destination = (targetData.target.position);
         }
 
 
@@ -92,7 +93,7 @@ namespace Enemies
                     m_navMeshAgent.speed = CalculateSlopeSpeed();
                 }
 
-               if(targetData.isMoving) Move();
+                if (targetData.isMoving) Move();
             }
             else
             {
@@ -129,21 +130,36 @@ namespace Enemies
 
         public void Move()
         {
+            Vector3 directionToDestination = m_navMeshAgent.destination - transform.position; 
+            Vector3 directionToTarget = targetData.target.position - transform.position;
+            float dot = Vector3.Dot(directionToDestination.normalized, directionToTarget.normalized);
             float distancePos = Vector3.Distance(transform.position, targetData.target.position);
-            if (distancePos > minDistanceToFullyActive)
+
+            // Repositionning enemi when to far 
+            if (distancePos > m_distanceBeforeRepositionning)
             {
-                if (m_timerBetweenNavRefresh < timeBetweenNavRefresh)
+
+                m_navMeshAgent.enabled = false;
+                if (enemiesManager.ReplaceFarEnemy(this.gameObject))
                 {
-                    m_timerBetweenNavRefresh += Time.deltaTime;
+                    distancePos = Vector3.Distance(transform.position, targetData.target.position);
+                    m_navMeshAgent.destination = targetData.target.position;
+                    m_navMeshAgent.nextPosition = transform.position;
+
                     return;
+          
                 }
+                
+
+
             }
-            else if (distancePos > 120)
+            if(distancePos > minDistanceToFullyActive && dot > m_directionMinDot)
             {
-                enemiesManager.ReplaceFarEnemy(this.gameObject);
+
+                return;
             }
+            m_navMeshAgent.enabled = true;
             m_navMeshAgent.destination = targetData.target.position;
-            m_timerBetweenNavRefresh = 0;
         }
 
         public void OnDeath(Vector3 direction, float power)

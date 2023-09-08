@@ -33,7 +33,6 @@ public class LightActivation : MonoBehaviour
             vfxLight.SendEvent("Active");
             colHit[i].enabled = false;
             //if (vfxLight.isActiveAndEnabled) ;
-            Debug.Log(vfxLight.isActiveAndEnabled);
         }
     }
 

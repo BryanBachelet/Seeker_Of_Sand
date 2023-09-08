@@ -20,23 +20,39 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
     [SerializeField] private Text m_DayPhases;
+    [SerializeField] private TMPro.TMP_Text m_Instruction;
+    [SerializeField] public Animator m_instructionAnimator;
     [SerializeField] private Image m_daySlider;
     private bool isNight = false;
     public float timescale;
 
     [SerializeField] float[] tempsChaquePhase;
+    [SerializeField] string[] instructionPhase;
     [SerializeField] string[] nomChaquePhase;
     [SerializeField] float[] heureChaquePhase;
     [SerializeField] string[] nomHeureChaquePhase;
     [SerializeField] int currentPhase = 0;
+    private int lastPhaseChecked = 0;
     [SerializeField] float m_TimeTransitionLastPhase;
     [SerializeField] float m_TimeProchainePhase;
 
+    [SerializeField] private GameObject m_EndUI;
+    [SerializeField] private int m_nightCount;
     private string dayprogress;
     private string phaseprogress;
+
+    // Night Event
+    public delegate void NightBeginning();
+    public event NightBeginning nightStartEvent;
+    // Day Event
+    public delegate void DayBeginning();
+    public event DayBeginning dayStartEvent;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        time = 0;
         m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'écouler IRL.  On multiplie le nombre de minutes réglée dans l'inspector par 60 pour le convertire en seconde.
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
@@ -47,7 +63,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        time = Time.time;
+        time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
         //if(isNight)
         //{
@@ -57,17 +73,17 @@ public class DayCyclecontroller : MonoBehaviour
         //{
         //    m_timeOfDay += Time.deltaTime * m_orbitSpeed;
         //}
-        if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
-        {
-           m_GSM.UpdateParameter(1, "DayOrNight");
-        }
-       else
-        {
-           m_GSM.UpdateParameter(0, "DayOrNight");
-        }
+        // if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
+        // {
+        //    m_GSM.UpdateParameter(1, "DayOrNight");
+        // }
+        //else
+        // {
+        //    m_GSM.UpdateParameter(0, "DayOrNight");
+        // }
 
         staticTimeOfTheDay = m_timeOfDay;
-        UpdateTime();   
+        UpdateTime();
     }
 
     private void OnValidate()
@@ -85,7 +101,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
-        if(m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
+        if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
             {
@@ -104,11 +120,16 @@ public class DayCyclecontroller : MonoBehaviour
 
     private void CheckingNightDayTransition()
     {
-        if(isNight)
+        if (isNight)
         {
-            if(m_moon.transform.rotation.eulerAngles.x > 180)
+            if (m_moon.transform.rotation.eulerAngles.x > 180)
             {
                 StartDay();
+                if (m_nightCount == 3)
+                {
+                    GameState.ChangeState();
+                    m_EndUI.SetActive(true);
+                }
             }
         }
         else
@@ -116,6 +137,8 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_sun.transform.rotation.eulerAngles.x > 180)
             {
                 StartNight();
+                m_nightCount++;
+
             }
         }
     }
@@ -124,8 +147,10 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_sun.gameObject.SetActive(true);
         isNight = false;
+        dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
+        m_GSM.UpdateParameter(1, "DayOrNight");
         //m_LocalNightVolume.enabled = false;
         m_GSM.UpdateParameter(0, "DayOrNight");
         m_moon.gameObject.SetActive(false);
@@ -135,6 +160,8 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
+        nightStartEvent.Invoke();
+        m_GSM.UpdateParameter(0, "DayOrNight");
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
@@ -144,52 +171,22 @@ public class DayCyclecontroller : MonoBehaviour
     public void CheckPhase(float hour)
     {
         UpdatePhaseInfo();
-       //if (isNight) { }
-       //if (hour > 0f && hour < 4f)
-       //{
-       //    dayprogress = "Nuit";
-       //}
-       //if (hour >= 4f && hour < 6f)
-       //{
-       //    dayprogress = "Aube";
-       //}
-       //else if(hour >= 6 && hour <= 8)
-       //{
-       //    dayprogress = "Aurore";
-       //}
-       //else if (hour > 8 && hour <= 11.5f)
-       //{
-       //    dayprogress = "Matinée";
-       //}
-       //else if (hour > 11.5f && hour <= 13.5f)
-       //{
-       //    dayprogress = "Zénith";
-       //}
-       //else if (hour > 13.5f && hour <= 17f)
-       //{
-       //    dayprogress = "Après-midi";
-       //}
-       //else if (hour > 17.5f && hour < 21f)
-       //{
-       //    dayprogress = "Crépuscule";
-       //}
-       //else if (hour >= 21f && hour <= 24f)
-       //{
-       //    dayprogress = "Nuit";
-       //}
 
-
-
-        m_DayPhases.text = dayprogress + " - " + phaseprogress;
+        if (currentPhase != lastPhaseChecked)
+        {
+            m_DayPhases.text = dayprogress + " - " + phaseprogress;
+            StartCoroutine(DisplayInstruction(instructionPhase[currentPhase], 2, Color.white, ""));
+            lastPhaseChecked = currentPhase;
+        }
 
     }
 
     public void UpdatePhaseInfo()
     {
-        if(time > m_TimeProchainePhase)
+        if (time > m_TimeProchainePhase)
         {
             currentPhase += 1;
-            if(currentPhase > tempsChaquePhase.Length)
+            if (currentPhase > tempsChaquePhase.Length)
             {
                 currentPhase = 0;
             }
@@ -198,14 +195,22 @@ public class DayCyclecontroller : MonoBehaviour
             phaseprogress = nomChaquePhase[currentPhase];
             dayprogress = nomHeureChaquePhase[currentPhase];
             m_DayPhases.text = dayprogress + " - " + phaseprogress;
-            
+
         }
-        float sliderValue =1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
+        float sliderValue = 1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
         if (sliderValue <= 1 && sliderValue >= 0)
         {
             m_daySlider.fillAmount = sliderValue;
         }
-        m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
+        if (currentPhase < tempsChaquePhase.Length)
+        {
+            m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[currentPhase + 1], sliderValue);
+        }
+        else
+        {
+            m_timeOfDay = Mathf.Lerp(heureChaquePhase[currentPhase], heureChaquePhase[0], sliderValue);
+        }
+
         if (m_timeOfDay >= 24)
         {
             m_timeOfDay = 0;
@@ -218,10 +223,19 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 18.5f;
         }
-    
-        if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
+
+        if (currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
         else { m_EnemyManager.ChangeSpawningPhase(false); }
 
 
+    }
+
+    public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, string locationName)
+    {
+        m_Instruction.color = colorText;
+        m_Instruction.text = "[" + locationName + "] " + instruction;
+        m_instructionAnimator.SetTrigger("DisplayInstruction");
+        yield return new WaitForSeconds(time);
+        m_instructionAnimator.ResetTrigger("DisplayInstruction");
     }
 }

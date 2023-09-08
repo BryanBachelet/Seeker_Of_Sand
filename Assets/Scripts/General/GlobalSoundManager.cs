@@ -22,15 +22,15 @@ public class GlobalSoundManager : MonoBehaviour
     public EventInstance globalMusicInstance;
 
     public bool changing = false;
+
+    public float delayMusic = 0;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         everyEvent = everyEvent_Attribution;
         OneS_Sound = OneS_Sound_Attribution;
-        globalinstance = RuntimeManager.CreateInstance(Globalsound);
-        globalinstance.start();
-        globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        globalMusicInstance.start();
+        StartCoroutine(StartAmbiant(delayMusic));
+
     }
 
     public static void PlayOneShot(int sNumber, Vector3 position)
@@ -55,7 +55,22 @@ public class GlobalSoundManager : MonoBehaviour
     public void UpdateParameter(float parameterValue, string parameterName)
     {
         globalinstance.setParameterByName(parameterName, parameterValue);
+        globalMusicInstance.setParameterByName(parameterName, parameterValue);
     }
 
+    public IEnumerator StartAmbiant(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        globalinstance = RuntimeManager.CreateInstance(Globalsound);
+        globalinstance.start();
+        globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
+        globalMusicInstance.start();
+    }
+
+    public void OnDisable()
+    {
+        globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
 
 }

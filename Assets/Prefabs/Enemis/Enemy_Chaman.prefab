@@ -131,7 +131,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0.9
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 1
 --- !u!54 &-3431584024930899228
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -195,6 +195,7 @@ MonoBehaviour:
   hasDeathAnimation: 0
   npcState: 0
   xpToDrop: 3
+  m_hasChangeTarget: 0
 --- !u!114 &-4669882926715339747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +220,7 @@ MonoBehaviour:
     m_Bits: 0
   timeBetweenNavRefresh: 0.2
   minDistanceToFullyActive: 80
+  m_distanceBeforeRepositionning: 400
   enemiesManager: {fileID: 0}
 --- !u!114 &3209565809213415622
 MonoBehaviour:
@@ -232,10 +234,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf70689a7a644de48bf06d9244218c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 65
-  damage: 5
-  timeOfCharge: 2
-  timeofRecuperation: 4
+  attackRange: 90
+  minAttackRange: 35
+  damage: 20
+  timeOfCharge: 3
+  timeofRecuperation: 6
   vfxFeedback: {fileID: 2601523354375520922}
   layer:
     serializedVersion: 2

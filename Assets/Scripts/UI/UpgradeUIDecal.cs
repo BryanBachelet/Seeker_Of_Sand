@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UpgradeUIDecal : MonoBehaviour
 {
-    public Text[] m_upgradeName = new Text[3];
+    public TMP_Text[] m_upgradeName = new TMP_Text[3];
     public Text[] m_upgradeDescription = new Text[3];
     public Image[] m_upgradeIcon = new Image[3];
     public Image[] m_upgradeTypeIcon = new Image[3];
@@ -16,14 +17,26 @@ public class UpgradeUIDecal : MonoBehaviour
     public GameObject selectionPanelGameObject;
     public GameObject spellEquipPanelGameObject;
     public GameObject spellselectDescriptionPanelGameObject;
+    public GameObject upgradeSelectedDetails;
 
     private Image m_iconSpellSelected;
     private TMP_Text[] m_textDescription;
 
     public GameObject upgradeScreenState;
+
+    public Image capacityAffectedIcon;
+    public TMP_Text capacityAffectedName;
+    public TMP_Text upgradeSelectedName;
+    public TMP_Text upgradeDescription;
+    public TMP_Text initialValue;
+    public TMP_Text newValue;
+
+    public TMP_Text upgradAvailable;
     // Start is called before the first frame update
     void Start()
     {
+       
+  
         m_iconSpellSelected = spellselectDescriptionPanelGameObject.GetComponentInChildren<Image>();
         m_textDescription = spellselectDescriptionPanelGameObject.GetComponentsInChildren<TMP_Text>();
     }
@@ -54,6 +67,16 @@ public class UpgradeUIDecal : MonoBehaviour
     {
         selectionPanelGameObject.SetActive(newState);
         spellEquipPanelGameObject.SetActive(newState);
+        spellselectDescriptionPanelGameObject.SetActive(newState);
+    }
+
+    public void FocusUpgrade(Upgrade upgradeSelected)
+    {
+        if(!upgradeSelectedDetails.activeSelf) { upgradeSelectedDetails.SetActive(true); }
+
+        capacityAffectedIcon.sprite = upgradeSelected.gain.icon_Associat;
+        upgradeSelectedName.text = upgradeSelected.gain.name;
+        upgradeDescription.text = upgradeSelected.gain.description;
     }
 
 }
