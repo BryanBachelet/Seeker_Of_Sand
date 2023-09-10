@@ -72,6 +72,9 @@ namespace Character
 
         [SerializeField] public bool autoAimActive;
         [SerializeField] private bool globalCD;
+
+       public float m_lastTimeShot = 0;
+        [SerializeField] private float m_TimeAutoWalk = 2;
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
@@ -199,6 +202,13 @@ namespace Character
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {
+                //if (Time.time > m_lastTimeShot + m_TimeAutoWalk)
+                //{
+                //    m_lastTimeShot = Mathf.Infinity;
+                //    m_CharacterMouvement.combatState = false;
+                //    StopCasting();
+                //    return;
+                //}
                 avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
                 if (autoAimActive)
                 {
@@ -209,6 +219,7 @@ namespace Character
                         if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
                         {
                             Shoot();
+                            m_CharacterMouvement.m_lastTimeShot = Time.time;
                             m_timeBetweenShoot = 0.0f;
                         }
                         else
@@ -260,6 +271,7 @@ namespace Character
         {
             if (!m_canShoot) return;
             GlobalSoundManager.PlayOneShot(27,transform.position);
+            m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
             //Debug.Log("[" + m_CharacterMouvement.runSpeed + "] Run speed ");
             if (currentShotNumber == 0)
@@ -521,6 +533,7 @@ namespace Character
                     m_shootInput = false;
 
                     m_CharacterAnimator.SetBool("Casting", false);
+                    m_lastTimeShot = Mathf.Infinity;
                     avatarTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
                     m_CharacterMouvement.combatState = false;

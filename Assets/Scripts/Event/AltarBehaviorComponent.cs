@@ -62,13 +62,17 @@ public class AltarBehaviorComponent : MonoBehaviour
     [HideInInspector] public bool isAltarDestroy = false;
 
     private ObjectHealthSystem m_objectHealthSystem;
+    public Image m_eventProgressionSlider;
 
     [SerializeField] private string instructionOnActivation;
+
+    [SerializeField] private Enemies.EnemyManager m_enemeyManager;
     // Start is called before the first frame update
     void Start()
     {
 
         eventElementType = Random.Range(0, 4);
+
         GetComponentInChildren<Light>().color = colorEvent[eventElementType];
         Light[] lightToSwap = GetComponentsInChildren<Light>();
         for (int i = 0; i < lightToSwap.Length; i++)
@@ -79,7 +83,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         altarCount++;
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
-
+        m_enemeyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
         altarAllMesh[0].material.shader = Shader.Find("Intensity");
         altarAllMesh[0].material.shader = Shader.Find("Color");
         altarAllMesh[0].material = materialEvent[eventElementType];
@@ -92,6 +96,9 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         //DisableColor();
         m_playerTransform = m_EnemyManagerScript.m_playerTranform;
+        float maxHealth = 50 + m_enemeyManager.m_maxUnittotal;
+        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
+        m_objectHealthSystem.ResetCurrentHealth();
     }
 
     private void InitComponent()
@@ -114,7 +121,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
 
 
-        float ennemyTokill = m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1));
+        float ennemyTokill = 25 * resetNumber + 1 + m_enemeyManager.m_maxUnittotal;
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
@@ -126,6 +133,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         else
         {
+            m_eventProgressionSlider.fillAmount = m_CurrentKillCount / ennemyTokill;
             //displayTextDescription1.text = m_CurrentHealth + "/" + m_MaxHealth;
             //displayTextDescription2.text = (m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1))) - m_CurrentKillCount + " Remaining";
         }
@@ -149,7 +157,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-        m_EnemyManagerScript.SendInstruction("Altar protection fail...", Color.red);
+        m_EnemyManagerScript.SendInstruction("Altar protection fail...", Color.red, TerrainLocationID.currentLocationName);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
@@ -167,7 +175,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
-            m_EnemyManagerScript.SendInstruction(instructionOnActivation, Color.white);
+            m_EnemyManagerScript.SendInstruction(instructionOnActivation, Color.white, TerrainLocationID.currentLocationName);
             m_visualEffectActivation.Play();
             for (int i = 0; i < altarAllMesh.Length; i++)
             {
@@ -205,7 +213,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         m_EnemyManagerScript.RemoveTarget(transform);
         m_EnemyManagerScript.RemoveAltar(transform);
-        m_EnemyManagerScript.SendInstruction("Altar protection succeed ! Gain [" + (XpQuantity + 25 * resetNumber) + "] exp quantity", Color.green);
+        m_EnemyManagerScript.SendInstruction("Altar protection succeed ! Gain [" + (XpQuantity + 25 * resetNumber) + "] exp quantity", Color.green, TerrainLocationID.currentLocationName);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
         for (int i = 0; i < altarAllMesh.Length; i++)
@@ -242,7 +250,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         m_CurrentKillCount = 0;
-        float maxHealth = 100 * (1 - 0.1f * (resetNumber + 1));
+        float maxHealth = 50 + m_enemeyManager.m_maxUnittotal;
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
 

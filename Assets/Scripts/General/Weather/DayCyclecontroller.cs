@@ -175,7 +175,7 @@ public class DayCyclecontroller : MonoBehaviour
         if (currentPhase != lastPhaseChecked)
         {
             m_DayPhases.text = dayprogress + " - " + phaseprogress;
-            StartCoroutine(DisplayInstruction(instructionPhase[currentPhase], 2, Color.white));
+            StartCoroutine(DisplayInstruction(instructionPhase[currentPhase], 2, Color.white, ""));
             lastPhaseChecked = currentPhase;
         }
 
@@ -230,10 +230,10 @@ public class DayCyclecontroller : MonoBehaviour
 
     }
 
-    public IEnumerator DisplayInstruction(string instruction, float time, Color colorText)
+    public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, string locationName)
     {
         m_Instruction.color = colorText;
-        m_Instruction.text = instruction;
+        m_Instruction.text = "[" + locationName + "] " + instruction;
         m_instructionAnimator.SetTrigger("DisplayInstruction");
         yield return new WaitForSeconds(time);
         m_instructionAnimator.ResetTrigger("DisplayInstruction");
