@@ -139,21 +139,26 @@ namespace Enemies
             if (distancePos > m_distanceBeforeRepositionning)
             {
 
-               
+                m_navMeshAgent.enabled = false;
                 if (enemiesManager.ReplaceFarEnemy(this.gameObject))
                 {
+                    distancePos = Vector3.Distance(transform.position, targetData.target.position);
                     m_navMeshAgent.destination = targetData.target.position;
                     m_navMeshAgent.nextPosition = transform.position;
+
                     return;
+          
                 }
+                
 
 
             }
             if(distancePos > minDistanceToFullyActive && dot > m_directionMinDot)
             {
+
                 return;
             }
-
+            m_navMeshAgent.enabled = true;
             m_navMeshAgent.destination = targetData.target.position;
         }
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
-
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 public class health_Player : MonoBehaviour
 {
     [SerializeField] private bool activeDeath = false;
@@ -34,11 +34,20 @@ public class health_Player : MonoBehaviour
     private Character.CharacterMouvement m_characterMouvement;
 
     public float damageSend;
+
+    public Volume volume;
+    private Vignette vignette;
+
+    private bool feedbackHit = false;
+    private float timeLastHit;
+    public AnimationCurve evolutionVignetteOverTime;
+    public float tempsEffetHit = 0.25f;
     // Start is called before the first frame update
     void Start()
     {
         InitializedHealthData();
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        volume.profile.TryGet(out vignette);
     }
 
     // Update is called once per frame
@@ -56,6 +65,19 @@ public class health_Player : MonoBehaviour
         //    GetDamageLeger(damageSend);
 
         }
+        if(feedbackHit)
+        {
+            if (Time.time - timeLastHit < tempsEffetHit)
+            {
+                vignette.intensity.value = 0.35f * evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit);
+            }
+            else
+            {
+                vignette.intensity.value = 0;
+                feedbackHit = false;
+            }
+        }
+
 
     }
 
@@ -67,6 +89,9 @@ public class health_Player : MonoBehaviour
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
+            timeLastHit = Time.time;
+            feedbackHit = true;
+            vignette.intensity.value = 0.35f;
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;
@@ -98,6 +123,9 @@ public class health_Player : MonoBehaviour
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
+            timeLastHit = Time.time;
+            feedbackHit = true;
+            vignette.intensity.value = 0.35f;
             if (m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;

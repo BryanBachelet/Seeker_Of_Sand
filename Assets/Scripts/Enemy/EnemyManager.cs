@@ -81,6 +81,8 @@ namespace Enemies
 
         private int repositionningLimit = 10;
         private int repositionningCount;
+
+        private DayCyclecontroller m_dayController;
         public void Awake()
         {
             TestReadDataSheet();
@@ -91,6 +93,7 @@ namespace Enemies
 
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
+            m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -415,6 +418,10 @@ namespace Enemies
             m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
+        public void SendInstruction(string Instruction, Color colorText)
+        {
+            m_dayController.StartCoroutine(m_dayController.DisplayInstruction(Instruction, 2, colorText));
+        }
         public void RemoveAltar(Transform altarTarget)
         {
             if (!m_altarTransform.Contains(altarTarget)) return;

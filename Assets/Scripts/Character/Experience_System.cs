@@ -154,6 +154,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         string debugdata = "";
 #if UNITY_EDITOR
         string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
+
 #else
 #if UNITY_STANDALONE_WIN
         string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";

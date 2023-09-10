@@ -26,6 +26,9 @@ public class ObjectHealthSystem : MonoBehaviour
     public Image m_eventLifeUIFeedback;
     public GameObject m_eventLifeUIFeedbackObj;
 
+    public LayerMask enemyLayer;
+    public float rangeDegatAugmente;
+    public AnimationCurve evolutionDegatAugment;
     private void Start()
     {
         GameState.AddObject(state);
@@ -104,5 +107,11 @@ public class ObjectHealthSystem : MonoBehaviour
     public bool IsEventActive()
     {
         return eventState == EventObjectState.Active;
+    }
+
+    public void checkEnemyArround()
+    {
+        Collider[] colProch = Physics.OverlapSphere(transform.position, rangeDegatAugmente, enemyLayer);
+        m_invicibleDuration = evolutionDegatAugment.Evaluate(colProch.Length / 250);
     }
 }
