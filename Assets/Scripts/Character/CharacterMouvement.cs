@@ -371,6 +371,11 @@ namespace Character
         }
 
 
+        public float GetSlope()
+        {
+            return m_slope;
+        }
+
         /// <summary>
         ///  Function that apply the final result of our velocity calcul to our rigidbody
         /// </summary>
