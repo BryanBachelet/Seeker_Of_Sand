@@ -157,6 +157,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "CameraRotationMouse",
+                    "type": "Value",
+                    "id": "1d2a7610-5a32-421b-b65e-d084c7ae2255",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -590,7 +599,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
+                    "name": "positive",
                     "id": "4d4dfffd-bab2-4cc4-bb44-9fc1222145ed",
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",
@@ -601,7 +610,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "positive",
+                    "name": "negative",
                     "id": "2b8d1a10-c3a7-4db5-aadd-4cfdabf7b60f",
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
@@ -610,6 +619,17 @@
                     "action": "CameraZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "0e63e846-c772-4591-be12-705f6f982ba1",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotationMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

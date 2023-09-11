@@ -31,12 +31,11 @@ public class TerrainLocationID : MonoBehaviour
                 ChangeCurrentLocation(newterrainlocation);
             }
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+           
         }
         else
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 1000, Color.white);
-            Debug.Log("Did not Hit");
+
         }
 
     }
