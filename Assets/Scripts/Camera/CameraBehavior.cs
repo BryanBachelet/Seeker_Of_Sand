@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 namespace Render.Camera
 {
     public class CameraBehavior : MonoBehaviour
@@ -34,19 +36,42 @@ namespace Render.Camera
         private CameraEffect[] cameraEffects;
         public Transform sun;
 
+
+        // -- Test Camera Zoom ---- 
+
+            // TODO : Lerp zoom rotation;
+
+        [Header("Camera Zoom parameter")]
+        [SerializeField] private float m_maxDistance = 10;
+        [SerializeField] private float m_minDistance = 2;
+        [SerializeField] private Vector3 m_maxAngle;
+        [SerializeField] private Vector3 m_minAngle;
+        [SerializeField] private float m_currentLerpValue = 0;
+        [SerializeField] private float m_inputZoomSensibility = 1.0f;
+        [SerializeField] private bool m_activeCameraZoomDebug = false;
+        [SerializeField] private Vector3 m_baseOffset;
+        private float m_inputZoomValue;
+        private float m_slopeAngle;
+        private float m_prevSlopeAngle;
+        private float m_nextSlopeAngle;
+       
+        [SerializeField] private float m_thresholdAngle = 4.0f;
+
+        // -------------
+
+
         // Free Rotation Variable
         [Header("Free Rotation Variables")]
         [SerializeField] private float m_angularSpeed = 10;
         private float initialAngularSpeed;
         [SerializeField] private AnimationCurve angularSpeedAcceleration;
+        [SerializeField] private bool m_inverseCameraController = false;
         private float timeLastRotationInput;
         private float m_currentAngle;
         [SerializeField] private bool m_activateHeightDirectionMode = false;
         [SerializeField] private bool m_mouseInputActivate = false;
         private bool m_isRotationInputPress;
         private float m_signValue;
-
-
 
 
         // Start is called before the first frame update
@@ -58,7 +83,7 @@ namespace Render.Camera
             m_baseAngle = transform.rotation.eulerAngles;
         }
 
-     
+
 
 
         void Update()
@@ -81,6 +106,11 @@ namespace Render.Camera
 
                 }
 
+                // ------------ Camera zoom ----------
+                CameraZoom();
+                // ------------------------
+
+
                 if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_signValue);
 
                 SetCameraRotation();
@@ -98,6 +128,43 @@ namespace Render.Camera
 
         }
 
+        #region CameraZoom 
+
+        public void InputZoom(InputAction.CallbackContext ctx)
+        {
+            if(ctx.performed)
+            {
+                m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
+                if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
+
+                m_currentLerpValue += m_inputZoomValue;
+                m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
+
+            }
+
+            if(ctx.canceled)
+            {
+                //m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
+            }
+        }
+        private void CameraZoom()
+        {
+            m_prevSlopeAngle = m_slopeAngle;
+            float angle = playerMove.GetSlope();
+            if (angle > m_thresholdAngle)
+            {
+                m_nextSlopeAngle = angle;
+            }
+
+            m_slopeAngle = Mathf.Lerp(m_prevSlopeAngle, m_nextSlopeAngle, 0.2f);
+            Vector3 slopeAngle = new Vector3(m_slopeAngle, 0.0f , 0);
+            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle ;
+            m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
+            m_cameraDirection = Quaternion.Euler(m_baseAngle) * - Vector3.forward;
+        }
+
+        #endregion
+
         public float GetAngle()
         {
             return m_currentAngle;
@@ -108,6 +175,7 @@ namespace Render.Camera
             {
 
                 float value = ctx.ReadValue<float>();
+                if (m_inverseCameraController) value = -1 * value;
                 m_signValue = value;
                 m_isRotationInputPress = true;
                 timeLastRotationInput = Time.time;
@@ -133,7 +201,9 @@ namespace Render.Camera
         {
             if (ctx.performed && m_mouseInputActivate)
             {
-                m_signValue = ctx.ReadValue<Vector2>().x;
+                int value = 1;
+                if (m_inverseCameraController) value = -1;
+                m_signValue = value * ctx.ReadValue<Vector2>().x;
             }
         }
 
@@ -142,7 +212,7 @@ namespace Render.Camera
             if (ctx.performed && m_mouseInputActivate)
             {
                 m_isRotationInputPress = true;
-          
+
             }
             if (ctx.canceled && m_mouseInputActivate)
             {
@@ -158,8 +228,6 @@ namespace Render.Camera
 
         private void ChangeRotation(bool state)
         {
-
-
             if (m_isLerping)
             {
                 m_lerpTimer = m_lerpTime / 1.5f;
@@ -228,7 +296,7 @@ namespace Render.Camera
         private void SetCameraPosition()
         {
             m_finalPosition = m_targetTransform.position;
-            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget; ;
+            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget ;
 
             for (int i = 0; i < cameraEffects.Length; i++)
             {

@@ -1813,6 +1813,8 @@ MonoBehaviour:
   isSliding: 0
   m_glideSpeed: 4
   m_gravityForce: 50
+  m_lastTimeShot: 0
+  m_TimeAutoWalk: 2
   m_accelerationSpeed: 4
   accelerationSlide: 60
   maxSpeed: 240
@@ -1823,6 +1825,15 @@ MonoBehaviour:
   timeAfterSliding: 0.5
   timeBeforeSliding: 0.3
   combatDeccelerationSpeed: 6
+  forwardDirection: {x: 0, y: 0, z: 0}
+  m_isSlowdown: 0
+  MouvementSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   m_knockBackPower: 50
   m_knockBackDuration: 1
   mouvementState: 0
@@ -2165,6 +2176,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 17b5e5a3-5088-49b6-ad75-53a905eb8d45
     m_ActionName: Player/RotationCameraMouse[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6455e521-f2bb-402d-9684-51b7f9e5c9a1
+    m_ActionName: Player/CameraZoom[/Mouse/scroll/up,/Mouse/scroll/down]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -2322,6 +2349,8 @@ MonoBehaviour:
   m_TextSpellGlobalCooldown: []
   autoAimActive: 0
   globalCD: 0
+  m_lastTimeShot: 0
+  m_TimeAutoWalk: 2
 --- !u!114 &1983534971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2582,6 +2611,14 @@ MonoBehaviour:
   m_SliderCurrentQuarterLow: {fileID: 0}
   updateHealthValues: 0
   damageSend: 10
+  volume: {fileID: 0}
+  evolutionVignetteOverTime:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  tempsEffetHit: 0.25
 --- !u!114 &1012445203582757945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2601,6 +2638,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 264
   m_playerMesh: {fileID: 275628373934368166}
+  m_dashUI: {fileID: 0}
   m_cameraBehavior: {fileID: 0}
 --- !u!1 &7409673259591215286
 GameObject:
