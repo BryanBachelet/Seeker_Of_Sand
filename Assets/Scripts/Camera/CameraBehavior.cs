@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 namespace Render.Camera
 {
     public class CameraBehavior : MonoBehaviour
@@ -39,6 +40,7 @@ namespace Render.Camera
         [SerializeField] private float m_angularSpeed = 10;
         private float initialAngularSpeed;
         [SerializeField] private AnimationCurve angularSpeedAcceleration;
+        [SerializeField] private bool m_inverseCameraController = false;
         private float timeLastRotationInput;
         private float m_currentAngle;
         [SerializeField] private bool m_activateHeightDirectionMode = false;
@@ -58,7 +60,7 @@ namespace Render.Camera
             m_baseAngle = transform.rotation.eulerAngles;
         }
 
-     
+
 
 
         void Update()
@@ -108,6 +110,7 @@ namespace Render.Camera
             {
 
                 float value = ctx.ReadValue<float>();
+                if (m_inverseCameraController) value = -1 * value;
                 m_signValue = value;
                 m_isRotationInputPress = true;
                 timeLastRotationInput = Time.time;
@@ -133,7 +136,9 @@ namespace Render.Camera
         {
             if (ctx.performed && m_mouseInputActivate)
             {
-                m_signValue = ctx.ReadValue<Vector2>().x;
+                int value = 1;
+                if (m_inverseCameraController) value = -1;
+                m_signValue = value * ctx.ReadValue<Vector2>().x;
             }
         }
 
@@ -142,7 +147,7 @@ namespace Render.Camera
             if (ctx.performed && m_mouseInputActivate)
             {
                 m_isRotationInputPress = true;
-          
+
             }
             if (ctx.canceled && m_mouseInputActivate)
             {
