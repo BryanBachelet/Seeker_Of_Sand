@@ -39,7 +39,7 @@ namespace Render.Camera
 
         // -- Test Camera Zoom ---- 
 
-            // TODO : Lerp zoom rotation;
+        // TODO : Lerp zoom rotation;
 
         [Header("Camera Zoom parameter")]
         [SerializeField] private float m_maxDistance = 10;
@@ -50,26 +50,36 @@ namespace Render.Camera
         [SerializeField] private float m_inputZoomSensibility = 1.0f;
         [SerializeField] private bool m_activeCameraZoomDebug = false;
         [SerializeField] private Vector3 m_baseOffset;
+        [SerializeField] private float m_valueMinToStartSlope = 0.8f;
+
         private float m_inputZoomValue;
         private float m_slopeAngle;
         private float m_prevSlopeAngle;
         private float m_nextSlopeAngle;
-       
+         
         [SerializeField] private float m_thresholdAngle = 4.0f;
 
         // -------------
+
+        // -------- Test Rotation Camera Mouse ---------
+
+        [Header("Camera Mouse Parameters")]
+        [SerializeField] private float m_mousDeltaThreshold = 3.0f;
+        [SerializeField] private bool m_activeDebugMouseRotation = false;
+        // ------------------------------
 
 
         // Free Rotation Variable
         [Header("Free Rotation Variables")]
         [SerializeField] private float m_angularSpeed = 10;
-        private float initialAngularSpeed;
         [SerializeField] private AnimationCurve angularSpeedAcceleration;
         [SerializeField] private bool m_inverseCameraController = false;
-        private float timeLastRotationInput;
-        private float m_currentAngle;
         [SerializeField] private bool m_activateHeightDirectionMode = false;
         [SerializeField] private bool m_mouseInputActivate = false;
+
+        private float initialAngularSpeed;
+        private float timeLastRotationInput;
+        private float m_currentAngle;
         private bool m_isRotationInputPress;
         private float m_signValue;
 
@@ -132,7 +142,7 @@ namespace Render.Camera
 
         public void InputZoom(InputAction.CallbackContext ctx)
         {
-            if(ctx.performed)
+            if (ctx.performed)
             {
                 m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
                 if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
@@ -142,7 +152,7 @@ namespace Render.Camera
 
             }
 
-            if(ctx.canceled)
+            if (ctx.canceled)
             {
                 //m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
             }
@@ -157,10 +167,12 @@ namespace Render.Camera
             }
 
             m_slopeAngle = Mathf.Lerp(m_prevSlopeAngle, m_nextSlopeAngle, 0.2f);
-            Vector3 slopeAngle = new Vector3(m_slopeAngle, 0.0f , 0);
-            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle ;
+            Vector3 slopeAngle = new Vector3(0, 0.0f, 0);
+
+            if(m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle, 0.0f, 0);
+            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle;
             m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
-            m_cameraDirection = Quaternion.Euler(m_baseAngle) * - Vector3.forward;
+            m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
         }
 
         #endregion
@@ -203,7 +215,17 @@ namespace Render.Camera
             {
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
+
                 m_signValue = value * ctx.ReadValue<Vector2>().x;
+
+                if (Mathf.Abs(m_signValue) < m_mousDeltaThreshold) m_signValue = 0;
+                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_signValue.ToString());
+            }
+
+            if (ctx.canceled && m_mouseInputActivate)
+            {
+                m_signValue = 0.0f;
+                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_signValue.ToString());
             }
         }
 
@@ -260,6 +282,7 @@ namespace Render.Camera
 
         private void FreeRotation(float sign)
         {
+            if (sign == 0) return;
             sign = Mathf.Sign(sign);
             float deltaInputMove = Time.time - timeLastRotationInput;
             if (deltaInputMove < 1)
@@ -296,7 +319,7 @@ namespace Render.Camera
         private void SetCameraPosition()
         {
             m_finalPosition = m_targetTransform.position;
-            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget ;
+            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget;
 
             for (int i = 0; i < cameraEffects.Length; i++)
             {
