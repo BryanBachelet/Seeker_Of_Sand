@@ -7,12 +7,12 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "97fce01f-9875-48b6-9dac-245c146af7fa",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Look",
@@ -166,6 +166,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ActivateRotation",
+                    "type": "Button",
+                    "id": "a1bab915-530f-4499-ac55-329fecf29ffc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -556,17 +565,6 @@
                 },
                 {
                     "name": "",
-                    "id": "43015074-22c7-4b43-b8ac-76f5f483ca69",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "StopFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "cdf62ffd-e70b-4195-bd61-cc7e11e7caee",
                     "path": "<Keyboard>/shift",
                     "interactions": "",
@@ -628,6 +626,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraRotationMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3d05f6e1-db35-4d61-b80c-99575f1de123",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ActivateRotation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
