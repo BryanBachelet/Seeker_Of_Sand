@@ -55,6 +55,7 @@ public class CameraIntroMouvement : MonoBehaviour
         m_isActivate = false;
         m_fixInterface.SetActive(true);
         GameState.ChangeState();
+        this.enabled = false; 
     }
 
     private void UpdateCameraStatus()
