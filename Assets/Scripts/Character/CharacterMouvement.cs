@@ -102,10 +102,14 @@ namespace Character
 
 
         public MouvementState mouvementState;
+       
 
         [SerializeField] private SpeedData m_speedData = new SpeedData();
 
         public Vector3 currentDirection { get; private set; }
+
+        [Header("Debug Parameters")]
+        [SerializeField] private bool m_activeDebug;
 
         public void InitComponentStat(CharacterStat stat)
         {
@@ -184,10 +188,12 @@ namespace Character
 
         public void ChangeState(MouvementState newState)
         {
+            MouvementState prevState = mouvementState;
             if (newState == mouvementState) return;
             BeforeChangeState(mouvementState);
             mouvementState = newState;
-            AfterChangeState(mouvementState);
+           if(m_activeDebug) Debug.Log("New State = " + newState);
+            AfterChangeState(mouvementState, prevState);
         }
 
         public void BeforeChangeState(MouvementState prevState)
@@ -220,7 +226,7 @@ namespace Character
             }
         }
 
-        public void AfterChangeState(MouvementState newState)
+        public void AfterChangeState(MouvementState newState , MouvementState prevState)
         {
 
 
@@ -252,7 +258,7 @@ namespace Character
                     //m_CharacterAnim.SetBool("Shooting", true);
                     UpdateParameter(0f, "MouvementState");
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
-                    if (m_isSlowdown )
+                    if (m_isSlowdown && prevState == MouvementState.Slide)
                     {
                         m_speedLimit = m_speedData.referenceSpeed[2];
                     }
