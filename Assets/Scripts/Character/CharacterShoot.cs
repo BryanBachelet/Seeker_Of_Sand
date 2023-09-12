@@ -90,6 +90,9 @@ namespace Character
             }
             InitCapsule();
             InitComponent();
+            m_currentRotationIndex = 0;
+            m_currentIndexCapsule = spellEquip[0];
+            m_canShoot = true;
         }
         public void InitComponentStat(CharacterStat stat)
         {
@@ -97,16 +100,7 @@ namespace Character
             shootTime = launcherStats.timeBetweenCapsule;
         }
 
-        // ================= TEMP =====================
-        public void IncreaseCapsuleIndex(InputAction.CallbackContext ctx)
-        {
-            if (ctx.started && state.isPlaying) SwitchCapsuleChange(true);
-        }
-
-        public void DecreaseCapsuleIndex(InputAction.CallbackContext ctx)
-        {
-            if (ctx.started && state.isPlaying) SwitchCapsuleChange(false);
-        }
+        // ================ Temps  ==================
 
         private void SwitchCapsuleChange(bool increase)
         {
@@ -202,13 +196,13 @@ namespace Character
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {
-                //if (Time.time > m_lastTimeShot + m_TimeAutoWalk)
-                //{
-                //    m_lastTimeShot = Mathf.Infinity;
-                //    m_CharacterMouvement.combatState = false;
-                //    StopCasting();
-                //    return;
-                //}
+                if (Time.time > m_lastTimeShot + m_TimeAutoWalk)
+                {
+                    m_lastTimeShot = Mathf.Infinity;
+                    m_CharacterMouvement.combatState = false;
+                    StopCasting();
+                    return;
+                }
                 avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
                 if (autoAimActive)
                 {
@@ -342,15 +336,15 @@ namespace Character
         private void StartShoot()
         {
             m_currentType = bookOfSpell[m_currentIndexCapsule].type;
-            icon_Sprite[m_currentRotationIndex].color = Color.gray;
+            //icon_Sprite[m_currentRotationIndex].color = Color.gray;
            // SignPosition[m_currentRotationIndex].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 0);
 
-            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
-            {
-                currentWeaponStats = (capsuleStatsAlone[m_currentIndexCapsule]);
-                Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).vfx, transform.position, m_characterAim.GetTransformHead().rotation);
+            //if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            //{
+            //    currentWeaponStats = (capsuleStatsAlone[m_currentIndexCapsule]);
+            //    Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).vfx, transform.position, m_characterAim.GetTransformHead().rotation);
 
-            }
+            //}
             m_isShooting = true;
         }
 
@@ -507,11 +501,11 @@ namespace Character
         {
             if (stateCall)
             {
-                if (!m_isCasting && !globalCD)
+                if (!m_isCasting && globalCD)
                 {
 
-                    m_isCasting = true;
-                    ReloadWeapon(1.5f);
+                    //m_isCasting = true;
+                    //ReloadWeapon(1.5f);
 
                     m_CharacterAnimator.SetBool("Casting", true);
                     //m_AnimatorSkillBar.SetBool("IsCasting", true);
@@ -593,6 +587,7 @@ namespace Character
                 m_CharacterMouvement.combatState = false;
                 ReloadWeapon(5f);
                 m_currentRotationIndex = 0;
+                m_currentIndexCapsule = spellEquip[0];
             }
 
         }
