@@ -102,9 +102,10 @@ namespace Character
 
 
         public MouvementState mouvementState;
-       
+
 
         [SerializeField] private SpeedData m_speedData = new SpeedData();
+        private bool m_directionInputActive = false;
 
         public Vector3 currentDirection { get; private set; }
 
@@ -152,11 +153,12 @@ namespace Character
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
-
+                m_directionInputActive = true;
             }
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
+                m_directionInputActive = false;
 
             }
             if (!state.isPlaying)
@@ -192,7 +194,7 @@ namespace Character
             if (newState == mouvementState) return;
             BeforeChangeState(mouvementState);
             mouvementState = newState;
-           if(m_activeDebug) Debug.Log("New State = " + newState);
+            if (m_activeDebug) Debug.Log("New State = " + newState);
             AfterChangeState(mouvementState, prevState);
         }
 
@@ -226,7 +228,7 @@ namespace Character
             }
         }
 
-        public void AfterChangeState(MouvementState newState , MouvementState prevState)
+        public void AfterChangeState(MouvementState newState, MouvementState prevState)
         {
 
 
@@ -262,6 +264,11 @@ namespace Character
                     {
                         m_speedLimit = m_speedData.referenceSpeed[2];
                     }
+
+                    if ( prevState == MouvementState.Classic)
+                    {
+                        m_speedLimit = m_speedData.referenceSpeed[1];
+                    }
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
@@ -288,7 +295,7 @@ namespace Character
         private void CheckPlayerMouvement()
         {
             if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash) return;
-            
+
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
 
@@ -394,7 +401,7 @@ namespace Character
                 //m_speedData.currentSpeed = 0.0f;
                 return;
             }
-                if (mouvementState == MouvementState.Knockback)
+            if (mouvementState == MouvementState.Knockback)
             {
                 if (m_applyKnockback)
                 {
@@ -440,7 +447,7 @@ namespace Character
                 {
                     currentRefSpeed = m_speedLimit;
                 }
-                m_rigidbody.AddForce(Vector3.down*m_gravityForce, ForceMode.Impulse);
+                m_rigidbody.AddForce(Vector3.down * m_gravityForce, ForceMode.Impulse);
                 m_velMovement += Vector3.down * m_gravityForce * Time.deltaTime;
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, currentRefSpeed);
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
@@ -498,8 +505,6 @@ namespace Character
             return Physics.Raycast(transform.position, transform.forward, 3, m_objstacleLayer);
         }
 
-     
-
         private bool IsFasterThanSpeedReference(float speedReference)
         {
             return m_velMovement.magnitude > speedReference;
@@ -525,7 +530,7 @@ namespace Character
 
             if (!m_isSlowdown)
             {
-                m_velMovement += direction.normalized  * m_accelerationSpeed * Time.deltaTime;
+                m_velMovement += direction.normalized * m_accelerationSpeed * Time.deltaTime;
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
             }
             else
@@ -606,8 +611,9 @@ namespace Character
 
         private void RotateCharacter()
         {
+            if (!m_directionInputActive) return;
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-            
+
 
             Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
             float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
@@ -618,7 +624,7 @@ namespace Character
         private void SlideRotationCharacter()
         {
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-           
+
             Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
             float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
