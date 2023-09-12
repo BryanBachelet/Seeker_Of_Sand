@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 
 
@@ -38,6 +39,24 @@ public class CameraIntroMouvement : MonoBehaviour
         }
     }
 
+    public void InputSkipCinematic(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+        {
+            SkipIntro();
+        }
+    }
+
+    private void SkipIntro()
+    {
+        transform.rotation = Quaternion.Euler(m_cameraSteps[m_cameraSteps.Length - 1].rotation);
+        transform.position = m_cameraSteps[m_cameraSteps.Length - 1].position;
+        m_cameraScript.enabled = true;
+        m_isActivate = false;
+        m_fixInterface.SetActive(true);
+        GameState.ChangeState();
+    }
+
     private void UpdateCameraStatus()
     {
         if (m_timerCamera > m_cameraSteps[m_nextIndex].duration)
@@ -46,19 +65,19 @@ public class CameraIntroMouvement : MonoBehaviour
             {
                 m_prevIndex++;
                 m_nextIndex++;
-              
+
             }
             else
             {
                 m_cameraScript.enabled = true;
                 m_isActivate = false;
                 m_fixInterface.SetActive(true);
-                 GameState.ChangeState();
+                GameState.ChangeState();
                 return;
             }
             m_timerCamera = 0.0f;
         }
-        
+
         m_timerCamera += Time.deltaTime;
         float ratio = m_timerCamera / m_cameraSteps[m_nextIndex].duration;
 

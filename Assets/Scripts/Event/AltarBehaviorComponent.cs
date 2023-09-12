@@ -120,7 +120,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     void Update()
     {
 
-
+        if (!m_isEventOccuring) return;
         float ennemyTokill = 25 * resetNumber + 1 + m_enemeyManager.m_maxUnittotal;
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
