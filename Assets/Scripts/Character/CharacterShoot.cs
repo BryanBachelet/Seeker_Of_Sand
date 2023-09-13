@@ -146,7 +146,7 @@ namespace Character
             }
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;
+                currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
         }
 
@@ -190,14 +190,8 @@ namespace Character
             }
         }
 
-        public void ApplyStat(int index)
-        {
-            if (bookOfSpell[index].type == CapsuleSystem.CapsuleType.ATTACK)
-            {
-                CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[index];
-                currentCap.stats.stats = capsuleStatsAlone[index];
-            }
-        }
+    
+
         private void Update()
         {
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.Train) { this.enabled = false; return; }
@@ -359,7 +353,7 @@ namespace Character
             m_currentType = bookOfSpell[m_currentIndexCapsule].type;
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;
+                currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
             m_canShoot = false;
             m_isShooting = false;
