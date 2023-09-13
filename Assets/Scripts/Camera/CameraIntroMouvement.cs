@@ -41,7 +41,7 @@ public class CameraIntroMouvement : MonoBehaviour
 
     public void InputSkipCinematic(InputAction.CallbackContext ctx)
     {
-        if (ctx.started)
+        if (ctx.started && this.enabled)
         {
             SkipIntro();
         }
@@ -74,6 +74,7 @@ public class CameraIntroMouvement : MonoBehaviour
                 m_isActivate = false;
                 m_fixInterface.SetActive(true);
                 GameState.ChangeState();
+                this.enabled = false;
                 return;
             }
             m_timerCamera = 0.0f;

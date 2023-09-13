@@ -210,6 +210,7 @@ public class CharacterUpgrade : MonoBehaviour
                 break;
             case UpgradeType.CAPSULE:
                 m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex]);
+                m_characterShoot.ApplyStat(m_upgradeToChoose[indexChoose].capsuleIndex);
                 break;
         }
     }
