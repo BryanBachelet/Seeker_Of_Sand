@@ -190,13 +190,21 @@ namespace Character
             }
         }
 
+        public void ApplyStat(int index)
+        {
+            if (bookOfSpell[index].type == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[index];
+                currentCap.stats.stats = capsuleStatsAlone[index];
+            }
+        }
         private void Update()
         {
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.Train) { this.enabled = false; return; }
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {
-               
+
                 avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
                 if (autoAimActive)
                 {
@@ -341,7 +349,7 @@ namespace Character
             m_currentType = bookOfSpell[m_currentIndexCapsule].type;
             m_isCasting = true;
             m_isShooting = true;
-            
+
         }
 
         private void EndShoot()
