@@ -65,7 +65,7 @@ namespace Character
 
         private bool CalculateDashEndPoint() // Function that test where the player should arrive
         {
-            Vector3 m_direction = m_characterMouvement.forwardDirection;
+            Vector3 m_direction = m_characterMouvement.GetDirection();
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
@@ -115,10 +115,9 @@ namespace Character
             {
                 transform.position = Vector3.Lerp(m_startPoint, m_endPoint, m_dashTimer / m_dashDuration);
                 m_dashTimer += Time.deltaTime;
-              
+
             }
         }
-
 
         public void Update()
         {
@@ -140,13 +139,5 @@ namespace Character
             }
         }
 
-
-        public void OnDrawGizmos()
-        {
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(m_startPoint, m_endPoint);
-            Gizmos.DrawSphere(m_endPoint, 3);
-        }
     }
 }

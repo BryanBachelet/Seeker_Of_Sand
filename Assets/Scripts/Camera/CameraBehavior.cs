@@ -75,7 +75,8 @@ namespace Render.Camera
         [SerializeField] private AnimationCurve angularSpeedAcceleration;
         [SerializeField] private bool m_inverseCameraController = false;
         [SerializeField] private bool m_activateHeightDirectionMode = false;
-        [SerializeField] private bool m_mouseInputActivate = false;
+        [SerializeField] private bool m_mouseInputActivate = true;
+        [SerializeField] private bool m_rotationKeyboardActive = true;
 
         private float initialAngularSpeed;
         private float timeLastRotationInput;
@@ -183,7 +184,7 @@ namespace Render.Camera
         }
         public void RotationInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed && !m_mouseInputActivate)
+            if (ctx.performed && m_rotationKeyboardActive)
             {
 
                 float value = ctx.ReadValue<float>();
@@ -202,7 +203,7 @@ namespace Render.Camera
                 }
             }
 
-            if (ctx.canceled && !m_mouseInputActivate)
+            if (ctx.canceled && m_rotationKeyboardActive)
             {
                 m_isRotationInputPress = false;
                 float value = ctx.ReadValue<float>();
