@@ -146,7 +146,7 @@ namespace Character
             }
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;
+                currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
         }
 
@@ -190,13 +190,15 @@ namespace Character
             }
         }
 
+    
+
         private void Update()
         {
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.Train) { this.enabled = false; return; }
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {
-               
+
                 avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
                 if (autoAimActive)
                 {
@@ -341,7 +343,7 @@ namespace Character
             m_currentType = bookOfSpell[m_currentIndexCapsule].type;
             m_isCasting = true;
             m_isShooting = true;
-            
+
         }
 
         private void EndShoot()
@@ -351,7 +353,7 @@ namespace Character
             m_currentType = bookOfSpell[m_currentIndexCapsule].type;
             if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
             {
-                currentWeaponStats = ((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).stats.stats;
+                currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
             m_canShoot = false;
             m_isShooting = false;
