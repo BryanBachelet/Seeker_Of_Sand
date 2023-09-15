@@ -14342,6 +14342,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5293957063007559483, guid: ad0ee83b977565042b124aa5232ba2c0,
+        type: 3}
+      propertyPath: blendMat
+      value: 
+      objectReference: {fileID: 2100000, guid: d9a4cf8f3a97d834db1da29b07eab8e7, type: 2}
     - target: {fileID: 7771307964590140457, guid: ad0ee83b977565042b124aa5232ba2c0,
         type: 3}
       propertyPath: m_MaterialTemplate
@@ -18814,7 +18819,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446711731}
-  m_LocalRotation: {x: -0.06698731, y: -0.9330127, z: -0.25000003, w: 0.25000006}
+  m_LocalRotation: {x: -0.1756866, y: -0.70930105, z: -0.65567124, w: 0.19005667}
   m_LocalPosition: {x: -0.00005555153, y: 6.041691, z: -0.016203016}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21807,7 +21812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eb4b66058c01a34bb45d632245ac97f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timeOfDay: 16
+  m_timeOfDay: 12.3
   m_sun: {fileID: 1889437989}
   m_moon: {fileID: 446711733}
   m_SettingDurationDay: 1
@@ -37130,19 +37135,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 685255152, guid: 8883c8b8e0e5a62408eeb57a8958c438, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8001032
+      value: 0.9231673
       objectReference: {fileID: 0}
     - target: {fileID: 685255152, guid: 8883c8b8e0e5a62408eeb57a8958c438, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.33141357
+      value: -0.38238838
       objectReference: {fileID: 0}
     - target: {fileID: 685255152, guid: 8883c8b8e0e5a62408eeb57a8958c438, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.19134171
+      value: -0.015024082
       objectReference: {fileID: 0}
     - target: {fileID: 685255152, guid: 8883c8b8e0e5a62408eeb57a8958c438, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.46193978
+      value: -0.036271345
       objectReference: {fileID: 0}
     - target: {fileID: 745842785, guid: 8883c8b8e0e5a62408eeb57a8958c438, type: 3}
       propertyPath: m_Enabled
@@ -78681,6 +78686,202 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1822544112}
   m_Mesh: {fileID: -8381486326422277593, guid: ea4e68ad61f107a4b972a4c4c3f766a0, type: 3}
+--- !u!21 &1823102024
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MicroSplat 4_TerrainObjectBlend
+  m_Shader: {fileID: 4800000, guid: c53af29ab06fae440aafb96d9be5e22b, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Control0:
+        m_Texture: {fileID: 6302255864710588034, guid: 27b6973d84b3026408495fd5e684c904,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Control1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Control2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Control3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Diffuse:
+        m_Texture: {fileID: 18700000, guid: 75a58db16abaee94388caae6d58585d8, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissiveMetal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlitterWind:
+        m_Texture: {fileID: 2800000, guid: 5c17d279ce2734171a1575aed76f85b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalOriginal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalSAO:
+        m_Texture: {fileID: 18700000, guid: ec7d8cdf523763d4893eb80616949f4a, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PerPixelNormal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PerTexProps:
+        m_Texture: {fileID: -2409402403257190019, guid: 5fe8a52a80e1a024e92d8c5498729da7,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmoothAO:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainDesc:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHeightmapTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainNormalmapTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddPrecomputedVelocity: 0
+    - _AlphaCutoffEnable: 0
+    - _AlphaDstBlend: 0
+    - _AlphaSrcBlend: 1
+    - _AlphaToMask: 0
+    - _AlphaToMaskInspectorValue: 0
+    - _BlendMode: 0
+    - _Contrast: 0.4
+    - _CullMode: 2
+    - _CullModeForward: 2
+    - _DepthOffsetEnable: 0
+    - _DoubleSidedEnable: 0
+    - _DoubleSidedNormalMode: 2
+    - _DstBlend: 0
+    - _EmissiveMult: 1
+    - _EnableBlendModePreserveSpecularLighting: 1
+    - _EnableFogOnTransparent: 1
+    - _GlitterGraininess: 2
+    - _GlitterShininess: 1
+    - _GlitterStrength: 1
+    - _GlitterThreshold: 0.422
+    - _GlitterViewDep: 0
+    - _HybridHeightBlendDistance: 300
+    - _OpaqueCullMode: 2
+    - _RayTracing: 0
+    - _ReceivesSSR: 1
+    - _ReceivesSSRTransparent: 0
+    - _RefractionModel: 0
+    - _RenderQueueType: 1
+    - _RequireSplitLighting: 0
+    - _SnowParticulateOcclusionStrength: 1
+    - _SnowParticulateStrength: 1
+    - _SnowParticulateStretch: 0.3
+    - _SrcBlend: 1
+    - _StencilRef: 0
+    - _StencilRefDepth: 8
+    - _StencilRefDistortionVec: 4
+    - _StencilRefGBuffer: 10
+    - _StencilRefMV: 40
+    - _StencilWriteMask: 6
+    - _StencilWriteMaskDepth: 8
+    - _StencilWriteMaskDistortionVec: 4
+    - _StencilWriteMaskGBuffer: 14
+    - _StencilWriteMaskMV: 40
+    - _SupportDecals: 1
+    - _SurfaceType: 0
+    - _TBNoiseScale: 1
+    - _TransparentBackfaceEnable: 0
+    - _TransparentCullMode: 2
+    - _TransparentDepthPostpassEnable: 0
+    - _TransparentDepthPrepassEnable: 0
+    - _TransparentSortPriority: 0
+    - _TransparentWritingMotionVec: 0
+    - _TransparentZWrite: 0
+    - _TraxNormalStrength: 1
+    - _UseShadowThreshold: 0
+    - _WindParticulateOcclusionStrength: 0.4
+    - _WindParticulateRotation: 0
+    - _WindParticulateStrength: 1.81
+    - _WindParticulateStretch: 0.3
+    - _ZTestDepthEqualForOpaque: 4
+    - _ZTestGBuffer: 4
+    - _ZTestTransparent: 4
+    - _ZWrite: 1
+    m_Colors:
+    - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
+    - _GlitterDistFade: {r: 505.13, g: 6.12, b: 0.807, a: 0.69}
+    - _GlitterUVScale: {r: 100, g: 100, b: 0, a: 0}
+    - _SnowParticulateAngleMask: {r: -1, g: -1, b: 1, a: 1}
+    - _SnowParticulateColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SnowParticulateHeightMask: {r: 0, g: 0, b: 99999, a: 99999}
+    - _SnowParticulateParams: {r: 1, g: 1, b: 1, a: 0.25}
+    - _SnowParticulateShadow: {r: 0.01, g: 1, b: 0, a: 0}
+    - _SnowParticulateShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _TerrainBlendParams: {r: 1, g: 0.4, b: 0, a: 0}
+    - _TerrainBlendParams2: {r: 40, g: 0, b: 0, a: 0}
+    - _TerrainBounds: {r: -257, g: -675, b: 1000, a: 1000}
+    - _TerrainHeightmapScale: {r: 1.953125, g: 600, b: 1.953125, a: 0}
+    - _UVScale: {r: 1, g: 1, b: 0, a: 0}
+    - _WindEmissive: {r: 0, g: 0, b: 0, a: 0}
+    - _WindParticulateAngleMask: {r: -1, g: 20.21, b: 1, a: 1}
+    - _WindParticulateColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WindParticulateHeightMask: {r: 0, g: 0, b: 99999, a: 99999}
+    - _WindParticulateParams: {r: 0.5, g: 0.5, b: 0.15, a: 0.11}
+    - _WindParticulateShadow: {r: 0.01, g: 1, b: 0, a: 0}
+    - _WindParticulateShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _WindParticulateUpMask: {r: -1, g: -1, b: 1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1001 &1823826372
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81824,7 +82025,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 9992
+  m_Intensity: 11636.0205
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -81881,7 +82082,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889437988}
-  m_LocalRotation: {x: 0.25000006, y: -0.25000006, z: 0.9330127, w: 0.06698732}
+  m_LocalRotation: {x: 0.19005665, y: -0.65567124, z: 0.709301, w: 0.1756866}
   m_LocalPosition: {x: -0.00005555153, y: 6.041691, z: -0.016203016}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -81902,13 +82103,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 9992
+  m_Intensity: 11636.0205
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
   m_SpotIESCutoffPercent: 100
   m_LightDimmer: 1
-  m_VolumetricDimmer: 0.53
+  m_VolumetricDimmer: 2.78
   m_LightUnit: 2
   m_FadeDistance: 10000
   m_VolumetricFadeDistance: 10000
@@ -81936,7 +82137,7 @@ MonoBehaviour:
   m_FlareSize: 0
   m_FlareTint: {r: 1, g: 1, b: 1, a: 1}
   m_FlareFalloff: 0
-  m_SurfaceTexture: {fileID: 2800000, guid: 8162c41ff9e2f814caae48f14c62281b, type: 3}
+  m_SurfaceTexture: {fileID: 0}
   m_SurfaceTint: {r: 1, g: 1, b: 1, a: 1}
   m_Distance: 150000000
   m_UseRayTracedShadows: 0
