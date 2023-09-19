@@ -28,7 +28,10 @@ public class TrainingArea : MonoBehaviour
 
     public float imprecisionLevel;
 
-
+    [Range(1,5)]
+    public int difficulty;
+    [Range(1,10)]
+    public int numberByDifficulty;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,14 +59,19 @@ public class TrainingArea : MonoBehaviour
     public void LaunchAttack(int indexAttack)
     {
         //Debug.Log( "spawn this prefab : " + attack[indexAttack]);
-        GameObject attackInstiate = Instantiate(attack[indexAttack], imprecision + (playerRigidBodyVelocity * predictionPercent[indexAttack]), transform.rotation, transform);
-        //Debug.Log("Attack spawned : " + attackInstiate.name);
-        AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
-        dataLife.tempsVie = tempsRealese[indexAttack];
-        dataLife.playerTarget = playerPosition;
-        dataLife.rangeHit = RangeAttack[indexAttack];
-        attackEnCour.Add(attackInstiate);
-        StartCoroutine(DestroyAfterDelay(6, attackInstiate));
+        int variationQuantity = Random.Range(-difficulty, difficulty);
+        for(int i = 0; i < numberByDifficulty + variationQuantity; i++)
+        {
+            GameObject attackInstiate = Instantiate(attack[indexAttack], foundNewPosition() + (playerRigidBodyVelocity * predictionPercent[indexAttack]), transform.rotation, transform);
+            //Debug.Log("Attack spawned : " + attackInstiate.name);
+            AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
+            dataLife.tempsVie = tempsRealese[indexAttack];
+            dataLife.playerTarget = playerPosition;
+            dataLife.rangeHit = RangeAttack[indexAttack];
+            attackEnCour.Add(attackInstiate);
+            StartCoroutine(DestroyAfterDelay(6, attackInstiate));
+        }
+
     }
 
     public IEnumerator DestroyAfterDelay(float time, GameObject attackCreated)
@@ -72,15 +80,21 @@ public class TrainingArea : MonoBehaviour
         attackEnCour.Remove(attackCreated);
     }
 
+    public Vector3 foundNewPosition()
+    {
+        float posX = Random.Range(-imprecisionLevel, imprecisionLevel);
+        float posZ = Random.Range(-imprecisionLevel, imprecisionLevel);
+        imprecision = playerPosition.position + new Vector3(posX, 0, posZ);
+        return imprecision;
+    }
     private void OnTriggerStay(Collider other)
     {
         if(other.tag == "Player")
         {
             playerHere = true;
-            float posX = Random.Range(-imprecisionLevel, imprecisionLevel);
-            float posZ = Random.Range(-imprecisionLevel, imprecisionLevel);
+
             playerPosition = other.transform;
-            imprecision = playerPosition.position + new Vector3(posX, 0, posZ);
+
             playerRigidBodyVelocity = playerRb.velocity;
 
         }

@@ -247,7 +247,7 @@ namespace Character
                 }
             }
             ReloadShot();
-            ReloadWeapon(1.5f);
+            ReloadWeapon(0.5f);
         }
 
         public void ShootInput(InputAction.CallbackContext ctx)
