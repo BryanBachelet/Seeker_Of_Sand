@@ -193,6 +193,10 @@ MonoBehaviour:
   hasDeathAnimation: 0
   npcState: 0
   xpToDrop: 1
+  targetData:
+    target: {fileID: 0}
+    isMoving: 0
+  m_hasChangeTarget: 0
 --- !u!114 &4435284738777021273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,11 +218,14 @@ MonoBehaviour:
   m_groundDistance: 3
   m_groundLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   timeBetweenNavRefresh: 0.2
   minDistanceToFullyActive: 80
   m_distanceBeforeRepositionning: 400
   enemiesManager: {fileID: 0}
+  targetData:
+    target: {fileID: 0}
+    isMoving: 0
 --- !u!114 &2510152453898684457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_animator: {fileID: 8689520365587293952}
+  debugdistance: 0
 --- !u!1001 &105517998707912369
 PrefabInstance:
   m_ObjectHideFlags: 0

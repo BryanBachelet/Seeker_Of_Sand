@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1600268842}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.4, y: 2.58, z: -0.57}
+  m_LocalPosition: {x: -0.4, y: 7.5, z: -0.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,9 +44,9 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 0.8756645, g: 0.67105734, b: 0.9811321, a: 1}
-  m_Intensity: 18800
-  m_Range: 41.88025
+  m_Color: {r: 0.98039216, g: 0.73584116, b: 0.67058825, a: 1}
+  m_Intensity: 16777216
+  m_Range: 83.664
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -107,14 +107,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 18800
+  m_Intensity: 27
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
   m_SpotIESCutoffPercent: 100
   m_LightDimmer: 1
   m_VolumetricDimmer: 1.89
-  m_LightUnit: 2
+  m_LightUnit: 4
   m_FadeDistance: 10000
   m_VolumetricFadeDistance: 10000
   m_AffectDiffuse: 1
@@ -324,6 +324,7 @@ MonoBehaviour:
   m_CurrentHealth: 100
   m_MaxKillEnemys: 10
   m_CurrentKillCount: 0
+  DangerAddition: []
   radiusEventActivePlayer: 300
   radiusEjection: 10
   rangeEvent: 100
@@ -344,6 +345,9 @@ MonoBehaviour:
   - {fileID: 8859553135386368470}
   socleMaterial: {fileID: 0}
   isAltarDestroy: 0
+  m_eventProgressionSlider: {fileID: 0}
+  instructionOnActivation: 
+  m_enemeyManager: {fileID: 0}
 --- !u!135 &3688518606914291261
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -376,6 +380,18 @@ MonoBehaviour:
   eventState: 1
   m_eventLifeUIFeedback: {fileID: 0}
   m_eventLifeUIFeedbackObj: {fileID: 0}
+  m_eventProgressUIFeedback: {fileID: 0}
+  m_eventProgressionSlider: {fileID: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  rangeDegatAugmente: 0
+  evolutionDegatAugment:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1647525743671366656
 GameObject:
   m_ObjectHideFlags: 0

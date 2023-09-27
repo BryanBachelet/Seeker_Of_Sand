@@ -23,9 +23,14 @@ public class CameraIntroMouvement : MonoBehaviour
     private float m_timerCamera;
     private Render.Camera.CameraBehavior m_cameraScript;
     [SerializeField] private GameObject m_fixInterface;
+    [SerializeField] private Animator m_BlackOpening;
 
     public void Start()
     {
+        //if(m_BlackOpening == null)
+        //{
+        //    m_BlackOpening = GameObject.Find("Black_limite_Holder").GetComponent<Animator>();
+        //}
         m_isActivate = true;
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
@@ -53,6 +58,7 @@ public class CameraIntroMouvement : MonoBehaviour
         transform.position = m_cameraSteps[m_cameraSteps.Length - 1].position;
         m_cameraScript.enabled = true;
         m_isActivate = false;
+        m_BlackOpening.SetBool("Open", true);
         m_fixInterface.SetActive(true);
         GameState.ChangeState();
         this.enabled = false; 
@@ -75,6 +81,7 @@ public class CameraIntroMouvement : MonoBehaviour
                 m_fixInterface.SetActive(true);
                 GameState.ChangeState();
                 this.enabled = false;
+                //m_BlackOpening.SetBool("Open", true); 
                 return;
             }
             m_timerCamera = 0.0f;

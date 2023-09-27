@@ -186,7 +186,7 @@ namespace Render.Camera
         {
             if (ctx.performed && m_rotationKeyboardActive)
             {
-
+                
                 float value = ctx.ReadValue<float>();
                 if (m_inverseCameraController) value = -1 * value;
                 m_signValue = value;
@@ -234,12 +234,16 @@ namespace Render.Camera
         {
             if (ctx.performed && m_mouseInputActivate)
             {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = false;
                 m_isRotationInputPress = true;
 
             }
             if (ctx.canceled && m_mouseInputActivate)
             {
                 m_isRotationInputPress = false;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
         }
 

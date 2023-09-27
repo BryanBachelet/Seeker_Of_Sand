@@ -5,8 +5,6 @@ using UnityEngine.AI;
 
 namespace Enemies
 {
-
-
     public class NpcMouvementComponent : MonoBehaviour
     {
 
@@ -26,8 +24,6 @@ namespace Enemies
 
         [SerializeField] private float m_groundDistance = 3.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
-
-
 
         [Header("Navmesh Parameters")]
         public float timeBetweenNavRefresh;
@@ -55,8 +51,6 @@ namespace Enemies
             m_navMeshAgent.speed = m_baseSpeed;
             m_navMeshAgent.destination = (targetData.target.position);
         }
-
-
 
         public void InitComponent()
         {

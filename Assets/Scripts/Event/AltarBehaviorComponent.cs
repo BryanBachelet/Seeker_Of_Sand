@@ -17,6 +17,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     [SerializeField] private int m_CurrentHealth;
     [SerializeField] private float m_MaxKillEnemys;
     [SerializeField] private int m_CurrentKillCount;
+    [SerializeField] private GameObject[] DangerAddition;
     public float radiusEventActivePlayer = 300;
     public float radiusEjection;
     public int rangeEvent = 100;
@@ -67,6 +68,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     [SerializeField] private string instructionOnActivation;
 
     [SerializeField] private Enemies.EnemyManager m_enemeyManager;
+
+    private GameObject lastItemInstantiate;
     // Start is called before the first frame update
     void Start()
     {
@@ -120,14 +123,18 @@ public class AltarBehaviorComponent : MonoBehaviour
     void Update()
     {
 
-
-        float ennemyTokill = 25 * resetNumber + 1 + m_enemeyManager.m_maxUnittotal;
+        if (!m_isEventOccuring) return;
+        float ennemyTokill = 25 * (resetNumber + 1) + m_enemeyManager.m_maxUnittotal;
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+            if(lastItemInstantiate != null)
+            {
+                Destroy(lastItemInstantiate);
+            }
 
             //displayAnimator.InvertDisplayStatus(2);
         }
@@ -175,7 +182,19 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
-            m_EnemyManagerScript.SendInstruction(instructionOnActivation, Color.white, TerrainLocationID.currentLocationName);
+            m_EnemyManagerScript.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+            if(resetNumber == 2)
+            {
+                lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
+            }
+            else if (resetNumber == 3)
+            {
+                lastItemInstantiate = Instantiate(DangerAddition[1], transform.position, transform.rotation);
+            }
+            else if (resetNumber == 4)
+            {
+                lastItemInstantiate = Instantiate(DangerAddition[2], transform.position, transform.rotation);
+            }
             m_visualEffectActivation.Play();
             for (int i = 0; i < altarAllMesh.Length; i++)
             {

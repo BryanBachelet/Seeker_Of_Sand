@@ -4,7 +4,7 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.16f1
+//   Unity Version: 2021.3.15f1
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
@@ -35,6 +35,18 @@ Shader "Terrain_1_1"
       _EmissiveMult("Emissive Multiplier", Float) = 1
       [NoScaleOffset]_Specular ("Specular Array", 2DArray) = "black" {}
       _HybridHeightBlendDistance("Hybrid Blend Distance", Float) = 300
+
+      
+      [HideInInspector]_TerrainDesc("Terrain Desc", 2D) = "black" {}
+      [HideInInspector]_TerrainBounds("Terrain Bounds", Vector) = (0,0,512,512)
+      [PerRendererData]_TerrainBlendParams("Terrain Blend Distance", Vector) = (1, 0.4, 0, 0)
+      [PerRendererData]_TerrainBlendParams2("Terrain Blend Params2", Vector) = (40, 0, 0, 0)
+      _TerrainHeightmapTexture("Terrain Height Map", 2D) = "black" {}
+      _TerrainNormalmapTexture("Terrain Normal Map", 2D) = "bump" {}
+      _TerrainHeightmapScale("Terrain Height Map Scale", Vector) = (0,0,100,0)
+
+
+
 
       _TraxNormalStrength("Normal Shape Strength", Range(0, 2.5)) = 1
 
@@ -225,13 +237,13 @@ Shader "Terrain_1_1"
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -239,6 +251,7 @@ Shader "Terrain_1_1"
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -5564,13 +5577,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -5578,6 +5591,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -10736,13 +10750,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -10750,6 +10764,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -15976,13 +15991,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -15990,6 +16005,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -21190,13 +21206,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -21204,6 +21220,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -26358,13 +26375,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -26372,6 +26389,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -31522,13 +31540,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -31536,6 +31554,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -36715,13 +36734,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -36729,6 +36748,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -41939,13 +41959,13 @@ void Frag(  VertexToPixel v2f
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -41953,6 +41973,7 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -47125,13 +47146,13 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _HYBRIDHEIGHTBLEND 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
@@ -47139,6 +47160,7 @@ float3 GetTessFactors ()
       #define _PERTEXSMOOTHSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _TERRAINBLENDING 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
       #define _PERTEXTRAXNORMALSTR 1
@@ -52205,7 +52227,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base1885192084"
-   Fallback "Hidden/Terrain_1_1_Base1885192084"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base-567108280"
+   Fallback "Hidden/Terrain_1_1_Base-567108280"
    CustomEditor "MicroSplatShaderGUI"
 }
