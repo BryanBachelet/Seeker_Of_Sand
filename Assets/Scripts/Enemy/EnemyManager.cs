@@ -426,6 +426,23 @@ namespace Enemies
             }
         }
 
+
+        public void RemoveAllTarget()
+        {
+            for (int i = 0; i < m_targetTransformLists.Count; i++)
+            {
+                RemoveTarget(m_targetTransformLists[i]);
+            }   
+        }
+
+        public void RemoveAllAltar()
+        {
+            for (int i = 0; i < m_altarTransform.Count; i++)
+            {
+                RemoveAltar(m_altarTransform[i]);
+            }
+        }
+
         public void AddAltar(Transform altarTarget)
         {
             m_altarTransform.Add(altarTarget);

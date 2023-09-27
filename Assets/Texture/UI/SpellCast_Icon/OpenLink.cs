@@ -7,7 +7,7 @@ public class OpenLink : MonoBehaviour
     public string urlButton;
     public void OpenChannel()
     {
-        Application.OpenURL("urlButton");
+        Application.OpenURL(urlButton);
         GUIUtility.systemCopyBuffer = urlButton;
     }
 }

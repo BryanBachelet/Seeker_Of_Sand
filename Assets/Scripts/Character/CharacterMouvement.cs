@@ -70,6 +70,7 @@ namespace Character
         private float m_timerBeforeSliding;
 
         private float m_slope;
+        private Vector3 m_groundNormal;
         private bool m_isSave;
         private Vector3 m_saveVeloctiy;
         private bool m_saveStateSliding;
@@ -292,6 +293,14 @@ namespace Character
 
         #endregion
 
+        public Vector3 GetDirection()
+        {
+            Vector3 horizontalDirection = new Vector3(forwardDirection.x, 0, forwardDirection.z);
+            float angle = Vector3.SignedAngle(horizontalDirection.normalized, GetMouvementDirection(), Vector3.up);
+            Vector3 forward = Quaternion.AngleAxis(angle,m_groundNormal.normalized) * forwardDirection;
+            return forward;
+        }
+
         private void CheckPlayerMouvement()
         {
             if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash) return;
@@ -316,6 +325,7 @@ namespace Character
                 return;
             }
             Vector3 direction = GetForwardDirection(hit.normal);
+            m_groundNormal = hit.normal;
             forwardDirection = direction;
             m_speedData.direction = direction;
 
@@ -632,8 +642,6 @@ namespace Character
         }
         #endregion
 
-
-
         #region Knockback
 
         public void SetKnockback(Vector3 attackPosition)
@@ -652,6 +660,12 @@ namespace Character
         }
 
         #endregion
+
+
+        public void StopRigidbody()
+        {
+            m_rigidbody.velocity = Vector3.zero;
+        }
 
     }
 }

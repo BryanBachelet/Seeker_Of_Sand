@@ -35,12 +35,15 @@ public class TrainEventManager : MonoBehaviour
         if (m_pilarActive < 3)
             m_pilarActive++;
         m_isEventActive = true;
+        m_enemiesManager.RemoveAllTarget();
+        m_enemiesManager.RemoveAllAltar();
         for (int i = 0; i < m_pilarActive; i++)
         {
             // m_pilarHealthSystem[i].GetComponent<MeshRenderer>().enabled = true;
             m_pilarHealthSystem[i].transform.GetChild(0).gameObject.SetActive(true);
             m_pilarHealthSystem[i].ChangeState(EventObjectState.Active);
             m_pilarHealthSystem[i].ResetCurrentHealth();
+          
             m_enemiesManager.AddTarget(m_pilarHealthSystem[i].transform);
         }
     }
