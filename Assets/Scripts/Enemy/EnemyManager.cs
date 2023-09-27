@@ -13,6 +13,7 @@ namespace Enemies
     {
         private ObjectState state;
         [SerializeField] public Transform m_playerTranform;
+        [SerializeField] private Transform m_cameraTransform;
         [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
         [SerializeField] private Vector3 m_offsetSpawnPos;
         [SerializeField] private Vector3 position;
@@ -32,6 +33,7 @@ namespace Enemies
         [SerializeField] private float m_offsetToSpawnCenter = 20.0f;
         [SerializeField] private float m_minimumSpeedToRepositing = 30.0f;
         private float m_upperStartPositionMagnitude = 50.0f;
+        [SerializeField] private Transform m_enemyHolder;
 
         [Header("Enemy Target Rate")]
         [Range(0, 1.0f)] [SerializeField] private float m_bodylessEventTargetRate = .5f;
@@ -92,7 +94,7 @@ namespace Enemies
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
-            gsm = Camera.main.transform.GetComponentInChildren<GlobalSoundManager>();
+            gsm = m_cameraTransform.GetComponentInChildren<GlobalSoundManager>();
 
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
@@ -152,7 +154,7 @@ namespace Enemies
 
         private Vector3 FindPosition()
         {
-            float magnitude = (m_playerTranform.position - Camera.main.transform.position).magnitude;
+            float magnitude = (m_playerTranform.position - m_cameraTransform.position).magnitude;
             for (int i = 0; i < 25; i++)
             {
                 Vector3 basePosition = m_playerTranform.transform.position + m_playerTranform.forward * m_offsetToSpawnCenter;
@@ -174,7 +176,7 @@ namespace Enemies
 
         private Vector3 FindPositionAroundTarget(Transform targetTransform)
         {
-            float magnitude = (targetTransform.position - Camera.main.transform.position).magnitude;
+            float magnitude = (targetTransform.position - m_cameraTransform.position).magnitude;
             for (int i = 0; i < 25; i++)
             {
                 Vector3 basePosition = targetTransform.transform.position;
@@ -275,7 +277,7 @@ namespace Enemies
 
             if (rnd < 450)
             {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
+                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation, m_enemyHolder);
                 if (!EnemyTargetPlayer)
                 {
                     if (targetRate > m_bodylessEventTargetRate)
@@ -286,7 +288,7 @@ namespace Enemies
             }
             else if (rnd < 495 && rnd >= 450)
             {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation);
+                enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation, m_enemyHolder);
                 if (!EnemyTargetPlayer)
                 {
                     if (targetRate > m_fullBodyEventTargetRate)
@@ -297,7 +299,7 @@ namespace Enemies
             }
             else if (rnd >= 496 && rnd < 501)
             {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation);
+                enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation, m_enemyHolder);
                 if (!EnemyTargetPlayer)
                 {
                     if (targetRate > m_tankEventTargetRate)
@@ -308,7 +310,7 @@ namespace Enemies
             }
             else if (rnd > 500 && rnd <= 510)
             {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[3], positionSpawn, transform.rotation);
+                enemySpawn = GameObject.Instantiate(m_enemyGO[3], positionSpawn, transform.rotation, m_enemyHolder);
                 if (!EnemyTargetPlayer)
                 {
                     if (targetRate > m_shamanEventTargetRate)
@@ -319,7 +321,7 @@ namespace Enemies
             }
             else if (rnd > 510)
             {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[4], positionSpawn, transform.rotation);
+                enemySpawn = GameObject.Instantiate(m_enemyGO[4], positionSpawn, transform.rotation, m_enemyHolder);
                 if (!EnemyTargetPlayer)
                 {
                     if (targetRate > m_runnerEventTargetRate)
@@ -330,7 +332,7 @@ namespace Enemies
             }
             else
             {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation);
+                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation, m_enemyHolder);
                 if (!EnemyTargetPlayer)
                 {
                     if (targetRate > m_bodylessEventTargetRate)
