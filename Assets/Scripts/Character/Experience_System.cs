@@ -11,7 +11,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private float m_NumberEnemyKilled = 0;
     [SerializeField] private int m_CurrentLevel = 1;
 
-    [SerializeField] private Image m_LevelDisplayFill;
+    [SerializeField] public Image m_LevelDisplayFill;
     [SerializeField] private float m_RadiusPickupXp;
     [SerializeField] private bool m_ActiveGizmo;
     [SerializeField] private LayerMask m_ExperienceLayer;
@@ -19,7 +19,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private float m_posXFinal = 950;
     [SerializeField] private RectTransform m_xpPointer;
     [SerializeField] private VisualEffect levelUpEffect;
-    [SerializeField] private VisualEffect levelUpEffectUi;
+    [SerializeField] public VisualEffect levelUpEffectUi;
 
 
     private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 

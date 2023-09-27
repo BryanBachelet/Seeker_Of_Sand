@@ -35,7 +35,7 @@ Transform:
   m_GameObject: {fileID: 3294013781257085869}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.75, y: 3.75, z: 3.75}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6194875397824694646}
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808a9262f0052a94fbdb1691a9766fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxLife: 1
+  m_maxLife: 15
   m_vfxHitFeedback: {fileID: 2575186347912425037, guid: 69a1bec963035b943bda3a2bfb1f638f,
     type: 3}
   timeBeforeDestruction: 2
@@ -233,13 +233,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50837e8005842504697e4bb3f4d69c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 40
-  speedThreshold: 4
+  speed: 60
+  speedThreshold: 10
   isAffectedBySlope: 1
   maxVariation: 1.5
   minVariation: 0.5
   m_maxAngle: 60
-  m_groundDistance: 3
+  m_groundDistance: 6.25
   m_groundLayerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -263,11 +263,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5
-  jumpDuration: 1
+  jumpDuration: 0.5
   angleOfJump: 20
-  jumpDistance: 50
-  recuperationDistance: 20
-  groundMaxDistance: 3
+  jumpDistance: 100
+  recuperationDistance: 40
+  groundMaxDistance: 6.25
   m_layerMask:
     serializedVersion: 2
     m_Bits: 8

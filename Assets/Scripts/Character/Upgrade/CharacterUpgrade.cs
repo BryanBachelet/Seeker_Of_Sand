@@ -12,7 +12,7 @@ public class CharacterUpgrade : MonoBehaviour
 
     public GameObject uiLoaderDisplay;
     public Text m_upgradePoint;
-    [SerializeField] private Text m_LevelDisplay;
+    [SerializeField] public Text m_LevelDisplay;
     [SerializeField] private int m_CurrentLevel = 1;
 
        // UI display object
