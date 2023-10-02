@@ -16,7 +16,7 @@ namespace Character
         [SerializeField] private GameObject m_playerMesh;
 
         [Header("Dash UI Feedback")]
-        [SerializeField] private Image m_dashUI;
+        [SerializeField] public Image m_dashUI;
 
         private float m_dashTimer = 0.0f;
         private float m_dashCooldownTimer = 0.0f;
@@ -38,7 +38,7 @@ namespace Character
 
         private void InitComponent()
         {
-            m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+            m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterAim = GetComponent<CharacterAim>();
         }
 

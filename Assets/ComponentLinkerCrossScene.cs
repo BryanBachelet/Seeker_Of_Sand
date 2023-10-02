@@ -8,11 +8,13 @@ using UnityEngine.VFX;
 public class ComponentLinkerCrossScene : MonoBehaviour
 {
     public Scene sceneUIBook;
+
     #region Player
 
     private GameObject m_PlayerObjectRef; //Object référence
     #region Character Shoot
     private Character.CharacterShoot m_characterShoot;
+    [Header("---Player Parameter----------------------------")]
     [SerializeField] private GameObject m_skillBarHolderRef;
     [SerializeField] public List<VisualEffect> m_SpellReady = new List<VisualEffect>();
     [SerializeField] public List<Image> m_icon_Sprite;
@@ -39,18 +41,30 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public Image m_healthBar_Slider_CurrentHealth;
     [SerializeField] public Image m_healthBar_Slider_Quarter;
     #endregion
+    #region Character Dash
     private Character.CharacterDash m_CharacterDash;
-    private TerrainLocationID m_TerrainLocationID;
+    [SerializeField] public Image m_dashUI;
     #endregion
+    #region TerrainLocation
+    private TerrainLocationID m_TerrainLocationID;
+    [SerializeField] public TMP_Text m_locationText;
+    #endregion
+    #endregion
+
     #region Camera
+    [Header("---Camera Parameter----------------------------")]
     private GameObject m_MainCamera; //Object référence
     private CameraIntroMouvement m_CameraIntroMouvement;
     #endregion
-    #region Player Upgrade
-    private GameObject m_UpgradeScreenReference; //Object référence
-    private UpgradeUI m_UpgradeUI;
 
+    #region Player Upgrade
+
+    private GameObject m_UpgradeScreenReference; //Object référence
+    [Header("---Player Upgrade----------------------------")]
+    public UpgradeUI m_UpgradeUI;
+    [SerializeField] public UpgradeButton[] m_upgradeButtons = new UpgradeButton[9];
     #endregion
+    
     #region Pillar Health
     private GameObject m_PillarObject; //Object référence
     private ObjectHealthSystem m_ObjectHealthSystemePillar;
@@ -61,12 +75,33 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     #endregion
 
     #region render book object
+    [Header("---Render Book Parameter----------------------------")]
     public UpgradeUI upgradeUIRender;
     #endregion
-
     #region SpellBook
     [SerializeField] private UiSpellGrimoire m_spellBookObjectReference;
     #endregion
+
+    #region Enemy Manager
+    private GameObject m_enemyManagerObjectRef; //Object référence
+    private Enemies.EnemyManager m_enemyManager;
+    [Header("---Enemy Manager Parameter----------------------------")]
+    [SerializeField] public Image[] m_imageLifeEvents = new Image[3];
+    [SerializeField] public GameObject[] m_imageLifeEventObj = new GameObject[3];
+    [SerializeField] public TMP_Text[] m_textProgressEvent = new TMP_Text[3];
+    [SerializeField] public Image[] m_sliderProgressEvent = new Image[3];
+    #endregion
+
+    #region Day Cycle Controller
+
+    private GameObject m_dayCycleControllerObjectReference; //Object référence
+    private DayCyclecontroller m_dayCycleController;
+    [Header("---Day Cycle Parameter----------------------------")]
+    [SerializeField] public Text m_dayPhases;
+    [SerializeField] public TMP_Text m_instruction;
+    [SerializeField] public Image m_daySlider;
+    #endregion
+
     public void Start()
     {
         StartCoroutine(DelayInitialization());
@@ -108,6 +143,35 @@ public class ComponentLinkerCrossScene : MonoBehaviour
                 Debug.Log("Upgrade Screen acquired");
                 continue;
             }
+            else if (otherSceneGameObject[i].name == "0-Persistent Element")
+            {
+                for(int j = 0; j < otherSceneGameObject[i].transform.childCount; j++)
+                {
+                    if(otherSceneGameObject[i].transform.GetChild(j).name == "Enemy Manager")
+                    {
+                        m_enemyManagerObjectRef = otherSceneGameObject[i].transform.GetChild(j).gameObject;
+                    }
+                }
+                continue;
+            }
+            else if(otherSceneGameObject[i].name == "2-Moving Decors Element")
+            {
+                for(int j = 0; j < otherSceneGameObject[i].transform.childCount; j++)
+                {
+                    if(otherSceneGameObject[i].transform.GetChild(j).name == "Sun&Moon-Holder")
+                    {
+                        for(int k = 0; k < otherSceneGameObject[i].transform.GetChild(j).transform.childCount; k++)
+                        {
+                            if(otherSceneGameObject[i].transform.GetChild(j).transform.GetChild(k).name == "DayController")
+                            {
+                                m_dayCycleControllerObjectReference = otherSceneGameObject[i].transform.GetChild(j).transform.GetChild(k).gameObject;
+                            }
+                        }
+
+                    }
+                }
+                continue;
+            }
 
         }
 
@@ -133,6 +197,8 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_CharacterUpgrade.upgradeUiGO = m_upgradeUIGO;
         m_CharacterUpgrade.m_upgradePoint = m_upgradePoint_Txt;
         m_CharacterUpgrade.m_LevelDisplay = m_levelDisplay;
+        m_CharacterUpgrade.m_upgradeUi = m_UpgradeUI;
+        m_CharacterUpgrade.InitComponents();
         #endregion
         #region InteractionEvent
         m_InteractionEvent = m_PlayerObjectRef.GetComponent<InteractionEvent>();
@@ -145,9 +211,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         #endregion
         #region Character Dash
         m_CharacterDash = m_PlayerObjectRef.GetComponent<Character.CharacterDash>();
+        m_CharacterDash.m_dashUI = m_dashUI;
         #endregion
         #region Terrain Location ID
         m_TerrainLocationID = m_PlayerObjectRef.GetComponent<TerrainLocationID>();
+        m_TerrainLocationID.locationText = m_locationText;
         #endregion
         #endregion
 
@@ -156,13 +224,30 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         #endregion
 
         #region Upgrade Screen
-        m_UpgradeUI = m_UpgradeScreenReference.GetComponent<UpgradeUI>();
+        //m_UpgradeUI = m_UpgradeScreenReference.GetComponent<UpgradeUI>();
+        m_UpgradeUI.m_upgradeCharacter = m_PlayerObjectRef.GetComponent<CharacterUpgrade>();
+        m_UpgradeScreenReference.GetComponent<UpgradeUI>().upgradeButtons = m_UpgradeUI.upgradeButtons;
+
         #endregion
 
         #region SpellBookUI
         m_spellBookObjectReference.m_characterShoot = m_characterShoot;
         #endregion
 
+        #region EnemyManager
+        m_enemyManager = m_enemyManagerObjectRef.GetComponent<Enemies.EnemyManager>();
+        m_enemyManager.m_imageLifeEvents = m_imageLifeEvents;
+        m_enemyManager.m_imageLifeEventsObj = m_imageLifeEventObj;
+        m_enemyManager.m_textProgressEvent = m_textProgressEvent;
+        m_enemyManager.m_sliderProgressEvent = m_sliderProgressEvent;
+        #endregion
+
+        #region Day Cycle Controller
+        m_dayCycleController = m_dayCycleControllerObjectReference.GetComponent<DayCyclecontroller>();
+        m_dayCycleController.m_DayPhases = m_dayPhases;
+        m_dayCycleController.m_Instruction = m_instruction;
+        m_dayCycleController.m_daySlider = m_daySlider;
+        #endregion
         Debug.Log("Initialization done in : " + Time.timeSinceLevelLoad);
     }
 

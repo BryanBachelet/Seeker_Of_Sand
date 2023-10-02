@@ -204,7 +204,6 @@ namespace Enemies
 
             repositionningCount++;
             enemy.transform.position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
-            Debug.Log("Distance before repo ");
             return true;
         }
         private float GetTimeSpawn()

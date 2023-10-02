@@ -15,7 +15,6 @@ public class SceneSetuper : MonoBehaviour
         Screen.SetResolution(1920, 1080, true);
         if (blockStart) return;
         SceneManager.LoadScene(sceneToLoadByIndex, LoadSceneMode.Additive);
-        Debug.Log("Scene has been load");
         if(haveToUInitializeComponent)
         {
             //GameObject.Find("ComponentLinker").GetComponent<ComponentLinkerCrossScene>().ComponentInitialization();

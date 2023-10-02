@@ -22,7 +22,7 @@ public class CharacterUpgrade : MonoBehaviour
 
     private Loader_Behavior m_loaderBehavior;
     private UpgradeManager m_upgradeManager;
-    private UpgradeUI m_upgradeUi;
+    public UpgradeUI m_upgradeUi;
     private CharacterProfile m_characterProfil;
     private Character.CharacterShoot m_characterShoot;
 
@@ -79,7 +79,20 @@ public class CharacterUpgrade : MonoBehaviour
     #region Init Script
     public void Start()
     {
-        InitComponents();
+        //InitComponents();
+
+    }
+
+    public void InitComponents()
+    {
+        m_upgradeManager = FindObjectOfType<UpgradeManager>();
+        //m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
+        m_characterProfil = GetComponent<CharacterProfile>();
+        m_characterShoot = GetComponent<Character.CharacterShoot>();
+        m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
+        m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
+        m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
+
         m_upgradeUi.m_upgradeButtonFunction += ChooseUpgrade;
         for (int i = 0; i < m_upgradeUi.upgradeButtons.Length; i++)
         {
@@ -88,17 +101,6 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradeUi.upgradeButtons[i].button.onClick.AddListener(() => m_upgradeUi.m_upgradeButtonFunction.Invoke(upgradeLink, upgradeNumber));
         }
         m_upgradePoint.text = upgradePoint.ToString();
-    }
-
-    private void InitComponents()
-    {
-        m_upgradeManager = FindObjectOfType<UpgradeManager>();
-        m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
-        m_characterProfil = GetComponent<CharacterProfile>();
-        m_characterShoot = GetComponent<Character.CharacterShoot>();
-        m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
-        m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
-        m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
         //m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
     }
     #endregion

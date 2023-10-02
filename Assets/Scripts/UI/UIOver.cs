@@ -9,10 +9,17 @@ public class UIOver : MonoBehaviour
 
     private void Start()
     {
-        upgradeUI_object = transform.parent.transform.parent.GetComponent<UpgradeUI>();
+        //upgradeUI_object = transform.parent.transform.parent.GetComponent<UpgradeUI>();
     }
     private void OnMouseOver()
     {
+        Debug.Log("Overing : " + this.name);
         upgradeUI_object.UpdateCursorOver(m_numeroUpgrade);
     }
+
+    private void OnMouseDown()
+    {
+        
+    }
+
 }
