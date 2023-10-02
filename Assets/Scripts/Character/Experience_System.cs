@@ -25,6 +25,10 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
+
+    private bool m_xperienceBuffered = false;
+    private float lastXpBuffered = 0;
+    private float levelProgress;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,12 +55,16 @@ public class Experience_System : MonoBehaviour, CharacterComponent
                 m_worldExp.Remove(xpMvtScript);
             }
         }
+        if(m_xperienceBuffered)
+        {
+            BufferXpDisplay(lastXpBuffered, levelProgress);
+        }
     }
 
     public void OnEnemyKilled()
     {
         m_NumberEnemyKilled += 1;
-        float levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
+        levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
         if (levelProgress > m_CurrentLevel + 1)
         {
             LevelUp((int)m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled));
@@ -67,7 +75,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         else
         {
             //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
-            m_LevelDisplayFill.fillAmount = (levelProgress - m_CurrentLevel);
+            lastXpBuffered = Time.time;
+            m_xperienceBuffered = true;
             //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
     }
@@ -146,6 +155,12 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         }
         return content;
 
+    }
+
+    private void BufferXpDisplay(float time, float levelProgress)
+    {
+        m_LevelDisplayFill.fillAmount = Mathf.Lerp(m_LevelDisplayFill.fillAmount, (levelProgress - m_CurrentLevel), Time.time - time);
+        
     }
 
     public void TestReadDataSheet()
