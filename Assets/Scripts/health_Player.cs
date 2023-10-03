@@ -20,8 +20,8 @@ public class health_Player : MonoBehaviour
     [SerializeField] private float m_CurrentHealth;
     [SerializeField] private float m_invulerableLegerTime;
     [SerializeField] private float m_invulerableLourdTime;
-    [SerializeField] private Image m_SliderCurrentHealthHigh;
-    [SerializeField] private Image m_SliderCurrentQuarterHigh;
+    [SerializeField] public Image m_SliderCurrentHealthHigh;
+    [SerializeField] public Image m_SliderCurrentQuarterHigh;
     [SerializeField] private Image m_SliderCurrentHealthLow;
     [SerializeField] private Image m_SliderCurrentQuarterLow;
 

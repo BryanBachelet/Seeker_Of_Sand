@@ -7,13 +7,19 @@ public class SceneSetuper : MonoBehaviour
 {
     public int sceneToLoadByIndex = 2;
     public bool blockStart = false;
+    public bool haveToUInitializeComponent = false;
+
     // Start is called before the first frame update
     void Start()
     {
         Screen.SetResolution(1920, 1080, true);
         if (blockStart) return;
         SceneManager.LoadScene(sceneToLoadByIndex, LoadSceneMode.Additive);
-        Debug.Log("Scene has been load");
+        if(haveToUInitializeComponent)
+        {
+            //GameObject.Find("ComponentLinker").GetComponent<ComponentLinkerCrossScene>().ComponentInitialization();
+        }
+
     }
 
     public void LoadSpecificScene(int indexScene)

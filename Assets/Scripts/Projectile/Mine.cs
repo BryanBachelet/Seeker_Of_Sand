@@ -96,7 +96,6 @@ public class Mine : ProjectileExplosif
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
         m_animator.SetTrigger("Activation");
-        Debug.Log("Debut fonction");
         GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
         //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)

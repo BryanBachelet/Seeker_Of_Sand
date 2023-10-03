@@ -11,7 +11,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private float m_NumberEnemyKilled = 0;
     [SerializeField] private int m_CurrentLevel = 1;
 
-    [SerializeField] private Image m_LevelDisplayFill;
+    [SerializeField] public Image m_LevelDisplayFill;
     [SerializeField] private float m_RadiusPickupXp;
     [SerializeField] private bool m_ActiveGizmo;
     [SerializeField] private LayerMask m_ExperienceLayer;
@@ -19,12 +19,16 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private float m_posXFinal = 950;
     [SerializeField] private RectTransform m_xpPointer;
     [SerializeField] private VisualEffect levelUpEffect;
-    [SerializeField] private VisualEffect levelUpEffectUi;
+    [SerializeField] public VisualEffect levelUpEffectUi;
 
 
     private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
+
+    private bool m_xperienceBuffered = false;
+    private float lastXpBuffered = 0;
+    private float levelProgress;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,12 +55,16 @@ public class Experience_System : MonoBehaviour, CharacterComponent
                 m_worldExp.Remove(xpMvtScript);
             }
         }
+        if(m_xperienceBuffered)
+        {
+            BufferXpDisplay(lastXpBuffered, levelProgress);
+        }
     }
 
     public void OnEnemyKilled()
     {
         m_NumberEnemyKilled += 1;
-        float levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
+        levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
         if (levelProgress > m_CurrentLevel + 1)
         {
             LevelUp((int)m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled));
@@ -67,7 +75,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         else
         {
             //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
-            m_LevelDisplayFill.fillAmount = (levelProgress - m_CurrentLevel);
+            lastXpBuffered = Time.time;
+            m_xperienceBuffered = true;
             //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
     }
@@ -146,6 +155,12 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         }
         return content;
 
+    }
+
+    private void BufferXpDisplay(float time, float levelProgress)
+    {
+        m_LevelDisplayFill.fillAmount = Mathf.Lerp(m_LevelDisplayFill.fillAmount, (levelProgress - m_CurrentLevel), Time.time - time);
+        
     }
 
     public void TestReadDataSheet()

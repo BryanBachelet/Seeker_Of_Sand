@@ -26,7 +26,7 @@ public class UpgradeUI : MonoBehaviour
     public GameObject[] SelectionIcon = new GameObject[3];
     private Animator[] selectionAnimator = new Animator[3];
     public Animator[] upgradeButton = new Animator[3];
-    [SerializeField] private CharacterUpgrade m_upgradeCharacter ;
+    [SerializeField] public CharacterUpgrade m_upgradeCharacter ;
     public int lastUpgradeSelected = 0;
 
     public UpgradeUIDecal m_uiDecalUpdaterDisplay;

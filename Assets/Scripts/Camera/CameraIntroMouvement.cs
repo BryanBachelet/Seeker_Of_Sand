@@ -27,10 +27,10 @@ public class CameraIntroMouvement : MonoBehaviour
 
     public void Start()
     {
-        if(m_BlackOpening == null)
-        {
-            m_BlackOpening = GameObject.Find("Black_limite_Holder").GetComponent<Animator>();
-        }
+        //if(m_BlackOpening == null)
+        //{
+        //    m_BlackOpening = GameObject.Find("Black_limite_Holder").GetComponent<Animator>();
+        //}
         m_isActivate = true;
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
@@ -81,7 +81,7 @@ public class CameraIntroMouvement : MonoBehaviour
                 m_fixInterface.SetActive(true);
                 GameState.ChangeState();
                 this.enabled = false;
-                m_BlackOpening.SetBool("Open", true); 
+                //m_BlackOpening.SetBool("Open", true); 
                 return;
             }
             m_timerCamera = 0.0f;

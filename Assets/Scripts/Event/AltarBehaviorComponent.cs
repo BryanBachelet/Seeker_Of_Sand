@@ -182,16 +182,16 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
-            m_EnemyManagerScript.SendInstruction(instructionOnActivation, Color.white, TerrainLocationID.currentLocationName);
-            if(resetNumber == 3)
+            m_EnemyManagerScript.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+            if(resetNumber == 2)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
             }
-            else if (resetNumber == 4)
+            else if (resetNumber == 3)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[1], transform.position, transform.rotation);
             }
-            else if (resetNumber == 5)
+            else if (resetNumber == 4)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[2], transform.position, transform.rotation);
             }

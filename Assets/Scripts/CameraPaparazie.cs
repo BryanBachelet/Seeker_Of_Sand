@@ -42,23 +42,34 @@ public class CameraPaparazie : MonoBehaviour
         if (takeHiResShot)
         {
             ChooseRandomPositionBeforeScreen();
+
             transform.LookAt(target);
             float randomYVariation = Random.Range(-35, 35);
             Vector3 newRotation = new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z) + new Vector3(0, randomYVariation, 0);
             transform.eulerAngles += newRotation;
             RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
             GetComponent<Camera>().targetTexture = rt;
+
             Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
             GetComponent<Camera>().Render();
+
             RenderTexture.active = rt;
+
             screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
+
             GetComponent<Camera>().targetTexture = null;
-            RenderTexture.active = null; // JC: added to avoid errors
+
+            // JC: added to avoid errors
+            RenderTexture.active = null;
+            Color[] color = screenShot.GetPixels(0, 0, 10, 10);
             Destroy(rt);
+            ImageConversion.EncodeArrayToPNG(color, UnityEngine.Experimental.Rendering.GraphicsFormat.R32G32B32A32_SFloat, 10, 10);
             byte[] bytes = screenShot.EncodeToPNG();
             string filename = ScreenShotName(resWidth, resHeight);
             System.IO.File.WriteAllBytes(filename, bytes);
+
             Debug.Log(string.Format("Took screenshot to: {0}", filename));
+
             takeHiResShot = false;
         }
     }

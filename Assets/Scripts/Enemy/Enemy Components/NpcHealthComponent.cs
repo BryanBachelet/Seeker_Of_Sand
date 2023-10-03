@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 namespace Enemies
 {
 
@@ -15,6 +15,7 @@ namespace Enemies
         PAUSE,
     }
 
+    [Serializable]
     public struct TargetData
     {
         public Transform target;
@@ -34,6 +35,7 @@ namespace Enemies
         public ObjectState m_objectGameState;
         public int xpToDrop;
         private int m_previousNpcState;
+
 
         public TargetData targetData;
         public bool m_hasChangeTarget;

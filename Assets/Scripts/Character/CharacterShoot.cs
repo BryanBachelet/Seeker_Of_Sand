@@ -50,17 +50,17 @@ namespace Character
         [SerializeField] private CharacterProfile m_chracterProfil;
         [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
-        [SerializeField] private GameObject m_SkillBarHolder;
+        [SerializeField] public GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
-        [SerializeField] private List<UnityEngine.VFX.VisualEffect> m_SpellReady = new List<UnityEngine.VFX.VisualEffect>();
+        [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReady = new List<UnityEngine.VFX.VisualEffect>();
         private Rigidbody m_rigidbody;
 
         private Animator m_AnimatorSkillBar;
 
         private Loader_Behavior m_LoaderInUI;
-        [SerializeField] private List<Image> icon_Sprite;
-        [SerializeField] private List<Image> m_spellGlobalCooldown;
-        [SerializeField] private List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
+        [SerializeField] public List<Image> icon_Sprite;
+        [SerializeField] public List<Image> m_spellGlobalCooldown;
+        [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
 
         private CapsuleSystem.CapsuleType m_currentType;
@@ -90,9 +90,6 @@ namespace Character
             }
             InitCapsule();
             InitComponent();
-            m_currentRotationIndex = 0;
-            m_currentIndexCapsule = spellEquip[0];
-            m_canShoot = true;
         }
         public void InitComponentStat(CharacterStat stat)
         {
@@ -130,7 +127,7 @@ namespace Character
 
         public float GetPodRange() { return currentWeaponStats.range; }
         public CapsuleStats GetPod() { return currentWeaponStats; }
-        private void InitComponent()
+        public void InitComponent()
         {
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>(); // Assignation du move script
@@ -148,6 +145,9 @@ namespace Character
             {
                 currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
+            m_currentRotationIndex = 0;
+            m_currentIndexCapsule = spellEquip[0];
+            m_canShoot = true;
         }
 
         public void InitCapsule()
@@ -247,7 +247,7 @@ namespace Character
                 }
             }
             ReloadShot();
-            ReloadWeapon(1.5f);
+            ReloadWeapon(0.5f);
         }
 
         public void ShootInput(InputAction.CallbackContext ctx)
@@ -296,7 +296,6 @@ namespace Character
         {
             float angle = GetShootAngle(currentWeaponStats);
             int mod = GetStartIndexProjectile(currentWeaponStats);
-
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
                 Transform transformUsed = transform;

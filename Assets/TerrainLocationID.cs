@@ -14,7 +14,7 @@ public class TerrainLocationID : MonoBehaviour
     public int currentTerrainID;
     static public string currentLocationName;
     private TerrainLocationID lastLocation;
-    [SerializeField] private TMPro.TMP_Text locationText;
+    [SerializeField] public TMPro.TMP_Text locationText;
 
     public void Update()
     {

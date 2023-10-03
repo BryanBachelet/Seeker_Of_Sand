@@ -19,10 +19,10 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Volume m_LocalNightVolume;
     [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
-    [SerializeField] private Text m_DayPhases;
-    [SerializeField] private TMPro.TMP_Text m_Instruction;
+    [SerializeField] public Text m_DayPhases;
+    [SerializeField] public TMPro.TMP_Text m_Instruction;
     [SerializeField] public Animator m_instructionAnimator;
-    [SerializeField] private Image m_daySlider;
+    [SerializeField] public Image m_daySlider;
     private bool isNight = false;
     public float timescale;
 
