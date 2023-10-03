@@ -112,7 +112,9 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         yield return new WaitForSeconds(2f);
         sceneUIBook = SceneManager.GetSceneByBuildIndex(5);
         ComponentInitialization();
-        SceneManager.SetActiveScene(sceneUIBook);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(1));
+        yield return new WaitForSeconds(2f);
+        Debug.Log("Scene active = " + SceneManager.GetActiveScene().name);
     }
     public void ComponentInitialization()
     {

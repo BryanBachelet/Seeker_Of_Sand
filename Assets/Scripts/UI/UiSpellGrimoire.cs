@@ -187,7 +187,7 @@ public class UiSpellGrimoire : MonoBehaviour
 
     public void GetMouseLeftClick(InputAction.CallbackContext ctx)
     {
-        if (ctx.canceled)
+        if (ctx.canceled && isOpen)
         {
             m_isSpellSelected = false;
             m_imageComponentDragAndDrop.enabled = false;
