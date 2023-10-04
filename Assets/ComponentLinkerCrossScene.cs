@@ -49,6 +49,12 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     private TerrainLocationID m_TerrainLocationID;
     [SerializeField] public TMP_Text m_locationText;
     #endregion
+    #region Serie Controller
+    private SerieController m_serieController;
+    [SerializeField] private TMP_Text m_multiplicatorDisplay;
+    [SerializeField] private Image m_serieTimeDisplay;
+    [SerializeField] public TMPro.TMP_Text m_serieKillCount;
+    #endregion
     #endregion
 
     #region Camera
@@ -216,6 +222,12 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         #region Terrain Location ID
         m_TerrainLocationID = m_PlayerObjectRef.GetComponent<TerrainLocationID>();
         m_TerrainLocationID.locationText = m_locationText;
+        #endregion
+        #region Serie Controller
+        m_serieController = m_PlayerObjectRef.GetComponent<SerieController>();
+        m_serieController.m_multiplicatorDisplay = m_multiplicatorDisplay;
+        m_serieController.m_serieTimeDisplay = m_serieTimeDisplay;
+        m_serieController.m_serieKillCount = m_serieKillCount;
         #endregion
         #endregion
 
