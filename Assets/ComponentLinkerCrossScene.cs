@@ -96,6 +96,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public GameObject[] m_imageLifeEventObj = new GameObject[3];
     [SerializeField] public TMP_Text[] m_textProgressEvent = new TMP_Text[3];
     [SerializeField] public Image[] m_sliderProgressEvent = new Image[3];
+    #region HealthManager
+    private HealthManager m_healthManager;
+    [SerializeField] private DamageHealthFD[] m_damageHealthFDs;
+    [SerializeField] private Camera m_cameraReference;
+    #endregion
     #endregion
 
     #region Day Cycle Controller
@@ -254,6 +259,12 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_enemyManager.m_imageLifeEventsObj = m_imageLifeEventObj;
         m_enemyManager.m_textProgressEvent = m_textProgressEvent;
         m_enemyManager.m_sliderProgressEvent = m_sliderProgressEvent;
+        #region HealthManager
+        m_healthManager = m_enemyManagerObjectRef.GetComponent<HealthManager>();
+        m_healthManager.m_damageHealthFDs = m_damageHealthFDs;
+        m_healthManager.m_cameraReference = m_cameraReference;
+        m_healthManager.InitTextFeedback();
+        #endregion
         #endregion
 
         #region Day Cycle Controller
