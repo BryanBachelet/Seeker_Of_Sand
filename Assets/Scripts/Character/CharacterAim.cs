@@ -246,7 +246,7 @@ namespace Character
             FindAimWorldPoint();
             CalculateAimInformation();
             AimFeedback();
-            projectorVisorObject.transform.position = GetAimFinalPoint();
+            //projectorVisorObject.transform.position = GetAimFinalPoint();
             if (m_cursor != null)
             {
                 m_cursor.position = Input.mousePosition;

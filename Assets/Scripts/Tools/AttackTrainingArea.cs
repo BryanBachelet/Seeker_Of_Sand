@@ -50,6 +50,8 @@ public class AttackTrainingArea : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (playerTarget == null) return;
+
         positionOnDestroy = transform.position;
         if (Vector3.Distance(positionOnDestroy, playerTarget.position) < rangeHit)
         {

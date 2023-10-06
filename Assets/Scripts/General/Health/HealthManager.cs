@@ -5,20 +5,22 @@ using UnityEngine;
 public class HealthManager : MonoBehaviour
 {
 
-    [SerializeField] private DamageHealthFD[] m_damageHealthFDs;
+    [SerializeField] public DamageHealthFD[] m_damageHealthFDs;
     private List<DamageHealthFD> m_inactiveText;
     private List<DamageHealthFD> m_activeText;
 
     private int m_damageFDMax;
     private int m_textActiveCount =1;
+
+    [SerializeField] public Camera m_cameraReference;
     private void Start()
     {
-        InitTextFeedback();
+        
     }
 
 
   
-    private void InitTextFeedback()
+    public void InitTextFeedback()
     {
         m_damageFDMax = m_damageHealthFDs.Length;
         m_inactiveText = new List<DamageHealthFD>(m_damageFDMax);
@@ -26,6 +28,7 @@ public class HealthManager : MonoBehaviour
         for (int i = 0; i < m_damageHealthFDs.Length; i++)
         {
             m_damageHealthFDs[i].SetupText(this);
+            m_damageHealthFDs[i].m_cameraToLook = m_cameraReference;
             m_inactiveText.Add(m_damageHealthFDs[i]);
             m_activeText.Add(null);
         }
