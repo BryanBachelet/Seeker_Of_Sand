@@ -49,6 +49,12 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     private TerrainLocationID m_TerrainLocationID;
     [SerializeField] public TMP_Text m_locationText;
     #endregion
+    #region Serie Controller
+    private SerieController m_serieController;
+    [SerializeField] private TMP_Text m_multiplicatorDisplay;
+    [SerializeField] private Image m_serieTimeDisplay;
+    [SerializeField] public TMPro.TMP_Text m_serieKillCount;
+    #endregion
     #endregion
 
     #region Camera
@@ -90,6 +96,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public GameObject[] m_imageLifeEventObj = new GameObject[3];
     [SerializeField] public TMP_Text[] m_textProgressEvent = new TMP_Text[3];
     [SerializeField] public Image[] m_sliderProgressEvent = new Image[3];
+    #region HealthManager
+    private HealthManager m_healthManager;
+    [SerializeField] private DamageHealthFD[] m_damageHealthFDs;
+    [SerializeField] private Camera m_cameraReference;
+    #endregion
     #endregion
 
     #region Day Cycle Controller
@@ -219,6 +230,12 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_TerrainLocationID = m_PlayerObjectRef.GetComponent<TerrainLocationID>();
         m_TerrainLocationID.locationText = m_locationText;
         #endregion
+        #region Serie Controller
+        m_serieController = m_PlayerObjectRef.GetComponent<SerieController>();
+        m_serieController.m_multiplicatorDisplay = m_multiplicatorDisplay;
+        m_serieController.m_serieTimeDisplay = m_serieTimeDisplay;
+        m_serieController.m_serieKillCount = m_serieKillCount;
+        #endregion
         #endregion
 
         #region Camera
@@ -242,6 +259,12 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_enemyManager.m_imageLifeEventsObj = m_imageLifeEventObj;
         m_enemyManager.m_textProgressEvent = m_textProgressEvent;
         m_enemyManager.m_sliderProgressEvent = m_sliderProgressEvent;
+        #region HealthManager
+        m_healthManager = m_enemyManagerObjectRef.GetComponent<HealthManager>();
+        m_healthManager.m_damageHealthFDs = m_damageHealthFDs;
+        m_healthManager.m_cameraReference = m_cameraReference;
+        m_healthManager.InitTextFeedback();
+        #endregion
         #endregion
 
         #region Day Cycle Controller

@@ -20,6 +20,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private RectTransform m_xpPointer;
     [SerializeField] private VisualEffect levelUpEffect;
     [SerializeField] public VisualEffect levelUpEffectUi;
+    [SerializeField] private SerieController m_serieController;
 
 
     private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 
@@ -63,7 +64,9 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
     public void OnEnemyKilled()
     {
-        m_NumberEnemyKilled += 1;
+        float time = Time.time;
+        m_serieController.RefreshSeries(time);
+        m_NumberEnemyKilled += (1 * m_serieController.GetXpMultiplicator());
         levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
         if (levelProgress > m_CurrentLevel + 1)
         {
@@ -75,7 +78,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         else
         {
             //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
-            lastXpBuffered = Time.time;
+            lastXpBuffered = time;
             m_xperienceBuffered = true;
             //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
