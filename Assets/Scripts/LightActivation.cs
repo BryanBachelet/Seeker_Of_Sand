@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using UnityEngine.Rendering;
 
 public class LightActivation : MonoBehaviour
 {
     [SerializeField] private float rangeActivation;
     [SerializeField] LayerMask layerLight;
     [SerializeField] Collider[] colLight;
+
+    [SerializeField] private Color m_lightColor;
+    [SerializeField] private Color m_materialLightingColor;
+
     // Start is called before the first frame update
     void Start()
     {
