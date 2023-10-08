@@ -168,12 +168,14 @@ namespace Enemies
 
 
             m_isDestroy = true;
+
+            Debug.Log("Call False on refresh serie !");
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             //m_enemyManager.DestroyEnemy(this);
         }
     }

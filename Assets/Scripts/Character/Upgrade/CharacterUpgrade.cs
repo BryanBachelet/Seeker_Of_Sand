@@ -11,7 +11,7 @@ public class CharacterUpgrade : MonoBehaviour
     public GameObject upgradeUiGO;
 
     public GameObject uiLoaderDisplay;
-    public Text m_upgradePoint;
+    public TMPro.TMP_Text m_upgradePoint;
     [SerializeField] public Text m_LevelDisplay;
     [SerializeField] private int m_CurrentLevel = 1;
 

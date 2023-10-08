@@ -65,7 +65,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     public void OnEnemyKilled()
     {
         float time = Time.time;
-        m_serieController.RefreshSeries(time);
         m_NumberEnemyKilled += (1 * m_serieController.GetXpMultiplicator());
         levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
         if (levelProgress > m_CurrentLevel + 1)

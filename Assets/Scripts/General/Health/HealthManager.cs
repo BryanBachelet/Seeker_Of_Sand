@@ -13,6 +13,7 @@ public class HealthManager : MonoBehaviour
     private int m_textActiveCount =1;
 
     [SerializeField] public Camera m_cameraReference;
+    [SerializeField] public SerieController m_serieController;
     private void Start()
     {
         
@@ -38,6 +39,7 @@ public class HealthManager : MonoBehaviour
     {
         if (m_textActiveCount == m_damageFDMax) return;
 
+        m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
         currentDamageFD.StartDamageFeeback(position,damage);
 

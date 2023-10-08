@@ -12,6 +12,7 @@ public class SerieController : MonoBehaviour
     [SerializeField] public UnityEngine.UI.Image m_serieTimeDisplay;
     [SerializeField] public TMPro.TMP_Text m_serieKillCount;
 
+
     private float m_lastTimeEnemyHit = 0;
     // Start is called before the first frame update
     void Start()
@@ -33,12 +34,16 @@ public class SerieController : MonoBehaviour
         m_serieTimeDisplay.fillAmount = 1 - (Time.time - m_lastTimeEnemyHit) / m_timeMaintienSeries;
     }
 
-    public void RefreshSeries(float time)
+    public void RefreshSeries(bool refresh)
     {
-        m_currentCount += 1;
-        m_serieKillCount.text = "Serie \n" + m_currentCount;
-        m_SerieActive = true;
+
         m_lastTimeEnemyHit = Time.time;
+        if (!refresh)
+        {
+            m_currentCount += 1;
+            m_serieKillCount.text = "Kill combo : \n" + m_currentCount;
+            m_SerieActive = true;
+        }
     }
 
     public float GetXpMultiplicator()

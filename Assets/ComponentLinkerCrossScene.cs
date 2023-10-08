@@ -29,7 +29,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     #region Character Upgrade
     private CharacterUpgrade m_CharacterUpgrade;
     [SerializeField] public GameObject m_upgradeUIGO;
-    [SerializeField] public Text m_upgradePoint_Txt;
+    [SerializeField] public TMP_Text m_upgradePoint_Txt;
     [SerializeField] public Text m_levelDisplay;
     #endregion
     #region Intercation Event
@@ -53,7 +53,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     private SerieController m_serieController;
     [SerializeField] private TMP_Text m_multiplicatorDisplay;
     [SerializeField] private Image m_serieTimeDisplay;
-    [SerializeField] public TMPro.TMP_Text m_serieKillCount;
+    [SerializeField] public TMP_Text m_serieKillCount;
     #endregion
     #endregion
 
