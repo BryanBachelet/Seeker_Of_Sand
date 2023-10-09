@@ -42096,7 +42096,7 @@ PrefabInstance:
     - target: {fileID: 8261983649136725518, guid: 54844553927a77b4394c9746c9c36ec7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8261983649136725518, guid: 54844553927a77b4394c9746c9c36ec7,
         type: 3}
@@ -46211,7 +46211,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1525947194
 GameObject:
@@ -62404,6 +62404,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
+      propertyPath: m_isZoomBlock
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
       propertyPath: m_maxDistance
       value: 80
       objectReference: {fileID: 0}
@@ -62424,9 +62429,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
+      propertyPath: m_maxAngularSpeed
+      value: 720
+      objectReference: {fileID: 0}
+    - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
       propertyPath: m_targetTransform
       value: 
       objectReference: {fileID: 1983534964}
+    - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: m_currentLerpValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
       propertyPath: m_distanceToTarget
@@ -62434,8 +62449,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
+      propertyPath: m_maxZoomScaleBlock
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
       propertyPath: cameraTrainTransform
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
+        type: 3}
+      propertyPath: m_maxMouseDeltaSpeed
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
@@ -62460,7 +62485,7 @@ PrefabInstance:
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
       propertyPath: m_activeDebugMouseRotation
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 898435386039766567, guid: 6f63477d27c04c64483ef88cac36596a,
         type: 3}
@@ -64327,7 +64352,7 @@ PrefabInstance:
       objectReference: {fileID: 1231885408}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.size
-      value: 29
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[24].m_ActionId
@@ -64342,6 +64367,10 @@ PrefabInstance:
       value: a1bab915-530f-4499-ac55-329fecf29ffc
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_ActionId
+      value: b9655a3f-f07d-4dde-ae68-7d6d390a4cef
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[24].m_ActionName
       value: Player/StopFire[/Mouse/rightButton]
       objectReference: {fileID: 0}
@@ -64352,6 +64381,10 @@ PrefabInstance:
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[28].m_ActionName
       value: Player/ActivateRotation[/Mouse/rightButton]
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_ActionName
+      value: Player/Slide[/Keyboard/shift]
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.size
@@ -64375,6 +64408,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[28].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
@@ -64411,6 +64448,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[28].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
@@ -64458,6 +64499,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1556041119}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1983534998}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -64479,6 +64524,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[28].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
@@ -64518,6 +64567,10 @@ PrefabInstance:
       value: RotationMouseInput
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SlideInput
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: CameraIntroMouvement, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -64554,6 +64607,10 @@ PrefabInstance:
       value: Render.Camera.CameraBehavior, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Character.CharacterMouvement, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
@@ -64579,6 +64636,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_ActionEvents.Array.data[28].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534965, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_ActionEvents.Array.data[29].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1983534969, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
@@ -64629,6 +64690,10 @@ PrefabInstance:
       propertyPath: m_SkillBarHolder
       value: 
       objectReference: {fileID: 898740139}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: m_cameraBehavior
+      value: 
+      objectReference: {fileID: 1556041119}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_capsuleManager
       value: 
