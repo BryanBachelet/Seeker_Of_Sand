@@ -45,6 +45,7 @@ namespace Character
         private CharacterAim m_characterAim;
         private CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private Render.Camera.CameraShake m_cameraShake;
+        [SerializeField] private Render.Camera.CameraBehavior m_cameraBehavior;
         [SerializeField] private float m_shakeDuration = 0.1f;
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;
@@ -342,7 +343,7 @@ namespace Character
             m_currentType = bookOfSpell[m_currentIndexCapsule].type;
             m_isCasting = true;
             m_isShooting = true;
-
+            m_cameraBehavior.BlockZoom(true);
         }
 
         private void EndShoot()
@@ -461,6 +462,7 @@ namespace Character
             avatarTransform.localRotation = Quaternion.identity;
             //m_AnimatorSkillBar.SetBool("IsCasting", false);
             m_CharacterMouvement.combatState = false;
+             m_cameraBehavior.BlockZoom(false);
             float totalShootTime = time + currentWeaponStats.timeInterval;
             if (m_reloadTimer > totalShootTime)
             {

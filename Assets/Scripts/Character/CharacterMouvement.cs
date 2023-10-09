@@ -67,6 +67,7 @@ namespace Character
         public float timeBeforeSliding = 0.3f;
         public float combatDeccelerationSpeed = 6.0f;
         private bool isSlidingIsActive;
+        private bool m_isSlideInputActive;
         private float m_timerBeforeSliding;
 
         private float m_slope;
@@ -164,6 +165,23 @@ namespace Character
             if (!state.isPlaying)
             {
                 ChangeState(MouvementState.None);
+            }
+        }
+
+        public void SlideInput(InputAction.CallbackContext ctx)
+        {
+            if(ctx.started)
+            {
+                m_isSlideInputActive = true;
+            }
+            if(ctx.canceled)
+            {
+                m_isSlideInputActive = false;
+            }
+            if (!state.isPlaying)
+            {
+                ChangeState(MouvementState.None);
+                m_isSlideInputActive = false;
             }
         }
 
@@ -339,7 +357,7 @@ namespace Character
             }
 
 
-            if (isSliding && !combatState)
+            if (isSliding && !combatState && m_isSlideInputActive)
             {
                 ChangeState(MouvementState.Slide);
 
@@ -371,7 +389,7 @@ namespace Character
 
 
 
-            if (m_slope > minSlope)
+            if (m_slope > minSlope  && m_isSlideInputActive)
             {
                 if (m_timerBeforeSliding < timeBeforeSliding)
                 {

@@ -39,24 +39,30 @@ namespace Render.Camera
 
         // -- Test Camera Zoom ---- 
 
-        // TODO : Lerp zoom rotation;
-
         [Header("Camera Zoom parameter")]
         [SerializeField] private float m_maxDistance = 10;
         [SerializeField] private float m_minDistance = 2;
         [SerializeField] private Vector3 m_maxAngle;
         [SerializeField] private Vector3 m_minAngle;
-        [SerializeField] private float m_currentLerpValue = 0;
+        [SerializeField] private float m_currentLerpValue = 1;
         [SerializeField] private float m_inputZoomSensibility = 1.0f;
         [SerializeField] private bool m_activeCameraZoomDebug = false;
         [SerializeField] private Vector3 m_baseOffset;
         [SerializeField] private float m_valueMinToStartSlope = 0.8f;
 
+        [Header("Camera Zoom High Block State parameters")]
+        private bool m_isZoomBlock = false;
+        [SerializeField] private float m_maxZoomBlock = 0.15f;
+        [SerializeField] private float m_transitionDuration = 2;
+        [SerializeField] private float m_minZoomBlock = .85f;
+        private bool m_boolTest = false;
+        private bool m_isDezoomingAutomatily;
+
         private float m_inputZoomValue;
         private float m_slopeAngle;
         private float m_prevSlopeAngle;
         private float m_nextSlopeAngle;
-         
+
         [SerializeField] private float m_thresholdAngle = 4.0f;
 
         // -------------
@@ -66,6 +72,11 @@ namespace Render.Camera
         [Header("Camera Mouse Parameters")]
         [SerializeField] private float m_mousDeltaThreshold = 3.0f;
         [SerializeField] private bool m_activeDebugMouseRotation = false;
+        [SerializeField] private float m_maxMouseDeltaSpeed = 500;
+        [SerializeField] private float m_minMouseDeltaSpeed = 5.0f;
+        [SerializeField] private float m_mouseSensibility = 1.0f;
+        [SerializeField] private float m_maxAngularSpeed = 360;
+
         // ------------------------------
 
 
@@ -82,7 +93,7 @@ namespace Render.Camera
         private float timeLastRotationInput;
         private float m_currentAngle;
         private bool m_isRotationInputPress;
-        private float m_signValue;
+        private float m_mouseDeltaValue;
 
 
         // Start is called before the first frame update
@@ -122,7 +133,7 @@ namespace Render.Camera
                 // ------------------------
 
 
-                if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_signValue);
+                if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_mouseDeltaValue);
 
                 SetCameraRotation();
                 SetCameraPosition();
@@ -148,8 +159,11 @@ namespace Render.Camera
                 m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
                 if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
 
+                if (m_isDezoomingAutomatily) return;
+
                 m_currentLerpValue += m_inputZoomValue;
                 m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
+                if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
 
             }
 
@@ -170,11 +184,53 @@ namespace Render.Camera
             m_slopeAngle = Mathf.Lerp(m_prevSlopeAngle, m_nextSlopeAngle, 0.2f);
             Vector3 slopeAngle = new Vector3(0, 0.0f, 0);
 
-            if(m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle, 0.0f, 0);
+            if (m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle, 0.0f, 0);
             m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle;
             m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
             m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
         }
+
+        IEnumerator DeZoomCamera()
+        {
+
+            // Setup a bool 
+            m_isDezoomingAutomatily = true;
+            float zoonDelta = m_currentLerpValue - m_maxZoomBlock;
+            float speed = zoonDelta * (1 / m_transitionDuration);
+            while (m_currentLerpValue > m_maxZoomBlock)
+            {
+                m_currentLerpValue -= speed * Time.deltaTime;
+                yield return Time.deltaTime;
+            }
+            m_isDezoomingAutomatily = false;
+            //Reset bool
+
+        }
+
+        IEnumerator ZoomCloseCamera()
+        {
+            m_isDezoomingAutomatily = true;
+            float zoonDelta = m_minZoomBlock - m_currentLerpValue;
+            float speed = zoonDelta * (1 / m_transitionDuration);
+            while (m_currentLerpValue < m_minZoomBlock)
+            {
+                m_currentLerpValue += speed * Time.deltaTime;
+                yield return Time.deltaTime;
+            }
+            m_isDezoomingAutomatily = false;
+        }
+
+        public void BlockZoom(bool state)
+        {
+            if (state == m_isZoomBlock) return;
+
+            m_isZoomBlock = state;
+
+            if (!m_isZoomBlock) return;
+
+            StartCoroutine(DeZoomCamera());
+        }
+
 
         #endregion
 
@@ -186,10 +242,10 @@ namespace Render.Camera
         {
             if (ctx.performed && m_rotationKeyboardActive)
             {
-                
+
                 float value = ctx.ReadValue<float>();
                 if (m_inverseCameraController) value = -1 * value;
-                m_signValue = value;
+                m_mouseDeltaValue = value;
                 m_isRotationInputPress = true;
                 timeLastRotationInput = Time.time;
                 if (value > 0)
@@ -217,16 +273,19 @@ namespace Render.Camera
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
 
-                m_signValue = value * ctx.ReadValue<Vector2>().x;
+                m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<Vector2>().x;
 
-                if (Mathf.Abs(m_signValue) < m_mousDeltaThreshold) m_signValue = 0;
-                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_signValue.ToString());
+
+
+                if (Mathf.Abs(m_mouseDeltaValue) < m_mousDeltaThreshold) m_mouseDeltaValue = 0;
+                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
+
             }
 
             if (ctx.canceled && m_mouseInputActivate)
             {
-                m_signValue = 0.0f;
-                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_signValue.ToString());
+                m_mouseDeltaValue = 0.0f;
+                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
             }
         }
 
@@ -290,6 +349,7 @@ namespace Render.Camera
             if (sign == 0) return;
             sign = Mathf.Sign(sign);
             float deltaInputMove = Time.time - timeLastRotationInput;
+
             if (deltaInputMove < 1)
             {
                 m_angularSpeed = angularSpeedAcceleration.Evaluate(deltaInputMove);
@@ -298,10 +358,13 @@ namespace Render.Camera
             {
                 m_angularSpeed = initialAngularSpeed;
             }
+            float ratio = Mathf.Clamp(Mathf.Abs(m_mouseDeltaValue), m_minMouseDeltaSpeed, m_maxMouseDeltaSpeed) / m_maxMouseDeltaSpeed;
+
+            float angularSpeed = m_maxAngularSpeed * ratio;
             m_prevAngle = m_currentAngle;
             m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
 
-            m_currentAngle += sign * m_angularSpeed * Time.deltaTime;
+            m_currentAngle += sign * angularSpeed * Time.deltaTime;
 
             m_nextAngle = m_currentAngle;
             m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
@@ -311,6 +374,7 @@ namespace Render.Camera
             }
             else m_lerpTimer = 0.0f;
         }
+
 
 
         private void SetCameraRotation()
