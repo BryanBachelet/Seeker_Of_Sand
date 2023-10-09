@@ -82,6 +82,10 @@ namespace Character
 
         public EventInstance mouvementSoundInstance;
         public EventReference MouvementSoundReference;
+
+        [SerializeField] private Sprite[] m_spriteStateAssociated;
+        [SerializeField] public UnityEngine.UI.Image m_spriteState;
+        private bool m_changingState;
         public enum MouvementState
         {
             None,
@@ -170,6 +174,7 @@ namespace Character
         public void Update()
         {
             if (!state.isPlaying) return;
+
             if (mouvementState == MouvementState.Train)
             {
                 transform.position = positionInTrain.localPosition;
@@ -265,7 +270,7 @@ namespace Character
                         m_speedLimit = m_speedData.referenceSpeed[2];
                     }
 
-                    if ( prevState == MouvementState.Classic)
+                    if (prevState == MouvementState.Classic)
                     {
                         m_speedLimit = m_speedData.referenceSpeed[1];
                     }
@@ -296,7 +301,7 @@ namespace Character
         {
             Vector3 horizontalDirection = new Vector3(forwardDirection.x, 0, forwardDirection.z);
             float angle = Vector3.SignedAngle(horizontalDirection.normalized, GetMouvementDirection(), Vector3.up);
-            Vector3 forward = Quaternion.AngleAxis(angle,m_groundNormal.normalized) * forwardDirection;
+            Vector3 forward = Quaternion.AngleAxis(angle, m_groundNormal.normalized) * forwardDirection;
             return forward;
         }
 
@@ -417,9 +422,7 @@ namespace Character
                     m_velMovement = Vector3.zero;
                     m_rigidbody.velocity = Vector3.zero;
                     m_rigidbody.velocity += (m_directionKnockback);
-
                     m_applyKnockback = false;
-
                     m_knockbackTimer = 0;
                 }
                 if (m_knockbackTimer > m_knockBackDuration)
@@ -666,5 +669,9 @@ namespace Character
             m_rigidbody.velocity = Vector3.zero;
         }
 
+        public void DisplayNewCurrentState(int indexImage)
+        {
+            m_spriteState.sprite = m_spriteStateAssociated[indexImage];
+        }
     }
 }
