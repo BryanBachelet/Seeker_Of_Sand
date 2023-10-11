@@ -25,6 +25,7 @@ namespace Character
         public Render.Camera.CameraBehavior cameraPlayer;
         [SerializeField] private Transform positionInTrain;
         public float runSpeed = 7.0f;
+        public float combatSpeed = 26.0f;
         public bool combatState;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
@@ -55,6 +56,7 @@ namespace Character
         [Header("Move Parameter")]
         [SerializeField] private float m_accelerationSpeed = 4.0f;
         private Vector3 m_velMovement;
+        public bool activeCombatModeConstant;
 
         [Header("Slide Parameters")]
         public float accelerationSlide = 3.0f;
@@ -177,10 +179,12 @@ namespace Character
             if(ctx.started)
             {
                 m_isSlideInputActive = true;
+               if( activeCombatModeConstant) combatState = false;
             }
             if(ctx.canceled)
             {
                 m_isSlideInputActive = false;
+                if (activeCombatModeConstant) combatState = true;
             }
             if (!state.isPlaying)
             {
@@ -546,11 +550,11 @@ namespace Character
 
             if (combatState)
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed * m_SpeedReduce;
+                m_speedData.referenceSpeed[(int)mouvementState] = combatSpeed;
             }
             else
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed;
+                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed ;
             }
 
             m_speedData.IsFlexibleSpeed = false;
