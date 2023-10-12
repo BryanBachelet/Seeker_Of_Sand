@@ -223,7 +223,7 @@ namespace Character
                 if (Time.time > m_lastTimeShot + m_TimeAutoWalk)
                 {
                     m_lastTimeShot = Mathf.Infinity;
-                    m_CharacterMouvement.combatState = false;
+                    if (m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                     StopCasting();
                     return;
                 }
@@ -461,8 +461,8 @@ namespace Character
             m_CharacterAnimator.SetBool("Casting", false);
             avatarTransform.localRotation = Quaternion.identity;
             //m_AnimatorSkillBar.SetBool("IsCasting", false);
-            m_CharacterMouvement.combatState = false;
-             m_cameraBehavior.BlockZoom(false);
+            if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+            m_cameraBehavior.BlockZoom(false);
             float totalShootTime = time + currentWeaponStats.timeInterval;
             if (m_reloadTimer > totalShootTime)
             {
@@ -532,7 +532,7 @@ namespace Character
                     m_lastTimeShot = Mathf.Infinity;
                     avatarTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                    m_CharacterMouvement.combatState = false;
+                    if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                     return false;
                 }
                 else
@@ -586,7 +586,7 @@ namespace Character
                 m_CharacterAnimator.SetBool("Casting", false);
                 avatarTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                m_CharacterMouvement.combatState = false;
+                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                 ReloadWeapon(5f);
                 m_currentRotationIndex = 0;
                 m_currentIndexCapsule = spellEquip[0];
@@ -600,7 +600,7 @@ namespace Character
                 m_CharacterAnimator.SetBool("Casting", false);
                 avatarTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                m_CharacterMouvement.combatState = false;
+                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                 ReloadWeapon(5f);
                 m_currentRotationIndex = 0;
                 m_currentIndexCapsule = spellEquip[0];
@@ -613,7 +613,7 @@ namespace Character
             if (ctx.started)
             {
                 m_lastTimeShot = Mathf.Infinity;
-                m_CharacterMouvement.combatState = false;
+                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                 StopCasting();
             }
         }
