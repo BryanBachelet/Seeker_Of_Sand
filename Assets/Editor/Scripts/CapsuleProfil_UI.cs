@@ -51,8 +51,9 @@ public class CapsuleProfil_UI : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+    
         CapsuleProfil m_capsuleProfile = (CapsuleProfil)target;
-        lifetimeProperty.floatValue = EditorGUILayout.FloatField(lifetimeProperty.displayName, lifetimeProperty.floatValue);
+        m_capsuleProfile.stats.lifetime = EditorGUILayout.FloatField(lifetimeProperty.displayName, lifetimeProperty.floatValue);
        // useTravelTimeProperty.boolValue = EditorGUILayout.Toggle(useTravelTimeProperty.displayName, useTravelTimeProperty.boolValue);
         EditorGUILayout.PropertyField(useTravelTimeProperty);
         if (m_capsuleProfile.stats.useTravelTime)
@@ -76,6 +77,7 @@ public class CapsuleProfil_UI : Editor
         sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
         piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
         descriptionProperty.stringValue = EditorGUILayout.TextField(descriptionProperty.displayName, descriptionProperty.stringValue);
+        base.OnInspectorGUI();
         serializedObject.ApplyModifiedProperties();
     }
 }
