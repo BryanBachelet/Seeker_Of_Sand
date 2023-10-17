@@ -118,8 +118,4 @@ public class TrainingArea : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(playerPosition.position + playerRigidBodyVelocity, 5);
-    }
 }
