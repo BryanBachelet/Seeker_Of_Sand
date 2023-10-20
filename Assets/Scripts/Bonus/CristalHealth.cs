@@ -9,7 +9,9 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private float m_currentHealth;
     [SerializeField] private int m_cristalToDropPerHealth = 1;
     [SerializeField] private GameObject m_cristalLootPrefab;
-
+    [Range(0,3)]
+    [SerializeField] public int m_cristalType = 0; //0 --> Water | 1 --> Fire | 2 --> Aer | 3 --> Ground
+    [SerializeField] private UnityEngine.VFX.VisualEffect m_hitPrefab;
    
     private bool m_activeDeath;
 
@@ -29,8 +31,11 @@ public class CristalHealth : MonoBehaviour
     {
         for(int i = 0; i < damage; i++)
         {
+            m_hitPrefab.Play();
             GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
-            cristalInstantiate.GetComponent<ExperienceMouvement>().playerPosition = playerPosition;
+            ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
+            expMouvementScript.playerPosition = playerPosition;
+            expMouvementScript.cristalType = m_cristalType;
         }
     }
 
