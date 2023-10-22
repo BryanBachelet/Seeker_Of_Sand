@@ -44,12 +44,12 @@ public class CristalHealth : MonoBehaviour
         {
             cristalPart[0].SetActive(false);
         }
-        else if (m_currentHealth < m_healthMax * 0.33f)
+        if (m_currentHealth < m_healthMax * 0.33f)
         {
             //cristalPart[0].SetActive(false);
             cristalPart[1].SetActive(false);
         }
-        else if (m_currentHealth <= 0)
+        if (m_currentHealth <= 0)
         {
             StartCoroutine(DestroyAfterDelay(3));
         }
