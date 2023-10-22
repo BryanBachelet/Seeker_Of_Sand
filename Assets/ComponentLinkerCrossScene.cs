@@ -115,6 +115,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public Text m_dayPhases;
     [SerializeField] public TMP_Text m_instruction;
     [SerializeField] public Image m_daySlider;
+    [SerializeField] public Animator m_instructionAnimator;
     #endregion
 
     public void Start()
@@ -278,6 +279,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
         #region Day Cycle Controller
         m_dayCycleController = m_dayCycleControllerObjectReference.GetComponent<DayCyclecontroller>();
+        m_dayCycleController.m_instructionAnimator = m_instructionAnimator;
         m_dayCycleController.m_DayPhases = m_dayPhases;
         m_dayCycleController.m_Instruction = m_instruction;
         m_dayCycleController.m_daySlider = m_daySlider;
