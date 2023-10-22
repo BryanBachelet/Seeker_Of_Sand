@@ -125,20 +125,10 @@ namespace Enemies
         {
             animator.SetTrigger("Attacking");
             GameObject projectileInstance = Instantiate(m_projectileThrow, transform.position, Quaternion.identity);
-            ProjectileCurveData data = new ProjectileCurveData();
-            data.damage = damage;
-            data.destination = m_targetTransform.position;
-            data.angleTrajectory = angleTrajectory;
-            data.lifetime = projectileLifeTime;
-            data.target = m_targetTransform;
-            data.radiusOfAttack = radiusOfAttack;
-            RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(m_targetTransform.position, Vector3.down, out hit, 10, layer))
-            {
-                data.destination = hit.point;
-            }
-            ProjectileMortar m_projectileMortar = projectileInstance.GetComponent<ProjectileMortar>();
-            m_projectileMortar.InitProjectile(data);
+        
+            AttackTrainingArea attackObjectArea = projectileInstance.GetComponent<AttackTrainingArea>();
+            attackObjectArea.playerTarget = m_targetTransform;
+        
             m_npcHealthComponent.npcState = NpcState.RECUPERATION;
             animator.ResetTrigger("Attacking");
         }
