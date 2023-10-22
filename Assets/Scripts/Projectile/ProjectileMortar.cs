@@ -34,6 +34,7 @@ public class ProjectileMortar : MonoBehaviour
     public void Start()
     {
         //InitTrajectory();
+        transform.position = m_projectileData.destination;
         
     }
     private void InitTrajectory()

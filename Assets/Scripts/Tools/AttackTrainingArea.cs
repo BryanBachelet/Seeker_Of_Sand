@@ -11,7 +11,7 @@ public class AttackTrainingArea : MonoBehaviour
     public Transform playerTarget;
     public health_Player hpPlayer;
     private VisualEffect m_Vfx;
-    public float tempsVie;
+    [SerializeField] public float lifeTimeVFX;
     private DestroyAfterBasic destroyScript;
     // Start is called before the first frame update
 
@@ -30,8 +30,8 @@ public class AttackTrainingArea : MonoBehaviour
         {
             m_Vfx.SetFloat("Size", rangeHit * 3.33f);
             hpPlayer = playerTarget.GetComponent<health_Player>();
-            destroyScript.m_DestroyAfterTime = tempsVie;
-            m_Vfx.SetFloat("TempsRealese", tempsVie);
+            destroyScript.m_DestroyAfterTime = lifeTimeVFX;
+            m_Vfx.SetFloat("TempsRealese", lifeTimeVFX);
             m_Vfx.SendEvent("ActiveArea");
         }
     }
