@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+
 namespace Character
 {
 
@@ -64,17 +65,18 @@ namespace Character
 
         #endregion
 
-        // Need to move this function to spell manager.
-        //public void LoadSpells()
-        //{
-        //    m_bookOfSpell.Clear();
-        //    Spell.Spell[] spells =Resources.LoadAll<Spell.Spell>("SpellsIntances");
-        //    for (int i = 0; i < spells.Length; i++)
-        //    {
-        //        m_bookOfSpell.Add(ScriptableObject.CreateInstance<Spell.Spell>());
-        //    }
-        //}
+    
 
+
+        public void OnTriggerEnter(Collider other)
+        {
+            if(other.gameObject.tag == "SpellContainer")
+            {
+                Spell.SpellContainer spellContainer = other.GetComponent<Spell.SpellContainer>();
+                AddSpell(spellContainer.GetSpell());
+                spellContainer.Destroy();
+            }
+        }
 
     }
 
