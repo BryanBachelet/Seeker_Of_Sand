@@ -12,13 +12,15 @@ public class AttackTrainingArea : MonoBehaviour
     public health_Player hpPlayer;
     private VisualEffect m_Vfx;
     [SerializeField] public float lifeTimeVFX;
+    [SerializeField] public LayerMask m_groundLayerMask;
     private DestroyAfterBasic destroyScript;
     // Start is called before the first frame update
 
     private void OnEnable()
     {
-
+       
         m_Vfx = GetComponentInChildren<VisualEffect>();
+        
         destroyScript = this.gameObject.AddComponent<DestroyAfterBasic>();
 
     }
@@ -34,13 +36,23 @@ public class AttackTrainingArea : MonoBehaviour
             m_Vfx.SetFloat("TempsRealese", lifeTimeVFX);
             m_Vfx.SendEvent("ActiveArea");
         }
+        RaycastHit hit = new RaycastHit();
+
+        if (Physics.Raycast(transform.position + Vector3.up * 3, -Vector3.up, out hit, 10, m_groundLayerMask)) ;
+
+        {
+            float angle = Vector3.SignedAngle(Vector3.up, hit.normal, Vector3.forward);
+
+            transform.rotation = Quaternion.Euler(angle, transform.eulerAngles.y, transform.eulerAngles.z);
+            transform.position = hit.point;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if(debugCollider)
+        if (debugCollider)
         {
             positionOnDestroy = transform.position;
         }
@@ -62,7 +74,7 @@ public class AttackTrainingArea : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(positionOnDestroy != Vector3.zero)
+        if (positionOnDestroy != Vector3.zero)
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(positionOnDestroy, rangeHit);

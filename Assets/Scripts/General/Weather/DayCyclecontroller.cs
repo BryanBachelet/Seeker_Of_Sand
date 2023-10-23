@@ -160,7 +160,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
-        nightStartEvent.Invoke();
+        if(nightStartEvent!=null) nightStartEvent.Invoke();
         m_GSM.UpdateParameter(0, "DayOrNight");
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
