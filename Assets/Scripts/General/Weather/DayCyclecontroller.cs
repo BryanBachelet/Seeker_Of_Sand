@@ -48,7 +48,7 @@ public class DayCyclecontroller : MonoBehaviour
     public delegate void DayBeginning();
     public event DayBeginning dayStartEvent;
 
-
+    bool checkNightSound = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -154,6 +154,7 @@ public class DayCyclecontroller : MonoBehaviour
         //m_LocalNightVolume.enabled = false;
         m_GSM.UpdateParameter(0, "DayOrNight");
         m_moon.gameObject.SetActive(false);
+        checkNightSound = false;
     }
 
     private void StartNight()
@@ -219,9 +220,17 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 6.1f;
         }
-        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.5f)
+        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.49f)
         {
             m_timeOfDay = 18.5f;
+            if(!checkNightSound)
+            {
+                checkNightSound = true;
+                m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
+                StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
+                GlobalSoundManager.PlayOneShot(34, transform.position);
+            }
+
         }
 
         if (currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
