@@ -87,7 +87,9 @@ namespace Character
         public EventReference MouvementSoundReference;
 
         [SerializeField] private Sprite[] m_spriteStateAssociated;
-        [SerializeField] public UnityEngine.UI.Image m_spriteState;
+        [HideInInspector] public UnityEngine.UI.Image m_spriteState;
+
+        [HideInInspector] public Animator m_uiStateAnimator;
         private bool m_changingState;
         public enum MouvementState
         {
@@ -183,6 +185,7 @@ namespace Character
                 {
                     combatState = false;
                     m_CharacterAnim.SetBool("Casting", false);
+                    DisplayNewCurrentState(1);
                 }
             }
                 if (ctx.canceled)
@@ -191,6 +194,7 @@ namespace Character
                 if (activeCombatModeConstant)
                 {
                     m_CharacterAnim.SetBool("Casting", true);
+                    DisplayNewCurrentState(0);
                     combatState = true;
                 }
             }
@@ -703,7 +707,10 @@ namespace Character
 
         public void DisplayNewCurrentState(int indexImage)
         {
+            m_uiStateAnimator.SetTrigger("ChangeDisplay");
             m_spriteState.sprite = m_spriteStateAssociated[indexImage];
+
+            //m_uiStateAnimator.ResetTrigger("ChangeDisplay");
         }
     }
 }

@@ -14,6 +14,10 @@ public class AttackTrainingArea : MonoBehaviour
     [SerializeField] public float lifeTimeVFX;
     [SerializeField] public LayerMask m_groundLayerMask;
     private DestroyAfterBasic destroyScript;
+
+    public GameObject vfxExplosion;
+
+    public float tempsAvantExplosion = 1;
     // Start is called before the first frame update
 
     private void OnEnable()
@@ -22,6 +26,7 @@ public class AttackTrainingArea : MonoBehaviour
         m_Vfx = GetComponentInChildren<VisualEffect>();
         
         destroyScript = this.gameObject.AddComponent<DestroyAfterBasic>();
+
 
     }
     void Start()
@@ -51,7 +56,6 @@ public class AttackTrainingArea : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (debugCollider)
         {
             positionOnDestroy = transform.position;
@@ -62,12 +66,14 @@ public class AttackTrainingArea : MonoBehaviour
 
     private void OnDestroy()
     {
+        GameObject vfxExplosionObject = Instantiate(vfxExplosion, transform.position, transform.rotation);
         if (playerTarget == null) return;
 
         positionOnDestroy = transform.position;
         if (Vector3.Distance(positionOnDestroy, playerTarget.position) < rangeHit)
         {
             hpPlayer.GetDamageLeger(5, positionOnDestroy);
+            //vfxExplosionObject.GetComponent<VisualEffect>().Play();
             Debug.Log("Hit at [" + Vector3.Distance(positionOnDestroy, playerTarget.position) + "]");
         }
     }
