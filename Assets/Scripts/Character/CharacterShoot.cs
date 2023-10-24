@@ -43,7 +43,7 @@ namespace Character
         //    private int currentIndexWeapon;
 
         private CharacterAim m_characterAim;
-        private CharacterMouvement m_CharacterMouvement; // Add reference to move script
+        [HideInInspector] public CharacterMouvement m_CharacterMouvement; // Add reference to move script
         [SerializeField] private Render.Camera.CameraShake m_cameraShake;
         [SerializeField] private Render.Camera.CameraBehavior m_cameraBehavior;
         [SerializeField] private float m_shakeDuration = 0.1f;
@@ -458,7 +458,7 @@ namespace Character
 
             m_isCasting = false;
             m_shootInput = false;
-            m_CharacterAnimator.SetBool("Casting", false);
+           
             avatarTransform.localRotation = Quaternion.identity;
             //m_AnimatorSkillBar.SetBool("IsCasting", false);
             if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
@@ -528,7 +528,7 @@ namespace Character
                     m_isCasting = false;
                     m_shootInput = false;
 
-                    m_CharacterAnimator.SetBool("Casting", false);
+                    
                     m_lastTimeShot = Mathf.Infinity;
                     avatarTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
@@ -583,7 +583,7 @@ namespace Character
                 m_shootInput = false;
                 m_canShoot = false;
                 m_isReloading = true;
-                m_CharacterAnimator.SetBool("Casting", false);
+                
                 avatarTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
                 if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
