@@ -19,7 +19,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Volume m_LocalNightVolume;
     [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
-    [SerializeField] public Text m_DayPhases;
+    [SerializeField] public TMPro.TMP_Text m_DayPhases;
     [SerializeField] public TMPro.TMP_Text m_Instruction;
     [SerializeField] public Animator m_instructionAnimator;
     [SerializeField] public Image m_daySlider;
@@ -150,9 +150,8 @@ public class DayCyclecontroller : MonoBehaviour
         dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
-        m_GSM.UpdateParameter(1, "DayOrNight");
-        //m_LocalNightVolume.enabled = false;
         m_GSM.UpdateParameter(0, "DayOrNight");
+        //m_LocalNightVolume.enabled = false;
         m_moon.gameObject.SetActive(false);
         checkNightSound = false;
     }
@@ -162,7 +161,10 @@ public class DayCyclecontroller : MonoBehaviour
         m_moon.gameObject.SetActive(true);
         isNight = true;
         if(nightStartEvent!=null) nightStartEvent.Invoke();
-        m_GSM.UpdateParameter(0, "DayOrNight");
+        m_GSM.UpdateParameter(1, "DayOrNight");
+        m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
+        StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
+        GlobalSoundManager.PlayOneShot(34, transform.position);
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
@@ -226,9 +228,7 @@ public class DayCyclecontroller : MonoBehaviour
             if(!checkNightSound)
             {
                 checkNightSound = true;
-                m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
-                StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
-                GlobalSoundManager.PlayOneShot(34, transform.position);
+
             }
 
         }

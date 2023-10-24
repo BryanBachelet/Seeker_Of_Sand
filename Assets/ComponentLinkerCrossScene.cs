@@ -112,7 +112,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     private GameObject m_dayCycleControllerObjectReference; //Object référence
     private DayCyclecontroller m_dayCycleController;
     [Header("---Day Cycle Parameter----------------------------")]
-    [SerializeField] public Text m_dayPhases;
+    [SerializeField] public TMP_Text m_dayPhases;
     [SerializeField] public TMP_Text m_instruction;
     [SerializeField] public Image m_daySlider;
     [SerializeField] public Animator m_instructionAnimator;
