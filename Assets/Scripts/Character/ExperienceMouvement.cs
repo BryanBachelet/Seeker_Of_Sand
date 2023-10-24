@@ -12,6 +12,10 @@ public class ExperienceMouvement : MonoBehaviour
     Vector3 destination = Vector3.zero;
 
     public int cristalType = 0;
+
+    private bool m_destruction = false;
+    private float m_timeBeforeDestruction = 3;
+    [SerializeField] private TrailRenderer m_trail; 
     // Update is called once per frame
     void Update()
     {
@@ -41,6 +45,12 @@ public class ExperienceMouvement : MonoBehaviour
             }
 
         }
+        if(m_destruction)
+        {
+            m_timeBeforeDestruction -= Time.deltaTime;
+            m_trail.time = m_timeBeforeDestruction;
+            if (m_timeBeforeDestruction < 0) Destroy(this.gameObject);
+        }
     }
 
     public IEnumerator MoveToDestination(float time)
@@ -51,8 +61,11 @@ public class ExperienceMouvement : MonoBehaviour
         yield return new WaitForSeconds(time);
         checkDistance = false;
     }
-
-
-
     
+    public void initDestruction()
+    {
+        m_destruction = true;
+    }
+
+
 }

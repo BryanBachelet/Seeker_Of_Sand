@@ -127,8 +127,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         if (collision.gameObject.tag == "Experience")
         {
-            
-            Destroy(collision.gameObject);
+            collision.GetComponent<ExperienceMouvement>().initDestruction();
+            //Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
             OnEnemyKilled();
         }

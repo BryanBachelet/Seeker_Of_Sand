@@ -33,7 +33,8 @@ public class ProjectileMortar : MonoBehaviour
 
     public void Start()
     {
-        InitTrajectory();
+        //InitTrajectory();
+        transform.position = m_projectileData.destination;
         
     }
     private void InitTrajectory()
@@ -76,7 +77,7 @@ public class ProjectileMortar : MonoBehaviour
 
     public void Update()
     {
-        CurveTrajectory();
+        //CurveTrajectory();
         Duration();
         m_vfx.transform.localPosition = transform.InverseTransformPoint( m_projectileData.destination);
     }

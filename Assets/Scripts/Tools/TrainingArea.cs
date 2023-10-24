@@ -65,7 +65,7 @@ public class TrainingArea : MonoBehaviour
             GameObject attackInstiate = Instantiate(attack[indexAttack], foundNewPosition() + (playerRigidBodyVelocity * predictionPercent[indexAttack]), transform.rotation, transform);
             //Debug.Log("Attack spawned : " + attackInstiate.name);
             AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
-            dataLife.tempsVie = tempsRealese[indexAttack];
+            dataLife.lifeTimeVFX = tempsRealese[indexAttack];
             dataLife.playerTarget = playerPosition;
             dataLife.rangeHit = RangeAttack[indexAttack];
             attackEnCour.Add(attackInstiate);
