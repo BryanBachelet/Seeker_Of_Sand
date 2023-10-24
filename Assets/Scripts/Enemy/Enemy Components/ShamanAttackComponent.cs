@@ -124,8 +124,8 @@ namespace Enemies
         public void Attack()
         {
             animator.SetTrigger("Attacking");
-            GameObject projectileInstance = Instantiate(m_projectileThrow, transform.position, Quaternion.identity);
-        
+            GameObject projectileInstance = Instantiate(m_projectileThrow, m_targetTransform.position, Quaternion.identity);
+     
             AttackTrainingArea attackObjectArea = projectileInstance.GetComponent<AttackTrainingArea>();
             attackObjectArea.playerTarget = m_targetTransform;
         
