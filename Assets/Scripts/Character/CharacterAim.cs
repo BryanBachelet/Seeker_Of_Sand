@@ -47,7 +47,11 @@ namespace Character
         public float rangeDebug;
         public Collider[] colProche;
         [SerializeField] private float aimAssist = 1;
+
+
         public Collider NearestCol;
+
+        private bool m_exitCombatState = false;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
@@ -61,7 +65,7 @@ namespace Character
         /// </summary>
         private void FindAimWorldPoint()
         {
-            if(m_characterShoot.autoAimActive && m_characterShoot.m_isCasting)
+            if (m_characterShoot.autoAimActive && m_characterShoot.m_isCasting)
             {
                 Collider[] col = Physics.OverlapSphere(GetAimFinalPoint(), m_characterShoot.GetPodRange(), enemyLayer);
                 if (col.Length > 0)
@@ -257,8 +261,16 @@ namespace Character
 
         private void AimFeedback()
         {
-            FeedbackHeadRotation();
-            
+            if (m_characterShoot.m_CharacterMouvement.combatState)
+            {
+                m_exitCombatState = false;
+                FeedbackHeadRotation();
+            }
+            else if (!m_exitCombatState)
+            {
+                m_exitCombatState = true;
+                FeedbackHeadRotationSlide();
+            }
             //m_lineRenderer.SetPosition(0, transform.position);
             //if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
             //{
@@ -283,6 +295,13 @@ namespace Character
         {
             Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
             float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
+            m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+        }
+
+        private void FeedbackHeadRotationSlide()
+        {
+            Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
+            float angleDir = Vector3.SignedAngle(m_transformHead.forward, m_characterShoot.m_CharacterMouvement.GetMouvementDirection(), Vector3.up);
             m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
         }
 
