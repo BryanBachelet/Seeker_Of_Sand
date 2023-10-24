@@ -26,6 +26,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
+    private CristalInventory m_cristalInventory;
 
     private bool m_xperienceBuffered = false;
     private float lastXpBuffered = 0;
@@ -35,6 +36,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         m_characterUpgrade = GetComponent<CharacterUpgrade>();
         m_characterProfile = GetComponent<CharacterProfile>();
+        m_cristalInventory = GetComponent<CristalInventory>();
         TestReadDataSheet();
     }
 
@@ -129,6 +131,12 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
             OnEnemyKilled();
+        }
+        else if (collision.gameObject.tag == "CristalDrop")
+        {
+            m_cristalInventory.AddCristalCount(collision.GetComponent<ExperienceMouvement>().cristalType, 1);
+            Destroy(collision.gameObject);
+            GlobalSoundManager.PlayOneShot(3, Vector3.zero);
         }
     }
 

@@ -32,7 +32,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3294013781257085869}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.20186247, z: -0, w: 0.9794139}
   m_LocalPosition: {x: 5.8354297, y: 0.75, z: 30.35}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
@@ -42,7 +42,7 @@ Transform:
   - {fileID: 503375608560503130}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -23.292, z: 0}
 --- !u!33 &3294013781257085865
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -73,6 +73,7 @@ MeshRenderer:
   m_Materials:
   - {fileID: 2100000, guid: e68febdf62ba6b44485718112526e9d8, type: 2}
   - {fileID: 2100000, guid: b709b512988256a47a067079b2b66868, type: 2}
+  - {fileID: 2100000, guid: 8b732a16aa81f0841b6a0e93e27906d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -144,7 +145,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 32
   m_CollisionDetection: 0
 --- !u!114 &-984922616853698352
 MonoBehaviour:
@@ -197,6 +198,7 @@ MonoBehaviour:
     target: {fileID: 0}
     isMoving: 0
   m_hasChangeTarget: 0
+  m_EnemyAnimatorDissolve: {fileID: 0}
 --- !u!114 &4435284738777021273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,6 +329,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[3]
       value: 
       objectReference: {fileID: 2100000, guid: 5fdd13cd05a595a4b9a77b358a38c514, type: 2}
+    - target: {fileID: 427659053400134494, guid: b3198d862ec5bf849b8f385f925aec47,
+        type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b732a16aa81f0841b6a0e93e27906d0, type: 2}
+    - target: {fileID: 427659053400134494, guid: b3198d862ec5bf849b8f385f925aec47,
+        type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b732a16aa81f0841b6a0e93e27906d0, type: 2}
     - target: {fileID: 919132149155446097, guid: b3198d862ec5bf849b8f385f925aec47,
         type: 3}
       propertyPath: m_Name

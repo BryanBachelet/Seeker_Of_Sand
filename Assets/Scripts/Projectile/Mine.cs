@@ -84,7 +84,7 @@ public class Mine : ProjectileExplosif
 
         if (!m_isActive || m_isTrigger || !m_isOnGround) return;
 
-        if (other.tag == "Enemy" || other.tag == "Player")
+        if (other.tag == "Enemy" || other.tag == "Player" || other.tag == "Cristal")
         {
             m_isTrigger = true;
             StartCoroutine(TimeToExplose(m_timeBeforeExplosion));
@@ -108,13 +108,18 @@ public class Mine : ProjectileExplosif
                 Debug.Log("Player explosion fonction");
                 continue;
             }
-            
-            Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
-           
-            if (enemyTouch == null) continue;
+            else if (enemies[i].tag == "Enemy")
+            {
+                Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
 
-            if (enemyTouch.npcState == Enemies.NpcState.DEATH) continue;
-             enemyTouch.ReceiveDamage(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized , m_power);
+                if (enemyTouch.npcState == Enemies.NpcState.DEATH) continue;
+                enemyTouch.ReceiveDamage(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power);
+            }
+            else if (enemies[i].tag == "Cristal")
+            {
+                enemies[i].GetComponent<CristalHealth>().ReceiveHit((int)m_damage);
+            }
+
         }
         StartCoroutine(DelayDestroy(2));
     }

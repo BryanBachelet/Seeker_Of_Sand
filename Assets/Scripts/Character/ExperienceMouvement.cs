@@ -6,10 +6,12 @@ public class ExperienceMouvement : MonoBehaviour
 {
     [HideInInspector] public Transform playerPosition;
     [SerializeField] private float m_speed = 15;
-    private bool checkDistance = false;
+    private bool checkDistance = true;
     private bool startCoroutine = false;
     private float distance = 0;
     Vector3 destination = Vector3.zero;
+
+    public int cristalType = 0;
     // Update is called once per frame
     void Update()
     {
@@ -17,7 +19,7 @@ public class ExperienceMouvement : MonoBehaviour
         {
             if(!startCoroutine)
             {
-                StartCoroutine(MoveToDestination(3));
+                StartCoroutine(MoveToDestination(0.5f));
             }
             if(!checkDistance)
             {
@@ -26,7 +28,16 @@ public class ExperienceMouvement : MonoBehaviour
             }
             else
             {
-                transform.position = Vector3.MoveTowards(transform.position, destination, m_speed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, destination, m_speed * 5 * Time.deltaTime);
+                float distance = Vector3.Distance(transform.position, destination);
+            }
+            if(distance < 3)
+            {
+                destination.y = Mathf.Lerp(destination.y, playerPosition.position.y, distance / 5);
+            }
+            else if (distance < 1)
+            {
+                checkDistance = false;
             }
 
         }
@@ -35,7 +46,8 @@ public class ExperienceMouvement : MonoBehaviour
     public IEnumerator MoveToDestination(float time)
     {
         startCoroutine = true;
-        destination = new Vector3(playerPosition.position.x, playerPosition.position.y + 100, playerPosition.position.z);
+        Vector2 rnd = Random.insideUnitCircle;
+        destination = new Vector3(transform.position.x + (rnd.x * 10), transform.position.y + 30, transform.position.z + (rnd.y * 10));
         yield return new WaitForSeconds(time);
         checkDistance = false;
     }

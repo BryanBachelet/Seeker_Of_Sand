@@ -179,12 +179,20 @@ namespace Character
             if(ctx.started)
             {
                 m_isSlideInputActive = true;
-               if( activeCombatModeConstant) combatState = false;
+                if (activeCombatModeConstant)
+                {
+                    combatState = false;
+                    m_CharacterAnim.SetBool("Casting", false);
+                }
             }
-            if(ctx.canceled)
+                if (ctx.canceled)
             {
                 m_isSlideInputActive = false;
-                if (activeCombatModeConstant) combatState = true;
+                if (activeCombatModeConstant)
+                {
+                    m_CharacterAnim.SetBool("Casting", true);
+                    combatState = true;
+                }
             }
             if (!state.isPlaying)
             {
@@ -403,8 +411,10 @@ namespace Character
                 if (m_timerBeforeSliding < timeBeforeSliding)
                 {
                     m_timerBeforeSliding += Time.deltaTime;
+                    
                     if (m_timerBeforeSliding >= timeBeforeSliding)
                         ChangeState(MouvementState.Slide);
+
                     ChangeState(MouvementState.Classic);
                     Move(direction);
                     return;

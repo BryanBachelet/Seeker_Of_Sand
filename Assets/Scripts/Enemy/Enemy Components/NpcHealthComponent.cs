@@ -47,6 +47,7 @@ namespace Enemies
         private HealthManager m_healthManager;
         private Animator m_entityAnimator;
         private EnemyManager m_enemyManager;
+        [SerializeField] private Animator m_EnemyAnimatorDissolve;
 
         // Hit damage
 
@@ -106,6 +107,7 @@ namespace Enemies
         private IEnumerator Death()
         {
             m_healthManager.m_serieController.RefreshSeries(false);
+            //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction);
            
             m_enemyManager.DestroyEnemy(this);

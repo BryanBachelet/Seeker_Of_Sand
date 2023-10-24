@@ -75,26 +75,36 @@ public class Harpon : Projectile
 
     private void EnemyCollision(Collider other)
     {
-        if (other.tag != "Enemy") return;
-
-        GlobalSoundManager.PlayOneShot(9, transform.position);
-        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
-        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
-
-        if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
+        if (other.tag == "Enemy" || other.tag == "Cristal")
         {
-            enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
+            GlobalSoundManager.PlayOneShot(9, transform.position);
+            if (other.tag == "Enemy")
+            {
+                Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
+                if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
 
-            if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+                if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
+                {
+                    enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
 
-            m_firstHit = true;
-            m_enemyImpale = enemyTouch;
-            m_enemyImpale.npcState = Enemies.NpcState.PAUSE;
+                    if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+
+                    m_firstHit = true;
+                    m_enemyImpale = enemyTouch;
+                    m_enemyImpale.npcState = Enemies.NpcState.PAUSE;
+                }
+                if (m_firstHit || m_currentDistance > m_minRangeToImpale)
+                {
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                }
+            }
+            if (other.tag == "Cristal")
+            {
+                other.GetComponent<CristalHealth>().ReceiveHit((int)m_damage);
+            }
         }
-        if (m_firstHit || m_currentDistance > m_minRangeToImpale)
-        {
-            enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
-        }
+
+
 
     }
 

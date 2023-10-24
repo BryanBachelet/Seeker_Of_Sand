@@ -55,6 +55,10 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] private Image m_serieTimeDisplay;
     [SerializeField] public TMP_Text m_serieKillCount;
     #endregion
+    #region cristal Inventory
+    private CristalInventory m_cristalInventory;
+    [SerializeField] private GameObject[] m_cristalDisplay = new GameObject[4];
+    #endregion
     #endregion
 
     #region Camera
@@ -235,6 +239,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_serieController.m_multiplicatorDisplay = m_multiplicatorDisplay;
         m_serieController.m_serieTimeDisplay = m_serieTimeDisplay;
         m_serieController.m_serieKillCount = m_serieKillCount;
+        #endregion
+        #region Cristal Inventory
+        m_cristalInventory = m_PlayerObjectRef.GetComponent<CristalInventory>();
+        m_cristalInventory.cristalDisplay = m_cristalDisplay;
+        m_cristalInventory.SetupText();
         #endregion
         #endregion
 

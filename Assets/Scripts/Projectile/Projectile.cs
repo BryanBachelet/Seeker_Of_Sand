@@ -90,20 +90,34 @@ public class Projectile : MonoBehaviour
     }
     public virtual void CollisionEvent(Collider other)
     {
-        if (other.gameObject.tag != "Enemy") return;
-
-        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
-
-        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
-
-        enemyTouch.ReceiveDamage(m_damage,other.transform.position - transform.position, m_power);
-
-        piercingCount++;
-        if (piercingCount >= m_piercingMax)
+        if (other.gameObject.tag == "Enemy") 
         {
-            
-            Destroy(this.gameObject);
+            Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
+
+            if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+
+            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power);
+
+            piercingCount++;
+            if (piercingCount >= m_piercingMax)
+            {
+
+                Destroy(this.gameObject);
+            }
         }
+        else if (other.gameObject.tag == "Cristal")
+        {
+            other.GetComponent<CristalHealth>().ReceiveHit((int)m_damage);
+            piercingCount++;
+            if (piercingCount >= m_piercingMax)
+            {
+
+                Destroy(this.gameObject);
+            }
+        }
+        else return;
+
+
 
     }
 
