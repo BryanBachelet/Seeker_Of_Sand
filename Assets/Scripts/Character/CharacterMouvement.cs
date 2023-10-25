@@ -185,6 +185,7 @@ namespace Character
                 {
                     combatState = false;
                     m_CharacterAnim.SetBool("Casting", false);
+                    cameraPlayer.BlockZoom(false);
                     DisplayNewCurrentState(1);
                 }
             }
@@ -195,6 +196,7 @@ namespace Character
                 {
                     m_CharacterAnim.SetBool("Casting", true);
                     DisplayNewCurrentState(0);
+                    cameraPlayer.BlockZoom(true);
                     combatState = true;
                 }
             }
