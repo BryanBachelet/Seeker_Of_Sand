@@ -6,5 +6,8 @@ using UnityEngine;
 public class CapsuleProfil : ScriptableObject
 {
     public CapsuleStats stats;
+    public GameObject test;
+    
+
 }
 

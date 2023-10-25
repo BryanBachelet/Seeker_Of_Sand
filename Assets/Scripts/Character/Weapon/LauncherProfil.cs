@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using UnityEditor;
 
 [Serializable]
 public struct LauncherStats
@@ -42,6 +42,7 @@ public struct CapsuleStats
     public int piercingMax;
     public string description;
 
+  
     [HideInInspector] public float timeBetweenShot 
     { 
         get 

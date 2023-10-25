@@ -31,7 +31,7 @@ public class SerieController : MonoBehaviour
                 m_currentCount = 0;
             }
         }
-        m_serieTimeDisplay.fillAmount = 1 - (Time.time - m_lastTimeEnemyHit) / m_timeMaintienSeries;
+      if(m_serieTimeDisplay)  m_serieTimeDisplay.fillAmount = 1 - (Time.time - m_lastTimeEnemyHit) / m_timeMaintienSeries;
     }
 
     public void RefreshSeries(bool refresh)

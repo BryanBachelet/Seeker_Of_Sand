@@ -21,6 +21,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public List<Image> m_spellGlobalCooldown;
     [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
     #endregion
+    #region Character Movement
+    private Character.CharacterMouvement m_characterMovement;
+    [SerializeField] public Animator m_uiStateAnimator;
+    [SerializeField] private Image m_spriteState;
+    #endregion
     #region eperience System
     private Experience_System m_ExperienceSysteme;
     [SerializeField] public Image m_LevelDisplayFill;
@@ -112,7 +117,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     private GameObject m_dayCycleControllerObjectReference; //Object référence
     private DayCyclecontroller m_dayCycleController;
     [Header("---Day Cycle Parameter----------------------------")]
-    [SerializeField] public Text m_dayPhases;
+    [SerializeField] public TMP_Text m_dayPhases;
     [SerializeField] public TMP_Text m_instruction;
     [SerializeField] public Image m_daySlider;
     [SerializeField] public Animator m_instructionAnimator;
@@ -204,6 +209,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_characterShoot.InitCapsule();
         m_characterShoot.InitComponent();
 
+        #endregion
+        #region Character Movement
+        m_characterMovement = m_PlayerObjectRef.GetComponent<Character.CharacterMouvement>();
+        m_characterMovement.m_uiStateAnimator = m_uiStateAnimator;
+        m_characterMovement.m_spriteState = m_spriteState;
         #endregion
         #region Experience systeme
         m_ExperienceSysteme = m_PlayerObjectRef.GetComponent<Experience_System>();
