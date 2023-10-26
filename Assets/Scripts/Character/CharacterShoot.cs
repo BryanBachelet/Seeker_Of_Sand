@@ -527,8 +527,9 @@ namespace Character
                 {
                     m_isCasting = false;
                     m_shootInput = false;
+                    m_cameraBehavior.BlockZoom(false);
 
-                    
+
                     m_lastTimeShot = Mathf.Infinity;
                     avatarTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
@@ -583,7 +584,8 @@ namespace Character
                 m_shootInput = false;
                 m_canShoot = false;
                 m_isReloading = true;
-                
+                m_cameraBehavior.BlockZoom(false);
+
                 avatarTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
                 if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
@@ -597,6 +599,7 @@ namespace Character
                 m_shootInput = false;
                 m_canShoot = false;
                 m_isReloading = true;
+                m_cameraBehavior.BlockZoom(false);
                 m_CharacterAnimator.SetBool("Casting", false);
                 avatarTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
