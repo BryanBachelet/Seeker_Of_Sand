@@ -108,9 +108,9 @@ namespace Enemies
 
         public void Update()
         {
-            if (!state.isPlaying) return;
+            if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
-            m_timeOfGame += Time.deltaTime;
+            m_timeOfGame = Time.time;
             if (spawningPhase)
             {
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
