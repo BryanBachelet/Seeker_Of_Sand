@@ -16,6 +16,7 @@ public class Mine : ProjectileExplosif
     private bool m_isActive;
     private bool m_isTrigger;
 
+    public GameObject vfxExplosion;
 
     public void Start()
     {
@@ -97,6 +98,8 @@ public class Mine : ProjectileExplosif
         Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
         m_animator.SetTrigger("Activation");
         GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
+        GameObject explosion = Instantiate(vfxExplosion, transform.position, transform.rotation);
+        explosion.transform.localScale = transform.localScale;
         //GlobalSoundManager.PlayOneShot(0, transform.position);
         for (int i = 0; i < enemies.Length; i++)
         {
