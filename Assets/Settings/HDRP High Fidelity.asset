@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HDRP High Fidelity
   m_EditorClassIdentifier: 
   m_RenderPipelineSettings:
-    supportShadowMask: 0
+    supportShadowMask: 1
     supportSSR: 0
     supportSSRTransparent: 0
     supportSSAO: 1
@@ -33,13 +33,13 @@ MonoBehaviour:
     colorBufferFormat: 48
     supportCustomPass: 1
     customBufferFormat: 12
-    supportedLitShaderMode: 2
+    supportedLitShaderMode: 1
     planarReflectionResolution:
       m_Values: 000100000004000000080000
       m_SchemaId:
         m_Id: With3Levels
     supportDecals: 1
-    supportDecalLayers: 0
+    supportDecalLayers: 1
     supportSurfaceGradient: 0
     decalNormalBufferHP: 0
     msaaSampleCount: 1
@@ -140,6 +140,7 @@ MonoBehaviour:
       singlePass: 1
       occlusionMesh: 1
       cameraJitter: 0
+      allowMotionBlur: 1
     postProcessQualitySettings:
       NearBlurSampleCount: 030000000500000008000000
       NearBlurMaxRadius:

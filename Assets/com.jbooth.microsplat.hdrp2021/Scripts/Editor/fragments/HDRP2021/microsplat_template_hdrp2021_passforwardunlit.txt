@@ -1,0 +1,210 @@
+﻿        Pass
+        {
+            Name "ForwardOnly"
+                Tags
+                {
+                    "LightMode" = "ForwardOnly"
+                }
+            
+            Stencil
+            {
+               WriteMask [_StencilWriteMask]
+               Ref [_StencilRef]
+               Comp Always
+               Pass Replace
+            }
+        
+            ColorMask [_ColorMaskTransparentVel] 1
+
+            %PASSFORWARD%
+            
+            //-------------------------------------------------------------------------------------
+            // End Render Modes
+            //-------------------------------------------------------------------------------------
+        
+            HLSLPROGRAM
+        
+            #pragma target %SHADERTARGET%
+            #pragma only_renderers d3d11 playstation xboxone xboxseries vulkan metal switch
+            #pragma multi_compile_instancing
+            //#pragma instancing_options renderinglayer// breaks terrain instancing
+            #pragma multi_compile_local _ _ALPHATEST_ON
+            #pragma shader_feature _ _SURFACE_TYPE_TRANSPARENT
+            #pragma shader_feature_local _BLENDMODE_OFF _BLENDMODE_ALPHA _BLENDMODE_ADD _BLENDMODE_PRE_MULTIPLY
+            #pragma shader_feature_local _ _ADD_PRECOMPUTED_VELOCITY
+            #pragma shader_feature_local _ _TRANSPARENT_WRITES_MOTION_VEC
+            //#pragma multi_compile _ DEBUG_DISPLAY
+                
+        
+
+            #define SHADERPASS SHADERPASS_FORWARD_UNLIT
+            #define RAYTRACING_SHADER_GRAPH_DEFAULT
+
+            #define SHADER_UNLIT
+
+            #if defined(_ENABLE_SHADOW_MATTE) && SHADERPASS == SHADERPASS_FORWARD_UNLIT
+            #define LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
+            #define HAS_LIGHTLOOP
+            #endif
+            
+            %DEFINES%
+
+            %PRAGMAS%
+
+            %HDRPINCLUDE%
+
+            // unlike the real pass, we use the lit includes so that the variables aren't all renamed.
+            // This allows us to share more pass code at no cost. We also have to include
+            // this normalbuffer stuff so that some things compile.
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderGraphFunctions.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/NormalBuffer.hlsl"
+               
+
+            %TEMPLATE_SHARED%
+
+            %CUSTOMCBUFFER%
+
+            %CUSTOMINSTANCEPROPS%
+
+            %CODE%
+
+            %SHADERDESC%
+
+            %VERT%
+
+            %TESSELLATION%
+
+            %HDRPSHARED%
+
+
+
+
+      #ifdef UNITY_VIRTUAL_TEXTURING
+      #define VT_BUFFER_TARGET SV_Target1
+      #define EXTRA_BUFFER_TARGET SV_Target2
+      #else
+      #define EXTRA_BUFFER_TARGET SV_Target1
+      #endif
+
+      void Frag(VertexToPixel v2p,
+                  out float4 outColor : SV_Target0
+              #ifdef UNITY_VIRTUAL_TEXTURING
+                  ,out float4 outVTFeedback : VT_BUFFER_TARGET
+              #endif
+              #ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
+                  , out float4 outMotionVec : EXTRA_BUFFER_TARGET
+              #endif
+              #ifdef _DEPTHOFFSET_ON
+                  , out float outputDepth : SV_Depth
+              #endif
+      )
+      {
+      #ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
+          // Init outMotionVector here to solve compiler warning (potentially unitialized variable)
+          // It is init to the value of forceNoMotion (with 2.0)
+          outMotionVec = float4(2.0, 0.0, 0.0, 0.0);
+      #endif
+
+          UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(vp2);
+          FragInputs input = BuildFragInputs(v2p);
+
+          // input.positionSS is SV_Position
+          PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS);
+
+          float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
+
+          SurfaceData surfaceData;
+          BuiltinData builtinData;
+          Surface l;
+          ShaderData d;
+          GetSurfaceAndBuiltinData(v2p, input, V, posInput, surfaceData, builtinData, l, d);
+
+
+          // Not lit here (but emissive is allowed)
+          BSDFData bsdfData = ConvertSurfaceDataToBSDFData(input.positionSS.xy, surfaceData);
+
+          // If this is a shadow matte, then we want the AO to affect the base color (the AO being correct if the surface is flagged shadow matte).
+      #if defined(_ENABLE_SHADOW_MATTE)
+          bsdfData.baseColor *= GetScreenSpaceAmbientOcclusion(input.positionSS.xy);
+      #endif
+
+          // Note: we must not access bsdfData in shader pass, but for unlit we make an exception and assume it should have a color field
+          float4 outResult = ApplyBlendMode(bsdfData.diffuseColor + builtinData.emissiveColor * GetCurrentExposureMultiplier(), builtinData.opacity);
+          outResult = EvaluateAtmosphericScattering(posInput, V, outResult);
+
+         #ifdef DEBUG_DISPLAY
+             // Same code in ShaderPassForward.shader
+             // Reminder: _DebugViewMaterialArray[i]
+             //   i==0 -> the size used in the buffer
+             //   i>0  -> the index used (0 value means nothing)
+             // The index stored in this buffer could either be
+             //   - a gBufferIndex (always stored in _DebugViewMaterialArray[1] as only one supported)
+             //   - a property index which is different for each kind of material even if reflecting the same thing (see MaterialSharedProperty)
+             int bufferSize = _DebugViewMaterialArray[0].x;
+             // Loop through the whole buffer
+             // Works because GetSurfaceDataDebug will do nothing if the index is not a known one
+             for (int index = 1; index <= bufferSize; index++)
+             {
+                 int indexMaterialProperty = _DebugViewMaterialArray[index].x;
+                 if (indexMaterialProperty != 0)
+                 {
+                     float3 result = float3(1.0, 0.0, 1.0);
+                     bool needLinearToSRGB = false;
+
+                     GetPropertiesDataDebug(indexMaterialProperty, result, needLinearToSRGB);
+                     GetVaryingsDataDebug(indexMaterialProperty, input, result, needLinearToSRGB);
+                     GetBuiltinDataDebug(indexMaterialProperty, builtinData, posInput, result, needLinearToSRGB);
+                     GetSurfaceDataDebug(indexMaterialProperty, surfaceData, result, needLinearToSRGB);
+                     GetBSDFDataDebug(indexMaterialProperty, bsdfData, result, needLinearToSRGB);
+
+                     // TEMP!
+                     // For now, the final blit in the backbuffer performs an sRGB write
+                     // So in the meantime we apply the inverse transform to linear data to compensate.
+                     if (!needLinearToSRGB)
+                         result = SRGBToLinear(max(0, result));
+
+                     outResult = float4(result, 1.0);
+                 }
+             }
+
+             if (_DebugFullScreenMode == FULLSCREENDEBUGMODE_TRANSPARENCY_OVERDRAW)
+             {
+                 float4 result = _DebugTransparencyOverdrawWeight * float4(TRANSPARENCY_OVERDRAW_COST, TRANSPARENCY_OVERDRAW_COST, TRANSPARENCY_OVERDRAW_COST, TRANSPARENCY_OVERDRAW_A);
+                 outResult = result;
+             }
+
+         #endif
+
+         outColor = outResult;
+
+         ChainFinalColorForward(l, d, outColor);
+
+          #ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
+                      bool forceNoMotion = any(unity_MotionVectorsParams.yw == 0.0);
+                      // outMotionVec is already initialize at the value of forceNoMotion (see above)
+                      if (!forceNoMotion)
+                      {
+                          float2 motionVec = CalculateMotionVector(v2p.motionVectorCS, v2p.previousPositionCS);
+                          EncodeMotionVector(motionVec * 0.5, outMotionVec);
+                          outMotionVec.zw = 1.0;
+                      }
+          #endif
+
+         #ifdef _DEPTHOFFSET_ON
+             outputDepth = posInput.deviceDepth;
+         #endif
+
+         #ifdef UNITY_VIRTUAL_TEXTURING
+             outVTFeedback = builtinData.vtPackedFeedback;
+         #endif
+         }
+
+
+         ENDHLSL
+      }

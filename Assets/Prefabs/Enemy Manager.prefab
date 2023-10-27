@@ -10,6 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1866458878302752471}
   - component: {fileID: 1866458878302752456}
+  - component: {fileID: 1224385589}
+  - component: {fileID: 262313276}
+  - component: {fileID: 6895622059654923546}
+  - component: {fileID: 1224385587}
+  - component: {fileID: 1224385598}
   m_Layer: 0
   m_Name: Enemy Manager
   m_TagString: Untagged
@@ -45,15 +50,356 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerTranform: {fileID: 0}
-  m_enemyGO: {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0,
-    type: 3}
+  m_enemyGO:
+  - {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0, type: 3}
+  - {fileID: 3294013781257085869, guid: fa9aa3f083e13df4c8594e5b87417bbf, type: 3}
+  - {fileID: 3294013781257085869, guid: 30c7509a0110d124dba2334d6fcd11f6, type: 3}
+  - {fileID: 3294013781257085869, guid: 3aaa73d55da9a084a81380514847f796, type: 3}
+  - {fileID: 3294013781257085869, guid: a616891c6a60a634c87400266a69054f, type: 3}
   m_offsetSpawnPos: {x: 0, y: 0, z: 11.81}
   position: {x: 0, y: 0, z: 0}
-  m_spawnTime: 3
-  m_maxUnitPerGroup: 10
-  m_spawnTimeCurve:
+  m_spawnTime: 0.5
+  m_maxUnitPerGroup: 20
+  m_minUnitPerGroup: 1
+  m_maxUnittotal: 200
+  m_MaxUnitControl:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 9
+      outSlope: 9
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 9
+      inSlope: 0.11360073
+      outSlope: 0.11360073
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2
+      value: 0.22720101
+      inSlope: -4.3304496
+      outSlope: -4.3304496
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3
+      value: 0.3391001
+      inSlope: 0.111393675
+      outSlope: 0.111393675
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 4
+      value: 0.44998837
+      inSlope: 0.11058797
+      outSlope: 0.11058797
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 4.987097
+      value: 0.558853
+      inSlope: 0.109303474
+      outSlope: 0.109303474
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 6
+      value: 0.6685699
+      inSlope: 0.107375026
+      outSlope: 0.107375026
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 7
+      value: 0.7750007
+      inSlope: 0.10951288
+      outSlope: 0.10951288
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 7.6559105
+      value: 0.84885293
+      inSlope: 0.113030605
+      outSlope: 0.113030605
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 8
+      value: 0.88789546
+      inSlope: 0.112813234
+      outSlope: 0.112813234
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 8.624283
+      value: 0.9579152
+      inSlope: 0.1120861
+      outSlope: 0.1120861
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 9
+      value: 1
+      inSlope: 0.112011954
+      outSlope: 0.112011954
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_healthManager: {fileID: 1224385587}
+  m_radiusspawn: 100
+  m_ExperiencePrefab: {fileID: 1278518001253408458, guid: 2c0c58b6d9328634eb9085bd7fb2127b,
+    type: 3}
+  m_minimumRadiusOfSpawn: 175
+  m_maximumRadiusOfSpawn: 300
+  m_offsetToSpawnCenter: 20
+  m_minimumSpeedToRepositing: 30
+  m_bodylessEventTargetRate: 0.5
+  m_fullBodyEventTargetRate: 0.5
+  m_shamanEventTargetRate: 1
+  m_runnerEventTargetRate: 0
+  m_tankEventTargetRate: 0.25
+  m_expBonus: {fileID: 2121503493807191550, guid: d760da04cd05cfe4488b8b841e5ec40e,
+    type: 3}
+  m_spawnRateExpBonus: 0
+  m_enemiesArray: []
+  m_enemiesFocusAltar: []
+  m_targetTranform: {fileID: 0}
+  m_targetTransformLists: []
+  m_tempsEntrePause: 120
+  m_tempsPause: 30
+  spawningPhase: 1
+  gsm: {fileID: 0}
+  debugSpawnValue: 
+--- !u!114 &1224385589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eb5fff29bb0555438c1d4abb990fe30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradeList:
+  - {fileID: 11400000, guid: edaa3935f0d1ac44294a1d3f7e80c94a, type: 2}
+  - {fileID: 11400000, guid: 18457174f0dd26f4daf35e0926977052, type: 2}
+  - {fileID: 11400000, guid: f3a40292c3b452743b55c37051754033, type: 2}
+  - {fileID: 11400000, guid: 43c743767eec18c41a4338f0451b14c6, type: 2}
+--- !u!114 &262313276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 568fa5ed5d3722541a1b840681007ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsules:
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  - name: 
+    description: 
+    type: 0
+    sprite: {fileID: 0}
+  attackInfo:
+  - name: Shot Gun
+    description: 
+    projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
+      type: 3}
+    vfx: {fileID: 8678430117243443168, guid: c5ef715d3bb47b447a187fe4daa76af6, type: 3}
+    stats: {fileID: 11400000, guid: a6212585ac02118449476ac4c1f279a8, type: 2}
+    sprite: {fileID: 21300000, guid: 94ade2a5ed42f0242ab1a4c7e8fa5679, type: 3}
+  - name: Zeri Traillet
+    description: 
+    projectile: {fileID: 529003561376632028, guid: ca87ce2dea036dc41ac35615e45109e6,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
+    sprite: {fileID: 21300000, guid: c3dfff8f60831ea46a43238fc222b830, type: 3}
+  - name: Harpon
+    description: 
+    projectile: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88, type: 2}
+    sprite: {fileID: 21300000, guid: 7c4b878b880e5884fab7fe7fd55cafef, type: 3}
+  - name: Bombe Sentex
+    description: 
+    projectile: {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
+    sprite: {fileID: 21300000, guid: 54e61c6be40a6e54e916867967bf79a4, type: 3}
+  - name: Phoenix
+    description: 
+    projectile: {fileID: 1815569696630512008, guid: 0247554d5f9a13f46bdb3d6723ebe7b3,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 469318e19a7d9d948926cec287c969d8, type: 2}
+    sprite: {fileID: 21300000, guid: 3ed9739dfd1d68a429c5a6586a915b9a, type: 3}
+  - name: Lance Stone
+    description: 
+    projectile: {fileID: 6035077377685851194, guid: 3a7353eeadaea574bbceaf04c0087e2c,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 0f37784471302fb4e9ad64defdeda5fc, type: 2}
+    sprite: {fileID: 21300000, guid: 2220aea81a6408a4c8fb5426e44e289c, type: 3}
+  - name: Rain Bullet
+    description: 
+    projectile: {fileID: 6333615331467375570, guid: 5c8f9c3aaecab7c46a27ee43f28e42ae,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 2219ec8c5eb11c44d873e65c9866d1cb, type: 2}
+    sprite: {fileID: 21300000, guid: c01e2015e21d27c43bda5ba96141c2ff, type: 3}
+  - name: Mine
+    description: 
+    projectile: {fileID: 6397006724863419028, guid: ca57b3bcf3b623b4f8f8492fe75f6eb6,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 1a893981abd33834e8867b5f0d741fba, type: 2}
+    sprite: {fileID: 21300000, guid: e5c5bafdfb333bb46baf4243c27192e2, type: 3}
+  - name: Lighting
+    description: 
+    projectile: {fileID: 1834853944460758612, guid: e4a0655fa9ce9f6489d50230d2c98258,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: 9d1925bfc01dcda498126d55c0601740, type: 2}
+    sprite: {fileID: 21300000, guid: 783a1ee3f95ff5543be0247b2e25ae5e, type: 3}
+  - name: Missile Souris
+    description: 
+    projectile: {fileID: 1815569696630512008, guid: f057a63b8d2da49439a39cb90135695b,
+      type: 3}
+    vfx: {fileID: 3258966444288658613, guid: 0d885771b708cca45966f2d85ac11420, type: 3}
+    stats: {fileID: 11400000, guid: a42bd52d1b610304aa4e4d7eb2b6fe1e, type: 2}
+    sprite: {fileID: 21300000, guid: 244f8cd63640466429a0d062958dc49e, type: 3}
+  buffInfos: []
+--- !u!114 &6895622059654923546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6820d9d4436acbf449e4ae6179112027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_killRatioTime: 25
+  m_textFeedbackUI: {fileID: 0}
+  m_maxKillPerMinute: 70
+  m_enemyCount: []
+  m_PlayerExperienceRef: {fileID: 0}
+--- !u!114 &1224385587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b88d9453e78a8bb4ba7c94b3f324d87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_damageHealthFDs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &1224385598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea62e041be61074e9828e4543629e0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_timeBetweenDeath: 0.8
+  m_indexScene: 0

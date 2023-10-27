@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 898435386039766567}
   - component: {fileID: 1231885401}
   - component: {fileID: 8870188415779612043}
+  - component: {fileID: 1231885407}
+  - component: {fileID: 1999966531}
+  - component: {fileID: 3325611191138883535}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -32,7 +35,8 @@ Transform:
   m_LocalPosition: {x: 4.8595467, y: 16.784523, z: -3.741519}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7287188395083420317}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 45.55, y: -5.844, z: 0}
@@ -60,14 +64,14 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
+  far clip plane: 4000
+  field of view: 65
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -96,7 +100,7 @@ MonoBehaviour:
   clearDepth: 1
   volumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 20512
   volumeAnchorOverride: {fileID: 0}
   antialiasing: 0
   SMAAQuality: 2
@@ -123,11 +127,11 @@ MonoBehaviour:
   xrRendering: 1
   fullscreenPassthrough: 0
   allowDynamicResolution: 0
-  customRenderingSettings: 0
+  customRenderingSettings: 1
   invertFaceCulling: 0
   probeLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   hasPersistentHistory: 0
   allowDeepLearningSuperSampling: 1
   deepLearningSuperSamplingUseCustomQualitySettings: 0
@@ -140,7 +144,7 @@ MonoBehaviour:
   m_RenderingPathCustomFrameSettings:
     bitDatas:
       data1: 72198260625768269
-      data2: 13763000477350330392
+      data2: 13763000473055363096
     lodBias: 1
     lodBiasMode: 0
     lodBiasQualityLevel: 0
@@ -154,8 +158,8 @@ MonoBehaviour:
     materialQuality: 0
   renderingPathCustomFrameSettingsOverrideMask:
     mask:
-      data1: 0
-      data2: 0
+      data1: 4096
+      data2: 4294967296
   defaultFrameSettings: 0
   m_Version: 8
   m_ObsoleteRenderingPath: 0
@@ -216,9 +220,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d561d001629b20a489dbe19fef687dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraTrainTransform: {fileID: 0}
+  playerMove: {fileID: 0}
   m_targetTransform: {fileID: 0}
-  m_distanceToTarget: 20
+  m_distanceToTarget: 60
   m_offsetPos: {x: 0, y: 0, z: 0}
+  sun: {fileID: 0}
+  m_angularSpeed: 10
+  angularSpeedAcceleration:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_activateHeightDirectionMode: 0
+  m_mouseInputActivate: 0
 --- !u!114 &1231885401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,5 +266,314 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e18d6854e09cf43abc3e1b1dbdab5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_sizeDistance: 2
+  m_sizeDistance: 3.5
   m_characterAim: {fileID: 0}
+--- !u!114 &1231885407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898435386039766562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
+--- !u!114 &1999966531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898435386039766562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  fadeRadius: 0
+  priority: 0
+  customPasses:
+  - rid: 3244285566852268032
+  injectionPoint: 1
+  m_TargetCamera: {fileID: 0}
+  useTargetCamera: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 3244285566852268032
+      type: {class: DrawRenderersCustomPass, ns: UnityEngine.Rendering.HighDefinition,
+        asm: Unity.RenderPipelines.HighDefinition.Runtime}
+      data:
+        m_Name: Custom Pass
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        filterFoldout: 1
+        rendererFoldout: 1
+        renderQueueType: 5
+        layerMask:
+          serializedVersion: 2
+          m_Bits: 32
+        sortingCriteria: 0
+        overrideMaterial: {fileID: 0}
+        overrideMaterialPassIndex: 0
+        overrideMaterialPassName: Forward
+        overrideDepthState: 1
+        depthCompareFunction: 0
+        depthWrite: 1
+        shaderPass: 1
+--- !u!114 &3325611191138883535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898435386039766562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf47e666120260944a42df09c2f5d7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_cameraSteps:
+  - duration: 0
+    position: {x: 519, y: 48.36, z: 206.25}
+    rotation: {x: -18, y: 0, z: 0}
+  - duration: 1
+    position: {x: 519, y: 48.36, z: 206.25}
+    rotation: {x: -18, y: 0, z: 0}
+  - duration: 2
+    position: {x: 519, y: 54.21, z: 184.33}
+    rotation: {x: 0, y: 0, z: 0}
+  - duration: 2
+    position: {x: 519, y: 107.98, z: 168.84}
+    rotation: {x: 45, y: 0, z: 0}
+  m_fixInterface: {fileID: 0}
+--- !u!1 &6398785996441288091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7287188395083420317}
+  - component: {fileID: 4925182484056978154}
+  m_Layer: 0
+  m_Name: ---SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7287188395083420317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398785996441288091}
+  m_LocalRotation: {x: -0.38661167, y: 0.047002975, z: -0.019733628, w: 0.92083263}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 898435386039766565}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4925182484056978154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398785996441288091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac9195a4f7014c4793453815f5e0206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OneS_Sound_Attribution:
+  - Guid:
+      Data1: 1097114510
+      Data2: 1101232089
+      Data3: -288044109
+      Data4: -851618239
+    Path: event:/Player/Weapon_Pack1/ExplosiveBuble/ExplosionActive
+  - Guid:
+      Data1: -1876534202
+      Data2: 1306382818
+      Data3: 1463424950
+      Data4: 845407891
+    Path: event:/Player/Weapon_Pack1/ShotGun/Fire&Reload 2
+  - Guid:
+      Data1: 164377641
+      Data2: 1077480975
+      Data3: 1252230805
+      Data4: 523445946
+    Path: event:/Player/Weapon_Pack1/Reloading
+  - Guid:
+      Data1: -1613121923
+      Data2: 1327130626
+      Data3: 673095077
+      Data4: 420336844
+    Path: event:/Player/Experience/GetExp
+  - Guid:
+      Data1: 1141897697
+      Data2: 1105974156
+      Data3: -1783589231
+      Data4: -777965080
+    Path: event:/Player/Weapon_Pack1/NextBullet
+  - Guid:
+      Data1: 557676691
+      Data2: 1147173079
+      Data3: 1363783045
+      Data4: 342507346
+    Path: event:/Player/Experience/Upgrade/MouseOverUpgrade
+  - Guid:
+      Data1: -1774468233
+      Data2: 1140182936
+      Data3: 834222752
+      Data4: -2099642297
+    Path: event:/Player/Experience/ChooseUpgrade
+  - Guid:
+      Data1: -14662067
+      Data2: 1176773681
+      Data3: 709979822
+      Data4: 1874502298
+    Path: event:/Player/Experience/Levelup
+  - Guid:
+      Data1: -1275453258
+      Data2: 1313903384
+      Data3: 1778480259
+      Data4: 10823304
+    Path: event:/Player/Weapon_Pack1/Buff
+  - Guid:
+      Data1: -358810236
+      Data2: 1326667860
+      Data3: 359800714
+      Data4: -972656932
+    Path: event:/Player/Weapon_Pack2/Spell_Harpon/Harpon_Impale2
+  - Guid:
+      Data1: 689003125
+      Data2: 1277151546
+      Data3: 1224855941
+      Data4: -853061150
+    Path: event:/Player/Weapon_Pack1/Rock
+  - Guid:
+      Data1: -1902046084
+      Data2: 1077591083
+      Data3: 302773420
+      Data4: -941375853
+    Path: event:/Player/Weapon_Pack1/BulletRain
+  - Guid:
+      Data1: 2134307583
+      Data2: 1247780026
+      Data3: 62766782
+      Data4: 875934024
+    Path: event:/Enemy/Health/Hit_1
+  - Guid:
+      Data1: -470843572
+      Data2: 1332915800
+      Data3: -93362560
+      Data4: -1303639202
+    Path: event:/Events/Altar/Activation
+  - Guid:
+      Data1: -266203082
+      Data2: 1174557277
+      Data3: 312240287
+      Data4: 530123369
+    Path: "event:/Events/Altar/Succ\xE8s"
+  - Guid:
+      Data1: -642553387
+      Data2: 1190399758
+      Data3: -870643798
+      Data4: -1014417208
+    Path: event:/Player/Weapon_Pack2/Air/VFX_Electricity_Bombe_Collante
+  - Guid:
+      Data1: -1277517167
+      Data2: 1253741884
+      Data3: 845372306
+      Data4: -440639989
+    Path: event:/Player/Weapon_Pack2/Air/VFX_Electricity_Bombe_Collante_Explosion
+  - Guid:
+      Data1: -966782004
+      Data2: 1105041136
+      Data3: -1871557980
+      Data4: 775578273
+    Path: event:/Player/Weapon_Pack2/Air/VFX_Electricity_Zeritrailette
+  - Guid:
+      Data1: -1811944722
+      Data2: 1219719124
+      Data3: -1726028108
+      Data4: -539682939
+    Path: event:/Player/Weapon_Pack2/Earth/VFX_Earth_Cailloux
+  - Guid:
+      Data1: -1383422002
+      Data2: 1124107702
+      Data3: 1223786665
+      Data4: 1503556313
+    Path: event:/Player/Weapon_Pack2/Earth/VFX_Earth_Missile_Sourie
+  - Guid:
+      Data1: 556315538
+      Data2: 1224443171
+      Data3: -77539963
+      Data4: -938580744
+    Path: event:/Player/Weapon_Pack2/Fire/VFX_Fire_2_Temps
+  - Guid:
+      Data1: -615660364
+      Data2: 1239885229
+      Data3: 1303501215
+      Data4: 146508357
+    Path: event:/Player/Weapon_Pack2/Fire/VFX_Fire_Mine_Proxy
+  - Guid:
+      Data1: -1634745386
+      Data2: 1210095611
+      Data3: -1234311784
+      Data4: -1048697806
+    Path: event:/Player/Weapon_Pack2/Fire/VFX_Fire_Mine_Proxy_Explosion
+  - Guid:
+      Data1: -2010001883
+      Data2: 1218059469
+      Data3: 634754205
+      Data4: -343539712
+    Path: event:/Player/Weapon_Pack2/Fire/VFX_Fire_Shotgun
+  - Guid:
+      Data1: 2143696357
+      Data2: 1265319200
+      Data3: 1465787531
+      Data4: 510877415
+    Path: event:/Player/Weapon_Pack2/Water/VFX_Water_Pluie
+  - Guid:
+      Data1: 1527123316
+      Data2: 1195545151
+      Data3: 1409422782
+      Data4: 1563761187
+    Path: event:/Player/Weapon_Pack2/Water/VFX_Water_Scie
+  - Guid:
+      Data1: 15578549
+      Data2: 1095221871
+      Data3: 1928684954
+      Data4: 1285361150
+    Path: event:/Player/Weapon_Pack2/Air/VFX_Air_Harpon
+  Globalsound:
+    Guid:
+      Data1: 234366381
+      Data2: 1247820395
+      Data3: 1329684622
+      Data4: 764994159
+    Path: event:/Ambiant/Desert/GlobalWind&Aer
+  GlobalMusic:
+    Guid:
+      Data1: -761100816
+      Data2: 1081408517
+      Data3: 1656790153
+      Data4: -173565671
+    Path: event:/Ambiant/Desert/Music
+  changing: 0

@@ -17,7 +17,7 @@ MonoBehaviour:
     supportSSR: 0
     supportSSRTransparent: 0
     supportSSAO: 1
-    supportSSGI: 0
+    supportSSGI: 1
     supportSubsurfaceScattering: 1
     sssSampleBudget:
       m_Values: 140000002800000050000000
@@ -25,7 +25,7 @@ MonoBehaviour:
         m_Id: With3Levels
     supportVolumetrics: 1
     supportVolumetricClouds: 0
-    supportLightLayers: 0
+    supportLightLayers: 1
     supportDistortion: 1
     supportTransparentBackface: 1
     supportTransparentDepthPrepass: 1
@@ -33,13 +33,13 @@ MonoBehaviour:
     colorBufferFormat: 74
     supportCustomPass: 1
     customBufferFormat: 12
-    supportedLitShaderMode: 2
+    supportedLitShaderMode: 1
     planarReflectionResolution:
-      m_Values: 000100000004000000080000
+      m_Values: 000100000004000000040000
       m_SchemaId:
         m_Id: With3Levels
     supportDecals: 1
-    supportDecalLayers: 0
+    supportDecalLayers: 1
     supportSurfaceGradient: 0
     decalNormalBufferHP: 0
     msaaSampleCount: 1
@@ -75,11 +75,11 @@ MonoBehaviour:
       maxPlanarReflectionOnScreen: 16
       maxLightsPerClusterCell: 8
       maxLocalVolumetricFogSize: 32
-      maxLocalVolumetricFogOnScreen: 64
+      maxLocalVolumetricFogOnScreen: 200
     hdShadowInitParams:
       maxShadowRequests: 128
       directionalShadowsDepthBits: 32
-      shadowFilteringQuality: 1
+      shadowFilteringQuality: 2
       punctualLightShadowAtlas:
         shadowAtlasResolution: 4096
         shadowAtlasDepthBits: 32
@@ -105,7 +105,7 @@ MonoBehaviour:
       maxDirectionalShadowMapResolution: 2048
       maxPunctualShadowMapResolution: 2048
       maxAreaShadowMapResolution: 2048
-      supportScreenSpaceShadows: 0
+      supportScreenSpaceShadows: 1
       maxScreenSpaceShadowSlots: 4
       screenSpaceShadowBufferFormat: 48
     decalSettings:
@@ -140,6 +140,7 @@ MonoBehaviour:
       singlePass: 1
       occlusionMesh: 1
       cameraJitter: 0
+      allowMotionBlur: 1
     postProcessQualitySettings:
       NearBlurSampleCount: 030000000500000008000000
       NearBlurMaxRadius:
@@ -161,7 +162,7 @@ MonoBehaviour:
       ChromaticAberrationMaxSamples: 03000000060000000c000000
     lightSettings:
       useContactShadow:
-        m_Values: 000001
+        m_Values: 010101
         m_SchemaId:
           m_Id: With3Levels
     maximumLODLevel:

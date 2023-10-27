@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: HDRP Balanced
   m_EditorClassIdentifier: 
   m_RenderPipelineSettings:
-    supportShadowMask: 0
-    supportSSR: 0
-    supportSSRTransparent: 0
+    supportShadowMask: 1
+    supportSSR: 1
+    supportSSRTransparent: 1
     supportSSAO: 1
-    supportSSGI: 1
+    supportSSGI: 0
     supportSubsurfaceScattering: 1
     sssSampleBudget:
       m_Values: 140000002800000050000000
@@ -39,7 +39,7 @@ MonoBehaviour:
       m_SchemaId:
         m_Id: With3Levels
     supportDecals: 1
-    supportDecalLayers: 0
+    supportDecalLayers: 1
     supportSurfaceGradient: 0
     decalNormalBufferHP: 0
     msaaSampleCount: 1
@@ -75,7 +75,7 @@ MonoBehaviour:
       maxPlanarReflectionOnScreen: 16
       maxLightsPerClusterCell: 16
       maxLocalVolumetricFogSize: 32
-      maxLocalVolumetricFogOnScreen: 64
+      maxLocalVolumetricFogOnScreen: 122
     hdShadowInitParams:
       maxShadowRequests: 128
       directionalShadowsDepthBits: 16
@@ -140,6 +140,7 @@ MonoBehaviour:
       singlePass: 1
       occlusionMesh: 1
       cameraJitter: 0
+      allowMotionBlur: 1
     postProcessQualitySettings:
       NearBlurSampleCount: 030000000400000005000000
       NearBlurMaxRadius:

@@ -1,0 +1,142 @@
+﻿        Pass
+        {
+            // based on HDLitPass.template
+            Name "META"
+            Tags { "LightMode" = "META" }
+            
+            Cull Off
+        
+            %PASSMETA%
+        
+            //-------------------------------------------------------------------------------------
+            // End Render Modes
+            //-------------------------------------------------------------------------------------
+        
+            HLSLPROGRAM
+        
+            #pragma target %SHADERTARGET%
+            #pragma only_renderers d3d11 ps4 xboxone vulkan metal switch
+            //#pragma enable_d3d11_debug_symbols
+        
+            #pragma multi_compile_instancing
+
+            #pragma multi_compile_local _ _ALPHATEST_ON
+
+
+ 
+            //-------------------------------------------------------------------------------------
+            // Variant Definitions (active field translations to HDRP defines)
+            //-------------------------------------------------------------------------------------
+            // #define _MATERIAL_FEATURE_SUBSURFACE_SCATTERING 1
+            // #define _MATERIAL_FEATURE_TRANSMISSION 1
+            // #define _MATERIAL_FEATURE_ANISOTROPY 1
+            // #define _MATERIAL_FEATURE_IRIDESCENCE 1
+            // #define _MATERIAL_FEATURE_SPECULAR_COLOR 1
+            #define _ENABLE_FOG_ON_TRANSPARENT 1
+            #define _AMBIENT_OCCLUSION 1
+            #define _SPECULAR_OCCLUSION_FROM_AO 1
+            // #define _SPECULAR_OCCLUSION_FROM_AO_BENT_NORMAL 1
+            // #define _SPECULAR_OCCLUSION_CUSTOM 1
+            #define _ENERGY_CONSERVING_SPECULAR 1
+            // #define _ENABLE_GEOMETRIC_SPECULAR_AA 1
+            // #define _HAS_REFRACTION 1
+            // #define _REFRACTION_PLANE 1
+            // #define _REFRACTION_SPHERE 1
+            // #define _DISABLE_DECALS 1
+            // #define _DISABLE_SSR 1
+            // #define _ADD_PRECOMPUTED_VELOCITY
+            // #define _WRITE_TRANSPARENT_MOTION_VECTOR 1
+            // #define _DEPTHOFFSET_ON 1
+            // #define _BLENDMODE_PRESERVE_SPECULAR_LIGHTING 1
+
+        
+            %DEFINES%
+
+            %PRAGMAS%
+        
+
+            #define SHADERPASS SHADERPASS_LIGHT_TRANSPORT
+            #define RAYTRACING_SHADER_GRAPH_HIGH
+            #define REQUIRE_DEPTH_TEXTURE
+
+            %HDRPINCLUDE%
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/NormalSurfaceGradient.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitDecalData.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderGraphFunctions.hlsl"
+    
+
+  
+            %TEMPLATE_SHARED%
+
+            %CUSTOMCBUFFER%
+
+            %CUSTOMINSTANCEPROPS%
+
+            %CODE%
+
+            %SHADERDESC%
+
+            %VERT%
+
+            %TESSELLATION%
+
+            %HDRPSHARED%
+
+
+            float4 Frag(VertexToPixel v2f) : SV_Target
+            {
+                FragInputs input = BuildFragInputs(v2f);
+
+                // input.positionSS is SV_Position
+                PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS);
+
+            #ifdef VARYINGS_NEED_POSITION_WS
+                float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
+            #else
+                // Unused
+                float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
+            #endif
+
+                SurfaceData surfaceData;
+                BuiltinData builtinData;
+                Surface l;
+                ShaderData d;
+                GetSurfaceAndBuiltinData(v2f, input, V, posInput, surfaceData, builtinData, l, d);
+
+                // no debug apply during light transport pass
+
+                BSDFData bsdfData = ConvertSurfaceDataToBSDFData(input.positionSS.xy, surfaceData);
+                LightTransportData lightTransportData = GetLightTransportData(surfaceData, builtinData, bsdfData);
+
+                // This shader is call two times. Once for getting emissiveColor, the other time to get diffuseColor
+                // We use unity_MetaFragmentControl to make the distinction.
+                float4 res = float4(0.0, 0.0, 0.0, 1.0);
+
+                if (unity_MetaFragmentControl.x)
+                {
+                    // Apply diffuseColor Boost from LightmapSettings.
+                    // put abs here to silent a warning, no cost, no impact as color is assume to be positive.
+                    res.rgb = clamp(pow(abs(lightTransportData.diffuseColor), saturate(unity_OneOverOutputBoost)), 0, unity_MaxOutputValue);
+                }
+
+                if (unity_MetaFragmentControl.y)
+                {
+                    // emissive use HDR format
+                    res.rgb = lightTransportData.emissiveColor;
+                }
+
+                return res;
+            }
+
+
+
+            ENDHLSL
+        }
+        
