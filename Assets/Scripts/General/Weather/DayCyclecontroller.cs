@@ -63,6 +63,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameState.IsPlaying()) return;
         time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
         //if(isNight)

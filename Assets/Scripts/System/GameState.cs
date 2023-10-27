@@ -87,4 +87,9 @@ public class GameState : MonoBehaviour
     {
         m_pauseMenuObj.SetActive(!m_pauseMenuObj.activeSelf);
     }
+
+    public static bool IsPlaying()
+    {
+        return m_isPlaying;
+    }
 }
