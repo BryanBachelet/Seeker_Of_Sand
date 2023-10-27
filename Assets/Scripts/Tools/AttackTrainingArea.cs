@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 public class AttackTrainingArea : MonoBehaviour
 {
+    private ObjectState state;
     static public bool debugCollider;
     public bool activeDebugCollider;
     public Vector3 positionOnDestroy;
@@ -22,7 +23,8 @@ public class AttackTrainingArea : MonoBehaviour
 
     private void OnEnable()
     {
-       
+        state = new ObjectState();
+        GameState.AddObject(state);
         m_Vfx = GetComponentInChildren<VisualEffect>();
         
         destroyScript = this.gameObject.AddComponent<DestroyAfterBasic>();
@@ -56,6 +58,14 @@ public class AttackTrainingArea : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!state.isPlaying)
+        {
+            m_Vfx.pause = true;
+            return;
+        }
+        else if(m_Vfx.pause) m_Vfx.pause = false;
+
+
         if (debugCollider)
         {
             positionOnDestroy = transform.position;

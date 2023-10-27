@@ -88,6 +88,9 @@ namespace Enemies
         private int repositionningCount;
 
         private DayCyclecontroller m_dayController;
+        private float m_timeOfGame;
+          
+
         public void Awake()
         {
             TestReadDataSheet();
@@ -99,6 +102,7 @@ namespace Enemies
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
+            m_timeOfGame = 0;
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -106,10 +110,10 @@ namespace Enemies
         {
             if (!state.isPlaying) return;
             repositionningCount = 0;
-
+            m_timeOfGame += Time.deltaTime;
             if (spawningPhase)
             {
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(Time.time / 60);
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                 SpawnCooldown();
             }
 
@@ -208,13 +212,13 @@ namespace Enemies
         }
         private float GetTimeSpawn()
         {
-            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f));
+            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame/ 2.0f)) + 1.3f) / 2.0f));
         }
 
         private int GetNumberToSpawn()
         {
             int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
-            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
             number = number <= 0 ? 1 : number;
             return number;
         }
