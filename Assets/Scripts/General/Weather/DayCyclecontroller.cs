@@ -165,7 +165,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_GSM.UpdateParameter(1, "DayOrNight");
         m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
         StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
-        GlobalSoundManager.PlayOneShot(34, transform.position);
+      //  GlobalSoundManager.PlayOneShot(34, transform.position);
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
