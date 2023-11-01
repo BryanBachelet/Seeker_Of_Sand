@@ -82,7 +82,6 @@ namespace Enemies
 
         private Character.CharacterMouvement m_characterMouvement;
 
-        public int[] debugSpawnValue;
 
         private int repositionningLimit = 10;
         private int repositionningCount;
@@ -110,7 +109,7 @@ namespace Enemies
         {
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
-            m_timeOfGame = Time.time;
+            m_timeOfGame += Time.deltaTime;
             if (spawningPhase)
             {
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
@@ -547,7 +546,7 @@ namespace Enemies
 
         public void CreateCurveSheet()
         {
-            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (5).csv");
+            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (1).csv");
             bool endOfFile = false;
             while (!endOfFile)
             {
@@ -595,10 +594,10 @@ namespace Enemies
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
 #if UNITY_EDITOR
-            string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
+            string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (1).csv";
 #else
 
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (1).csv";
        
 
 #endif 
@@ -607,17 +606,15 @@ namespace Enemies
 
             string lineContents = ReadSpecificLine(filePath, lineNumber);
             string[] data_values = lineContents.Split(',');
-            int[] dataTransformed = new int[data_values.Length - 1];
+            long[] dataTransformed = new long[data_values.Length - 1];
             for (int i = 0; i < dataTransformed.Length; i++)
             {
-                dataTransformed[i] = int.Parse(data_values[i + 1]);
+                if (data_values[i] == "") continue;
+                dataTransformed[i] = long.Parse(data_values[i] );
                 tempAnimationCurve.AddKey(i, dataTransformed[i]);
                 debugdata = debugdata + " , " + dataTransformed[i];
 
             }
-            debugSpawnValue = dataTransformed;
-
-
             m_MaxUnitControl = tempAnimationCurve;
             //Debug.Log(debugdata);
 

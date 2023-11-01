@@ -54,9 +54,9 @@ namespace Character
         private bool m_exitCombatState = false;
         private void Start()
         {
-            Cursor.visible = false;
+            //Cursor.visible = false;
 
-            Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
         }

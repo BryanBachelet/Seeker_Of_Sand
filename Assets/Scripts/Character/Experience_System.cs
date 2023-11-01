@@ -68,10 +68,10 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         float time = Time.time;
         m_NumberEnemyKilled += (1 * m_serieController.GetXpMultiplicator());
-        levelProgress = m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled);
+        levelProgress = m_ExperienceQuantityControl.Evaluate(m_NumberEnemyKilled);
         if (levelProgress > m_CurrentLevel + 1)
         {
-            LevelUp((int)m_ExperienceQuantity.Evaluate(m_NumberEnemyKilled));
+            LevelUp((int)m_ExperienceQuantityControl.Evaluate(m_NumberEnemyKilled));
             levelUpEffect.Play();
             levelUpEffectUi.Play();
             GlobalSoundManager.PlayOneShot(7, Vector3.zero);
@@ -178,11 +178,11 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         AnimationCurve tempAnimationCurve = new AnimationCurve();
         string debugdata = "";
 #if UNITY_EDITOR
-        string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
+        string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (1).csv";
 
 #else
 #if UNITY_STANDALONE_WIN
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (1).csv";
         Debug.LogError("Is Right path");
 #endif
 #endif
@@ -190,11 +190,13 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
         string lineContents = ReadSpecificLine(filePath, lineNumber);
         string[] data_values = lineContents.Split(',');
-        int[] dataTransformed = new int[data_values.Length - 1];
+        long[] dataTransformed = new long[data_values.Length - 1];
         for (int i = 0; i < dataTransformed.Length; i++)
         {
-            dataTransformed[i] = int.Parse(data_values[i + 1]);
-            tempAnimationCurve.AddKey(i, dataTransformed[i]);
+            Debug.Log(i + " : Job done");
+            if (data_values[i] == "") continue;
+            dataTransformed[i] = long.Parse(data_values[i]);
+            tempAnimationCurve.AddKey(dataTransformed[i], i);
             debugdata = debugdata + " , " + dataTransformed[i];
 
         }
