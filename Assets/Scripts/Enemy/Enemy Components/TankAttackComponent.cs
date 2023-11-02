@@ -20,6 +20,7 @@ namespace Enemies
 
         public Transform m_monsterBodyTransform;
         private Transform m_targetTransform;
+        public Animator m_tankAnimator;
         private NpcHealthComponent m_npcHealthComponent;
 
 
@@ -36,6 +37,7 @@ namespace Enemies
             {
                 m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
                 vfxRangeAttack.SetActive(true);
+                m_tankAnimator.SetBool("Attack", true);
             }
 
             if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
@@ -46,11 +48,13 @@ namespace Enemies
                     m_timerOfCharge = 0;
                     AttackTank();
                     vfxRangeAttack.SetActive(false);
+                    m_tankAnimator.SetBool("Attack", false);
                 }
                 else
                 {
                     m_timerOfCharge += Time.deltaTime;
                 }
+
             }
 
             if (m_npcHealthComponent.npcState == NpcState.RECUPERATION)
