@@ -9,6 +9,7 @@ public class AttackTrainingArea : MonoBehaviour
     public bool activeDebugCollider;
     public Vector3 positionOnDestroy;
     public float rangeHit;
+    public Vector3 scaleAttack;
     public Transform playerTarget;
     public health_Player hpPlayer;
     private VisualEffect m_Vfx;
@@ -77,6 +78,7 @@ public class AttackTrainingArea : MonoBehaviour
     private void OnDestroy()
     {
         GameObject vfxExplosionObject = Instantiate(vfxExplosion, transform.position, transform.rotation);
+        vfxExplosionObject.transform.localScale = scaleAttack * rangeHit;
         if (playerTarget == null) return;
 
         positionOnDestroy = transform.position;
