@@ -37,7 +37,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] float m_TimeProchainePhase;
 
     [SerializeField] private GameObject m_EndUI;
-    [SerializeField] private int m_nightCount;
+    [SerializeField] public int m_nightCount { get; private set; }
     private string dayprogress;
     private string phaseprogress;
 

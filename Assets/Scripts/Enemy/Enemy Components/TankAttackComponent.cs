@@ -20,6 +20,7 @@ namespace Enemies
 
         public Transform m_monsterBodyTransform;
         private Transform m_targetTransform;
+        public Animator m_tankAnimator;
         private NpcHealthComponent m_npcHealthComponent;
 
         private Animator m_entityAnimator;
@@ -55,6 +56,7 @@ namespace Enemies
                 {
                     m_timerOfCharge += Time.deltaTime;
                 }
+
             }
 
             if (m_npcHealthComponent.npcState == NpcState.RECUPERATION)
