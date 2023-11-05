@@ -42,6 +42,7 @@ public class SerieController : MonoBehaviour
         if (!refresh)
         {
             m_currentCount += 1;
+            if (m_biggestMultiplicator < m_currentCount) m_biggestMultiplicator = m_currentCount;
             m_serieKillCount.text = "Kill combo : \n" + m_currentCount;
             m_SerieActive = true;
         }
@@ -50,7 +51,7 @@ public class SerieController : MonoBehaviour
     public float GetXpMultiplicator()
     {
         float multiplicatorValue = m_multiplicatorCurve.Evaluate(m_currentCount);
-        if (m_biggestMultiplicator < multiplicatorValue) m_biggestMultiplicator = multiplicatorValue;
+      
         m_multiplicatorDisplay.text = "x" + multiplicatorValue;
         return multiplicatorValue;
     }

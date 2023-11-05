@@ -39,7 +39,6 @@ namespace Enemies
             {
                 m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
 
-                //vfxRangeAttack.SetActive(true);
             }
 
             if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
@@ -50,7 +49,7 @@ namespace Enemies
                     m_timerOfCharge = 0;
                     vfxRangeAttack.SendEvent("ActiveArea");
                     AttackTank();
-                    //vfxRangeAttack.SetActive(false);
+                   
                 }
                 else
                 {
