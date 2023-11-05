@@ -20,6 +20,9 @@ public class AttackTrainingArea : MonoBehaviour
     public GameObject vfxExplosion;
 
     public float tempsAvantExplosion = 1;
+
+    public float delayTimeStart = 0;
+    private float tempsEcoleDelay;
     // Start is called before the first frame update
 
     private void OnEnable()
@@ -71,7 +74,6 @@ public class AttackTrainingArea : MonoBehaviour
         {
             positionOnDestroy = transform.position;
         }
-
 
     }
 

@@ -193,7 +193,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         long[] dataTransformed = new long[data_values.Length - 1];
         for (int i = 0; i < dataTransformed.Length; i++)
         {
-            Debug.Log(i + " : Job done");
+            //Debug.Log(i + " : Job done");
             if (data_values[i] == "") continue;
             dataTransformed[i] = long.Parse(data_values[i]);
             tempAnimationCurve.AddKey(dataTransformed[i], i);

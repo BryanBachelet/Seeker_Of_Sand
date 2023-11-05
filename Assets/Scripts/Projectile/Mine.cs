@@ -17,6 +17,7 @@ public class Mine : ProjectileExplosif
     private bool m_isTrigger;
 
     public GameObject vfxExplosion;
+    public UnityEngine.VFX.VisualEffect vfxDecal;
 
     public void Start()
     {
@@ -71,6 +72,8 @@ public class Mine : ProjectileExplosif
         if (m_setupTimer > m_setupDuration)
         {
             m_setupTimer = 0;
+            if(vfxDecal != null) { vfxDecal.SendEvent("ActiveArea"); }
+            
             m_isActive = true;
         }
         else
