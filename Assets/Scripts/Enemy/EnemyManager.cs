@@ -657,6 +657,10 @@ namespace Enemies
             return endInfoStats;
         }
 
+        public void WriteEndStats()
+        {
+
+        }
         #endregion
 
     }
