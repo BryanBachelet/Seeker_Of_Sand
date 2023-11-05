@@ -12,6 +12,7 @@ public class SerieController : MonoBehaviour
     [SerializeField] public UnityEngine.UI.Image m_serieTimeDisplay;
     [SerializeField] public TMPro.TMP_Text m_serieKillCount;
 
+    public float m_biggestMultiplicator { get; private set; }
 
     private float m_lastTimeEnemyHit = 0;
     // Start is called before the first frame update
@@ -49,6 +50,7 @@ public class SerieController : MonoBehaviour
     public float GetXpMultiplicator()
     {
         float multiplicatorValue = m_multiplicatorCurve.Evaluate(m_currentCount);
+        if (m_biggestMultiplicator < multiplicatorValue) m_biggestMultiplicator = multiplicatorValue;
         m_multiplicatorDisplay.text = "x" + multiplicatorValue;
         return multiplicatorValue;
     }

@@ -130,6 +130,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
+            m_enemeyManager.altarSuccessed++;
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
             if(lastItemInstantiate != null)
             {

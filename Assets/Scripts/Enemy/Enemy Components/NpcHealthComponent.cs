@@ -106,7 +106,7 @@ namespace Enemies
 
         private IEnumerator Death()
         {
-            m_healthManager.m_serieController.RefreshSeries(false);
+            m_enemyManager.DeathEnemy();
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction);
            

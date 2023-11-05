@@ -87,9 +87,18 @@ namespace Enemies
         private int repositionningLimit = 10;
         private int repositionningCount;
 
+
         private DayCyclecontroller m_dayController;
         private float m_timeOfGame;
+
+        private SerieController m_serieController;
           
+
+        // Stats Variables
+        public int altarLaunch;
+        public int altarSuccessed;
+        public int killCount;
+        
 
         public void Awake()
         {
@@ -102,6 +111,7 @@ namespace Enemies
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
+            m_serieController = m_playerTranform.GetComponent<SerieController>();
             m_timeOfGame = 0;
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -389,6 +399,7 @@ namespace Enemies
             healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
             if(target.GetComponent<AltarBehaviorComponent>())
             {
+                altarLaunch++;
                 target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
                 m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
             }
@@ -452,6 +463,8 @@ namespace Enemies
             m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
+       
+
         public void SendInstruction(string Instruction, Color colorText, string locationName)
         {
             m_dayController.StartCoroutine(m_dayController.DisplayInstruction(Instruction, 2, colorText, locationName));
@@ -497,11 +510,16 @@ namespace Enemies
 
             if (!m_enemiesArray.Contains(npcHealth)) return;
 
-
+            killCount++;
             m_enemyKillRatio.AddEnemiKill();
             if (m_enemiesFocusAltar.Contains(npcHealth)) m_enemiesFocusAltar.Remove(npcHealth);
             m_enemiesArray.Remove(npcHealth);
             Destroy(npcHealth.gameObject);
+        }
+
+        public void DeathEnemy()
+        {
+            m_serieController.RefreshSeries(true);
         }
 
         public AltarBehaviorComponent FindClosestAltar(Vector3 position)
@@ -623,6 +641,23 @@ namespace Enemies
 
         }
 
+
+        #region EndStat
+
+        public EndInfoStats FillEndStat()
+        {
+            EndInfoStats endInfoStats = new EndInfoStats();
+
+            endInfoStats.durationGame = m_timeOfGame;
+            endInfoStats.enemyKill = killCount;
+            endInfoStats.altarSuccessed = altarSuccessed;
+            endInfoStats.altarRepeated = altarLaunch;
+            endInfoStats.bigestCombo = m_serieController.m_biggestMultiplicator;
+            endInfoStats.nightValidate = m_dayController.m_nightCount ;
+            return endInfoStats;
+        }
+
+        #endregion
 
     }
 
