@@ -13,7 +13,7 @@ namespace Enemies
         public float timeOfCharge = 1.0f;
         public float timeofRecuperation = 0.5f;
 
-        public GameObject vfxRangeAttack;
+        public UnityEngine.VFX.VisualEffect vfxRangeAttack;
 
         private float m_timerOfCharge;
         private float m_timerOfRecuperation;
@@ -23,10 +23,12 @@ namespace Enemies
         public Animator m_tankAnimator;
         private NpcHealthComponent m_npcHealthComponent;
 
+        private Animator m_entityAnimator;
 
         public void Start()
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_entityAnimator = m_npcHealthComponent.m_entityAnimator;
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_targetTransform = m_npcHealthComponent.targetData.target;
         }
@@ -36,8 +38,8 @@ namespace Enemies
             if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, m_monsterBodyTransform.position) < radiusOfAttack)
             {
                 m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
-                vfxRangeAttack.SetActive(true);
-                m_tankAnimator.SetBool("Attack", true);
+
+                //vfxRangeAttack.SetActive(true);
             }
 
             if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
@@ -46,9 +48,9 @@ namespace Enemies
                 {
                     m_npcHealthComponent.npcState = NpcState.ATTACK;
                     m_timerOfCharge = 0;
+                    vfxRangeAttack.SendEvent("ActiveArea");
                     AttackTank();
-                    vfxRangeAttack.SetActive(false);
-                    m_tankAnimator.SetBool("Attack", false);
+                    //vfxRangeAttack.SetActive(false);
                 }
                 else
                 {
@@ -63,6 +65,8 @@ namespace Enemies
                 {
                     m_npcHealthComponent.npcState = NpcState.MOVE;
                     timeofRecuperation = 0;
+                    m_entityAnimator.SetBool("Attack", false);
+                    vfxRangeAttack.SendEvent("UnActiveArea");
                 }
                 else
                 {
@@ -74,6 +78,8 @@ namespace Enemies
 
         public void AttackTank()
         {
+            m_entityAnimator.SetBool("Attack", true);
+
             if (Vector3.Distance(m_targetTransform.position, m_monsterBodyTransform.position) < radiusOfAttack)
             {
                 if (m_targetTransform.tag == "Player")

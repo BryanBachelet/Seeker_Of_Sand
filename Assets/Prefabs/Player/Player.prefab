@@ -1797,6 +1797,7 @@ MonoBehaviour:
   cameraPlayer: {fileID: 0}
   positionInTrain: {fileID: 0}
   runSpeed: 7
+  combatSpeed: 26
   combatState: 0
   initialSpeed: 10
   m_groundLayerMask:
@@ -1816,6 +1817,7 @@ MonoBehaviour:
   m_lastTimeShot: 0
   m_TimeAutoWalk: 2
   m_accelerationSpeed: 4
+  activeCombatModeConstant: 0
   accelerationSlide: 60
   maxSpeed: 240
   maxSlope: 60
@@ -1834,6 +1836,9 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  m_spriteStateAssociated: []
+  m_spriteState: {fileID: 0}
+  m_uiStateAnimator: {fileID: 0}
   m_knockBackPower: 50
   m_knockBackDuration: 1
   mouvementState: 0
@@ -1842,6 +1847,7 @@ MonoBehaviour:
     referenceSpeed: []
     IsFlexibleSpeed: 0
     direction: {x: 0, y: 0, z: 0}
+  m_activeDebug: 0
 --- !u!114 &1983534965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2192,6 +2198,18 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 6455e521-f2bb-402d-9684-51b7f9e5c9a1
     m_ActionName: Player/CameraZoom[/Mouse/scroll/up,/Mouse/scroll/down]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1d2a7610-5a32-421b-b65e-d084c7ae2255
+    m_ActionName: Player/CameraRotationMouse[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a1bab915-530f-4499-ac55-329fecf29ffc
+    m_ActionName: Player/ActivateRotation[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b9655a3f-f07d-4dde-ae68-7d6d390a4cef
+    m_ActionName: Player/Slide[/Keyboard/shift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -2331,7 +2349,9 @@ MonoBehaviour:
     rangeAdd: 0
     degatAdd: 0
   capsuleStatsAlone: []
+  m_CharacterMouvement: {fileID: 0}
   m_cameraShake: {fileID: 0}
+  m_cameraBehavior: {fileID: 0}
   m_shakeDuration: 0.1
   m_buffManager: {fileID: 1983534973}
   m_chracterProfil: {fileID: 5635426079325464019}
@@ -2480,6 +2500,7 @@ MonoBehaviour:
   m_xpPointer: {fileID: 0}
   levelUpEffect: {fileID: 0}
   levelUpEffectUi: {fileID: 0}
+  m_serieController: {fileID: 0}
 --- !u!114 &5635426079325464019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2529,6 +2550,7 @@ MonoBehaviour:
   m_upgradePoint: {fileID: 0}
   m_LevelDisplay: {fileID: 0}
   m_CurrentLevel: 1
+  m_upgradeUi: {fileID: 0}
 --- !u!114 &1983534973
 MonoBehaviour:
   m_ObjectHideFlags: 0
