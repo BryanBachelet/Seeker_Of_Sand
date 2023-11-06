@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class ObjectState
 {
@@ -17,6 +18,43 @@ public struct EndInfoStats
     public float bigestCombo;
     public float altarSuccessed;
     public float altarRepeated;
+
+
+    public byte[] SaveData()
+    {
+        MemoryStream stream = new MemoryStream();
+        BinaryWriter binary = new BinaryWriter(stream);
+        binary.Write(durationGame);
+        binary.Write(nightValidate);
+        binary.Write(enemyKill);
+        binary.Write(bigestCombo);
+        binary.Write(altarSuccessed);
+        binary.Write(altarRepeated);
+
+        return stream.ToArray();
+    }
+
+    public void ReadData(BinaryReader binaryReader)
+    {
+        durationGame = binaryReader.ReadSingle();
+        nightValidate = binaryReader.ReadInt32();
+        enemyKill = binaryReader.ReadInt32();
+        bigestCombo = binaryReader.ReadSingle();
+        altarSuccessed = binaryReader.ReadSingle();
+        altarRepeated = binaryReader.ReadSingle();
+    }
+
+    public bool HasSuperiorValue(EndInfoStats statToCompare)
+    {
+        if (durationGame < statToCompare.durationGame) return true;
+        if (nightValidate < statToCompare.nightValidate) return true;
+        if (enemyKill < statToCompare.enemyKill) return true;
+        if (bigestCombo < statToCompare.bigestCombo) return true;
+        if (altarSuccessed < statToCompare.altarSuccessed) return true;
+        if (altarRepeated < statToCompare.altarRepeated) return true;
+
+        return false;
+    }
 }
 
 public class GameState : MonoBehaviour
@@ -25,6 +63,7 @@ public class GameState : MonoBehaviour
     private static List<ObjectState> listObject = new List<ObjectState>(0);
 
     public static UIEndScreen endMenu;
+    public static string profileName = "";
 
     [SerializeField] private static bool m_isPlaying = true;
 
@@ -36,13 +75,22 @@ public class GameState : MonoBehaviour
     private float m_timerBetweenDeath = 0.0f;
     private GameObject m_pauseMenuObj;
 
-    
+     private bool m_activeDebug= true;
 
     public void Start()
     {
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
-       
+        GameObject gm = GameObject.Find("GameManager");
+        if (gm != null)
+        {
+            if(m_activeDebug) Debug.Log("Found Game manager object ");
+            profileName = gm.GetComponent<GameManager>().profileName;
+        }
+        else
+        {
+            if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
+        }
     }
 
     public static void DeathActivation()

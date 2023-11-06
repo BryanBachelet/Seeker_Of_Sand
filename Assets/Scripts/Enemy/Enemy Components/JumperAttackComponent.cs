@@ -11,8 +11,10 @@ namespace Enemies
         [Header("Attack Parameters")]
         public float damage = 5;
         public float jumpDuration = 1;
-        public float angleOfJump = 15;
+        public float angleOfJump = 20;
         public float jumpDistance = 10;
+        public float distanceClosePlayer = 100;
+        public float rangeToDamageDuringDash = 5;
 
         public float recuperationDistance = 20;// Find better name;
 
@@ -62,7 +64,7 @@ namespace Enemies
         public void Update()
         {
             float distancePlayer = Vector3.Distance(transform.position, m_target.position);
-            if (distancePlayer < 100)
+            if (distancePlayer < distanceClosePlayer)
             {
                 m_animator.SetBool("ClosefromPlayer", true);
                 vfxRangeAttack.transform.position = m_target.position;
@@ -75,31 +77,34 @@ namespace Enemies
             {
                 if (!IsPlayerHide())
                 {
-                    m_npcHealthComponent.npcState = NpcState.ATTACK;
+                    m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
                     PrepareToJump();
 
                     return;
                 }
 
             }
-            if(m_jumpPreparation)
+            if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
             {
                 if(m_tempsPreparation < m_tempsEcoulePreparation)
                 {
                     StartAttack();
+                    m_npcHealthComponent.npcState = NpcState.ATTACK;
                 }
                 else
                 {
                     m_tempsEcoulePreparation += Time.deltaTime;
-                    m_jumpPreparation = false;
+                   
                 }
             }
-            if (m_npcHealthComponent.npcState == NpcState.ATTACK && !m_jumpPreparation)
+            if (m_npcHealthComponent.npcState == NpcState.ATTACK )
             {
                 AttackJumper();
                 return;
             }
-            if (m_npcHealthComponent.npcState == NpcState.RECUPERATION && m_agent.remainingDistance <= 0.5f)
+
+            float dist = Vector3.Distance(transform.position, dest);
+            if (m_npcHealthComponent.npcState == NpcState.RECUPERATION && dist < 7)
             {
                 m_npcHealthComponent.npcState = NpcState.MOVE;
             }
@@ -118,6 +123,12 @@ namespace Enemies
         private void AttackJumper()
         {
             transform.position += m_curveBehavior.UpdateCurveBehavior();
+            float distancePlayer = Vector3.Distance(transform.position, m_target.position);
+            if(distancePlayer < rangeToDamageDuringDash)
+            {
+                m_target.GetComponent<health_Player>().GetDamageLourd(damage);
+
+            }
             if (m_curveBehavior.IsCurveFinish())
             {
                 EndAttack();
@@ -146,11 +157,12 @@ namespace Enemies
         private bool IsPlayerHide()
         {
             Vector3 direction = (m_target.position - transform.position).normalized;
-            return Physics.Raycast(transform.position, direction, jumpDistance, m_layerObstaclePlayer);
+            return Physics.Raycast(transform.position+Vector3.up*0.5f, direction, jumpDistance, m_layerObstaclePlayer);
         }
 
         private void PrepareToJump()
         {
+            m_agent.isStopped = true;
             m_agent.enabled = false;
             m_capsuleCollider.isTrigger = true;
             m_isFalling = false;
@@ -207,6 +219,7 @@ namespace Enemies
             m_tempsEcoulePreparation = 0;
             vfxRangeAttack.SendEvent("UnActiveArea");
             m_agent.enabled = true;
+
             NavMeshHit hitTest = new NavMeshHit();
             NavMesh.SamplePosition(transform.position, out hitTest, Mathf.Infinity, NavMesh.AllAreas);
 
@@ -218,7 +231,7 @@ namespace Enemies
             Vector3 dirTransform = m_direction;
             dirTransform.y = 0;
 
-
+    
             Vector3 recupFinalPos = transform.position + Vector3.up * 100 + dirTransform.normalized * recuperationDistance;
             dest = recupFinalPos;
             if (Physics.Raycast(recupFinalPos, Vector3.down, out hit, Mathf.Infinity, m_layerMask))
@@ -237,7 +250,7 @@ namespace Enemies
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, dest);
+            Gizmos.DrawLine(transform.position, m_agent.destination);
         }
 
     }
