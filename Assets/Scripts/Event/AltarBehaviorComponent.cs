@@ -136,7 +136,8 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
             if(lastItemInstantiate != null)
             {
-                Destroy(lastItemInstantiate);
+                
+               Destroy(lastItemInstantiate);
             }
 
             //displayAnimator.InvertDisplayStatus(2);
