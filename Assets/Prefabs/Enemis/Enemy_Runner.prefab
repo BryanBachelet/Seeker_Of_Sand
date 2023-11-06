@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 3294013781257085871}
   - component: {fileID: 3294013781257085868}
   - component: {fileID: -3431584024930899228}
-  - component: {fileID: -984922616853698352}
   - component: {fileID: 4201272780608832961}
   - component: {fileID: -1539951015226756814}
   - component: {fileID: -3186308383320918057}
@@ -151,37 +150,9 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &-984922616853698352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3294013781257085869}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d111f6adaf64c04419fcd1b36b8b9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_agentStat:
-    healthMax: 1
-    speed: 36
-    armor: 1
-    regeneration: 1
-    damage: 1
-  m_target: {fileID: 0}
-  m_speedThreshold: 0.5
-  m_ExperiencePrefab: {fileID: 1278518001253408458, guid: 2c0c58b6d9328634eb9085bd7fb2127b,
-    type: 3}
-  m_xpDrop: 1
-  m_debugActive: 0
-  m_hitVfx: {fileID: 602918771122814874, guid: 23962c5172d38db48a3b3e041cc4b5ef, type: 3}
-  m_TimeBtwRefresh: 0.2
-  myAnimator: {fileID: 4938930430865175783}
-  m_ActiveDeathAnim: 0
 --- !u!95 &4201272780608832961
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -198,7 +169,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &-1539951015226756814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,7 +240,9 @@ MonoBehaviour:
   jumpDuration: 0.5
   angleOfJump: 20
   jumpDistance: 100
-  recuperationDistance: 40
+  distanceClosePlayer: 100
+  rangeToDamageDuringDash: 10
+  recuperationDistance: 100
   groundMaxDistance: 8
   m_layerMask:
     serializedVersion: 2
@@ -703,7 +676,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &4307211066910414988
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -720,7 +693,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!4 &1109604901122803704 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9e78e88a961b54d40bd864356641f0b4,
@@ -885,7 +858,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &4938930430865175783
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -902,7 +875,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &3410280465912584062
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1252,7 +1225,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &9110139663936937197
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1269,7 +1242,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &5940853908079947421
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1783,7 +1756,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &1575469636531619741
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1800,4 +1773,4 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
