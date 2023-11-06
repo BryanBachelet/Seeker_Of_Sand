@@ -57,7 +57,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     public string txt_EventName;
     int resetNumber = 0;
 
-    public MeshRenderer[] altarAllMesh;
+    public SkinnedMeshRenderer[] altarAllMesh;
+    public MeshRenderer socleMesh;
 
     public Material socleMaterial;
     [HideInInspector] public bool isAltarDestroy = false;
@@ -87,9 +88,9 @@ public class AltarBehaviorComponent : MonoBehaviour
         InitComponent();
         m_CurrentHealth = (int)m_MaxHealth;
         m_enemeyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
-        altarAllMesh[0].material.shader = Shader.Find("Intensity");
-        altarAllMesh[0].material.shader = Shader.Find("Color");
-        altarAllMesh[0].material = materialEvent[eventElementType];
+        socleMesh.material.shader = Shader.Find("Intensity");
+        socleMesh.material.shader = Shader.Find("Color");
+        socleMesh.material = materialEvent[eventElementType];
         m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
         m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
@@ -97,6 +98,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
             altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
         }
+        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
         //DisableColor();
         m_playerTransform = m_EnemyManagerScript.m_playerTranform;
         float maxHealth = 50 + m_enemeyManager.m_maxUnittotal;
@@ -184,6 +186,10 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
             m_EnemyManagerScript.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+            if(resetNumber == 0)
+            {
+                m_myAnimator.SetTrigger("Activation");
+            }
             if(resetNumber == 2)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
@@ -201,6 +207,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             {
                 altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f * resetNumber);
             }
+            socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f * resetNumber);
             m_myAnimator.SetBool("ActiveEvent", true);
             GlobalSoundManager.PlayOneShot(13, transform.position);
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
@@ -240,6 +247,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.32f * resetNumber);
         }
+        socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f * resetNumber);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
         for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
