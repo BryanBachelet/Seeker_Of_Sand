@@ -518,7 +518,7 @@ namespace Enemies
 
         public void DeathEnemy()
         {
-            m_serieController.RefreshSeries(true);
+            m_serieController.RefreshSeries(false);
         }
 
         public AltarBehaviorComponent FindClosestAltar(Vector3 position)
@@ -654,6 +654,10 @@ namespace Enemies
             return endInfoStats;
         }
 
+        public void WriteEndStats()
+        {
+
+        }
         #endregion
 
     }
