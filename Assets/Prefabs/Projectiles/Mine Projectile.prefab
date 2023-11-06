@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 174914553487474460}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: 0}
-  m_LocalScale: {x: 0.40684444, y: 0.40684444, z: 0.40684444}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4875569693349461353}
@@ -42,14 +42,20 @@ VisualEffect:
   m_GameObject: {fileID: 174914553487474460}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: b05c60577a375ea46b5083051a53314d, type: 3}
-  m_InitialEventName: OnPlay
-  m_InitialEventNameOverriden: 0
+  m_InitialEventName: ActiveArea
+  m_InitialEventNameOverriden: 1
   m_StartSeed: 1176773271
   m_ResetSeedOnPlay: 1
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: Progress
+        m_Overridden: 1
+      - m_Value: 100
+        m_Name: TempsRealese
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -66,7 +72,42 @@ VisualEffect:
     m_Matrix4x4f:
       m_Array: []
     m_AnimationCurve:
-      m_Array: []
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 4.003257
+            outSlope: 4.003257
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.24979663
+            value: 1
+            inSlope: 2.0016284
+            outSlope: 0
+            tangentMode: 65
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        m_Name: Size Over Time
+        m_Overridden: 1
     m_Gradient:
       m_Array: []
     m_NamedObject:
@@ -264,7 +305,10 @@ MonoBehaviour:
     type: 3}
   indexSFXExplosion: 22
   m_setupDuration: 2
-  powerPlayerProjection: 30
+  powerPlayerProjection: 150
+  vfxExplosion: {fileID: 659503455244116027, guid: 6e4809e6f25c1b24294cc75e5e7641b1,
+    type: 3}
+  vfxDecal: {fileID: 1941468164468798751}
 --- !u!95 &7339334848954211579
 Animator:
   serializedVersion: 5

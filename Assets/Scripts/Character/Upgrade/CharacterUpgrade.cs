@@ -148,6 +148,7 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
             m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
             m_upgradePoint.text = upgradePoint.ToString();
+            GlobalSoundManager.PlayOneShot(30, transform.position);
             GameState.ChangeState();
             if(had5level) { had5level = false; }
             return;

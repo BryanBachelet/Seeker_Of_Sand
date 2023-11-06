@@ -21,6 +21,7 @@ namespace Enemies
         public float projectileLifeTime = 1.5f;
         public float angleTrajectory = 45.0f;
         public float radiusOfAttack = 4.0f;
+        public Vector3 attackScale = Vector3.zero;
 
         [SerializeField] private GameObject m_projectileThrow;
 

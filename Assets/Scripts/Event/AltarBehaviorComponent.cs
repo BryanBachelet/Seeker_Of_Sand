@@ -124,12 +124,13 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
 
         if (!m_isEventOccuring) return;
-        float ennemyTokill = 25 * (resetNumber + 1) + (m_enemeyManager.m_maxUnittotal * 0.75f);
+        float ennemyTokill = 25 * (resetNumber + 1) + (m_enemeyManager.m_maxUnittotal * 0.25f);
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
             m_myAnimator.SetBool("ActiveEvent", false);
             GiveRewardXp();
+            m_enemeyManager.altarSuccessed++;
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
             if(lastItemInstantiate != null)
             {

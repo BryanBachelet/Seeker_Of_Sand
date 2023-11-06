@@ -55,8 +55,8 @@ public class health_Player : MonoBehaviour
     {
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
-            GameState.DeathActivation();
-      //      m_gameOverMenu.SetActive(true);
+            GameState.LaunchEndMenu();
+           
             isActivate = true;
             return;
         }
@@ -190,8 +190,8 @@ public class health_Player : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-      //  Debug.Log("Hit an Object !");
-        if (collision.transform.tag != "Enemy") return;
+        //  Debug.Log("Hit an Object !");
+        if (collision.transform.tag != "Enemy" || !GameState.IsPlaying()  ) return;
        // Debug.Log("Object was an Enemy !");
         GetDamageLeger(2,collision.transform.position);
     }

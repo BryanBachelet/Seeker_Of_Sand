@@ -82,12 +82,23 @@ namespace Enemies
 
         private Character.CharacterMouvement m_characterMouvement;
 
-        public int[] debugSpawnValue;
 
         private int repositionningLimit = 10;
         private int repositionningCount;
 
+
         private DayCyclecontroller m_dayController;
+        private float m_timeOfGame;
+
+        private SerieController m_serieController;
+          
+
+        // Stats Variables
+        public int altarLaunch;
+        public int altarSuccessed;
+        public int killCount;
+        
+
         public void Awake()
         {
             TestReadDataSheet();
@@ -99,17 +110,19 @@ namespace Enemies
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
+            m_serieController = m_playerTranform.GetComponent<SerieController>();
+            m_timeOfGame = 0;
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
         {
-            if (!state.isPlaying) return;
+            if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
-
+            m_timeOfGame += Time.deltaTime;
             if (spawningPhase)
             {
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(Time.time / 60);
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                 SpawnCooldown();
             }
 
@@ -208,13 +221,13 @@ namespace Enemies
         }
         private float GetTimeSpawn()
         {
-            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(Time.time / 2.0f)) + 1.3f) / 2.0f));
+            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame/ 2.0f)) + 1.3f) / 2.0f));
         }
 
         private int GetNumberToSpawn()
         {
             int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
-            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(Time.time / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
             number = number <= 0 ? 1 : number;
             return number;
         }
@@ -385,6 +398,7 @@ namespace Enemies
             healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
             if(target.GetComponent<AltarBehaviorComponent>())
             {
+                altarLaunch++;
                 target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
                 m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
             }
@@ -448,6 +462,8 @@ namespace Enemies
             m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
+       
+
         public void SendInstruction(string Instruction, Color colorText, string locationName)
         {
             m_dayController.StartCoroutine(m_dayController.DisplayInstruction(Instruction, 2, colorText, locationName));
@@ -493,11 +509,16 @@ namespace Enemies
 
             if (!m_enemiesArray.Contains(npcHealth)) return;
 
-
+            killCount++;
             m_enemyKillRatio.AddEnemiKill();
             if (m_enemiesFocusAltar.Contains(npcHealth)) m_enemiesFocusAltar.Remove(npcHealth);
             m_enemiesArray.Remove(npcHealth);
             Destroy(npcHealth.gameObject);
+        }
+
+        public void DeathEnemy()
+        {
+            m_serieController.RefreshSeries(false);
         }
 
         public AltarBehaviorComponent FindClosestAltar(Vector3 position)
@@ -543,7 +564,7 @@ namespace Enemies
 
         public void CreateCurveSheet()
         {
-            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (5).csv");
+            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet (1).csv");
             bool endOfFile = false;
             while (!endOfFile)
             {
@@ -591,10 +612,10 @@ namespace Enemies
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
 #if UNITY_EDITOR
-            string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (5).csv";
+            string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (1).csv";
 #else
 
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (5).csv";
+        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (1).csv";
        
 
 #endif 
@@ -603,22 +624,41 @@ namespace Enemies
 
             string lineContents = ReadSpecificLine(filePath, lineNumber);
             string[] data_values = lineContents.Split(',');
-            int[] dataTransformed = new int[data_values.Length - 1];
+            long[] dataTransformed = new long[data_values.Length - 1];
             for (int i = 0; i < dataTransformed.Length; i++)
             {
-                dataTransformed[i] = int.Parse(data_values[i + 1]);
+                if (data_values[i] == "") continue;
+                dataTransformed[i] = long.Parse(data_values[i] );
                 tempAnimationCurve.AddKey(i, dataTransformed[i]);
                 debugdata = debugdata + " , " + dataTransformed[i];
 
             }
-            debugSpawnValue = dataTransformed;
-
-
             m_MaxUnitControl = tempAnimationCurve;
             //Debug.Log(debugdata);
 
         }
 
+
+        #region EndStat
+
+        public EndInfoStats FillEndStat()
+        {
+            EndInfoStats endInfoStats = new EndInfoStats();
+
+            endInfoStats.durationGame = m_timeOfGame;
+            endInfoStats.enemyKill = killCount;
+            endInfoStats.altarSuccessed = altarSuccessed;
+            endInfoStats.altarRepeated = altarLaunch;
+            endInfoStats.bigestCombo = m_serieController.m_biggestMultiplicator;
+            endInfoStats.nightValidate = m_dayController.m_nightCount ;
+            return endInfoStats;
+        }
+
+        public void WriteEndStats()
+        {
+
+        }
+        #endregion
 
     }
 

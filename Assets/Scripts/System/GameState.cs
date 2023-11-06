@@ -9,10 +9,22 @@ public class ObjectState
     public bool isPlaying = true;
 }
 
+public struct EndInfoStats
+{
+    public float durationGame;
+    public int nightValidate;
+    public int enemyKill;
+    public float bigestCombo;
+    public float altarSuccessed;
+    public float altarRepeated;
+}
+
 public class GameState : MonoBehaviour
 {
     private static Enemies.EnemyManager m_enemyManager;
     private static List<ObjectState> listObject = new List<ObjectState>(0);
+
+    public static UIEndScreen endMenu;
 
     [SerializeField] private static bool m_isPlaying = true;
 
@@ -24,10 +36,13 @@ public class GameState : MonoBehaviour
     private float m_timerBetweenDeath = 0.0f;
     private GameObject m_pauseMenuObj;
 
+    
+
     public void Start()
     {
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
+       
     }
 
     public static void DeathActivation()
@@ -86,5 +101,17 @@ public class GameState : MonoBehaviour
     public void OpenGameMenu(InputAction.CallbackContext ctx)
     {
         m_pauseMenuObj.SetActive(!m_pauseMenuObj.activeSelf);
+    }
+
+    public static bool IsPlaying()
+    {
+        return m_isPlaying;
+    }
+
+    public static void LaunchEndMenu()
+    {
+        EndInfoStats stats = m_enemyManager.FillEndStat();
+        endMenu.ActiveUIEndScreen(stats);
+        ChangeState();
     }
 }

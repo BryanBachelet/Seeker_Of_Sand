@@ -35,6 +35,10 @@ namespace Enemies
         private NpcHealthComponent m_npcHealthComponent;
         public Animator m_animator;
 
+        public UnityEngine.VFX.VisualEffect vfxRangeAttack;
+        private bool m_jumpPreparation = false;
+        private float m_tempsEcoulePreparation = 0;
+        [SerializeField] private float m_tempsPreparation = 0.5f;
         // -------- Temps --------------
         private bool m_onlyOnce;
         private Vector3 dest;
@@ -61,6 +65,7 @@ namespace Enemies
             if (distancePlayer < 100)
             {
                 m_animator.SetBool("ClosefromPlayer", true);
+                vfxRangeAttack.transform.position = m_target.position;
             }
             else
             {
@@ -71,14 +76,25 @@ namespace Enemies
                 if (!IsPlayerHide())
                 {
                     m_npcHealthComponent.npcState = NpcState.ATTACK;
-                    StartAttack();
+                    PrepareToJump();
 
                     return;
                 }
 
             }
-
-            if (m_npcHealthComponent.npcState == NpcState.ATTACK)
+            if(m_jumpPreparation)
+            {
+                if(m_tempsPreparation < m_tempsEcoulePreparation)
+                {
+                    StartAttack();
+                }
+                else
+                {
+                    m_tempsEcoulePreparation += Time.deltaTime;
+                    m_jumpPreparation = false;
+                }
+            }
+            if (m_npcHealthComponent.npcState == NpcState.ATTACK && !m_jumpPreparation)
             {
                 AttackJumper();
                 return;
@@ -133,11 +149,18 @@ namespace Enemies
             return Physics.Raycast(transform.position, direction, jumpDistance, m_layerObstaclePlayer);
         }
 
-        private void StartAttack()
+        private void PrepareToJump()
         {
             m_agent.enabled = false;
             m_capsuleCollider.isTrigger = true;
             m_isFalling = false;
+            m_jumpPreparation = true;
+            vfxRangeAttack.SendEvent("ActiveArea");
+        }
+        private void StartAttack()
+        {
+
+            Debug.Log("Jumping");
 
             Vector3 finalDashPos = Vector3.zero;
             RaycastHit hit = new RaycastHit();
@@ -181,7 +204,8 @@ namespace Enemies
 
         private void EndAttack()
         {
-          
+            m_tempsEcoulePreparation = 0;
+            vfxRangeAttack.SendEvent("UnActiveArea");
             m_agent.enabled = true;
             NavMeshHit hitTest = new NavMeshHit();
             NavMesh.SamplePosition(transform.position, out hitTest, Mathf.Infinity, NavMesh.AllAreas);

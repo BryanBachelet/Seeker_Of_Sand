@@ -12,6 +12,9 @@ public class TrainingArea : MonoBehaviour
     public float[] predictionPercent;
     public float[] tempsRealese;
     public float[] RangeAttack;
+    private bool[] attackCheck = new bool[3];
+    private int[] numberOfAttackByTypeToLaunch = new int[3];
+    private int[] numberOfAttackByTypeCounter = new int[3];
 
     public float densityAttack;
     private float attackCount;
@@ -27,6 +30,8 @@ public class TrainingArea : MonoBehaviour
     private Rigidbody playerRb;
 
     public float imprecisionLevel;
+    public float delayBtwnSingleAttack = 0.2f;
+    private float tempsEcouleLastSingleAttack = 0;
 
     [Range(1,5)]
     public int difficulty;
@@ -53,24 +58,45 @@ public class TrainingArea : MonoBehaviour
                 LaunchAttack(i);
                 tempsEcouleLastAttack[i] = tempsEcoule;
             }
+            if(attackCheck[i] == true)
+            {
+                if(numberOfAttackByTypeCounter[i] < numberOfAttackByTypeToLaunch[i])
+                {
+                    if (tempsEcouleLastSingleAttack > 0)
+                    {
+                        tempsEcouleLastSingleAttack -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        GameObject attackInstiate = Instantiate(attack[i], foundNewPosition() + (playerRigidBodyVelocity * predictionPercent[i]), transform.rotation, transform);
+                        //Debug.Log("Attack spawned : " + attackInstiate.name);
+                        AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
+                        dataLife.lifeTimeVFX = tempsRealese[i];
+                        dataLife.playerTarget = playerPosition;
+                        dataLife.rangeHit = RangeAttack[i];
+                        attackEnCour.Add(attackInstiate);
+                        StartCoroutine(DestroyAfterDelay(tempsRealese[i] + 1, attackInstiate));
+                        numberOfAttackByTypeCounter[i] += 1;
+                        tempsEcouleLastSingleAttack = delayBtwnSingleAttack;
+                    }
+                }
+                else
+                {
+                    attackCheck[i] = false;
+                }
+
+            }
         }
+        
     }
 
     public void LaunchAttack(int indexAttack)
     {
         //Debug.Log( "spawn this prefab : " + attack[indexAttack]);
         int variationQuantity = Random.Range(-difficulty, difficulty);
-        for(int i = 0; i < numberByDifficulty + variationQuantity; i++)
-        {
-            GameObject attackInstiate = Instantiate(attack[indexAttack], foundNewPosition() + (playerRigidBodyVelocity * predictionPercent[indexAttack]), transform.rotation, transform);
-            //Debug.Log("Attack spawned : " + attackInstiate.name);
-            AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
-            dataLife.lifeTimeVFX = tempsRealese[indexAttack];
-            dataLife.playerTarget = playerPosition;
-            dataLife.rangeHit = RangeAttack[indexAttack];
-            attackEnCour.Add(attackInstiate);
-            StartCoroutine(DestroyAfterDelay(6, attackInstiate));
-        }
+        attackCheck[indexAttack] = true;
+        numberOfAttackByTypeToLaunch[indexAttack] = numberByDifficulty + variationQuantity;
+        numberOfAttackByTypeCounter[indexAttack] = 0;
 
     }
 

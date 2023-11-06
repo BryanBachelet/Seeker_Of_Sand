@@ -37,7 +37,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] float m_TimeProchainePhase;
 
     [SerializeField] private GameObject m_EndUI;
-    [SerializeField] private int m_nightCount;
+    [SerializeField] public int m_nightCount { get; private set; }
     private string dayprogress;
     private string phaseprogress;
 
@@ -63,6 +63,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameState.IsPlaying()) return;
         time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
         //if(isNight)
@@ -164,7 +165,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_GSM.UpdateParameter(1, "DayOrNight");
         m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
         StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
-        GlobalSoundManager.PlayOneShot(34, transform.position);
+      //  GlobalSoundManager.PlayOneShot(34, transform.position);
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;

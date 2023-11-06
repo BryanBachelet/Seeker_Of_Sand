@@ -35,7 +35,7 @@ namespace Render.Camera
 
         private CameraEffect[] cameraEffects;
         public Transform sun;
-
+        [SerializeField] private Texture2D[] m_cursorTex = new Texture2D[2];
 
         // -- Test Camera Zoom ---- 
 
@@ -103,6 +103,7 @@ namespace Render.Camera
             cameraEffects = GetComponents<CameraEffect>();
             m_cameraDirection = transform.position - m_targetTransform.position;
             m_baseAngle = transform.rotation.eulerAngles;
+            Cursor.lockState = CursorLockMode.Confined;
         }
 
 
@@ -278,14 +279,14 @@ namespace Render.Camera
 
 
                 if (Mathf.Abs(m_mouseDeltaValue) < m_mousDeltaThreshold) m_mouseDeltaValue = 0;
-                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
+                //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
 
             }
 
             if (ctx.canceled && m_mouseInputActivate)
             {
                 m_mouseDeltaValue = 0.0f;
-                if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
+                //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
             }
         }
 
@@ -293,16 +294,18 @@ namespace Render.Camera
         {
             if (ctx.performed && m_mouseInputActivate)
             {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = false;
+
+                //Cursor.visible = false;
+                Cursor.SetCursor(m_cursorTex[0], Vector2.zero, CursorMode.ForceSoftware);
                 m_isRotationInputPress = true;
 
             }
             if (ctx.canceled && m_mouseInputActivate)
             {
+                Cursor.SetCursor(m_cursorTex[1], Vector2.zero, CursorMode.ForceSoftware);
                 m_isRotationInputPress = false;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                //Cursor.lockState = CursorLockMode.None;
+                //Cursor.visible = true;
             }
         }
 

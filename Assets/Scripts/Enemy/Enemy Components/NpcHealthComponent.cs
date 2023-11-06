@@ -45,7 +45,7 @@ namespace Enemies
 
         private HealthSystem m_healthSystem;
         private HealthManager m_healthManager;
-        private Animator m_entityAnimator;
+        [HideInInspector] public Animator m_entityAnimator;
         private EnemyManager m_enemyManager;
         [SerializeField] private Animator m_EnemyAnimatorDissolve;
 
@@ -84,7 +84,7 @@ namespace Enemies
             // VfX feedback
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage);
             Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
-            m_entityAnimator.SetTrigger("TakeDamage");
+            //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
             if (m_healthSystem.health > 0) return;
@@ -106,7 +106,7 @@ namespace Enemies
 
         private IEnumerator Death()
         {
-            m_healthManager.m_serieController.RefreshSeries(false);
+            m_enemyManager.DeathEnemy();
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction);
            

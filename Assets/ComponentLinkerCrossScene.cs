@@ -59,6 +59,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] private TMP_Text m_multiplicatorDisplay;
     [SerializeField] private Image m_serieTimeDisplay;
     [SerializeField] public TMP_Text m_serieKillCount;
+   
     #endregion
     #region cristal Inventory
     private CristalInventory m_cristalInventory;
@@ -122,6 +123,8 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public Image m_daySlider;
     [SerializeField] public Animator m_instructionAnimator;
     #endregion
+
+    [SerializeField] private UIEndScreen m_uiEndScreen;
 
     public void Start()
     {
@@ -293,6 +296,11 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_dayCycleController.m_DayPhases = m_dayPhases;
         m_dayCycleController.m_Instruction = m_instruction;
         m_dayCycleController.m_daySlider = m_daySlider;
+        #endregion
+
+
+        #region End Menu
+        GameState.endMenu = m_uiEndScreen;
         #endregion
         Debug.Log("Initialization done in : " + Time.timeSinceLevelLoad);
     }
