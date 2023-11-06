@@ -63,7 +63,11 @@ namespace Enemies
 
         public void Update()
         {
+
+
             float distancePlayer = Vector3.Distance(transform.position, m_target.position);
+            
+            
             if (distancePlayer < distanceClosePlayer)
             {
                 m_animator.SetBool("ClosefromPlayer", true);
@@ -73,7 +77,7 @@ namespace Enemies
             {
                 m_animator.SetBool("ClosefromPlayer", false);
             }
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && distancePlayer < jumpDistance / 2.0f)
+            if (m_npcHealthComponent.npcState == NpcState.MOVE && distancePlayer < jumpDistance /1.5f)
             {
                 if (!IsPlayerHide())
                 {
