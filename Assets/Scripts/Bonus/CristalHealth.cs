@@ -10,7 +10,7 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private float m_currentHealth;
     [SerializeField] private int m_cristalToDropPerHealth = 1;
     [SerializeField] private GameObject m_cristalLootPrefab;
-    [Range(0,3)]
+    [Range(0, 3)]
     [SerializeField] public int m_cristalType = 0; //0 --> Water | 1 --> Fire | 2 --> Aer | 3 --> Ground
     [SerializeField] private UnityEngine.VFX.VisualEffect m_hitPrefab;
     [SerializeField] private GameObject[] cristalPart;
@@ -19,24 +19,18 @@ public class CristalHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(playerPosition == null) { playerPosition = GameObject.Find("Player").transform; }
+        if (playerPosition == null) { playerPosition = GameObject.Find("Player").transform; }
         m_currentHealth = m_healthMax;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void ReceiveHit(int damage)
     {
-        for(int i = 0; i < damage; i++)
+        for (int i = 0; i < damage; i++)
         {
             m_hitPrefab.Play();
             GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
             ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
-            expMouvementScript.playerPosition = playerPosition;
+            expMouvementScript.ActiveExperienceParticule(playerPosition);
             expMouvementScript.cristalType = m_cristalType;
         }
         m_currentHealth -= damage;
