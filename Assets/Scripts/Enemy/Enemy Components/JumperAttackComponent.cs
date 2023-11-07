@@ -77,7 +77,7 @@ namespace Enemies
             {
                 m_animator.SetBool("ClosefromPlayer", false);
             }
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && distancePlayer < jumpDistance /1.5f)
+           if (m_npcHealthComponent.npcState == NpcState.MOVE && distancePlayer < jumpDistance /1.5f)
             {
                 if (!IsPlayerHide())
                 {

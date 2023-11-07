@@ -54,7 +54,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             for (int i = 0; i < experienceTouched.Length; i++)
             {
                 ExperienceMouvement xpMvtScript  = experienceTouched[i].GetComponent<ExperienceMouvement>();
-                xpMvtScript.playerPosition = this.transform;
+                xpMvtScript.ActiveExperienceParticule(this.transform);
                 m_worldExp.Remove(xpMvtScript);
             }
         }
@@ -105,7 +105,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         ExperienceMouvement[] expArray = m_worldExp.ToArray();
         for (int i = 0; i < expArray.Length; i++)
         {
-            expArray[i].playerPosition = this.transform;
+            expArray[i].ActiveExperienceParticule(this.transform);
         }
 
         m_worldExp.Clear();
@@ -127,7 +127,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         if (collision.gameObject.tag == "Experience")
         {
-            collision.GetComponent<ExperienceMouvement>().initDestruction();
+            collision.GetComponent<ExperienceMouvement>().InitDestruction();
             //Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
             OnEnemyKilled();
