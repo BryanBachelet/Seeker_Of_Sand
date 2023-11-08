@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 28b0af0f360677e40b8453b8214b962a, type: 2}
+  - {fileID: -876546973899608171, guid: 2da402d4b0a2ecd478ac10155f466948, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -119,7 +119,8 @@ MonoBehaviour:
     m_Bits: 8
   m_power: 25
   m_damage: 1
-  piercingMax: 1
+  m_indexSFX: 0
+  m_piercingMax: 0
   m_deltaTimeMove: 0
   m_timeBeforeExplosion: 1
   m_explosionSize: 15
@@ -141,9 +142,12 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   baseEmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+  m_ActivationVFX: 0
+  m_VFXObject: {fileID: 0}
+  indexSFXExplosion: 0
 --- !u!95 &3637716343358496254
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -160,7 +164,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &7315505697740163180
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -94,6 +94,8 @@ namespace Enemies
 
         public void GetDestroy(Vector3 direction, float power)
         {
+            if (npcState == NpcState.DEATH) return;
+
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
             npcState = NpcState.DEATH;
             this.gameObject.layer = 16;
