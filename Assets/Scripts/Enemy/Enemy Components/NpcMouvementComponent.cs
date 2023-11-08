@@ -165,8 +165,9 @@ namespace Enemies
             if (!m_npcHealthComponent.hasDeathAnimation)
             {
 
-                //m_rigidbody.isKinematic = false;
-                m_rigidbody.AddForce((direction.normalized + Vector3.up).normalized * power, ForceMode.Impulse);
+                m_rigidbody.isKinematic = false;
+                m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
+               m_rigidbody.AddForce((direction.normalized + Vector3.up).normalized * power, ForceMode.Impulse);
             }
 
             this.enabled = false;
