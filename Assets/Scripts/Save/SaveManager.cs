@@ -7,6 +7,13 @@ using UnityEngine;
 namespace Save
 {
 
+    public struct GeneralSaveData
+    {
+
+    }
+
+
+
     public class SaveManager
     {
         public static void WriteEndStats(string filePath, EndInfoStats data )
@@ -36,5 +43,7 @@ namespace Save
             streamReader.Close();
             return stats;
         }
+
+
     }
 }
