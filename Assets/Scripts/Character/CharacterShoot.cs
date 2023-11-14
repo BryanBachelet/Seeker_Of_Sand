@@ -50,9 +50,11 @@ namespace Character
         [SerializeField] private Buff.BuffsManager m_buffManager;
         [SerializeField] private CharacterProfile m_chracterProfil;
         [SerializeField] private Animator m_CharacterAnimator;
+        [SerializeField] private Animator m_BookAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
         [SerializeField] public GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
+        [SerializeField] private Transform bookTransform;
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReady = new List<UnityEngine.VFX.VisualEffect>();
         private Rigidbody m_rigidbody;
 
@@ -199,8 +201,10 @@ namespace Character
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {
+                Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
+                avatarTransform.rotation = rotationFromHead;
+                bookTransform.rotation = rotationFromHead;
 
-                avatarTransform.rotation = m_characterAim.GetTransformHead().rotation;
                 if (autoAimActive)
                 {
 
@@ -289,6 +293,7 @@ namespace Character
                 EndShoot();
             }
             m_CharacterAnimator.SetBool("Shooting", true);
+            m_BookAnimator.SetBool("Shooting", true);
 
 
         }
@@ -401,6 +406,7 @@ namespace Character
         {
             if (m_canShoot || m_isReloading) return;
             m_CharacterAnimator.SetBool("Shooting", false);
+            m_BookAnimator.SetBool("Shooting", false);
             m_CharacterMouvement.m_SpeedReduce = 1;
             float totalShootTime = shootTime + currentWeaponStats.timeInterval;
             if (m_shootTimer > totalShootTime)
@@ -431,6 +437,7 @@ namespace Character
         private void ReloadShotCast(float time)
         {
             m_CharacterAnimator.SetBool("Shooting", false);
+            m_BookAnimator.SetBool("Shooting", false);
             m_CharacterMouvement.m_SpeedReduce = 1;
             float totalShootTime = time + currentWeaponStats.timeInterval;
             if (m_shootTimer > totalShootTime)
@@ -460,6 +467,7 @@ namespace Character
             m_shootInput = false;
            
             avatarTransform.localRotation = Quaternion.identity;
+            bookTransform.localRotation = Quaternion.identity;
             //m_AnimatorSkillBar.SetBool("IsCasting", false);
             if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
             m_cameraBehavior.BlockZoom(false);
@@ -506,6 +514,7 @@ namespace Character
                     //m_isCasting = true;
                     //ReloadWeapon(1.5f);
                     m_CharacterAnimator.SetBool("Casting", true);
+                    m_BookAnimator.SetBool("Casting", true);
 
                     //m_AnimatorSkillBar.SetBool("IsCasting", true);
                     //m_canShoot = true;
@@ -516,6 +525,7 @@ namespace Character
                 {
                     m_isCasting = true;
                     m_CharacterAnimator.SetBool("Casting", true);
+                    m_BookAnimator.SetBool("Casting", true);
                     m_CharacterMouvement.combatState = true;
                     return true;
                 }
@@ -532,6 +542,7 @@ namespace Character
 
                     m_lastTimeShot = Mathf.Infinity;
                     avatarTransform.localRotation = Quaternion.identity;
+                    bookTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
                     if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                     return false;
@@ -587,6 +598,7 @@ namespace Character
                 m_cameraBehavior.BlockZoom(false);
 
                 avatarTransform.localRotation = Quaternion.identity;
+                bookTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
                 if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                 ReloadWeapon(5f);
@@ -601,7 +613,9 @@ namespace Character
                 m_isReloading = true;
                 m_cameraBehavior.BlockZoom(false);
                 m_CharacterAnimator.SetBool("Casting", false);
+                m_BookAnimator.SetBool("Casting", false);
                 avatarTransform.localRotation = Quaternion.identity;
+                bookTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
                 if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
                 ReloadWeapon(5f);
