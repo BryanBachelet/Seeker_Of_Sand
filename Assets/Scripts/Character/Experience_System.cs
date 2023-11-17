@@ -27,7 +27,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
     private CristalInventory m_cristalInventory;
-    private health_Player m_healthPlayer;
 
     private bool m_xperienceBuffered = false;
     private float lastXpBuffered = 0;
@@ -38,7 +37,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_characterUpgrade = GetComponent<CharacterUpgrade>();
         m_characterProfile = GetComponent<CharacterProfile>();
         m_cristalInventory = GetComponent<CristalInventory>();
-        m_healthPlayer = GetComponent<health_Player>();
         TestReadDataSheet();
     }
 
@@ -56,7 +54,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             for (int i = 0; i < experienceTouched.Length; i++)
             {
                 ExperienceMouvement xpMvtScript  = experienceTouched[i].GetComponent<ExperienceMouvement>();
-                xpMvtScript.ActiveExperienceParticule(this.transform);
+                xpMvtScript.playerPosition = this.transform;
                 m_worldExp.Remove(xpMvtScript);
             }
         }
@@ -107,7 +105,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         ExperienceMouvement[] expArray = m_worldExp.ToArray();
         for (int i = 0; i < expArray.Length; i++)
         {
-            expArray[i].ActiveExperienceParticule(this.transform);
+            expArray[i].playerPosition = this.transform;
         }
 
         m_worldExp.Clear();
@@ -129,7 +127,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         if (collision.gameObject.tag == "Experience")
         {
-            collision.GetComponent<ExperienceMouvement>().InitDestruction();
+            collision.GetComponent<ExperienceMouvement>().initDestruction();
             //Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
             OnEnemyKilled();
@@ -140,13 +138,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
         }
-        else if (collision.gameObject.tag == "HealDrop")
-        {
-            Destroy(collision.gameObject);
-            m_healthPlayer.RestoreHealQuarter(0);
-            GlobalSoundManager.PlayOneShot(3, Vector3.zero);
-        }
-
     }
 
     private void UpdateMagnet(ref CharacterStat playerStat)

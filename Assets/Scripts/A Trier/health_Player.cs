@@ -188,20 +188,6 @@ public class health_Player : MonoBehaviour
         InitializedHealthData();
     }
 
-    public void RestoreHealQuarter(int quantity)
-    {
-        m_CurrentHealth += m_QuarterHealthQuantity;
-        if(m_CurrentHealth > m_MaxHealthQuantity)
-        {
-            m_CurrentHealth = m_MaxHealthQuantity;
-            //m_CurrentQuarter = (int)m_QuarterNumber;
-        }
-        else
-        {
-            //m_CurrentQuarter += 1;
-        }
-        InitializedHealthData();
-    }
     private void OnCollisionStay(Collision collision)
     {
         //  Debug.Log("Hit an Object !");

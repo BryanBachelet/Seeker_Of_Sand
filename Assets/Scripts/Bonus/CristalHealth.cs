@@ -10,8 +10,7 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private float m_currentHealth;
     [SerializeField] private int m_cristalToDropPerHealth = 1;
     [SerializeField] private GameObject m_cristalLootPrefab;
-    private bool[] state = new bool[3];
-    [Range(0, 3)]
+    [Range(0,3)]
     [SerializeField] public int m_cristalType = 0; //0 --> Water | 1 --> Fire | 2 --> Aer | 3 --> Ground
     [SerializeField] private UnityEngine.VFX.VisualEffect m_hitPrefab;
     [SerializeField] private GameObject[] cristalPart;
@@ -20,47 +19,39 @@ public class CristalHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (playerPosition == null) { playerPosition = GameObject.Find("Player").transform; }
+        if(playerPosition == null) { playerPosition = GameObject.Find("Player").transform; }
         m_currentHealth = m_healthMax;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     public void ReceiveHit(int damage)
     {
-        m_hitPrefab.Play();
+        for(int i = 0; i < damage; i++)
+        {
+            m_hitPrefab.Play();
+            GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
+            ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
+            expMouvementScript.playerPosition = playerPosition;
+            expMouvementScript.cristalType = m_cristalType;
+        }
         m_currentHealth -= damage;
-        if (m_currentHealth < m_healthMax * 0.66f || state[0] == false)
+        if (m_currentHealth < m_healthMax * 0.66f)
         {
             cristalPart[0].SetActive(false);
-            state[0] = true;
-                GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
-                ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
-                expMouvementScript.ActiveExperienceParticule(playerPosition);
-                expMouvementScript.cristalType = m_cristalType;
         }
-        if (m_currentHealth < m_healthMax * 0.33f || state[1] == false)
+        if (m_currentHealth < m_healthMax * 0.33f)
         {
             //cristalPart[0].SetActive(false);
             cristalPart[1].SetActive(false);
-            state[1] = true;
-            for (int i = 0; i < 3; i++)
-            {
-                GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
-                ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
-                expMouvementScript.ActiveExperienceParticule(playerPosition);
-                expMouvementScript.cristalType = m_cristalType;
-            }
         }
-        if (m_currentHealth <= 0 || state[2] == false)
+        if (m_currentHealth <= 0)
         {
-            state[2] = true;
             StartCoroutine(DestroyAfterDelay(3));
-            for (int i = 0; i < 6; i++)
-            {
-                GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
-                ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
-                expMouvementScript.ActiveExperienceParticule(playerPosition);
-                expMouvementScript.cristalType = m_cristalType;
-            }
         }
     }
 

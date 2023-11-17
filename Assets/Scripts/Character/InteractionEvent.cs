@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+
 public class InteractionEvent : MonoBehaviour
 {
     [SerializeField] private float radiusInteraction;
@@ -13,13 +12,6 @@ public class InteractionEvent : MonoBehaviour
     public GameObject currentInteractibleObject;
 
     public GameObject ui_HintInteractionObject;
-
-    public string[] eventDataInfo;
-
-    public TMP_Text txt_ObjectifDescription;
-    public TMP_Text txt_RewardDescription;
-    public UnityEngine.UI.Image img_ImageReward;
-    public Sprite[] sprite_List;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,31 +35,7 @@ public class InteractionEvent : MonoBehaviour
         if(col.Length > 0)
         {
             if (ui_HintInteractionObject != null) { ui_HintInteractionObject.SetActive(true); };
-            if(currentInteractibleObject != col[0].transform.gameObject)
-            {
-                currentInteractibleObject = col[0].transform.gameObject;
-                eventDataInfo = currentInteractibleObject.GetComponent<AltarBehaviorComponent>().GetAltarData();
-                if(eventDataInfo[0] == "0")
-                {
-                    img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
-                }
-                else if(eventDataInfo[0] == "1")
-                {
-                    img_ImageReward.sprite = sprite_List[4]; // Experience Icon
-                }
-                else if(eventDataInfo[0] == "2")
-                {
-                    //Trouver methode pour récupérer le sprite du sort obtenu
-                }
-                else if(eventDataInfo[0] == "3")
-                {
-                    img_ImageReward.sprite = sprite_List[5]; //Health Quarter icon
-                }
-                txt_ObjectifDescription.text = eventDataInfo[1];
-                txt_RewardDescription.text = eventDataInfo[2] + "x";
-            }
-
-
+            currentInteractibleObject = col[0].transform.gameObject;
             float nearest = Vector3.Distance(transform.position, col[0].transform.position);
             if(col.Length > 1)
             {

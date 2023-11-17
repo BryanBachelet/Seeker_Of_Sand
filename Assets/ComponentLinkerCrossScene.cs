@@ -40,9 +40,6 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     #region Intercation Event
     private InteractionEvent m_InteractionEvent;
     [SerializeField] public GameObject m_ui_HintInteraction;
-    [SerializeField] public TMP_Text txt_ObjectifDescription;
-    [SerializeField] public TMP_Text txt_RewardDescription;
-    [SerializeField] public Image img_ImageReward;
     #endregion
     #region health Player
     private health_Player m_HealthPlayer;
@@ -237,9 +234,6 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         #region InteractionEvent
         m_InteractionEvent = m_PlayerObjectRef.GetComponent<InteractionEvent>();
         m_InteractionEvent.ui_HintInteractionObject = m_ui_HintInteraction;
-        m_InteractionEvent.txt_ObjectifDescription = txt_ObjectifDescription;
-        m_InteractionEvent.txt_RewardDescription = txt_RewardDescription;
-        m_InteractionEvent.img_ImageReward = img_ImageReward;
         #endregion
         #region Health Player
         m_HealthPlayer = m_PlayerObjectRef.GetComponent<health_Player>();

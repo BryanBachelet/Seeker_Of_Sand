@@ -121,12 +121,4 @@ public class Projectile : MonoBehaviour
 
     }
 
-    public void SetSlopeRotation(Vector3 hitNormal)
-    {
-        Vector3 axis = Vector3.Cross(transform.right, hitNormal);
-        Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-        float angle = Vector3.SignedAngle( rotTest* Vector3.forward, axis,transform.right);
-        transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
-    }
-
 }
