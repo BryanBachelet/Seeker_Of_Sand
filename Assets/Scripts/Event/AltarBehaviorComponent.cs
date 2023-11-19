@@ -13,9 +13,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     [ColorUsage(showAlpha: true, hdr: true)]
     [SerializeField] private Color[] colorEventTab;
     [SerializeField] private float m_TimeInvulnerability;
-    [SerializeField] private float m_MaxHealth;
-    [SerializeField] private int m_CurrentHealth;
-    [SerializeField] private float m_MaxKillEnemys;
+    [SerializeField] private float m_MaxKillEnemies;
     [SerializeField] private int m_CurrentKillCount;
     [SerializeField] private GameObject[] DangerAddition;
     public float radiusEventActivePlayer = 300;
@@ -46,7 +44,6 @@ public class AltarBehaviorComponent : MonoBehaviour
     public EventDisplay displayAnimator;
 
     private RectTransform canvasPrincipal;
-    private Enemies.EnemyManager m_EnemyManagerScript;
 
     static int altarCount = 0;
     private int ownNumber = 0;
@@ -55,7 +52,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public VisualEffect m_visualEffectActivation;
     public string txt_EventName;
-    int resetNumber = 1;
+    int resetNumber = 0;
 
     public SkinnedMeshRenderer[] altarAllMesh;
     public MeshRenderer socleMesh;
@@ -79,76 +76,44 @@ public class AltarBehaviorComponent : MonoBehaviour
     private Vector3 raycastdirection;
 
     private float progression = 0;
-    // Start is called before the first frame update
+
+    private int m_idSpellReward;
+
+    #region Unity Functions
     void Start()
     {
-        raycastdirection = new Vector3(0, -10, 0);
-        eventElementType = Random.Range(0, 4);
+        InitComponent();
 
-        GetComponentInChildren<Light>().color = colorEvent[eventElementType];
-        Light[] lightToSwap = GetComponentsInChildren<Light>();
-        for (int i = 0; i < lightToSwap.Length; i++)
-        {
-            lightToSwap[i].color = colorEvent[eventElementType];
-        }
+        eventElementType = Random.Range(0, 4); 
+
         ownNumber = altarCount;
         altarCount++;
-        InitComponent();
-        m_CurrentHealth = (int)m_MaxHealth;
-        m_enemeyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
-        socleMesh.material.shader = Shader.Find("Intensity");
-        socleMesh.material.shader = Shader.Find("Color");
-        socleMesh.material = materialEvent[eventElementType];
-        m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
-        m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[eventElementType]);
-        for (int i = 0; i < altarAllMesh.Length; i++)
-        {
 
-            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
-        }
-        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
-        //DisableColor();
-        m_playerTransform = m_EnemyManagerScript.m_playerTranform;
+        m_playerTransform = m_enemeyManager.m_playerTranform;
+
+        // Setup the altar health
         float maxHealth = 50 + m_enemeyManager.m_maxUnittotal;
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
-        RaycastHit hit;
+
+        // Setup the drop point position
+        RaycastHit hit = new RaycastHit();
+        Vector3 raycastdirection = new Vector3(0, -10, 0);
         if (Physics.Raycast(transform.position + new Vector3(0, 25, 0), raycastdirection, out hit, Mathf.Infinity, m_groundLayer))
         {
-            Debug.DrawRay(transform.position + new Vector3(0, 25, 0), raycastdirection * hit.distance, Color.cyan);
             m_DropAreaPosition = hit.point;
-            Debug.Log("Did Hit");
         }
-        else
-        {
-            Debug.DrawRay(transform.position + new Vector3(0, 25, 0), raycastdirection * 1000, Color.white);
-            Debug.Log("Did not Hit");
-        }
-        nextRewardObject = rewardObject[0];
-        // Does the ray intersect any objects excluding the player layer
 
+        InitVisualElements();
+
+        StartCoroutine(LastStart());
     }
 
-    private void InitComponent()
-    {
-        m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
-        m_EnemyManagerScript = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
-        //canvasPrincipal = GameObject.Find("MainUI_EventDisplayHolder").GetComponent<RectTransform>();
-        //ownDisplayEventDetail = Instantiate(displayEventDetail, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal);
-        //ownArrowDisplayEventDetail = Instantiate(displayArrowEvent, canvasPrincipal.position, canvasPrincipal.rotation, canvasPrincipal.parent);
-        //ownArrowDisplayEventDetail.GetComponent<UI_ArrowPointingEvent>().refGo = this.gameObject;
-        //displayAnimator = ownDisplayEventDetail.GetComponent<EventDisplay>();
-        //m_myAnimator = this.GetComponentInChildren<Animator>();
-        //displayTextDescription1 = displayAnimator.m_textDescription1;
-        //displayTextDescription2 = displayAnimator.m_textDescription2;
-        //eventTextName = displayAnimator.m_textEventName;
-
-    }
-    // Update is called once per frame
     void Update()
     {
 
         if (!m_isEventOccuring) return;
+
         float ennemyTokill = 25 * (resetNumber + 1) + (m_enemeyManager.m_maxUnittotal * 0.25f);
 
         if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
@@ -157,10 +122,10 @@ public class AltarBehaviorComponent : MonoBehaviour
             GiveRewardXp();
             m_enemeyManager.altarSuccessed++;
             m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-            if(lastItemInstantiate != null)
+            if (lastItemInstantiate != null)
             {
-                
-               Destroy(lastItemInstantiate);
+
+                Destroy(lastItemInstantiate);
             }
 
             //displayAnimator.InvertDisplayStatus(2);
@@ -188,17 +153,51 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region Init Functions
+    private void InitComponent()
+    {
+        m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
+        m_enemeyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
+    }
+
+
+    private void InitVisualElements()
+    {
+        Light[] lightToSwap = GetComponentsInChildren<Light>();
+        for (int i = 0; i < lightToSwap.Length; i++)
+        {
+            lightToSwap[i].color = colorEvent[eventElementType];
+        }
+
+        socleMesh.material = materialEvent[eventElementType];
+        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+
+        m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
+        m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[eventElementType]);
+
+        for (int i = 0; i < altarAllMesh.Length; i++)
+        {
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+        }
+    }
+    #endregion
+
+    // Update is called once per frame
+   
+
 
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-        m_EnemyManagerScript.SendInstruction("Altar protection fail...", Color.red, TerrainLocationID.currentLocationName);
+        m_enemeyManager.SendInstruction("Altar protection fail...", Color.red, TerrainLocationID.currentLocationName);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         isAltarDestroy = true;
-        m_EnemyManagerScript.RemoveTarget(transform);
-        m_EnemyManagerScript.RemoveAltar(transform);
+        m_enemeyManager.RemoveTarget(transform);
+        m_enemeyManager.RemoveAltar(transform);
         Debug.Log("Destroy event");
     }
 
@@ -208,22 +207,22 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
         if (!m_objectHealthSystem.IsEventActive())
         {
-            m_EnemyManagerScript.AddTarget(this.transform);
-            m_EnemyManagerScript.AddAltar(transform);
-            m_EnemyManagerScript.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
-            if(resetNumber == 1)
+            m_enemeyManager.AddTarget(this.transform);
+            m_enemeyManager.AddAltar(transform);
+            m_enemeyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+            if(resetNumber == 0)
             {
                 m_myAnimator.SetTrigger("Activation");
             }
-            if(resetNumber == 3)
+            if(resetNumber == 2)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
             }
-            else if (resetNumber == 4)
+            else if (resetNumber == 3)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[1], transform.position, transform.rotation);
             }
-            else if (resetNumber == 5)
+            else if (resetNumber == 4)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[2], transform.position, transform.rotation);
             }
@@ -238,20 +237,10 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
             m_hasEventActivate = false;
             m_isEventOccuring = true;
-
-            //this.transform.GetChild(0).gameObject.SetActive(true);
-            //Enemies.EnemyManager.EnemyTargetPlayer = false;
-            //this.transform.GetChild(0).gameObject.SetActive(true);
-            //Enemies.EnemyManager.EnemyTargetPlayer = false;
-            //this.transform.GetChild(0).gameObject.SetActive(true);
-            //Enemies.EnemyManager.EnemyTargetPlayer = false;
-            //displayAnimator.InvertDisplayStatus(1);
-            //eventTextName.text = txt_EventName + " (+" + resetNumber + ")";
-            //ActiveColor();
         }
         else
         {
-            Debug.Log("Cette objet [" + this.name + "] ne peut pas être activé");
+            Debug.Log("Cette objet [" + this.name + "] ne peut pas ï¿½tre activï¿½");
         }
     }
 
@@ -263,9 +252,9 @@ public class AltarBehaviorComponent : MonoBehaviour
     public void GiveRewardXp()
     {
 
-        m_EnemyManagerScript.RemoveTarget(transform);
-        m_EnemyManagerScript.RemoveAltar(transform);
-        m_EnemyManagerScript.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" +nextRewardTypologie + ")", Color.green, TerrainLocationID.currentLocationName);
+        m_enemeyManager.RemoveTarget(transform);
+        m_enemeyManager.RemoveAltar(transform);
+        m_enemeyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" +nextRewardTypologie + ")", Color.green, TerrainLocationID.currentLocationName);
         m_isEventOccuring = false;
         m_myAnimator.SetBool("IsDone", true);
         for (int i = 0; i < altarAllMesh.Length; i++)
@@ -279,6 +268,10 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             Vector3 rndVariant = new Vector3((float)Random.Range(-radiusEjection, radiusEjection), 0, (float)Random.Range(-radiusEjection, radiusEjection));
             GameObject xpGenerated = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
+
+            if (nextRewardTypologie == 2)
+                xpGenerated.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+
             ExperienceMouvement ExpMovementRef = xpGenerated.GetComponent<ExperienceMouvement>();
             ExpMovementRef.GroundPosition = m_DropAreaPosition + rndVariant;
             StartCoroutine(ExpMovementRef.MoveToGround());
@@ -326,7 +319,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public string[] GetAltarData() 
     {
-        int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantité; 2 = Specific spell; 3 = Health quarter
+        int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantitï¿½; 2 = Specific spell; 3 = Health quarter
         string[] dataToSend = new string[5];
         dataToSend[0] = RewardTypologie.ToString();
         dataToSend[1] = instructionOnActivation;
@@ -338,17 +331,17 @@ public class AltarBehaviorComponent : MonoBehaviour
         else if (RewardTypologie == 1)
         {
             dataToSend[2] = nextReward.ToString();
-            dataToSend[3] = "123"; //1234 = Aucun element car la récompense est de l'experience
+            dataToSend[3] = "123"; //1234 = Aucun element car la rï¿½compense est de l'experience
         }
-        /*else if(RewardTypologie == 2)
+        else if(RewardTypologie == 2)
         {
-            dataToSend[2] = "-1"; // -1 = Aucune quantité particulière car la récompense est unique
-            dataToSend[3] = "ID du spell associé à l'autel"; // A remplacé par une variable randomisé au démarrage
+            dataToSend[2] = "-1"; // -1 = Aucune quantitï¿½ particuliï¿½re car la rï¿½compense est unique
+            dataToSend[3] = m_idSpellReward.ToString(); // A remplacï¿½ par une variable randomisï¿½ au dï¿½marrage
         }
-        else if (RewardTypologie == 3)
+      /*  else if (RewardTypologie == 3)
         {
-            dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augmenté sous condition spécifique
-            dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associé au gain"; 
+            dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augmentï¿½ sous condition spï¿½cifique
+            dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associï¿½ au gain"; 
         }*/
         dataToSend[4] = ""+ progression;
 
@@ -357,37 +350,44 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public void GenerateNextReward(int repeatNumber)
     {
-        if(repeatNumber == 1)
+        if (repeatNumber == 0)
         {
             nextRewardTypologie = 2;
-            nextRewardObject = rewardObject[0];
+            nextRewardObject = rewardObject[6];
+            nextReward = 1;
         }
-        else if (repeatNumber == 2)
+        else if (repeatNumber == 1)
         {
             nextRewardTypologie = 1;
             nextReward = (int)(100 + Time.timeSinceLevelLoad);
             nextRewardObject = rewardObject[0];
-            Debug.Log("Next reward : " + nextReward);
         }
-        else if (repeatNumber == 3)
+        else if (repeatNumber == 2)
         {
             nextRewardTypologie = 0;
             nextReward = 30;
             nextRewardObject = rewardObject[1 + eventElementType];
         }
-        else if (repeatNumber == 4) 
+        else if (repeatNumber == 3)
         {
             nextRewardTypologie = 3;
             nextReward = 1;
             nextRewardObject = rewardObject[5];
         }
-        else if (repeatNumber == 5)
+        else if (repeatNumber == 4)
         {
             nextRewardTypologie = 0;
             nextReward = 70;
             nextRewardObject = rewardObject[1 + eventElementType];
         }
 
+    }
+
+    public IEnumerator LastStart()
+    {
+       yield return new WaitForSeconds(2.0f);
+        m_idSpellReward = CapsuleManager.GetRandomCapsuleIndex();
+        GenerateNextReward(resetNumber);
     }
 
 }

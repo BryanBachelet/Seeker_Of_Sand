@@ -112,7 +112,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
-            int index = Random.Range(0, 4);
+            int index = Random.Range(0, m_characterShoot.maxSpellIndex);
             int spellIndex = m_characterShoot.spellEquip[index];
             m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[spellIndex].sprite);
         }

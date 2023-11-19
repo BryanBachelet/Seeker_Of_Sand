@@ -663,7 +663,7 @@ namespace Enemies
         public void CheckEndStat(EndInfoStats stats)
         {
 #if UNITY_EDITOR
-            string filePath = Application.dataPath +"\\Temp"+ fileStatsName + GameState.profileName + ".txt";
+            string filePath = Application.dataPath +"\\Temp"+ fileStatsName + GameState.profileName + ".sost";
 #else
             string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
 #endif

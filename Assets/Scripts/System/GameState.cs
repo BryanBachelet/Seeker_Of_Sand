@@ -34,6 +34,7 @@ public struct EndInfoStats
         return stream.ToArray();
     }
 
+
     public void ReadData(BinaryReader binaryReader)
     {
         durationGame = binaryReader.ReadSingle();

@@ -17,6 +17,7 @@ namespace Character
         [HideInInspector]
         public List<CapsuleSystem.Capsule> bookOfSpell = new List<CapsuleSystem.Capsule>();
         public int[] spellEquip;
+        public int maxSpellIndex;
         private int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
 
@@ -78,6 +79,8 @@ namespace Character
 
         public float m_lastTimeShot = 0;
         [SerializeField] private float m_TimeAutoWalk = 2;
+
+        #region Unity Functions
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
@@ -94,6 +97,10 @@ namespace Character
             InitCapsule();
             InitComponent();
         }
+
+        #endregion 
+
+
         public void InitComponentStat(CharacterStat stat)
         {
             reloadTime = launcherStats.reloadTime;
@@ -158,7 +165,9 @@ namespace Character
 
             for (int i = 0; i < capsuleIndex.Count; i++)
             {
+                if (capsuleIndex[i] == -1) continue;
                 bookOfSpell.Add(m_capsuleManager.capsules[capsuleIndex[i]]);
+                CapsuleManager.RemoveSpecificCapsuleFromPool(capsuleIndex[i]);
             }
             capsuleStatsAlone = new CapsuleStats[bookOfSpell.Count];
             for (int i = 0; i < bookOfSpell.Count; i++)
@@ -171,20 +180,30 @@ namespace Character
                 else
                     capsuleStatsAlone[i] = new CapsuleStats();
             }
+
+            //  Set to Spell Equip
             spellEquip = new int[4];
             for (int i = 0; i < spellEquip.Length; i++)
             {
-                spellEquip[i] = i;
+                if (i>= capsuleIndex.Count)
+                    spellEquip[i] = -1;
+                else
+                    spellEquip[i] = i;
             }
             m_currentIndexCapsule = spellEquip[0];
+            FindLastSpellIndex();
+
             GetCircleInfo();
+
             if (m_LoaderInUI == null) return;
+
             m_LoaderInUI.CleanCapsule();
             m_LoaderInUI.SetCapsuleOrder(capsuleIndex.ToArray());
         }
 
         public void GenerateNewBuild()
         {
+            // TRest
 
             for (int i = 0; i < 5; i++)
             {
@@ -193,7 +212,7 @@ namespace Character
             }
         }
 
-    
+
 
         private void Update()
         {
@@ -300,6 +319,8 @@ namespace Character
 
         private void ShootAttack()
         {
+            if (m_currentIndexCapsule == -1) EndShoot();
+
             float angle = GetShootAngle(currentWeaponStats);
             int mod = GetStartIndexProjectile(currentWeaponStats);
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
@@ -355,10 +376,13 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
-            m_currentType = bookOfSpell[m_currentIndexCapsule].type;
-            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            if (m_currentIndexCapsule != -1)
             {
-                currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
+                m_currentType = bookOfSpell[m_currentIndexCapsule].type;
+                if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+                {
+                    currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
+                }
             }
             m_canShoot = false;
             m_isShooting = false;
@@ -388,7 +412,7 @@ namespace Character
 
         private int ChangeProjecileIndex()
         {
-            if (m_currentRotationIndex == spellEquip.Length - 1)
+            if (m_currentRotationIndex == maxSpellIndex-1)
             {
                 m_isReloading = true;
                 m_currentRotationIndex = 0;
@@ -418,7 +442,7 @@ namespace Character
                 }
 
                 m_canShoot = true;
-                m_SpellReady[m_currentIndexCapsule].Play();
+                m_SpellReady[m_currentRotationIndex].Play();
                 m_shootTimer = 0;
                 return;
             }
@@ -465,7 +489,7 @@ namespace Character
 
             m_isCasting = false;
             m_shootInput = false;
-           
+
             avatarTransform.localRotation = Quaternion.identity;
             bookTransform.localRotation = Quaternion.identity;
             //m_AnimatorSkillBar.SetBool("IsCasting", false);
@@ -573,6 +597,8 @@ namespace Character
         {
             for (int i = 0; i < spellEquip.Length; i++)
             {
+                if (spellEquip[i] == -1) continue;
+
                 int index = spellEquip[i];
                 if (capsuleState[index].type == CapsuleSystem.CapsuleType.ATTACK)
                 {
@@ -640,6 +666,25 @@ namespace Character
         {
             capsuleIndex.Add(index);
             bookOfSpell.Add(m_capsuleManager.capsules[index]);
+
+            capsuleStatsAlone = new CapsuleStats[bookOfSpell.Count];
+            for (int i = 0; i < bookOfSpell.Count; i++)
+            {
+                if (bookOfSpell[i].type == CapsuleSystem.CapsuleType.ATTACK)
+                {
+                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[i];
+                    capsuleStatsAlone[i] = currentCap.stats.stats;
+                }
+                else
+                    capsuleStatsAlone[i] = new CapsuleStats();
+            }
+
+            if (capsuleIndex.Count <= spellEquip.Length)
+            {
+                spellEquip[capsuleIndex.Count - 1] = bookOfSpell.Count-1;
+                FindLastSpellIndex();
+                RefreshActiveIcon(bookOfSpell.ToArray());
+            }
         }
 
         public void OpenGrimoire(InputAction.CallbackContext ctx)
@@ -683,6 +728,18 @@ namespace Character
 
         #endregion
 
+        #region Spell Bar Functions
+
+        void FindLastSpellIndex()
+        {
+            maxSpellIndex = 0;
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                if (spellEquip[i] != -1) maxSpellIndex++;
+            }
+        }
+
+        #endregion
 
     }
 
