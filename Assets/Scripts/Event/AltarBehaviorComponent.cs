@@ -77,6 +77,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     private GameObject nextRewardObject;
     [SerializeField] private LayerMask m_groundLayer;
     private Vector3 raycastdirection;
+
+    private float progression = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -165,7 +167,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         else
         {
-            m_eventProgressionSlider.fillAmount = m_CurrentKillCount / ennemyTokill;
+            progression = m_CurrentKillCount / ennemyTokill;
+            m_eventProgressionSlider.fillAmount = progression;
             //displayTextDescription1.text = m_CurrentHealth + "/" + m_MaxHealth;
             //displayTextDescription2.text = (m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1))) - m_CurrentKillCount + " Remaining";
         }
@@ -298,6 +301,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     public void ResetAltarEvent()
     {
         m_myAnimator.SetBool("ActiveEvent", false);
+        progression = 0;
         resetNumber++;
         GenerateNextReward(resetNumber);
         m_hasEventActivate = true;
@@ -323,7 +327,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     public string[] GetAltarData() 
     {
         int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantité; 2 = Specific spell; 3 = Health quarter
-        string[] dataToSend = new string[4];
+        string[] dataToSend = new string[5];
         dataToSend[0] = RewardTypologie.ToString();
         dataToSend[1] = instructionOnActivation;
         if ( RewardTypologie == 0)
@@ -346,7 +350,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augmenté sous condition spécifique
             dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associé au gain"; 
         }*/
-
+        dataToSend[4] = ""+ progression;
 
         return dataToSend;
     }

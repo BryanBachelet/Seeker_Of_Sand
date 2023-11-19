@@ -20,6 +20,7 @@ public class InteractionEvent : MonoBehaviour
     public TMP_Text txt_RewardDescription;
     public UnityEngine.UI.Image img_ImageReward;
     public Sprite[] sprite_List;
+    public Image img_progressionBar;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,6 +66,7 @@ public class InteractionEvent : MonoBehaviour
                 }
                 txt_ObjectifDescription.text = eventDataInfo[1];
                 txt_RewardDescription.text = eventDataInfo[2] + "x";
+                img_progressionBar.fillAmount = float.Parse(eventDataInfo[4]);
             }
 
 
