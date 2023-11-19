@@ -74,7 +74,10 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [Header("---Camera Parameter----------------------------")]
     private GameObject m_MainCamera; //Object référence
     private CameraIntroMouvement m_CameraIntroMouvement;
+    private BoussoleComponent m_BoussoleComponent;
+    public Renderer m_bousoleRender;
     #endregion
+
 
     #region Player Upgrade
 
@@ -128,6 +131,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     #endregion
 
     [SerializeField] private UIEndScreen m_uiEndScreen;
+    [SerializeField] private Compass m_Compass;
 
     public void Start()
     {
@@ -269,6 +273,8 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
         #region Camera
         m_CameraIntroMouvement = m_MainCamera.GetComponent<CameraIntroMouvement>();
+        m_BoussoleComponent = m_MainCamera.GetComponent<BoussoleComponent>();
+        m_BoussoleComponent.rendBoussole = m_bousoleRender;
         #endregion
 
         #region Upgrade Screen
@@ -304,6 +310,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_dayCycleController.m_daySlider = m_daySlider;
         #endregion
 
+        m_Compass.player = m_MainCamera.transform;
 
         #region End Menu
         GameState.endMenu = m_uiEndScreen;

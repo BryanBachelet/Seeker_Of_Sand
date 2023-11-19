@@ -17,19 +17,36 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text m_altarSuccessedText;
     [SerializeField] private TMP_Text m_durationGameText;
 
+    private bool m_finishDisplayStat = false;
+    private bool m_isUpdatingStat = false;
 
+    private EndInfoStats stat;
+    private float lastXpBuffered = 0;
 
+    public float timeToDisplay;
+    public void Update()
+    {
+        if(m_isUpdatingStat)
+        {
+            if (m_finishDisplayStat)
+            {
+                
+                m_isUpdatingStat = false;
+            }
+            else
+            {
+                BufferXpDisplay(lastXpBuffered);
+            }
+        }
+        
+    }
 
     public void ActiveUIEndScreen(EndInfoStats stats)
     {
         m_parentEndMenu.SetActive(true);
-
+        stat = stats;
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);
-        m_killCountText.text = stats.enemyKill.ToString();
-        m_nightValidateText.text = stats.nightValidate.ToString();
-        m_altarLaunchText.text = stats.altarRepeated.ToString();
-        m_altarSuccessedText.text = stats.altarSuccessed.ToString();
-        m_biggestComboText.text = stats.bigestCombo.ToString("F1");
+        StartDisplayStat();
 
     }
 
@@ -49,5 +66,19 @@ public class UIEndScreen : MonoBehaviour
         return gameDurationText;
     }
 
+    private void StartDisplayStat()
+    {
+        lastXpBuffered = Time.time;
+        m_isUpdatingStat = true;
+    }
+    private void BufferXpDisplay(float time)
+    {
+        m_durationGameText.text = (Mathf.Lerp(0, time, Time.time - time + 1) / 60).ToString("F1") + "  Minutes";
+        m_killCountText.text = Mathf.Lerp(0, stat.enemyKill, Time.time - time).ToString("F0"); 
+        m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, Time.time - time).ToString("F0");
+        m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, Time.time - time).ToString("F0");
+        m_altarSuccessedText.text = Mathf.Lerp(0, stat.altarSuccessed, Time.time - time).ToString("F0");
+        m_biggestComboText.text = Mathf.Lerp(0, stat.bigestCombo, Time.time - time).ToString("F0");
 
+    }
 }

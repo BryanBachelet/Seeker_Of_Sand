@@ -88,7 +88,7 @@ public class AttackTrainingArea : MonoBehaviour
         {
             hpPlayer.GetDamageLeger(5, positionOnDestroy);
             //vfxExplosionObject.GetComponent<VisualEffect>().Play();
-            Debug.Log("Hit at [" + Vector3.Distance(positionOnDestroy, playerTarget.position) + "]");
+            //Debug.Log("Hit at [" + Vector3.Distance(positionOnDestroy, playerTarget.position) + "]");
         }
     }
 

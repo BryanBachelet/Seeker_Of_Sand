@@ -371,7 +371,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             nextReward = 30;
             nextRewardObject = rewardObject[1 + eventElementType];
         }
-        else if (repeatNumber == 4)
+        else if (repeatNumber == 4) 
         {
             nextRewardTypologie = 3;
             nextReward = 1;
