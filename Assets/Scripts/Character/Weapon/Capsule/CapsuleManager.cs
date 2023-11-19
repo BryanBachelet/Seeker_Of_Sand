@@ -10,13 +10,17 @@ public class CapsuleManager : MonoBehaviour
     public CapsuleSystem.CapsuleBuffInfo[] buffInfos;
 
 
+    public static int capsuleCount;
+
     private int indexAttackInfo;
     private int indexBuffInfo;
 
     public void Awake()
     {
         CreateInfo();
+        capsuleCount = capsules.Length;
     }
+
     public void CreateInfo()
     {
         for (int i = 0; i < capsules.Length; i++)

@@ -17,7 +17,7 @@ namespace Character
         [HideInInspector]
         public List<CapsuleSystem.Capsule> bookOfSpell = new List<CapsuleSystem.Capsule>();
         public int[] spellEquip;
-        private int m_maxSpellIndex;
+        public int maxSpellIndex;
         private int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
 
@@ -410,7 +410,7 @@ namespace Character
 
         private int ChangeProjecileIndex()
         {
-            if (m_currentRotationIndex == m_maxSpellIndex-1)
+            if (m_currentRotationIndex == maxSpellIndex-1)
             {
                 m_isReloading = true;
                 m_currentRotationIndex = 0;
@@ -730,10 +730,10 @@ namespace Character
 
         void FindLastSpellIndex()
         {
-            m_maxSpellIndex = 0;
+            maxSpellIndex = 0;
             for (int i = 0; i < spellEquip.Length; i++)
             {
-                if (spellEquip[i] != -1) m_maxSpellIndex++;
+                if (spellEquip[i] != -1) maxSpellIndex++;
             }
         }
 
