@@ -97,10 +97,6 @@ public class InteractionEvent : MonoBehaviour
         if(currentInteractibleObject != null) { currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(); }
 
     }
-    public void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, radiusInteraction);
-    }
+
 
 }
