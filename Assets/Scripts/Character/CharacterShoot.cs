@@ -165,7 +165,9 @@ namespace Character
 
             for (int i = 0; i < capsuleIndex.Count; i++)
             {
+                if (capsuleIndex[i] == -1) continue;
                 bookOfSpell.Add(m_capsuleManager.capsules[capsuleIndex[i]]);
+                CapsuleManager.RemoveSpecificCapsuleFromPool(capsuleIndex[i]);
             }
             capsuleStatsAlone = new CapsuleStats[bookOfSpell.Count];
             for (int i = 0; i < bookOfSpell.Count; i++)

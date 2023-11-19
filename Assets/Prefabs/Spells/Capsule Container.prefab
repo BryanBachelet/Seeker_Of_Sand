@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5082157772771070478}
   - component: {fileID: 7939497372212574178}
   - component: {fileID: -400937594581501134}
+  - component: {fileID: 2859619469376323172}
   m_Layer: 0
   m_Name: Capsule Container
   m_TagString: SpellContainer
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 906984133921314960}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 243.79128, y: -26.107529, z: 7.8273926}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,3 +112,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capsuleIndex: 7
+  m_feedbackTiming: 3
+  m_moveHeight: 2
+  m_angularSpeed: 30
+--- !u!114 &2859619469376323172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906984133921314960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8a8ea809091ae4b904846029259ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GroundPosition: {x: 0, y: 0, z: 0}
+  m_speed: 15
+  m_speedUp: 40
+  m_trail: {fileID: 0}
+  m_timeBeforeDestruction: 3
+  cristalType: 0

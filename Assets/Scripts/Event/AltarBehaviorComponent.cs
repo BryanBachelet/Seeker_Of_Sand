@@ -55,7 +55,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public VisualEffect m_visualEffectActivation;
     public string txt_EventName;
-    int resetNumber = 1;
+    int resetNumber = 0;
 
     public SkinnedMeshRenderer[] altarAllMesh;
     public MeshRenderer socleMesh;
@@ -77,12 +77,15 @@ public class AltarBehaviorComponent : MonoBehaviour
     private GameObject nextRewardObject;
     [SerializeField] private LayerMask m_groundLayer;
     private Vector3 raycastdirection;
+
+    private int m_idSpellReward;
+
+
     // Start is called before the first frame update
     void Start()
     {
         raycastdirection = new Vector3(0, -10, 0);
         eventElementType = Random.Range(0, 4);
-
         GetComponentInChildren<Light>().color = colorEvent[eventElementType];
         Light[] lightToSwap = GetComponentsInChildren<Light>();
         for (int i = 0; i < lightToSwap.Length; i++)
@@ -122,8 +125,10 @@ public class AltarBehaviorComponent : MonoBehaviour
             Debug.DrawRay(transform.position + new Vector3(0, 25, 0), raycastdirection * 1000, Color.white);
             Debug.Log("Did not Hit");
         }
-        nextRewardObject = rewardObject[0];
-        // Does the ray intersect any objects excluding the player layer
+
+        StartCoroutine(LastStart());
+
+
 
     }
 
@@ -208,19 +213,19 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_EnemyManagerScript.AddTarget(this.transform);
             m_EnemyManagerScript.AddAltar(transform);
             m_EnemyManagerScript.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
-            if(resetNumber == 1)
+            if(resetNumber == 0)
             {
                 m_myAnimator.SetTrigger("Activation");
             }
-            if(resetNumber == 3)
+            if(resetNumber == 2)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
             }
-            else if (resetNumber == 4)
+            else if (resetNumber == 3)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[1], transform.position, transform.rotation);
             }
-            else if (resetNumber == 5)
+            else if (resetNumber == 4)
             {
                 lastItemInstantiate = Instantiate(DangerAddition[2], transform.position, transform.rotation);
             }
@@ -276,6 +281,10 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             Vector3 rndVariant = new Vector3((float)Random.Range(-radiusEjection, radiusEjection), 0, (float)Random.Range(-radiusEjection, radiusEjection));
             GameObject xpGenerated = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
+
+            if (nextRewardTypologie == 2)
+                xpGenerated.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+
             ExperienceMouvement ExpMovementRef = xpGenerated.GetComponent<ExperienceMouvement>();
             ExpMovementRef.GroundPosition = m_DropAreaPosition + rndVariant;
             StartCoroutine(ExpMovementRef.MoveToGround());
@@ -336,12 +345,12 @@ public class AltarBehaviorComponent : MonoBehaviour
             dataToSend[2] = nextReward.ToString();
             dataToSend[3] = "123"; //1234 = Aucun element car la récompense est de l'experience
         }
-        /*else if(RewardTypologie == 2)
+        else if(RewardTypologie == 2)
         {
             dataToSend[2] = "-1"; // -1 = Aucune quantité particulière car la récompense est unique
-            dataToSend[3] = "ID du spell associé à l'autel"; // A remplacé par une variable randomisé au démarrage
+            dataToSend[3] = m_idSpellReward.ToString(); // A remplacé par une variable randomisé au démarrage
         }
-        else if (RewardTypologie == 3)
+      /*  else if (RewardTypologie == 3)
         {
             dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augmenté sous condition spécifique
             dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associé au gain"; 
@@ -353,37 +362,44 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public void GenerateNextReward(int repeatNumber)
     {
-        if(repeatNumber == 1)
+        if (repeatNumber == 0)
         {
             nextRewardTypologie = 2;
-            nextRewardObject = rewardObject[0];
+            nextRewardObject = rewardObject[6];
+            nextReward = 1;
         }
-        else if (repeatNumber == 2)
+        else if (repeatNumber == 1)
         {
             nextRewardTypologie = 1;
             nextReward = (int)(100 + Time.timeSinceLevelLoad);
             nextRewardObject = rewardObject[0];
-            Debug.Log("Next reward : " + nextReward);
         }
-        else if (repeatNumber == 3)
+        else if (repeatNumber == 2)
         {
             nextRewardTypologie = 0;
             nextReward = 30;
             nextRewardObject = rewardObject[1 + eventElementType];
         }
-        else if (repeatNumber == 4)
+        else if (repeatNumber == 3)
         {
             nextRewardTypologie = 3;
             nextReward = 1;
             nextRewardObject = rewardObject[5];
         }
-        else if (repeatNumber == 5)
+        else if (repeatNumber == 4)
         {
             nextRewardTypologie = 0;
             nextReward = 70;
             nextRewardObject = rewardObject[1 + eventElementType];
         }
 
+    }
+
+    public IEnumerator LastStart()
+    {
+       yield return new WaitForSeconds(2.0f);
+        m_idSpellReward = CapsuleManager.GetRandomCapsuleIndex();
+        GenerateNextReward(resetNumber);
     }
 
 }

@@ -26,7 +26,7 @@ public class CapsuleContainer : MonoBehaviour
 
     private void Update()
     {
-        CapsuleMovement();
+       // CapsuleMovement();
     }
 
     private void OnTriggerEnter(Collider other)

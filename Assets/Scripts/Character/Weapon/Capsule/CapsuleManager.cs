@@ -10,14 +10,47 @@ public class CapsuleManager : MonoBehaviour
     public CapsuleSystem.CapsuleBuffInfo[] buffInfos;
 
 
+    public static CapsuleManager instance;
     public static int capsuleCount;
+
+    public static List<int> m_capsulePool =  new List<int>();
 
     private int indexAttackInfo;
     private int indexBuffInfo;
 
+    public static int GetRandomCapsuleIndex()
+    {
+        int index = -1;
+
+        if (m_capsulePool.Count == 0)
+        {
+            Debug.LogWarning("Altar don't have spell");
+            return index;
+        }
+
+        int listIndex = Random.Range(0, m_capsulePool.Count);
+        index = m_capsulePool[listIndex];
+        m_capsulePool.RemoveAt(listIndex);
+
+        return index;
+    }
+
+    public static void RemoveSpecificCapsuleFromPool(int index)
+    {
+        m_capsulePool.Remove(index);
+    }
+
     public void Awake()
     {
+        instance = this; // Singleton Variable
+
+        for (int i = 0; i < capsules.Length; i++)
+        {
+            m_capsulePool.Add(i);
+        }
+
         CreateInfo();
+
         capsuleCount = capsules.Length;
     }
 

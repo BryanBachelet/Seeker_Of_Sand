@@ -57,6 +57,8 @@ public class InteractionEvent : MonoBehaviour
                 }
                 else if(eventDataInfo[0] == "2")
                 {
+
+                    img_ImageReward.sprite = CapsuleManager.instance.capsules[int.Parse(eventDataInfo[3])].sprite;
                     //Trouver methode pour récupérer le sprite du sort obtenu
                 }
                 else if(eventDataInfo[0] == "3")
