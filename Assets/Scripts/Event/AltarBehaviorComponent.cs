@@ -24,7 +24,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     [Header("Reward Parameters")]
     [SerializeField] private int XpQuantity = 100;
-    [SerializeField] private GameObject[] xpObject;
+    [SerializeField] private GameObject[] rewardObject;
     [SerializeField] private float m_ImpusleForceXp;
 
 
@@ -74,6 +74,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     public Vector3 m_DropAreaPosition;
 
     private GameObject lastItemInstantiate;
+    private GameObject nextRewardObject;
     [SerializeField] private LayerMask m_groundLayer;
     private Vector3 raycastdirection;
     // Start is called before the first frame update
@@ -121,6 +122,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             Debug.DrawRay(transform.position + new Vector3(0, 25, 0), raycastdirection * 1000, Color.white);
             Debug.Log("Did not Hit");
         }
+        nextRewardObject = rewardObject[0];
         // Does the ray intersect any objects excluding the player layer
 
     }
@@ -273,7 +275,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         for (int i = 0; i < nextReward; i++)
         {
             Vector3 rndVariant = new Vector3((float)Random.Range(-radiusEjection, radiusEjection), 0, (float)Random.Range(-radiusEjection, radiusEjection));
-            GameObject xpGenerated = Instantiate(xpObject[0], transform.position, Quaternion.identity);
+            GameObject xpGenerated = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
             ExperienceMouvement ExpMovementRef = xpGenerated.GetComponent<ExperienceMouvement>();
             ExpMovementRef.GroundPosition = m_DropAreaPosition + rndVariant;
             StartCoroutine(ExpMovementRef.MoveToGround());
@@ -354,26 +356,32 @@ public class AltarBehaviorComponent : MonoBehaviour
         if(repeatNumber == 1)
         {
             nextRewardTypologie = 2;
+            nextRewardObject = rewardObject[0];
         }
         else if (repeatNumber == 2)
         {
             nextRewardTypologie = 1;
             nextReward = (int)(100 + Time.timeSinceLevelLoad);
+            nextRewardObject = rewardObject[0];
             Debug.Log("Next reward : " + nextReward);
         }
         else if (repeatNumber == 3)
         {
             nextRewardTypologie = 0;
             nextReward = 30;
+            nextRewardObject = rewardObject[1 + eventElementType];
         }
         else if (repeatNumber == 4)
         {
             nextRewardTypologie = 3;
+            nextReward = 1;
+            nextRewardObject = rewardObject[5];
         }
         else if (repeatNumber == 5)
         {
             nextRewardTypologie = 0;
             nextReward = 70;
+            nextRewardObject = rewardObject[1 + eventElementType];
         }
 
     }
