@@ -218,6 +218,7 @@ namespace JBooth.MicroSplat
          header.AppendLine("// Auto-generated shader code, don't hand edit!");
          header.AppendLine("//");
          header.AppendLine("//   Unity Version: " + Application.unityVersion);
+         header.AppendLine("//   MicroSplat Version: " + MicroSplatShaderGUI.MicroSplatVersion);
          header.AppendLine("//   Render Pipeline: HDRP2021");
          header.AppendLine("//   Platform: " + Application.platform);
          header.AppendLine("////////////////////////////////////////\n\n");
