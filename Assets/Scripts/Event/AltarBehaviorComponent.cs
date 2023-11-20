@@ -202,9 +202,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_CurrentKillCount++;
     }
 
-
-
-
     #region State Altar Functions
 
     // Need to set active
@@ -217,30 +214,26 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_enemyManager.AddTarget(this.transform);
             m_enemyManager.AddAltar(transform);
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+
+            m_myAnimator.SetBool("ActiveEvent", true);
+
             if (resetNumber == 0)
             {
                 m_myAnimator.SetTrigger("Activation");
             }
-            if (resetNumber == 2)
+            if (resetNumber - 2 >= 0)
             {
-                lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
+                lastItemInstantiate = Instantiate(DangerAddition[resetNumber -2], transform.position, transform.rotation);
             }
-            else if (resetNumber == 3)
-            {
-                lastItemInstantiate = Instantiate(DangerAddition[1], transform.position, transform.rotation);
-            }
-            else if (resetNumber == 4)
-            {
-                lastItemInstantiate = Instantiate(DangerAddition[2], transform.position, transform.rotation);
-            }
-            m_visualEffectActivation.Play();
+            
 
             SetMeshesEventIntensity(0.15f * (resetNumber + 1));
-
-            m_myAnimator.SetBool("ActiveEvent", true);
+            m_visualEffectActivation.Play();
+            
             GlobalSoundManager.PlayOneShot(13, transform.position);
 
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
+
             m_hasEventActivate = false;
             m_isEventOccuring = true;
         }
@@ -279,26 +272,29 @@ public class AltarBehaviorComponent : MonoBehaviour
             Destroy(lastItemInstantiate);
     }
 
-    public void ResetAltarEvent()
-    {
-        m_myAnimator.SetBool("ActiveEvent", false);
-        resetNumber++;
-        GenerateNextReward(resetNumber);
-        m_hasEventActivate = true;
-        m_isEventOccuring = false;
-        m_CurrentKillCount = 0;
-        float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
-        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
-        m_objectHealthSystem.ResetCurrentHealth();
-
-    }
-
     public IEnumerator ResetEventWithDelay(float time)
     {
         yield return new WaitForSeconds(time);
         ResetAltarEvent();
     }
 
+    public void ResetAltarEvent()
+    {
+       
+        resetNumber++;
+        GenerateNextReward(resetNumber);
+
+        m_hasEventActivate = true;
+        m_isEventOccuring = false;
+
+        m_CurrentKillCount = 0;
+        
+        float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
+        
+        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
+        m_objectHealthSystem.ResetCurrentHealth();
+
+    }
 
     #endregion 
 
@@ -414,8 +410,6 @@ public class AltarBehaviorComponent : MonoBehaviour
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, radiusEventActivePlayer);
     }
-
-
     #endregion
 
 }
