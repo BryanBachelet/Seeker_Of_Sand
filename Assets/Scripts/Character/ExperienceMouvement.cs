@@ -20,18 +20,37 @@ public class ExperienceMouvement : MonoBehaviour
     private bool m_isDropping = false;
     private float m_durationOfCuve = 1f;
 
+    private float m_timeSpawned = 0;
+    private float m_tempsEcoule;
+    private void Start()
+    {
+        m_timeSpawned = Time.time;
+    }
     // Update is called once per frame
     void Update()
     {
         if(!m_isGrounded && GroundPosition != Vector3.zero)
         {
             MoveGround();
+            if(m_tempsEcoule < 2)
+            {
+                m_tempsEcoule += Time.deltaTime;
+            }
+            else
+            {
+                m_isGrounded = true;
+                
+            }
         }
-        if (m_playerPosition)
+        else
         {
-            MoveDestination();
+            if (m_playerPosition)
+            {
+                MoveDestination();
 
+            }
         }
+        
         if (m_destruction)
         {
             m_timeBeforeDestruction -= Time.deltaTime;

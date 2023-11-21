@@ -21,6 +21,7 @@ public class health_Player : MonoBehaviour
     [SerializeField] private float m_invulerableLegerTime;
     [SerializeField] private float m_invulerableLourdTime;
     [SerializeField] public Image m_SliderCurrentHealthHigh;
+    [SerializeField] public Image m_SliderCurrentHealthHighBuffer;
     [SerializeField] public Image m_SliderCurrentQuarterHigh;
     [SerializeField] private Image m_SliderCurrentHealthLow;
     [SerializeField] private Image m_SliderCurrentQuarterLow;
@@ -42,6 +43,8 @@ public class health_Player : MonoBehaviour
     private float timeLastHit;
     public AnimationCurve evolutionVignetteOverTime;
     public float tempsEffetHit = 0.25f;
+    private bool healthBuffer;
+    private float lastHealth;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,7 +68,11 @@ public class health_Player : MonoBehaviour
         //    GetDamageLeger(damageSend);
 
         }
-        if(feedbackHit)
+        if (healthBuffer)
+        {
+            BufferXpDisplay();
+        }
+        if (feedbackHit)
         {
             if (Time.time - timeLastHit < tempsEffetHit)
             {
@@ -89,7 +96,7 @@ public class health_Player : MonoBehaviour
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
-            timeLastHit = Time.time;
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
             feedbackHit = true;
             vignette.intensity.value = 0.35f;
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
@@ -102,9 +109,10 @@ public class health_Player : MonoBehaviour
                 m_CurrentHealth -= damage;
             }
 
-                m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-                m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
 
+            m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+            BufferXpDisplay();
+            m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
             m_characterMouvement.SetKnockback(position);
 
             if(m_CurrentHealth <= 0)
@@ -123,7 +131,7 @@ public class health_Player : MonoBehaviour
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
-            timeLastHit = Time.time;
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
             feedbackHit = true;
             vignette.intensity.value = 0.35f;
             if (m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
@@ -136,8 +144,9 @@ public class health_Player : MonoBehaviour
                 m_CurrentHealth -= damage;
             }
 
-            m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+            m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+            BufferXpDisplay();
 
             if (m_CurrentHealth <= 0)
             {
@@ -173,7 +182,10 @@ public class health_Player : MonoBehaviour
         //Calculer la valeur d'un quart de vie
         //Actualiser m_CurrentQuarterMaxHealth && m_CurrentQuarterMinHealth
         //Actualiser m_CurrentQuarter
-        m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+
+        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+        ActiveBufferHealth(Time.time, m_CurrentHealth);
+        BufferXpDisplay();
         m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
         m_CurrentHealth = m_MaxHealthQuantity;
         updateHealthValues = false;
@@ -193,6 +205,7 @@ public class health_Player : MonoBehaviour
         m_CurrentHealth += m_QuarterHealthQuantity;
         if(m_CurrentHealth > m_MaxHealthQuantity)
         {
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
             m_CurrentHealth = m_MaxHealthQuantity;
             //m_CurrentQuarter = (int)m_QuarterNumber;
         }
@@ -208,6 +221,18 @@ public class health_Player : MonoBehaviour
         if (collision.transform.tag != "Enemy" || !GameState.IsPlaying()  ) return;
        // Debug.Log("Object was an Enemy !");
         GetDamageLeger(2,collision.transform.position);
+    }
+
+    private void ActiveBufferHealth(float time, float health)
+    {
+        timeLastHit = time;
+        healthBuffer = true;
+        lastHealth = health;
+    }
+    private void BufferXpDisplay()
+    {
+       m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (timeLastHit - Time.time - 1) /1 );
+
     }
 
 }

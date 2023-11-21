@@ -18,6 +18,7 @@ public class CharacterUpgrade : MonoBehaviour
        // UI display object
     private GameObject m_upgradeUiGODisplay;
     private GameObject m_spellBookUIDisplay;
+    public GameObject m_FixeElementUI;
 
 
     private Loader_Behavior m_loaderBehavior;
@@ -35,7 +36,9 @@ public class CharacterUpgrade : MonoBehaviour
     {
         if (ctx.started)
         {
+
             if (upgradePoint == 0 || had5level) return;
+            m_FixeElementUI.SetActive(false);
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
 
@@ -61,6 +64,7 @@ public class CharacterUpgrade : MonoBehaviour
 
         had5level = true;
         upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+        m_FixeElementUI.SetActive(false);
         UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
         m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
         m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
@@ -108,7 +112,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void GetNewUpgrade()
     {
         if (upgradePoint == 0) return;
-
+        m_FixeElementUI.SetActive(false);
         m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
@@ -144,6 +148,7 @@ public class CharacterUpgrade : MonoBehaviour
         if (upgradePoint == 0 )
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+            m_FixeElementUI.SetActive(true);
             UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
             m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);

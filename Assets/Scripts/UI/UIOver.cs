@@ -15,6 +15,7 @@ public class UIOver : MonoBehaviour
     {
         Debug.Log("Overing : " + this.name);
         upgradeUI_object.UpdateCursorOver(m_numeroUpgrade);
+        ComponentLinkerCrossScene.selectionOveringSprite.transform.position = this.transform.position;
     }
 
     private void OnMouseDown()

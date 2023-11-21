@@ -36,6 +36,9 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public GameObject m_upgradeUIGO;
     [SerializeField] public TMP_Text m_upgradePoint_Txt;
     [SerializeField] public Text m_levelDisplay;
+    [SerializeField] public GameObject m_FixeElementUI;
+    [SerializeField] static public GameObject selectionOveringSprite;
+    [SerializeField] public GameObject reference_selectionOveringSprite;
     #endregion
     #region Intercation Event
     private InteractionEvent m_InteractionEvent;
@@ -48,6 +51,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     #region health Player
     private health_Player m_HealthPlayer;
     [SerializeField] public Image m_healthBar_Slider_CurrentHealth;
+    [SerializeField] public Image m_healthBar_Slider_CurrentHealthBuffer;
     [SerializeField] public Image m_healthBar_Slider_Quarter;
     #endregion
     #region Character Dash
@@ -131,11 +135,16 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public Animator m_instructionAnimator;
     #endregion
 
+    #region EventHolder
+    [SerializeField] private EventHolder m_eventHolder;
+    public List<AltarBehaviorComponent> eventList = new List<AltarBehaviorComponent>();
+    #endregion
     [SerializeField] private UIEndScreen m_uiEndScreen;
     [SerializeField] private Compass m_Compass;
 
     public void Start()
     {
+        selectionOveringSprite = reference_selectionOveringSprite;
         StartCoroutine(DelayInitialization());
     }
 
@@ -146,6 +155,10 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         ComponentInitialization();
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(1));
         yield return new WaitForSeconds(2f);
+        for (int i = 0; i < eventList.Count; i++)
+        {
+            m_Compass.AddQuestMarker(eventList[i].m_questMarker);
+        }
         Debug.Log("Scene active = " + SceneManager.GetActiveScene().name);
     }
     public void ComponentInitialization()
@@ -206,6 +219,18 @@ public class ComponentLinkerCrossScene : MonoBehaviour
                 }
                 continue;
             }
+            else if (otherSceneGameObject[i].name == "7-Event Element")
+            {
+                for (int j = 0; j < otherSceneGameObject[i].transform.childCount; j++)
+                {
+                    if (otherSceneGameObject[i].transform.GetChild(j).name == "EventHolder")
+                    {
+                        m_eventHolder = otherSceneGameObject[i].transform.GetChild(j).GetComponent<EventHolder>();
+                    }
+                }
+
+                continue;
+            }
 
         }
 
@@ -237,7 +262,9 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_CharacterUpgrade.m_upgradePoint = m_upgradePoint_Txt;
         m_CharacterUpgrade.m_LevelDisplay = m_levelDisplay;
         m_CharacterUpgrade.m_upgradeUi = m_UpgradeUI;
+        m_CharacterUpgrade.m_FixeElementUI = m_FixeElementUI;
         m_CharacterUpgrade.InitComponents();
+
         #endregion
         #region InteractionEvent
         m_InteractionEvent = m_PlayerObjectRef.GetComponent<InteractionEvent>();
@@ -249,6 +276,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         #endregion
         #region Health Player
         m_HealthPlayer = m_PlayerObjectRef.GetComponent<health_Player>();
+        m_HealthPlayer.m_SliderCurrentHealthHighBuffer = m_healthBar_Slider_CurrentHealthBuffer;
         m_HealthPlayer.m_SliderCurrentHealthHigh = m_healthBar_Slider_CurrentHealth;
         m_HealthPlayer.m_SliderCurrentQuarterHigh = m_healthBar_Slider_Quarter;
         #endregion
@@ -312,6 +340,9 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_dayCycleController.m_daySlider = m_daySlider;
         #endregion
 
+        #region eventHolder
+        eventList = m_eventHolder.GetAltar();
+        #endregion
         m_Compass.player = m_MainCamera.transform;
 
         #region End Menu

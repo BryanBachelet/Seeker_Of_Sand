@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 public class Compass : MonoBehaviour
 {
     public GameObject iconPrefab;
     List<QuestMarker> questMarkers = new List<QuestMarker>();
+    private Material m_boussoleMaterial;
+    public RawImage m_boussole;
+    public Vector2 offsetMaterial;
 
     public RawImage compassImage;
     public Transform player;
@@ -17,23 +21,24 @@ public class Compass : MonoBehaviour
     public QuestMarker one;
     public QuestMarker two;
     public QuestMarker three;
+
+    private string offSetPropertyID;
     // Start is called before the first frame update
     void Start()
     {
         compassUnit = compassImage.rectTransform.rect.width / 360f;
-
-        AddQuestMarker(one);
-        AddQuestMarker(two);
-        AddQuestMarker(three);
+       
+        m_boussoleMaterial = m_boussole.material;
     }
 
     // Update is called once per frame
     void Update()
     {
         compassImage.uvRect = new Rect(0.5f + player.localEulerAngles.y / 360, 0, 1, 1);
-        foreach(QuestMarker marker in questMarkers)
+        m_boussoleMaterial.SetVector("_Tilling", new Vector2(0.5f + -player.localEulerAngles.y / 360, 0));
+        foreach (QuestMarker marker in questMarkers)
         {
-            marker.image.rectTransform.anchoredPosition = GetPosOnCompass(marker);
+            marker.image.rectTransform.anchoredPosition = GetPosOnCompass(marker) + new Vector2(0,-30);
 
             float dst = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), marker.position);
             float scale = 0;
@@ -42,9 +47,10 @@ public class Compass : MonoBehaviour
             {
                 scale = 1f - (dst / maxDistance);
 
-                marker.image.rectTransform.localScale = Vector3.one * scale;
-                marker.image.color = new Color(1,1,1, scale);
+
             }
+            marker.image.rectTransform.localScale = Vector3.one * scale;
+            marker.image.color = new Color(1, 1, 1, scale);
         }
     }
 

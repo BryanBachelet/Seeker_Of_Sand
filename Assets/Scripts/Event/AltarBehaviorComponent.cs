@@ -6,10 +6,12 @@ using UnityEngine.VFX;
 public class AltarBehaviorComponent : MonoBehaviour
 {
     [Header("Event Parameters")]
+    [SerializeField] public QuestMarker m_questMarker;
     [Range(0, 3)]
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
+    [SerializeField] private Sprite[] spriteEventCompass;
     [ColorUsage(showAlpha: true, hdr: true)]
     [SerializeField] private Color[] colorEventTab;
     [SerializeField] private float m_TimeInvulnerability;
@@ -84,8 +86,9 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
         InitComponent();
 
-        eventElementType = Random.Range(0, 4); 
-
+        eventElementType = Random.Range(0, 4);
+        m_questMarker.icon = spriteEventCompass[eventElementType];
+        
         ownNumber = altarCount;
         altarCount++;
 
@@ -159,6 +162,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void InitComponent()
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
+        m_questMarker = GetComponent<QuestMarker>();
         m_enemeyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
     }
 
@@ -270,9 +274,14 @@ public class AltarBehaviorComponent : MonoBehaviour
             GameObject xpGenerated = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
 
             if (nextRewardTypologie == 2)
+            {
                 xpGenerated.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+            }
+
+
 
             ExperienceMouvement ExpMovementRef = xpGenerated.GetComponent<ExperienceMouvement>();
+            ExpMovementRef.ActiveExperienceParticule(m_playerTransform);
             ExpMovementRef.GroundPosition = m_DropAreaPosition + rndVariant;
             StartCoroutine(ExpMovementRef.MoveToGround());
         }
