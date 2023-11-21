@@ -24,7 +24,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     [Header("Reward Parameters")]
     [SerializeField] private int XpQuantity = 100;
-    [SerializeField] private GameObject[] xpObject;
+    [SerializeField] private GameObject[] rewardObject;
     [SerializeField] private float m_ImpusleForceXp;
 
 
@@ -66,8 +66,11 @@ public class AltarBehaviorComponent : MonoBehaviour
     public Image m_eventProgressionSlider;
 
     [SerializeField] private string instructionOnActivation;
+    [SerializeField] private int nextReward;
+    [SerializeField] private int nextRewardTypologie = 0;
 
     [SerializeField] private Enemies.EnemyManager m_enemeyManager;
+    public Vector3 m_DropAreaPosition;
 
     private GameObject lastItemInstantiate;
     private GameObject nextRewardObject;
@@ -265,7 +268,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f * resetNumber);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
         GlobalSoundManager.PlayOneShot(14, transform.position);
-        for (int i = 0; i < XpQuantity + 25 * resetNumber; i++)
+        for (int i = 0; i < nextReward; i++)
         {
             Vector3 rndVariant = new Vector3((float)Random.Range(-radiusEjection, radiusEjection), 0, (float)Random.Range(-radiusEjection, radiusEjection));
             GameObject xpGenerated = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
@@ -284,7 +287,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         //xpGenerated.GetComponent<Rigidbody>().AddForce(new Vector3(rndVariant.x, 1 * m_ImpusleForceXp, rndVariant.y) , ForceMode.Impulse);
         //Enemies.EnemyManager.EnemyTargetPlayer = true;
-        StartCoroutine(ResetEventWithDelay(3));
+        StartCoroutine(ResetEventWithDelay(1.5f));
     }
 
     public void OnDrawGizmos()
@@ -302,6 +305,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_myAnimator.SetBool("ActiveEvent", false);
         progression = 0;
         resetNumber++;
+        GenerateNextReward(resetNumber);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         m_CurrentKillCount = 0;

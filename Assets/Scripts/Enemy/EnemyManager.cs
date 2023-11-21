@@ -91,16 +91,19 @@ namespace Enemies
         private float m_timeOfGame;
 
         private SerieController m_serieController;
-          
+
+
 
         // Stats Variables
-        public int altarLaunch;
-        public int altarSuccessed;
-        public int killCount;
+        [HideInInspector] public int altarLaunch;
+        [HideInInspector] public int altarSuccessed;
+        [HideInInspector] public int killCount;
+        private const string fileStatsName="\\Stats_data";
         
 
         public void Awake()
         {
+
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -651,10 +654,13 @@ namespace Enemies
             endInfoStats.altarRepeated = altarLaunch;
             endInfoStats.bigestCombo = m_serieController.m_biggestMultiplicator;
             endInfoStats.nightValidate = m_dayController.m_nightCount ;
+
+            CheckEndStat(endInfoStats);
             return endInfoStats;
         }
 
-        public void WriteEndStats()
+
+        public void CheckEndStat(EndInfoStats stats)
         {
 #if UNITY_EDITOR
             string filePath = Application.dataPath +"\\Temp"+ fileStatsName + GameState.profileName + ".sost";
@@ -667,7 +673,10 @@ namespace Enemies
                 Save.SaveManager.WriteEndStats(filePath, stats);
             }
         }
-        #endregion
+      
+
+
+#endregion
 
     }
 

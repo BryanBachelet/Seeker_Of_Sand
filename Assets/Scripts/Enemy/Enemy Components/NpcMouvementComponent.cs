@@ -29,6 +29,7 @@ namespace Enemies
         public float timeBetweenNavRefresh;
         public float minDistanceToFullyActive;
         [SerializeField] private float m_distanceBeforeRepositionning = 400;
+        [SerializeField] private bool m_isAlwaysUpdate;
 
         private float m_timerBetweenNavRefresh = 0;
 
@@ -147,7 +148,7 @@ namespace Enemies
 
 
             }
-            if(distancePos > minDistanceToFullyActive && dot > m_directionMinDot)
+            if(distancePos > minDistanceToFullyActive  && dot > m_directionMinDot && !m_isAlwaysUpdate)
             {
 
                 return;

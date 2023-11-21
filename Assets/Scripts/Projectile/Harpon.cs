@@ -42,7 +42,7 @@ public class Harpon : Projectile
             m_enemyImpale = null;
         }
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, m_direction.normalized,out hit, m_speed * Time.deltaTime, m_layer))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, m_speed * Time.deltaTime, m_layer))
         {
             if (m_enemyImpale != null && m_firstHit && m_enemyImpale.npcState != Enemies.NpcState.DEATH)
             {
@@ -52,22 +52,13 @@ public class Harpon : Projectile
             Destroy(this.gameObject);
         }
 
-        transform.position += m_direction.normalized * m_speed * Time.deltaTime;
+        transform.position += transform.forward * m_speed * Time.deltaTime;
         m_currentDistance += m_speed * Time.deltaTime;
 
         if (!m_enemyImpale && Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
         {
 
-            if (Vector3.Distance(transform.position, hit.point) < 0.9f)
-            {
-                transform.position += (transform.position - hit.point).normalized * (1.0f - Vector3.Distance(transform.position, hit.point));
-                return;
-            }
-
-            if (Vector3.Distance(transform.position, hit.point) > 1.1f)
-            {
-                transform.position += (hit.point - transform.position).normalized * (Vector3.Distance(transform.position, hit.point) - 1.0f);
-            }
+            SetSlopeRotation(hit.normal);
         }
 
         if (m_firstHit && m_enemyImpale != null)
