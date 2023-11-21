@@ -33,7 +33,6 @@ namespace Character
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
-        [SerializeField] private Animator m_BookAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
         [Range(0, 1)]
         [SerializeField] public float m_SpeedReduce;
@@ -135,6 +134,7 @@ namespace Character
 
 
             m_rigidbody = GetComponent<Rigidbody>();
+            if (m_CharacterAnim == null) { m_CharacterAnim = GameObject.Find("Avatar_Model").GetComponent<Animator>(); }
             initialSpeed = runSpeed;
         }
 
@@ -185,7 +185,6 @@ namespace Character
                 {
                     combatState = false;
                     m_CharacterAnim.SetBool("Casting", false);
-                    m_BookAnim.SetBool("Casting", false);
                     cameraPlayer.BlockZoom(false);
                     DisplayNewCurrentState(1);
                 }
@@ -196,7 +195,6 @@ namespace Character
                 if (activeCombatModeConstant)
                 {
                     m_CharacterAnim.SetBool("Casting", true);
-                    m_BookAnim.SetBool("Casting", true);
                     DisplayNewCurrentState(0);
                     cameraPlayer.BlockZoom(true);
                     combatState = true;
@@ -249,28 +247,22 @@ namespace Character
                 case MouvementState.None:
 
                     m_CharacterAnim.SetBool("Idle", false);
-                    m_BookAnim.SetBool("Idle", false);
                     break;
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", false);
-                    m_BookAnim.SetBool("Running", false);
                     break;
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", false);
-                    m_BookAnim.SetBool("Sliding", false);
                     m_slidingEffect.SetActive(false);
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
-                    m_BookAnim.SetBool("Shooting", false);
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
-                    m_BookAnim.SetBool("Shooting", false);
                     break;
                 case MouvementState.Dash:
                     m_CharacterAnim.SetBool("Shooting", false);
-                    m_BookAnim.SetBool("Shooting", false);
                     break;
                 default:
                     break;
@@ -286,12 +278,10 @@ namespace Character
                 case MouvementState.None:
 
                     m_CharacterAnim.SetBool("Idle", true);
-                    m_BookAnim.SetBool("Idle", true);
                     UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", true);
-                    m_BookAnim.SetBool("Running", true);
                     UpdateParameter(0.10f, "MouvementState");
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
                     if (m_isSlowdown)
@@ -303,7 +293,6 @@ namespace Character
 
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", true);
-                    m_BookAnim.SetBool("Sliding", true);
                     UpdateParameter(1, "MouvementState");
                     m_slidingEffect.SetActive(true);
 
@@ -324,12 +313,10 @@ namespace Character
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
-                    m_BookAnim.SetBool("Shooting", false);
                     UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Dash:
                     m_CharacterAnim.SetBool("Shooting", false);
-                    m_BookAnim.SetBool("Shooting", false);
                     UpdateParameter(0f, "MouvementState");
                     break;
                 default:

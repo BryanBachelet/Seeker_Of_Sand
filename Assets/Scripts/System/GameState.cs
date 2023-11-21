@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using System.IO;
 
 public class ObjectState
 {
@@ -64,7 +63,6 @@ public class GameState : MonoBehaviour
     private static List<ObjectState> listObject = new List<ObjectState>(0);
 
     public static UIEndScreen endMenu;
-    public static string profileName = "";
 
     [SerializeField] private static bool m_isPlaying = true;
 
@@ -76,22 +74,13 @@ public class GameState : MonoBehaviour
     private float m_timerBetweenDeath = 0.0f;
     private GameObject m_pauseMenuObj;
 
-     private bool m_activeDebug= true;
+    
 
     public void Start()
     {
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
-        GameObject gm = GameObject.Find("GameManager");
-        if (gm != null)
-        {
-            if(m_activeDebug) Debug.Log("Found Game manager object ");
-            profileName = gm.GetComponent<GameManager>().profileName;
-        }
-        else
-        {
-            if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
-        }
+       
     }
 
     public static void DeathActivation()

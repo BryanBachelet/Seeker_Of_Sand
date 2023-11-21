@@ -11,7 +11,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
     #region Player
 
-    private GameObject m_PlayerObjectRef; //Object référence
+    private GameObject m_PlayerObjectRef; //Object rï¿½fï¿½rence
     #region Character Shoot
     private Character.CharacterShoot m_characterShoot;
     [Header("---Player Parameter----------------------------")]
@@ -77,7 +77,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
     #region Camera
     [Header("---Camera Parameter----------------------------")]
-    private GameObject m_MainCamera; //Object référence
+    private GameObject m_MainCamera; //Object rï¿½fï¿½rence
     private CameraIntroMouvement m_CameraIntroMouvement;
     private BoussoleComponent m_BoussoleComponent;
     public Renderer m_bousoleRender;
@@ -86,14 +86,14 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
     #region Player Upgrade
 
-    private GameObject m_UpgradeScreenReference; //Object référence
+    private GameObject m_UpgradeScreenReference; //Object rï¿½fï¿½rence
     [Header("---Player Upgrade----------------------------")]
     public UpgradeUI m_UpgradeUI;
     [SerializeField] public UpgradeButton[] m_upgradeButtons = new UpgradeButton[9];
     #endregion
     
     #region Pillar Health
-    private GameObject m_PillarObject; //Object référence
+    private GameObject m_PillarObject; //Object rï¿½fï¿½rence
     private ObjectHealthSystem m_ObjectHealthSystemePillar;
     #endregion
     #region Altar Health
@@ -110,7 +110,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     #endregion
 
     #region Enemy Manager
-    private GameObject m_enemyManagerObjectRef; //Object référence
+    private GameObject m_enemyManagerObjectRef; //Object rï¿½fï¿½rence
     private Enemies.EnemyManager m_enemyManager;
     [Header("---Enemy Manager Parameter----------------------------")]
     [SerializeField] public Image[] m_imageLifeEvents = new Image[3];
@@ -126,7 +126,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
     #region Day Cycle Controller
 
-    private GameObject m_dayCycleControllerObjectReference; //Object référence
+    private GameObject m_dayCycleControllerObjectReference; //Object rï¿½fï¿½rence
     private DayCyclecontroller m_dayCycleController;
     [Header("---Day Cycle Parameter----------------------------")]
     [SerializeField] public TMP_Text m_dayPhases;

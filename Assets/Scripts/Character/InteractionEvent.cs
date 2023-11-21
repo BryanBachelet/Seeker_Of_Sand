@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+
 public class InteractionEvent : MonoBehaviour
 {
     [SerializeField] private float radiusInteraction;
@@ -60,7 +59,7 @@ public class InteractionEvent : MonoBehaviour
                 {
 
                     img_ImageReward.sprite = CapsuleManager.instance.capsules[int.Parse(eventDataInfo[3])].sprite;
-                    //Trouver methode pour récupérer le sprite du sort obtenu
+                    //Trouver methode pour rï¿½cupï¿½rer le sprite du sort obtenu
                 }
                 else if(eventDataInfo[0] == "3")
                 {
