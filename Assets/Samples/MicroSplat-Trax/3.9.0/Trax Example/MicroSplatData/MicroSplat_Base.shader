@@ -1,17 +1,18 @@
+// Upgrade NOTE: replaced 'defined FOG_COMBINED_WITH_WORLD_POS' with 'defined (FOG_COMBINED_WITH_WORLD_POS)'
+
 ////////////////////////////////////////
 // MicroSplat
 // Copyright (c) Jason Booth
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.16f1
-//   MicroSplat Version: 3.9
+//   Unity Version: 2018.4.7f1
 //   Render Pipeline: Standard
-//   Platform: WindowsEditor
+//   Platform: OSXEditor
 ////////////////////////////////////////
 
 
-Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
+Shader "Hidden/MicroSplat/TraxExample_Base-1289377270"
 {
    Properties
    {
@@ -45,6 +46,9 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
 
 
 
+
+
+
       _TraxNormalStrength("Normal Shape Strength", Range(0, 2.5)) = 1
       _TraxArrayDiff("Track Diffuse", 2DArray) = "white" {}
       _TraxArrayNSAO("Track NSAO", 2DArray) = "white" {}
@@ -59,7 +63,7 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
    }
    SubShader
    {
-            Tags {"RenderType" = "Opaque" "Queue" = "Geometry+100" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "4"}
+            Tags {"RenderType" = "Opaque" "Queue" = "Geometry+100" "IgnoreProjector" = "False" "SplatCount" = "4"}
 
       
       Pass
@@ -80,11 +84,16 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
          #pragma multi_compile_fwdbase
          #include "HLSLSupport.cginc"
          
-         #define _PASSFORWARD 1
+
 
          #include "UnityShaderVariables.cginc"
          #include "UnityShaderUtilities.cginc"
          // -------- variant for: <when no other keywords are defined>
+
+         #include "UnityCG.cginc"
+         #include "Lighting.cginc"
+         #include "UnityPBSLighting.cginc"
+         #include "AutoLight.cginc"
 
          
       #define _MICROSPLAT 1
@@ -108,133 +117,8 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
 // of the patchy one Unity provides being inlined/emulated in HDRP/URP. Strangely, PSSL and XBoxOne libraries are not
 // included in the standard SRP code, but they are in tons of Unity own projects on the web, so I grabbed them from there.
 
-#if defined(SHADER_API_GAMECORE)
 
-	#define ZERO_INITIALIZE(type, name) name = (type)0;
-	#define ZERO_INITIALIZE_ARRAY(type, name, arraySize) { for (int arrayIndex = 0; arrayIndex < arraySize; arrayIndex++) { name[arrayIndex] = (type)0; } }
-
-	// Texture util abstraction
-
-	#define CALCULATE_TEXTURE2D_LOD(textureName, samplerName, coord2) textureName.CalculateLevelOfDetail(samplerName, coord2)
-
-	// Texture abstraction
-
-	#define TEXTURE2D(textureName)                Texture2D textureName
-	#define TEXTURE2D_ARRAY(textureName)          Texture2DArray textureName
-	#define TEXTURECUBE(textureName)              TextureCube textureName
-	#define TEXTURECUBE_ARRAY(textureName)        TextureCubeArray textureName
-	#define TEXTURE3D(textureName)                Texture3D textureName
-
-	#define TEXTURE2D_FLOAT(textureName)          TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_FLOAT(textureName)    TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_FLOAT(textureName)        TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_FLOAT(textureName)  TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_FLOAT(textureName)          TEXTURE3D(textureName)
-
-	#define TEXTURE2D_HALF(textureName)           TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_HALF(textureName)     TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_HALF(textureName)         TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_HALF(textureName)   TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_HALF(textureName)           TEXTURE3D(textureName)
-
-	#define TEXTURE2D_SHADOW(textureName)         TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_SHADOW(textureName)   TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_SHADOW(textureName)       TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_SHADOW(textureName) TEXTURECUBE_ARRAY(textureName)
-
-	#define RW_TEXTURE2D(type, textureName)       RWTexture2D<type> textureName
-	#define RW_TEXTURE2D_ARRAY(type, textureName) RWTexture2DArray<type> textureName
-	#define RW_TEXTURE3D(type, textureName)       RWTexture3D<type> textureName
-
-	#define SAMPLER(samplerName)                  SamplerState samplerName
-	#define SAMPLER_CMP(samplerName)              SamplerComparisonState samplerName
-	#define ASSIGN_SAMPLER(samplerName, samplerValue) samplerName = samplerValue
-
-	#define TEXTURE2D_PARAM(textureName, samplerName)                 TEXTURE2D(textureName),         SAMPLER(samplerName)
-	#define TEXTURE2D_ARRAY_PARAM(textureName, samplerName)           TEXTURE2D_ARRAY(textureName),   SAMPLER(samplerName)
-	#define TEXTURECUBE_PARAM(textureName, samplerName)               TEXTURECUBE(textureName),       SAMPLER(samplerName)
-	#define TEXTURECUBE_ARRAY_PARAM(textureName, samplerName)         TEXTURECUBE_ARRAY(textureName), SAMPLER(samplerName)
-	#define TEXTURE3D_PARAM(textureName, samplerName)                 TEXTURE3D(textureName),         SAMPLER(samplerName)
-
-	#define TEXTURE2D_SHADOW_PARAM(textureName, samplerName)          TEXTURE2D(textureName),         SAMPLER_CMP(samplerName)
-	#define TEXTURE2D_ARRAY_SHADOW_PARAM(textureName, samplerName)    TEXTURE2D_ARRAY(textureName),   SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_SHADOW_PARAM(textureName, samplerName)        TEXTURECUBE(textureName),       SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_ARRAY_SHADOW_PARAM(textureName, samplerName)  TEXTURECUBE_ARRAY(textureName), SAMPLER_CMP(samplerName)
-
-	#define TEXTURE2D_ARGS(textureName, samplerName)                textureName, samplerName
-	#define TEXTURE2D_ARRAY_ARGS(textureName, samplerName)          textureName, samplerName
-	#define TEXTURECUBE_ARGS(textureName, samplerName)              textureName, samplerName
-	#define TEXTURECUBE_ARRAY_ARGS(textureName, samplerName)        textureName, samplerName
-	#define TEXTURE3D_ARGS(textureName, samplerName)                textureName, samplerName
-
-	#define TEXTURE2D_SHADOW_ARGS(textureName, samplerName)         textureName, samplerName
-	#define TEXTURE2D_ARRAY_SHADOW_ARGS(textureName, samplerName)   textureName, samplerName
-	#define TEXTURECUBE_SHADOW_ARGS(textureName, samplerName)       textureName, samplerName
-	#define TEXTURECUBE_ARRAY_SHADOW_ARGS(textureName, samplerName) textureName, samplerName
-
-	#define PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               textureName.Sample(samplerName, coord2)
-	#define PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      textureName.SampleLevel(samplerName, coord2, lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    textureName.SampleBias(samplerName, coord2, bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              textureName.SampleGrad(samplerName, coord2, dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  textureName.Sample(samplerName, float3(coord2, index))
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         textureName.SampleLevel(samplerName, float3(coord2, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       textureName.SampleBias(samplerName, float3(coord2, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) textureName.SampleGrad(samplerName, float3(coord2, index), dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    textureName.SampleLevel(samplerName, coord3, lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  textureName.SampleBias(samplerName, coord3, bias)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                textureName.Sample(samplerName, float4(coord3, index))
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       textureName.SampleLevel(samplerName, float4(coord3, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     textureName.SampleBias(samplerName, float4(coord3, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      textureName.SampleLevel(samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)
-	#define SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)
-	#define SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)
-	#define SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)
-	#define SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)
-	#define SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)
-	#define SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)
-	#define SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy)
-	#define SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)
-	#define SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)
-	#define SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)
-	#define SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)
-	#define SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)
-	#define SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D_SHADOW(textureName, samplerName, coord3)                    textureName.SampleCmpLevelZero(samplerName, (coord3).xy, (coord3).z)
-	#define SAMPLE_TEXTURE2D_ARRAY_SHADOW(textureName, samplerName, coord3, index)       textureName.SampleCmpLevelZero(samplerName, float3((coord3).xy, index), (coord3).z)
-	#define SAMPLE_TEXTURECUBE_SHADOW(textureName, samplerName, coord4)                  textureName.SampleCmpLevelZero(samplerName, (coord4).xyz, (coord4).w)
-	#define SAMPLE_TEXTURECUBE_ARRAY_SHADOW(textureName, samplerName, coord4, index)     textureName.SampleCmpLevelZero(samplerName, float4((coord4).xyz, index), (coord4).w)
-
-	#define SAMPLE_DEPTH_TEXTURE(textureName, samplerName, coord2)          SAMPLE_TEXTURE2D(textureName, samplerName, coord2).r
-	#define SAMPLE_DEPTH_TEXTURE_LOD(textureName, samplerName, coord2, lod) SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod).r
-
-	#define LOAD_TEXTURE2D(textureName, unCoord2)                                   textureName.Load(int3(unCoord2, 0))
-	#define LOAD_TEXTURE2D_LOD(textureName, unCoord2, lod)                          textureName.Load(int3(unCoord2, lod))
-	#define LOAD_TEXTURE2D_MSAA(textureName, unCoord2, sampleIndex)                 textureName.Load(unCoord2, sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY(textureName, unCoord2, index)                      textureName.Load(int4(unCoord2, index, 0))
-	#define LOAD_TEXTURE2D_ARRAY_MSAA(textureName, unCoord2, index, sampleIndex)    textureName.Load(int3(unCoord2, index), sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY_LOD(textureName, unCoord2, index, lod)             textureName.Load(int4(unCoord2, index, lod))
-	#define LOAD_TEXTURE3D(textureName, unCoord3)                                   textureName.Load(int4(unCoord3, 0))
-	#define LOAD_TEXTURE3D_LOD(textureName, unCoord3, lod)                          textureName.Load(int4(unCoord3, lod))
-
-	#define PLATFORM_SUPPORT_GATHER
-	#define GATHER_TEXTURE2D(textureName, samplerName, coord2)                textureName.Gather(samplerName, coord2)
-	#define GATHER_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)   textureName.Gather(samplerName, float3(coord2, index))
-	#define GATHER_TEXTURECUBE(textureName, samplerName, coord3)              textureName.Gather(samplerName, coord3)
-	#define GATHER_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index) textureName.Gather(samplerName, float4(coord3, index))
-	#define GATHER_RED_TEXTURE2D(textureName, samplerName, coord2)            textureName.GatherRed(samplerName, coord2)
-	#define GATHER_GREEN_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherGreen(samplerName, coord2)
-	#define GATHER_BLUE_TEXTURE2D(textureName, samplerName, coord2)           textureName.GatherBlue(samplerName, coord2)
-	#define GATHER_ALPHA_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherAlpha(samplerName, coord2)
-
-	
-#elif defined(SHADER_API_XBOXONE)
+#if defined(SHADER_API_XBOXONE)
 	
 	// Initialize arbitrary structure with zero values.
 	// Do not exist on some platform, in this case we need to have a standard name that call a function that will initialize all parameters to 0
@@ -619,20 +503,6 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
 
 
 
-         #include "UnityCG.cginc"
-         #if _NOMINDIELETRIC
-            // for Standard
-            #ifdef unity_ColorSpaceDielectricSpec
-               #undef unity_ColorSpaceDielectricSpec
-            #endif
-            #define unity_ColorSpaceDielectricSpec half4(0,0,0,1)
-         #endif
-         #include "Lighting.cginc"
-         #include "UnityPBSLighting.cginc"
-         #include "AutoLight.cginc"
-
-         
-
 
          #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
             #define UNITY_ASSUME_UNIFORM_SCALING
@@ -653,33 +523,30 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
             float3 worldNormal : TEXCOORD1;
             float4 worldTangent : TEXCOORD2;
              float4 texcoord0 : TEXCCOORD3;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              float4 texcoord1 : TEXCCOORD4;
-            // float4 texcoord2 : TEXCCOORD5;
-            #endif
+             float4 texcoord2 : TEXCCOORD5;
             // float4 texcoord3 : TEXCCOORD6;
             // float4 screenPos : TEXCOORD7;
-            // float4 vertexColor : COLOR;
+             float4 vertexColor : COLOR;
             float4 lmap : TEXCOORD8;
             #if UNITY_SHOULD_SAMPLE_SH
                half3 sh : TEXCOORD9; // SH
             #endif
             #ifdef LIGHTMAP_ON
                UNITY_LIGHTING_COORDS(10,11)
-               UNITY_FOG_COORDS(12)
             #else
                UNITY_FOG_COORDS(10)
                UNITY_SHADOW_COORDS(11)
             #endif
 
-            // float4 extraV2F0 : TEXCOORD13;
-            // float4 extraV2F1 : TEXCOORD14;
-            // float4 extraV2F2 : TEXCOORD15;
-            // float4 extraV2F3 : TEXCOORD16;
-            // float4 extraV2F4 : TEXCOORD17;
-            // float4 extraV2F5 : TEXCOORD18;
-            // float4 extraV2F6 : TEXCOORD19;
-            // float4 extraV2F7 : TEXCOORD20;
+            // float4 extraV2F0 : TEXCOORD12;
+            // float4 extraV2F1 : TEXCOORD13;
+            // float4 extraV2F2 : TEXCOORD14;
+            // float4 extraV2F3 : TEXCOORD15;
+            // float4 extraV2F4 : TEXCOORD16;
+            // float4 extraV2F5 : TEXCOORD17;
+            // float4 extraV2F6 : TEXCOORD18;
+            // float4 extraV2F7 : TEXCOORD19;
 
 
             UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -748,19 +615,17 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
 
             struct VertexData
             {
-               #if SHADER_TARGET > 30 && _PLANETCOMPUTE
- //              // uint vertexID : SV_VertexID;
+               #if SHADER_TARGET > 30
+               // uint vertexID : SV_VertexID;
                #endif
                float4 vertex : POSITION;
                float3 normal : NORMAL;
+               float4 tangent : TANGENT;
                float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                  float4 tangent : TANGENT;
-                  float4 texcoord1 : TEXCOORD1;
-                  float4 texcoord2 : TEXCOORD2;
-               #endif
+               float4 texcoord1 : TEXCOORD1;
+               float4 texcoord2 : TEXCOORD2;
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -777,14 +642,12 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
             {
                float4 vertex : INTERNALTESSPOS;
                float3 normal : NORMAL;
-               float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
                float4 tangent : TANGENT;
+               float4 texcoord0 : TEXCOORD0;
                float4 texcoord1 : TEXCOORD1;
                float4 texcoord2 : TEXCOORD2;
-               #endif
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                // float4 extraV2F0 : TEXCOORD4;
@@ -840,6 +703,13 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
                float4 TransformObjectToWorld(float4 p) { return mul(unity_ObjectToWorld, p); };
                float4x4 GetWorldToObjectMatrix() { return unity_WorldToObject; }
                float4x4 GetObjectToWorldMatrix() { return unity_ObjectToWorld; }
+               #if (defined(SHADER_API_D3D11) || defined(SHADER_API_XBOXONE) || defined(UNITY_COMPILER_HLSLCC) || defined(SHADER_API_PSSL) || (SHADER_TARGET_SURFACE_ANALYSIS && !SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER))
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord, lod) tex.SampleLevel (sampler##tex,coord, lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) tex.SampleLevel (sampler##samplertex,coord, lod)
+               #else
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord,lod) tex2D (tex,coord,0,lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord,lod) tex2D (tex,coord,0,lod)
+               #endif
             #endif
 
             float3 GetCameraWorldPosition()
@@ -930,6 +800,13 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
          float _HybridHeightBlendDistance;
       #endif
 
+
+      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
+         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
+         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
+         float4    _TerrainNormalmapTexture_TexelSize;
+      #endif
+
       #if _PACKINGHQ
          float4 _SmoothAO_TexelSize;
       #endif
@@ -956,9 +833,13 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
 
       float4 _UVScale; // scale and offset
 
+      float2 _ToonTerrainSize;
+
       half _Contrast;
       
-      
+      float3 _gGlitterLightDir;
+      float3 _gGlitterLightWorldPos;
+      half3 _gGlitterLightColor;
 
        #if _VSSHADOWMAP
          float4 gVSSunDirection;
@@ -973,9 +854,7 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
       #endif
 
       float4 _Control0_TexelSize;
-      #if _CUSTOMSPLATTEXTURES
-         float4 _CustomControl0_TexelSize;
-      #endif
+      float4 _CustomControl0_TexelSize;
       float4 _PerPixelNormal_TexelSize;
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
@@ -1027,30 +906,7 @@ Shader "Hidden/MicroSplat/TraxExample_Base-180877576"
    
 // In Unity 2020.3LTS, Unity will spew tons of errors about missing this sampler in
 // URP, even though it shouldn't be required.
-TEXTURE2D(_MainTex);
-
-      // globals, outside of CBuffer, but used by more than one module
-      float3 _gGlitterLightDir;
-      float3 _gGlitterLightWorldPos;
-      half3 _gGlitterLightColor;
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
-         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
-         float4    _TerrainNormalmapTexture_TexelSize;
-      #endif
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-          TEXTURE2D(_TerrainHeightmapTexture);
-          TEXTURE2D(_TerrainNormalmapTexture);
-      #endif
-
-      UNITY_INSTANCING_BUFFER_START(Terrain)
-          UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
-      UNITY_INSTANCING_BUFFER_END(Terrain)          
-
-
-      
+sampler2D _MainTex; 
 
       // dynamic branching helpers, for regular and aggressive branching
       // debug mode shows how many samples using branching will save us. 
@@ -1119,8 +975,8 @@ TEXTURE2D(_MainTex);
 
 
       #if _DEBUG_USE_TOPOLOGY
-         TEXTURE2D(_DebugWorldPos);
-         TEXTURE2D(_DebugWorldNormal);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldPos);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldNormal);
       #endif
       
 
@@ -1129,7 +985,7 @@ TEXTURE2D(_MainTex);
       UNITY_DECLARE_TEX2DARRAY(_NormalSAO);
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
-         TEXTURE2D(_NoiseUV);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_NoiseUV);
       #endif
 
       #if _PACKINGHQ
@@ -1144,60 +1000,58 @@ TEXTURE2D(_MainTex);
          UNITY_DECLARE_TEX2DARRAY(_EmissiveMetal);
       #endif
 
-      TEXTURE2D(_PerPixelNormal);
-
-      SamplerState shared_linear_clamp_sampler;
-      SamplerState shared_point_clamp_sampler;
+      UNITY_DECLARE_TEX2D(_PerPixelNormal);
       
-      TEXTURE2D(_Control0);
+      
+      UNITY_DECLARE_TEX2D(_Control0);
       #if _CUSTOMSPLATTEXTURES
-         TEXTURE2D(_CustomControl0);
+         UNITY_DECLARE_TEX2D(_CustomControl0);
          #if !_MAX4TEXTURES
-         TEXTURE2D(_CustomControl1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_CustomControl2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_CustomControl3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_CustomControl7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl7);
          #endif
       #else
          #if !_MAX4TEXTURES
-         TEXTURE2D(_Control1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_Control2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_Control3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_Control7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control7);
          #endif
       #endif
 
-      TEXTURE2D_FLOAT(_PerTexProps);
+      sampler2D_float _PerTexProps;
    
       struct DecalLayer
       {
@@ -1229,19 +1083,19 @@ TEXTURE2D(_MainTex);
          float4 d2;
       };
 
-      float InverseLerp(float x, float y, float v) { return (v-x)/max(y-x, 0.001); }
-      float2 InverseLerp(float2 x, float2 y, float2 v) { return (v-x)/max(y-x, float2(0.001, 0.001)); }
-      float3 InverseLerp(float3 x, float3 y, float3 v) { return (v-x)/max(y-x, float3(0.001, 0.001, 0.001)); }
-      float4 InverseLerp(float4 x, float4 y, float4 v) { return (v-x)/max(y-x, float4(0.001, 0.001, 0.001, 0.001)); }
+      half InverseLerp(half x, half y, half v) { return (v-x)/max(y-x, 0.001); }
+      half2 InverseLerp(half2 x, half2 y, half2 v) { return (v-x)/max(y-x, half2(0.001, 0.001)); }
+      half3 InverseLerp(half3 x, half3 y, half3 v) { return (v-x)/max(y-x, half3(0.001, 0.001, 0.001)); }
+      half4 InverseLerp(half4 x, half4 y, half4 v) { return (v-x)/max(y-x, half4(0.001, 0.001, 0.001, 0.001)); }
       
 
       // 2019.3 holes
       #ifdef _ALPHATEST_ON
-          TEXTURE2D(_TerrainHolesTexture);
+          UNITY_DECLARE_TEX2D(_TerrainHolesTexture);
           
           void ClipHoles(float2 uv)
           {
-              float hole = SAMPLE_TEXTURE2D(_TerrainHolesTexture, shared_linear_clamp_sampler, uv).r;
+              float hole = UNITY_SAMPLE_TEX2D(_TerrainHolesTexture, uv).r;
               COUNTSAMPLE
               clip(hole < 0.5f ? -1 : 1);
           }
@@ -1303,11 +1157,15 @@ TEXTURE2D(_MainTex);
 
       struct Input 
       {
-         ShaderData shaderData;
          float2 uv_Control0;
          float2 uv2_Diffuse;
 
-         float worldHeight;
+         #if _PLANETVECTORS
+            float3 wrappedPos;
+            float3 localNormal;
+         #endif
+
+         float3 worldHeight;
          float3 worldUpVector;
 
          float3 viewDir;
@@ -1334,8 +1192,6 @@ TEXTURE2D(_MainTex);
 
          // wetness, puddles, streams, lava from vertex or megasplat
          fixed4 fx;
-         // snow min, snow max
-         fixed4 fx2;
 
 
       };
@@ -1525,9 +1381,9 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #elif _MAX2LAYER
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
@@ -1535,15 +1391,15 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #else
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
-            half4 varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##3 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            half4 varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##3 = tex2Dlod(_PerTexProps, float4(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #endif
 
@@ -1690,19 +1546,19 @@ TEXTURE2D(_MainTex);
       
       half3 BlendNormal3(half3 n1, half3 n2)
       {
-         n1 += float3( 0,  0, 1);
-         n2 *= float3(-1, -1, 1);
-         return n1*dot(n1, n2) / n1.z - n2;
+         n1.z += 1;
+         n2.xy = -n2.xy;
+
+         return n1 * dot(n1, n2) / n1.z - n2;
       }
       
       half2 TransformTriplanarNormal(Input IN, float3x3 t2w, half3 axisSign, half3 absVertNormal,
                half3 pN, half2 a0, half2 a1, half2 a2)
       {
-         
          a0 = a0 * 2 - 1;
          a1 = a1 * 2 - 1;
          a2 = a2 * 2 - 1;
-
+         
          a0.x *= axisSign.x;
          a1.x *= axisSign.y;
          a2.x *= axisSign.z;
@@ -1710,20 +1566,19 @@ TEXTURE2D(_MainTex);
          half3 n0 = half3(a0.xy, 1);
          half3 n1 = half3(a1.xy, 1);
          half3 n2 = half3(a2.xy, 1);
-
-         float3 wn = IN.worldNormal;
-
-         n0 = BlendNormal3(half3(wn.zy, absVertNormal.x), n0);
-         n1 = BlendNormal3(half3(wn.xz, absVertNormal.y), n1 * float3(-1, 1, 1)); 
-         n2 = BlendNormal3(half3(wn.xy, absVertNormal.z), n2);
+         
+         n0 = BlendNormal3(half3(IN.worldNormal.zy, absVertNormal.x), n0);
+         n1 = BlendNormal3(half3(IN.worldNormal.xz, absVertNormal.y), n1);
+         n2 = BlendNormal3(half3(IN.worldNormal.xy, absVertNormal.z), n2);
   
          n0.z *= axisSign.x;
          n1.z *= axisSign.y;
          n2.z *= -axisSign.z;
-
-         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z);
-         return mul(t2w, worldNormal).xy;
-
+  
+         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z );
+         half2 rn = mul(t2w, worldNormal).xy;
+         //rn.y *= -1;
+         return rn;
       }
       
       // funcs
@@ -2211,16 +2066,27 @@ TEXTURE2D(_MainTex);
       }
 
 
-      // abstraction around sampler mode
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##samplertex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, sampler##tex, coord, dx, dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy) SAMPLE_TEXTURE2D_GRAD(tex, sampler##samp, coord, dx, dy);
+      
+
       #if _USELODMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, u, l.x)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u, l.x)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
       #elif _USEGRADMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_GRAD(tex, sampler##tex, u, l.xy, l.zw)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, ss, u.xy, u.z, l.xy, l.zw)
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
       #else
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, u.xy, u.z)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u.xy, y.z)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
+      #endif
+
+      #if _USELODMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
+      #elif _USEGRADMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
+      #else
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
       #endif
 
 
@@ -2259,9 +2125,9 @@ TEXTURE2D(_MainTex);
          tc.uv2 = worldPos.xy * axisSign.z;
       }
       
-      #define SimpleTriplanarSample(tex, tc, scale) (SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv0 * scale) * tc.pn.x + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv1 * scale) * tc.pn.y + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv2 * scale) * tc.pn.z)
-      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv0 * scale, lod) * tc.pn.x + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv1 * scale, lod) * tc.pn.y + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
-      #define SimpleTriplanarSampleGrad(tex, tc, scale) (SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
+      #define SimpleTriplanarSample(tex, tc, scale) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv0 * scale) * tc.pn.x + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv1 * scale) * tc.pn.y + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv2 * scale) * tc.pn.z)
+      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv0 * scale, lod) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv1 * scale, lod) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
+      #define SimpleTriplanarSampleGrad(tex, tc, scale) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
    
       
       inline half3 MicroSplatDiffuseAndSpecularFromMetallic (half3 albedo, half metallic, out half3 specColor, out half oneMinusReflectivity)
@@ -2276,11 +2142,20 @@ TEXTURE2D(_MainTex);
 
 
 
+      #undef MICROSPLAT_SAMPLE_TEX2D_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord,lod)                    SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy)            SAMPLE_TEXTURE2D_GRAD(tex,sampler##tex,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy)    SAMPLE_TEXTURE2D_GRAD(tex,sampler##samp,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, samp, coord, lod)    SAMPLE_TEXTURE2D_LOD(tex, sampler##samp, coord, lod)
+      
 
       Input DescToInput(ShaderData IN)
       {
         Input s = (Input)0;
-        s.shaderData = IN;
         s.TBN = IN.TBNMatrix;
         s.worldNormal = IN.worldSpaceNormal;
         s.worldPos = IN.worldSpacePosition;
@@ -2297,7 +2172,11 @@ TEXTURE2D(_MainTex);
         #endif
 
         #if _MICROMESH && _MESHUV2
-            s.uv2_Diffuse = IN.texcoord1.xy;
+            s.uv_Diffuse = IN.texcoord1.xy;
+        #endif
+
+        #if _SRPTERRAINBLEND
+            s.color = IN.vertexColor;
         #endif
 
         #if _MEGASPLAT
@@ -2421,16 +2300,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          
-         TEXTURE2D_FLOAT(_GMSTraxBuffer);
+         sampler2D_float _GMSTraxBuffer;
 
          #if _TRAXSINGLE
-         TEXTURE2D(_TraxDiff);
-         TEXTURE2D(_TraxNSAO);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxDiff);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxNSAO);
          #endif
 
          #if _TRAXARRAY
-         TEXTURE2D_ARRAY(_TraxArrayDiff);
-         TEXTURE2D_ARRAY(_TraxArrayNSAO);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayDiff);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayNSAO);
          #endif
 
          #define TRAXSAMPLEQUADRATIC2D(tex, uv, texelSize, ret) \
@@ -2439,15 +2318,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 c = (q*(q - 1.0) + 0.5) / texelSize.zw; \
             float2 w0 = uv - c; \
             float2 w1 = uv + c; \
-            half4 s = SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w0.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w0.y)); \
+            half4 s = tex2D(tex, float2(w0.x, w0.y)) \
+              + tex2D(tex, float2(w0.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w0.y)); \
             ret = s / 4.0; \
          } \
         
          
-         float SampleTraxBufferLOD(float3 worldPos, float3 vertexNormal, float h)
+         float SampleTraxBufferLOD(float3 worldPos, float h)
          {
             
             // generate UVs for the buffer, which is moving
@@ -2458,28 +2337,28 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             fade = 1 - pow(fade, 8);
             uv *= 0.5;
             uv += 0.5;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
+            
             
             #if _TRAXQUADRATIC
+               float4 sr;
                float2 q = frac(uv * _GMSTraxBuffer_TexelSize.zw);
                float2 c = (q*(q - 1.0) + 0.5) / _GMSTraxBuffer_TexelSize.zw; 
                float2 w0 = uv - c; 
                float2 w1 = uv + c; 
-               half s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, w0.xy, 0).r + 
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w0.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w0.y), 0).r;
+               half4 s = tex2Dlod(_GMSTraxBuffer, float4(w0.x, w0.y, 0, 0)) 
+              + tex2Dlod(_GMSTraxBuffer, float4(w0.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w0.y, 0, 0));
 
               s /= 4;
             #else
-               float s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, uv, 0).r;
+               float s =  tex2Dlod(_GMSTraxBuffer, float4(uv, 0, 0)).r;
             #endif
-            return 1.0 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            return 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
          }
          
         
-         float SampleTraxBuffer(float3 worldPos, float3 vertexNormal, out float3 norm)
+         float SampleTraxBuffer(float3 worldPos, out float3 norm)
          {
             float2 uv = worldPos.xz;
             uv -= _GMSTraxBufferPosition.xz;
@@ -2491,8 +2370,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             
 
             float2 offset = _GMSTraxBuffer_TexelSize.xy;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
 
             #if _TRAXQUADRATIC
                float4 sr, sr1, sr2, sr3, sr4;
@@ -2509,14 +2386,14 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                float s4 = sr4.r;
 
             #else
-               float s = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv).r;
+               float s = tex2D(_GMSTraxBuffer, uv).r;
                
-               float s1 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, -1)).r;
-               float s2 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(-1, 0)).r;
-               float s3 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(1, 0)).r;
-               float s4 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, 1)).r;
+               float s1 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, -1)).r;
+               float s2 = tex2D(_GMSTraxBuffer, uv + offset * float2(-1, 0)).r;
+               float s3 = tex2D(_GMSTraxBuffer, uv + offset * float2(1, 0)).r;
+               float s4 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, 1)).r;
             #endif
-            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
  
 
             // generate normals
@@ -2600,8 +2477,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
 
             
-            half4 albedo = SAMPLE_TEXTURE2D_GRAD(_TraxDiff, sampler_Diffuse, uv, fsdx, fsdy);
-            half4 normSAO = SAMPLE_TEXTURE2D_GRAD(_TraxNSAO, sampler_NormalSAO, uv, fsdx, fsdy).agrb;
+            half4 albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxDiff, _Diffuse, uv, fsdx, fsdy);
+            half4 normSAO = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxNSAO, _Diffuse, uv, fsdx, fsdy).agrb;
             normSAO.xy = normSAO.xy * 2 - 1;
 
             COUNTSAMPLE
@@ -2638,11 +2515,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdx = ddx(config.uv) * _TraxUVScales;
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
             
-            half4 albedo0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, fsdx, fsdy);
-            half4 normSAO0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv0.z, fsdx, fsdy).agrb;
+            half4 albedo0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv0.z), fsdx, fsdy);
+            half4 normSAO0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv0.z), fsdx, fsdy).agrb;
             normSAO0.xy = normSAO0.xy * 2 - 1;
-            half4 albedo1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, fsdx, fsdy);
-            half4 normSAO1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv1.z, fsdx, fsdy).agrb;
+            half4 albedo1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv1.z), fsdx, fsdy);
+            half4 normSAO1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv1.z), fsdx, fsdy).agrb;
             normSAO1.xy = normSAO1.xy * 2 - 1;
             COUNTSAMPLE
             COUNTSAMPLE
@@ -2654,8 +2531,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             h1 = lerp(traxBuffer1, h1, _TraxInterpContrast);
 
             #if !_MAX2LAYER
-               half4 albedo2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, fsdx, fsdy);
-               half4 normSAO2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv2.z, fsdx, fsdy).agrb;
+               half4 albedo2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv2.z), fsdx, fsdy);
+               half4 normSAO2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv2.z), fsdx, fsdy).agrb;
                half h2 = HeightBlend(albedo2.a, samples.albedo2.a, traxBuffer2, _Contrast);
                h2 = lerp(traxBuffer2, h2, _TraxInterpContrast);
                normSAO2.xy = normSAO2.xy * 2 - 1;
@@ -2663,8 +2540,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                COUNTSAMPLE
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               half4 albedo3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, fsdx, fsdy);
-               half4 normSAO3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv3.z, fsdx, fsdy).agrb;
+               half4 albedo3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv3.z), fsdx, fsdy);
+               half4 normSAO3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv3.z), fsdx, fsdy).agrb;
                normSAO3.xy = normSAO3.xy * 2 - 1;
                half h3 = HeightBlend(albedo3.a, samples.albedo3.a, traxBuffer3, _Contrast);
                h3 = lerp(traxBuffer3, h3, _TraxInterpContrast);
@@ -2731,7 +2608,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _TRAXSINGLE
             float2 uv = config.uv * _TraxUVScales.xy;
 
-            half albedo = SAMPLE_TEXTURE2D_LOD(_TraxDiff, sampler_Diffuse, uv, mipLevel).a;
+            half albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_TraxDiff, _Diffuse, uv, mipLevel).a;
             
 
             h0 = lerp(albedo - offset, h0, traxBuffer0);
@@ -2743,10 +2620,10 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             traxBuffer = 1 - ((1 - traxBuffer) * _TraxTextureBlend);
 
             
-            half albedo0 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, mipLevel).a;
-            half albedo1 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, mipLevel).a;
-            half albedo2 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, mipLevel).a;
-            half albedo3 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, mipLevel).a;
+            half albedo0 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv0.z), mipLevel).a;
+            half albedo1 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv1.z), mipLevel).a;
+            half albedo2 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv2.z), mipLevel).a;
+            half albedo3 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv3.z), mipLevel).a;
             
 
             h0 = lerp(albedo0 - offset0, h0, traxBuffer0);
@@ -2785,7 +2662,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          
             half4 contrasts = _Contrast.xxxx;
             #if _PERTEXTRIPLANARCONTRAST
-               SAMPLE_PER_TEX(ptc, 9.5, config, half4(1,0.5,0,0));
+               SAMPLE_PER_TEX(ptc, 5.5, config, half4(1,0.5,0,0));
                contrasts = half4(ptc0.y, ptc1.y, ptc2.y, ptc3.y);
             #endif
 
@@ -3525,7 +3402,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float globalSlopeFilter = 1;
             #if _GLOBALSLOPEFILTER
                float2 gfilterUV = float2(1 - saturate(dot(worldNormalVertex, upVector) * 0.5 + 0.49), 0.5);
-               globalSlopeFilter = SAMPLE_TEXTURE2D(_GlobalSlopeTex, sampler_Diffuse, gfilterUV).a;
+               globalSlopeFilter = UNITY_SAMPLE_TEX2D_SAMPLER(_GlobalSlopeTex, _Diffuse, gfilterUV).a;
             #endif
          #endif
 
@@ -3552,7 +3429,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
-            traxBuffer = SampleTraxBuffer(i.worldPos, worldNormalVertex, traxNormal);
+            traxBuffer = SampleTraxBuffer(i.worldPos, traxNormal);
          #endif
          
          #if _WETNESS || _PUDDLES || _STREAMS || _LAVA
@@ -3580,7 +3457,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          MIPFORMAT origAlbedoLOD = INITMIPFORMAT;
 
          #if _TRIPLANAR && !_DISABLESPLATMAPS
-            PrepTriplanar(i.shaderData.texcoord0, worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #if _PLANETVECTORS
+               PrepTriplanar(i.localNormal, i.wrappedPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #else
+               PrepTriplanar(worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #endif
+            
             tc.IN = i;
          #endif
          
@@ -3590,7 +3472,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                albedoLOD = ComputeMipLevel(config.uv0.xy, _Diffuse_TexelSize.zw);
                normalLOD = ComputeMipLevel(config.uv0.xy, _NormalSAO_TexelSize.zw);
                #if _USEEMISSIVEMETAL
-                  emisLOD = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
+                  emisLOD   = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
                #endif
                #if _USESPECULARWORKFLOW
                   specLOD = ComputeMipLevel(config.uv0.xy, _Specular_TexelSize.zw);;
@@ -3711,7 +3593,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _HYBRIDHEIGHTBLEND
-            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/max(1.0, _HybridHeightBlendDistance)));
+            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/_HybridHeightBlendDistance));
          #endif
 
          
@@ -3786,13 +3668,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             DistanceResample(samples, config, tc, camDist, i.viewDir, fxLevels, albedoLOD, i.worldPos, heightWeights, worldNormalVertex);
          #endif
 
-         #if _STARREACHFORMAT
-            samples.normSAO0.w = length(samples.normSAO0.xy);
-            samples.normSAO1.w = length(samples.normSAO1.xy);
-            samples.normSAO2.w = length(samples.normSAO2.xy);
-            samples.normSAO3.w = length(samples.normSAO3.xy);
-         #endif
-
          // PerTexture sampling goes here, passing the samples structure
          
          #if _PERTEXMICROSHADOWS || _PERTEXFUZZYSHADE
@@ -3823,9 +3698,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                return o;
                #endif
 
-               
-
-               
             }
             #endif
 
@@ -3943,13 +3815,13 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _PERTEXAOSTR && !_DISABLESPLATMAPS
-            samples.normSAO0.a = pow(abs(samples.normSAO0.a), perTexMatSettings0.b);
-            samples.normSAO1.a = pow(abs(samples.normSAO1.a), perTexMatSettings1.b);
+            samples.normSAO0.a = pow(samples.normSAO0.a, abs(perTexMatSettings0.b));
+            samples.normSAO1.a = pow(samples.normSAO1.a, abs(perTexMatSettings1.b));
             #if !_MAX2LAYER
-               samples.normSAO2.a = pow(abs(samples.normSAO2.a), perTexMatSettings2.b);
+               samples.normSAO2.a = pow(samples.normSAO2.a, abs(perTexMatSettings2.b));
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               samples.normSAO3.a = pow(abs(samples.normSAO3.a), perTexMatSettings3.b);
+               samples.normSAO3.a = pow(samples.normSAO3.a, abs(perTexMatSettings3.b));
             #endif
          #endif
 
@@ -3984,26 +3856,30 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          {
             SAMPLE_PER_TEX(ptRimA, 26.5, config, half4(1, 1, 1, 1));
             SAMPLE_PER_TEX(ptRimB, 27.5, config, half4(1, 1, 1, 0));
-            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), max(0.0001, ptRimA0.g)) * ptRimB0.rgb * ptRimB0.a;
-            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), max(0.0001, ptRimA1.g)) * ptRimB1.rgb * ptRimB1.a;
-            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), max(0.0001, ptRimA2.g)) * ptRimB2.rgb * ptRimB2.a;
-            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), max(0.0001, ptRimA3.g)) * ptRimB3.rgb * ptRimB3.a;
+            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), ptRimA0.g) * ptRimB0.rgb * ptRimB0.a;
+            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), ptRimA1.g) * ptRimB1.rgb * ptRimB1.a;
+            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), ptRimA2.g) * ptRimB2.rgb * ptRimB2.a;
+            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), ptRimA3.g) * ptRimB3.rgb * ptRimB3.a;
          }
          #endif
 
 
 
          #if (((_DETAILNOISE && _PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && _PERTEXDISTANCENOISESTRENGTH)) || (_NORMALNOISE && _PERTEXNORMALNOISESTRENGTH)) && !_DISABLESPLATMAPS
-            ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          
          #if _GLOBALNOISEUV
             // noise defaults so that a value of 1, 1 is 4 pixels in size and moves the uvs by 1 pixel max.
             #if _CUSTOMSPLATTEXTURES
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #else
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
          #endif
 
@@ -4013,7 +3889,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if (_ANTITILEARRAYDETAIL || _ANTITILEARRAYDISTANCE || _ANTITILEARRAYNORMAL) && !_DISABLESPLATMAPS
-            ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #if _PLANETVECTORS
+               ApplyAntiTilePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex, heightWeights);
+            #else
+               ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #endif
          #endif
 
          #if _GEOMAP && !_DISABLESPLATMAPS
@@ -4104,7 +3984,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          #if ((_DETAILNOISE && !_PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && !_PERTEXDISTANCENOISESTRENGTH) || (_NORMALNOISE && !_PERTEXNORMALNOISESTRENGTH))
-            ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          #if _SPLATFADE
@@ -4119,12 +4003,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             MSBRANCHOTHER(camDist - _SplatFade.x)
             {
                float falloff = saturate(InverseLerp(_SplatFade.x, _SplatFade.y, camDist));
-               half4 sfalb = SAMPLE_TEXTURE2D_ARRAY_GRAD(_Diffuse, sampler_Diffuse, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY);
+               half4 sfalb = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_Diffuse, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY);
                COUNTSAMPLE
                albedo.rgb = lerp(albedo.rgb, sfalb.rgb, falloff);
 
                #if !_NONORMALMAP && !_AUTONORMAL
-                  half4 sfnormSAO = SAMPLE_TEXTURE2D_ARRAY_GRAD(_NormalSAO, sampler_NormalSAO, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY).agrb;
+                  half4 sfnormSAO = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_NormalSAO, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY).agrb;
                   COUNTSAMPLE
                   sfnormSAO.xy = sfnormSAO.xy * 2 - 1;
 
@@ -4159,13 +4043,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             GeoTexture(albedo.rgb, normSAO, surfGrad, i.worldPos, worldHeight, config, worldNormalVertex, upVector);
          #endif
 
+         #if _PLANETALBEDO || _PLANETALBEDO2 || _PLANETNORMAL || _PLANETNORMAL2
+            //ApplyPlanet(i, albedo, normSAO, config, camDist, i.worldPos, upVector);
+         #endif
          
          #if _SCATTER
-            ApplyScatter(
-               #if _MEGASPLAT
-               config, 
-               #endif
-               i, albedo, normSAO, surfGrad, config.uv, camDist);
+            ApplyScatter(i, albedo, normSAO, surfGrad, config.uv, camDist);
          #endif
 
          #if _DECAL
@@ -4276,9 +4159,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
          
          #if _TOONWIREFRAME
-         ToonWireframe(config.uv, o.Albedo, camDist);
+         ToonWireframe(config.uv, o.Albedo);
          #endif
 
+         #if _PLANETVECTORS
+            ApplyPlanetAtmosphere(i, o);
+         #endif
 
          #if _DEBUG_TRAXBUFFER
             ClearAllButAlbedo(o, half3(traxBuffer, 0, 0) * saturate(o.Albedo.z+1));
@@ -4287,11 +4173,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _DEBUG_WORLDNORMAL
             ClearAllButAlbedo(o,  WorldNormalVector(i, o.Normal) * saturate(o.Albedo.z+1));
          #endif
-
-         #if _DEBUG_MEGABARY && _MEGASPLAT
-            o.Albedo = i.baryWeights.xyz;
-         #endif
-
 
          return o;
       }
@@ -4304,44 +4185,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_CustomControl0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_CustomControl0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_CustomControl1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl1, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_CustomControl2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl2, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_CustomControl3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl3, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_CustomControl4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl4, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_CustomControl5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl5, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_CustomControl6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl6, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_CustomControl7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl7, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
          #else
@@ -4350,44 +4231,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_Control0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_Control0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_Control1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control1, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_Control2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control2, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_Control3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control3, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_Control4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control4, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_Control5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control5, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_Control6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control6, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_Control7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control7, _Control0, controlUV);
             COUNTSAMPLE
             #endif
          #endif
@@ -4407,18 +4288,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #if _FORCELOCALSPACE
             worldNormalVertex = mul((float3x3)unity_WorldToObject, worldNormalVertex).xyz;
             i.worldPos = i.worldPos -  mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz;
-            i.worldHeight = i.worldPos.y;
          #endif
 
          #if _ORIGINSHIFT
+             //worldNormalVertex = mul(_GlobalOriginMTX, float4(worldNormalVertex, 1)).xyz;
              i.worldPos = i.worldPos + mul(_GlobalOriginMTX, float4(0,0,0,1)).xyz;
-             i.worldHeight = i.worldPos.y;
          #endif
 
          #if _DEBUG_USE_TOPOLOGY
-            i.worldPos = SAMPLE_TEXTURE2D(_DebugWorldPos, sampler_Diffuse, i.uv_Control0);
-            worldNormalVertex = SAMPLE_TEXTURE2D(_DebugWorldNormal, sampler_Diffuse, i.uv_Control0);
-            i.worldHeight = i.worldPos.y;
+            i.worldPos = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldPos, _Diffuse, i.uv_Control0);
+            worldNormalVertex = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldNormal, _Diffuse, i.uv_Control0);
          #endif
 
          #if _ALPHABELOWHEIGHT && !_TBDISABLEALPHAHOLES
@@ -4473,8 +4352,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                   DiggerSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MEGASPLAT
                   MegaSplatVertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
-               #elif _MEGASPLATTEXTURE
-                   MegaSplatTextureSetup(controlUV, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MICROVERTEXMESH
                   VertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif !_PROCEDURALTEXTURE || _PROCEDURALBLENDSPLATS
@@ -4486,14 +4363,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                #if _PROCEDURALTEXTURE
                   float3 procNormal = worldNormalVertex;
                   float3 worldPos = i.worldPos;
+                  #if _PLANETVECTORS
+                     config.uv = origUV;
+                     procNormal = i.TBN[2];
+                     worldPos = i.wrappedPos;
+                  #endif
                   ProceduralSetup(i, worldPos, i.worldHeight, procNormal, i.worldUpVector, weights, origUV, config, ddx(origUV), ddy(origUV), ddx(worldPos), ddy(worldPos), decalOutput);
                #endif
             #else // _DISABLESPLATMAPS
                 Setup(weights, origUV, config, half4(1,0,0,0), 0, 0, 0, 0, 0, 0, 0, i.worldPos, decalOutput);
-            #endif
-
-            #if _SLOPETEXTURE
-               SlopeTexture(config, weights, worldNormalVertex);
             #endif
          } // _SPLATFADE else case
 
@@ -4523,15 +4401,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
  
          MicroSplatLayer l = Sample(i, weights, config, camDist, worldNormalVertex, decalOutput);
 
-         // On windows, sometimes the shared samplers gets stripped, so we have to do this crap.
+         // On windows, sometimes the diffuse sampler gets stripped, so we have to do this crap.
          // We sample from the lowest mip, so it shouldn't cost much, but still, I hate this, wtf..
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_Diffuse, sampler_Diffuse, config.uv0, 11).r + 2);
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_NormalSAO, sampler_NormalSAO, config.uv0, 11).r + 2);
+         l.Albedo *= saturate(UNITY_SAMPLE_TEX2DARRAY_LOD(_Diffuse, config.uv0, 11).r + 2);
+         // same for the control sampler.
+         l.Albedo *= saturate(MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_Control0, _Control0, config.uv, 11).r + 2);
 
          #if _PROCEDURALTEXTURE
             ProceduralTextureDebugOutput(l, weights, config);
          #endif
-
 
          return l;
 
@@ -4541,6 +4419,17 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
    
 
+
+#if (_MICROTERRAIN || _MICROMESHTERRAIN)
+    TEXTURE2D(_TerrainHeightmapTexture);
+    SAMPLER(sampler_TerrainHeightmapTexture);
+    TEXTURE2D(_TerrainNormalmapTexture);
+    SAMPLER(sampler_TerrainNormalmapTexture);
+#endif
+
+UNITY_INSTANCING_BUFFER_START(Terrain)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
+UNITY_INSTANCING_BUFFER_END(Terrain)          
 
 
 
@@ -4561,7 +4450,7 @@ float4 ConstructTerrainTangent(float3 normal, float3 positiveZ)
 
 void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv)
 {
-#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED) && !_TERRAINBLENDABLESHADER
+#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED)
    
     float2 patchVertex = vertex.xy;
     float4 instanceData = UNITY_ACCESS_INSTANCED_PROP(Terrain, _TerrainPatchInstanceData);
@@ -4571,7 +4460,7 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
     float2 sampleUV = (uv / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
 
-    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, shared_linear_clamp_sampler, sampleUV, 0));
+    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, sampler_TerrainHeightmapTexture, sampleUV, 0));
    
     vertex.xz = sampleCoords * _TerrainHeightmapScale.xz;
     vertex.y = height * _TerrainHeightmapScale.y;
@@ -4585,28 +4474,26 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
 void ApplyMeshModification(inout VertexData input)
 {
-   #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
+   #if _MICROTERRAIN
       float2 uv = input.texcoord0.xy;
       TerrainInstancing(input.vertex, input.normal, uv);
       input.texcoord0.xy = uv;
+      input.texcoord1.xy = uv;
+      input.texcoord2.xy = uv;
+      
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
-   #if _PERPIXNORMAL && !_TERRAINBLENDABLESHADER
+   #if _PERPIXNORMAL
       input.normal = float3(0,1,0);
-   #endif
-
-}
-
-// called by the template, so we can remove tangent from VertexData
-void ApplyTerrainTangent(inout VertexToPixel input)
-{
-   #if (_MICROTERRAIN || _PERPIXNORMAL) && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
 
    // digger meshes ain't got no tangent either..
-   #if _MICRODIGGERMESH && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+   #if _MICRODIGGERMESH
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
+
+
 }
 
 
@@ -4650,13 +4537,13 @@ float3 GetTessFactors ()
        
         float3 worldNormalVertex = d.worldSpaceNormal;
 
-        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN && !_TERRAINBLENDABLESHADER)
+        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_TerrainNormalmapTexture, _TerrainNormalmapTexture, sampleCoords).xyz * 2 - 1);
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomNormal, geomTangent)) * -1;
             worldNormalVertex = geomNormal;
@@ -4666,13 +4553,13 @@ float3 GetTessFactors ()
             d.TBNMatrix = float3x3(geomTangent, geomBitangent, geomNormal);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
 
-         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN) && !_TERRAINBLENDABLESHADER
+         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy * _PerPixelNormal_TexelSize.zw + 0.5f) * _PerPixelNormal_TexelSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_PerPixelNormal, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_PerPixelNormal, _PerPixelNormal, sampleCoords).xyz * 2 - 1);
             
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomTangent, geomNormal)) * -1;
@@ -4694,18 +4581,13 @@ float3 GetTessFactors ()
          
          #if _SRPTERRAINBLEND
             MicroSplatLayer l = BlendWithTerrain(d);
-
-               #if _DEBUG_WORLDNORMAL
-                  ClearAllButAlbedo(l, normalize(TangentToWorldSpace(d, l.Normal)) * saturate(l.Albedo.z+1));
-               #endif
          #else
             MicroSplatLayer l = SurfImpl(i, worldNormalVertex);
          #endif
 
         DoDebugOutput(l);
 
-
-
+      
 
         o.Albedo = l.Albedo;
         o.Normal = l.Normal;
@@ -4744,12 +4626,10 @@ float3 GetTessFactors ()
             d.worldSpaceViewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
              d.texcoord0 = i.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                d.texcoord1 = i.texcoord1;
-               // d.texcoord2 = i.texcoord2;
-            #endif
+             d.texcoord1 = i.texcoord1;
+             d.texcoord2 = i.texcoord2;
             // d.texcoord3 = i.texcoord3;
-            // d.vertexColor = i.vertexColor;
+             d.vertexColor = i.vertexColor;
 
             // these rarely get used, so we back transform them. Usually will be stripped.
             #if _HDRP
@@ -4757,8 +4637,8 @@ float3 GetTessFactors ()
             #else
                 // d.localSpacePosition = mul(unity_WorldToObject, float4(i.worldPos, 1));
             #endif
-            // d.localSpaceNormal = normalize(mul((float3x3)unity_WorldToObject, i.worldNormal));
-            // d.localSpaceTangent = normalize(mul((float3x3)unity_WorldToObject, i.worldTangent.xyz));
+            // d.localSpaceNormal = normalize(mul(unity_WorldToObject, i.worldNormal));
+            // d.localSpaceTangent = normalize(mul(unity_WorldToObject, i.worldTangent.xyz));
 
             // d.screenPos = i.screenPos;
             // d.screenUV = i.screenPos.xy / i.screenPos.w;
@@ -4842,38 +4722,22 @@ float3 GetTessFactors ()
 
            o.pos = UnityObjectToClipPos(v.vertex);
             o.texcoord0 = v.texcoord0;
-           #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-               o.texcoord1 = v.texcoord1;
-              // o.texcoord2 = v.texcoord2;
-           #endif
+            o.texcoord1 = v.texcoord1;
+            o.texcoord2 = v.texcoord2;
            // o.texcoord3 = v.texcoord3;
-           // o.vertexColor = v.vertexColor;
+            o.vertexColor = v.vertexColor;
            // o.screenPos = ComputeScreenPos(o.pos);
            o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
            o.worldNormal = UnityObjectToWorldNormal(v.normal);
-
-           #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-               o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
-               fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
-               o.worldTangent.w = tangentSign;
-           #endif
-
-           // MS Only
-           ApplyTerrainTangent(o);
-
-           #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-              float2 uv1 = v.texcoord1.xy;
-              float2 uv2 = v.texcoord2.xy;
-           #else
-              float2 uv1 = v.texcoord0.xy;
-              float2 uv2 = uv1;
-           #endif
+           o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
+           fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+           o.worldTangent.w = tangentSign;
 
            #ifdef DYNAMICLIGHTMAP_ON
-           o.lmap.zw = uv2 * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+           o.lmap.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
            #endif
            #ifdef LIGHTMAP_ON
-           o.lmap.xy = uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+           o.lmap.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
            #endif
 
            // SH/ambient and vertex lights
@@ -4891,7 +4755,7 @@ float3 GetTessFactors ()
              #endif
            #endif // !LIGHTMAP_ON
 
-           UNITY_TRANSFER_LIGHTING(o, uv1.xy); // pass shadow and, possibly, light cookie coordinates to pixel shader
+           UNITY_TRANSFER_LIGHTING(o,v.texcoord1.xy); // pass shadow and, possibly, light cookie coordinates to pixel shader
            #ifdef FOG_COMBINED_WITH_TSPACE
              UNITY_TRANSFER_FOG_COMBINED_WITH_TSPACE(o,o.pos); // pass fog coordinates to pixel shader
            #elif defined (FOG_COMBINED_WITH_WORLD_POS)
@@ -5045,7 +4909,7 @@ float3 GetTessFactors ()
 
              UNITY_APPLY_FOG(_unity_fogCoord, c); // apply fog
            #else
-             fixed4 c = fixed4(o.Albedo.rgb, o.Alpha);
+             fixed4 = fixed4(o.Albedo.rgb, o.Alpha);
              UNITY_APPLY_FOG(_unity_fogCoord, c); // apply fog
            #endif
            #if !_ALPHABLEND_ON
@@ -5086,7 +4950,11 @@ float3 GetTessFactors ()
          #include "UnityShaderVariables.cginc"
          #include "UnityShaderUtilities.cginc"
 
-         #define _PASSFORWARD 1
+
+         #include "UnityCG.cginc"
+         #include "Lighting.cginc"
+         #include "UnityPBSLighting.cginc"
+         #include "AutoLight.cginc"
 
          
       #define _MICROSPLAT 1
@@ -5110,133 +4978,8 @@ float3 GetTessFactors ()
 // of the patchy one Unity provides being inlined/emulated in HDRP/URP. Strangely, PSSL and XBoxOne libraries are not
 // included in the standard SRP code, but they are in tons of Unity own projects on the web, so I grabbed them from there.
 
-#if defined(SHADER_API_GAMECORE)
 
-	#define ZERO_INITIALIZE(type, name) name = (type)0;
-	#define ZERO_INITIALIZE_ARRAY(type, name, arraySize) { for (int arrayIndex = 0; arrayIndex < arraySize; arrayIndex++) { name[arrayIndex] = (type)0; } }
-
-	// Texture util abstraction
-
-	#define CALCULATE_TEXTURE2D_LOD(textureName, samplerName, coord2) textureName.CalculateLevelOfDetail(samplerName, coord2)
-
-	// Texture abstraction
-
-	#define TEXTURE2D(textureName)                Texture2D textureName
-	#define TEXTURE2D_ARRAY(textureName)          Texture2DArray textureName
-	#define TEXTURECUBE(textureName)              TextureCube textureName
-	#define TEXTURECUBE_ARRAY(textureName)        TextureCubeArray textureName
-	#define TEXTURE3D(textureName)                Texture3D textureName
-
-	#define TEXTURE2D_FLOAT(textureName)          TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_FLOAT(textureName)    TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_FLOAT(textureName)        TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_FLOAT(textureName)  TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_FLOAT(textureName)          TEXTURE3D(textureName)
-
-	#define TEXTURE2D_HALF(textureName)           TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_HALF(textureName)     TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_HALF(textureName)         TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_HALF(textureName)   TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_HALF(textureName)           TEXTURE3D(textureName)
-
-	#define TEXTURE2D_SHADOW(textureName)         TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_SHADOW(textureName)   TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_SHADOW(textureName)       TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_SHADOW(textureName) TEXTURECUBE_ARRAY(textureName)
-
-	#define RW_TEXTURE2D(type, textureName)       RWTexture2D<type> textureName
-	#define RW_TEXTURE2D_ARRAY(type, textureName) RWTexture2DArray<type> textureName
-	#define RW_TEXTURE3D(type, textureName)       RWTexture3D<type> textureName
-
-	#define SAMPLER(samplerName)                  SamplerState samplerName
-	#define SAMPLER_CMP(samplerName)              SamplerComparisonState samplerName
-	#define ASSIGN_SAMPLER(samplerName, samplerValue) samplerName = samplerValue
-
-	#define TEXTURE2D_PARAM(textureName, samplerName)                 TEXTURE2D(textureName),         SAMPLER(samplerName)
-	#define TEXTURE2D_ARRAY_PARAM(textureName, samplerName)           TEXTURE2D_ARRAY(textureName),   SAMPLER(samplerName)
-	#define TEXTURECUBE_PARAM(textureName, samplerName)               TEXTURECUBE(textureName),       SAMPLER(samplerName)
-	#define TEXTURECUBE_ARRAY_PARAM(textureName, samplerName)         TEXTURECUBE_ARRAY(textureName), SAMPLER(samplerName)
-	#define TEXTURE3D_PARAM(textureName, samplerName)                 TEXTURE3D(textureName),         SAMPLER(samplerName)
-
-	#define TEXTURE2D_SHADOW_PARAM(textureName, samplerName)          TEXTURE2D(textureName),         SAMPLER_CMP(samplerName)
-	#define TEXTURE2D_ARRAY_SHADOW_PARAM(textureName, samplerName)    TEXTURE2D_ARRAY(textureName),   SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_SHADOW_PARAM(textureName, samplerName)        TEXTURECUBE(textureName),       SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_ARRAY_SHADOW_PARAM(textureName, samplerName)  TEXTURECUBE_ARRAY(textureName), SAMPLER_CMP(samplerName)
-
-	#define TEXTURE2D_ARGS(textureName, samplerName)                textureName, samplerName
-	#define TEXTURE2D_ARRAY_ARGS(textureName, samplerName)          textureName, samplerName
-	#define TEXTURECUBE_ARGS(textureName, samplerName)              textureName, samplerName
-	#define TEXTURECUBE_ARRAY_ARGS(textureName, samplerName)        textureName, samplerName
-	#define TEXTURE3D_ARGS(textureName, samplerName)                textureName, samplerName
-
-	#define TEXTURE2D_SHADOW_ARGS(textureName, samplerName)         textureName, samplerName
-	#define TEXTURE2D_ARRAY_SHADOW_ARGS(textureName, samplerName)   textureName, samplerName
-	#define TEXTURECUBE_SHADOW_ARGS(textureName, samplerName)       textureName, samplerName
-	#define TEXTURECUBE_ARRAY_SHADOW_ARGS(textureName, samplerName) textureName, samplerName
-
-	#define PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               textureName.Sample(samplerName, coord2)
-	#define PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      textureName.SampleLevel(samplerName, coord2, lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    textureName.SampleBias(samplerName, coord2, bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              textureName.SampleGrad(samplerName, coord2, dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  textureName.Sample(samplerName, float3(coord2, index))
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         textureName.SampleLevel(samplerName, float3(coord2, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       textureName.SampleBias(samplerName, float3(coord2, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) textureName.SampleGrad(samplerName, float3(coord2, index), dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    textureName.SampleLevel(samplerName, coord3, lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  textureName.SampleBias(samplerName, coord3, bias)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                textureName.Sample(samplerName, float4(coord3, index))
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       textureName.SampleLevel(samplerName, float4(coord3, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     textureName.SampleBias(samplerName, float4(coord3, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      textureName.SampleLevel(samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)
-	#define SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)
-	#define SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)
-	#define SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)
-	#define SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)
-	#define SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)
-	#define SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)
-	#define SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy)
-	#define SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)
-	#define SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)
-	#define SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)
-	#define SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)
-	#define SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)
-	#define SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D_SHADOW(textureName, samplerName, coord3)                    textureName.SampleCmpLevelZero(samplerName, (coord3).xy, (coord3).z)
-	#define SAMPLE_TEXTURE2D_ARRAY_SHADOW(textureName, samplerName, coord3, index)       textureName.SampleCmpLevelZero(samplerName, float3((coord3).xy, index), (coord3).z)
-	#define SAMPLE_TEXTURECUBE_SHADOW(textureName, samplerName, coord4)                  textureName.SampleCmpLevelZero(samplerName, (coord4).xyz, (coord4).w)
-	#define SAMPLE_TEXTURECUBE_ARRAY_SHADOW(textureName, samplerName, coord4, index)     textureName.SampleCmpLevelZero(samplerName, float4((coord4).xyz, index), (coord4).w)
-
-	#define SAMPLE_DEPTH_TEXTURE(textureName, samplerName, coord2)          SAMPLE_TEXTURE2D(textureName, samplerName, coord2).r
-	#define SAMPLE_DEPTH_TEXTURE_LOD(textureName, samplerName, coord2, lod) SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod).r
-
-	#define LOAD_TEXTURE2D(textureName, unCoord2)                                   textureName.Load(int3(unCoord2, 0))
-	#define LOAD_TEXTURE2D_LOD(textureName, unCoord2, lod)                          textureName.Load(int3(unCoord2, lod))
-	#define LOAD_TEXTURE2D_MSAA(textureName, unCoord2, sampleIndex)                 textureName.Load(unCoord2, sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY(textureName, unCoord2, index)                      textureName.Load(int4(unCoord2, index, 0))
-	#define LOAD_TEXTURE2D_ARRAY_MSAA(textureName, unCoord2, index, sampleIndex)    textureName.Load(int3(unCoord2, index), sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY_LOD(textureName, unCoord2, index, lod)             textureName.Load(int4(unCoord2, index, lod))
-	#define LOAD_TEXTURE3D(textureName, unCoord3)                                   textureName.Load(int4(unCoord3, 0))
-	#define LOAD_TEXTURE3D_LOD(textureName, unCoord3, lod)                          textureName.Load(int4(unCoord3, lod))
-
-	#define PLATFORM_SUPPORT_GATHER
-	#define GATHER_TEXTURE2D(textureName, samplerName, coord2)                textureName.Gather(samplerName, coord2)
-	#define GATHER_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)   textureName.Gather(samplerName, float3(coord2, index))
-	#define GATHER_TEXTURECUBE(textureName, samplerName, coord3)              textureName.Gather(samplerName, coord3)
-	#define GATHER_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index) textureName.Gather(samplerName, float4(coord3, index))
-	#define GATHER_RED_TEXTURE2D(textureName, samplerName, coord2)            textureName.GatherRed(samplerName, coord2)
-	#define GATHER_GREEN_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherGreen(samplerName, coord2)
-	#define GATHER_BLUE_TEXTURE2D(textureName, samplerName, coord2)           textureName.GatherBlue(samplerName, coord2)
-	#define GATHER_ALPHA_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherAlpha(samplerName, coord2)
-
-	
-#elif defined(SHADER_API_XBOXONE)
+#if defined(SHADER_API_XBOXONE)
 	
 	// Initialize arbitrary structure with zero values.
 	// Do not exist on some platform, in this case we need to have a standard name that call a function that will initialize all parameters to 0
@@ -5621,22 +5364,6 @@ float3 GetTessFactors ()
 
 
 
-         #include "UnityCG.cginc"
-
-         #if _NOMINDIELETRIC
-            // for Standard
-            #ifdef unity_ColorSpaceDielectricSpec
-               #undef unity_ColorSpaceDielectricSpec
-            #endif
-            #define unity_ColorSpaceDielectricSpec half4(0,0,0,1)
-         #endif
-
-         #include "Lighting.cginc"
-         #include "UnityPBSLighting.cginc"
-         #include "AutoLight.cginc"
-
-         
-
          #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
             #define UNITY_ASSUME_UNIFORM_SCALING
             #define UNITY_DONT_INSTANCE_OBJECT_MATRICES
@@ -5655,13 +5382,11 @@ float3 GetTessFactors ()
             float3 worldNormal : TEXCOORD1;
             float4 worldTangent : TEXCOORD2;
              float4 texcoord0 : TEXCCOORD3;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                float4 texcoord1 : TEXCCOORD4;
-               // float4 texcoord2 : TEXCCOORD5;
-            #endif
+             float4 texcoord1 : TEXCCOORD4;
+             float4 texcoord2 : TEXCCOORD5;
             // float4 texcoord3 : TEXCCOORD6;
             // float4 screenPos : TEXCOORD7;
-            // float4 vertexColor : COLOR;
+             float4 vertexColor : COLOR;
 
             UNITY_LIGHTING_COORDS(8,9)
             UNITY_FOG_COORDS(10)
@@ -5742,19 +5467,17 @@ float3 GetTessFactors ()
 
             struct VertexData
             {
-               #if SHADER_TARGET > 30 && _PLANETCOMPUTE
- //              // uint vertexID : SV_VertexID;
+               #if SHADER_TARGET > 30
+               // uint vertexID : SV_VertexID;
                #endif
                float4 vertex : POSITION;
                float3 normal : NORMAL;
+               float4 tangent : TANGENT;
                float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                  float4 tangent : TANGENT;
-                  float4 texcoord1 : TEXCOORD1;
-                  float4 texcoord2 : TEXCOORD2;
-               #endif
+               float4 texcoord1 : TEXCOORD1;
+               float4 texcoord2 : TEXCOORD2;
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -5771,14 +5494,12 @@ float3 GetTessFactors ()
             {
                float4 vertex : INTERNALTESSPOS;
                float3 normal : NORMAL;
-               float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
                float4 tangent : TANGENT;
+               float4 texcoord0 : TEXCOORD0;
                float4 texcoord1 : TEXCOORD1;
                float4 texcoord2 : TEXCOORD2;
-               #endif
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                // float4 extraV2F0 : TEXCOORD4;
@@ -5834,6 +5555,13 @@ float3 GetTessFactors ()
                float4 TransformObjectToWorld(float4 p) { return mul(unity_ObjectToWorld, p); };
                float4x4 GetWorldToObjectMatrix() { return unity_WorldToObject; }
                float4x4 GetObjectToWorldMatrix() { return unity_ObjectToWorld; }
+               #if (defined(SHADER_API_D3D11) || defined(SHADER_API_XBOXONE) || defined(UNITY_COMPILER_HLSLCC) || defined(SHADER_API_PSSL) || (SHADER_TARGET_SURFACE_ANALYSIS && !SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER))
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord, lod) tex.SampleLevel (sampler##tex,coord, lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) tex.SampleLevel (sampler##samplertex,coord, lod)
+               #else
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord,lod) tex2D (tex,coord,0,lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord,lod) tex2D (tex,coord,0,lod)
+               #endif
             #endif
 
             float3 GetCameraWorldPosition()
@@ -5924,6 +5652,13 @@ float3 GetTessFactors ()
          float _HybridHeightBlendDistance;
       #endif
 
+
+      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
+         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
+         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
+         float4    _TerrainNormalmapTexture_TexelSize;
+      #endif
+
       #if _PACKINGHQ
          float4 _SmoothAO_TexelSize;
       #endif
@@ -5950,9 +5685,13 @@ float3 GetTessFactors ()
 
       float4 _UVScale; // scale and offset
 
+      float2 _ToonTerrainSize;
+
       half _Contrast;
       
-      
+      float3 _gGlitterLightDir;
+      float3 _gGlitterLightWorldPos;
+      half3 _gGlitterLightColor;
 
        #if _VSSHADOWMAP
          float4 gVSSunDirection;
@@ -5967,9 +5706,7 @@ float3 GetTessFactors ()
       #endif
 
       float4 _Control0_TexelSize;
-      #if _CUSTOMSPLATTEXTURES
-         float4 _CustomControl0_TexelSize;
-      #endif
+      float4 _CustomControl0_TexelSize;
       float4 _PerPixelNormal_TexelSize;
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
@@ -6021,30 +5758,7 @@ float3 GetTessFactors ()
    
 // In Unity 2020.3LTS, Unity will spew tons of errors about missing this sampler in
 // URP, even though it shouldn't be required.
-TEXTURE2D(_MainTex);
-
-      // globals, outside of CBuffer, but used by more than one module
-      float3 _gGlitterLightDir;
-      float3 _gGlitterLightWorldPos;
-      half3 _gGlitterLightColor;
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
-         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
-         float4    _TerrainNormalmapTexture_TexelSize;
-      #endif
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-          TEXTURE2D(_TerrainHeightmapTexture);
-          TEXTURE2D(_TerrainNormalmapTexture);
-      #endif
-
-      UNITY_INSTANCING_BUFFER_START(Terrain)
-          UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
-      UNITY_INSTANCING_BUFFER_END(Terrain)          
-
-
-      
+sampler2D _MainTex; 
 
       // dynamic branching helpers, for regular and aggressive branching
       // debug mode shows how many samples using branching will save us. 
@@ -6113,8 +5827,8 @@ TEXTURE2D(_MainTex);
 
 
       #if _DEBUG_USE_TOPOLOGY
-         TEXTURE2D(_DebugWorldPos);
-         TEXTURE2D(_DebugWorldNormal);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldPos);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldNormal);
       #endif
       
 
@@ -6123,7 +5837,7 @@ TEXTURE2D(_MainTex);
       UNITY_DECLARE_TEX2DARRAY(_NormalSAO);
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
-         TEXTURE2D(_NoiseUV);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_NoiseUV);
       #endif
 
       #if _PACKINGHQ
@@ -6138,60 +5852,58 @@ TEXTURE2D(_MainTex);
          UNITY_DECLARE_TEX2DARRAY(_EmissiveMetal);
       #endif
 
-      TEXTURE2D(_PerPixelNormal);
-
-      SamplerState shared_linear_clamp_sampler;
-      SamplerState shared_point_clamp_sampler;
+      UNITY_DECLARE_TEX2D(_PerPixelNormal);
       
-      TEXTURE2D(_Control0);
+      
+      UNITY_DECLARE_TEX2D(_Control0);
       #if _CUSTOMSPLATTEXTURES
-         TEXTURE2D(_CustomControl0);
+         UNITY_DECLARE_TEX2D(_CustomControl0);
          #if !_MAX4TEXTURES
-         TEXTURE2D(_CustomControl1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_CustomControl2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_CustomControl3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_CustomControl7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl7);
          #endif
       #else
          #if !_MAX4TEXTURES
-         TEXTURE2D(_Control1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_Control2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_Control3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_Control7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control7);
          #endif
       #endif
 
-      TEXTURE2D_FLOAT(_PerTexProps);
+      sampler2D_float _PerTexProps;
    
       struct DecalLayer
       {
@@ -6223,19 +5935,19 @@ TEXTURE2D(_MainTex);
          float4 d2;
       };
 
-      float InverseLerp(float x, float y, float v) { return (v-x)/max(y-x, 0.001); }
-      float2 InverseLerp(float2 x, float2 y, float2 v) { return (v-x)/max(y-x, float2(0.001, 0.001)); }
-      float3 InverseLerp(float3 x, float3 y, float3 v) { return (v-x)/max(y-x, float3(0.001, 0.001, 0.001)); }
-      float4 InverseLerp(float4 x, float4 y, float4 v) { return (v-x)/max(y-x, float4(0.001, 0.001, 0.001, 0.001)); }
+      half InverseLerp(half x, half y, half v) { return (v-x)/max(y-x, 0.001); }
+      half2 InverseLerp(half2 x, half2 y, half2 v) { return (v-x)/max(y-x, half2(0.001, 0.001)); }
+      half3 InverseLerp(half3 x, half3 y, half3 v) { return (v-x)/max(y-x, half3(0.001, 0.001, 0.001)); }
+      half4 InverseLerp(half4 x, half4 y, half4 v) { return (v-x)/max(y-x, half4(0.001, 0.001, 0.001, 0.001)); }
       
 
       // 2019.3 holes
       #ifdef _ALPHATEST_ON
-          TEXTURE2D(_TerrainHolesTexture);
+          UNITY_DECLARE_TEX2D(_TerrainHolesTexture);
           
           void ClipHoles(float2 uv)
           {
-              float hole = SAMPLE_TEXTURE2D(_TerrainHolesTexture, shared_linear_clamp_sampler, uv).r;
+              float hole = UNITY_SAMPLE_TEX2D(_TerrainHolesTexture, uv).r;
               COUNTSAMPLE
               clip(hole < 0.5f ? -1 : 1);
           }
@@ -6297,11 +6009,15 @@ TEXTURE2D(_MainTex);
 
       struct Input 
       {
-         ShaderData shaderData;
          float2 uv_Control0;
          float2 uv2_Diffuse;
 
-         float worldHeight;
+         #if _PLANETVECTORS
+            float3 wrappedPos;
+            float3 localNormal;
+         #endif
+
+         float3 worldHeight;
          float3 worldUpVector;
 
          float3 viewDir;
@@ -6328,8 +6044,6 @@ TEXTURE2D(_MainTex);
 
          // wetness, puddles, streams, lava from vertex or megasplat
          fixed4 fx;
-         // snow min, snow max
-         fixed4 fx2;
 
 
       };
@@ -6519,9 +6233,9 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #elif _MAX2LAYER
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
@@ -6529,15 +6243,15 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #else
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
-            half4 varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##3 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            half4 varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##3 = tex2Dlod(_PerTexProps, float4(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #endif
 
@@ -6684,19 +6398,19 @@ TEXTURE2D(_MainTex);
       
       half3 BlendNormal3(half3 n1, half3 n2)
       {
-         n1 += float3( 0,  0, 1);
-         n2 *= float3(-1, -1, 1);
-         return n1*dot(n1, n2) / n1.z - n2;
+         n1.z += 1;
+         n2.xy = -n2.xy;
+
+         return n1 * dot(n1, n2) / n1.z - n2;
       }
       
       half2 TransformTriplanarNormal(Input IN, float3x3 t2w, half3 axisSign, half3 absVertNormal,
                half3 pN, half2 a0, half2 a1, half2 a2)
       {
-         
          a0 = a0 * 2 - 1;
          a1 = a1 * 2 - 1;
          a2 = a2 * 2 - 1;
-
+         
          a0.x *= axisSign.x;
          a1.x *= axisSign.y;
          a2.x *= axisSign.z;
@@ -6704,20 +6418,19 @@ TEXTURE2D(_MainTex);
          half3 n0 = half3(a0.xy, 1);
          half3 n1 = half3(a1.xy, 1);
          half3 n2 = half3(a2.xy, 1);
-
-         float3 wn = IN.worldNormal;
-
-         n0 = BlendNormal3(half3(wn.zy, absVertNormal.x), n0);
-         n1 = BlendNormal3(half3(wn.xz, absVertNormal.y), n1 * float3(-1, 1, 1)); 
-         n2 = BlendNormal3(half3(wn.xy, absVertNormal.z), n2);
+         
+         n0 = BlendNormal3(half3(IN.worldNormal.zy, absVertNormal.x), n0);
+         n1 = BlendNormal3(half3(IN.worldNormal.xz, absVertNormal.y), n1);
+         n2 = BlendNormal3(half3(IN.worldNormal.xy, absVertNormal.z), n2);
   
          n0.z *= axisSign.x;
          n1.z *= axisSign.y;
          n2.z *= -axisSign.z;
-
-         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z);
-         return mul(t2w, worldNormal).xy;
-
+  
+         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z );
+         half2 rn = mul(t2w, worldNormal).xy;
+         //rn.y *= -1;
+         return rn;
       }
       
       // funcs
@@ -7205,16 +6918,27 @@ TEXTURE2D(_MainTex);
       }
 
 
-      // abstraction around sampler mode
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##samplertex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, sampler##tex, coord, dx, dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy) SAMPLE_TEXTURE2D_GRAD(tex, sampler##samp, coord, dx, dy);
+      
+
       #if _USELODMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, u, l.x)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u, l.x)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
       #elif _USEGRADMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_GRAD(tex, sampler##tex, u, l.xy, l.zw)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, ss, u.xy, u.z, l.xy, l.zw)
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
       #else
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, u.xy, u.z)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u.xy, y.z)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
+      #endif
+
+      #if _USELODMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
+      #elif _USEGRADMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
+      #else
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
       #endif
 
 
@@ -7253,9 +6977,9 @@ TEXTURE2D(_MainTex);
          tc.uv2 = worldPos.xy * axisSign.z;
       }
       
-      #define SimpleTriplanarSample(tex, tc, scale) (SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv0 * scale) * tc.pn.x + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv1 * scale) * tc.pn.y + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv2 * scale) * tc.pn.z)
-      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv0 * scale, lod) * tc.pn.x + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv1 * scale, lod) * tc.pn.y + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
-      #define SimpleTriplanarSampleGrad(tex, tc, scale) (SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
+      #define SimpleTriplanarSample(tex, tc, scale) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv0 * scale) * tc.pn.x + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv1 * scale) * tc.pn.y + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv2 * scale) * tc.pn.z)
+      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv0 * scale, lod) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv1 * scale, lod) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
+      #define SimpleTriplanarSampleGrad(tex, tc, scale) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
    
       
       inline half3 MicroSplatDiffuseAndSpecularFromMetallic (half3 albedo, half metallic, out half3 specColor, out half oneMinusReflectivity)
@@ -7270,11 +6994,20 @@ TEXTURE2D(_MainTex);
 
 
 
+      #undef MICROSPLAT_SAMPLE_TEX2D_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord,lod)                    SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy)            SAMPLE_TEXTURE2D_GRAD(tex,sampler##tex,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy)    SAMPLE_TEXTURE2D_GRAD(tex,sampler##samp,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, samp, coord, lod)    SAMPLE_TEXTURE2D_LOD(tex, sampler##samp, coord, lod)
+      
 
       Input DescToInput(ShaderData IN)
       {
         Input s = (Input)0;
-        s.shaderData = IN;
         s.TBN = IN.TBNMatrix;
         s.worldNormal = IN.worldSpaceNormal;
         s.worldPos = IN.worldSpacePosition;
@@ -7291,7 +7024,11 @@ TEXTURE2D(_MainTex);
         #endif
 
         #if _MICROMESH && _MESHUV2
-            s.uv2_Diffuse = IN.texcoord1.xy;
+            s.uv_Diffuse = IN.texcoord1.xy;
+        #endif
+
+        #if _SRPTERRAINBLEND
+            s.color = IN.vertexColor;
         #endif
 
         #if _MEGASPLAT
@@ -7415,16 +7152,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          
-         TEXTURE2D_FLOAT(_GMSTraxBuffer);
+         sampler2D_float _GMSTraxBuffer;
 
          #if _TRAXSINGLE
-         TEXTURE2D(_TraxDiff);
-         TEXTURE2D(_TraxNSAO);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxDiff);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxNSAO);
          #endif
 
          #if _TRAXARRAY
-         TEXTURE2D_ARRAY(_TraxArrayDiff);
-         TEXTURE2D_ARRAY(_TraxArrayNSAO);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayDiff);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayNSAO);
          #endif
 
          #define TRAXSAMPLEQUADRATIC2D(tex, uv, texelSize, ret) \
@@ -7433,15 +7170,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 c = (q*(q - 1.0) + 0.5) / texelSize.zw; \
             float2 w0 = uv - c; \
             float2 w1 = uv + c; \
-            half4 s = SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w0.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w0.y)); \
+            half4 s = tex2D(tex, float2(w0.x, w0.y)) \
+              + tex2D(tex, float2(w0.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w0.y)); \
             ret = s / 4.0; \
          } \
         
          
-         float SampleTraxBufferLOD(float3 worldPos, float3 vertexNormal, float h)
+         float SampleTraxBufferLOD(float3 worldPos, float h)
          {
             
             // generate UVs for the buffer, which is moving
@@ -7452,28 +7189,28 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             fade = 1 - pow(fade, 8);
             uv *= 0.5;
             uv += 0.5;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
+            
             
             #if _TRAXQUADRATIC
+               float4 sr;
                float2 q = frac(uv * _GMSTraxBuffer_TexelSize.zw);
                float2 c = (q*(q - 1.0) + 0.5) / _GMSTraxBuffer_TexelSize.zw; 
                float2 w0 = uv - c; 
                float2 w1 = uv + c; 
-               half s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, w0.xy, 0).r + 
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w0.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w0.y), 0).r;
+               half4 s = tex2Dlod(_GMSTraxBuffer, float4(w0.x, w0.y, 0, 0)) 
+              + tex2Dlod(_GMSTraxBuffer, float4(w0.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w0.y, 0, 0));
 
               s /= 4;
             #else
-               float s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, uv, 0).r;
+               float s =  tex2Dlod(_GMSTraxBuffer, float4(uv, 0, 0)).r;
             #endif
-            return 1.0 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            return 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
          }
          
         
-         float SampleTraxBuffer(float3 worldPos, float3 vertexNormal, out float3 norm)
+         float SampleTraxBuffer(float3 worldPos, out float3 norm)
          {
             float2 uv = worldPos.xz;
             uv -= _GMSTraxBufferPosition.xz;
@@ -7485,8 +7222,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             
 
             float2 offset = _GMSTraxBuffer_TexelSize.xy;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
 
             #if _TRAXQUADRATIC
                float4 sr, sr1, sr2, sr3, sr4;
@@ -7503,14 +7238,14 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                float s4 = sr4.r;
 
             #else
-               float s = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv).r;
+               float s = tex2D(_GMSTraxBuffer, uv).r;
                
-               float s1 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, -1)).r;
-               float s2 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(-1, 0)).r;
-               float s3 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(1, 0)).r;
-               float s4 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, 1)).r;
+               float s1 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, -1)).r;
+               float s2 = tex2D(_GMSTraxBuffer, uv + offset * float2(-1, 0)).r;
+               float s3 = tex2D(_GMSTraxBuffer, uv + offset * float2(1, 0)).r;
+               float s4 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, 1)).r;
             #endif
-            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
  
 
             // generate normals
@@ -7594,8 +7329,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
 
             
-            half4 albedo = SAMPLE_TEXTURE2D_GRAD(_TraxDiff, sampler_Diffuse, uv, fsdx, fsdy);
-            half4 normSAO = SAMPLE_TEXTURE2D_GRAD(_TraxNSAO, sampler_NormalSAO, uv, fsdx, fsdy).agrb;
+            half4 albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxDiff, _Diffuse, uv, fsdx, fsdy);
+            half4 normSAO = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxNSAO, _Diffuse, uv, fsdx, fsdy).agrb;
             normSAO.xy = normSAO.xy * 2 - 1;
 
             COUNTSAMPLE
@@ -7632,11 +7367,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdx = ddx(config.uv) * _TraxUVScales;
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
             
-            half4 albedo0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, fsdx, fsdy);
-            half4 normSAO0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv0.z, fsdx, fsdy).agrb;
+            half4 albedo0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv0.z), fsdx, fsdy);
+            half4 normSAO0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv0.z), fsdx, fsdy).agrb;
             normSAO0.xy = normSAO0.xy * 2 - 1;
-            half4 albedo1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, fsdx, fsdy);
-            half4 normSAO1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv1.z, fsdx, fsdy).agrb;
+            half4 albedo1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv1.z), fsdx, fsdy);
+            half4 normSAO1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv1.z), fsdx, fsdy).agrb;
             normSAO1.xy = normSAO1.xy * 2 - 1;
             COUNTSAMPLE
             COUNTSAMPLE
@@ -7648,8 +7383,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             h1 = lerp(traxBuffer1, h1, _TraxInterpContrast);
 
             #if !_MAX2LAYER
-               half4 albedo2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, fsdx, fsdy);
-               half4 normSAO2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv2.z, fsdx, fsdy).agrb;
+               half4 albedo2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv2.z), fsdx, fsdy);
+               half4 normSAO2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv2.z), fsdx, fsdy).agrb;
                half h2 = HeightBlend(albedo2.a, samples.albedo2.a, traxBuffer2, _Contrast);
                h2 = lerp(traxBuffer2, h2, _TraxInterpContrast);
                normSAO2.xy = normSAO2.xy * 2 - 1;
@@ -7657,8 +7392,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                COUNTSAMPLE
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               half4 albedo3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, fsdx, fsdy);
-               half4 normSAO3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv3.z, fsdx, fsdy).agrb;
+               half4 albedo3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv3.z), fsdx, fsdy);
+               half4 normSAO3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv3.z), fsdx, fsdy).agrb;
                normSAO3.xy = normSAO3.xy * 2 - 1;
                half h3 = HeightBlend(albedo3.a, samples.albedo3.a, traxBuffer3, _Contrast);
                h3 = lerp(traxBuffer3, h3, _TraxInterpContrast);
@@ -7725,7 +7460,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _TRAXSINGLE
             float2 uv = config.uv * _TraxUVScales.xy;
 
-            half albedo = SAMPLE_TEXTURE2D_LOD(_TraxDiff, sampler_Diffuse, uv, mipLevel).a;
+            half albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_TraxDiff, _Diffuse, uv, mipLevel).a;
             
 
             h0 = lerp(albedo - offset, h0, traxBuffer0);
@@ -7737,10 +7472,10 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             traxBuffer = 1 - ((1 - traxBuffer) * _TraxTextureBlend);
 
             
-            half albedo0 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, mipLevel).a;
-            half albedo1 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, mipLevel).a;
-            half albedo2 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, mipLevel).a;
-            half albedo3 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, mipLevel).a;
+            half albedo0 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv0.z), mipLevel).a;
+            half albedo1 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv1.z), mipLevel).a;
+            half albedo2 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv2.z), mipLevel).a;
+            half albedo3 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv3.z), mipLevel).a;
             
 
             h0 = lerp(albedo0 - offset0, h0, traxBuffer0);
@@ -7779,7 +7514,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          
             half4 contrasts = _Contrast.xxxx;
             #if _PERTEXTRIPLANARCONTRAST
-               SAMPLE_PER_TEX(ptc, 9.5, config, half4(1,0.5,0,0));
+               SAMPLE_PER_TEX(ptc, 5.5, config, half4(1,0.5,0,0));
                contrasts = half4(ptc0.y, ptc1.y, ptc2.y, ptc3.y);
             #endif
 
@@ -8519,7 +8254,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float globalSlopeFilter = 1;
             #if _GLOBALSLOPEFILTER
                float2 gfilterUV = float2(1 - saturate(dot(worldNormalVertex, upVector) * 0.5 + 0.49), 0.5);
-               globalSlopeFilter = SAMPLE_TEXTURE2D(_GlobalSlopeTex, sampler_Diffuse, gfilterUV).a;
+               globalSlopeFilter = UNITY_SAMPLE_TEX2D_SAMPLER(_GlobalSlopeTex, _Diffuse, gfilterUV).a;
             #endif
          #endif
 
@@ -8546,7 +8281,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
-            traxBuffer = SampleTraxBuffer(i.worldPos, worldNormalVertex, traxNormal);
+            traxBuffer = SampleTraxBuffer(i.worldPos, traxNormal);
          #endif
          
          #if _WETNESS || _PUDDLES || _STREAMS || _LAVA
@@ -8574,7 +8309,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          MIPFORMAT origAlbedoLOD = INITMIPFORMAT;
 
          #if _TRIPLANAR && !_DISABLESPLATMAPS
-            PrepTriplanar(i.shaderData.texcoord0, worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #if _PLANETVECTORS
+               PrepTriplanar(i.localNormal, i.wrappedPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #else
+               PrepTriplanar(worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #endif
+            
             tc.IN = i;
          #endif
          
@@ -8584,7 +8324,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                albedoLOD = ComputeMipLevel(config.uv0.xy, _Diffuse_TexelSize.zw);
                normalLOD = ComputeMipLevel(config.uv0.xy, _NormalSAO_TexelSize.zw);
                #if _USEEMISSIVEMETAL
-                  emisLOD = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
+                  emisLOD   = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
                #endif
                #if _USESPECULARWORKFLOW
                   specLOD = ComputeMipLevel(config.uv0.xy, _Specular_TexelSize.zw);;
@@ -8705,7 +8445,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _HYBRIDHEIGHTBLEND
-            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/max(1.0, _HybridHeightBlendDistance)));
+            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/_HybridHeightBlendDistance));
          #endif
 
          
@@ -8780,13 +8520,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             DistanceResample(samples, config, tc, camDist, i.viewDir, fxLevels, albedoLOD, i.worldPos, heightWeights, worldNormalVertex);
          #endif
 
-         #if _STARREACHFORMAT
-            samples.normSAO0.w = length(samples.normSAO0.xy);
-            samples.normSAO1.w = length(samples.normSAO1.xy);
-            samples.normSAO2.w = length(samples.normSAO2.xy);
-            samples.normSAO3.w = length(samples.normSAO3.xy);
-         #endif
-
          // PerTexture sampling goes here, passing the samples structure
          
          #if _PERTEXMICROSHADOWS || _PERTEXFUZZYSHADE
@@ -8817,9 +8550,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                return o;
                #endif
 
-               
-
-               
             }
             #endif
 
@@ -8937,13 +8667,13 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _PERTEXAOSTR && !_DISABLESPLATMAPS
-            samples.normSAO0.a = pow(abs(samples.normSAO0.a), perTexMatSettings0.b);
-            samples.normSAO1.a = pow(abs(samples.normSAO1.a), perTexMatSettings1.b);
+            samples.normSAO0.a = pow(samples.normSAO0.a, abs(perTexMatSettings0.b));
+            samples.normSAO1.a = pow(samples.normSAO1.a, abs(perTexMatSettings1.b));
             #if !_MAX2LAYER
-               samples.normSAO2.a = pow(abs(samples.normSAO2.a), perTexMatSettings2.b);
+               samples.normSAO2.a = pow(samples.normSAO2.a, abs(perTexMatSettings2.b));
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               samples.normSAO3.a = pow(abs(samples.normSAO3.a), perTexMatSettings3.b);
+               samples.normSAO3.a = pow(samples.normSAO3.a, abs(perTexMatSettings3.b));
             #endif
          #endif
 
@@ -8978,26 +8708,30 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          {
             SAMPLE_PER_TEX(ptRimA, 26.5, config, half4(1, 1, 1, 1));
             SAMPLE_PER_TEX(ptRimB, 27.5, config, half4(1, 1, 1, 0));
-            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), max(0.0001, ptRimA0.g)) * ptRimB0.rgb * ptRimB0.a;
-            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), max(0.0001, ptRimA1.g)) * ptRimB1.rgb * ptRimB1.a;
-            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), max(0.0001, ptRimA2.g)) * ptRimB2.rgb * ptRimB2.a;
-            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), max(0.0001, ptRimA3.g)) * ptRimB3.rgb * ptRimB3.a;
+            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), ptRimA0.g) * ptRimB0.rgb * ptRimB0.a;
+            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), ptRimA1.g) * ptRimB1.rgb * ptRimB1.a;
+            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), ptRimA2.g) * ptRimB2.rgb * ptRimB2.a;
+            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), ptRimA3.g) * ptRimB3.rgb * ptRimB3.a;
          }
          #endif
 
 
 
          #if (((_DETAILNOISE && _PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && _PERTEXDISTANCENOISESTRENGTH)) || (_NORMALNOISE && _PERTEXNORMALNOISESTRENGTH)) && !_DISABLESPLATMAPS
-            ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          
          #if _GLOBALNOISEUV
             // noise defaults so that a value of 1, 1 is 4 pixels in size and moves the uvs by 1 pixel max.
             #if _CUSTOMSPLATTEXTURES
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #else
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
          #endif
 
@@ -9007,7 +8741,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if (_ANTITILEARRAYDETAIL || _ANTITILEARRAYDISTANCE || _ANTITILEARRAYNORMAL) && !_DISABLESPLATMAPS
-            ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #if _PLANETVECTORS
+               ApplyAntiTilePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex, heightWeights);
+            #else
+               ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #endif
          #endif
 
          #if _GEOMAP && !_DISABLESPLATMAPS
@@ -9098,7 +8836,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          #if ((_DETAILNOISE && !_PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && !_PERTEXDISTANCENOISESTRENGTH) || (_NORMALNOISE && !_PERTEXNORMALNOISESTRENGTH))
-            ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          #if _SPLATFADE
@@ -9113,12 +8855,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             MSBRANCHOTHER(camDist - _SplatFade.x)
             {
                float falloff = saturate(InverseLerp(_SplatFade.x, _SplatFade.y, camDist));
-               half4 sfalb = SAMPLE_TEXTURE2D_ARRAY_GRAD(_Diffuse, sampler_Diffuse, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY);
+               half4 sfalb = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_Diffuse, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY);
                COUNTSAMPLE
                albedo.rgb = lerp(albedo.rgb, sfalb.rgb, falloff);
 
                #if !_NONORMALMAP && !_AUTONORMAL
-                  half4 sfnormSAO = SAMPLE_TEXTURE2D_ARRAY_GRAD(_NormalSAO, sampler_NormalSAO, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY).agrb;
+                  half4 sfnormSAO = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_NormalSAO, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY).agrb;
                   COUNTSAMPLE
                   sfnormSAO.xy = sfnormSAO.xy * 2 - 1;
 
@@ -9153,13 +8895,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             GeoTexture(albedo.rgb, normSAO, surfGrad, i.worldPos, worldHeight, config, worldNormalVertex, upVector);
          #endif
 
+         #if _PLANETALBEDO || _PLANETALBEDO2 || _PLANETNORMAL || _PLANETNORMAL2
+            //ApplyPlanet(i, albedo, normSAO, config, camDist, i.worldPos, upVector);
+         #endif
          
          #if _SCATTER
-            ApplyScatter(
-               #if _MEGASPLAT
-               config, 
-               #endif
-               i, albedo, normSAO, surfGrad, config.uv, camDist);
+            ApplyScatter(i, albedo, normSAO, surfGrad, config.uv, camDist);
          #endif
 
          #if _DECAL
@@ -9270,9 +9011,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
          
          #if _TOONWIREFRAME
-         ToonWireframe(config.uv, o.Albedo, camDist);
+         ToonWireframe(config.uv, o.Albedo);
          #endif
 
+         #if _PLANETVECTORS
+            ApplyPlanetAtmosphere(i, o);
+         #endif
 
          #if _DEBUG_TRAXBUFFER
             ClearAllButAlbedo(o, half3(traxBuffer, 0, 0) * saturate(o.Albedo.z+1));
@@ -9281,11 +9025,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _DEBUG_WORLDNORMAL
             ClearAllButAlbedo(o,  WorldNormalVector(i, o.Normal) * saturate(o.Albedo.z+1));
          #endif
-
-         #if _DEBUG_MEGABARY && _MEGASPLAT
-            o.Albedo = i.baryWeights.xyz;
-         #endif
-
 
          return o;
       }
@@ -9298,44 +9037,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_CustomControl0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_CustomControl0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_CustomControl1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl1, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_CustomControl2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl2, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_CustomControl3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl3, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_CustomControl4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl4, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_CustomControl5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl5, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_CustomControl6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl6, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_CustomControl7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl7, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
          #else
@@ -9344,44 +9083,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_Control0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_Control0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_Control1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control1, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_Control2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control2, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_Control3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control3, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_Control4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control4, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_Control5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control5, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_Control6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control6, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_Control7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control7, _Control0, controlUV);
             COUNTSAMPLE
             #endif
          #endif
@@ -9401,18 +9140,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #if _FORCELOCALSPACE
             worldNormalVertex = mul((float3x3)unity_WorldToObject, worldNormalVertex).xyz;
             i.worldPos = i.worldPos -  mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz;
-            i.worldHeight = i.worldPos.y;
          #endif
 
          #if _ORIGINSHIFT
+             //worldNormalVertex = mul(_GlobalOriginMTX, float4(worldNormalVertex, 1)).xyz;
              i.worldPos = i.worldPos + mul(_GlobalOriginMTX, float4(0,0,0,1)).xyz;
-             i.worldHeight = i.worldPos.y;
          #endif
 
          #if _DEBUG_USE_TOPOLOGY
-            i.worldPos = SAMPLE_TEXTURE2D(_DebugWorldPos, sampler_Diffuse, i.uv_Control0);
-            worldNormalVertex = SAMPLE_TEXTURE2D(_DebugWorldNormal, sampler_Diffuse, i.uv_Control0);
-            i.worldHeight = i.worldPos.y;
+            i.worldPos = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldPos, _Diffuse, i.uv_Control0);
+            worldNormalVertex = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldNormal, _Diffuse, i.uv_Control0);
          #endif
 
          #if _ALPHABELOWHEIGHT && !_TBDISABLEALPHAHOLES
@@ -9467,8 +9204,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                   DiggerSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MEGASPLAT
                   MegaSplatVertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
-               #elif _MEGASPLATTEXTURE
-                   MegaSplatTextureSetup(controlUV, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MICROVERTEXMESH
                   VertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif !_PROCEDURALTEXTURE || _PROCEDURALBLENDSPLATS
@@ -9480,14 +9215,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                #if _PROCEDURALTEXTURE
                   float3 procNormal = worldNormalVertex;
                   float3 worldPos = i.worldPos;
+                  #if _PLANETVECTORS
+                     config.uv = origUV;
+                     procNormal = i.TBN[2];
+                     worldPos = i.wrappedPos;
+                  #endif
                   ProceduralSetup(i, worldPos, i.worldHeight, procNormal, i.worldUpVector, weights, origUV, config, ddx(origUV), ddy(origUV), ddx(worldPos), ddy(worldPos), decalOutput);
                #endif
             #else // _DISABLESPLATMAPS
                 Setup(weights, origUV, config, half4(1,0,0,0), 0, 0, 0, 0, 0, 0, 0, i.worldPos, decalOutput);
-            #endif
-
-            #if _SLOPETEXTURE
-               SlopeTexture(config, weights, worldNormalVertex);
             #endif
          } // _SPLATFADE else case
 
@@ -9517,15 +9253,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
  
          MicroSplatLayer l = Sample(i, weights, config, camDist, worldNormalVertex, decalOutput);
 
-         // On windows, sometimes the shared samplers gets stripped, so we have to do this crap.
+         // On windows, sometimes the diffuse sampler gets stripped, so we have to do this crap.
          // We sample from the lowest mip, so it shouldn't cost much, but still, I hate this, wtf..
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_Diffuse, sampler_Diffuse, config.uv0, 11).r + 2);
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_NormalSAO, sampler_NormalSAO, config.uv0, 11).r + 2);
+         l.Albedo *= saturate(UNITY_SAMPLE_TEX2DARRAY_LOD(_Diffuse, config.uv0, 11).r + 2);
+         // same for the control sampler.
+         l.Albedo *= saturate(MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_Control0, _Control0, config.uv, 11).r + 2);
 
          #if _PROCEDURALTEXTURE
             ProceduralTextureDebugOutput(l, weights, config);
          #endif
-
 
          return l;
 
@@ -9535,6 +9271,17 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
    
 
+
+#if (_MICROTERRAIN || _MICROMESHTERRAIN)
+    TEXTURE2D(_TerrainHeightmapTexture);
+    SAMPLER(sampler_TerrainHeightmapTexture);
+    TEXTURE2D(_TerrainNormalmapTexture);
+    SAMPLER(sampler_TerrainNormalmapTexture);
+#endif
+
+UNITY_INSTANCING_BUFFER_START(Terrain)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
+UNITY_INSTANCING_BUFFER_END(Terrain)          
 
 
 
@@ -9555,7 +9302,7 @@ float4 ConstructTerrainTangent(float3 normal, float3 positiveZ)
 
 void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv)
 {
-#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED) && !_TERRAINBLENDABLESHADER
+#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED)
    
     float2 patchVertex = vertex.xy;
     float4 instanceData = UNITY_ACCESS_INSTANCED_PROP(Terrain, _TerrainPatchInstanceData);
@@ -9565,7 +9312,7 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
     float2 sampleUV = (uv / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
 
-    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, shared_linear_clamp_sampler, sampleUV, 0));
+    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, sampler_TerrainHeightmapTexture, sampleUV, 0));
    
     vertex.xz = sampleCoords * _TerrainHeightmapScale.xz;
     vertex.y = height * _TerrainHeightmapScale.y;
@@ -9579,28 +9326,26 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
 void ApplyMeshModification(inout VertexData input)
 {
-   #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
+   #if _MICROTERRAIN
       float2 uv = input.texcoord0.xy;
       TerrainInstancing(input.vertex, input.normal, uv);
       input.texcoord0.xy = uv;
+      input.texcoord1.xy = uv;
+      input.texcoord2.xy = uv;
+      
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
-   #if _PERPIXNORMAL && !_TERRAINBLENDABLESHADER
+   #if _PERPIXNORMAL
       input.normal = float3(0,1,0);
-   #endif
-
-}
-
-// called by the template, so we can remove tangent from VertexData
-void ApplyTerrainTangent(inout VertexToPixel input)
-{
-   #if (_MICROTERRAIN || _PERPIXNORMAL) && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
 
    // digger meshes ain't got no tangent either..
-   #if _MICRODIGGERMESH && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+   #if _MICRODIGGERMESH
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
+
+
 }
 
 
@@ -9644,13 +9389,13 @@ float3 GetTessFactors ()
        
         float3 worldNormalVertex = d.worldSpaceNormal;
 
-        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN && !_TERRAINBLENDABLESHADER)
+        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_TerrainNormalmapTexture, _TerrainNormalmapTexture, sampleCoords).xyz * 2 - 1);
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomNormal, geomTangent)) * -1;
             worldNormalVertex = geomNormal;
@@ -9660,13 +9405,13 @@ float3 GetTessFactors ()
             d.TBNMatrix = float3x3(geomTangent, geomBitangent, geomNormal);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
 
-         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN) && !_TERRAINBLENDABLESHADER
+         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy * _PerPixelNormal_TexelSize.zw + 0.5f) * _PerPixelNormal_TexelSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_PerPixelNormal, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_PerPixelNormal, _PerPixelNormal, sampleCoords).xyz * 2 - 1);
             
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomTangent, geomNormal)) * -1;
@@ -9688,18 +9433,13 @@ float3 GetTessFactors ()
          
          #if _SRPTERRAINBLEND
             MicroSplatLayer l = BlendWithTerrain(d);
-
-               #if _DEBUG_WORLDNORMAL
-                  ClearAllButAlbedo(l, normalize(TangentToWorldSpace(d, l.Normal)) * saturate(l.Albedo.z+1));
-               #endif
          #else
             MicroSplatLayer l = SurfImpl(i, worldNormalVertex);
          #endif
 
         DoDebugOutput(l);
 
-
-
+      
 
         o.Albedo = l.Albedo;
         o.Normal = l.Normal;
@@ -9738,12 +9478,10 @@ float3 GetTessFactors ()
             d.worldSpaceViewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
              d.texcoord0 = i.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                d.texcoord1 = i.texcoord1;
-               // d.texcoord2 = i.texcoord2;
-            #endif
+             d.texcoord1 = i.texcoord1;
+             d.texcoord2 = i.texcoord2;
             // d.texcoord3 = i.texcoord3;
-            // d.vertexColor = i.vertexColor;
+             d.vertexColor = i.vertexColor;
 
             // these rarely get used, so we back transform them. Usually will be stripped.
             #if _HDRP
@@ -9751,8 +9489,8 @@ float3 GetTessFactors ()
             #else
                 // d.localSpacePosition = mul(unity_WorldToObject, float4(i.worldPos, 1));
             #endif
-            // d.localSpaceNormal = normalize(mul((float3x3)unity_WorldToObject, i.worldNormal));
-            // d.localSpaceTangent = normalize(mul((float3x3)unity_WorldToObject, i.worldTangent.xyz));
+            // d.localSpaceNormal = normalize(mul(unity_WorldToObject, i.worldNormal));
+            // d.localSpaceTangent = normalize(mul(unity_WorldToObject, i.worldTangent.xyz));
 
             // d.screenPos = i.screenPos;
             // d.screenUV = i.screenPos.xy / i.screenPos.w;
@@ -9836,34 +9574,18 @@ float3 GetTessFactors ()
 
            o.pos = UnityObjectToClipPos(v.vertex);
             o.texcoord0 = v.texcoord0;
-           #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-             o.texcoord1 = v.texcoord1;
-            // o.texcoord2 = v.texcoord2;
-           #endif
+            o.texcoord1 = v.texcoord1;
+            o.texcoord2 = v.texcoord2;
            // o.texcoord3 = v.texcoord3;
-           // o.vertexColor = v.vertexColor;
+            o.vertexColor = v.vertexColor;
            // o.screenPos = ComputeScreenPos(o.pos);
            o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
            o.worldNormal = UnityObjectToWorldNormal(v.normal);
+           o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
+           fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+           o.worldTangent.w = tangentSign;
 
-           #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-              o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
-              fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
-              o.worldTangent.w = tangentSign;
-           #endif
-
-           // MS Only
-           ApplyTerrainTangent(o);
-           
-           #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-             float2 uv1 = v.texcoord1.xy;
-             float2 uv2 = v.texcoord2.xy;
-          #else
-             float2 uv1 = v.texcoord0.xy;
-             float2 uv2 = uv1;
-          #endif
-
-           UNITY_TRANSFER_LIGHTING(o,uv1); // pass shadow and, possibly, light cookie coordinates to pixel shader
+           UNITY_TRANSFER_LIGHTING(o,v.texcoord1.xy); // pass shadow and, possibly, light cookie coordinates to pixel shader
            UNITY_TRANSFER_FOG(o,o.pos); // pass fog coordinates to pixel shader
            return o;
          }
@@ -10015,8 +9737,8 @@ float3 GetTessFactors ()
          #include "UnityShaderVariables.cginc"
          #include "UnityShaderUtilities.cginc"
          #include "UnityCG.cginc"
-
-         #define _PASSGBUFFER 1
+         #include "Lighting.cginc"
+         #include "UnityPBSLighting.cginc"
 
          
       #define _MICROSPLAT 1
@@ -10040,133 +9762,8 @@ float3 GetTessFactors ()
 // of the patchy one Unity provides being inlined/emulated in HDRP/URP. Strangely, PSSL and XBoxOne libraries are not
 // included in the standard SRP code, but they are in tons of Unity own projects on the web, so I grabbed them from there.
 
-#if defined(SHADER_API_GAMECORE)
 
-	#define ZERO_INITIALIZE(type, name) name = (type)0;
-	#define ZERO_INITIALIZE_ARRAY(type, name, arraySize) { for (int arrayIndex = 0; arrayIndex < arraySize; arrayIndex++) { name[arrayIndex] = (type)0; } }
-
-	// Texture util abstraction
-
-	#define CALCULATE_TEXTURE2D_LOD(textureName, samplerName, coord2) textureName.CalculateLevelOfDetail(samplerName, coord2)
-
-	// Texture abstraction
-
-	#define TEXTURE2D(textureName)                Texture2D textureName
-	#define TEXTURE2D_ARRAY(textureName)          Texture2DArray textureName
-	#define TEXTURECUBE(textureName)              TextureCube textureName
-	#define TEXTURECUBE_ARRAY(textureName)        TextureCubeArray textureName
-	#define TEXTURE3D(textureName)                Texture3D textureName
-
-	#define TEXTURE2D_FLOAT(textureName)          TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_FLOAT(textureName)    TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_FLOAT(textureName)        TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_FLOAT(textureName)  TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_FLOAT(textureName)          TEXTURE3D(textureName)
-
-	#define TEXTURE2D_HALF(textureName)           TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_HALF(textureName)     TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_HALF(textureName)         TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_HALF(textureName)   TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_HALF(textureName)           TEXTURE3D(textureName)
-
-	#define TEXTURE2D_SHADOW(textureName)         TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_SHADOW(textureName)   TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_SHADOW(textureName)       TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_SHADOW(textureName) TEXTURECUBE_ARRAY(textureName)
-
-	#define RW_TEXTURE2D(type, textureName)       RWTexture2D<type> textureName
-	#define RW_TEXTURE2D_ARRAY(type, textureName) RWTexture2DArray<type> textureName
-	#define RW_TEXTURE3D(type, textureName)       RWTexture3D<type> textureName
-
-	#define SAMPLER(samplerName)                  SamplerState samplerName
-	#define SAMPLER_CMP(samplerName)              SamplerComparisonState samplerName
-	#define ASSIGN_SAMPLER(samplerName, samplerValue) samplerName = samplerValue
-
-	#define TEXTURE2D_PARAM(textureName, samplerName)                 TEXTURE2D(textureName),         SAMPLER(samplerName)
-	#define TEXTURE2D_ARRAY_PARAM(textureName, samplerName)           TEXTURE2D_ARRAY(textureName),   SAMPLER(samplerName)
-	#define TEXTURECUBE_PARAM(textureName, samplerName)               TEXTURECUBE(textureName),       SAMPLER(samplerName)
-	#define TEXTURECUBE_ARRAY_PARAM(textureName, samplerName)         TEXTURECUBE_ARRAY(textureName), SAMPLER(samplerName)
-	#define TEXTURE3D_PARAM(textureName, samplerName)                 TEXTURE3D(textureName),         SAMPLER(samplerName)
-
-	#define TEXTURE2D_SHADOW_PARAM(textureName, samplerName)          TEXTURE2D(textureName),         SAMPLER_CMP(samplerName)
-	#define TEXTURE2D_ARRAY_SHADOW_PARAM(textureName, samplerName)    TEXTURE2D_ARRAY(textureName),   SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_SHADOW_PARAM(textureName, samplerName)        TEXTURECUBE(textureName),       SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_ARRAY_SHADOW_PARAM(textureName, samplerName)  TEXTURECUBE_ARRAY(textureName), SAMPLER_CMP(samplerName)
-
-	#define TEXTURE2D_ARGS(textureName, samplerName)                textureName, samplerName
-	#define TEXTURE2D_ARRAY_ARGS(textureName, samplerName)          textureName, samplerName
-	#define TEXTURECUBE_ARGS(textureName, samplerName)              textureName, samplerName
-	#define TEXTURECUBE_ARRAY_ARGS(textureName, samplerName)        textureName, samplerName
-	#define TEXTURE3D_ARGS(textureName, samplerName)                textureName, samplerName
-
-	#define TEXTURE2D_SHADOW_ARGS(textureName, samplerName)         textureName, samplerName
-	#define TEXTURE2D_ARRAY_SHADOW_ARGS(textureName, samplerName)   textureName, samplerName
-	#define TEXTURECUBE_SHADOW_ARGS(textureName, samplerName)       textureName, samplerName
-	#define TEXTURECUBE_ARRAY_SHADOW_ARGS(textureName, samplerName) textureName, samplerName
-
-	#define PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               textureName.Sample(samplerName, coord2)
-	#define PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      textureName.SampleLevel(samplerName, coord2, lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    textureName.SampleBias(samplerName, coord2, bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              textureName.SampleGrad(samplerName, coord2, dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  textureName.Sample(samplerName, float3(coord2, index))
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         textureName.SampleLevel(samplerName, float3(coord2, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       textureName.SampleBias(samplerName, float3(coord2, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) textureName.SampleGrad(samplerName, float3(coord2, index), dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    textureName.SampleLevel(samplerName, coord3, lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  textureName.SampleBias(samplerName, coord3, bias)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                textureName.Sample(samplerName, float4(coord3, index))
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       textureName.SampleLevel(samplerName, float4(coord3, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     textureName.SampleBias(samplerName, float4(coord3, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      textureName.SampleLevel(samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)
-	#define SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)
-	#define SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)
-	#define SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)
-	#define SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)
-	#define SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)
-	#define SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)
-	#define SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy)
-	#define SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)
-	#define SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)
-	#define SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)
-	#define SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)
-	#define SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)
-	#define SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D_SHADOW(textureName, samplerName, coord3)                    textureName.SampleCmpLevelZero(samplerName, (coord3).xy, (coord3).z)
-	#define SAMPLE_TEXTURE2D_ARRAY_SHADOW(textureName, samplerName, coord3, index)       textureName.SampleCmpLevelZero(samplerName, float3((coord3).xy, index), (coord3).z)
-	#define SAMPLE_TEXTURECUBE_SHADOW(textureName, samplerName, coord4)                  textureName.SampleCmpLevelZero(samplerName, (coord4).xyz, (coord4).w)
-	#define SAMPLE_TEXTURECUBE_ARRAY_SHADOW(textureName, samplerName, coord4, index)     textureName.SampleCmpLevelZero(samplerName, float4((coord4).xyz, index), (coord4).w)
-
-	#define SAMPLE_DEPTH_TEXTURE(textureName, samplerName, coord2)          SAMPLE_TEXTURE2D(textureName, samplerName, coord2).r
-	#define SAMPLE_DEPTH_TEXTURE_LOD(textureName, samplerName, coord2, lod) SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod).r
-
-	#define LOAD_TEXTURE2D(textureName, unCoord2)                                   textureName.Load(int3(unCoord2, 0))
-	#define LOAD_TEXTURE2D_LOD(textureName, unCoord2, lod)                          textureName.Load(int3(unCoord2, lod))
-	#define LOAD_TEXTURE2D_MSAA(textureName, unCoord2, sampleIndex)                 textureName.Load(unCoord2, sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY(textureName, unCoord2, index)                      textureName.Load(int4(unCoord2, index, 0))
-	#define LOAD_TEXTURE2D_ARRAY_MSAA(textureName, unCoord2, index, sampleIndex)    textureName.Load(int3(unCoord2, index), sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY_LOD(textureName, unCoord2, index, lod)             textureName.Load(int4(unCoord2, index, lod))
-	#define LOAD_TEXTURE3D(textureName, unCoord3)                                   textureName.Load(int4(unCoord3, 0))
-	#define LOAD_TEXTURE3D_LOD(textureName, unCoord3, lod)                          textureName.Load(int4(unCoord3, lod))
-
-	#define PLATFORM_SUPPORT_GATHER
-	#define GATHER_TEXTURE2D(textureName, samplerName, coord2)                textureName.Gather(samplerName, coord2)
-	#define GATHER_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)   textureName.Gather(samplerName, float3(coord2, index))
-	#define GATHER_TEXTURECUBE(textureName, samplerName, coord3)              textureName.Gather(samplerName, coord3)
-	#define GATHER_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index) textureName.Gather(samplerName, float4(coord3, index))
-	#define GATHER_RED_TEXTURE2D(textureName, samplerName, coord2)            textureName.GatherRed(samplerName, coord2)
-	#define GATHER_GREEN_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherGreen(samplerName, coord2)
-	#define GATHER_BLUE_TEXTURE2D(textureName, samplerName, coord2)           textureName.GatherBlue(samplerName, coord2)
-	#define GATHER_ALPHA_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherAlpha(samplerName, coord2)
-
-	
-#elif defined(SHADER_API_XBOXONE)
+#if defined(SHADER_API_XBOXONE)
 	
 	// Initialize arbitrary structure with zero values.
 	// Do not exist on some platform, in this case we need to have a standard name that call a function that will initialize all parameters to 0
@@ -10550,18 +10147,7 @@ float3 GetTessFactors ()
 
 
 
-
-         #if _NOMINDIELETRIC
-            // for Standard
-            #ifdef unity_ColorSpaceDielectricSpec
-               #undef unity_ColorSpaceDielectricSpec
-            #endif
-            #define unity_ColorSpaceDielectricSpec half4(0,0,0,1)
-         #endif
-
-         #include "Lighting.cginc"
-         #include "UnityPBSLighting.cginc"
-
+         
          #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
             #define UNITY_ASSUME_UNIFORM_SCALING
             #define UNITY_DONT_INSTANCE_OBJECT_MATRICES
@@ -10581,13 +10167,11 @@ float3 GetTessFactors ()
             float3 worldNormal : TEXCOORD1;
             float4 worldTangent : TEXCOORD2;
              float4 texcoord0 : TEXCCOORD3;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              float4 texcoord1 : TEXCCOORD4;
-            // float4 texcoord2 : TEXCCOORD5;
-            #endif
+             float4 texcoord2 : TEXCCOORD5;
             // float4 texcoord3 : TEXCCOORD6;
             // float4 screenPos : TEXCOORD7;
-            // float4 vertexColor : COLOR;
+             float4 vertexColor : COLOR;
 
             #ifndef DIRLIGHTMAP_OFF
               float3 viewDir : TEXCOORD8;
@@ -10678,19 +10262,17 @@ float3 GetTessFactors ()
 
             struct VertexData
             {
-               #if SHADER_TARGET > 30 && _PLANETCOMPUTE
- //              // uint vertexID : SV_VertexID;
+               #if SHADER_TARGET > 30
+               // uint vertexID : SV_VertexID;
                #endif
                float4 vertex : POSITION;
                float3 normal : NORMAL;
+               float4 tangent : TANGENT;
                float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                  float4 tangent : TANGENT;
-                  float4 texcoord1 : TEXCOORD1;
-                  float4 texcoord2 : TEXCOORD2;
-               #endif
+               float4 texcoord1 : TEXCOORD1;
+               float4 texcoord2 : TEXCOORD2;
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -10707,14 +10289,12 @@ float3 GetTessFactors ()
             {
                float4 vertex : INTERNALTESSPOS;
                float3 normal : NORMAL;
-               float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
                float4 tangent : TANGENT;
+               float4 texcoord0 : TEXCOORD0;
                float4 texcoord1 : TEXCOORD1;
                float4 texcoord2 : TEXCOORD2;
-               #endif
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                // float4 extraV2F0 : TEXCOORD4;
@@ -10770,6 +10350,13 @@ float3 GetTessFactors ()
                float4 TransformObjectToWorld(float4 p) { return mul(unity_ObjectToWorld, p); };
                float4x4 GetWorldToObjectMatrix() { return unity_WorldToObject; }
                float4x4 GetObjectToWorldMatrix() { return unity_ObjectToWorld; }
+               #if (defined(SHADER_API_D3D11) || defined(SHADER_API_XBOXONE) || defined(UNITY_COMPILER_HLSLCC) || defined(SHADER_API_PSSL) || (SHADER_TARGET_SURFACE_ANALYSIS && !SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER))
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord, lod) tex.SampleLevel (sampler##tex,coord, lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) tex.SampleLevel (sampler##samplertex,coord, lod)
+               #else
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord,lod) tex2D (tex,coord,0,lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord,lod) tex2D (tex,coord,0,lod)
+               #endif
             #endif
 
             float3 GetCameraWorldPosition()
@@ -10860,6 +10447,13 @@ float3 GetTessFactors ()
          float _HybridHeightBlendDistance;
       #endif
 
+
+      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
+         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
+         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
+         float4    _TerrainNormalmapTexture_TexelSize;
+      #endif
+
       #if _PACKINGHQ
          float4 _SmoothAO_TexelSize;
       #endif
@@ -10886,9 +10480,13 @@ float3 GetTessFactors ()
 
       float4 _UVScale; // scale and offset
 
+      float2 _ToonTerrainSize;
+
       half _Contrast;
       
-      
+      float3 _gGlitterLightDir;
+      float3 _gGlitterLightWorldPos;
+      half3 _gGlitterLightColor;
 
        #if _VSSHADOWMAP
          float4 gVSSunDirection;
@@ -10903,9 +10501,7 @@ float3 GetTessFactors ()
       #endif
 
       float4 _Control0_TexelSize;
-      #if _CUSTOMSPLATTEXTURES
-         float4 _CustomControl0_TexelSize;
-      #endif
+      float4 _CustomControl0_TexelSize;
       float4 _PerPixelNormal_TexelSize;
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
@@ -10957,30 +10553,7 @@ float3 GetTessFactors ()
    
 // In Unity 2020.3LTS, Unity will spew tons of errors about missing this sampler in
 // URP, even though it shouldn't be required.
-TEXTURE2D(_MainTex);
-
-      // globals, outside of CBuffer, but used by more than one module
-      float3 _gGlitterLightDir;
-      float3 _gGlitterLightWorldPos;
-      half3 _gGlitterLightColor;
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
-         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
-         float4    _TerrainNormalmapTexture_TexelSize;
-      #endif
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-          TEXTURE2D(_TerrainHeightmapTexture);
-          TEXTURE2D(_TerrainNormalmapTexture);
-      #endif
-
-      UNITY_INSTANCING_BUFFER_START(Terrain)
-          UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
-      UNITY_INSTANCING_BUFFER_END(Terrain)          
-
-
-      
+sampler2D _MainTex; 
 
       // dynamic branching helpers, for regular and aggressive branching
       // debug mode shows how many samples using branching will save us. 
@@ -11049,8 +10622,8 @@ TEXTURE2D(_MainTex);
 
 
       #if _DEBUG_USE_TOPOLOGY
-         TEXTURE2D(_DebugWorldPos);
-         TEXTURE2D(_DebugWorldNormal);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldPos);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldNormal);
       #endif
       
 
@@ -11059,7 +10632,7 @@ TEXTURE2D(_MainTex);
       UNITY_DECLARE_TEX2DARRAY(_NormalSAO);
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
-         TEXTURE2D(_NoiseUV);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_NoiseUV);
       #endif
 
       #if _PACKINGHQ
@@ -11074,60 +10647,58 @@ TEXTURE2D(_MainTex);
          UNITY_DECLARE_TEX2DARRAY(_EmissiveMetal);
       #endif
 
-      TEXTURE2D(_PerPixelNormal);
-
-      SamplerState shared_linear_clamp_sampler;
-      SamplerState shared_point_clamp_sampler;
+      UNITY_DECLARE_TEX2D(_PerPixelNormal);
       
-      TEXTURE2D(_Control0);
+      
+      UNITY_DECLARE_TEX2D(_Control0);
       #if _CUSTOMSPLATTEXTURES
-         TEXTURE2D(_CustomControl0);
+         UNITY_DECLARE_TEX2D(_CustomControl0);
          #if !_MAX4TEXTURES
-         TEXTURE2D(_CustomControl1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_CustomControl2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_CustomControl3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_CustomControl7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl7);
          #endif
       #else
          #if !_MAX4TEXTURES
-         TEXTURE2D(_Control1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_Control2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_Control3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_Control7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control7);
          #endif
       #endif
 
-      TEXTURE2D_FLOAT(_PerTexProps);
+      sampler2D_float _PerTexProps;
    
       struct DecalLayer
       {
@@ -11159,19 +10730,19 @@ TEXTURE2D(_MainTex);
          float4 d2;
       };
 
-      float InverseLerp(float x, float y, float v) { return (v-x)/max(y-x, 0.001); }
-      float2 InverseLerp(float2 x, float2 y, float2 v) { return (v-x)/max(y-x, float2(0.001, 0.001)); }
-      float3 InverseLerp(float3 x, float3 y, float3 v) { return (v-x)/max(y-x, float3(0.001, 0.001, 0.001)); }
-      float4 InverseLerp(float4 x, float4 y, float4 v) { return (v-x)/max(y-x, float4(0.001, 0.001, 0.001, 0.001)); }
+      half InverseLerp(half x, half y, half v) { return (v-x)/max(y-x, 0.001); }
+      half2 InverseLerp(half2 x, half2 y, half2 v) { return (v-x)/max(y-x, half2(0.001, 0.001)); }
+      half3 InverseLerp(half3 x, half3 y, half3 v) { return (v-x)/max(y-x, half3(0.001, 0.001, 0.001)); }
+      half4 InverseLerp(half4 x, half4 y, half4 v) { return (v-x)/max(y-x, half4(0.001, 0.001, 0.001, 0.001)); }
       
 
       // 2019.3 holes
       #ifdef _ALPHATEST_ON
-          TEXTURE2D(_TerrainHolesTexture);
+          UNITY_DECLARE_TEX2D(_TerrainHolesTexture);
           
           void ClipHoles(float2 uv)
           {
-              float hole = SAMPLE_TEXTURE2D(_TerrainHolesTexture, shared_linear_clamp_sampler, uv).r;
+              float hole = UNITY_SAMPLE_TEX2D(_TerrainHolesTexture, uv).r;
               COUNTSAMPLE
               clip(hole < 0.5f ? -1 : 1);
           }
@@ -11233,11 +10804,15 @@ TEXTURE2D(_MainTex);
 
       struct Input 
       {
-         ShaderData shaderData;
          float2 uv_Control0;
          float2 uv2_Diffuse;
 
-         float worldHeight;
+         #if _PLANETVECTORS
+            float3 wrappedPos;
+            float3 localNormal;
+         #endif
+
+         float3 worldHeight;
          float3 worldUpVector;
 
          float3 viewDir;
@@ -11264,8 +10839,6 @@ TEXTURE2D(_MainTex);
 
          // wetness, puddles, streams, lava from vertex or megasplat
          fixed4 fx;
-         // snow min, snow max
-         fixed4 fx2;
 
 
       };
@@ -11455,9 +11028,9 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #elif _MAX2LAYER
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
@@ -11465,15 +11038,15 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #else
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
-            half4 varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##3 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            half4 varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##3 = tex2Dlod(_PerTexProps, float4(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #endif
 
@@ -11620,19 +11193,19 @@ TEXTURE2D(_MainTex);
       
       half3 BlendNormal3(half3 n1, half3 n2)
       {
-         n1 += float3( 0,  0, 1);
-         n2 *= float3(-1, -1, 1);
-         return n1*dot(n1, n2) / n1.z - n2;
+         n1.z += 1;
+         n2.xy = -n2.xy;
+
+         return n1 * dot(n1, n2) / n1.z - n2;
       }
       
       half2 TransformTriplanarNormal(Input IN, float3x3 t2w, half3 axisSign, half3 absVertNormal,
                half3 pN, half2 a0, half2 a1, half2 a2)
       {
-         
          a0 = a0 * 2 - 1;
          a1 = a1 * 2 - 1;
          a2 = a2 * 2 - 1;
-
+         
          a0.x *= axisSign.x;
          a1.x *= axisSign.y;
          a2.x *= axisSign.z;
@@ -11640,20 +11213,19 @@ TEXTURE2D(_MainTex);
          half3 n0 = half3(a0.xy, 1);
          half3 n1 = half3(a1.xy, 1);
          half3 n2 = half3(a2.xy, 1);
-
-         float3 wn = IN.worldNormal;
-
-         n0 = BlendNormal3(half3(wn.zy, absVertNormal.x), n0);
-         n1 = BlendNormal3(half3(wn.xz, absVertNormal.y), n1 * float3(-1, 1, 1)); 
-         n2 = BlendNormal3(half3(wn.xy, absVertNormal.z), n2);
+         
+         n0 = BlendNormal3(half3(IN.worldNormal.zy, absVertNormal.x), n0);
+         n1 = BlendNormal3(half3(IN.worldNormal.xz, absVertNormal.y), n1);
+         n2 = BlendNormal3(half3(IN.worldNormal.xy, absVertNormal.z), n2);
   
          n0.z *= axisSign.x;
          n1.z *= axisSign.y;
          n2.z *= -axisSign.z;
-
-         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z);
-         return mul(t2w, worldNormal).xy;
-
+  
+         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z );
+         half2 rn = mul(t2w, worldNormal).xy;
+         //rn.y *= -1;
+         return rn;
       }
       
       // funcs
@@ -12141,16 +11713,27 @@ TEXTURE2D(_MainTex);
       }
 
 
-      // abstraction around sampler mode
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##samplertex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, sampler##tex, coord, dx, dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy) SAMPLE_TEXTURE2D_GRAD(tex, sampler##samp, coord, dx, dy);
+      
+
       #if _USELODMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, u, l.x)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u, l.x)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
       #elif _USEGRADMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_GRAD(tex, sampler##tex, u, l.xy, l.zw)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, ss, u.xy, u.z, l.xy, l.zw)
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
       #else
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, u.xy, u.z)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u.xy, y.z)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
+      #endif
+
+      #if _USELODMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
+      #elif _USEGRADMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
+      #else
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
       #endif
 
 
@@ -12189,9 +11772,9 @@ TEXTURE2D(_MainTex);
          tc.uv2 = worldPos.xy * axisSign.z;
       }
       
-      #define SimpleTriplanarSample(tex, tc, scale) (SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv0 * scale) * tc.pn.x + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv1 * scale) * tc.pn.y + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv2 * scale) * tc.pn.z)
-      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv0 * scale, lod) * tc.pn.x + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv1 * scale, lod) * tc.pn.y + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
-      #define SimpleTriplanarSampleGrad(tex, tc, scale) (SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
+      #define SimpleTriplanarSample(tex, tc, scale) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv0 * scale) * tc.pn.x + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv1 * scale) * tc.pn.y + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv2 * scale) * tc.pn.z)
+      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv0 * scale, lod) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv1 * scale, lod) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
+      #define SimpleTriplanarSampleGrad(tex, tc, scale) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
    
       
       inline half3 MicroSplatDiffuseAndSpecularFromMetallic (half3 albedo, half metallic, out half3 specColor, out half oneMinusReflectivity)
@@ -12206,11 +11789,20 @@ TEXTURE2D(_MainTex);
 
 
 
+      #undef MICROSPLAT_SAMPLE_TEX2D_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord,lod)                    SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy)            SAMPLE_TEXTURE2D_GRAD(tex,sampler##tex,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy)    SAMPLE_TEXTURE2D_GRAD(tex,sampler##samp,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, samp, coord, lod)    SAMPLE_TEXTURE2D_LOD(tex, sampler##samp, coord, lod)
+      
 
       Input DescToInput(ShaderData IN)
       {
         Input s = (Input)0;
-        s.shaderData = IN;
         s.TBN = IN.TBNMatrix;
         s.worldNormal = IN.worldSpaceNormal;
         s.worldPos = IN.worldSpacePosition;
@@ -12227,7 +11819,11 @@ TEXTURE2D(_MainTex);
         #endif
 
         #if _MICROMESH && _MESHUV2
-            s.uv2_Diffuse = IN.texcoord1.xy;
+            s.uv_Diffuse = IN.texcoord1.xy;
+        #endif
+
+        #if _SRPTERRAINBLEND
+            s.color = IN.vertexColor;
         #endif
 
         #if _MEGASPLAT
@@ -12351,16 +11947,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          
-         TEXTURE2D_FLOAT(_GMSTraxBuffer);
+         sampler2D_float _GMSTraxBuffer;
 
          #if _TRAXSINGLE
-         TEXTURE2D(_TraxDiff);
-         TEXTURE2D(_TraxNSAO);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxDiff);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxNSAO);
          #endif
 
          #if _TRAXARRAY
-         TEXTURE2D_ARRAY(_TraxArrayDiff);
-         TEXTURE2D_ARRAY(_TraxArrayNSAO);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayDiff);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayNSAO);
          #endif
 
          #define TRAXSAMPLEQUADRATIC2D(tex, uv, texelSize, ret) \
@@ -12369,15 +11965,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 c = (q*(q - 1.0) + 0.5) / texelSize.zw; \
             float2 w0 = uv - c; \
             float2 w1 = uv + c; \
-            half4 s = SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w0.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w0.y)); \
+            half4 s = tex2D(tex, float2(w0.x, w0.y)) \
+              + tex2D(tex, float2(w0.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w0.y)); \
             ret = s / 4.0; \
          } \
         
          
-         float SampleTraxBufferLOD(float3 worldPos, float3 vertexNormal, float h)
+         float SampleTraxBufferLOD(float3 worldPos, float h)
          {
             
             // generate UVs for the buffer, which is moving
@@ -12388,28 +11984,28 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             fade = 1 - pow(fade, 8);
             uv *= 0.5;
             uv += 0.5;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
+            
             
             #if _TRAXQUADRATIC
+               float4 sr;
                float2 q = frac(uv * _GMSTraxBuffer_TexelSize.zw);
                float2 c = (q*(q - 1.0) + 0.5) / _GMSTraxBuffer_TexelSize.zw; 
                float2 w0 = uv - c; 
                float2 w1 = uv + c; 
-               half s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, w0.xy, 0).r + 
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w0.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w0.y), 0).r;
+               half4 s = tex2Dlod(_GMSTraxBuffer, float4(w0.x, w0.y, 0, 0)) 
+              + tex2Dlod(_GMSTraxBuffer, float4(w0.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w0.y, 0, 0));
 
               s /= 4;
             #else
-               float s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, uv, 0).r;
+               float s =  tex2Dlod(_GMSTraxBuffer, float4(uv, 0, 0)).r;
             #endif
-            return 1.0 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            return 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
          }
          
         
-         float SampleTraxBuffer(float3 worldPos, float3 vertexNormal, out float3 norm)
+         float SampleTraxBuffer(float3 worldPos, out float3 norm)
          {
             float2 uv = worldPos.xz;
             uv -= _GMSTraxBufferPosition.xz;
@@ -12421,8 +12017,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             
 
             float2 offset = _GMSTraxBuffer_TexelSize.xy;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
 
             #if _TRAXQUADRATIC
                float4 sr, sr1, sr2, sr3, sr4;
@@ -12439,14 +12033,14 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                float s4 = sr4.r;
 
             #else
-               float s = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv).r;
+               float s = tex2D(_GMSTraxBuffer, uv).r;
                
-               float s1 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, -1)).r;
-               float s2 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(-1, 0)).r;
-               float s3 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(1, 0)).r;
-               float s4 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, 1)).r;
+               float s1 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, -1)).r;
+               float s2 = tex2D(_GMSTraxBuffer, uv + offset * float2(-1, 0)).r;
+               float s3 = tex2D(_GMSTraxBuffer, uv + offset * float2(1, 0)).r;
+               float s4 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, 1)).r;
             #endif
-            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
  
 
             // generate normals
@@ -12530,8 +12124,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
 
             
-            half4 albedo = SAMPLE_TEXTURE2D_GRAD(_TraxDiff, sampler_Diffuse, uv, fsdx, fsdy);
-            half4 normSAO = SAMPLE_TEXTURE2D_GRAD(_TraxNSAO, sampler_NormalSAO, uv, fsdx, fsdy).agrb;
+            half4 albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxDiff, _Diffuse, uv, fsdx, fsdy);
+            half4 normSAO = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxNSAO, _Diffuse, uv, fsdx, fsdy).agrb;
             normSAO.xy = normSAO.xy * 2 - 1;
 
             COUNTSAMPLE
@@ -12568,11 +12162,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdx = ddx(config.uv) * _TraxUVScales;
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
             
-            half4 albedo0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, fsdx, fsdy);
-            half4 normSAO0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv0.z, fsdx, fsdy).agrb;
+            half4 albedo0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv0.z), fsdx, fsdy);
+            half4 normSAO0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv0.z), fsdx, fsdy).agrb;
             normSAO0.xy = normSAO0.xy * 2 - 1;
-            half4 albedo1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, fsdx, fsdy);
-            half4 normSAO1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv1.z, fsdx, fsdy).agrb;
+            half4 albedo1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv1.z), fsdx, fsdy);
+            half4 normSAO1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv1.z), fsdx, fsdy).agrb;
             normSAO1.xy = normSAO1.xy * 2 - 1;
             COUNTSAMPLE
             COUNTSAMPLE
@@ -12584,8 +12178,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             h1 = lerp(traxBuffer1, h1, _TraxInterpContrast);
 
             #if !_MAX2LAYER
-               half4 albedo2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, fsdx, fsdy);
-               half4 normSAO2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv2.z, fsdx, fsdy).agrb;
+               half4 albedo2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv2.z), fsdx, fsdy);
+               half4 normSAO2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv2.z), fsdx, fsdy).agrb;
                half h2 = HeightBlend(albedo2.a, samples.albedo2.a, traxBuffer2, _Contrast);
                h2 = lerp(traxBuffer2, h2, _TraxInterpContrast);
                normSAO2.xy = normSAO2.xy * 2 - 1;
@@ -12593,8 +12187,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                COUNTSAMPLE
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               half4 albedo3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, fsdx, fsdy);
-               half4 normSAO3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv3.z, fsdx, fsdy).agrb;
+               half4 albedo3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv3.z), fsdx, fsdy);
+               half4 normSAO3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv3.z), fsdx, fsdy).agrb;
                normSAO3.xy = normSAO3.xy * 2 - 1;
                half h3 = HeightBlend(albedo3.a, samples.albedo3.a, traxBuffer3, _Contrast);
                h3 = lerp(traxBuffer3, h3, _TraxInterpContrast);
@@ -12661,7 +12255,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _TRAXSINGLE
             float2 uv = config.uv * _TraxUVScales.xy;
 
-            half albedo = SAMPLE_TEXTURE2D_LOD(_TraxDiff, sampler_Diffuse, uv, mipLevel).a;
+            half albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_TraxDiff, _Diffuse, uv, mipLevel).a;
             
 
             h0 = lerp(albedo - offset, h0, traxBuffer0);
@@ -12673,10 +12267,10 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             traxBuffer = 1 - ((1 - traxBuffer) * _TraxTextureBlend);
 
             
-            half albedo0 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, mipLevel).a;
-            half albedo1 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, mipLevel).a;
-            half albedo2 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, mipLevel).a;
-            half albedo3 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, mipLevel).a;
+            half albedo0 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv0.z), mipLevel).a;
+            half albedo1 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv1.z), mipLevel).a;
+            half albedo2 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv2.z), mipLevel).a;
+            half albedo3 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv3.z), mipLevel).a;
             
 
             h0 = lerp(albedo0 - offset0, h0, traxBuffer0);
@@ -12715,7 +12309,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          
             half4 contrasts = _Contrast.xxxx;
             #if _PERTEXTRIPLANARCONTRAST
-               SAMPLE_PER_TEX(ptc, 9.5, config, half4(1,0.5,0,0));
+               SAMPLE_PER_TEX(ptc, 5.5, config, half4(1,0.5,0,0));
                contrasts = half4(ptc0.y, ptc1.y, ptc2.y, ptc3.y);
             #endif
 
@@ -13455,7 +13049,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float globalSlopeFilter = 1;
             #if _GLOBALSLOPEFILTER
                float2 gfilterUV = float2(1 - saturate(dot(worldNormalVertex, upVector) * 0.5 + 0.49), 0.5);
-               globalSlopeFilter = SAMPLE_TEXTURE2D(_GlobalSlopeTex, sampler_Diffuse, gfilterUV).a;
+               globalSlopeFilter = UNITY_SAMPLE_TEX2D_SAMPLER(_GlobalSlopeTex, _Diffuse, gfilterUV).a;
             #endif
          #endif
 
@@ -13482,7 +13076,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
-            traxBuffer = SampleTraxBuffer(i.worldPos, worldNormalVertex, traxNormal);
+            traxBuffer = SampleTraxBuffer(i.worldPos, traxNormal);
          #endif
          
          #if _WETNESS || _PUDDLES || _STREAMS || _LAVA
@@ -13510,7 +13104,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          MIPFORMAT origAlbedoLOD = INITMIPFORMAT;
 
          #if _TRIPLANAR && !_DISABLESPLATMAPS
-            PrepTriplanar(i.shaderData.texcoord0, worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #if _PLANETVECTORS
+               PrepTriplanar(i.localNormal, i.wrappedPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #else
+               PrepTriplanar(worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #endif
+            
             tc.IN = i;
          #endif
          
@@ -13520,7 +13119,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                albedoLOD = ComputeMipLevel(config.uv0.xy, _Diffuse_TexelSize.zw);
                normalLOD = ComputeMipLevel(config.uv0.xy, _NormalSAO_TexelSize.zw);
                #if _USEEMISSIVEMETAL
-                  emisLOD = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
+                  emisLOD   = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
                #endif
                #if _USESPECULARWORKFLOW
                   specLOD = ComputeMipLevel(config.uv0.xy, _Specular_TexelSize.zw);;
@@ -13641,7 +13240,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _HYBRIDHEIGHTBLEND
-            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/max(1.0, _HybridHeightBlendDistance)));
+            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/_HybridHeightBlendDistance));
          #endif
 
          
@@ -13716,13 +13315,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             DistanceResample(samples, config, tc, camDist, i.viewDir, fxLevels, albedoLOD, i.worldPos, heightWeights, worldNormalVertex);
          #endif
 
-         #if _STARREACHFORMAT
-            samples.normSAO0.w = length(samples.normSAO0.xy);
-            samples.normSAO1.w = length(samples.normSAO1.xy);
-            samples.normSAO2.w = length(samples.normSAO2.xy);
-            samples.normSAO3.w = length(samples.normSAO3.xy);
-         #endif
-
          // PerTexture sampling goes here, passing the samples structure
          
          #if _PERTEXMICROSHADOWS || _PERTEXFUZZYSHADE
@@ -13753,9 +13345,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                return o;
                #endif
 
-               
-
-               
             }
             #endif
 
@@ -13873,13 +13462,13 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _PERTEXAOSTR && !_DISABLESPLATMAPS
-            samples.normSAO0.a = pow(abs(samples.normSAO0.a), perTexMatSettings0.b);
-            samples.normSAO1.a = pow(abs(samples.normSAO1.a), perTexMatSettings1.b);
+            samples.normSAO0.a = pow(samples.normSAO0.a, abs(perTexMatSettings0.b));
+            samples.normSAO1.a = pow(samples.normSAO1.a, abs(perTexMatSettings1.b));
             #if !_MAX2LAYER
-               samples.normSAO2.a = pow(abs(samples.normSAO2.a), perTexMatSettings2.b);
+               samples.normSAO2.a = pow(samples.normSAO2.a, abs(perTexMatSettings2.b));
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               samples.normSAO3.a = pow(abs(samples.normSAO3.a), perTexMatSettings3.b);
+               samples.normSAO3.a = pow(samples.normSAO3.a, abs(perTexMatSettings3.b));
             #endif
          #endif
 
@@ -13914,26 +13503,30 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          {
             SAMPLE_PER_TEX(ptRimA, 26.5, config, half4(1, 1, 1, 1));
             SAMPLE_PER_TEX(ptRimB, 27.5, config, half4(1, 1, 1, 0));
-            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), max(0.0001, ptRimA0.g)) * ptRimB0.rgb * ptRimB0.a;
-            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), max(0.0001, ptRimA1.g)) * ptRimB1.rgb * ptRimB1.a;
-            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), max(0.0001, ptRimA2.g)) * ptRimB2.rgb * ptRimB2.a;
-            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), max(0.0001, ptRimA3.g)) * ptRimB3.rgb * ptRimB3.a;
+            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), ptRimA0.g) * ptRimB0.rgb * ptRimB0.a;
+            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), ptRimA1.g) * ptRimB1.rgb * ptRimB1.a;
+            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), ptRimA2.g) * ptRimB2.rgb * ptRimB2.a;
+            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), ptRimA3.g) * ptRimB3.rgb * ptRimB3.a;
          }
          #endif
 
 
 
          #if (((_DETAILNOISE && _PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && _PERTEXDISTANCENOISESTRENGTH)) || (_NORMALNOISE && _PERTEXNORMALNOISESTRENGTH)) && !_DISABLESPLATMAPS
-            ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          
          #if _GLOBALNOISEUV
             // noise defaults so that a value of 1, 1 is 4 pixels in size and moves the uvs by 1 pixel max.
             #if _CUSTOMSPLATTEXTURES
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #else
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
          #endif
 
@@ -13943,7 +13536,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if (_ANTITILEARRAYDETAIL || _ANTITILEARRAYDISTANCE || _ANTITILEARRAYNORMAL) && !_DISABLESPLATMAPS
-            ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #if _PLANETVECTORS
+               ApplyAntiTilePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex, heightWeights);
+            #else
+               ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #endif
          #endif
 
          #if _GEOMAP && !_DISABLESPLATMAPS
@@ -14034,7 +13631,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          #if ((_DETAILNOISE && !_PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && !_PERTEXDISTANCENOISESTRENGTH) || (_NORMALNOISE && !_PERTEXNORMALNOISESTRENGTH))
-            ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          #if _SPLATFADE
@@ -14049,12 +13650,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             MSBRANCHOTHER(camDist - _SplatFade.x)
             {
                float falloff = saturate(InverseLerp(_SplatFade.x, _SplatFade.y, camDist));
-               half4 sfalb = SAMPLE_TEXTURE2D_ARRAY_GRAD(_Diffuse, sampler_Diffuse, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY);
+               half4 sfalb = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_Diffuse, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY);
                COUNTSAMPLE
                albedo.rgb = lerp(albedo.rgb, sfalb.rgb, falloff);
 
                #if !_NONORMALMAP && !_AUTONORMAL
-                  half4 sfnormSAO = SAMPLE_TEXTURE2D_ARRAY_GRAD(_NormalSAO, sampler_NormalSAO, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY).agrb;
+                  half4 sfnormSAO = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_NormalSAO, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY).agrb;
                   COUNTSAMPLE
                   sfnormSAO.xy = sfnormSAO.xy * 2 - 1;
 
@@ -14089,13 +13690,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             GeoTexture(albedo.rgb, normSAO, surfGrad, i.worldPos, worldHeight, config, worldNormalVertex, upVector);
          #endif
 
+         #if _PLANETALBEDO || _PLANETALBEDO2 || _PLANETNORMAL || _PLANETNORMAL2
+            //ApplyPlanet(i, albedo, normSAO, config, camDist, i.worldPos, upVector);
+         #endif
          
          #if _SCATTER
-            ApplyScatter(
-               #if _MEGASPLAT
-               config, 
-               #endif
-               i, albedo, normSAO, surfGrad, config.uv, camDist);
+            ApplyScatter(i, albedo, normSAO, surfGrad, config.uv, camDist);
          #endif
 
          #if _DECAL
@@ -14206,9 +13806,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
          
          #if _TOONWIREFRAME
-         ToonWireframe(config.uv, o.Albedo, camDist);
+         ToonWireframe(config.uv, o.Albedo);
          #endif
 
+         #if _PLANETVECTORS
+            ApplyPlanetAtmosphere(i, o);
+         #endif
 
          #if _DEBUG_TRAXBUFFER
             ClearAllButAlbedo(o, half3(traxBuffer, 0, 0) * saturate(o.Albedo.z+1));
@@ -14217,11 +13820,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _DEBUG_WORLDNORMAL
             ClearAllButAlbedo(o,  WorldNormalVector(i, o.Normal) * saturate(o.Albedo.z+1));
          #endif
-
-         #if _DEBUG_MEGABARY && _MEGASPLAT
-            o.Albedo = i.baryWeights.xyz;
-         #endif
-
 
          return o;
       }
@@ -14234,44 +13832,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_CustomControl0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_CustomControl0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_CustomControl1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl1, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_CustomControl2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl2, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_CustomControl3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl3, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_CustomControl4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl4, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_CustomControl5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl5, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_CustomControl6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl6, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_CustomControl7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl7, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
          #else
@@ -14280,44 +13878,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_Control0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_Control0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_Control1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control1, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_Control2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control2, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_Control3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control3, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_Control4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control4, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_Control5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control5, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_Control6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control6, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_Control7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control7, _Control0, controlUV);
             COUNTSAMPLE
             #endif
          #endif
@@ -14337,18 +13935,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #if _FORCELOCALSPACE
             worldNormalVertex = mul((float3x3)unity_WorldToObject, worldNormalVertex).xyz;
             i.worldPos = i.worldPos -  mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz;
-            i.worldHeight = i.worldPos.y;
          #endif
 
          #if _ORIGINSHIFT
+             //worldNormalVertex = mul(_GlobalOriginMTX, float4(worldNormalVertex, 1)).xyz;
              i.worldPos = i.worldPos + mul(_GlobalOriginMTX, float4(0,0,0,1)).xyz;
-             i.worldHeight = i.worldPos.y;
          #endif
 
          #if _DEBUG_USE_TOPOLOGY
-            i.worldPos = SAMPLE_TEXTURE2D(_DebugWorldPos, sampler_Diffuse, i.uv_Control0);
-            worldNormalVertex = SAMPLE_TEXTURE2D(_DebugWorldNormal, sampler_Diffuse, i.uv_Control0);
-            i.worldHeight = i.worldPos.y;
+            i.worldPos = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldPos, _Diffuse, i.uv_Control0);
+            worldNormalVertex = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldNormal, _Diffuse, i.uv_Control0);
          #endif
 
          #if _ALPHABELOWHEIGHT && !_TBDISABLEALPHAHOLES
@@ -14403,8 +13999,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                   DiggerSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MEGASPLAT
                   MegaSplatVertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
-               #elif _MEGASPLATTEXTURE
-                   MegaSplatTextureSetup(controlUV, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MICROVERTEXMESH
                   VertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif !_PROCEDURALTEXTURE || _PROCEDURALBLENDSPLATS
@@ -14416,14 +14010,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                #if _PROCEDURALTEXTURE
                   float3 procNormal = worldNormalVertex;
                   float3 worldPos = i.worldPos;
+                  #if _PLANETVECTORS
+                     config.uv = origUV;
+                     procNormal = i.TBN[2];
+                     worldPos = i.wrappedPos;
+                  #endif
                   ProceduralSetup(i, worldPos, i.worldHeight, procNormal, i.worldUpVector, weights, origUV, config, ddx(origUV), ddy(origUV), ddx(worldPos), ddy(worldPos), decalOutput);
                #endif
             #else // _DISABLESPLATMAPS
                 Setup(weights, origUV, config, half4(1,0,0,0), 0, 0, 0, 0, 0, 0, 0, i.worldPos, decalOutput);
-            #endif
-
-            #if _SLOPETEXTURE
-               SlopeTexture(config, weights, worldNormalVertex);
             #endif
          } // _SPLATFADE else case
 
@@ -14453,15 +14048,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
  
          MicroSplatLayer l = Sample(i, weights, config, camDist, worldNormalVertex, decalOutput);
 
-         // On windows, sometimes the shared samplers gets stripped, so we have to do this crap.
+         // On windows, sometimes the diffuse sampler gets stripped, so we have to do this crap.
          // We sample from the lowest mip, so it shouldn't cost much, but still, I hate this, wtf..
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_Diffuse, sampler_Diffuse, config.uv0, 11).r + 2);
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_NormalSAO, sampler_NormalSAO, config.uv0, 11).r + 2);
+         l.Albedo *= saturate(UNITY_SAMPLE_TEX2DARRAY_LOD(_Diffuse, config.uv0, 11).r + 2);
+         // same for the control sampler.
+         l.Albedo *= saturate(MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_Control0, _Control0, config.uv, 11).r + 2);
 
          #if _PROCEDURALTEXTURE
             ProceduralTextureDebugOutput(l, weights, config);
          #endif
-
 
          return l;
 
@@ -14471,6 +14066,17 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
    
 
+
+#if (_MICROTERRAIN || _MICROMESHTERRAIN)
+    TEXTURE2D(_TerrainHeightmapTexture);
+    SAMPLER(sampler_TerrainHeightmapTexture);
+    TEXTURE2D(_TerrainNormalmapTexture);
+    SAMPLER(sampler_TerrainNormalmapTexture);
+#endif
+
+UNITY_INSTANCING_BUFFER_START(Terrain)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
+UNITY_INSTANCING_BUFFER_END(Terrain)          
 
 
 
@@ -14491,7 +14097,7 @@ float4 ConstructTerrainTangent(float3 normal, float3 positiveZ)
 
 void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv)
 {
-#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED) && !_TERRAINBLENDABLESHADER
+#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED)
    
     float2 patchVertex = vertex.xy;
     float4 instanceData = UNITY_ACCESS_INSTANCED_PROP(Terrain, _TerrainPatchInstanceData);
@@ -14501,7 +14107,7 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
     float2 sampleUV = (uv / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
 
-    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, shared_linear_clamp_sampler, sampleUV, 0));
+    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, sampler_TerrainHeightmapTexture, sampleUV, 0));
    
     vertex.xz = sampleCoords * _TerrainHeightmapScale.xz;
     vertex.y = height * _TerrainHeightmapScale.y;
@@ -14515,28 +14121,26 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
 void ApplyMeshModification(inout VertexData input)
 {
-   #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
+   #if _MICROTERRAIN
       float2 uv = input.texcoord0.xy;
       TerrainInstancing(input.vertex, input.normal, uv);
       input.texcoord0.xy = uv;
+      input.texcoord1.xy = uv;
+      input.texcoord2.xy = uv;
+      
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
-   #if _PERPIXNORMAL && !_TERRAINBLENDABLESHADER
+   #if _PERPIXNORMAL
       input.normal = float3(0,1,0);
-   #endif
-
-}
-
-// called by the template, so we can remove tangent from VertexData
-void ApplyTerrainTangent(inout VertexToPixel input)
-{
-   #if (_MICROTERRAIN || _PERPIXNORMAL) && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
 
    // digger meshes ain't got no tangent either..
-   #if _MICRODIGGERMESH && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+   #if _MICRODIGGERMESH
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
+
+
 }
 
 
@@ -14580,13 +14184,13 @@ float3 GetTessFactors ()
        
         float3 worldNormalVertex = d.worldSpaceNormal;
 
-        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN && !_TERRAINBLENDABLESHADER)
+        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_TerrainNormalmapTexture, _TerrainNormalmapTexture, sampleCoords).xyz * 2 - 1);
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomNormal, geomTangent)) * -1;
             worldNormalVertex = geomNormal;
@@ -14596,13 +14200,13 @@ float3 GetTessFactors ()
             d.TBNMatrix = float3x3(geomTangent, geomBitangent, geomNormal);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
 
-         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN) && !_TERRAINBLENDABLESHADER
+         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy * _PerPixelNormal_TexelSize.zw + 0.5f) * _PerPixelNormal_TexelSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_PerPixelNormal, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_PerPixelNormal, _PerPixelNormal, sampleCoords).xyz * 2 - 1);
             
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomTangent, geomNormal)) * -1;
@@ -14624,18 +14228,13 @@ float3 GetTessFactors ()
          
          #if _SRPTERRAINBLEND
             MicroSplatLayer l = BlendWithTerrain(d);
-
-               #if _DEBUG_WORLDNORMAL
-                  ClearAllButAlbedo(l, normalize(TangentToWorldSpace(d, l.Normal)) * saturate(l.Albedo.z+1));
-               #endif
          #else
             MicroSplatLayer l = SurfImpl(i, worldNormalVertex);
          #endif
 
         DoDebugOutput(l);
 
-
-
+      
 
         o.Albedo = l.Albedo;
         o.Normal = l.Normal;
@@ -14674,12 +14273,10 @@ float3 GetTessFactors ()
             d.worldSpaceViewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
              d.texcoord0 = i.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                d.texcoord1 = i.texcoord1;
-               // d.texcoord2 = i.texcoord2;
-            #endif
+             d.texcoord1 = i.texcoord1;
+             d.texcoord2 = i.texcoord2;
             // d.texcoord3 = i.texcoord3;
-            // d.vertexColor = i.vertexColor;
+             d.vertexColor = i.vertexColor;
 
             // these rarely get used, so we back transform them. Usually will be stripped.
             #if _HDRP
@@ -14687,8 +14284,8 @@ float3 GetTessFactors ()
             #else
                 // d.localSpacePosition = mul(unity_WorldToObject, float4(i.worldPos, 1));
             #endif
-            // d.localSpaceNormal = normalize(mul((float3x3)unity_WorldToObject, i.worldNormal));
-            // d.localSpaceTangent = normalize(mul((float3x3)unity_WorldToObject, i.worldTangent.xyz));
+            // d.localSpaceNormal = normalize(mul(unity_WorldToObject, i.worldNormal));
+            // d.localSpaceTangent = normalize(mul(unity_WorldToObject, i.worldTangent.xyz));
 
             // d.screenPos = i.screenPos;
             // d.screenUV = i.screenPos.xy / i.screenPos.w;
@@ -14773,26 +14370,17 @@ float3 GetTessFactors ()
 
             o.pos = UnityObjectToClipPos(v.vertex);
              o.texcoord0 = v.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              o.texcoord1 = v.texcoord1;
-            // o.texcoord2 = v.texcoord2;
-            #endif
+             o.texcoord2 = v.texcoord2;
             // o.texcoord3 = v.texcoord3;
-            // o.vertexColor = v.vertexColor;
+             o.vertexColor = v.vertexColor;
             // o.screenPos = ComputeScreenPos(o.pos);
             o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
             o.worldNormal = UnityObjectToWorldNormal(v.normal);
-            
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
             o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
             fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
             float3 worldBinormal = cross(o.worldNormal, o.worldTangent.xyz) * tangentSign;
             o.worldTangent.w = tangentSign;
-            #else
-            // MS Only
-            ApplyTerrainTangent(o);
-            float3 worldBinormal = cross(o.worldNormal, o.worldTangent.xyz) * unity_WorldTransformParams.w;
-            #endif
 
             float3 viewDirForLight = UnityWorldSpaceViewDir(o.worldPos);
             #ifndef DIRLIGHTMAP_OFF
@@ -14800,22 +14388,13 @@ float3 GetTessFactors ()
                o.viewDir.y = dot(viewDirForLight, worldBinormal);
                o.viewDir.z = dot(viewDirForLight, o.worldNormal);
             #endif
-
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-               float2 uv1 = v.texcoord1.xy;
-               float2 uv2 = v.texcoord2.xy;
-            #else
-               float2 uv1 = v.texcoord0.xy;
-               float2 uv2 = uv1;
-            #endif
-
             #ifdef DYNAMICLIGHTMAP_ON
-               o.lmap.zw = uv2 * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
+               o.lmap.zw = v.texcoord2.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
             #else
                o.lmap.zw = 0;
             #endif
             #ifdef LIGHTMAP_ON
-               o.lmap.xy = uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+               o.lmap.xy = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
                #ifdef DIRLIGHTMAP_OFF
                   o.lmapFadePos.xyz = (mul(unity_ObjectToWorld, v.vertex).xyz - unity_ShadowFadeCenterAndType.xyz) * unity_ShadowFadeCenterAndType.w;
                   o.lmapFadePos.w = (-UnityObjectToViewPos(v.vertex).z) * (1.0 - unity_ShadowFadeCenterAndType.w);
@@ -14974,7 +14553,7 @@ float3 GetTessFactors ()
               // call lighting function to output g-buffer
               outEmission = LightingStandardSpecular_Deferred (o, worldViewDir, gi, outGBuffer0, outGBuffer1, outGBuffer2);
               #if defined(SHADOWS_SHADOWMASK) && (UNITY_ALLOWED_MRT_COUNT > 4)
-                outShadowMask = UnityGetRawBakedOcclusions (IN.lmap.xy, d.worldSpacePosition);
+                outShadowMask = UnityGetRawBakedOcclusions (IN.lmap.xy, worldPos);
               #endif
               #ifndef UNITY_HDR_ON
               outEmission.rgb = exp2(-outEmission.rgb);
@@ -15034,8 +14613,6 @@ float3 GetTessFactors ()
          #include "Lighting.cginc"
          #include "UnityPBSLighting.cginc"
 
-         #define _PASSSHADOW 1
-
          
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
@@ -15058,133 +14635,8 @@ float3 GetTessFactors ()
 // of the patchy one Unity provides being inlined/emulated in HDRP/URP. Strangely, PSSL and XBoxOne libraries are not
 // included in the standard SRP code, but they are in tons of Unity own projects on the web, so I grabbed them from there.
 
-#if defined(SHADER_API_GAMECORE)
 
-	#define ZERO_INITIALIZE(type, name) name = (type)0;
-	#define ZERO_INITIALIZE_ARRAY(type, name, arraySize) { for (int arrayIndex = 0; arrayIndex < arraySize; arrayIndex++) { name[arrayIndex] = (type)0; } }
-
-	// Texture util abstraction
-
-	#define CALCULATE_TEXTURE2D_LOD(textureName, samplerName, coord2) textureName.CalculateLevelOfDetail(samplerName, coord2)
-
-	// Texture abstraction
-
-	#define TEXTURE2D(textureName)                Texture2D textureName
-	#define TEXTURE2D_ARRAY(textureName)          Texture2DArray textureName
-	#define TEXTURECUBE(textureName)              TextureCube textureName
-	#define TEXTURECUBE_ARRAY(textureName)        TextureCubeArray textureName
-	#define TEXTURE3D(textureName)                Texture3D textureName
-
-	#define TEXTURE2D_FLOAT(textureName)          TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_FLOAT(textureName)    TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_FLOAT(textureName)        TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_FLOAT(textureName)  TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_FLOAT(textureName)          TEXTURE3D(textureName)
-
-	#define TEXTURE2D_HALF(textureName)           TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_HALF(textureName)     TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_HALF(textureName)         TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_HALF(textureName)   TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_HALF(textureName)           TEXTURE3D(textureName)
-
-	#define TEXTURE2D_SHADOW(textureName)         TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_SHADOW(textureName)   TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_SHADOW(textureName)       TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_SHADOW(textureName) TEXTURECUBE_ARRAY(textureName)
-
-	#define RW_TEXTURE2D(type, textureName)       RWTexture2D<type> textureName
-	#define RW_TEXTURE2D_ARRAY(type, textureName) RWTexture2DArray<type> textureName
-	#define RW_TEXTURE3D(type, textureName)       RWTexture3D<type> textureName
-
-	#define SAMPLER(samplerName)                  SamplerState samplerName
-	#define SAMPLER_CMP(samplerName)              SamplerComparisonState samplerName
-	#define ASSIGN_SAMPLER(samplerName, samplerValue) samplerName = samplerValue
-
-	#define TEXTURE2D_PARAM(textureName, samplerName)                 TEXTURE2D(textureName),         SAMPLER(samplerName)
-	#define TEXTURE2D_ARRAY_PARAM(textureName, samplerName)           TEXTURE2D_ARRAY(textureName),   SAMPLER(samplerName)
-	#define TEXTURECUBE_PARAM(textureName, samplerName)               TEXTURECUBE(textureName),       SAMPLER(samplerName)
-	#define TEXTURECUBE_ARRAY_PARAM(textureName, samplerName)         TEXTURECUBE_ARRAY(textureName), SAMPLER(samplerName)
-	#define TEXTURE3D_PARAM(textureName, samplerName)                 TEXTURE3D(textureName),         SAMPLER(samplerName)
-
-	#define TEXTURE2D_SHADOW_PARAM(textureName, samplerName)          TEXTURE2D(textureName),         SAMPLER_CMP(samplerName)
-	#define TEXTURE2D_ARRAY_SHADOW_PARAM(textureName, samplerName)    TEXTURE2D_ARRAY(textureName),   SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_SHADOW_PARAM(textureName, samplerName)        TEXTURECUBE(textureName),       SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_ARRAY_SHADOW_PARAM(textureName, samplerName)  TEXTURECUBE_ARRAY(textureName), SAMPLER_CMP(samplerName)
-
-	#define TEXTURE2D_ARGS(textureName, samplerName)                textureName, samplerName
-	#define TEXTURE2D_ARRAY_ARGS(textureName, samplerName)          textureName, samplerName
-	#define TEXTURECUBE_ARGS(textureName, samplerName)              textureName, samplerName
-	#define TEXTURECUBE_ARRAY_ARGS(textureName, samplerName)        textureName, samplerName
-	#define TEXTURE3D_ARGS(textureName, samplerName)                textureName, samplerName
-
-	#define TEXTURE2D_SHADOW_ARGS(textureName, samplerName)         textureName, samplerName
-	#define TEXTURE2D_ARRAY_SHADOW_ARGS(textureName, samplerName)   textureName, samplerName
-	#define TEXTURECUBE_SHADOW_ARGS(textureName, samplerName)       textureName, samplerName
-	#define TEXTURECUBE_ARRAY_SHADOW_ARGS(textureName, samplerName) textureName, samplerName
-
-	#define PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               textureName.Sample(samplerName, coord2)
-	#define PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      textureName.SampleLevel(samplerName, coord2, lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    textureName.SampleBias(samplerName, coord2, bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              textureName.SampleGrad(samplerName, coord2, dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  textureName.Sample(samplerName, float3(coord2, index))
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         textureName.SampleLevel(samplerName, float3(coord2, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       textureName.SampleBias(samplerName, float3(coord2, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) textureName.SampleGrad(samplerName, float3(coord2, index), dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    textureName.SampleLevel(samplerName, coord3, lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  textureName.SampleBias(samplerName, coord3, bias)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                textureName.Sample(samplerName, float4(coord3, index))
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       textureName.SampleLevel(samplerName, float4(coord3, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     textureName.SampleBias(samplerName, float4(coord3, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      textureName.SampleLevel(samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)
-	#define SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)
-	#define SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)
-	#define SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)
-	#define SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)
-	#define SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)
-	#define SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)
-	#define SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy)
-	#define SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)
-	#define SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)
-	#define SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)
-	#define SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)
-	#define SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)
-	#define SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D_SHADOW(textureName, samplerName, coord3)                    textureName.SampleCmpLevelZero(samplerName, (coord3).xy, (coord3).z)
-	#define SAMPLE_TEXTURE2D_ARRAY_SHADOW(textureName, samplerName, coord3, index)       textureName.SampleCmpLevelZero(samplerName, float3((coord3).xy, index), (coord3).z)
-	#define SAMPLE_TEXTURECUBE_SHADOW(textureName, samplerName, coord4)                  textureName.SampleCmpLevelZero(samplerName, (coord4).xyz, (coord4).w)
-	#define SAMPLE_TEXTURECUBE_ARRAY_SHADOW(textureName, samplerName, coord4, index)     textureName.SampleCmpLevelZero(samplerName, float4((coord4).xyz, index), (coord4).w)
-
-	#define SAMPLE_DEPTH_TEXTURE(textureName, samplerName, coord2)          SAMPLE_TEXTURE2D(textureName, samplerName, coord2).r
-	#define SAMPLE_DEPTH_TEXTURE_LOD(textureName, samplerName, coord2, lod) SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod).r
-
-	#define LOAD_TEXTURE2D(textureName, unCoord2)                                   textureName.Load(int3(unCoord2, 0))
-	#define LOAD_TEXTURE2D_LOD(textureName, unCoord2, lod)                          textureName.Load(int3(unCoord2, lod))
-	#define LOAD_TEXTURE2D_MSAA(textureName, unCoord2, sampleIndex)                 textureName.Load(unCoord2, sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY(textureName, unCoord2, index)                      textureName.Load(int4(unCoord2, index, 0))
-	#define LOAD_TEXTURE2D_ARRAY_MSAA(textureName, unCoord2, index, sampleIndex)    textureName.Load(int3(unCoord2, index), sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY_LOD(textureName, unCoord2, index, lod)             textureName.Load(int4(unCoord2, index, lod))
-	#define LOAD_TEXTURE3D(textureName, unCoord3)                                   textureName.Load(int4(unCoord3, 0))
-	#define LOAD_TEXTURE3D_LOD(textureName, unCoord3, lod)                          textureName.Load(int4(unCoord3, lod))
-
-	#define PLATFORM_SUPPORT_GATHER
-	#define GATHER_TEXTURE2D(textureName, samplerName, coord2)                textureName.Gather(samplerName, coord2)
-	#define GATHER_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)   textureName.Gather(samplerName, float3(coord2, index))
-	#define GATHER_TEXTURECUBE(textureName, samplerName, coord3)              textureName.Gather(samplerName, coord3)
-	#define GATHER_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index) textureName.Gather(samplerName, float4(coord3, index))
-	#define GATHER_RED_TEXTURE2D(textureName, samplerName, coord2)            textureName.GatherRed(samplerName, coord2)
-	#define GATHER_GREEN_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherGreen(samplerName, coord2)
-	#define GATHER_BLUE_TEXTURE2D(textureName, samplerName, coord2)           textureName.GatherBlue(samplerName, coord2)
-	#define GATHER_ALPHA_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherAlpha(samplerName, coord2)
-
-	
-#elif defined(SHADER_API_XBOXONE)
+#if defined(SHADER_API_XBOXONE)
 	
 	// Initialize arbitrary structure with zero values.
 	// Do not exist on some platform, in this case we need to have a standard name that call a function that will initialize all parameters to 0
@@ -15588,13 +15040,11 @@ float3 GetTessFactors ()
             float3 worldNormal : TEXCOORD1;
             float4 worldTangent : TEXCOORD2;
              float4 texcoord0 : TEXCCOORD3;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              float4 texcoord1 : TEXCCOORD4;
-            // float4 texcoord2 : TEXCCOORD5;
-            #endif
+             float4 texcoord2 : TEXCCOORD5;
             // float4 texcoord3 : TEXCCOORD6;
             // float4 screenPos : TEXCOORD7;
-            // float4 vertexColor : COLOR;
+             float4 vertexColor : COLOR;
 
             // float4 extraV2F0 : TEXCOORD8;
             // float4 extraV2F1 : TEXCOORD9;
@@ -15671,19 +15121,17 @@ float3 GetTessFactors ()
 
             struct VertexData
             {
-               #if SHADER_TARGET > 30 && _PLANETCOMPUTE
- //              // uint vertexID : SV_VertexID;
+               #if SHADER_TARGET > 30
+               // uint vertexID : SV_VertexID;
                #endif
                float4 vertex : POSITION;
                float3 normal : NORMAL;
+               float4 tangent : TANGENT;
                float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                  float4 tangent : TANGENT;
-                  float4 texcoord1 : TEXCOORD1;
-                  float4 texcoord2 : TEXCOORD2;
-               #endif
+               float4 texcoord1 : TEXCOORD1;
+               float4 texcoord2 : TEXCOORD2;
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -15700,14 +15148,12 @@ float3 GetTessFactors ()
             {
                float4 vertex : INTERNALTESSPOS;
                float3 normal : NORMAL;
-               float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
                float4 tangent : TANGENT;
+               float4 texcoord0 : TEXCOORD0;
                float4 texcoord1 : TEXCOORD1;
                float4 texcoord2 : TEXCOORD2;
-               #endif
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                // float4 extraV2F0 : TEXCOORD4;
@@ -15763,6 +15209,13 @@ float3 GetTessFactors ()
                float4 TransformObjectToWorld(float4 p) { return mul(unity_ObjectToWorld, p); };
                float4x4 GetWorldToObjectMatrix() { return unity_WorldToObject; }
                float4x4 GetObjectToWorldMatrix() { return unity_ObjectToWorld; }
+               #if (defined(SHADER_API_D3D11) || defined(SHADER_API_XBOXONE) || defined(UNITY_COMPILER_HLSLCC) || defined(SHADER_API_PSSL) || (SHADER_TARGET_SURFACE_ANALYSIS && !SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER))
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord, lod) tex.SampleLevel (sampler##tex,coord, lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) tex.SampleLevel (sampler##samplertex,coord, lod)
+               #else
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord,lod) tex2D (tex,coord,0,lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord,lod) tex2D (tex,coord,0,lod)
+               #endif
             #endif
 
             float3 GetCameraWorldPosition()
@@ -15853,6 +15306,13 @@ float3 GetTessFactors ()
          float _HybridHeightBlendDistance;
       #endif
 
+
+      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
+         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
+         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
+         float4    _TerrainNormalmapTexture_TexelSize;
+      #endif
+
       #if _PACKINGHQ
          float4 _SmoothAO_TexelSize;
       #endif
@@ -15879,9 +15339,13 @@ float3 GetTessFactors ()
 
       float4 _UVScale; // scale and offset
 
+      float2 _ToonTerrainSize;
+
       half _Contrast;
       
-      
+      float3 _gGlitterLightDir;
+      float3 _gGlitterLightWorldPos;
+      half3 _gGlitterLightColor;
 
        #if _VSSHADOWMAP
          float4 gVSSunDirection;
@@ -15896,9 +15360,7 @@ float3 GetTessFactors ()
       #endif
 
       float4 _Control0_TexelSize;
-      #if _CUSTOMSPLATTEXTURES
-         float4 _CustomControl0_TexelSize;
-      #endif
+      float4 _CustomControl0_TexelSize;
       float4 _PerPixelNormal_TexelSize;
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
@@ -15950,30 +15412,7 @@ float3 GetTessFactors ()
    
 // In Unity 2020.3LTS, Unity will spew tons of errors about missing this sampler in
 // URP, even though it shouldn't be required.
-TEXTURE2D(_MainTex);
-
-      // globals, outside of CBuffer, but used by more than one module
-      float3 _gGlitterLightDir;
-      float3 _gGlitterLightWorldPos;
-      half3 _gGlitterLightColor;
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
-         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
-         float4    _TerrainNormalmapTexture_TexelSize;
-      #endif
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-          TEXTURE2D(_TerrainHeightmapTexture);
-          TEXTURE2D(_TerrainNormalmapTexture);
-      #endif
-
-      UNITY_INSTANCING_BUFFER_START(Terrain)
-          UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
-      UNITY_INSTANCING_BUFFER_END(Terrain)          
-
-
-      
+sampler2D _MainTex; 
 
       // dynamic branching helpers, for regular and aggressive branching
       // debug mode shows how many samples using branching will save us. 
@@ -16042,8 +15481,8 @@ TEXTURE2D(_MainTex);
 
 
       #if _DEBUG_USE_TOPOLOGY
-         TEXTURE2D(_DebugWorldPos);
-         TEXTURE2D(_DebugWorldNormal);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldPos);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldNormal);
       #endif
       
 
@@ -16052,7 +15491,7 @@ TEXTURE2D(_MainTex);
       UNITY_DECLARE_TEX2DARRAY(_NormalSAO);
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
-         TEXTURE2D(_NoiseUV);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_NoiseUV);
       #endif
 
       #if _PACKINGHQ
@@ -16067,60 +15506,58 @@ TEXTURE2D(_MainTex);
          UNITY_DECLARE_TEX2DARRAY(_EmissiveMetal);
       #endif
 
-      TEXTURE2D(_PerPixelNormal);
-
-      SamplerState shared_linear_clamp_sampler;
-      SamplerState shared_point_clamp_sampler;
+      UNITY_DECLARE_TEX2D(_PerPixelNormal);
       
-      TEXTURE2D(_Control0);
+      
+      UNITY_DECLARE_TEX2D(_Control0);
       #if _CUSTOMSPLATTEXTURES
-         TEXTURE2D(_CustomControl0);
+         UNITY_DECLARE_TEX2D(_CustomControl0);
          #if !_MAX4TEXTURES
-         TEXTURE2D(_CustomControl1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_CustomControl2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_CustomControl3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_CustomControl7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl7);
          #endif
       #else
          #if !_MAX4TEXTURES
-         TEXTURE2D(_Control1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_Control2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_Control3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_Control7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control7);
          #endif
       #endif
 
-      TEXTURE2D_FLOAT(_PerTexProps);
+      sampler2D_float _PerTexProps;
    
       struct DecalLayer
       {
@@ -16152,19 +15589,19 @@ TEXTURE2D(_MainTex);
          float4 d2;
       };
 
-      float InverseLerp(float x, float y, float v) { return (v-x)/max(y-x, 0.001); }
-      float2 InverseLerp(float2 x, float2 y, float2 v) { return (v-x)/max(y-x, float2(0.001, 0.001)); }
-      float3 InverseLerp(float3 x, float3 y, float3 v) { return (v-x)/max(y-x, float3(0.001, 0.001, 0.001)); }
-      float4 InverseLerp(float4 x, float4 y, float4 v) { return (v-x)/max(y-x, float4(0.001, 0.001, 0.001, 0.001)); }
+      half InverseLerp(half x, half y, half v) { return (v-x)/max(y-x, 0.001); }
+      half2 InverseLerp(half2 x, half2 y, half2 v) { return (v-x)/max(y-x, half2(0.001, 0.001)); }
+      half3 InverseLerp(half3 x, half3 y, half3 v) { return (v-x)/max(y-x, half3(0.001, 0.001, 0.001)); }
+      half4 InverseLerp(half4 x, half4 y, half4 v) { return (v-x)/max(y-x, half4(0.001, 0.001, 0.001, 0.001)); }
       
 
       // 2019.3 holes
       #ifdef _ALPHATEST_ON
-          TEXTURE2D(_TerrainHolesTexture);
+          UNITY_DECLARE_TEX2D(_TerrainHolesTexture);
           
           void ClipHoles(float2 uv)
           {
-              float hole = SAMPLE_TEXTURE2D(_TerrainHolesTexture, shared_linear_clamp_sampler, uv).r;
+              float hole = UNITY_SAMPLE_TEX2D(_TerrainHolesTexture, uv).r;
               COUNTSAMPLE
               clip(hole < 0.5f ? -1 : 1);
           }
@@ -16226,11 +15663,15 @@ TEXTURE2D(_MainTex);
 
       struct Input 
       {
-         ShaderData shaderData;
          float2 uv_Control0;
          float2 uv2_Diffuse;
 
-         float worldHeight;
+         #if _PLANETVECTORS
+            float3 wrappedPos;
+            float3 localNormal;
+         #endif
+
+         float3 worldHeight;
          float3 worldUpVector;
 
          float3 viewDir;
@@ -16257,8 +15698,6 @@ TEXTURE2D(_MainTex);
 
          // wetness, puddles, streams, lava from vertex or megasplat
          fixed4 fx;
-         // snow min, snow max
-         fixed4 fx2;
 
 
       };
@@ -16448,9 +15887,9 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #elif _MAX2LAYER
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
@@ -16458,15 +15897,15 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #else
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
-            half4 varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##3 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            half4 varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##3 = tex2Dlod(_PerTexProps, float4(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #endif
 
@@ -16613,19 +16052,19 @@ TEXTURE2D(_MainTex);
       
       half3 BlendNormal3(half3 n1, half3 n2)
       {
-         n1 += float3( 0,  0, 1);
-         n2 *= float3(-1, -1, 1);
-         return n1*dot(n1, n2) / n1.z - n2;
+         n1.z += 1;
+         n2.xy = -n2.xy;
+
+         return n1 * dot(n1, n2) / n1.z - n2;
       }
       
       half2 TransformTriplanarNormal(Input IN, float3x3 t2w, half3 axisSign, half3 absVertNormal,
                half3 pN, half2 a0, half2 a1, half2 a2)
       {
-         
          a0 = a0 * 2 - 1;
          a1 = a1 * 2 - 1;
          a2 = a2 * 2 - 1;
-
+         
          a0.x *= axisSign.x;
          a1.x *= axisSign.y;
          a2.x *= axisSign.z;
@@ -16633,20 +16072,19 @@ TEXTURE2D(_MainTex);
          half3 n0 = half3(a0.xy, 1);
          half3 n1 = half3(a1.xy, 1);
          half3 n2 = half3(a2.xy, 1);
-
-         float3 wn = IN.worldNormal;
-
-         n0 = BlendNormal3(half3(wn.zy, absVertNormal.x), n0);
-         n1 = BlendNormal3(half3(wn.xz, absVertNormal.y), n1 * float3(-1, 1, 1)); 
-         n2 = BlendNormal3(half3(wn.xy, absVertNormal.z), n2);
+         
+         n0 = BlendNormal3(half3(IN.worldNormal.zy, absVertNormal.x), n0);
+         n1 = BlendNormal3(half3(IN.worldNormal.xz, absVertNormal.y), n1);
+         n2 = BlendNormal3(half3(IN.worldNormal.xy, absVertNormal.z), n2);
   
          n0.z *= axisSign.x;
          n1.z *= axisSign.y;
          n2.z *= -axisSign.z;
-
-         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z);
-         return mul(t2w, worldNormal).xy;
-
+  
+         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z );
+         half2 rn = mul(t2w, worldNormal).xy;
+         //rn.y *= -1;
+         return rn;
       }
       
       // funcs
@@ -17134,16 +16572,27 @@ TEXTURE2D(_MainTex);
       }
 
 
-      // abstraction around sampler mode
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##samplertex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, sampler##tex, coord, dx, dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy) SAMPLE_TEXTURE2D_GRAD(tex, sampler##samp, coord, dx, dy);
+      
+
       #if _USELODMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, u, l.x)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u, l.x)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
       #elif _USEGRADMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_GRAD(tex, sampler##tex, u, l.xy, l.zw)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, ss, u.xy, u.z, l.xy, l.zw)
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
       #else
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, u.xy, u.z)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u.xy, y.z)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
+      #endif
+
+      #if _USELODMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
+      #elif _USEGRADMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
+      #else
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
       #endif
 
 
@@ -17182,9 +16631,9 @@ TEXTURE2D(_MainTex);
          tc.uv2 = worldPos.xy * axisSign.z;
       }
       
-      #define SimpleTriplanarSample(tex, tc, scale) (SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv0 * scale) * tc.pn.x + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv1 * scale) * tc.pn.y + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv2 * scale) * tc.pn.z)
-      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv0 * scale, lod) * tc.pn.x + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv1 * scale, lod) * tc.pn.y + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
-      #define SimpleTriplanarSampleGrad(tex, tc, scale) (SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
+      #define SimpleTriplanarSample(tex, tc, scale) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv0 * scale) * tc.pn.x + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv1 * scale) * tc.pn.y + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv2 * scale) * tc.pn.z)
+      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv0 * scale, lod) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv1 * scale, lod) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
+      #define SimpleTriplanarSampleGrad(tex, tc, scale) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
    
       
       inline half3 MicroSplatDiffuseAndSpecularFromMetallic (half3 albedo, half metallic, out half3 specColor, out half oneMinusReflectivity)
@@ -17199,11 +16648,20 @@ TEXTURE2D(_MainTex);
 
 
 
+      #undef MICROSPLAT_SAMPLE_TEX2D_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord,lod)                    SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy)            SAMPLE_TEXTURE2D_GRAD(tex,sampler##tex,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy)    SAMPLE_TEXTURE2D_GRAD(tex,sampler##samp,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, samp, coord, lod)    SAMPLE_TEXTURE2D_LOD(tex, sampler##samp, coord, lod)
+      
 
       Input DescToInput(ShaderData IN)
       {
         Input s = (Input)0;
-        s.shaderData = IN;
         s.TBN = IN.TBNMatrix;
         s.worldNormal = IN.worldSpaceNormal;
         s.worldPos = IN.worldSpacePosition;
@@ -17220,7 +16678,11 @@ TEXTURE2D(_MainTex);
         #endif
 
         #if _MICROMESH && _MESHUV2
-            s.uv2_Diffuse = IN.texcoord1.xy;
+            s.uv_Diffuse = IN.texcoord1.xy;
+        #endif
+
+        #if _SRPTERRAINBLEND
+            s.color = IN.vertexColor;
         #endif
 
         #if _MEGASPLAT
@@ -17344,16 +16806,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          
-         TEXTURE2D_FLOAT(_GMSTraxBuffer);
+         sampler2D_float _GMSTraxBuffer;
 
          #if _TRAXSINGLE
-         TEXTURE2D(_TraxDiff);
-         TEXTURE2D(_TraxNSAO);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxDiff);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxNSAO);
          #endif
 
          #if _TRAXARRAY
-         TEXTURE2D_ARRAY(_TraxArrayDiff);
-         TEXTURE2D_ARRAY(_TraxArrayNSAO);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayDiff);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayNSAO);
          #endif
 
          #define TRAXSAMPLEQUADRATIC2D(tex, uv, texelSize, ret) \
@@ -17362,15 +16824,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 c = (q*(q - 1.0) + 0.5) / texelSize.zw; \
             float2 w0 = uv - c; \
             float2 w1 = uv + c; \
-            half4 s = SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w0.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w0.y)); \
+            half4 s = tex2D(tex, float2(w0.x, w0.y)) \
+              + tex2D(tex, float2(w0.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w0.y)); \
             ret = s / 4.0; \
          } \
         
          
-         float SampleTraxBufferLOD(float3 worldPos, float3 vertexNormal, float h)
+         float SampleTraxBufferLOD(float3 worldPos, float h)
          {
             
             // generate UVs for the buffer, which is moving
@@ -17381,28 +16843,28 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             fade = 1 - pow(fade, 8);
             uv *= 0.5;
             uv += 0.5;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
+            
             
             #if _TRAXQUADRATIC
+               float4 sr;
                float2 q = frac(uv * _GMSTraxBuffer_TexelSize.zw);
                float2 c = (q*(q - 1.0) + 0.5) / _GMSTraxBuffer_TexelSize.zw; 
                float2 w0 = uv - c; 
                float2 w1 = uv + c; 
-               half s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, w0.xy, 0).r + 
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w0.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w0.y), 0).r;
+               half4 s = tex2Dlod(_GMSTraxBuffer, float4(w0.x, w0.y, 0, 0)) 
+              + tex2Dlod(_GMSTraxBuffer, float4(w0.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w0.y, 0, 0));
 
               s /= 4;
             #else
-               float s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, uv, 0).r;
+               float s =  tex2Dlod(_GMSTraxBuffer, float4(uv, 0, 0)).r;
             #endif
-            return 1.0 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            return 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
          }
          
         
-         float SampleTraxBuffer(float3 worldPos, float3 vertexNormal, out float3 norm)
+         float SampleTraxBuffer(float3 worldPos, out float3 norm)
          {
             float2 uv = worldPos.xz;
             uv -= _GMSTraxBufferPosition.xz;
@@ -17414,8 +16876,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             
 
             float2 offset = _GMSTraxBuffer_TexelSize.xy;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
 
             #if _TRAXQUADRATIC
                float4 sr, sr1, sr2, sr3, sr4;
@@ -17432,14 +16892,14 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                float s4 = sr4.r;
 
             #else
-               float s = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv).r;
+               float s = tex2D(_GMSTraxBuffer, uv).r;
                
-               float s1 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, -1)).r;
-               float s2 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(-1, 0)).r;
-               float s3 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(1, 0)).r;
-               float s4 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, 1)).r;
+               float s1 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, -1)).r;
+               float s2 = tex2D(_GMSTraxBuffer, uv + offset * float2(-1, 0)).r;
+               float s3 = tex2D(_GMSTraxBuffer, uv + offset * float2(1, 0)).r;
+               float s4 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, 1)).r;
             #endif
-            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
  
 
             // generate normals
@@ -17523,8 +16983,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
 
             
-            half4 albedo = SAMPLE_TEXTURE2D_GRAD(_TraxDiff, sampler_Diffuse, uv, fsdx, fsdy);
-            half4 normSAO = SAMPLE_TEXTURE2D_GRAD(_TraxNSAO, sampler_NormalSAO, uv, fsdx, fsdy).agrb;
+            half4 albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxDiff, _Diffuse, uv, fsdx, fsdy);
+            half4 normSAO = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxNSAO, _Diffuse, uv, fsdx, fsdy).agrb;
             normSAO.xy = normSAO.xy * 2 - 1;
 
             COUNTSAMPLE
@@ -17561,11 +17021,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdx = ddx(config.uv) * _TraxUVScales;
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
             
-            half4 albedo0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, fsdx, fsdy);
-            half4 normSAO0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv0.z, fsdx, fsdy).agrb;
+            half4 albedo0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv0.z), fsdx, fsdy);
+            half4 normSAO0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv0.z), fsdx, fsdy).agrb;
             normSAO0.xy = normSAO0.xy * 2 - 1;
-            half4 albedo1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, fsdx, fsdy);
-            half4 normSAO1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv1.z, fsdx, fsdy).agrb;
+            half4 albedo1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv1.z), fsdx, fsdy);
+            half4 normSAO1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv1.z), fsdx, fsdy).agrb;
             normSAO1.xy = normSAO1.xy * 2 - 1;
             COUNTSAMPLE
             COUNTSAMPLE
@@ -17577,8 +17037,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             h1 = lerp(traxBuffer1, h1, _TraxInterpContrast);
 
             #if !_MAX2LAYER
-               half4 albedo2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, fsdx, fsdy);
-               half4 normSAO2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv2.z, fsdx, fsdy).agrb;
+               half4 albedo2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv2.z), fsdx, fsdy);
+               half4 normSAO2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv2.z), fsdx, fsdy).agrb;
                half h2 = HeightBlend(albedo2.a, samples.albedo2.a, traxBuffer2, _Contrast);
                h2 = lerp(traxBuffer2, h2, _TraxInterpContrast);
                normSAO2.xy = normSAO2.xy * 2 - 1;
@@ -17586,8 +17046,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                COUNTSAMPLE
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               half4 albedo3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, fsdx, fsdy);
-               half4 normSAO3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv3.z, fsdx, fsdy).agrb;
+               half4 albedo3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv3.z), fsdx, fsdy);
+               half4 normSAO3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv3.z), fsdx, fsdy).agrb;
                normSAO3.xy = normSAO3.xy * 2 - 1;
                half h3 = HeightBlend(albedo3.a, samples.albedo3.a, traxBuffer3, _Contrast);
                h3 = lerp(traxBuffer3, h3, _TraxInterpContrast);
@@ -17654,7 +17114,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _TRAXSINGLE
             float2 uv = config.uv * _TraxUVScales.xy;
 
-            half albedo = SAMPLE_TEXTURE2D_LOD(_TraxDiff, sampler_Diffuse, uv, mipLevel).a;
+            half albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_TraxDiff, _Diffuse, uv, mipLevel).a;
             
 
             h0 = lerp(albedo - offset, h0, traxBuffer0);
@@ -17666,10 +17126,10 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             traxBuffer = 1 - ((1 - traxBuffer) * _TraxTextureBlend);
 
             
-            half albedo0 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, mipLevel).a;
-            half albedo1 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, mipLevel).a;
-            half albedo2 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, mipLevel).a;
-            half albedo3 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, mipLevel).a;
+            half albedo0 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv0.z), mipLevel).a;
+            half albedo1 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv1.z), mipLevel).a;
+            half albedo2 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv2.z), mipLevel).a;
+            half albedo3 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv3.z), mipLevel).a;
             
 
             h0 = lerp(albedo0 - offset0, h0, traxBuffer0);
@@ -17708,7 +17168,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          
             half4 contrasts = _Contrast.xxxx;
             #if _PERTEXTRIPLANARCONTRAST
-               SAMPLE_PER_TEX(ptc, 9.5, config, half4(1,0.5,0,0));
+               SAMPLE_PER_TEX(ptc, 5.5, config, half4(1,0.5,0,0));
                contrasts = half4(ptc0.y, ptc1.y, ptc2.y, ptc3.y);
             #endif
 
@@ -18448,7 +17908,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float globalSlopeFilter = 1;
             #if _GLOBALSLOPEFILTER
                float2 gfilterUV = float2(1 - saturate(dot(worldNormalVertex, upVector) * 0.5 + 0.49), 0.5);
-               globalSlopeFilter = SAMPLE_TEXTURE2D(_GlobalSlopeTex, sampler_Diffuse, gfilterUV).a;
+               globalSlopeFilter = UNITY_SAMPLE_TEX2D_SAMPLER(_GlobalSlopeTex, _Diffuse, gfilterUV).a;
             #endif
          #endif
 
@@ -18475,7 +17935,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
-            traxBuffer = SampleTraxBuffer(i.worldPos, worldNormalVertex, traxNormal);
+            traxBuffer = SampleTraxBuffer(i.worldPos, traxNormal);
          #endif
          
          #if _WETNESS || _PUDDLES || _STREAMS || _LAVA
@@ -18503,7 +17963,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          MIPFORMAT origAlbedoLOD = INITMIPFORMAT;
 
          #if _TRIPLANAR && !_DISABLESPLATMAPS
-            PrepTriplanar(i.shaderData.texcoord0, worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #if _PLANETVECTORS
+               PrepTriplanar(i.localNormal, i.wrappedPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #else
+               PrepTriplanar(worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #endif
+            
             tc.IN = i;
          #endif
          
@@ -18513,7 +17978,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                albedoLOD = ComputeMipLevel(config.uv0.xy, _Diffuse_TexelSize.zw);
                normalLOD = ComputeMipLevel(config.uv0.xy, _NormalSAO_TexelSize.zw);
                #if _USEEMISSIVEMETAL
-                  emisLOD = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
+                  emisLOD   = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
                #endif
                #if _USESPECULARWORKFLOW
                   specLOD = ComputeMipLevel(config.uv0.xy, _Specular_TexelSize.zw);;
@@ -18634,7 +18099,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _HYBRIDHEIGHTBLEND
-            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/max(1.0, _HybridHeightBlendDistance)));
+            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/_HybridHeightBlendDistance));
          #endif
 
          
@@ -18709,13 +18174,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             DistanceResample(samples, config, tc, camDist, i.viewDir, fxLevels, albedoLOD, i.worldPos, heightWeights, worldNormalVertex);
          #endif
 
-         #if _STARREACHFORMAT
-            samples.normSAO0.w = length(samples.normSAO0.xy);
-            samples.normSAO1.w = length(samples.normSAO1.xy);
-            samples.normSAO2.w = length(samples.normSAO2.xy);
-            samples.normSAO3.w = length(samples.normSAO3.xy);
-         #endif
-
          // PerTexture sampling goes here, passing the samples structure
          
          #if _PERTEXMICROSHADOWS || _PERTEXFUZZYSHADE
@@ -18746,9 +18204,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                return o;
                #endif
 
-               
-
-               
             }
             #endif
 
@@ -18866,13 +18321,13 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _PERTEXAOSTR && !_DISABLESPLATMAPS
-            samples.normSAO0.a = pow(abs(samples.normSAO0.a), perTexMatSettings0.b);
-            samples.normSAO1.a = pow(abs(samples.normSAO1.a), perTexMatSettings1.b);
+            samples.normSAO0.a = pow(samples.normSAO0.a, abs(perTexMatSettings0.b));
+            samples.normSAO1.a = pow(samples.normSAO1.a, abs(perTexMatSettings1.b));
             #if !_MAX2LAYER
-               samples.normSAO2.a = pow(abs(samples.normSAO2.a), perTexMatSettings2.b);
+               samples.normSAO2.a = pow(samples.normSAO2.a, abs(perTexMatSettings2.b));
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               samples.normSAO3.a = pow(abs(samples.normSAO3.a), perTexMatSettings3.b);
+               samples.normSAO3.a = pow(samples.normSAO3.a, abs(perTexMatSettings3.b));
             #endif
          #endif
 
@@ -18907,26 +18362,30 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          {
             SAMPLE_PER_TEX(ptRimA, 26.5, config, half4(1, 1, 1, 1));
             SAMPLE_PER_TEX(ptRimB, 27.5, config, half4(1, 1, 1, 0));
-            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), max(0.0001, ptRimA0.g)) * ptRimB0.rgb * ptRimB0.a;
-            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), max(0.0001, ptRimA1.g)) * ptRimB1.rgb * ptRimB1.a;
-            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), max(0.0001, ptRimA2.g)) * ptRimB2.rgb * ptRimB2.a;
-            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), max(0.0001, ptRimA3.g)) * ptRimB3.rgb * ptRimB3.a;
+            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), ptRimA0.g) * ptRimB0.rgb * ptRimB0.a;
+            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), ptRimA1.g) * ptRimB1.rgb * ptRimB1.a;
+            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), ptRimA2.g) * ptRimB2.rgb * ptRimB2.a;
+            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), ptRimA3.g) * ptRimB3.rgb * ptRimB3.a;
          }
          #endif
 
 
 
          #if (((_DETAILNOISE && _PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && _PERTEXDISTANCENOISESTRENGTH)) || (_NORMALNOISE && _PERTEXNORMALNOISESTRENGTH)) && !_DISABLESPLATMAPS
-            ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          
          #if _GLOBALNOISEUV
             // noise defaults so that a value of 1, 1 is 4 pixels in size and moves the uvs by 1 pixel max.
             #if _CUSTOMSPLATTEXTURES
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #else
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
          #endif
 
@@ -18936,7 +18395,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if (_ANTITILEARRAYDETAIL || _ANTITILEARRAYDISTANCE || _ANTITILEARRAYNORMAL) && !_DISABLESPLATMAPS
-            ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #if _PLANETVECTORS
+               ApplyAntiTilePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex, heightWeights);
+            #else
+               ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #endif
          #endif
 
          #if _GEOMAP && !_DISABLESPLATMAPS
@@ -19027,7 +18490,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          #if ((_DETAILNOISE && !_PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && !_PERTEXDISTANCENOISESTRENGTH) || (_NORMALNOISE && !_PERTEXNORMALNOISESTRENGTH))
-            ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          #if _SPLATFADE
@@ -19042,12 +18509,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             MSBRANCHOTHER(camDist - _SplatFade.x)
             {
                float falloff = saturate(InverseLerp(_SplatFade.x, _SplatFade.y, camDist));
-               half4 sfalb = SAMPLE_TEXTURE2D_ARRAY_GRAD(_Diffuse, sampler_Diffuse, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY);
+               half4 sfalb = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_Diffuse, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY);
                COUNTSAMPLE
                albedo.rgb = lerp(albedo.rgb, sfalb.rgb, falloff);
 
                #if !_NONORMALMAP && !_AUTONORMAL
-                  half4 sfnormSAO = SAMPLE_TEXTURE2D_ARRAY_GRAD(_NormalSAO, sampler_NormalSAO, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY).agrb;
+                  half4 sfnormSAO = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_NormalSAO, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY).agrb;
                   COUNTSAMPLE
                   sfnormSAO.xy = sfnormSAO.xy * 2 - 1;
 
@@ -19082,13 +18549,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             GeoTexture(albedo.rgb, normSAO, surfGrad, i.worldPos, worldHeight, config, worldNormalVertex, upVector);
          #endif
 
+         #if _PLANETALBEDO || _PLANETALBEDO2 || _PLANETNORMAL || _PLANETNORMAL2
+            //ApplyPlanet(i, albedo, normSAO, config, camDist, i.worldPos, upVector);
+         #endif
          
          #if _SCATTER
-            ApplyScatter(
-               #if _MEGASPLAT
-               config, 
-               #endif
-               i, albedo, normSAO, surfGrad, config.uv, camDist);
+            ApplyScatter(i, albedo, normSAO, surfGrad, config.uv, camDist);
          #endif
 
          #if _DECAL
@@ -19199,9 +18665,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
          
          #if _TOONWIREFRAME
-         ToonWireframe(config.uv, o.Albedo, camDist);
+         ToonWireframe(config.uv, o.Albedo);
          #endif
 
+         #if _PLANETVECTORS
+            ApplyPlanetAtmosphere(i, o);
+         #endif
 
          #if _DEBUG_TRAXBUFFER
             ClearAllButAlbedo(o, half3(traxBuffer, 0, 0) * saturate(o.Albedo.z+1));
@@ -19210,11 +18679,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _DEBUG_WORLDNORMAL
             ClearAllButAlbedo(o,  WorldNormalVector(i, o.Normal) * saturate(o.Albedo.z+1));
          #endif
-
-         #if _DEBUG_MEGABARY && _MEGASPLAT
-            o.Albedo = i.baryWeights.xyz;
-         #endif
-
 
          return o;
       }
@@ -19227,44 +18691,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_CustomControl0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_CustomControl0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_CustomControl1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl1, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_CustomControl2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl2, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_CustomControl3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl3, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_CustomControl4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl4, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_CustomControl5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl5, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_CustomControl6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl6, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_CustomControl7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl7, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
          #else
@@ -19273,44 +18737,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_Control0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_Control0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_Control1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control1, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_Control2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control2, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_Control3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control3, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_Control4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control4, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_Control5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control5, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_Control6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control6, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_Control7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control7, _Control0, controlUV);
             COUNTSAMPLE
             #endif
          #endif
@@ -19330,18 +18794,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #if _FORCELOCALSPACE
             worldNormalVertex = mul((float3x3)unity_WorldToObject, worldNormalVertex).xyz;
             i.worldPos = i.worldPos -  mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz;
-            i.worldHeight = i.worldPos.y;
          #endif
 
          #if _ORIGINSHIFT
+             //worldNormalVertex = mul(_GlobalOriginMTX, float4(worldNormalVertex, 1)).xyz;
              i.worldPos = i.worldPos + mul(_GlobalOriginMTX, float4(0,0,0,1)).xyz;
-             i.worldHeight = i.worldPos.y;
          #endif
 
          #if _DEBUG_USE_TOPOLOGY
-            i.worldPos = SAMPLE_TEXTURE2D(_DebugWorldPos, sampler_Diffuse, i.uv_Control0);
-            worldNormalVertex = SAMPLE_TEXTURE2D(_DebugWorldNormal, sampler_Diffuse, i.uv_Control0);
-            i.worldHeight = i.worldPos.y;
+            i.worldPos = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldPos, _Diffuse, i.uv_Control0);
+            worldNormalVertex = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldNormal, _Diffuse, i.uv_Control0);
          #endif
 
          #if _ALPHABELOWHEIGHT && !_TBDISABLEALPHAHOLES
@@ -19396,8 +18858,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                   DiggerSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MEGASPLAT
                   MegaSplatVertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
-               #elif _MEGASPLATTEXTURE
-                   MegaSplatTextureSetup(controlUV, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MICROVERTEXMESH
                   VertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif !_PROCEDURALTEXTURE || _PROCEDURALBLENDSPLATS
@@ -19409,14 +18869,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                #if _PROCEDURALTEXTURE
                   float3 procNormal = worldNormalVertex;
                   float3 worldPos = i.worldPos;
+                  #if _PLANETVECTORS
+                     config.uv = origUV;
+                     procNormal = i.TBN[2];
+                     worldPos = i.wrappedPos;
+                  #endif
                   ProceduralSetup(i, worldPos, i.worldHeight, procNormal, i.worldUpVector, weights, origUV, config, ddx(origUV), ddy(origUV), ddx(worldPos), ddy(worldPos), decalOutput);
                #endif
             #else // _DISABLESPLATMAPS
                 Setup(weights, origUV, config, half4(1,0,0,0), 0, 0, 0, 0, 0, 0, 0, i.worldPos, decalOutput);
-            #endif
-
-            #if _SLOPETEXTURE
-               SlopeTexture(config, weights, worldNormalVertex);
             #endif
          } // _SPLATFADE else case
 
@@ -19446,15 +18907,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
  
          MicroSplatLayer l = Sample(i, weights, config, camDist, worldNormalVertex, decalOutput);
 
-         // On windows, sometimes the shared samplers gets stripped, so we have to do this crap.
+         // On windows, sometimes the diffuse sampler gets stripped, so we have to do this crap.
          // We sample from the lowest mip, so it shouldn't cost much, but still, I hate this, wtf..
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_Diffuse, sampler_Diffuse, config.uv0, 11).r + 2);
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_NormalSAO, sampler_NormalSAO, config.uv0, 11).r + 2);
+         l.Albedo *= saturate(UNITY_SAMPLE_TEX2DARRAY_LOD(_Diffuse, config.uv0, 11).r + 2);
+         // same for the control sampler.
+         l.Albedo *= saturate(MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_Control0, _Control0, config.uv, 11).r + 2);
 
          #if _PROCEDURALTEXTURE
             ProceduralTextureDebugOutput(l, weights, config);
          #endif
-
 
          return l;
 
@@ -19464,6 +18925,17 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
    
 
+
+#if (_MICROTERRAIN || _MICROMESHTERRAIN)
+    TEXTURE2D(_TerrainHeightmapTexture);
+    SAMPLER(sampler_TerrainHeightmapTexture);
+    TEXTURE2D(_TerrainNormalmapTexture);
+    SAMPLER(sampler_TerrainNormalmapTexture);
+#endif
+
+UNITY_INSTANCING_BUFFER_START(Terrain)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
+UNITY_INSTANCING_BUFFER_END(Terrain)          
 
 
 
@@ -19484,7 +18956,7 @@ float4 ConstructTerrainTangent(float3 normal, float3 positiveZ)
 
 void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv)
 {
-#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED) && !_TERRAINBLENDABLESHADER
+#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED)
    
     float2 patchVertex = vertex.xy;
     float4 instanceData = UNITY_ACCESS_INSTANCED_PROP(Terrain, _TerrainPatchInstanceData);
@@ -19494,7 +18966,7 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
     float2 sampleUV = (uv / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
 
-    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, shared_linear_clamp_sampler, sampleUV, 0));
+    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, sampler_TerrainHeightmapTexture, sampleUV, 0));
    
     vertex.xz = sampleCoords * _TerrainHeightmapScale.xz;
     vertex.y = height * _TerrainHeightmapScale.y;
@@ -19508,28 +18980,26 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
 void ApplyMeshModification(inout VertexData input)
 {
-   #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
+   #if _MICROTERRAIN
       float2 uv = input.texcoord0.xy;
       TerrainInstancing(input.vertex, input.normal, uv);
       input.texcoord0.xy = uv;
+      input.texcoord1.xy = uv;
+      input.texcoord2.xy = uv;
+      
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
-   #if _PERPIXNORMAL && !_TERRAINBLENDABLESHADER
+   #if _PERPIXNORMAL
       input.normal = float3(0,1,0);
-   #endif
-
-}
-
-// called by the template, so we can remove tangent from VertexData
-void ApplyTerrainTangent(inout VertexToPixel input)
-{
-   #if (_MICROTERRAIN || _PERPIXNORMAL) && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
 
    // digger meshes ain't got no tangent either..
-   #if _MICRODIGGERMESH && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+   #if _MICRODIGGERMESH
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
+
+
 }
 
 
@@ -19573,13 +19043,13 @@ float3 GetTessFactors ()
        
         float3 worldNormalVertex = d.worldSpaceNormal;
 
-        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN && !_TERRAINBLENDABLESHADER)
+        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_TerrainNormalmapTexture, _TerrainNormalmapTexture, sampleCoords).xyz * 2 - 1);
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomNormal, geomTangent)) * -1;
             worldNormalVertex = geomNormal;
@@ -19589,13 +19059,13 @@ float3 GetTessFactors ()
             d.TBNMatrix = float3x3(geomTangent, geomBitangent, geomNormal);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
 
-         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN) && !_TERRAINBLENDABLESHADER
+         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy * _PerPixelNormal_TexelSize.zw + 0.5f) * _PerPixelNormal_TexelSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_PerPixelNormal, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_PerPixelNormal, _PerPixelNormal, sampleCoords).xyz * 2 - 1);
             
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomTangent, geomNormal)) * -1;
@@ -19617,18 +19087,13 @@ float3 GetTessFactors ()
          
          #if _SRPTERRAINBLEND
             MicroSplatLayer l = BlendWithTerrain(d);
-
-               #if _DEBUG_WORLDNORMAL
-                  ClearAllButAlbedo(l, normalize(TangentToWorldSpace(d, l.Normal)) * saturate(l.Albedo.z+1));
-               #endif
          #else
             MicroSplatLayer l = SurfImpl(i, worldNormalVertex);
          #endif
 
         DoDebugOutput(l);
 
-
-
+      
 
         o.Albedo = l.Albedo;
         o.Normal = l.Normal;
@@ -19667,12 +19132,10 @@ float3 GetTessFactors ()
             d.worldSpaceViewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
              d.texcoord0 = i.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                d.texcoord1 = i.texcoord1;
-               // d.texcoord2 = i.texcoord2;
-            #endif
+             d.texcoord1 = i.texcoord1;
+             d.texcoord2 = i.texcoord2;
             // d.texcoord3 = i.texcoord3;
-            // d.vertexColor = i.vertexColor;
+             d.vertexColor = i.vertexColor;
 
             // these rarely get used, so we back transform them. Usually will be stripped.
             #if _HDRP
@@ -19680,8 +19143,8 @@ float3 GetTessFactors ()
             #else
                 // d.localSpacePosition = mul(unity_WorldToObject, float4(i.worldPos, 1));
             #endif
-            // d.localSpaceNormal = normalize(mul((float3x3)unity_WorldToObject, i.worldNormal));
-            // d.localSpaceTangent = normalize(mul((float3x3)unity_WorldToObject, i.worldTangent.xyz));
+            // d.localSpaceNormal = normalize(mul(unity_WorldToObject, i.worldNormal));
+            // d.localSpaceTangent = normalize(mul(unity_WorldToObject, i.worldTangent.xyz));
 
             // d.screenPos = i.screenPos;
             // d.screenUV = i.screenPos.xy / i.screenPos.w;
@@ -19763,30 +19226,21 @@ float3 GetTessFactors ()
 #if !_TESSELLATION_ON
            ChainModifyVertex(v, o);
 #endif
-            
+
              o.texcoord0 = v.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              o.texcoord1 = v.texcoord1;
-            // o.texcoord2 = v.texcoord2;
-            #endif
+             o.texcoord2 = v.texcoord2;
             // o.texcoord3 = v.texcoord3;
-            // o.vertexColor = v.vertexColor;
-            
+             o.vertexColor = v.vertexColor;
+            // o.screenPos = ComputeScreenPos(o.pos);
             o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
             o.worldNormal = UnityObjectToWorldNormal(v.normal);
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-               o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
-               fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
-               o.worldTangent.w = tangentSign;
-            #endif
-
-            // MS Only
-            ApplyTerrainTangent(o);
+            o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
+            fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+            float3 worldBinormal = cross(o.worldNormal, o.worldTangent.xyz) * tangentSign;
+            o.worldTangent.w = tangentSign;
 
             TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-
-            // o.screenPos = ComputeScreenPos(o.pos);
-
             return o;
          }
 
@@ -19856,8 +19310,9 @@ float3 GetTessFactors ()
          #include "UnityShaderUtilities.cginc"
 
          #include "UnityCG.cginc"
-
-         #define _PASSMETA 1
+         #include "Lighting.cginc"
+         #include "UnityPBSLighting.cginc"
+         #include "UnityMetaPass.cginc"
 
          
       #define _MICROSPLAT 1
@@ -19881,133 +19336,8 @@ float3 GetTessFactors ()
 // of the patchy one Unity provides being inlined/emulated in HDRP/URP. Strangely, PSSL and XBoxOne libraries are not
 // included in the standard SRP code, but they are in tons of Unity own projects on the web, so I grabbed them from there.
 
-#if defined(SHADER_API_GAMECORE)
 
-	#define ZERO_INITIALIZE(type, name) name = (type)0;
-	#define ZERO_INITIALIZE_ARRAY(type, name, arraySize) { for (int arrayIndex = 0; arrayIndex < arraySize; arrayIndex++) { name[arrayIndex] = (type)0; } }
-
-	// Texture util abstraction
-
-	#define CALCULATE_TEXTURE2D_LOD(textureName, samplerName, coord2) textureName.CalculateLevelOfDetail(samplerName, coord2)
-
-	// Texture abstraction
-
-	#define TEXTURE2D(textureName)                Texture2D textureName
-	#define TEXTURE2D_ARRAY(textureName)          Texture2DArray textureName
-	#define TEXTURECUBE(textureName)              TextureCube textureName
-	#define TEXTURECUBE_ARRAY(textureName)        TextureCubeArray textureName
-	#define TEXTURE3D(textureName)                Texture3D textureName
-
-	#define TEXTURE2D_FLOAT(textureName)          TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_FLOAT(textureName)    TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_FLOAT(textureName)        TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_FLOAT(textureName)  TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_FLOAT(textureName)          TEXTURE3D(textureName)
-
-	#define TEXTURE2D_HALF(textureName)           TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_HALF(textureName)     TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_HALF(textureName)         TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_HALF(textureName)   TEXTURECUBE_ARRAY(textureName)
-	#define TEXTURE3D_HALF(textureName)           TEXTURE3D(textureName)
-
-	#define TEXTURE2D_SHADOW(textureName)         TEXTURE2D(textureName)
-	#define TEXTURE2D_ARRAY_SHADOW(textureName)   TEXTURE2D_ARRAY(textureName)
-	#define TEXTURECUBE_SHADOW(textureName)       TEXTURECUBE(textureName)
-	#define TEXTURECUBE_ARRAY_SHADOW(textureName) TEXTURECUBE_ARRAY(textureName)
-
-	#define RW_TEXTURE2D(type, textureName)       RWTexture2D<type> textureName
-	#define RW_TEXTURE2D_ARRAY(type, textureName) RWTexture2DArray<type> textureName
-	#define RW_TEXTURE3D(type, textureName)       RWTexture3D<type> textureName
-
-	#define SAMPLER(samplerName)                  SamplerState samplerName
-	#define SAMPLER_CMP(samplerName)              SamplerComparisonState samplerName
-	#define ASSIGN_SAMPLER(samplerName, samplerValue) samplerName = samplerValue
-
-	#define TEXTURE2D_PARAM(textureName, samplerName)                 TEXTURE2D(textureName),         SAMPLER(samplerName)
-	#define TEXTURE2D_ARRAY_PARAM(textureName, samplerName)           TEXTURE2D_ARRAY(textureName),   SAMPLER(samplerName)
-	#define TEXTURECUBE_PARAM(textureName, samplerName)               TEXTURECUBE(textureName),       SAMPLER(samplerName)
-	#define TEXTURECUBE_ARRAY_PARAM(textureName, samplerName)         TEXTURECUBE_ARRAY(textureName), SAMPLER(samplerName)
-	#define TEXTURE3D_PARAM(textureName, samplerName)                 TEXTURE3D(textureName),         SAMPLER(samplerName)
-
-	#define TEXTURE2D_SHADOW_PARAM(textureName, samplerName)          TEXTURE2D(textureName),         SAMPLER_CMP(samplerName)
-	#define TEXTURE2D_ARRAY_SHADOW_PARAM(textureName, samplerName)    TEXTURE2D_ARRAY(textureName),   SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_SHADOW_PARAM(textureName, samplerName)        TEXTURECUBE(textureName),       SAMPLER_CMP(samplerName)
-	#define TEXTURECUBE_ARRAY_SHADOW_PARAM(textureName, samplerName)  TEXTURECUBE_ARRAY(textureName), SAMPLER_CMP(samplerName)
-
-	#define TEXTURE2D_ARGS(textureName, samplerName)                textureName, samplerName
-	#define TEXTURE2D_ARRAY_ARGS(textureName, samplerName)          textureName, samplerName
-	#define TEXTURECUBE_ARGS(textureName, samplerName)              textureName, samplerName
-	#define TEXTURECUBE_ARRAY_ARGS(textureName, samplerName)        textureName, samplerName
-	#define TEXTURE3D_ARGS(textureName, samplerName)                textureName, samplerName
-
-	#define TEXTURE2D_SHADOW_ARGS(textureName, samplerName)         textureName, samplerName
-	#define TEXTURE2D_ARRAY_SHADOW_ARGS(textureName, samplerName)   textureName, samplerName
-	#define TEXTURECUBE_SHADOW_ARGS(textureName, samplerName)       textureName, samplerName
-	#define TEXTURECUBE_ARRAY_SHADOW_ARGS(textureName, samplerName) textureName, samplerName
-
-	#define PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               textureName.Sample(samplerName, coord2)
-	#define PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      textureName.SampleLevel(samplerName, coord2, lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    textureName.SampleBias(samplerName, coord2, bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              textureName.SampleGrad(samplerName, coord2, dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  textureName.Sample(samplerName, float3(coord2, index))
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         textureName.SampleLevel(samplerName, float3(coord2, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       textureName.SampleBias(samplerName, float3(coord2, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) textureName.SampleGrad(samplerName, float3(coord2, index), dpdx, dpdy)
-	#define PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    textureName.SampleLevel(samplerName, coord3, lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  textureName.SampleBias(samplerName, coord3, bias)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                textureName.Sample(samplerName, float4(coord3, index))
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       textureName.SampleLevel(samplerName, float4(coord3, index), lod)
-	#define PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     textureName.SampleBias(samplerName, float4(coord3, index), bias)
-	#define PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               textureName.Sample(samplerName, coord3)
-	#define PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      textureName.SampleLevel(samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D(textureName, samplerName, coord2)                               PLATFORM_SAMPLE_TEXTURE2D(textureName, samplerName, coord2)
-	#define SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)                      PLATFORM_SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod)
-	#define SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)                    PLATFORM_SAMPLE_TEXTURE2D_BIAS(textureName, samplerName, coord2, bias)
-	#define SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)              PLATFORM_SAMPLE_TEXTURE2D_GRAD(textureName, samplerName, coord2, dpdx, dpdy)
-	#define SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)                  PLATFORM_SAMPLE_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)
-	#define SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)         PLATFORM_SAMPLE_TEXTURE2D_ARRAY_LOD(textureName, samplerName, coord2, index, lod)
-	#define SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)       PLATFORM_SAMPLE_TEXTURE2D_ARRAY_BIAS(textureName, samplerName, coord2, index, bias)
-	#define SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy) PLATFORM_SAMPLE_TEXTURE2D_ARRAY_GRAD(textureName, samplerName, coord2, index, dpdx, dpdy)
-	#define SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)                             PLATFORM_SAMPLE_TEXTURECUBE(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)                    PLATFORM_SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod)
-	#define SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)                  PLATFORM_SAMPLE_TEXTURECUBE_BIAS(textureName, samplerName, coord3, bias)
-	#define SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)                PLATFORM_SAMPLE_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index)
-	#define SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)       PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_LOD(textureName, samplerName, coord3, index, lod)
-	#define SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)     PLATFORM_SAMPLE_TEXTURECUBE_ARRAY_BIAS(textureName, samplerName, coord3, index, bias)
-	#define SAMPLE_TEXTURE3D(textureName, samplerName, coord3)                               PLATFORM_SAMPLE_TEXTURE3D(textureName, samplerName, coord3)
-	#define SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)                      PLATFORM_SAMPLE_TEXTURE3D_LOD(textureName, samplerName, coord3, lod)
-
-	#define SAMPLE_TEXTURE2D_SHADOW(textureName, samplerName, coord3)                    textureName.SampleCmpLevelZero(samplerName, (coord3).xy, (coord3).z)
-	#define SAMPLE_TEXTURE2D_ARRAY_SHADOW(textureName, samplerName, coord3, index)       textureName.SampleCmpLevelZero(samplerName, float3((coord3).xy, index), (coord3).z)
-	#define SAMPLE_TEXTURECUBE_SHADOW(textureName, samplerName, coord4)                  textureName.SampleCmpLevelZero(samplerName, (coord4).xyz, (coord4).w)
-	#define SAMPLE_TEXTURECUBE_ARRAY_SHADOW(textureName, samplerName, coord4, index)     textureName.SampleCmpLevelZero(samplerName, float4((coord4).xyz, index), (coord4).w)
-
-	#define SAMPLE_DEPTH_TEXTURE(textureName, samplerName, coord2)          SAMPLE_TEXTURE2D(textureName, samplerName, coord2).r
-	#define SAMPLE_DEPTH_TEXTURE_LOD(textureName, samplerName, coord2, lod) SAMPLE_TEXTURE2D_LOD(textureName, samplerName, coord2, lod).r
-
-	#define LOAD_TEXTURE2D(textureName, unCoord2)                                   textureName.Load(int3(unCoord2, 0))
-	#define LOAD_TEXTURE2D_LOD(textureName, unCoord2, lod)                          textureName.Load(int3(unCoord2, lod))
-	#define LOAD_TEXTURE2D_MSAA(textureName, unCoord2, sampleIndex)                 textureName.Load(unCoord2, sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY(textureName, unCoord2, index)                      textureName.Load(int4(unCoord2, index, 0))
-	#define LOAD_TEXTURE2D_ARRAY_MSAA(textureName, unCoord2, index, sampleIndex)    textureName.Load(int3(unCoord2, index), sampleIndex)
-	#define LOAD_TEXTURE2D_ARRAY_LOD(textureName, unCoord2, index, lod)             textureName.Load(int4(unCoord2, index, lod))
-	#define LOAD_TEXTURE3D(textureName, unCoord3)                                   textureName.Load(int4(unCoord3, 0))
-	#define LOAD_TEXTURE3D_LOD(textureName, unCoord3, lod)                          textureName.Load(int4(unCoord3, lod))
-
-	#define PLATFORM_SUPPORT_GATHER
-	#define GATHER_TEXTURE2D(textureName, samplerName, coord2)                textureName.Gather(samplerName, coord2)
-	#define GATHER_TEXTURE2D_ARRAY(textureName, samplerName, coord2, index)   textureName.Gather(samplerName, float3(coord2, index))
-	#define GATHER_TEXTURECUBE(textureName, samplerName, coord3)              textureName.Gather(samplerName, coord3)
-	#define GATHER_TEXTURECUBE_ARRAY(textureName, samplerName, coord3, index) textureName.Gather(samplerName, float4(coord3, index))
-	#define GATHER_RED_TEXTURE2D(textureName, samplerName, coord2)            textureName.GatherRed(samplerName, coord2)
-	#define GATHER_GREEN_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherGreen(samplerName, coord2)
-	#define GATHER_BLUE_TEXTURE2D(textureName, samplerName, coord2)           textureName.GatherBlue(samplerName, coord2)
-	#define GATHER_ALPHA_TEXTURE2D(textureName, samplerName, coord2)          textureName.GatherAlpha(samplerName, coord2)
-
-	
-#elif defined(SHADER_API_XBOXONE)
+#if defined(SHADER_API_XBOXONE)
 	
 	// Initialize arbitrary structure with zero values.
 	// Do not exist on some platform, in this case we need to have a standard name that call a function that will initialize all parameters to 0
@@ -20392,19 +19722,6 @@ float3 GetTessFactors ()
 
 
 
-         #if _NOMINDIELETRIC
-            // for Standard
-            #ifdef unity_ColorSpaceDielectricSpec
-               #undef unity_ColorSpaceDielectricSpec
-            #endif
-            #define unity_ColorSpaceDielectricSpec half4(0,0,0,1)
-         #endif
-
-         #include "Lighting.cginc"
-         #include "UnityPBSLighting.cginc"
-         #include "UnityMetaPass.cginc"
-
-
          #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
             #define UNITY_ASSUME_UNIFORM_SCALING
             #define UNITY_DONT_INSTANCE_OBJECT_MATRICES
@@ -20423,13 +19740,11 @@ float3 GetTessFactors ()
             float3 worldNormal : TEXCOORD1;
             float4 worldTangent : TEXCOORD2;
              float4 texcoord0 : TEXCCOORD3;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              float4 texcoord1 : TEXCCOORD4;
-            // float4 texcoord2 : TEXCCOORD5;
-            #endif
+             float4 texcoord2 : TEXCCOORD5;
             // float4 texcoord3 : TEXCCOORD6;
             // float4 screenPos : TEXCOORD7;
-            // float4 vertexColor : COLOR;
+             float4 vertexColor : COLOR;
             #ifdef EDITOR_VISUALIZATION
               float2 vizUV : TEXCOORD8;
               float4 lightCoord : TEXCOORD9;
@@ -20511,19 +19826,17 @@ float3 GetTessFactors ()
 
             struct VertexData
             {
-               #if SHADER_TARGET > 30 && _PLANETCOMPUTE
- //              // uint vertexID : SV_VertexID;
+               #if SHADER_TARGET > 30
+               // uint vertexID : SV_VertexID;
                #endif
                float4 vertex : POSITION;
                float3 normal : NORMAL;
+               float4 tangent : TANGENT;
                float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                  float4 tangent : TANGENT;
-                  float4 texcoord1 : TEXCOORD1;
-                  float4 texcoord2 : TEXCOORD2;
-               #endif
+               float4 texcoord1 : TEXCOORD1;
+               float4 texcoord2 : TEXCOORD2;
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -20540,14 +19853,12 @@ float3 GetTessFactors ()
             {
                float4 vertex : INTERNALTESSPOS;
                float3 normal : NORMAL;
-               float4 texcoord0 : TEXCOORD0;
-               #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
                float4 tangent : TANGENT;
+               float4 texcoord0 : TEXCOORD0;
                float4 texcoord1 : TEXCOORD1;
                float4 texcoord2 : TEXCOORD2;
-               #endif
                // float4 texcoord3 : TEXCOORD3;
-               // float4 vertexColor : COLOR;
+                float4 vertexColor : COLOR;
 
                
                // float4 extraV2F0 : TEXCOORD4;
@@ -20603,6 +19914,13 @@ float3 GetTessFactors ()
                float4 TransformObjectToWorld(float4 p) { return mul(unity_ObjectToWorld, p); };
                float4x4 GetWorldToObjectMatrix() { return unity_WorldToObject; }
                float4x4 GetObjectToWorldMatrix() { return unity_ObjectToWorld; }
+               #if (defined(SHADER_API_D3D11) || defined(SHADER_API_XBOXONE) || defined(UNITY_COMPILER_HLSLCC) || defined(SHADER_API_PSSL) || (SHADER_TARGET_SURFACE_ANALYSIS && !SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER))
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord, lod) tex.SampleLevel (sampler##tex,coord, lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) tex.SampleLevel (sampler##samplertex,coord, lod)
+               #else
+                 #define UNITY_SAMPLE_TEX2D_LOD(tex,coord,lod) tex2D (tex,coord,0,lod)
+                 #define UNITY_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord,lod) tex2D (tex,coord,0,lod)
+               #endif
             #endif
 
             float3 GetCameraWorldPosition()
@@ -20693,6 +20011,13 @@ float3 GetTessFactors ()
          float _HybridHeightBlendDistance;
       #endif
 
+
+      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
+         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
+         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
+         float4    _TerrainNormalmapTexture_TexelSize;
+      #endif
+
       #if _PACKINGHQ
          float4 _SmoothAO_TexelSize;
       #endif
@@ -20719,9 +20044,13 @@ float3 GetTessFactors ()
 
       float4 _UVScale; // scale and offset
 
+      float2 _ToonTerrainSize;
+
       half _Contrast;
       
-      
+      float3 _gGlitterLightDir;
+      float3 _gGlitterLightWorldPos;
+      half3 _gGlitterLightColor;
 
        #if _VSSHADOWMAP
          float4 gVSSunDirection;
@@ -20736,9 +20065,7 @@ float3 GetTessFactors ()
       #endif
 
       float4 _Control0_TexelSize;
-      #if _CUSTOMSPLATTEXTURES
-         float4 _CustomControl0_TexelSize;
-      #endif
+      float4 _CustomControl0_TexelSize;
       float4 _PerPixelNormal_TexelSize;
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
@@ -20790,30 +20117,7 @@ float3 GetTessFactors ()
    
 // In Unity 2020.3LTS, Unity will spew tons of errors about missing this sampler in
 // URP, even though it shouldn't be required.
-TEXTURE2D(_MainTex);
-
-      // globals, outside of CBuffer, but used by more than one module
-      float3 _gGlitterLightDir;
-      float3 _gGlitterLightWorldPos;
-      half3 _gGlitterLightColor;
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-         float4    _TerrainHeightmapRecipSize;   // float4(1.0f/width, 1.0f/height, 1.0f/(width-1), 1.0f/(height-1))
-         float4    _TerrainHeightmapScale;       // float4(hmScale.x, hmScale.y / (float)(kMaxHeight), hmScale.z, 0.0f)
-         float4    _TerrainNormalmapTexture_TexelSize;
-      #endif
-
-      #if (_MICROTERRAIN || _MICROMESHTERRAIN)
-          TEXTURE2D(_TerrainHeightmapTexture);
-          TEXTURE2D(_TerrainNormalmapTexture);
-      #endif
-
-      UNITY_INSTANCING_BUFFER_START(Terrain)
-          UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
-      UNITY_INSTANCING_BUFFER_END(Terrain)          
-
-
-      
+sampler2D _MainTex; 
 
       // dynamic branching helpers, for regular and aggressive branching
       // debug mode shows how many samples using branching will save us. 
@@ -20882,8 +20186,8 @@ TEXTURE2D(_MainTex);
 
 
       #if _DEBUG_USE_TOPOLOGY
-         TEXTURE2D(_DebugWorldPos);
-         TEXTURE2D(_DebugWorldNormal);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldPos);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_DebugWorldNormal);
       #endif
       
 
@@ -20892,7 +20196,7 @@ TEXTURE2D(_MainTex);
       UNITY_DECLARE_TEX2DARRAY(_NormalSAO);
 
       #if _CONTROLNOISEUV || _GLOBALNOISEUV
-         TEXTURE2D(_NoiseUV);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_NoiseUV);
       #endif
 
       #if _PACKINGHQ
@@ -20907,60 +20211,58 @@ TEXTURE2D(_MainTex);
          UNITY_DECLARE_TEX2DARRAY(_EmissiveMetal);
       #endif
 
-      TEXTURE2D(_PerPixelNormal);
-
-      SamplerState shared_linear_clamp_sampler;
-      SamplerState shared_point_clamp_sampler;
+      UNITY_DECLARE_TEX2D(_PerPixelNormal);
       
-      TEXTURE2D(_Control0);
+      
+      UNITY_DECLARE_TEX2D(_Control0);
       #if _CUSTOMSPLATTEXTURES
-         TEXTURE2D(_CustomControl0);
+         UNITY_DECLARE_TEX2D(_CustomControl0);
          #if !_MAX4TEXTURES
-         TEXTURE2D(_CustomControl1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_CustomControl2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_CustomControl3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_CustomControl6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_CustomControl7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_CustomControl7);
          #endif
       #else
          #if !_MAX4TEXTURES
-         TEXTURE2D(_Control1);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control1);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES
-         TEXTURE2D(_Control2);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control2);
          #endif
          #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-         TEXTURE2D(_Control3);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control3);
          #endif
          #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control4);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control4);
          #endif
          #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control5);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control5);
          #endif
          #if _MAX28TEXTURES || _MAX32TEXTURES
-         TEXTURE2D(_Control6);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control6);
          #endif
          #if _MAX32TEXTURES
-         TEXTURE2D(_Control7);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_Control7);
          #endif
       #endif
 
-      TEXTURE2D_FLOAT(_PerTexProps);
+      sampler2D_float _PerTexProps;
    
       struct DecalLayer
       {
@@ -20992,19 +20294,19 @@ TEXTURE2D(_MainTex);
          float4 d2;
       };
 
-      float InverseLerp(float x, float y, float v) { return (v-x)/max(y-x, 0.001); }
-      float2 InverseLerp(float2 x, float2 y, float2 v) { return (v-x)/max(y-x, float2(0.001, 0.001)); }
-      float3 InverseLerp(float3 x, float3 y, float3 v) { return (v-x)/max(y-x, float3(0.001, 0.001, 0.001)); }
-      float4 InverseLerp(float4 x, float4 y, float4 v) { return (v-x)/max(y-x, float4(0.001, 0.001, 0.001, 0.001)); }
+      half InverseLerp(half x, half y, half v) { return (v-x)/max(y-x, 0.001); }
+      half2 InverseLerp(half2 x, half2 y, half2 v) { return (v-x)/max(y-x, half2(0.001, 0.001)); }
+      half3 InverseLerp(half3 x, half3 y, half3 v) { return (v-x)/max(y-x, half3(0.001, 0.001, 0.001)); }
+      half4 InverseLerp(half4 x, half4 y, half4 v) { return (v-x)/max(y-x, half4(0.001, 0.001, 0.001, 0.001)); }
       
 
       // 2019.3 holes
       #ifdef _ALPHATEST_ON
-          TEXTURE2D(_TerrainHolesTexture);
+          UNITY_DECLARE_TEX2D(_TerrainHolesTexture);
           
           void ClipHoles(float2 uv)
           {
-              float hole = SAMPLE_TEXTURE2D(_TerrainHolesTexture, shared_linear_clamp_sampler, uv).r;
+              float hole = UNITY_SAMPLE_TEX2D(_TerrainHolesTexture, uv).r;
               COUNTSAMPLE
               clip(hole < 0.5f ? -1 : 1);
           }
@@ -21066,11 +20368,15 @@ TEXTURE2D(_MainTex);
 
       struct Input 
       {
-         ShaderData shaderData;
          float2 uv_Control0;
          float2 uv2_Diffuse;
 
-         float worldHeight;
+         #if _PLANETVECTORS
+            float3 wrappedPos;
+            float3 localNormal;
+         #endif
+
+         float3 worldHeight;
          float3 worldUpVector;
 
          float3 viewDir;
@@ -21097,8 +20403,6 @@ TEXTURE2D(_MainTex);
 
          // wetness, puddles, streams, lava from vertex or megasplat
          fixed4 fx;
-         // snow min, snow max
-         fixed4 fx2;
 
 
       };
@@ -21288,9 +20592,9 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #elif _MAX2LAYER
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
@@ -21298,15 +20602,15 @@ TEXTURE2D(_MainTex);
             half4 varName##1 = defVal; \
             half4 varName##2 = defVal; \
             half4 varName##3 = defVal; \
-            varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #else
          #define SAMPLE_PER_TEX(varName, pixel, config, defVal) \
-            half4 varName##0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
-            half4 varName##3 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.y), 0); \
+            half4 varName##0 = tex2Dlod(_PerTexProps, float4(config.uv0.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##1 = tex2Dlod(_PerTexProps, float4(config.uv1.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##2 = tex2Dlod(_PerTexProps, float4(config.uv2.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
+            half4 varName##3 = tex2Dlod(_PerTexProps, float4(config.uv3.z*_PerTexProps_TexelSize.x, pixel*_PerTexProps_TexelSize.x, 0, 0)); \
 
       #endif
 
@@ -21453,19 +20757,19 @@ TEXTURE2D(_MainTex);
       
       half3 BlendNormal3(half3 n1, half3 n2)
       {
-         n1 += float3( 0,  0, 1);
-         n2 *= float3(-1, -1, 1);
-         return n1*dot(n1, n2) / n1.z - n2;
+         n1.z += 1;
+         n2.xy = -n2.xy;
+
+         return n1 * dot(n1, n2) / n1.z - n2;
       }
       
       half2 TransformTriplanarNormal(Input IN, float3x3 t2w, half3 axisSign, half3 absVertNormal,
                half3 pN, half2 a0, half2 a1, half2 a2)
       {
-         
          a0 = a0 * 2 - 1;
          a1 = a1 * 2 - 1;
          a2 = a2 * 2 - 1;
-
+         
          a0.x *= axisSign.x;
          a1.x *= axisSign.y;
          a2.x *= axisSign.z;
@@ -21473,20 +20777,19 @@ TEXTURE2D(_MainTex);
          half3 n0 = half3(a0.xy, 1);
          half3 n1 = half3(a1.xy, 1);
          half3 n2 = half3(a2.xy, 1);
-
-         float3 wn = IN.worldNormal;
-
-         n0 = BlendNormal3(half3(wn.zy, absVertNormal.x), n0);
-         n1 = BlendNormal3(half3(wn.xz, absVertNormal.y), n1 * float3(-1, 1, 1)); 
-         n2 = BlendNormal3(half3(wn.xy, absVertNormal.z), n2);
+         
+         n0 = BlendNormal3(half3(IN.worldNormal.zy, absVertNormal.x), n0);
+         n1 = BlendNormal3(half3(IN.worldNormal.xz, absVertNormal.y), n1);
+         n2 = BlendNormal3(half3(IN.worldNormal.xy, absVertNormal.z), n2);
   
          n0.z *= axisSign.x;
          n1.z *= axisSign.y;
          n2.z *= -axisSign.z;
-
-         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z);
-         return mul(t2w, worldNormal).xy;
-
+  
+         half3 worldNormal = (n0.zyx * pN.x + n1.xzy * pN.y + n2.xyz * pN.z );
+         half2 rn = mul(t2w, worldNormal).xy;
+         //rn.y *= -1;
+         return rn;
       }
       
       // funcs
@@ -21974,16 +21277,27 @@ TEXTURE2D(_MainTex);
       }
 
 
-      // abstraction around sampler mode
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex,samplertex,coord, lod) SAMPLE_TEXTURE2D_LOD(tex, sampler##samplertex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, sampler##tex, coord, dx, dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy) SAMPLE_TEXTURE2D_GRAD(tex, sampler##samp, coord, dx, dy);
+      
+
       #if _USELODMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, u, l.x)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u, l.x)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
       #elif _USEGRADMIP
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_GRAD(tex, sampler##tex, u, l.xy, l.zw)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY_GRAD(tex, ss, u.xy, u.z, l.xy, l.zw)
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
       #else
-         #define MICROSPLAT_SAMPLE(tex, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, sampler##tex, u.xy, u.z)
-         #define MICROSPLAT_SAMPLE_SAMPLER(tex, ss, u, l) SAMPLE_TEXTURE2D_ARRAY(tex, ss, u.xy, y.z)
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
+      #endif
+
+      #if _USELODMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY_LOD(tex, u, l.x)
+      #elif _USEGRADMIP
+         #define MICROSPLAT_SAMPLE(tex, u, l) MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex, u, l.xy, l.zw)
+      #else
+         #define MICROSPLAT_SAMPLE(tex, u, l) UNITY_SAMPLE_TEX2DARRAY(tex, u)
       #endif
 
 
@@ -22022,9 +21336,9 @@ TEXTURE2D(_MainTex);
          tc.uv2 = worldPos.xy * axisSign.z;
       }
       
-      #define SimpleTriplanarSample(tex, tc, scale) (SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv0 * scale) * tc.pn.x + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv1 * scale) * tc.pn.y + SAMPLE_TEXTURE2D(tex, sampler_Diffuse, tc.uv2 * scale) * tc.pn.z)
-      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv0 * scale, lod) * tc.pn.x + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv1 * scale, lod) * tc.pn.y + SAMPLE_TEXTURE2D_LOD(tex, sampler_Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
-      #define SimpleTriplanarSampleGrad(tex, tc, scale) (SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + SAMPLE_TEXTURE2D_GRAD(tex, sampler_Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
+      #define SimpleTriplanarSample(tex, tc, scale) (UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv0 * scale) * tc.pn.x + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv1 * scale) * tc.pn.y + UNITY_SAMPLE_TEX2D_SAMPLER(tex, _Diffuse, tc.uv2 * scale) * tc.pn.z)
+      #define SimpleTriplanarSampleLOD(tex, tc, scale, lod) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv0 * scale, lod) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv1 * scale, lod) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, _Diffuse, tc.uv2 * scale, lod) * tc.pn.z)
+      #define SimpleTriplanarSampleGrad(tex, tc, scale) (MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv0 * scale, ddx(tc.uv0) * scale, ddy(tc.uv0) * scale) * tc.pn.x + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv1 * scale, ddx(tc.uv1) * scale, ddy(tc.uv1) * scale) * tc.pn.y + MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex, _Diffuse, tc.uv2 * scale, ddx(tc.uv2) * scale, ddy(tc.uv2) * scale) * tc.pn.z)
    
       
       inline half3 MicroSplatDiffuseAndSpecularFromMetallic (half3 albedo, half metallic, out half3 specColor, out half oneMinusReflectivity)
@@ -22039,11 +21353,20 @@ TEXTURE2D(_MainTex);
 
 
 
+      #undef MICROSPLAT_SAMPLE_TEX2D_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD
+      #undef MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD
+      #undef MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD
+
+      #define MICROSPLAT_SAMPLE_TEX2D_LOD(tex,coord,lod)                    SAMPLE_TEXTURE2D_LOD(tex, sampler##tex, coord, lod)
+      #define MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(tex,coord,dx,dy)            SAMPLE_TEXTURE2D_GRAD(tex,sampler##tex,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(tex,samp,coord,dx,dy)    SAMPLE_TEXTURE2D_GRAD(tex,sampler##samp,coord,dx,dy)
+      #define MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(tex, samp, coord, lod)    SAMPLE_TEXTURE2D_LOD(tex, sampler##samp, coord, lod)
+      
 
       Input DescToInput(ShaderData IN)
       {
         Input s = (Input)0;
-        s.shaderData = IN;
         s.TBN = IN.TBNMatrix;
         s.worldNormal = IN.worldSpaceNormal;
         s.worldPos = IN.worldSpacePosition;
@@ -22060,7 +21383,11 @@ TEXTURE2D(_MainTex);
         #endif
 
         #if _MICROMESH && _MESHUV2
-            s.uv2_Diffuse = IN.texcoord1.xy;
+            s.uv_Diffuse = IN.texcoord1.xy;
+        #endif
+
+        #if _SRPTERRAINBLEND
+            s.color = IN.vertexColor;
         #endif
 
         #if _MEGASPLAT
@@ -22184,16 +21511,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          
-         TEXTURE2D_FLOAT(_GMSTraxBuffer);
+         sampler2D_float _GMSTraxBuffer;
 
          #if _TRAXSINGLE
-         TEXTURE2D(_TraxDiff);
-         TEXTURE2D(_TraxNSAO);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxDiff);
+         UNITY_DECLARE_TEX2D_NOSAMPLER(_TraxNSAO);
          #endif
 
          #if _TRAXARRAY
-         TEXTURE2D_ARRAY(_TraxArrayDiff);
-         TEXTURE2D_ARRAY(_TraxArrayNSAO);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayDiff);
+         UNITY_DECLARE_TEX2DARRAY(_TraxArrayNSAO);
          #endif
 
          #define TRAXSAMPLEQUADRATIC2D(tex, uv, texelSize, ret) \
@@ -22202,15 +21529,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 c = (q*(q - 1.0) + 0.5) / texelSize.zw; \
             float2 w0 = uv - c; \
             float2 w1 = uv + c; \
-            half4 s = SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w0.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w0.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w1.y)) \
-              + SAMPLE_TEXTURE2D(tex, shared_linear_clamp_sampler, float2(w1.x, w0.y)); \
+            half4 s = tex2D(tex, float2(w0.x, w0.y)) \
+              + tex2D(tex, float2(w0.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w1.y)) \
+              + tex2D(tex, float2(w1.x, w0.y)); \
             ret = s / 4.0; \
          } \
         
          
-         float SampleTraxBufferLOD(float3 worldPos, float3 vertexNormal, float h)
+         float SampleTraxBufferLOD(float3 worldPos, float h)
          {
             
             // generate UVs for the buffer, which is moving
@@ -22221,28 +21548,28 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             fade = 1 - pow(fade, 8);
             uv *= 0.5;
             uv += 0.5;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
+            
             
             #if _TRAXQUADRATIC
+               float4 sr;
                float2 q = frac(uv * _GMSTraxBuffer_TexelSize.zw);
                float2 c = (q*(q - 1.0) + 0.5) / _GMSTraxBuffer_TexelSize.zw; 
                float2 w0 = uv - c; 
                float2 w1 = uv + c; 
-               half s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, w0.xy, 0).r + 
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w0.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w1.y), 0).r
-              + SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, float2(w1.x, w0.y), 0).r;
+               half4 s = tex2Dlod(_GMSTraxBuffer, float4(w0.x, w0.y, 0, 0)) 
+              + tex2Dlod(_GMSTraxBuffer, float4(w0.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w1.y, 0, 0))
+              + tex2Dlod(_GMSTraxBuffer, float4(w1.x, w0.y, 0, 0));
 
               s /= 4;
             #else
-               float s = SAMPLE_TEXTURE2D_LOD(_GMSTraxBuffer, shared_linear_clamp_sampler, uv, 0).r;
+               float s =  tex2Dlod(_GMSTraxBuffer, float4(uv, 0, 0)).r;
             #endif
-            return 1.0 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            return 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
          }
          
         
-         float SampleTraxBuffer(float3 worldPos, float3 vertexNormal, out float3 norm)
+         float SampleTraxBuffer(float3 worldPos, out float3 norm)
          {
             float2 uv = worldPos.xz;
             uv -= _GMSTraxBufferPosition.xz;
@@ -22254,8 +21581,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             
 
             float2 offset = _GMSTraxBuffer_TexelSize.xy;
-
-            float vn = saturate(sign(dot(vertexNormal, float3(0, 1, 0))));
 
             #if _TRAXQUADRATIC
                float4 sr, sr1, sr2, sr3, sr4;
@@ -22272,14 +21597,14 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                float s4 = sr4.r;
 
             #else
-               float s = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv).r;
+               float s = tex2D(_GMSTraxBuffer, uv).r;
                
-               float s1 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, -1)).r;
-               float s2 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(-1, 0)).r;
-               float s3 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(1, 0)).r;
-               float s4 = SAMPLE_TEXTURE2D(_GMSTraxBuffer, shared_linear_clamp_sampler, uv + offset * float2(0, 1)).r;
+               float s1 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, -1)).r;
+               float s2 = tex2D(_GMSTraxBuffer, uv + offset * float2(-1, 0)).r;
+               float s3 = tex2D(_GMSTraxBuffer, uv + offset * float2(1, 0)).r;
+               float s4 = tex2D(_GMSTraxBuffer, uv + offset * float2(0, 1)).r;
             #endif
-            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade * vn;
+            float r = 1 - saturate((worldPos.y + _GMSTraxFudgeFactor) - s) * fade;
  
 
             // generate normals
@@ -22363,8 +21688,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
 
             
-            half4 albedo = SAMPLE_TEXTURE2D_GRAD(_TraxDiff, sampler_Diffuse, uv, fsdx, fsdy);
-            half4 normSAO = SAMPLE_TEXTURE2D_GRAD(_TraxNSAO, sampler_NormalSAO, uv, fsdx, fsdy).agrb;
+            half4 albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxDiff, _Diffuse, uv, fsdx, fsdy);
+            half4 normSAO = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_GRAD(_TraxNSAO, _Diffuse, uv, fsdx, fsdy).agrb;
             normSAO.xy = normSAO.xy * 2 - 1;
 
             COUNTSAMPLE
@@ -22401,11 +21726,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float2 fsdx = ddx(config.uv) * _TraxUVScales;
             float2 fsdy = ddy(config.uv) * _TraxUVScales;
             
-            half4 albedo0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, fsdx, fsdy);
-            half4 normSAO0 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv0.z, fsdx, fsdy).agrb;
+            half4 albedo0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv0.z), fsdx, fsdy);
+            half4 normSAO0 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv0.z), fsdx, fsdy).agrb;
             normSAO0.xy = normSAO0.xy * 2 - 1;
-            half4 albedo1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, fsdx, fsdy);
-            half4 normSAO1 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv1.z, fsdx, fsdy).agrb;
+            half4 albedo1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv1.z), fsdx, fsdy);
+            half4 normSAO1 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv1.z), fsdx, fsdy).agrb;
             normSAO1.xy = normSAO1.xy * 2 - 1;
             COUNTSAMPLE
             COUNTSAMPLE
@@ -22417,8 +21742,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             h1 = lerp(traxBuffer1, h1, _TraxInterpContrast);
 
             #if !_MAX2LAYER
-               half4 albedo2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, fsdx, fsdy);
-               half4 normSAO2 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv2.z, fsdx, fsdy).agrb;
+               half4 albedo2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv2.z), fsdx, fsdy);
+               half4 normSAO2 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv2.z), fsdx, fsdy).agrb;
                half h2 = HeightBlend(albedo2.a, samples.albedo2.a, traxBuffer2, _Contrast);
                h2 = lerp(traxBuffer2, h2, _TraxInterpContrast);
                normSAO2.xy = normSAO2.xy * 2 - 1;
@@ -22426,8 +21751,8 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                COUNTSAMPLE
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               half4 albedo3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, fsdx, fsdy);
-               half4 normSAO3 = SAMPLE_TEXTURE2D_ARRAY_GRAD(_TraxArrayNSAO, sampler_NormalSAO, uv, config.uv3.z, fsdx, fsdy).agrb;
+               half4 albedo3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayDiff, float3(uv, config.uv3.z), fsdx, fsdy);
+               half4 normSAO3 = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_TraxArrayNSAO, float3(uv, config.uv3.z), fsdx, fsdy).agrb;
                normSAO3.xy = normSAO3.xy * 2 - 1;
                half h3 = HeightBlend(albedo3.a, samples.albedo3.a, traxBuffer3, _Contrast);
                h3 = lerp(traxBuffer3, h3, _TraxInterpContrast);
@@ -22494,7 +21819,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _TRAXSINGLE
             float2 uv = config.uv * _TraxUVScales.xy;
 
-            half albedo = SAMPLE_TEXTURE2D_LOD(_TraxDiff, sampler_Diffuse, uv, mipLevel).a;
+            half albedo = MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_TraxDiff, _Diffuse, uv, mipLevel).a;
             
 
             h0 = lerp(albedo - offset, h0, traxBuffer0);
@@ -22506,10 +21831,10 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             traxBuffer = 1 - ((1 - traxBuffer) * _TraxTextureBlend);
 
             
-            half albedo0 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv0.z, mipLevel).a;
-            half albedo1 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv1.z, mipLevel).a;
-            half albedo2 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv2.z, mipLevel).a;
-            half albedo3 = SAMPLE_TEXTURE2D_ARRAY_LOD(_TraxArrayDiff, sampler_Diffuse, uv, config.uv3.z, mipLevel).a;
+            half albedo0 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv0.z), mipLevel).a;
+            half albedo1 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv1.z), mipLevel).a;
+            half albedo2 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv2.z), mipLevel).a;
+            half albedo3 = UNITY_SAMPLE_TEX2DARRAY_LOD(_TraxArrayDiff, float3(uv, config.uv3.z), mipLevel).a;
             
 
             h0 = lerp(albedo0 - offset0, h0, traxBuffer0);
@@ -22548,7 +21873,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          
             half4 contrasts = _Contrast.xxxx;
             #if _PERTEXTRIPLANARCONTRAST
-               SAMPLE_PER_TEX(ptc, 9.5, config, half4(1,0.5,0,0));
+               SAMPLE_PER_TEX(ptc, 5.5, config, half4(1,0.5,0,0));
                contrasts = half4(ptc0.y, ptc1.y, ptc2.y, ptc3.y);
             #endif
 
@@ -23288,7 +22613,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             float globalSlopeFilter = 1;
             #if _GLOBALSLOPEFILTER
                float2 gfilterUV = float2(1 - saturate(dot(worldNormalVertex, upVector) * 0.5 + 0.49), 0.5);
-               globalSlopeFilter = SAMPLE_TEXTURE2D(_GlobalSlopeTex, sampler_Diffuse, gfilterUV).a;
+               globalSlopeFilter = UNITY_SAMPLE_TEX2D_SAMPLER(_GlobalSlopeTex, _Diffuse, gfilterUV).a;
             #endif
          #endif
 
@@ -23315,7 +22640,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
-            traxBuffer = SampleTraxBuffer(i.worldPos, worldNormalVertex, traxNormal);
+            traxBuffer = SampleTraxBuffer(i.worldPos, traxNormal);
          #endif
          
          #if _WETNESS || _PUDDLES || _STREAMS || _LAVA
@@ -23343,7 +22668,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          MIPFORMAT origAlbedoLOD = INITMIPFORMAT;
 
          #if _TRIPLANAR && !_DISABLESPLATMAPS
-            PrepTriplanar(i.shaderData.texcoord0, worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #if _PLANETVECTORS
+               PrepTriplanar(i.localNormal, i.wrappedPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #else
+               PrepTriplanar(worldNormalVertex, i.worldPos, config, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+            #endif
+            
             tc.IN = i;
          #endif
          
@@ -23353,7 +22683,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                albedoLOD = ComputeMipLevel(config.uv0.xy, _Diffuse_TexelSize.zw);
                normalLOD = ComputeMipLevel(config.uv0.xy, _NormalSAO_TexelSize.zw);
                #if _USEEMISSIVEMETAL
-                  emisLOD = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
+                  emisLOD   = ComputeMipLevel(config.uv0.xy, _EmissiveMetal_TexelSize.zw);
                #endif
                #if _USESPECULARWORKFLOW
                   specLOD = ComputeMipLevel(config.uv0.xy, _Specular_TexelSize.zw);;
@@ -23474,7 +22804,7 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _HYBRIDHEIGHTBLEND
-            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/max(1.0, _HybridHeightBlendDistance)));
+            heightWeights = lerp(heightWeights, TotalOne(weights), saturate(camDist/_HybridHeightBlendDistance));
          #endif
 
          
@@ -23549,13 +22879,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             DistanceResample(samples, config, tc, camDist, i.viewDir, fxLevels, albedoLOD, i.worldPos, heightWeights, worldNormalVertex);
          #endif
 
-         #if _STARREACHFORMAT
-            samples.normSAO0.w = length(samples.normSAO0.xy);
-            samples.normSAO1.w = length(samples.normSAO1.xy);
-            samples.normSAO2.w = length(samples.normSAO2.xy);
-            samples.normSAO3.w = length(samples.normSAO3.xy);
-         #endif
-
          // PerTexture sampling goes here, passing the samples structure
          
          #if _PERTEXMICROSHADOWS || _PERTEXFUZZYSHADE
@@ -23586,9 +22909,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                return o;
                #endif
 
-               
-
-               
             }
             #endif
 
@@ -23706,13 +23026,13 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if _PERTEXAOSTR && !_DISABLESPLATMAPS
-            samples.normSAO0.a = pow(abs(samples.normSAO0.a), perTexMatSettings0.b);
-            samples.normSAO1.a = pow(abs(samples.normSAO1.a), perTexMatSettings1.b);
+            samples.normSAO0.a = pow(samples.normSAO0.a, abs(perTexMatSettings0.b));
+            samples.normSAO1.a = pow(samples.normSAO1.a, abs(perTexMatSettings1.b));
             #if !_MAX2LAYER
-               samples.normSAO2.a = pow(abs(samples.normSAO2.a), perTexMatSettings2.b);
+               samples.normSAO2.a = pow(samples.normSAO2.a, abs(perTexMatSettings2.b));
             #endif
             #if !_MAX3LAYER || !_MAX2LAYER
-               samples.normSAO3.a = pow(abs(samples.normSAO3.a), perTexMatSettings3.b);
+               samples.normSAO3.a = pow(samples.normSAO3.a, abs(perTexMatSettings3.b));
             #endif
          #endif
 
@@ -23747,26 +23067,30 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          {
             SAMPLE_PER_TEX(ptRimA, 26.5, config, half4(1, 1, 1, 1));
             SAMPLE_PER_TEX(ptRimB, 27.5, config, half4(1, 1, 1, 0));
-            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), max(0.0001, ptRimA0.g)) * ptRimB0.rgb * ptRimB0.a;
-            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), max(0.0001, ptRimA1.g)) * ptRimB1.rgb * ptRimB1.a;
-            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), max(0.0001, ptRimA2.g)) * ptRimB2.rgb * ptRimB2.a;
-            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), max(0.0001, ptRimA3.g)) * ptRimB3.rgb * ptRimB3.a;
+            samples.emisMetal0.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO0.xy, 1))), ptRimA0.g) * ptRimB0.rgb * ptRimB0.a;
+            samples.emisMetal1.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO1.xy, 1))), ptRimA1.g) * ptRimB1.rgb * ptRimB1.a;
+            samples.emisMetal2.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO2.xy, 1))), ptRimA2.g) * ptRimB2.rgb * ptRimB2.a;
+            samples.emisMetal3.rgb += pow(1.0 - saturate(dot(i.viewDir, float3(samples.normSAO3.xy, 1))), ptRimA3.g) * ptRimB3.rgb * ptRimB3.a;
          }
          #endif
 
 
 
          #if (((_DETAILNOISE && _PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && _PERTEXDISTANCENOISESTRENGTH)) || (_NORMALNOISE && _PERTEXNORMALNOISESTRENGTH)) && !_DISABLESPLATMAPS
-            ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoisePerTex(samples, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          
          #if _GLOBALNOISEUV
             // noise defaults so that a value of 1, 1 is 4 pixels in size and moves the uvs by 1 pixel max.
             #if _CUSTOMSPLATTEXTURES
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #else
-               noiseUV = (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               noiseUV = (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, config.uv * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
          #endif
 
@@ -23776,7 +23100,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
 
          #if (_ANTITILEARRAYDETAIL || _ANTITILEARRAYDISTANCE || _ANTITILEARRAYNORMAL) && !_DISABLESPLATMAPS
-            ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #if _PLANETVECTORS
+               ApplyAntiTilePerTex(samples, config, camDist, i.wrappedPos, worldNormalVertex, heightWeights);
+            #else
+               ApplyAntiTilePerTex(samples, config, camDist, i.worldPos, worldNormalVertex, heightWeights);
+            #endif
          #endif
 
          #if _GEOMAP && !_DISABLESPLATMAPS
@@ -23867,7 +23195,11 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
 
          #if ((_DETAILNOISE && !_PERTEXDETAILNOISESTRENGTH) || (_DISTANCENOISE && !_PERTEXDISTANCENOISESTRENGTH) || (_NORMALNOISE && !_PERTEXNORMALNOISESTRENGTH))
-            ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #if _PLANETVECTORS
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.wrappedPos, worldNormalVertex);
+            #else
+               ApplyDetailDistanceNoise(albedo.rgb, normSAO, surfGrad, config, camDist, i.worldPos, worldNormalVertex);
+            #endif
          #endif
 
          #if _SPLATFADE
@@ -23882,12 +23214,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             MSBRANCHOTHER(camDist - _SplatFade.x)
             {
                float falloff = saturate(InverseLerp(_SplatFade.x, _SplatFade.y, camDist));
-               half4 sfalb = SAMPLE_TEXTURE2D_ARRAY_GRAD(_Diffuse, sampler_Diffuse, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY);
+               half4 sfalb = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_Diffuse, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY);
                COUNTSAMPLE
                albedo.rgb = lerp(albedo.rgb, sfalb.rgb, falloff);
 
                #if !_NONORMALMAP && !_AUTONORMAL
-                  half4 sfnormSAO = SAMPLE_TEXTURE2D_ARRAY_GRAD(_NormalSAO, sampler_NormalSAO, config.uv * _UVScale, _SplatFade.z, sfDX, sfDY).agrb;
+                  half4 sfnormSAO = MICROSPLAT_SAMPLE_TEX2DARRAY_GRAD(_NormalSAO, float3(config.uv * _UVScale, _SplatFade.z), sfDX, sfDY).agrb;
                   COUNTSAMPLE
                   sfnormSAO.xy = sfnormSAO.xy * 2 - 1;
 
@@ -23922,13 +23254,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             GeoTexture(albedo.rgb, normSAO, surfGrad, i.worldPos, worldHeight, config, worldNormalVertex, upVector);
          #endif
 
+         #if _PLANETALBEDO || _PLANETALBEDO2 || _PLANETNORMAL || _PLANETNORMAL2
+            //ApplyPlanet(i, albedo, normSAO, config, camDist, i.worldPos, upVector);
+         #endif
          
          #if _SCATTER
-            ApplyScatter(
-               #if _MEGASPLAT
-               config, 
-               #endif
-               i, albedo, normSAO, surfGrad, config.uv, camDist);
+            ApplyScatter(i, albedo, normSAO, surfGrad, config.uv, camDist);
          #endif
 
          #if _DECAL
@@ -24039,9 +23370,12 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #endif
          
          #if _TOONWIREFRAME
-         ToonWireframe(config.uv, o.Albedo, camDist);
+         ToonWireframe(config.uv, o.Albedo);
          #endif
 
+         #if _PLANETVECTORS
+            ApplyPlanetAtmosphere(i, o);
+         #endif
 
          #if _DEBUG_TRAXBUFFER
             ClearAllButAlbedo(o, half3(traxBuffer, 0, 0) * saturate(o.Albedo.z+1));
@@ -24050,11 +23384,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #elif _DEBUG_WORLDNORMAL
             ClearAllButAlbedo(o,  WorldNormalVector(i, o.Normal) * saturate(o.Albedo.z+1));
          #endif
-
-         #if _DEBUG_MEGABARY && _MEGASPLAT
-            o.Albedo = i.baryWeights.xyz;
-         #endif
-
 
          return o;
       }
@@ -24067,44 +23396,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _CustomControl0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _CustomControl0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_CustomControl0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_CustomControl0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_CustomControl1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl1, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_CustomControl2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl2, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_CustomControl3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl3, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_CustomControl4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl4, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_CustomControl5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl5, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_CustomControl6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl6, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_CustomControl7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_CustomControl7, _CustomControl0, controlUV);
             COUNTSAMPLE
             #endif
          #else
@@ -24113,44 +23442,44 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
             #endif
 
             #if  _CONTROLNOISEUV
-               controlUV += (SAMPLE_TEXTURE2D(_NoiseUV, sampler_Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
+               controlUV += (UNITY_SAMPLE_TEX2D_SAMPLER(_NoiseUV, _Diffuse, controlUV * _Control0_TexelSize.zw * 0.2 * _NoiseUVParams.x).ga - 0.5) * _Control0_TexelSize.xy * _NoiseUVParams.y;
             #endif
 
-            w0 = SAMPLE_TEXTURE2D(_Control0, shared_linear_clamp_sampler, controlUV);
+            w0 = UNITY_SAMPLE_TEX2D(_Control0, controlUV);
             COUNTSAMPLE
 
             #if !_MAX4TEXTURES
-            w1 = SAMPLE_TEXTURE2D(_Control1, shared_linear_clamp_sampler, controlUV);
+            w1 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control1, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES
-            w2 = SAMPLE_TEXTURE2D(_Control2, shared_linear_clamp_sampler, controlUV);
+            w2 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control2, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if !_MAX4TEXTURES && !_MAX8TEXTURES && !_MAX12TEXTURES
-            w3 = SAMPLE_TEXTURE2D(_Control3, shared_linear_clamp_sampler, controlUV);
+            w3 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control3, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX20TEXTURES || _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w4 = SAMPLE_TEXTURE2D(_Control4, shared_linear_clamp_sampler, controlUV);
+            w4 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control4, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX24TEXTURES || _MAX28TEXTURES || _MAX32TEXTURES
-            w5 = SAMPLE_TEXTURE2D(_Control5, shared_linear_clamp_sampler, controlUV);
+            w5 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control5, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX28TEXTURES || _MAX32TEXTURES
-            w6 = SAMPLE_TEXTURE2D(_Control6, shared_linear_clamp_sampler, controlUV);
+            w6 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control6, _Control0, controlUV);
             COUNTSAMPLE
             #endif
 
             #if _MAX32TEXTURES
-            w7 = SAMPLE_TEXTURE2D(_Control7, shared_linear_clamp_sampler, controlUV);
+            w7 = UNITY_SAMPLE_TEX2D_SAMPLER(_Control7, _Control0, controlUV);
             COUNTSAMPLE
             #endif
          #endif
@@ -24170,18 +23499,16 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
          #if _FORCELOCALSPACE
             worldNormalVertex = mul((float3x3)unity_WorldToObject, worldNormalVertex).xyz;
             i.worldPos = i.worldPos -  mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz;
-            i.worldHeight = i.worldPos.y;
          #endif
 
          #if _ORIGINSHIFT
+             //worldNormalVertex = mul(_GlobalOriginMTX, float4(worldNormalVertex, 1)).xyz;
              i.worldPos = i.worldPos + mul(_GlobalOriginMTX, float4(0,0,0,1)).xyz;
-             i.worldHeight = i.worldPos.y;
          #endif
 
          #if _DEBUG_USE_TOPOLOGY
-            i.worldPos = SAMPLE_TEXTURE2D(_DebugWorldPos, sampler_Diffuse, i.uv_Control0);
-            worldNormalVertex = SAMPLE_TEXTURE2D(_DebugWorldNormal, sampler_Diffuse, i.uv_Control0);
-            i.worldHeight = i.worldPos.y;
+            i.worldPos = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldPos, _Diffuse, i.uv_Control0);
+            worldNormalVertex = UNITY_SAMPLE_TEX2D_SAMPLER(_DebugWorldNormal, _Diffuse, i.uv_Control0);
          #endif
 
          #if _ALPHABELOWHEIGHT && !_TBDISABLEALPHAHOLES
@@ -24236,8 +23563,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                   DiggerSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MEGASPLAT
                   MegaSplatVertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
-               #elif _MEGASPLATTEXTURE
-                   MegaSplatTextureSetup(controlUV, weights, origUV, config, i.worldPos, decalOutput);
                #elif _MICROVERTEXMESH
                   VertexSetup(i, weights, origUV, config, i.worldPos, decalOutput);
                #elif !_PROCEDURALTEXTURE || _PROCEDURALBLENDSPLATS
@@ -24249,14 +23574,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
                #if _PROCEDURALTEXTURE
                   float3 procNormal = worldNormalVertex;
                   float3 worldPos = i.worldPos;
+                  #if _PLANETVECTORS
+                     config.uv = origUV;
+                     procNormal = i.TBN[2];
+                     worldPos = i.wrappedPos;
+                  #endif
                   ProceduralSetup(i, worldPos, i.worldHeight, procNormal, i.worldUpVector, weights, origUV, config, ddx(origUV), ddy(origUV), ddx(worldPos), ddy(worldPos), decalOutput);
                #endif
             #else // _DISABLESPLATMAPS
                 Setup(weights, origUV, config, half4(1,0,0,0), 0, 0, 0, 0, 0, 0, 0, i.worldPos, decalOutput);
-            #endif
-
-            #if _SLOPETEXTURE
-               SlopeTexture(config, weights, worldNormalVertex);
             #endif
          } // _SPLATFADE else case
 
@@ -24286,15 +23612,15 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
  
          MicroSplatLayer l = Sample(i, weights, config, camDist, worldNormalVertex, decalOutput);
 
-         // On windows, sometimes the shared samplers gets stripped, so we have to do this crap.
+         // On windows, sometimes the diffuse sampler gets stripped, so we have to do this crap.
          // We sample from the lowest mip, so it shouldn't cost much, but still, I hate this, wtf..
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_Diffuse, sampler_Diffuse, config.uv0, 11).r + 2);
-         l.Albedo *= saturate(SAMPLE_TEXTURE2D_LOD(_NormalSAO, sampler_NormalSAO, config.uv0, 11).r + 2);
+         l.Albedo *= saturate(UNITY_SAMPLE_TEX2DARRAY_LOD(_Diffuse, config.uv0, 11).r + 2);
+         // same for the control sampler.
+         l.Albedo *= saturate(MICROSPLAT_SAMPLE_TEX2D_SAMPLER_LOD(_Control0, _Control0, config.uv, 11).r + 2);
 
          #if _PROCEDURALTEXTURE
             ProceduralTextureDebugOutput(l, weights, config);
          #endif
-
 
          return l;
 
@@ -24304,6 +23630,17 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 
    
 
+
+#if (_MICROTERRAIN || _MICROMESHTERRAIN)
+    TEXTURE2D(_TerrainHeightmapTexture);
+    SAMPLER(sampler_TerrainHeightmapTexture);
+    TEXTURE2D(_TerrainNormalmapTexture);
+    SAMPLER(sampler_TerrainNormalmapTexture);
+#endif
+
+UNITY_INSTANCING_BUFFER_START(Terrain)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
+UNITY_INSTANCING_BUFFER_END(Terrain)          
 
 
 
@@ -24324,7 +23661,7 @@ float4 ConstructTerrainTangent(float3 normal, float3 positiveZ)
 
 void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv)
 {
-#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED) && !_TERRAINBLENDABLESHADER
+#if _MICROTERRAIN && defined(UNITY_INSTANCING_ENABLED)
    
     float2 patchVertex = vertex.xy;
     float4 instanceData = UNITY_ACCESS_INSTANCED_PROP(Terrain, _TerrainPatchInstanceData);
@@ -24334,7 +23671,7 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
     float2 sampleUV = (uv / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
 
-    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, shared_linear_clamp_sampler, sampleUV, 0));
+    float height = UnpackHeightmap(SAMPLE_TEXTURE2D_LOD(_TerrainHeightmapTexture, sampler_TerrainHeightmapTexture, sampleUV, 0));
    
     vertex.xz = sampleCoords * _TerrainHeightmapScale.xz;
     vertex.y = height * _TerrainHeightmapScale.y;
@@ -24348,28 +23685,26 @@ void TerrainInstancing(inout float4 vertex, inout float3 normal, inout float2 uv
 
 void ApplyMeshModification(inout VertexData input)
 {
-   #if _MICROTERRAIN && !_TERRAINBLENDABLESHADER
+   #if _MICROTERRAIN
       float2 uv = input.texcoord0.xy;
       TerrainInstancing(input.vertex, input.normal, uv);
       input.texcoord0.xy = uv;
+      input.texcoord1.xy = uv;
+      input.texcoord2.xy = uv;
+      
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
-   #if _PERPIXNORMAL && !_TERRAINBLENDABLESHADER
+   #if _PERPIXNORMAL
       input.normal = float3(0,1,0);
-   #endif
-
-}
-
-// called by the template, so we can remove tangent from VertexData
-void ApplyTerrainTangent(inout VertexToPixel input)
-{
-   #if (_MICROTERRAIN || _PERPIXNORMAL) && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
 
    // digger meshes ain't got no tangent either..
-   #if _MICRODIGGERMESH && !_TERRAINBLENDABLESHADER
-      input.worldTangent = ConstructTerrainTangent(input.worldNormal, float3(0, 0, 1));
+   #if _MICRODIGGERMESH
+      input.tangent = ConstructTerrainTangent(input.normal, float3(0, 0, 1));
    #endif
+
+
 }
 
 
@@ -24413,13 +23748,13 @@ float3 GetTessFactors ()
        
         float3 worldNormalVertex = d.worldSpaceNormal;
 
-        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN && !_TERRAINBLENDABLESHADER)
+        #if (defined(UNITY_INSTANCING_ENABLED) && _MICROTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy / _TerrainHeightmapRecipSize.zw + 0.5f) * _TerrainHeightmapRecipSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_TerrainNormalmapTexture, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_TerrainNormalmapTexture, _TerrainNormalmapTexture, sampleCoords).xyz * 2 - 1);
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomNormal, geomTangent)) * -1;
             worldNormalVertex = geomNormal;
@@ -24429,13 +23764,13 @@ float3 GetTessFactors ()
             d.TBNMatrix = float3x3(geomTangent, geomBitangent, geomNormal);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
 
-         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN) && !_TERRAINBLENDABLESHADER
+         #elif _PERPIXNORMAL &&  (_MICROTERRAIN || _MICROMESHTERRAIN)
             float2 sampleCoords = (d.texcoord0.xy * _PerPixelNormal_TexelSize.zw + 0.5f) * _PerPixelNormal_TexelSize.xy;
             #if _TOONHARDEDGENORMAL
                sampleCoords = ToonEdgeUV(d.texcoord0.xy);
             #endif
 
-            float3 geomNormal = normalize(SAMPLE_TEXTURE2D(_PerPixelNormal, shared_linear_clamp_sampler, sampleCoords).xyz * 2 - 1);
+            float3 geomNormal = normalize(UNITY_SAMPLE_TEX2D_SAMPLER(_PerPixelNormal, _PerPixelNormal, sampleCoords).xyz * 2 - 1);
             
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
             float3 geomBitangent = normalize(cross(geomTangent, geomNormal)) * -1;
@@ -24457,18 +23792,13 @@ float3 GetTessFactors ()
          
          #if _SRPTERRAINBLEND
             MicroSplatLayer l = BlendWithTerrain(d);
-
-               #if _DEBUG_WORLDNORMAL
-                  ClearAllButAlbedo(l, normalize(TangentToWorldSpace(d, l.Normal)) * saturate(l.Albedo.z+1));
-               #endif
          #else
             MicroSplatLayer l = SurfImpl(i, worldNormalVertex);
          #endif
 
         DoDebugOutput(l);
 
-
-
+      
 
         o.Albedo = l.Albedo;
         o.Normal = l.Normal;
@@ -24507,12 +23837,10 @@ float3 GetTessFactors ()
             d.worldSpaceViewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
             d.tangentSpaceViewDir = mul(d.worldSpaceViewDir, d.TBNMatrix);
              d.texcoord0 = i.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-                d.texcoord1 = i.texcoord1;
-               // d.texcoord2 = i.texcoord2;
-            #endif
+             d.texcoord1 = i.texcoord1;
+             d.texcoord2 = i.texcoord2;
             // d.texcoord3 = i.texcoord3;
-            // d.vertexColor = i.vertexColor;
+             d.vertexColor = i.vertexColor;
 
             // these rarely get used, so we back transform them. Usually will be stripped.
             #if _HDRP
@@ -24520,8 +23848,8 @@ float3 GetTessFactors ()
             #else
                 // d.localSpacePosition = mul(unity_WorldToObject, float4(i.worldPos, 1));
             #endif
-            // d.localSpaceNormal = normalize(mul((float3x3)unity_WorldToObject, i.worldNormal));
-            // d.localSpaceTangent = normalize(mul((float3x3)unity_WorldToObject, i.worldTangent.xyz));
+            // d.localSpaceNormal = normalize(mul(unity_WorldToObject, i.worldNormal));
+            // d.localSpaceTangent = normalize(mul(unity_WorldToObject, i.worldTangent.xyz));
 
             // d.screenPos = i.screenPos;
             // d.screenUV = i.screenPos.xy / i.screenPos.w;
@@ -24603,47 +23931,31 @@ float3 GetTessFactors ()
            ChainModifyVertex(v, o);
 #endif
 
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-               float2 uv1 = v.texcoord1.xy;
-               float2 uv2 = v.texcoord2.xy;
-            #else
-               float2 uv1 = v.texcoord0.xy;
-               float2 uv2 = uv1;
-            #endif
-
-            o.pos = UnityMetaVertexPosition(v.vertex, uv1, uv2, unity_LightmapST, unity_DynamicLightmapST);
-
+            o.pos = UnityMetaVertexPosition(v.vertex, v.texcoord1.xy, v.texcoord2.xy, unity_LightmapST, unity_DynamicLightmapST);
             #ifdef EDITOR_VISUALIZATION
                o.vizUV = 0;
                o.lightCoord = 0;
                if (unity_VisualizationMode == EDITORVIZ_TEXTURE)
-                  o.vizUV = UnityMetaVizUV(unity_EditorViz_UVIndex, v.texcoord0.xy, uv1, uv2, unity_EditorViz_Texture_ST);
+                  o.vizUV = UnityMetaVizUV(unity_EditorViz_UVIndex, v.texcoord0.xy, v.texcoord1.xy, v.texcoord2.xy, unity_EditorViz_Texture_ST);
                else if (unity_VisualizationMode == EDITORVIZ_SHOWLIGHTMASK)
                {
-                  o.vizUV = uv1 * unity_LightmapST.xy + unity_LightmapST.zw;
+                  o.vizUV = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
                   o.lightCoord = mul(unity_EditorViz_WorldToLight, mul(unity_ObjectToWorld, float4(v.vertex.xyz, 1)));
                }
             #endif
 
 
              o.texcoord0 = v.texcoord0;
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
              o.texcoord1 = v.texcoord1;
-            // o.texcoord2 = v.texcoord2;
-            #endif
+             o.texcoord2 = v.texcoord2;
             // o.texcoord3 = v.texcoord3;
-            // o.vertexColor = v.vertexColor;
+             o.vertexColor = v.vertexColor;
             // o.screenPos = ComputeScreenPos(o.pos);
             o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
             o.worldNormal = UnityObjectToWorldNormal(v.normal);
-            #if !_MICROTERRAIN || _TERRAINBLENDABLESHADER
-               o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
-               fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
-               o.worldTangent.w = tangentSign;
-            #endif
-
-            // MS Only
-            ApplyTerrainTangent(o);
+            o.worldTangent.xyz = UnityObjectToWorldDir(v.tangent.xyz);
+            fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+            o.worldTangent.w = tangentSign;
 
             return o;
          }
