@@ -52,7 +52,7 @@ public class UiSpellGrimoire : MonoBehaviour
 
     private UpgradeUIDecal m_uiDecalUpdaterDisplay;
 
-
+    public ClicOnBook clicOnBook;
     public void Start()
     {
         sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
@@ -286,5 +286,11 @@ public class UiSpellGrimoire : MonoBehaviour
 
     #endregion
 
-
+    public void ClicInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            clicOnBook.getClicEffect(Input.mousePosition);
+        }
+    }
 }

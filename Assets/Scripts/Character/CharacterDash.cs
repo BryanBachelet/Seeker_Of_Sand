@@ -29,6 +29,8 @@ namespace Character
         private bool m_isActiveCooldown;
         public Render.Camera.CameraBehavior m_cameraBehavior;
 
+        public GameObject[] characterModel;
+        public GameObject vfxDash;
         // Start is called before the first frame update
         void Start()
         {
@@ -54,7 +56,10 @@ namespace Character
         private void StartDash() // Function call at the start of the dash
         {
             if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_isActiveCooldown || m_isDashValid) return;
-
+            Instantiate(vfxDash, transform.position, transform.rotation);
+            characterModel[0].SetActive(false);
+            characterModel[1].SetActive(false);
+            characterModel[2].SetActive(true);
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
             GlobalSoundManager.PlayOneShot(28, transform.position);
@@ -100,7 +105,9 @@ namespace Character
 
             m_isActiveCooldown = true;
             m_dashCooldownTimer = 0.0f;
-
+            characterModel[0].SetActive(true);
+            characterModel[1].SetActive(true);
+            characterModel[2].SetActive(false);
         }
 
         private void DashMouvement()
