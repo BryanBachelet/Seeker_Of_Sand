@@ -293,7 +293,7 @@ namespace Character
             m_lineRenderer.SetPosition(1, m_aimFinalPoint);
         }
 
-        private void FeedbackHeadRotation()
+        public void FeedbackHeadRotation()
         {
             Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
             float angleDir = Vector3.SignedAngle(m_transformHead.forward, direction2d.normalized, Vector3.up);
