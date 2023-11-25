@@ -5,6 +5,7 @@
 // Auto-generated shader code, don't hand edit!
 //
 //   Unity Version: 2021.3.15f1
+//   MicroSplat Version: 3.9
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
@@ -36,19 +37,33 @@ Shader "Terrain_1_1_TerrainObjectBlend"
       [NoScaleOffset]_Specular ("Specular Array", 2DArray) = "black" {}
       _HybridHeightBlendDistance("Hybrid Blend Distance", Float) = 300
 
+
+
+
+
+
+
+
+
+
+
+
+
       
       [HideInInspector]_TerrainDesc("Terrain Desc", 2D) = "black" {}
       [HideInInspector]_TerrainBounds("Terrain Bounds", Vector) = (0,0,512,512)
       [PerRendererData]_TerrainBlendParams("Terrain Blend Distance", Vector) = (1, 0.4, 0, 0)
       [PerRendererData]_TerrainBlendParams2("Terrain Blend Params2", Vector) = (40, 0, 0, 0)
-      _TerrainHeightmapTexture("Terrain Height Map", 2D) = "black" {}
-      _TerrainNormalmapTexture("Terrain Normal Map", 2D) = "bump" {}
       _TerrainHeightmapScale("Terrain Height Map Scale", Vector) = (0,0,100,0)
 
 
 
 
+
+
       _TraxNormalStrength("Normal Shape Strength", Range(0, 2.5)) = 1
+
+      _TriplanarUVScale("Triplanar UV Scale", Vector) = (1, 1, 0, 0)
 
       _GlitterWind ("Glitter Wind Map", 2D) = "black" {}
 
@@ -246,6 +261,7 @@ ZWrite Off
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -474,7 +490,7 @@ ZWrite Off
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -593,7 +609,7 @@ ZWrite Off
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -2172,6 +2188,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -2288,7 +2408,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -4707,6 +4827,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -4762,6 +4905,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -4926,8 +5076,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -5111,7 +5261,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -5752,6 +5902,7 @@ float3 GetTessFactors ()
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -5990,7 +6141,7 @@ float3 GetTessFactors ()
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -6109,7 +6260,7 @@ float3 GetTessFactors ()
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -7687,6 +7838,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -7803,7 +8058,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -10222,6 +10477,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -10277,6 +10555,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -10441,8 +10726,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -10626,7 +10911,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -11074,6 +11359,7 @@ float3 GetTessFactors ()
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -11307,7 +11593,7 @@ float3 GetTessFactors ()
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -11426,7 +11712,7 @@ float3 GetTessFactors ()
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -13003,6 +13289,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -13119,7 +13509,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -15538,6 +15928,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -15593,6 +16006,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -15757,8 +16177,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -15942,7 +16362,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -16409,6 +16829,7 @@ float3 GetTessFactors ()
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -16642,7 +17063,7 @@ float3 GetTessFactors ()
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -16761,7 +17182,7 @@ float3 GetTessFactors ()
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -18337,6 +18758,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -18453,7 +18978,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -20872,6 +21397,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -20927,6 +21475,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -21091,8 +21646,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -21276,7 +21831,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -21740,6 +22295,7 @@ float3 GetTessFactors ()
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -21968,7 +22524,7 @@ float3 GetTessFactors ()
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -22087,7 +22643,7 @@ float3 GetTessFactors ()
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -23661,6 +24217,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -23777,7 +24437,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -26196,6 +26856,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -26251,6 +26934,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -26415,8 +27105,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -26600,7 +27290,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -27100,6 +27790,7 @@ float3 GetTessFactors ()
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -27328,7 +28019,7 @@ float3 GetTessFactors ()
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -27447,7 +28138,7 @@ float3 GetTessFactors ()
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -29022,6 +29713,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -29138,7 +29933,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -31557,6 +32352,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -31612,6 +32430,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -31776,8 +32601,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -31961,7 +32786,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -32473,7 +33298,6 @@ void Frag(  VertexToPixel v2f
             #pragma shader_feature_local _ _DISABLE_SSR
             #pragma shader_feature_local _ _DISABLE_SSR_TRANSPARENT
             #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
-            #pragma multi_compile _ WRITE_DECAL_BUFFER
                 
         
   
@@ -32491,6 +33315,7 @@ void Frag(  VertexToPixel v2f
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -32719,7 +33544,7 @@ void Frag(  VertexToPixel v2f
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -32838,7 +33663,7 @@ void Frag(  VertexToPixel v2f
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -34414,6 +35239,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -34530,7 +35459,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -36949,6 +37878,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -37004,6 +37956,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -37168,8 +38127,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -37353,7 +38312,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))
@@ -37844,6 +38803,7 @@ float3 GetTessFactors ()
       #define _USEEMISSIVEMETAL 1
       #define _MAX4TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
+      #define _PERTEXUVROTATION 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -38072,7 +39032,7 @@ float3 GetTessFactors ()
             half _TraxSnowRemoval;
          #endif
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
             float2 _TraxUVScales;
             float _TraxTextureBlend;
             float _TraxNormalStrength;
@@ -38191,7 +39151,7 @@ float3 GetTessFactors ()
                float4 texcoord2 : TEXCCOORD5;
                #endif
                // float4 texcoord3 : TEXCCOORD6;
-               // float4 screenPos : TEXCOORD7;
+                float4 screenPos : TEXCOORD7;
                 float4 vertexColor : COLOR;
 
                // float4 extraV2F0 : TEXCOORD8;
@@ -39765,6 +40725,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
 
          
          TEXTURE2D_FLOAT(_GMSTraxBuffer);
@@ -39881,7 +40945,7 @@ TEXTURE2D(_MainTex);
          }
 
 
-         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE
+         #if _TRAXSINGLE || _TRAXARRAY || _TRAXNOTEXTURE || _SNOWFOOTSTEPS
          void ApplyTrax(inout RawSamples samples, Config config, float3 worldPos, float traxBuffer, float3 traxNormal)
          {
             #if _PERTEXTRAXOPACITY || _PERTEXTRAXNORMALSTR
@@ -42300,6 +43364,29 @@ float3 GetTessFactors ()
 
 
 
+      float Dither8x8Bayer( int x, int y )
+     {
+        const float dither[ 64 ] = {
+                1, 49, 13, 61,  4, 52, 16, 64,
+            33, 17, 45, 29, 36, 20, 48, 32,
+                9, 57,  5, 53, 12, 60,  8, 56,
+            41, 25, 37, 21, 44, 28, 40, 24,
+                3, 51, 15, 63,  2, 50, 14, 62,
+            35, 19, 47, 31, 34, 18, 46, 30,
+            11, 59,  7, 55, 10, 58,  6, 54,
+            43, 27, 39, 23, 42, 26, 38, 22};
+        int r = y * 8 + x;
+        return dither[r] / 64; 
+     }
+
+     void ApplyDitherFade(float2 vpos, float fadeValue)
+     {
+        if (fadeValue <= 0) clip(-1);
+        float dither = Dither8x8Bayer( fmod(vpos.x, 8), fmod(vpos.y, 8) );
+        float sgn = fadeValue > 0 ? 1.0f : -1.0f;
+        clip(dither - (1-fadeValue) * sgn);
+     }
+
       MicroSplatLayer DoTerrainLayer(inout ShaderData d, float4 th, inout float3 worldNormalBlend, float3x3 tbn, out float rawalpha)
       {
          MicroSplatLayer terrainS = (MicroSplatLayer)0;
@@ -42355,6 +43442,13 @@ float3 GetTessFactors ()
          #endif
 
          terrainS.Alpha = alpha;
+         #if _TBDITHERALPHA
+            float4 screenPosNorm = d.screenPos / d.screenPos.w;
+            float2 clipScreen = screenPosNorm.xy * _ScreenParams.xy;
+            float camDist = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+            ApplyDitherFade(clipScreen, alpha);
+            alpha = 1;
+         #endif
          return terrainS;
       }
 
@@ -42519,8 +43613,8 @@ float3 GetTessFactors ()
             // d.localSpaceNormal = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldNormal));
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
-            // d.screenPos = i.screenPos;
-            // d.screenUV = i.screenPos.xy / i.screenPos.w;
+             d.screenPos = i.screenPos;
+             d.screenUV = i.screenPos.xy / i.screenPos.w;
 
             // d.extraV2F0 = i.extraV2F0;
             // d.extraV2F1 = i.extraV2F1;
@@ -42704,7 +43798,7 @@ float3 GetTessFactors ()
       #endif
        // output.texcoord3 = input.texcoord3;
         output.vertexColor = input.vertexColor;
-       // output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
+        output.screenPos = ComputeScreenPos(output.pos, _ProjectionParams.x);
 
    
        #if _HDRP && (_PASSMOTIONVECTOR || (_PASSFORWARD && defined(_WRITE_TRANSPARENT_MOTION_VECTOR)))

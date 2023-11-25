@@ -11,7 +11,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_Base-484518903"
+Shader "Hidden/Terrain_Base-938947171"
 {
    Properties
    {
@@ -40,9 +40,6 @@ Shader "Hidden/Terrain_Base-484518903"
 
 
 
-      _AlphaData("Alpha Params", Vector) = (0, 0, 0, 0)
-      _AlphaHoleTexture("ClipMap", 2D) = "white" {}
-
 
       // terrain
       [NoScaleOffset]_NormalNoise("Normal Noise", 2D) = "bump" {}
@@ -57,11 +54,14 @@ Shader "Hidden/Terrain_Base-484518903"
       _TraxFXThresholds("Trax FX Thresholds", Vector) = (0,0,0,0)
       _StreamControl("Stream Control", 2D) = "black" {}
       _DynamicStreamControl("Stream Control", 2D) = "black" {}
+      _SpecularFades("Specular Heights", Vector) = (0, 100, 0, 0)
       _GlobalPorosity("Porosity", Range(0.0, 1.0)) = 0.4
       // wetness
       _WetnessParams("Min/Max Wetness", Vector) = (0, 1, 0, 0)
 
 
+      _HeightWetness("Height Wetness Params", Vector) = (1, 0.1, 1, 1)
+      _DistanceWetness("Distance Wetness Fade", Vector) = (100, 1, 200, 0)
       // puddles
       _PuddleParams("Puddle Blend", Vector) = (6, 1, 0, 0)
 
@@ -75,6 +75,7 @@ Shader "Hidden/Terrain_Base-484518903"
       _StreamUVScales("Stream UV Scales", Vector) = (70, 70, 70, 70)
       _StreamTint("Stream Tint", Color) = (0.5, 0.5, 0.5, 1.0)
 
+      _StreamFades("Stream Height Fades", Vector) = (0, 10, 1000, 1500)
       // Lava
       _LavaDiffuse("Lava Diffuse", 2D) = "white" {}
       _LavaParams("lava blend, max, speed, interp", Vector) = (2.7, 1.0, 0.5, 0.275)
@@ -85,11 +86,19 @@ Shader "Hidden/Terrain_Base-484518903"
       _LavaUVScale("Lava UV Scale", Vector) = (70, 70, 0, 0)
       _LavaDislacementScale("Displacement Scale", Range(0, 2)) = 1
       _LavaEmissiveMult("Emission Multiplier", Float) = 2
+      _LavaFades("Lava Height Fades", Vector) = (0, 10, 1000, 1500)
+      _LavaStochasticContrast("Stochastic Contrast", Range(0.001, 0.999)) = 0.5
+      _LavaStochasticSize("Stochastic Size", Range(0.5, 1.5)) = 1
+
+      _RainDropTexture("RainDrop Texture", 2D) = "white" {}
+      _RainIntensityScale("Intensity/Scale", Vector) = (0, 150, 0, 0)
+	
 
 
 
 
 
+      _TriplanarContrast("Triplanar Contrast", Range(1.0, 8)) = 4
       _TriplanarUVScale("Triplanar UV Scale", Vector) = (1, 1, 0, 0)
 
       _GlitterWind ("Glitter Wind Map", 2D) = "black" {}
@@ -291,19 +300,29 @@ Shader "Hidden/Terrain_Base-484518903"
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -498,10 +517,6 @@ Shader "Hidden/Terrain_Base-484518903"
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -543,6 +558,7 @@ Shader "Hidden/Terrain_Base-484518903"
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -612,6 +628,8 @@ Shader "Hidden/Terrain_Base-484518903"
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -2391,45 +2409,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -7297,19 +7548,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -7514,10 +7775,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -7559,6 +7816,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -7628,6 +7886,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -9406,45 +9666,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -14136,19 +14629,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -14350,10 +14853,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -14395,6 +14894,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -14464,6 +14964,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -16240,45 +16742,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -21043,19 +21778,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -21256,10 +22001,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -21301,6 +22042,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -21370,6 +22112,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -23146,45 +23890,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -27924,19 +28901,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -28136,10 +29123,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -28181,6 +29164,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -28250,6 +29234,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -30027,45 +31013,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -34759,19 +35978,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -34971,10 +36200,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -35016,6 +36241,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -35085,6 +36311,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -36861,45 +38089,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -41590,19 +43051,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -41797,10 +43268,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -41842,6 +43309,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -41911,6 +43379,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -43685,45 +45155,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -48450,19 +50153,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -48657,10 +50370,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -48702,6 +50411,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -48771,6 +50481,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -50546,45 +52258,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -55340,19 +57285,29 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -55547,10 +57502,6 @@ void Frag(  VertexToPixel v2f
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -55592,6 +57543,7 @@ void Frag(  VertexToPixel v2f
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -55661,6 +57613,8 @@ void Frag(  VertexToPixel v2f
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -57437,45 +59391,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
@@ -62193,19 +64380,29 @@ float3 GetTessFactors ()
       #define _PERTEXNORMSTR 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
-      #define _ALPHAHOLETEXTURE 1
-      #define _ALPHABELOWHEIGHT 1
       #define _NORMALNOISE 1
+      #define _SPECULARFADE 1
       #define _WETNESS 1
+      #define _HEIGHTWETNESS 1
+      #define _DISTANCEWETNESS 1
       #define _PUDDLES 1
       #define _STREAMS 1
+      #define _STREAMHEIGHTFILTER 1
       #define _LAVA 1
+      #define _LAVAHEIGHTFILTER 1
+      #define _LAVASTOCHASTIC 1
       #define _DYNAMICFLOWS 1
+      #define _RAINDROPS 1
+      #define _TRIPLANAR 1
+      #define _TRIPLANARLOCALSPACE 1
+      #define _PERTEXTRIPLANAR 1
+      #define _TRIPLANARHEIGHTBLEND 1
       #define _WINDPARTICULATE 1
       #define _WINDSHADOWS 1
       #define _WINDPARTICULATEUPFILTER 1
       #define _PERTEXWINDPARTICULATE 1
       #define _GLITTER 1
+      #define _MSRENDERLOOP_SURFACESHADER 1
       #define _MSRENDERLOOP_UNITYHDRP2021 1
       #define _MICROSPLATBASEMAP 1
       #define _MSRENDERLOOP_UNITYHD 1
@@ -62400,10 +64597,6 @@ float3 GetTessFactors ()
       #endif
 
 
-      float2 _AlphaData;
-      
-
-
          #if _DETAILNOISE
          half3 _DetailNoiseScaleStrengthFade;
          #endif
@@ -62445,6 +64638,7 @@ float3 GetTessFactors ()
          
 
 
+      float2 _SpecularFades;
 
          half _GlobalPorosity;
          
@@ -62514,6 +64708,8 @@ float3 GetTessFactors ()
          #endif
 
       half4 _TraxFXThresholds;
+      float _TriplanarContrast;
+      float4 _TriplanarUVScale;
 
       #if _GLOBALPARTICULATEROTATION
          float     _Global_WindParticulateRotation;
@@ -64288,45 +66484,278 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
 }
 
 
-      #if _ALPHAHOLETEXTURE
-         TEXTURE2D(_AlphaHoleTexture);   // must declare with a sampler or windows throws an error, which seems like a compiler bug
-         float4 _AlphaHoleTexture_TexelSize;
-      #endif
 
 
-
-      void ClipWaterLevel(float3 worldPos)
+      void TriplanarPrepSpace(inout float3 worldPos, inout float3 n)
       {
-         clip(worldPos.y - _AlphaData.y);
+         #if _TRIPLANARLOCALSPACE && !_FORCELOCALSPACE
+            worldPos = mul(GetWorldToObjectMatrix(), float4(worldPos, 1));
+            n = mul((float3x3)GetWorldToObjectMatrix(), n).xyz;
+         #endif
       }
 
-      void ClipAlphaHole(inout Config c, inout half4 weights)
+
+      float3 TerrainBarycentric(float2 p, float2 a, float2 b, float2 c)
       {
-      #if _ALPHAHOLETEXTURE
-         clip(SAMPLE_TEXTURE2D(_AlphaHoleTexture, shared_linear_clamp_sampler, c.uv).r - 0.5);
-      #else
-         if ((int)round(c.uv0.z ) == (int)round(_AlphaData.x))
+            float2 v0 = b - a;
+            float2 v1 = c - a;
+            float2 v2 = p - a;
+            float d00 = dot(v0, v0);
+            float d01 = dot(v0, v1);
+            float d11 = dot(v1, v1);
+            float d20 = dot(v2, v0);
+            float d21 = dot(v2, v1);
+            float denom = d00 * d11 - d01 * d01;
+            float v = (d11 * d20 - d01 * d21) / denom;
+            float w = (d00 * d21 - d01 * d20) / denom;
+            float u = 1.0f - v - w;
+            return float3(u, v, w);
+      }
+
+      float3 GetTerrainBary(float2 uv)
+      {
+         #if _CUSTOMSPLATTEXTURES
+            float2 texSize = _CustomControl0_TexelSize.zw;
+            float2 stp = _CustomControl0_TexelSize.xy;
+         #else
+            float2 texSize = _Control0_TexelSize.zw;
+            float2 stp = _Control0_TexelSize.xy;
+         #endif
+         // scale coords so we can take floor/frac to construct a cell
+         float2 stepped = uv * texSize;
+         float2 uvBottom = floor(stepped);
+         float2 uvFrac = frac(stepped);
+         uvBottom /= texSize;
+
+         float2 center = stp * 0.5;
+         uvBottom += center;
+
+         // construct uv/positions of triangle based on our interpolation point
+         float2 cuv0, cuv1, cuv2;
+         // make virtual triangle
+         if (uvFrac.x > uvFrac.y)
          {
-            clip(-1);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(stp.x, 0);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv1.z ) == (int)round(_AlphaData.x) && weights.y > 0)
+         else
          {
-            weights.y = 0;
-            weights = TotalOne(weights);
+            cuv0 = uvBottom;
+            cuv1 = uvBottom + float2(0, stp.y);
+            cuv2 = uvBottom + float2(stp.x, stp.y);
          }
-         else if ((int)round(c.uv2.z ) == (int)round(_AlphaData.x) && weights.z > 0)
-         {
-            weights.z = 0;
-            weights = TotalOne(weights);
-         }
-         else if ((int)round(c.uv3.z ) == (int)round(_AlphaData.x) && weights.w > 0)
-         {
-            weights.w = 0;
-            weights = TotalOne(weights);
-         }
+
+         float2 uvBaryFrac = uvFrac * stp + uvBottom;
+         return TerrainBarycentric(uvBaryFrac, cuv0, cuv1, cuv2);
+      }
+
+      void TriplanarPrepSurfaceNormals(float4 uv0, inout float3 worldPos, inout float3 n)
+      {
          
-      #endif
+         #if _TRIPLANARUSEFACENORMALS
+            float3 dx = ddx(worldPos);
+		      float3 dy = ddy(worldPos);
+		      float3 flatNormal = normalize(cross(dy, dx));
+            float3 bary = GetTerrainBary(uv0.xy);
+            #if _MICROTERRAIN
+               float mb = min(bary.x, min(bary.y, bary.z));
+		         n = lerp(n, flatNormal, saturate(mb * _TriplanarFaceBlend * 20));
+            #else
+               n = lerp(n, flatNormal, _TriplanarFaceBlend);
+            #endif
+         #endif
       }
+
+      
+      void DoPrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         
+
+         n = normalize(n);
+         tc.pN = pow(abs(n), abs(_TriplanarContrast));
+         tc.pN = TotalOne(tc.pN);
+     
+         // Get the sign (-1 or 1) of the surface normal
+         half3 axisSign = n < 0 ? -1 : 1;
+         axisSign.z *= -1;
+         tc.axisSign = axisSign;
+         tc.uv0 = float3x3(c.uv0, c.uv0, c.uv0);
+         tc.uv1 = float3x3(c.uv1, c.uv1, c.uv1);
+         tc.uv2 = float3x3(c.uv2, c.uv2, c.uv2);
+         tc.uv3 = float3x3(c.uv3, c.uv3, c.uv3);
+         tc.pN0 = tc.pN;
+         tc.pN1 = tc.pN;
+         tc.pN2 = tc.pN;
+         tc.pN3 = tc.pN;
+
+
+         float2 uscale = 0.1 * _TriplanarUVScale.xy; // this was a mistake, but too late to undo.
+         float4 triScale = _TriplanarUVScale;
+         #if _TERRAINBLENDABLESHADER && _TERRAINBLENDMATCHWORLDUV && _WORLDUV
+            uscale = _UVScale.xy;
+            triScale.zw = _UVScale.zw;
+         #endif
+         
+         tc.uv0[0].xy = (worldPos.zy * uscale + triScale.zw);
+         tc.uv0[1].xy = (worldPos.xz * float2(-1,1) * uscale + triScale.zw);
+         tc.uv0[2].xy = (worldPos.xy * uscale + triScale.zw);
+         #if !_SURFACENORMALS
+         tc.uv0[0].x *= axisSign.x;
+         tc.uv0[1].x *= axisSign.y;
+         tc.uv0[2].x *= axisSign.z;
+         #endif
+
+         tc.uv1[0].xy = tc.uv0[0].xy;
+         tc.uv1[1].xy = tc.uv0[1].xy;
+         tc.uv1[2].xy = tc.uv0[2].xy;
+
+         tc.uv2[0].xy = tc.uv0[0].xy;
+         tc.uv2[1].xy = tc.uv0[1].xy;
+         tc.uv2[2].xy = tc.uv0[2].xy;
+
+         tc.uv3[0].xy = tc.uv0[0].xy;
+         tc.uv3[1].xy = tc.uv0[1].xy;
+         tc.uv3[2].xy = tc.uv0[2].xy;
+
+         
+
+         #if _USEGRADMIP
+            albedoLOD.d0 = float4(ddx(tc.uv0[0].xy), ddy(tc.uv0[0].xy));
+            albedoLOD.d1 = float4(ddx(tc.uv0[1].xy), ddy(tc.uv0[1].xy));
+            albedoLOD.d2 = float4(ddx(tc.uv0[2].xy), ddy(tc.uv0[2].xy));
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #elif _USELODMIP
+            albedoLOD.x = ComputeMipLevel(tc.uv0[0].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.y = ComputeMipLevel(tc.uv0[1].xy, _Diffuse_TexelSize.zw);
+            albedoLOD.z = ComputeMipLevel(tc.uv0[2].xy, _Diffuse_TexelSize.zw);
+            normalLOD = albedoLOD;
+            emisLOD = albedoLOD;
+         #endif
+
+         origAlbedoLOD = albedoLOD;
+         
+         #if _PERTEXUVSCALEOFFSET
+            SAMPLE_PER_TEX(ptUVScale, 0.5, c, half4(1,1,0,0));
+            tc.uv0[0].xy = tc.uv0[0].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[1].xy = tc.uv0[1].xy * ptUVScale0.xy + ptUVScale0.zw;
+            tc.uv0[2].xy = tc.uv0[2].xy * ptUVScale0.xy + ptUVScale0.zw;
+
+            tc.uv1[0].xy = tc.uv1[0].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[1].xy = tc.uv1[1].xy * ptUVScale1.xy + ptUVScale1.zw;
+            tc.uv1[2].xy = tc.uv1[2].xy * ptUVScale1.xy + ptUVScale1.zw;
+
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = tc.uv2[0].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[1].xy = tc.uv2[1].xy * ptUVScale2.xy + ptUVScale2.zw;
+               tc.uv2[2].xy = tc.uv2[2].xy * ptUVScale2.xy + ptUVScale2.zw;
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = tc.uv3[0].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[1].xy = tc.uv3[1].xy * ptUVScale3.xy + ptUVScale3.zw;
+               tc.uv3[2].xy = tc.uv3[2].xy * ptUVScale3.xy + ptUVScale3.zw;
+            #endif
+            
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d0 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d0 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d0 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d1 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d1 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d1 * ptUVScale3.xyxy * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * ptUVScale0.xyxy * weights.x + 
+                  albedoLOD.d2 * ptUVScale1.xyxy * weights.y + 
+                  albedoLOD.d2 * ptUVScale2.xyxy * weights.z + 
+                  albedoLOD.d2 * ptUVScale3.xyxy * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+               
+            #endif
+         #else
+            #if _USEGRADMIP
+               albedoLOD.d0 = albedoLOD.d0 * weights.x + 
+                  albedoLOD.d0 * weights.y + 
+                  albedoLOD.d0 * weights.z + 
+                  albedoLOD.d0 * weights.w;
+               
+               albedoLOD.d1 = albedoLOD.d1 * weights.x + 
+                  albedoLOD.d1 * weights.y + 
+                  albedoLOD.d1 * weights.z + 
+                  albedoLOD.d1 * weights.w;
+               
+               albedoLOD.d2 = albedoLOD.d2 * weights.x + 
+                  albedoLOD.d2 * weights.y + 
+                  albedoLOD.d2 * weights.z + 
+                  albedoLOD.d2 * weights.w;
+                       
+               
+               normalLOD.d0 = albedoLOD.d0;
+               normalLOD.d1 = albedoLOD.d1;
+               normalLOD.d2 = albedoLOD.d2;
+               
+               #if _USEEMISSIVEMETAL
+                  emisLOD.d0 = albedoLOD.d0;
+                  emisLOD.d1 = albedoLOD.d1;
+                  emisLOD.d2 = albedoLOD.d2;
+               #endif
+            #endif
+         #endif
+
+         #if _PERTEXUVROTATION
+            SAMPLE_PER_TEX(ptUVRot, 16.5, c, half4(0,0,0,0));
+            tc.uv0[0].xy = RotateUV(tc.uv0[0].xy, ptUVRot0.x);
+            tc.uv0[1].xy = RotateUV(tc.uv0[1].xy, ptUVRot0.y);
+            tc.uv0[2].xy = RotateUV(tc.uv0[2].xy, ptUVRot0.z);
+            
+            tc.uv1[0].xy = RotateUV(tc.uv1[0].xy, ptUVRot1.x);
+            tc.uv1[1].xy = RotateUV(tc.uv1[1].xy, ptUVRot1.y);
+            tc.uv1[2].xy = RotateUV(tc.uv1[2].xy, ptUVRot1.z);
+            #if !_MAX2LAYER
+               tc.uv2[0].xy = RotateUV(tc.uv2[0].xy, ptUVRot2.x);
+               tc.uv2[1].xy = RotateUV(tc.uv2[1].xy, ptUVRot2.y);
+               tc.uv2[2].xy = RotateUV(tc.uv2[2].xy, ptUVRot2.z);
+            #endif
+            #if !_MAX3LAYER || !_MAX2LAYER
+               tc.uv3[0].xy = RotateUV(tc.uv3[0].xy, ptUVRot3.x);
+               tc.uv3[1].xy = RotateUV(tc.uv3[1].xy, ptUVRot3.y);
+               tc.uv3[2].xy = RotateUV(tc.uv3[2].xy, ptUVRot3.z);
+            #endif
+         #endif
+
+      }
+
+      void PrepTriplanar(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         TriplanarPrepSurfaceNormals(uv0, worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+      void PrepTriplanarDisplace(float4 uv0, float3 n, float3 worldPos, Config c, inout TriplanarConfig tc, half4 weights, inout MIPFORMAT albedoLOD,
+          inout MIPFORMAT normalLOD, inout MIPFORMAT emisLOD, inout MIPFORMAT origAlbedoLOD)
+      {
+         TriplanarPrepSpace(worldPos, n);
+         DoPrepTriplanar(uv0, n, worldPos, c, tc, weights, albedoLOD, normalLOD, emisLOD, origAlbedoLOD);
+      }
+
+
+         
 
          #if _DETAILNOISE
          TEXTURE2D(_DetailNoise);
