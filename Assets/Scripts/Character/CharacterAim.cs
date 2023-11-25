@@ -305,6 +305,7 @@ namespace Character
             Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
             float angleDir = Vector3.SignedAngle(m_transformHead.forward, m_characterShoot.m_CharacterMouvement.GetMouvementDirection(), Vector3.up);
             m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+     
         }
 
 

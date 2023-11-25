@@ -216,6 +216,14 @@ namespace Character
             }
         }
 
+        public void SetCombatMode(bool state)
+        {
+            if (m_isSlideInputActive)
+                combatState = false;
+            else
+                combatState = state;
+        }
+
         public void Update()
         {
             if (!state.isPlaying) return;
@@ -699,6 +707,7 @@ namespace Character
                 Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
                 float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
                 transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
+                m_avatarTransform.localRotation = Quaternion.identity;
             }
 
             if (combatState)
@@ -719,6 +728,7 @@ namespace Character
             float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            m_avatarTransform.localRotation = Quaternion.identity;
         }
         #endregion
 

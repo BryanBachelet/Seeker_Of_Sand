@@ -185,7 +185,7 @@ namespace Character
             spellEquip = new int[4];
             for (int i = 0; i < spellEquip.Length; i++)
             {
-                if (i>= capsuleIndex.Count)
+                if (i >= capsuleIndex.Count)
                     spellEquip[i] = -1;
                 else
                     spellEquip[i] = i;
@@ -247,7 +247,7 @@ namespace Character
                 if (Time.time > m_lastTimeShot + m_TimeAutoWalk)
                 {
                     m_lastTimeShot = Mathf.Infinity;
-                    if (m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+                    if (m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
                     StopCasting();
                     return;
                 }
@@ -413,7 +413,7 @@ namespace Character
 
         private int ChangeProjecileIndex()
         {
-            if (m_currentRotationIndex == maxSpellIndex-1)
+            if (m_currentRotationIndex == maxSpellIndex - 1)
             {
                 m_isReloading = true;
                 m_currentRotationIndex = 0;
@@ -494,7 +494,7 @@ namespace Character
             avatarTransform.localRotation = Quaternion.identity;
             bookTransform.localRotation = Quaternion.identity;
             //m_AnimatorSkillBar.SetBool("IsCasting", false);
-            if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+            if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
             m_cameraBehavior.BlockZoom(false);
             float totalShootTime = time + currentWeaponStats.timeInterval;
             if (m_reloadTimer > totalShootTime)
@@ -543,7 +543,7 @@ namespace Character
 
                     //m_AnimatorSkillBar.SetBool("IsCasting", true);
                     //m_canShoot = true;
-                    m_CharacterMouvement.combatState = true;
+                    m_CharacterMouvement.SetCombatMode(true);
                     return false;
                 }
                 else
@@ -551,7 +551,7 @@ namespace Character
                     m_isCasting = true;
                     m_CharacterAnimator.SetBool("Casting", true);
                     m_BookAnimator.SetBool("Casting", true);
-                    m_CharacterMouvement.combatState = true;
+                    m_CharacterMouvement.SetCombatMode(true);
                     return true;
                 }
             }
@@ -569,7 +569,7 @@ namespace Character
                     avatarTransform.localRotation = Quaternion.identity;
                     bookTransform.localRotation = Quaternion.identity;
                     //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                    if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+                    if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
                     return false;
                 }
                 else
@@ -627,7 +627,7 @@ namespace Character
                 avatarTransform.localRotation = Quaternion.identity;
                 bookTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
                 ReloadWeapon(5f);
                 m_currentRotationIndex = 0;
                 m_currentIndexCapsule = spellEquip[0];
@@ -644,7 +644,7 @@ namespace Character
                 avatarTransform.localRotation = Quaternion.identity;
                 bookTransform.localRotation = Quaternion.identity;
                 //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
                 ReloadWeapon(5f);
                 m_currentRotationIndex = 0;
                 m_currentIndexCapsule = spellEquip[0];
@@ -657,7 +657,7 @@ namespace Character
             if (ctx.started)
             {
                 m_lastTimeShot = Mathf.Infinity;
-                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.combatState = false;
+                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
                 StopCasting();
             }
         }
@@ -665,17 +665,17 @@ namespace Character
         #region Spell Functions
         public void AddSpell(int index)
         {
-           int prevIndex=  bookOfSpell.Count;
+            int prevIndex = bookOfSpell.Count;
             capsuleIndex.Add(index);
             bookOfSpell.Add(m_capsuleManager.capsules[index]);
 
             CapsuleStats[] newCapsuleStat = new CapsuleStats[bookOfSpell.Count];
-         
+
             for (int i = 0; i < prevIndex; i++)
             {
 
                 newCapsuleStat[i] = capsuleStatsAlone[i];
-            
+
             }
             capsuleStatsAlone = newCapsuleStat;
 
@@ -690,7 +690,7 @@ namespace Character
 
             if (capsuleIndex.Count <= spellEquip.Length)
             {
-                spellEquip[capsuleIndex.Count - 1] = bookOfSpell.Count-1;
+                spellEquip[capsuleIndex.Count - 1] = bookOfSpell.Count - 1;
                 FindLastSpellIndex();
                 RefreshActiveIcon(bookOfSpell.ToArray());
             }
