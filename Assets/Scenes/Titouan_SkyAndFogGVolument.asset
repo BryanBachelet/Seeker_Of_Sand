@@ -79,7 +79,7 @@ MonoBehaviour:
     m_Value: 566
   meanFreePath:
     m_OverrideState: 1
-    m_Value: 213.4
+    m_Value: 213.57
   enableVolumetricFog:
     m_OverrideState: 1
     m_Value: 1
@@ -91,7 +91,7 @@ MonoBehaviour:
     m_Value: 1
   depthExtent:
     m_OverrideState: 1
-    m_Value: 115.1
+    m_Value: 29.43
   denoisingMode:
     m_OverrideState: 1
     m_Value: 3
@@ -106,7 +106,7 @@ MonoBehaviour:
     m_Value: 1
   screenResolutionPercentage:
     m_OverrideState: 1
-    m_Value: 7.7
+    m_Value: 10.8
   volumeSliceCount:
     m_OverrideState: 1
     m_Value: 338
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa3b8214f75b354e9ba2caadd022259, type: 3}
   m_Name: DepthOfField
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   quality:
     m_OverrideState: 1
     m_Value: 3
@@ -201,7 +201,7 @@ MonoBehaviour:
     m_Value: 1
   fixedExposure:
     m_OverrideState: 1
-    m_Value: 11.765156
+    m_Value: 10.972781
   compensation:
     m_OverrideState: 1
     m_Value: 0.5
@@ -346,7 +346,7 @@ MonoBehaviour:
     m_Value: {x: 0.9677611, y: 0.9552968, z: 1, w: -0.05501651}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.02246686}
+    m_Value: {x: 1, y: 1, z: 1, w: -0.06052069}
   gain:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0.07233275}
@@ -368,13 +368,13 @@ MonoBehaviour:
     m_Value: 2
   threshold:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.05
   intensity:
     m_OverrideState: 1
-    m_Value: 0.551
+    m_Value: 0.294
   scatter:
     m_OverrideState: 1
-    m_Value: 0.861
+    m_Value: 0.617
   tint:
     m_OverrideState: 1
     m_Value: {r: 0.9787736, g: 0.96603775, b: 1, a: 1}
@@ -542,7 +542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89f83259d497a7e4c97631aa6e417541, type: 3}
   m_Name: DeNorSobOutline
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   OutlineWidth:
     m_OverrideState: 1
     m_Value: 0.0001
@@ -645,15 +645,16 @@ MonoBehaviour:
   - {fileID: 5399228873499260976}
   - {fileID: -5952511860384772844}
   - {fileID: -2487184097119012380}
+  - {fileID: 5672195085464197083}
   - {fileID: -6547394206358816113}
   - {fileID: -3326221647617228940}
   - {fileID: 7830033703387984505}
   - {fileID: -315341905029657923}
   - {fileID: 331763139956130317}
-  - {fileID: 5672195085464197083}
   - {fileID: 8327991371708962649}
   - {fileID: -6158409020732941316}
   - {fileID: 250633051689519656}
+  - {fileID: 2769227142434094408}
 --- !u!114 &250633051689519656
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -706,7 +707,47 @@ MonoBehaviour:
     m_Value: 0
   saturation:
     m_OverrideState: 1
+    m_Value: 3.8
+--- !u!114 &2769227142434094408
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7649d9368d3a5c4ab8ad01a63e04962, type: 3}
+  m_Name: ChannelMixer
+  m_EditorClassIdentifier: 
+  active: 0
+  redOutRedIn:
+    m_OverrideState: 0
+    m_Value: 100
+  redOutGreenIn:
+    m_OverrideState: 0
     m_Value: 0
+  redOutBlueIn:
+    m_OverrideState: 0
+    m_Value: 0
+  greenOutRedIn:
+    m_OverrideState: 0
+    m_Value: 0
+  greenOutGreenIn:
+    m_OverrideState: 0
+    m_Value: 100
+  greenOutBlueIn:
+    m_OverrideState: 0
+    m_Value: 0
+  blueOutRedIn:
+    m_OverrideState: 0
+    m_Value: 0
+  blueOutGreenIn:
+    m_OverrideState: 0
+    m_Value: 0
+  blueOutBlueIn:
+    m_OverrideState: 0
+    m_Value: 100
 --- !u!114 &5399228873499260976
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -722,7 +763,7 @@ MonoBehaviour:
   active: 1
   opacity:
     m_OverrideState: 1
-    m_Value: 0.674
+    m_Value: 0.542
   upperHemisphereOnly:
     m_OverrideState: 0
     m_Value: 1
@@ -734,35 +775,35 @@ MonoBehaviour:
     m_Value: 1024
   shadowMultiplier:
     m_OverrideState: 1
-    m_Value: 18.9
+    m_Value: 31.4
   shadowTint:
     m_OverrideState: 1
-    m_Value: {r: 0.26415092, g: 0.24427809, b: 0.197864, a: 1}
+    m_Value: {r: 0.084905684, g: 0.066110864, b: 0.055669293, a: 1}
   shadowResolution:
     m_OverrideState: 0
     m_Value: 256
   shadowSize:
     m_OverrideState: 1
-    m_Value: 504.4
+    m_Value: 172.8
   layerA:
     cloudMap:
       m_OverrideState: 1
       m_Value: {fileID: 2800000, guid: d7e55445fde365e4e9d83c69b33a54c8, type: 3}
     opacityR:
       m_OverrideState: 1
-      m_Value: 0.209
+      m_Value: 0.22
     opacityG:
       m_OverrideState: 1
       m_Value: 0
     opacityB:
       m_OverrideState: 1
-      m_Value: 0.587
+      m_Value: 0.898
     opacityA:
       m_OverrideState: 1
       m_Value: 0
     rotation:
       m_OverrideState: 1
-      m_Value: 225
+      m_Value: 307
     tint:
       m_OverrideState: 1
       m_Value: {r: 0.7242265, g: 0.68301886, b: 1, a: 1}
@@ -773,17 +814,17 @@ MonoBehaviour:
       m_OverrideState: 1
       m_Value: 1
     scrollOrientation:
-      m_OverrideState: 0
+      m_OverrideState: 1
       m_Value:
         mode: 2
         customValue: 0
-        additiveValue: -84.94
+        additiveValue: 396.1
         multiplyValue: 1
     scrollSpeed:
       m_OverrideState: 1
       m_Value:
         mode: 0
-        customValue: 1150
+        customValue: 717
         additiveValue: 0
         multiplyValue: 1
     flowmap:
@@ -794,10 +835,10 @@ MonoBehaviour:
       m_Value: 1
     steps:
       m_OverrideState: 1
-      m_Value: 6
+      m_Value: 8
     thickness:
       m_OverrideState: 1
-      m_Value: 0.267
+      m_Value: 0.48
     castShadows:
       m_OverrideState: 1
       m_Value: 1
@@ -810,13 +851,13 @@ MonoBehaviour:
       m_Value: 0.252
     opacityG:
       m_OverrideState: 1
-      m_Value: 1
+      m_Value: 0
     opacityB:
       m_OverrideState: 1
-      m_Value: 1
+      m_Value: 0.321
     opacityA:
       m_OverrideState: 1
-      m_Value: 1
+      m_Value: 0
     rotation:
       m_OverrideState: 1
       m_Value: 0
@@ -825,7 +866,7 @@ MonoBehaviour:
       m_Value: {r: 0.29440245, g: 0.27118188, b: 0.5188679, a: 1}
     exposure:
       m_OverrideState: 1
-      m_Value: 0.62
+      m_Value: 0.01
     distortionMode:
       m_OverrideState: 1
       m_Value: 1
@@ -873,28 +914,28 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 3
   rayTracing:
     m_OverrideState: 1
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 3.18
+    m_Value: 2.05
   directLightingStrength:
     m_OverrideState: 1
-    m_Value: 0.598
+    m_Value: 0.72
   radius:
     m_OverrideState: 1
-    m_Value: 4.7
+    m_Value: 3.85
   spatialBilateralAggressiveness:
-    m_OverrideState: 1
-    m_Value: 0.096
+    m_OverrideState: 0
+    m_Value: 0
   temporalAccumulation:
     m_OverrideState: 1
     m_Value: 1
   ghostingReduction:
     m_OverrideState: 1
-    m_Value: 0.771
+    m_Value: 1
   blurSharpness:
     m_OverrideState: 1
     m_Value: 0.1
@@ -911,31 +952,31 @@ MonoBehaviour:
     m_Value: 1
   m_StepCount:
     m_OverrideState: 1
-    m_Value: 6
+    m_Value: 32
   m_FullResolution:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   m_MaximumRadiusInPixels:
     m_OverrideState: 1
-    m_Value: 32
+    m_Value: 256
   m_BilateralUpsample:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   m_DirectionCount:
     m_OverrideState: 1
     m_Value: 2
   m_RayLength:
     m_OverrideState: 1
-    m_Value: 3
+    m_Value: 20
   m_SampleCount:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 8
   m_Denoise:
     m_OverrideState: 1
     m_Value: 1
   m_DenoiserRadius:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.65
 --- !u!114 &6240177844487483043
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1326,13 +1367,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcf384b154398e341b6b29969c078198, type: 3}
   m_Name: MotionBlur
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   quality:
     m_OverrideState: 1
     m_Value: 2
   intensity:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   maximumVelocity:
     m_OverrideState: 1
     m_Value: 100
