@@ -220,6 +220,7 @@ namespace Character
             if (PauseMenu.gameState && !state.isPlaying) { return; }
             if (m_isCasting)
             {
+                m_characterAim.FeedbackHeadRotation();
                 Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
                 avatarTransform.rotation = rotationFromHead;
                 bookTransform.rotation = rotationFromHead;
@@ -664,20 +665,28 @@ namespace Character
         #region Spell Functions
         public void AddSpell(int index)
         {
+           int prevIndex=  bookOfSpell.Count;
             capsuleIndex.Add(index);
             bookOfSpell.Add(m_capsuleManager.capsules[index]);
 
-            capsuleStatsAlone = new CapsuleStats[bookOfSpell.Count];
-            for (int i = 0; i < bookOfSpell.Count; i++)
+            CapsuleStats[] newCapsuleStat = new CapsuleStats[bookOfSpell.Count];
+         
+            for (int i = 0; i < prevIndex; i++)
             {
-                if (bookOfSpell[i].type == CapsuleSystem.CapsuleType.ATTACK)
-                {
-                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[i];
-                    capsuleStatsAlone[i] = currentCap.stats.stats;
-                }
-                else
-                    capsuleStatsAlone[i] = new CapsuleStats();
+
+                newCapsuleStat[i] = capsuleStatsAlone[i];
+            
             }
+            capsuleStatsAlone = newCapsuleStat;
+
+            // Update New Capsule
+            if (bookOfSpell[prevIndex].type == CapsuleSystem.CapsuleType.ATTACK)
+            {
+                CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[prevIndex];
+                capsuleStatsAlone[prevIndex] = currentCap.stats.stats;
+            }
+            else
+                capsuleStatsAlone[prevIndex] = new CapsuleStats();
 
             if (capsuleIndex.Count <= spellEquip.Length)
             {

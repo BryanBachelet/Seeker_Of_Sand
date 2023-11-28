@@ -38,6 +38,9 @@ public class health_Player : MonoBehaviour
 
     public Volume volume;
     private Vignette vignette;
+    public GameObject vignetteEffectWithPlane;
+    private Material m_vignetteObjectMat;
+    private Color m_materialVignetteColor;
 
     private bool feedbackHit = false;
     private float timeLastHit;
@@ -50,7 +53,9 @@ public class health_Player : MonoBehaviour
     {
         InitializedHealthData();
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
-        volume.profile.TryGet(out vignette);
+        m_vignetteObjectMat = vignetteEffectWithPlane.GetComponent<Renderer>().material;
+        m_materialVignetteColor = m_vignetteObjectMat.color;
+        //volume.profile.TryGet(out vignette);
     }
 
     // Update is called once per frame
@@ -76,12 +81,23 @@ public class health_Player : MonoBehaviour
         {
             if (Time.time - timeLastHit < tempsEffetHit)
             {
-                vignette.intensity.value = ((0.35f + (0.05f * m_CurrentQuarter)) * evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit));
+                m_materialVignetteColor.a = ((0.35f + (0.05f * m_CurrentQuarter)) * evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit));
+                //vignette.intensity.value = ;
+                m_vignetteObjectMat.color = m_materialVignetteColor;
             }
             else
             {
-                vignette.intensity.value = 0;
+                m_materialVignetteColor.a = 0;
+                //vignette.intensity.value = ;
+                m_vignetteObjectMat.color = m_materialVignetteColor;
+                //vignette.intensity.value = 0;
                 feedbackHit = false;
+            }
+            if(Time.time - timeLastHit > 1)
+            {
+                healthBuffer = false;
+                m_SliderCurrentHealthHigh.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+
             }
         }
 
@@ -96,9 +112,12 @@ public class health_Player : MonoBehaviour
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
+
             feedbackHit = true;
-            vignette.intensity.value = 0.35f;
+            m_materialVignetteColor.a = 0.35f;
+            //vignette.intensity.value = ;
+            m_vignetteObjectMat.color = m_materialVignetteColor;
+            //vignette.intensity.value = 0.35f;
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;
@@ -111,11 +130,11 @@ public class health_Player : MonoBehaviour
 
 
             m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            BufferXpDisplay();
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
             m_characterMouvement.SetKnockback(position);
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
 
-            if(m_CurrentHealth <= 0)
+            if (m_CurrentHealth <= 0)
             {
                 activeDeath = true;
             }
@@ -131,9 +150,11 @@ public class health_Player : MonoBehaviour
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
             StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
             feedbackHit = true;
-            vignette.intensity.value = 0.35f;
+            m_materialVignetteColor.a = 0.35f;
+            //vignette.intensity.value = ;
+            m_vignetteObjectMat.color = m_materialVignetteColor;
+            //vignette.intensity.value = 0.35f;
             if (m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;
@@ -146,7 +167,7 @@ public class health_Player : MonoBehaviour
 
             m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-            BufferXpDisplay();
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
 
             if (m_CurrentHealth <= 0)
             {
@@ -184,10 +205,9 @@ public class health_Player : MonoBehaviour
         //Actualiser m_CurrentQuarter
 
         m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-        ActiveBufferHealth(Time.time, m_CurrentHealth);
-        BufferXpDisplay();
         m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
         m_CurrentHealth = m_MaxHealthQuantity;
+        ActiveBufferHealth(Time.time, m_CurrentHealth);
         updateHealthValues = false;
         m_isInvulnerableLeger = false;
         m_isInvulnerableLourd = false;
@@ -205,8 +225,9 @@ public class health_Player : MonoBehaviour
         m_CurrentHealth += m_QuarterHealthQuantity;
         if(m_CurrentHealth > m_MaxHealthQuantity)
         {
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
+
             m_CurrentHealth = m_MaxHealthQuantity;
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
             //m_CurrentQuarter = (int)m_QuarterNumber;
         }
         else
