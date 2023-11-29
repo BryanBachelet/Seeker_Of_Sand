@@ -123,10 +123,10 @@ public class AltarBehaviorComponent : MonoBehaviour
             SucceedEvent();
             return;
         }
-            progression = m_CurrentKillCount / ennemyTokill;
+            progression = m_CurrentKillCount / m_enemiesCountConditionToWin;
             m_eventProgressionSlider.fillAmount = progression;
 
-        m_eventProgressionSlider.fillAmount = m_CurrentKillCount / m_enemiesCountConditionToWin; // Update event UI
+        m_eventProgressionSlider.fillAmount = progression; // Update event UI
 
         if (DestroyCondition())
         {
@@ -222,7 +222,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_enemyManager.AddTarget(this.transform);
             m_enemyManager.AddAltar(transform);
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
-
+            progression = 0;
             m_myAnimator.SetBool("ActiveEvent", true);
 
             if (resetNumber == 0)
@@ -320,6 +320,7 @@ public class AltarBehaviorComponent : MonoBehaviour
                 rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
 
             ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
+            expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
             expMouvementComponent.GroundPosition = m_DropAreaPosition + randomRadiusPosition;
             StartCoroutine(expMouvementComponent.MoveToGround());
         }
