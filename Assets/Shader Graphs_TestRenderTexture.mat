@@ -8,15 +8,17 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Shader Graphs_TestRenderTexture
-  m_Shader: {fileID: -6465566751694194690, guid: d78520b60a5f5fa4a8845649e19d6f08,
+  m_Shader: {fileID: -6465566751694194690, guid: 0338986d6e87fc548a63d5c0611f75b6,
     type: 3}
   m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _ALPHATOMASK_ON
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3750
+  m_CustomRenderQueue: 3050
   stringTagMap:
     MotionVector: User
     RenderType: Transparent
@@ -28,6 +30,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AlphaTexture:
+        m_Texture: {fileID: 8400000, guid: 363ef59d3d3362b4bad77644cefb167b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Texture2D:
         m_Texture: {fileID: 8400000, guid: 3c48fadaafa209845a98b95afd2b7344, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -47,12 +53,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _Alpha: 0
-    - _AlphaCutoffEnable: 0
+    - _Alpha: 1.73
+    - _AlphaCutoffEnable: 1
     - _AlphaDstBlend: 10
-    - _AlphaSrcBlend: 0
-    - _AlphaToMask: 0
-    - _AlphaToMaskInspectorValue: 0
+    - _AlphaSrcBlend: 1
+    - _AlphaToMask: 1
+    - _AlphaToMaskInspectorValue: 1
     - _BlendMode: 0
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
@@ -64,8 +70,9 @@ Material:
     - _DstBlend: 10
     - _EnableBlendModePreserveSpecularLighting: 0
     - _EnableFogOnTransparent: 0
+    - _Float: 0
     - _OpaqueCullMode: 2
-    - _RenderQueueType: 6
+    - _RenderQueueType: 4
     - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 0
@@ -94,14 +101,18 @@ Material:
     - _TransparentZWrite: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 8
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 8
     - _ZWrite: 0
     m_Colors:
-    - _ClampMax: {r: 1, g: 1, b: 1, a: -1}
-    - _Clampmin: {r: 0, g: 0, b: 0, a: 0}
+    - _ClampMax: {r: 0.001, g: 0.001, b: 0.001, a: 1}
+    - _Clampmin: {r: 0.06, g: 0.33, b: 0.3, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color_1: {r: 0.028301895, g: 0.028301895, b: 0.028301895, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _InMax: {r: 0, g: 0, b: 0, a: 0}
+    - _InMin: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1319441711735723122
 MonoBehaviour:
