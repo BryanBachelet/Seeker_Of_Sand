@@ -31,6 +31,9 @@ namespace Character
 
         public GameObject[] characterModel;
         public GameObject vfxDash;
+
+        public Material m_dashDecalFeedback;
+        public UnityEngine.Rendering.HighDefinition.DecalProjector m_dashHolderDecal;
         // Start is called before the first frame update
         void Start()
         {
@@ -42,6 +45,7 @@ namespace Character
         {
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterAim = GetComponent<CharacterAim>();
+            m_dashDecalFeedback = m_dashHolderDecal.material;
         }
 
         // Function that get the dash input
@@ -141,8 +145,9 @@ namespace Character
                 {
                     m_dashCooldownTimer += Time.deltaTime;
                 }
-
-                m_dashUI.fillAmount = m_dashCooldownTimer / m_dashCooldownDuration;
+                float dashFillFeedback = m_dashCooldownTimer / m_dashCooldownDuration;
+                m_dashUI.fillAmount = dashFillFeedback;
+                m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);
             }
         }
 
