@@ -69,7 +69,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     [SerializeField] private int nextReward;
     [SerializeField] private int nextRewardTypologie = 0;
 
-    [SerializeField] private Enemies.EnemyManager m_enemeyManager;
+    [SerializeField] private Enemies.EnemyManager m_enemyManager;
     public Vector3 m_DropAreaPosition;
 
     private GameObject lastItemInstantiate;
@@ -80,6 +80,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private float progression = 0;
 
     private int m_idSpellReward;
+    private int m_enemiesCountConditionToWin = 0;
 
     #region Unity Functions
     void Start()
@@ -88,14 +89,13 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         eventElementType = Random.Range(0, 4);
         m_questMarker.icon = spriteEventCompass[eventElementType];
-        
         ownNumber = altarCount;
         altarCount++;
 
-        m_playerTransform = m_enemeyManager.m_playerTranform;
+        m_playerTransform = m_enemyManager.m_playerTranform;
 
         // Setup the altar health
-        float maxHealth = 50 + m_enemeyManager.m_maxUnittotal;
+        float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
 
@@ -117,43 +117,22 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         if (!m_isEventOccuring) return;
 
-        float ennemyTokill = 25 * (resetNumber + 1) + (m_enemeyManager.m_maxUnittotal * 0.25f);
-
-        if (ennemyTokill <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
+        if (m_enemiesCountConditionToWin <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
-            m_myAnimator.SetBool("ActiveEvent", false);
-            GiveRewardXp();
-            m_enemeyManager.altarSuccessed++;
-            m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-            if (lastItemInstantiate != null)
-            {
 
-                Destroy(lastItemInstantiate);
-            }
-
-            //displayAnimator.InvertDisplayStatus(2);
+            SucceedEvent();
+            return;
         }
-        else
-        {
-            progression = m_CurrentKillCount / ennemyTokill;
-            m_eventProgressionSlider.fillAmount = progression;
-            //displayTextDescription1.text = m_CurrentHealth + "/" + m_MaxHealth;
-            //displayTextDescription2.text = (m_MaxKillEnemys * (1 + 0.1f * (resetNumber + 1))) - m_CurrentKillCount + " Remaining";
-        }
+        progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
+        m_eventProgressionSlider.fillAmount = progression;
+        Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
+        //m_eventProgressionSlider.fillAmount = progression; // Update event UI
 
-        if (m_objectHealthSystem.IsEventActive() && Vector3.Distance(m_playerTransform.position, transform.position) > radiusEventActivePlayer)
+        if (DestroyCondition())
         {
             DestroyAltar();
         }
-
-        if (m_objectHealthSystem.eventState == EventObjectState.Death)
-        {
-            DestroyAltar();
-        }
-
-
-
     }
 
     #endregion
@@ -163,7 +142,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_questMarker = GetComponent<QuestMarker>();
-        m_enemeyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
+        m_enemyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
     }
 
 
@@ -176,69 +155,94 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
 
         socleMesh.material = materialEvent[eventElementType];
-        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
 
         m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
         m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[eventElementType]);
 
+
+        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
             altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
         }
     }
+
+
+    public IEnumerator LastStart()
+    {
+        yield return new WaitForSeconds(2.0f);
+        m_idSpellReward = CapsuleManager.GetRandomCapsuleIndex();
+        GenerateNextReward(resetNumber);
+    }
     #endregion
 
     // Update is called once per frame
-   
 
+    #region Destroy Functions
+
+    private bool DestroyCondition()
+    {
+        bool distanceTest = m_objectHealthSystem.IsEventActive() && Vector3.Distance(m_playerTransform.position, transform.position) > radiusEventActivePlayer;
+        bool stateTest = m_objectHealthSystem.eventState == EventObjectState.Death;
+
+        if (distanceTest || stateTest)
+            return true;
+
+        return false;
+    }
 
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-        m_enemeyManager.SendInstruction("Altar protection fail...", Color.red, TerrainLocationID.currentLocationName);
+        m_enemyManager.SendInstruction("Altar protection fail...", Color.red, TerrainLocationID.currentLocationName);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         isAltarDestroy = true;
-        m_enemeyManager.RemoveTarget(transform);
-        m_enemeyManager.RemoveAltar(transform);
+        m_enemyManager.RemoveTarget(transform);
+        m_enemyManager.RemoveAltar(transform);
         Debug.Log("Destroy event");
     }
+    #endregion
 
+ 
+    public void IncreaseKillCount()
+    {
+        m_CurrentKillCount++;
+    }
+
+    #region State Altar Functions
 
     // Need to set active
     public void ActiveEvent()
     {
         if (!m_objectHealthSystem.IsEventActive())
         {
-            m_enemeyManager.AddTarget(this.transform);
-            m_enemeyManager.AddAltar(transform);
-            m_enemeyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
-            if(resetNumber == 0)
+            m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
+
+            m_enemyManager.AddTarget(this.transform);
+            m_enemyManager.AddAltar(transform);
+            m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+            progression = 0;
+            m_myAnimator.SetBool("ActiveEvent", true);
+
+            if (resetNumber == 0)
             {
                 m_myAnimator.SetTrigger("Activation");
             }
-            if(resetNumber == 2)
+            if (resetNumber - 2 >= 0)
             {
-                lastItemInstantiate = Instantiate(DangerAddition[0], transform.position, transform.rotation);
+                lastItemInstantiate = Instantiate(DangerAddition[resetNumber -2], transform.position, transform.rotation);
             }
-            else if (resetNumber == 3)
-            {
-                lastItemInstantiate = Instantiate(DangerAddition[1], transform.position, transform.rotation);
-            }
-            else if (resetNumber == 4)
-            {
-                lastItemInstantiate = Instantiate(DangerAddition[2], transform.position, transform.rotation);
-            }
+            
+
+            SetMeshesEventIntensity(0.15f * (resetNumber + 1));
             m_visualEffectActivation.Play();
-            for (int i = 0; i < altarAllMesh.Length; i++)
-            {
-                altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.15f * resetNumber);
-            }
-            socleMesh.material.SetFloat("_SelfLitIntensity", 0.15f * resetNumber);
-            m_myAnimator.SetBool("ActiveEvent", true);
+            
             GlobalSoundManager.PlayOneShot(13, transform.position);
+
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
+
             m_hasEventActivate = false;
             m_isEventOccuring = true;
         }
@@ -248,91 +252,89 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
     }
 
-    public void IncreaseKillCount()
-    {
-        m_CurrentKillCount++;
-    }
 
-    public void GiveRewardXp()
+    private void SucceedEvent()
     {
-
-        m_enemeyManager.RemoveTarget(transform);
-        m_enemeyManager.RemoveAltar(transform);
-        m_enemeyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" +nextRewardTypologie + ")", Color.green, TerrainLocationID.currentLocationName);
         m_isEventOccuring = false;
-        m_myAnimator.SetBool("IsDone", true);
-        for (int i = 0; i < altarAllMesh.Length; i++)
-        {
-            altarAllMesh[i].material.SetFloat("_SelfLitIntensity", 0.32f * resetNumber);
-        }
-        socleMesh.material.SetFloat("_SelfLitIntensity", 0.32f * resetNumber);
-        //Enemies.EnemyManager.EnemyTargetPlayer = true;
-        GlobalSoundManager.PlayOneShot(14, transform.position);
-        for (int i = 0; i < nextReward; i++)
-        {
-            Vector3 rndVariant = new Vector3((float)Random.Range(-radiusEjection, radiusEjection), 0, (float)Random.Range(-radiusEjection, radiusEjection));
-            GameObject xpGenerated = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
-
-            if (nextRewardTypologie == 2)
-            {
-                xpGenerated.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-            }
-
-
-
-            ExperienceMouvement ExpMovementRef = xpGenerated.GetComponent<ExperienceMouvement>();
-            ExpMovementRef.ActiveExperienceParticule(m_playerTransform);
-            ExpMovementRef.GroundPosition = m_DropAreaPosition + rndVariant;
-            StartCoroutine(ExpMovementRef.MoveToGround());
-        }
-        //xpGenerated.GetComponent<Rigidbody>().AddForce(new Vector3(rndVariant.x, 1 * m_ImpusleForceXp, rndVariant.y) , ForceMode.Impulse);
-        //Enemies.EnemyManager.EnemyTargetPlayer = true;
-        StartCoroutine(ResetEventWithDelay(1.5f));
-    }
-
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, radiusEjection);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, rangeEvent);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, radiusEventActivePlayer);
-    }
-
-    public void ResetAltarEvent()
-    {
-        m_myAnimator.SetBool("ActiveEvent", false);
         progression = 0;
-        resetNumber++;
-        GenerateNextReward(resetNumber);
-        m_hasEventActivate = true;
-        m_isEventOccuring = false;
-        m_CurrentKillCount = 0;
-        float maxHealth = 50 + m_enemeyManager.m_maxUnittotal;
-        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
-        m_objectHealthSystem.ResetCurrentHealth();
+        m_myAnimator.SetBool("ActiveEvent", false);
+        m_myAnimator.SetBool("IsDone", true);
 
-        //this.transform.GetChild(0).gameObject.SetActive(false);
-        //Enemies.EnemyManager.EnemyTargetPlayer = true;
-        //eventTextName.text = "Ready !";
-        //displayAnimator.InvertDisplayStatus(2);
+        // Update Enemies Manager  ==> Create One functions from the enemyManager
+        m_enemyManager.altarSuccessed++;
+        m_enemyManager.RemoveTarget(transform);
+        m_enemyManager.RemoveAltar(transform);
+        m_enemyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" + nextRewardTypologie + ")", Color.green, TerrainLocationID.currentLocationName);
+
+        // Update altar mesh color
+        SetMeshesEventIntensity(.32f * (resetNumber + 1));
+
+        GlobalSoundManager.PlayOneShot(14, transform.position);
+
+        SpawnAltarReward();
+
+        StartCoroutine(ResetEventWithDelay(1.5f));
+
+        m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+
+        if (lastItemInstantiate != null)
+            Destroy(lastItemInstantiate);
     }
 
     public IEnumerator ResetEventWithDelay(float time)
     {
-        //eventTextName.text = "Finish !";
         yield return new WaitForSeconds(time);
         ResetAltarEvent();
     }
 
-    public string[] GetAltarData() 
+    public void ResetAltarEvent()
+    {
+       
+        resetNumber++;
+        GenerateNextReward(resetNumber);
+
+        m_hasEventActivate = true;
+        m_isEventOccuring = false;
+
+        m_CurrentKillCount = 0;
+        
+        float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
+        
+        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
+        m_objectHealthSystem.ResetCurrentHealth();
+
+    }
+
+    #endregion 
+
+    #region Reward Functions
+
+    public void SpawnAltarReward()
+    {
+        for (int i = 0; i < nextReward; i++)
+        {
+            Vector3 randomRadiusPosition = new Vector3(Random.Range(-radiusEjection, radiusEjection), 0, Random.Range(-radiusEjection, radiusEjection));
+
+            GameObject rewardObject = Instantiate(nextRewardObject, transform.position, Quaternion.identity);
+
+            if (nextRewardTypologie == 2)
+                rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+
+            ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
+            expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
+            expMouvementComponent.GroundPosition = m_DropAreaPosition + randomRadiusPosition;
+            StartCoroutine(expMouvementComponent.MoveToGround());
+        }
+
+    }
+
+    public string[] GetAltarData()
     {
         int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantit�; 2 = Specific spell; 3 = Health quarter
         string[] dataToSend = new string[5];
         dataToSend[0] = RewardTypologie.ToString();
         dataToSend[1] = instructionOnActivation;
-        if ( RewardTypologie == 0)
+        if (RewardTypologie == 0)
         {
             dataToSend[2] = nextReward.ToString();
             dataToSend[3] = eventElementType.ToString();
@@ -342,16 +344,16 @@ public class AltarBehaviorComponent : MonoBehaviour
             dataToSend[2] = nextReward.ToString();
             dataToSend[3] = "123"; //1234 = Aucun element car la r�compense est de l'experience
         }
-        else if(RewardTypologie == 2)
+        else if (RewardTypologie == 2)
         {
             dataToSend[2] = "-1"; // -1 = Aucune quantit� particuli�re car la r�compense est unique
             dataToSend[3] = m_idSpellReward.ToString(); // A remplac� par une variable randomis� au d�marrage
         }
-      /*  else if (RewardTypologie == 3)
-        {
-            dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augment� sous condition sp�cifique
-            dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associ� au gain"; 
-        }*/
+        /*  else if (RewardTypologie == 3)
+          {
+              dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augment� sous condition sp�cifique
+              dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associ� au gain"; 
+          }*/
         dataToSend[4] = ""+ progression;
 
         return dataToSend;
@@ -392,11 +394,32 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     }
 
-    public IEnumerator LastStart()
+
+    #endregion
+
+    #region Visual Functions
+
+    private void SetMeshesEventIntensity(float intensity)
     {
-       yield return new WaitForSeconds(2.0f);
-        m_idSpellReward = CapsuleManager.GetRandomCapsuleIndex();
-        GenerateNextReward(resetNumber);
+        socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
+        for (int i = 0; i < altarAllMesh.Length; i++)
+        {
+            altarAllMesh[i].material.SetFloat("_SelfLitIntensity", intensity);
+        }
     }
+    #endregion
+
+
+    #region Debug Functions
+    public void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, radiusEjection);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, rangeEvent);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, radiusEventActivePlayer);
+    }
+    #endregion
 
 }

@@ -120,8 +120,14 @@ namespace Character
 
         public Vector3 currentDirection { get; private set; }
 
+        private Character.CharacterAim m_characterAim;
+        [SerializeField] private Transform m_avatarTransform;
+
         [Header("Debug Parameters")]
         [SerializeField] private bool m_activeDebug;
+
+
+
 
         public void InitComponentStat(CharacterStat stat)
         {
@@ -136,6 +142,7 @@ namespace Character
 
             m_rigidbody = GetComponent<Rigidbody>();
             initialSpeed = runSpeed;
+            m_characterAim = GetComponent<CharacterAim>();
         }
 
         private void Start()
@@ -178,7 +185,7 @@ namespace Character
 
         public void SlideInput(InputAction.CallbackContext ctx)
         {
-            if(ctx.started)
+            if (ctx.started)
             {
                 m_isSlideInputActive = true;
                 if (activeCombatModeConstant)
@@ -190,7 +197,7 @@ namespace Character
                     DisplayNewCurrentState(1);
                 }
             }
-                if (ctx.canceled)
+            if (ctx.canceled)
             {
                 m_isSlideInputActive = false;
                 if (activeCombatModeConstant)
@@ -207,6 +214,14 @@ namespace Character
                 ChangeState(MouvementState.None);
                 m_isSlideInputActive = false;
             }
+        }
+
+        public void SetCombatMode(bool state)
+        {
+            if (m_isSlideInputActive)
+                combatState = false;
+            else
+                combatState = state;
         }
 
         public void Update()
@@ -377,7 +392,15 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 return;
             }
+
             Vector3 direction = GetForwardDirection(hit.normal);
+            Vector3 newDir = new Vector3(direction.x, 0, direction.z);
+            if (combatState && inputDirection != Vector3.zero)
+            {
+                float angle = Vector3.SignedAngle(newDir, inputDirection, hit.normal.normalized);
+                newDir = Quaternion.AngleAxis(angle,hit.normal.normalized) * direction;
+            }
+
             m_groundNormal = hit.normal;
             forwardDirection = direction;
             m_speedData.direction = direction;
@@ -419,18 +442,18 @@ namespace Character
             {
                 isSliding = false;
                 ChangeState(MouvementState.Classic);
-                Move(direction);
+                Move(newDir);
                 return;
             }
 
 
 
-            if (m_slope > minSlope  && m_isSlideInputActive)
+            if (m_slope > minSlope && m_isSlideInputActive)
             {
                 if (m_timerBeforeSliding < timeBeforeSliding)
                 {
                     m_timerBeforeSliding += Time.deltaTime;
-                    
+
                     if (m_timerBeforeSliding >= timeBeforeSliding)
                         ChangeState(MouvementState.Slide);
 
@@ -583,7 +606,7 @@ namespace Character
             }
             else
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed ;
+                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed;
             }
 
             m_speedData.IsFlexibleSpeed = false;
@@ -675,12 +698,25 @@ namespace Character
         private void RotateCharacter()
         {
             if (!m_directionInputActive) return;
-            Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+
+            if (!combatState)
+            {
+                Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
 
-            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
-            float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
-            transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
+                Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
+                float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
+                transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
+                m_avatarTransform.localRotation = Quaternion.identity;
+            }
+
+            if (combatState)
+            {
+                m_characterAim.FeedbackHeadRotation();
+                Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
+                m_avatarTransform.rotation = rotationFromHead;
+            }
+
         }
 
 
@@ -692,6 +728,7 @@ namespace Character
             float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            m_avatarTransform.localRotation = Quaternion.identity;
         }
         #endregion
 

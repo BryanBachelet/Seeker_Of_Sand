@@ -112,10 +112,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8a8ea809091ae4b904846029259ed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPosition: {fileID: 0}
+  GroundPosition: {x: 0, y: 0, z: 0}
   m_speed: 15
-  cristalType: 0
+  m_speedUp: 40
   m_trail: {fileID: 6268820045213260168}
+  m_timeBeforeDestruction: 3
+  cristalType: 0
 --- !u!1 &1919461930451284906
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,6 +287,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: vfxGraph_StylizedSmoke 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8798052860319673218, guid: 9b7858a0b699cf84dac6e368b7885c6c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8798052860319673219, guid: 9b7858a0b699cf84dac6e368b7885c6c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8798052860319673228, guid: 9b7858a0b699cf84dac6e368b7885c6c,
         type: 3}
