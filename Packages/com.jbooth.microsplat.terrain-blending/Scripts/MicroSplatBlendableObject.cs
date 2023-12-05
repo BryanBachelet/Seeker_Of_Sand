@@ -50,7 +50,6 @@ namespace JBooth.MicroSplat
 
       public bool doSnow = true;
       public bool doTerrainBlend = true;
-
       public Texture2D normalFromObject;
 
       void OnEnable()
@@ -72,18 +71,27 @@ namespace JBooth.MicroSplat
          Sync();
       }
 
-#if UNITY_EDITOR
+
       void OnDisable()
       {
-         MicroSplatTerrain.OnMaterialSyncAll -= Sync;
+#if UNITY_EDITOR
+            MicroSplatTerrain.OnMaterialSyncAll -= Sync;
 #if __MICROSPLAT_MESHTERRAIN__
          MicroSplatMeshTerrain.OnMaterialSyncAll -= Sync;
 #endif
 #if __MICROSPLAT_MESH__
          MicroSplatMesh.OnMaterialSyncAll -= Sync;
 #endif
+#endif // unity editor
+         if (msObject != null)
+         {
+            Material bmInstance = msObject.GetBlendMatInstance();
+            if (bmInstance != null)
+            {
+                RemoveMaterial(bmInstance);
+            }
+         }
       }
-#endif
 
       public Bounds TransformBounds(Bounds localBounds)
       {
@@ -101,6 +109,23 @@ namespace JBooth.MicroSplat
 
          return new Bounds { center = center, extents = extents };
       }
+
+      void RemoveMaterial(Material m)
+      {
+         Renderer r = GetComponent<Renderer>();
+         var materials = r.sharedMaterials;
+         for (int i = 0; i < materials.Length; ++i)
+         {
+            if (materials[i] == m && m != null)
+            {
+               List<Material> mats = new List<Material>(materials);
+               mats.RemoveAt(i);
+               materials = mats.ToArray();
+               i--;
+            }
+         }
+      }
+
 
       public void Sync()
       {

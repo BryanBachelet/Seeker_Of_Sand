@@ -41,6 +41,7 @@ namespace JBooth.MicroSplat
       public enum DefineFeature
       {
          _TERRAINBLENDING,
+         _TBDITHERALPHA,
          _TBDISABLE_DETAILNOISE,
          _TBDISABLE_DISTANCENOISE,
          _TBDISABLE_DISTANCERESAMPLE,
@@ -64,7 +65,7 @@ namespace JBooth.MicroSplat
       }
 
       public bool terrainBlend;
-      public bool alphaShader;
+      public bool ditherAlpha;
       public bool disableDetailNoise;
       public bool disableDistanceNoise;
       public bool disableDistanceResampling;
@@ -76,6 +77,7 @@ namespace JBooth.MicroSplat
       public BlendNoise blendNoise = BlendNoise.None;
 
       GUIContent CTerrainBlend = new GUIContent("Terrain Blending", "Generate shader and enable system for mesh:terrain blending");
+      GUIContent CDitherAlpha = new GUIContent("Dither Alpha", "Rather than use traditional alpha blending, draw the terrain blend as opaque and use a dithered alpha technique. This works best with Temporal AntiAliasing");
       GUIContent CDisableDetailNoise = new GUIContent("Disable Detail Noise", "Disabled detail noise in blendable object shader");
       GUIContent CDisableDistanceNoise = new GUIContent("Disable Distance Noise", "Disabled distance noise in blendable object shader");
       GUIContent CDisableDistanceResample = new GUIContent("Disable Distance Resample", "Disabled distance resample in blendable object shader");
@@ -119,7 +121,8 @@ namespace JBooth.MicroSplat
       {
          var aux = new MicroSplatShaderGUI.MicroSplatCompiler.AuxShader ("_TERRAINBLENDING", "_TerrainObjectBlend");
          aux.customEditor = "MicroSplatBlendableMaterialEditor";
-         aux.options = "       Alpha \"Blend\"\n";
+         if (!ditherAlpha)
+            aux.options = "       Alpha \"Blend\"\n";
          return aux;
       }
 
@@ -183,7 +186,7 @@ namespace JBooth.MicroSplat
          if (old)
          {
             EditorGUI.indentLevel++;
-
+            ditherAlpha = EditorGUILayout.Toggle(CDitherAlpha, ditherAlpha);
             objectNormalBlend = EditorGUILayout.Toggle(CObjectNormalBlend, objectNormalBlend);
             disableAlphaControl = EditorGUILayout.Toggle(CDisableAlphaControl, disableAlphaControl);
             blendNoise = (BlendNoise)EditorGUILayout.EnumPopup(CBlendNoise, blendNoise);
@@ -225,7 +228,10 @@ namespace JBooth.MicroSplat
          if (terrainBlend)
          {
             features.Add(GetFeatureName(DefineFeature._TERRAINBLENDING));
-
+            if (ditherAlpha)
+            {
+               features.Add(GetFeatureName(DefineFeature._TBDITHERALPHA));
+            }
             if (blendNoise == BlendNoise.Simple)
             {
                features.Add(GetFeatureName(DefineFeature._TBNOISE));
@@ -278,6 +284,7 @@ namespace JBooth.MicroSplat
          terrainBlend = HasFeature(keywords, DefineFeature._TERRAINBLENDING);
          if (terrainBlend)
          {
+            ditherAlpha = HasFeature(keywords, DefineFeature._TBDITHERALPHA);
             disableAlphaControl = HasFeature(keywords, DefineFeature._TBDISABLE_ALPHACONTROL);
             disableDetailNoise = HasFeature(keywords, DefineFeature._TBDISABLE_DETAILNOISE);
             disableDistanceNoise = HasFeature(keywords, DefineFeature._TBDISABLE_DISTANCENOISE);

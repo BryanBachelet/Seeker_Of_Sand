@@ -6,10 +6,12 @@ using UnityEngine.VFX;
 public class AltarBehaviorComponent : MonoBehaviour
 {
     [Header("Event Parameters")]
+    [SerializeField] public QuestMarker m_questMarker;
     [Range(0, 3)]
     [SerializeField] int eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
+    [SerializeField] private Sprite[] spriteEventCompass;
     [ColorUsage(showAlpha: true, hdr: true)]
     [SerializeField] private Color[] colorEventTab;
     [SerializeField] private float m_TimeInvulnerability;
@@ -73,6 +75,9 @@ public class AltarBehaviorComponent : MonoBehaviour
     private GameObject lastItemInstantiate;
     private GameObject nextRewardObject;
     [SerializeField] private LayerMask m_groundLayer;
+    private Vector3 raycastdirection;
+
+    private float progression = 0;
 
     private int m_idSpellReward;
     private int m_enemiesCountConditionToWin = 0;
@@ -83,7 +88,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         InitComponent();
 
         eventElementType = Random.Range(0, 4);
-
+        m_questMarker.icon = spriteEventCompass[eventElementType];
         ownNumber = altarCount;
         altarCount++;
 
@@ -118,8 +123,10 @@ public class AltarBehaviorComponent : MonoBehaviour
             SucceedEvent();
             return;
         }
+            progression = m_CurrentKillCount / m_enemiesCountConditionToWin;
+            m_eventProgressionSlider.fillAmount = progression;
 
-        m_eventProgressionSlider.fillAmount = m_CurrentKillCount / m_enemiesCountConditionToWin; // Update event UI
+        m_eventProgressionSlider.fillAmount = progression; // Update event UI
 
         if (DestroyCondition())
         {
@@ -133,6 +140,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void InitComponent()
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
+        m_questMarker = GetComponent<QuestMarker>();
         m_enemyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
     }
 
@@ -214,7 +222,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_enemyManager.AddTarget(this.transform);
             m_enemyManager.AddAltar(transform);
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
-
+            progression = 0;
             m_myAnimator.SetBool("ActiveEvent", true);
 
             if (resetNumber == 0)
@@ -239,7 +247,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         else
         {
-            Debug.Log("Cette objet [" + this.name + "] ne peut pas être activé");
+            Debug.Log("Cette objet [" + this.name + "] ne peut pas ï¿½tre activï¿½");
         }
     }
 
@@ -312,6 +320,7 @@ public class AltarBehaviorComponent : MonoBehaviour
                 rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
 
             ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
+            expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
             expMouvementComponent.GroundPosition = m_DropAreaPosition + randomRadiusPosition;
             StartCoroutine(expMouvementComponent.MoveToGround());
         }
@@ -320,8 +329,8 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public string[] GetAltarData()
     {
-        int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantité; 2 = Specific spell; 3 = Health quarter
-        string[] dataToSend = new string[4];
+        int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantitï¿½; 2 = Specific spell; 3 = Health quarter
+        string[] dataToSend = new string[5];
         dataToSend[0] = RewardTypologie.ToString();
         dataToSend[1] = instructionOnActivation;
         if (RewardTypologie == 0)
@@ -332,19 +341,19 @@ public class AltarBehaviorComponent : MonoBehaviour
         else if (RewardTypologie == 1)
         {
             dataToSend[2] = nextReward.ToString();
-            dataToSend[3] = "123"; //1234 = Aucun element car la récompense est de l'experience
+            dataToSend[3] = "123"; //1234 = Aucun element car la rï¿½compense est de l'experience
         }
         else if (RewardTypologie == 2)
         {
-            dataToSend[2] = "-1"; // -1 = Aucune quantité particulière car la récompense est unique
-            dataToSend[3] = m_idSpellReward.ToString(); // A remplacé par une variable randomisé au démarrage
+            dataToSend[2] = "-1"; // -1 = Aucune quantitï¿½ particuliï¿½re car la rï¿½compense est unique
+            dataToSend[3] = m_idSpellReward.ToString(); // A remplacï¿½ par une variable randomisï¿½ au dï¿½marrage
         }
         /*  else if (RewardTypologie == 3)
           {
-              dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augmenté sous condition spécifique
-              dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associé au gain"; 
+              dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augmentï¿½ sous condition spï¿½cifique
+              dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associï¿½ au gain"; 
           }*/
-
+        dataToSend[4] = ""+ progression;
 
         return dataToSend;
     }

@@ -29,6 +29,11 @@ namespace Character
         private bool m_isActiveCooldown;
         public Render.Camera.CameraBehavior m_cameraBehavior;
 
+        public GameObject[] characterModel;
+        public GameObject vfxDash;
+
+        public Material m_dashDecalFeedback;
+        public UnityEngine.Rendering.HighDefinition.DecalProjector m_dashHolderDecal;
         // Start is called before the first frame update
         void Start()
         {
@@ -40,6 +45,7 @@ namespace Character
         {
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterAim = GetComponent<CharacterAim>();
+            m_dashDecalFeedback = m_dashHolderDecal.material;
         }
 
         // Function that get the dash input
@@ -54,7 +60,10 @@ namespace Character
         private void StartDash() // Function call at the start of the dash
         {
             if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_isActiveCooldown || m_isDashValid) return;
-
+            Instantiate(vfxDash, transform.position, transform.rotation);
+            characterModel[0].SetActive(false);
+            characterModel[1].SetActive(false);
+            characterModel[2].SetActive(true);
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
             GlobalSoundManager.PlayOneShot(28, transform.position);
@@ -100,7 +109,9 @@ namespace Character
 
             m_isActiveCooldown = true;
             m_dashCooldownTimer = 0.0f;
-
+            characterModel[0].SetActive(true);
+            characterModel[1].SetActive(true);
+            characterModel[2].SetActive(false);
         }
 
         private void DashMouvement()
@@ -134,8 +145,9 @@ namespace Character
                 {
                     m_dashCooldownTimer += Time.deltaTime;
                 }
-
-                m_dashUI.fillAmount = m_dashCooldownTimer / m_dashCooldownDuration;
+                float dashFillFeedback = m_dashCooldownTimer / m_dashCooldownDuration;
+                m_dashUI.fillAmount = dashFillFeedback;
+                m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);
             }
         }
 
