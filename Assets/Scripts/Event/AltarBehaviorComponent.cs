@@ -123,10 +123,11 @@ public class AltarBehaviorComponent : MonoBehaviour
             SucceedEvent();
             return;
         }
-            progression = m_CurrentKillCount / m_enemiesCountConditionToWin;
-            m_eventProgressionSlider.fillAmount = progression;
+        progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
+        m_eventProgressionSlider.fillAmount = progression;
+        Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
-        m_eventProgressionSlider.fillAmount = progression; // Update event UI
+        //m_eventProgressionSlider.fillAmount = progression; // Update event UI
 
         if (DestroyCondition())
         {
@@ -255,7 +256,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void SucceedEvent()
     {
         m_isEventOccuring = false;
-
+        progression = 0;
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
 

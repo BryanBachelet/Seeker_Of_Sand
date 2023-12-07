@@ -11,6 +11,10 @@ public struct ProjectileData
     public Vector3 destination;
     public GameObject area_Feedback;
     public int piercingMax;
+    public int shootNumber;
+    public int salveNumber;
+    public float sizeFactor;
+    public float size;
 }
 
 
@@ -28,7 +32,12 @@ public class Projectile : MonoBehaviour
     protected Vector3 m_destination;
     protected float m_lifeTimer;
     public int m_piercingMax;
-    private int piercingCount;
+    protected int piercingCount;
+
+    protected int m_shootNumber;
+    protected int m_salveNumber;
+    protected float m_size;
+    protected float m_sizeMultiplicateurFactor;
 
     private float spawnTime;
     private bool checkSpawnTime = false;
@@ -55,17 +64,16 @@ public class Projectile : MonoBehaviour
         m_damage = data.damage;
         m_destination = data.destination;
         m_piercingMax = data.piercingMax;
-
-
-
-
+        m_shootNumber = data.shootNumber;
+        m_salveNumber = data.salveNumber;
+        m_size = data.size;
+        m_sizeMultiplicateurFactor = data.sizeFactor;
     }
     protected virtual void Move()
     {
         //Debug.Log("Test");
         if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
-
             Destroy(this.gameObject);
         }
         transform.position += m_direction.normalized * m_speed * Time.deltaTime;

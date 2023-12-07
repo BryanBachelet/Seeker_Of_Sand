@@ -63,7 +63,7 @@ public class CapsuleProfil_UI : Editor
         speedProperty.floatValue = EditorGUILayout.FloatField(speedProperty.displayName, speedProperty.floatValue);
         rangeProperty.floatValue = EditorGUILayout.FloatField(rangeProperty.displayName, rangeProperty.floatValue);
         damageProperty.floatValue = EditorGUILayout.FloatField(damageProperty.displayName, damageProperty.floatValue);
-        projectileNumberProperty.floatValue = EditorGUILayout.FloatField(projectileNumberProperty.displayName, projectileNumberProperty.floatValue);
+        projectileNumberProperty.intValue = EditorGUILayout.IntField(projectileNumberProperty.displayName, projectileNumberProperty.intValue);
         totalShotTimeProperty.floatValue = EditorGUILayout.FloatField(totalShotTimeProperty.displayName, totalShotTimeProperty.floatValue);
         shootAngleProperty.floatValue = EditorGUILayout.FloatField(shootAngleProperty.displayName, shootAngleProperty.floatValue);
         EditorGUILayout.PropertyField(trajectoryProperty);
