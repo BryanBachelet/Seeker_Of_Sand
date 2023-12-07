@@ -343,6 +343,7 @@ namespace Character
             data.direction =  m_characterAim.GetAimDirection();
             data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
             data.life = currentWeaponStats.lifetime;
+            data.travelTime = currentWeaponStats.trajectoryTimer;
             data.damage = currentWeaponStats.damage;
             data.piercingMax = currentWeaponStats.piercingMax;
             data.salveNumber = (int)currentWeaponStats.projectileNumber;
@@ -378,7 +379,12 @@ namespace Character
                 data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
                 data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
+                data.travelTime = currentWeaponStats.trajectoryTimer;
                 data.piercingMax = currentWeaponStats.piercingMax;
+                data.salveNumber = (int)currentWeaponStats.projectileNumber;
+                data.shootNumber = (int)currentWeaponStats.shootNumber;
+                data.size = currentWeaponStats.size;
+                data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
                 Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
                 if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
                     dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;

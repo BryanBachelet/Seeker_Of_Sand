@@ -15,7 +15,7 @@ public class ProjectileExplosif : Projectile
     public Color baseEmissiveColor;
 
     [SerializeField] private bool m_ActivationVFX;
-    [SerializeField] private GameObject m_VFXObject;
+    [SerializeField] protected GameObject m_VFXObject;
     [SerializeField] public int indexSFXExplosion;
     private bool m_isStick;
     private bool m_onEnemy;
@@ -29,6 +29,7 @@ public class ProjectileExplosif : Projectile
     private float m_distanceDest;
     private Vector3 m_directionHeight;
     private Vector3 prevPosition;
+    protected bool m_isTravelFinish;
 
     private void Start()
     {
@@ -48,8 +49,8 @@ public class ProjectileExplosif : Projectile
 
         m_direction = direction.normalized;
         m_direction.Normalize();
-        m_speed = GetSpeed(m_distanceDest, m_lifeTime - 0.1f, m_angleTrajectory);
-        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, 0);
+        m_speed = GetSpeed(m_distanceDest, m_travelTime, m_angleTrajectory);
+        m_gravityForce = GetGravity(m_speed, m_travelTime, m_angleTrajectory, 0);
     }
 
     #region Physics Function
@@ -76,6 +77,7 @@ public class ProjectileExplosif : Projectile
         Move();
         StickBehavior();
         Duration();
+        UpdateTravelTime();
     }
 
 
@@ -88,9 +90,9 @@ public class ProjectileExplosif : Projectile
 
     protected virtual void CurveTrajectory()
     {
-        float timer = (m_lifeTimer * m_lifeTimer) / 2.0f;
-        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * m_lifeTimer;
-        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad) * m_lifeTimer;
+        float timer = (m_travelTimer * m_travelTimer) / 2.0f;
+        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * m_travelTimer;
+        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad) * m_travelTimer;
 
         Vector3 pos = m_direction.normalized * xPos + m_directionHeight.normalized * yPos;
         transform.position += (pos - prevPosition);
@@ -118,7 +120,21 @@ public class ProjectileExplosif : Projectile
     protected override void Duration()
     {
         if (m_isStick) return;
-        base.Duration();
+    
+    }
+
+    protected override void UpdateTravelTime()
+    {
+        if (m_travelTimer > m_travelTime)
+        {
+            transform.position = m_destination + Vector3.up * 0.5f;
+            m_isTravelFinish = true;
+        }
+        else
+        {
+            m_travelTimer += Time.deltaTime;
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)

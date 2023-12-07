@@ -19,6 +19,7 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty shootAngleProperty;
     SerializedProperty trajectoryProperty;
     SerializedProperty angleTrajectoryProperty;
+    SerializedProperty trajectoryTimerProperty;
     SerializedProperty shootNumberProperty;
     SerializedProperty TimeIntervalProperty;
     SerializedProperty sizeProperty;
@@ -45,6 +46,7 @@ public class CapsuleProfil_UI : Editor
         sizeMultiplicatorFactorProperty = serializedObject.FindProperty("stats.sizeMultiplicatorFactor");
         piercingMaxProperty = serializedObject.FindProperty("stats.piercingMax");
         descriptionProperty = serializedObject.FindProperty("stats.description");
+        trajectoryTimerProperty = serializedObject.FindProperty("stats.trajectoryTimer");
 
     }
 
@@ -70,6 +72,7 @@ public class CapsuleProfil_UI : Editor
         if (m_capsuleProfile.stats.trajectory == TrajectoryType.CURVE)
         {
             angleTrajectoryProperty.floatValue = EditorGUILayout.FloatField(angleTrajectoryProperty.displayName, angleTrajectoryProperty.floatValue);
+            trajectoryTimerProperty.floatValue = EditorGUILayout.FloatField(trajectoryTimerProperty.displayName, trajectoryTimerProperty.floatValue);
         }
         shootNumberProperty.floatValue = EditorGUILayout.FloatField(shootNumberProperty.displayName, shootNumberProperty.floatValue);
         TimeIntervalProperty.floatValue = EditorGUILayout.FloatField(TimeIntervalProperty.displayName, TimeIntervalProperty.floatValue);
@@ -77,7 +80,7 @@ public class CapsuleProfil_UI : Editor
         sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
         piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
         descriptionProperty.stringValue = EditorGUILayout.TextField(descriptionProperty.displayName, descriptionProperty.stringValue);
-        base.OnInspectorGUI();
+       
         serializedObject.ApplyModifiedProperties();
     }
 }

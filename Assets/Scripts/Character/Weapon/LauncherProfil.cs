@@ -43,6 +43,7 @@ public struct CapsuleStats
     public TrajectoryType trajectory;
     public FormTypeSpell formType;
     public float angleTrajectory;
+    public float trajectoryTimer;
     public float shootNumber;
     public float timeInterval;
     public float size;
@@ -82,7 +83,7 @@ public struct CapsuleStats
 
     public float GetTravelTime()
     {
-        return travelTime != 0 ? travelTime : lifetime;
+        return trajectoryTimer;
     }
 }
 

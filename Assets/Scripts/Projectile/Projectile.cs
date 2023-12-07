@@ -7,6 +7,7 @@ public struct ProjectileData
     public Vector3 direction;
     public float speed;
     public float life;
+    public float travelTime;
     public float damage;
     public Vector3 destination;
     public GameObject area_Feedback;
@@ -34,6 +35,8 @@ public class Projectile : MonoBehaviour
     public int m_piercingMax;
     protected int piercingCount;
 
+    protected float m_travelTime;
+    protected float m_travelTimer;
     protected int m_shootNumber;
     protected int m_salveNumber;
     protected float m_size;
@@ -67,6 +70,7 @@ public class Projectile : MonoBehaviour
         m_shootNumber = data.shootNumber;
         m_salveNumber = data.salveNumber;
         m_size = data.size;
+        m_travelTime = data.travelTime;
         m_sizeMultiplicateurFactor = data.sizeFactor;
     }
     protected virtual void Move()
@@ -127,6 +131,9 @@ public class Projectile : MonoBehaviour
 
 
 
+    }
+    protected virtual void UpdateTravelTime()
+    {
     }
 
     public void SetSlopeRotation(Vector3 hitNormal)

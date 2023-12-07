@@ -113,6 +113,7 @@ public class UpgradeCapsule : Upgrade
         playerStat.size += gain.capsulsStats.size;
         playerStat.sizeMultiplicatorFactor += gain.capsulsStats.sizeMultiplicatorFactor;
         playerStat.piercingMax += gain.capsulsStats.piercingMax;
+        playerStat.lifetime += gain.capsulsStats.lifetime;
 
         //gain.description = m_baseString;
     }
