@@ -21,7 +21,7 @@ public class Lighting : ProjectileExplosif
     public void InitUpgradeSpell()
     {
         m_timeBeforeExplosion += Mathf.Clamp(m_lifeTime - 1, 0, 10);
-       m_explosionSize += m_size * m_sizeMultiplicateurFactor;
+        m_explosionSize += m_size * m_sizeMultiplicateurFactor;
         m_attackTime -= m_shootNumber * 0.053f;
         m_attackTime = Mathf.Clamp(m_attackTime, m_minTimeDamageTick, m_maxTimeDamageTick);
     }
@@ -48,16 +48,19 @@ public class Lighting : ProjectileExplosif
             GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
             for (int i = 0; i < enemies.Length; i++)
             {
-                Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
-                if (enemyTouch == null) continue;
-
-                if (enemyTouch.npcState == Enemies.NpcState.DEATH)
+                for (int j = 0; i < m_salveNumber; i++)
                 {
-                    Destroy(this.gameObject);
-                    return;
-                }
+                    Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
+                    if (enemyTouch == null) continue;
 
-                enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                    if (enemyTouch.npcState == Enemies.NpcState.DEATH)
+                    {
+                        Destroy(this.gameObject);
+                        return;
+                    }
+
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                }
             }
             m_baseTime = m_timerBeforeExplosion;
         }

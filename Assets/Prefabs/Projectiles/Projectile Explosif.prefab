@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 8275868994604092004}
   - component: {fileID: 8894761375885930491}
   - component: {fileID: 1584883544344779847}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Projectile Explosif
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,7 +99,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.47
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8894761375885930491
 MonoBehaviour:
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_indexSFX: 15
   m_piercingMax: 0
   m_deltaTimeMove: 0
-  m_timeBeforeExplosion: 1
+  m_timeBeforeExplosion: 2
   m_explosionSize: 12
   m_angleTrajectory: 45
   m_explosionMask:
@@ -388,6 +388,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7094486266216797388, guid: 5ce42e6db40a0a241916d4b0725a9cca,
         type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7094486266216797388, guid: 5ce42e6db40a0a241916d4b0725a9cca,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -396,10 +401,25 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7094486266660759101, guid: 5ce42e6db40a0a241916d4b0725a9cca,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7094486267130188702, guid: 5ce42e6db40a0a241916d4b0725a9cca,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 8750376482754070700, guid: 5ce42e6db40a0a241916d4b0725a9cca,
         type: 3}
       propertyPath: m_Name
       value: TRAIL_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750376482754070700, guid: 5ce42e6db40a0a241916d4b0725a9cca,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8750376482754070700, guid: 5ce42e6db40a0a241916d4b0725a9cca,
         type: 3}
@@ -478,6 +498,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6099103991749230837, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6099103991749230837, guid: f9354cfa73f5acb468da72d0ac29ed49,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -486,10 +511,20 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 2027662fb8d75394d9b89b2e89b6a324, type: 2}
+    - target: {fileID: 6099103992776111165, guid: f9354cfa73f5acb468da72d0ac29ed49,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6982365112249696257, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
       propertyPath: m_Name
       value: VFX_BOMBE_MISSILE
+      objectReference: {fileID: 0}
+    - target: {fileID: 6982365112249696257, guid: f9354cfa73f5acb468da72d0ac29ed49,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6982365112249696258, guid: f9354cfa73f5acb468da72d0ac29ed49,
         type: 3}
