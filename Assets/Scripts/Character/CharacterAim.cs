@@ -34,6 +34,7 @@ namespace Character
         private Vector3 m_aimFinalPoint = Vector3.zero;
         private Vector3 m_aimFinalPointFeedbackOffSet_Y = new Vector3(0, 10, 0);
         private Vector3 m_aimPoint = Vector3.zero;
+        private Vector3 m_aimFinalSnapPoint=  Vector3.zero;
         private Vector3 m_rawAimPoint = Vector3.zero;
         private Vector3 m_aimDirection = Vector3.zero;
         private Vector3 m_aimFinalPointNormal = Vector3.zero;
@@ -132,7 +133,12 @@ namespace Character
         private Vector3 VerifyAimTrajectory(CapsuleStats stats)
         {
             if (stats.trajectory == TrajectoryType.CURVE)
-                return CheckCurveTrajectory();
+            {
+                m_aimPoint = CheckCurveTrajectory();
+                SnapAimFinalPoint();
+
+                return m_aimPoint;
+            }
             else
                 return CheckLineTrajectory();
         }
@@ -196,6 +202,20 @@ namespace Character
             return m_aimPoint;
 
         }
+
+        private void SnapAimFinalPoint()
+        {
+            Ray aimTrajectoryRay = new Ray(m_aimPoint, Vector3.down);
+            RaycastHit hit = new RaycastHit();
+            if (Physics.Raycast(aimTrajectoryRay, out hit,Mathf.Infinity , m_aimLayer))
+            {
+                if(Vector3.Distance(m_aimPoint,hit.point) >1.0f)
+                {
+                    m_aimPoint = hit.point;
+                }
+            }
+        }
+
 
         #endregion
 
@@ -365,6 +385,12 @@ namespace Character
                 Vector3 dir = m_aimDirection.normalized;
                 Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
                 Vector3 normalDirection = Quaternion.AngleAxis(-90, dirRight) * dir;
+                float angleTest = Vector3.SignedAngle(normalDirection, Vector3.up, dir);
+                if (angleTest != 0)
+                {
+                    normalDirection  = Quaternion.AngleAxis(angleTest, dir)* normalDirection;
+                }
+
 
                 Vector3 newPos = transform.position + dir.normalized * m_aimPointToPlayerDistance * 0.5f;
                 Vector3 heightestPoint = newPos + normalDirection.normalized * height;

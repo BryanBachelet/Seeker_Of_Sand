@@ -203,8 +203,6 @@ namespace Character
 
         public void GenerateNewBuild()
         {
-            // TRest
-
             for (int i = 0; i < 5; i++)
             {
                 int RndCapsule = UnityEngine.Random.Range(0, 8);
