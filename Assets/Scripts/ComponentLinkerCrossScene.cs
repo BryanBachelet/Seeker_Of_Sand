@@ -195,6 +195,13 @@ public class ComponentLinkerCrossScene : MonoBehaviour
                 Debug.Log("Upgrade Screen acquired");
                 continue;
             }
+            else if (otherSceneGameObject[i].name == "HealthUIFeedback")
+            {
+                m_healthManager = otherSceneGameObject[i].GetComponent<HealthManager>();
+                //m_UpgradeScreenReference = otherSceneGameObject[i];
+                Debug.Log("Upgrade Screen acquired");
+                continue;
+            }
             else if (otherSceneGameObject[i].name == "0-Persistent Element")
             {
                 for(int j = 0; j < otherSceneGameObject[i].transform.childCount; j++)
@@ -334,8 +341,8 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_InputSpellBookOpen.clicOnBook = m_clicOnBook;
         #region HealthManager
         m_healthManager = m_enemyManagerObjectRef.GetComponent<HealthManager>();
-        m_healthManager.m_damageHealthFDs = m_damageHealthFDs;
-        m_healthManager.m_cameraReference = m_cameraReference;
+        //m_healthManager.m_damageHealthFDs = m_damageHealthFDs;
+        //m_healthManager.m_cameraReference = m_cameraReference;
         m_healthManager.InitTextFeedback();
         #endregion
         #endregion

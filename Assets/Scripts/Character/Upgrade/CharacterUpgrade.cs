@@ -83,7 +83,7 @@ public class CharacterUpgrade : MonoBehaviour
     #region Init Script
     public void Start()
     {
-        //InitComponents();
+        InitComponents();
 
     }
 

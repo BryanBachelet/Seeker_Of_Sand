@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 869771104}
   m_LocalRotation: {x: -0.6530587, y: 0.28898746, z: 0.28608057, w: 0.6388728}
-  m_LocalPosition: {x: -18.2, y: 16, z: -5.6}
+  m_LocalPosition: {x: -18.19, y: 14.1, z: -5.56}
   m_LocalScale: {x: 112.911835, y: 112.91185, z: 112.91182}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -63,6 +63,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: dd34b7171252f2b45af4e7ebe3c78d0f, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -416,6 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b64d7410217b8014597752a73be6219d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_questMarker: {fileID: 0}
   eventElementType: 0
   colorEvent:
   - {r: 0.8745098, g: 0.67058825, b: 0.98039216, a: 1}
@@ -427,15 +429,14 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 2e0a0edcbb431604285c58b4f040f3d8, type: 2}
   - {fileID: 2100000, guid: 20e8898482cb2874eabae6cd43b0f1ee, type: 2}
   - {fileID: 2100000, guid: 7b25dee16e2201c459d6dbd1104858a1, type: 2}
+  spriteEventCompass: []
   colorEventTab:
   - {r: 1, g: 0, b: 0.9564915, a: 1}
   - {r: 1, g: 0.37034264, b: 0, a: 1}
   - {r: 0, g: 0.53823805, b: 1, a: 1}
   - {r: 0.5, g: 0.26666668, b: 0.21960784, a: 1}
   m_TimeInvulnerability: 0.5
-  m_MaxHealth: 100
-  m_CurrentHealth: 100
-  m_MaxKillEnemys: 30
+  m_MaxKillEnemies: 0
   m_CurrentKillCount: 0
   DangerAddition:
   - {fileID: 0}
@@ -445,8 +446,7 @@ MonoBehaviour:
   radiusEjection: 10
   rangeEvent: 100
   XpQuantity: 100
-  xpObject:
-  - {fileID: 1278518001253408458, guid: 2c0c58b6d9328634eb9085bd7fb2127b, type: 3}
+  rewardObject: []
   m_ImpusleForceXp: 20
   displayEventDetail: {fileID: 0}
   displayArrowEvent: {fileID: 0}
@@ -459,11 +459,18 @@ MonoBehaviour:
   - {fileID: 5274044292730738412}
   - {fileID: 8859553135386368470}
   - {fileID: 8859553135386368470}
+  socleMesh: {fileID: 0}
   socleMaterial: {fileID: 0}
   isAltarDestroy: 0
   m_eventProgressionSlider: {fileID: 0}
   instructionOnActivation: Protect the altar, kill mobs near it to fill in
-  m_enemeyManager: {fileID: 0}
+  nextReward: 0
+  nextRewardTypologie: 0
+  m_enemyManager: {fileID: 0}
+  m_DropAreaPosition: {x: 0, y: 0, z: 0}
+  m_groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!135 &3688518606914291261
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1437,6 +1444,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: be5aa1d0d09d4604dbe0d2356cfa0822, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 837b377762f21704e9577a120d1c776b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: -5754084199372789682, guid: 837b377762f21704e9577a120d1c776b,
         type: 3}
       propertyPath: m_Mesh

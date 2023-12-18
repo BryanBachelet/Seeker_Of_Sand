@@ -16,7 +16,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] public SerieController m_serieController;
     private void Start()
     {
-        
+        InitTextFeedback();
     }
 
 

@@ -12,6 +12,9 @@ public class ProjectileZeri : Projectile
     private Vector3 normalHit;
     private Vector3 hitPoint;
 
+    private ApplyLightingStrike mLightingStrike;
+    [Range(1,100)]
+    public int probability;
 
     public void Start()
     {
@@ -29,6 +32,7 @@ public class ProjectileZeri : Projectile
                 transform.position += (hit.point - transform.position).normalized * (Vector3.Distance(transform.position, hit.point) - 1.0f);
             }
         }
+        mLightingStrike = this.GetComponent<ApplyLightingStrike>();
     }
 
     protected override void Move()
@@ -56,7 +60,19 @@ public class ProjectileZeri : Projectile
         }
     }
 
+    private void OnDestroy()
+    {
+        int random = Random.Range(0, 100);
+        if( random > probability) { return; }
 
+        GlobalSoundManager.PlayOneShot(35, transform.position);
+        mLightingStrike.CallLightingStrike(transform.position);
+    }
+
+    private void TriggerEffect()
+    {
+
+    }
     public void OnDrawGizmos()
     {
         Gizmos.DrawLine(hitPoint, hitPoint + normalHit.normalized * 5);
