@@ -75,6 +75,7 @@ namespace Character
         private Vector3 pos;
 
         [SerializeField] public bool autoAimActive;
+        [SerializeField] public AimMode m_aimModeState;
         [SerializeField] private bool globalCD;
 
         public float m_lastTimeShot = 0;
@@ -216,14 +217,14 @@ namespace Character
         {
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.Train) { this.enabled = false; return; }
             if (PauseMenu.gameState && !state.isPlaying) { return; }
-            if (m_isCasting)
+            if (m_CharacterMouvement.combatState)
             {
                 m_characterAim.FeedbackHeadRotation();
                 Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
                 avatarTransform.rotation = rotationFromHead;
                 bookTransform.rotation = rotationFromHead;
 
-                if (autoAimActive)
+                if (m_aimModeState != AimMode.FullControl && m_characterAim.HasCloseTarget())
                 {
 
                     if (!m_isShooting) Shoot();
@@ -250,7 +251,7 @@ namespace Character
                     return;
                 }
             }
-            if (!autoAimActive)
+            if (m_aimModeState == AimMode.FullControl)
             {
                 if (m_shootInput && !globalCD)
                 {
