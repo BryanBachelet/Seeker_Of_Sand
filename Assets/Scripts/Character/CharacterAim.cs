@@ -34,7 +34,7 @@ namespace Character
         private Vector3 m_aimFinalPoint = Vector3.zero;
         private Vector3 m_aimFinalPointFeedbackOffSet_Y = new Vector3(0, 10, 0);
         private Vector3 m_aimPoint = Vector3.zero;
-        private Vector3 m_aimFinalSnapPoint=  Vector3.zero;
+        private Vector3 m_aimFinalSnapPoint = Vector3.zero;
         private Vector3 m_rawAimPoint = Vector3.zero;
         private Vector3 m_aimDirection = Vector3.zero;
         private Vector3 m_aimFinalPointNormal = Vector3.zero;
@@ -53,10 +53,9 @@ namespace Character
         public Collider NearestCol;
 
         private bool m_exitCombatState = false;
+
         private void Start()
         {
-            //Cursor.visible = false;
-
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
@@ -207,9 +206,9 @@ namespace Character
         {
             Ray aimTrajectoryRay = new Ray(m_aimPoint, Vector3.down);
             RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(aimTrajectoryRay, out hit,Mathf.Infinity , m_aimLayer))
+            if (Physics.Raycast(aimTrajectoryRay, out hit, Mathf.Infinity, m_aimLayer))
             {
-                if(Vector3.Distance(m_aimPoint,hit.point) >1.0f)
+                if (Vector3.Distance(m_aimPoint, hit.point) > 1.0f)
                 {
                     m_aimPoint = hit.point;
                 }
@@ -273,13 +272,18 @@ namespace Character
             CalculateAimInformation();
             AimFeedback();
             //projectorVisorObject.transform.position = GetAimFinalPoint();
-            if (m_cursor != null)
-            {
-                m_cursor.position = Input.mousePosition;
-            }
+        
             if (search) search = false;
         }
 
+
+        private void UpdateCursorPosition()
+        {
+            if (m_cursor != null)
+            {
+                m_cursor.position = m_aimInputValue;
+            }
+        }
 
         private void AimFeedback()
         {
@@ -293,17 +297,7 @@ namespace Character
                 m_exitCombatState = true;
                 FeedbackHeadRotationSlide();
             }
-            //m_lineRenderer.SetPosition(0, transform.position);
-            //if (m_characterShoot.GetPod().trajectory == TrajectoryType.LINE)
-            //{
-            //    FeedbackLinearTrajectory();
-            //}
-            //else
-            //{
-            //
-            //    FeedbackCurveTrajectory(m_characterShoot.GetPod());
-            //}
-            //Cursor.visible = true;
+
 
         }
 
@@ -325,7 +319,7 @@ namespace Character
             Vector3 direction2d = new Vector3(m_aimDirection.x, 0, m_aimDirection.z);
             float angleDir = Vector3.SignedAngle(m_transformHead.forward, m_characterShoot.m_CharacterMouvement.GetMouvementDirection(), Vector3.up);
             m_transformHead.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
-     
+
         }
 
 
@@ -358,8 +352,23 @@ namespace Character
             {
                 m_aimInputValue = ctx.ReadValue<Vector2>();
 
+                if (IsGamepad())
+                {
+                    Vector2 tempVec2 = m_aimInputValue;
+                    m_aimInputValue.x = (tempVec2.x / 2.0f + 0.5f) * 1920;
+                    m_aimInputValue.y = (tempVec2.y / 2.0f + 0.5f) * 1080;
+
+                }
             }
-            if (ctx.canceled) m_aimInputValue = Vector2.zero;
+
+
+            if (ctx.canceled)
+            {
+                if (!IsGamepad())
+                {
+                    m_aimInputValue = Vector2.zero;
+                }
+            }
 
         }
 
@@ -388,7 +397,7 @@ namespace Character
                 float angleTest = Vector3.SignedAngle(normalDirection, Vector3.up, dir);
                 if (angleTest != 0)
                 {
-                    normalDirection  = Quaternion.AngleAxis(angleTest, dir)* normalDirection;
+                    normalDirection = Quaternion.AngleAxis(angleTest, dir) * normalDirection;
                 }
 
 
