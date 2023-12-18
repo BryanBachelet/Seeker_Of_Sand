@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 4019022266725414705}
   - component: {fileID: 3751895143451615771}
   m_Layer: 18
-  m_Name: Harpon
+  m_Name: Projectile_Harpon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -351,7 +351,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7035111290779714718}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 5.68, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -455,7 +455,7 @@ CapsuleCollider:
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &3751895143451615771
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -472,7 +472,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7879218795909706092
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,7 +646,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8849158781272464227}
     m_Modifications:
+    - target: {fileID: 792881324528163668, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 970971524760557848, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440614803878104064, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -716,10 +726,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2615918274555636546, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3258966444288658613, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
       propertyPath: m_Name
       value: VFX_Zeritraillette
+      objectReference: {fileID: 0}
+    - target: {fileID: 7690279643116414101, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8191699255492494557, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
@@ -994,7 +1014,7 @@ PrefabInstance:
     - target: {fileID: 7363746034466958184, guid: a7c1ad94bb01aec43a9cc08b6da75881,
         type: 3}
       propertyPath: m_Name
-      value: TRAIL_II.2
+      value: Harpon_Head
       objectReference: {fileID: 0}
     - target: {fileID: 7363746034466958184, guid: a7c1ad94bb01aec43a9cc08b6da75881,
         type: 3}
@@ -1083,6 +1103,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7363746034643272995, guid: a7c1ad94bb01aec43a9cc08b6da75881,
         type: 3}
+      propertyPath: m_Name
+      value: Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363746034643272995, guid: a7c1ad94bb01aec43a9cc08b6da75881,
+        type: 3}
       propertyPath: m_Layer
       value: 15
       objectReference: {fileID: 0}
@@ -1116,6 +1141,12 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7363746034643272998, guid: a7c1ad94bb01aec43a9cc08b6da75881,
+        type: 3}
+      propertyPath: m_Asset
+      value: 
+      objectReference: {fileID: 8926484042661614526, guid: 6382cfefa1d193143a51e28cfd79ae75,
+        type: 3}
     - target: {fileID: 7363746034643272998, guid: a7c1ad94bb01aec43a9cc08b6da75881,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
