@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.VFX;
 public class RainBullet : Projectile
 {
+    private const float m_maxTimeDamageTick = .3f;
+    private const float m_minTimeDamageTick = 0.05f;
     [SerializeField] private float m_timeDamageTick = 0.3f;
     private float m_timerDamageTick = 0;
 
@@ -16,11 +18,14 @@ public class RainBullet : Projectile
     {
         m_collider = GetComponent<SphereCollider>();
         GlobalSoundManager.PlayOneShot(24, transform.position);
-        //m_VisualEffect = transform.GetComponentInChildren<VisualEffect>();
-        //m_EventNameIdentifier[0] = Shader.PropertyToID("StartPluie");
-        //m_EventNameIdentifier[1] = Shader.PropertyToID("StopPluie");
-        //StartCoroutine(LaunchingPluieVfx());
-        //GlobalSoundManager.PlayOneShot(11, transform.position);
+        InitUpgradeSpell();
+    }
+
+    public void InitUpgradeSpell()
+    {
+        m_collider.radius += m_size * m_sizeMultiplicateurFactor;
+        m_timeDamageTick -= m_shootNumber * 0.02f;
+        m_timeDamageTick = Mathf.Clamp(m_timeDamageTick, m_minTimeDamageTick, m_maxTimeDamageTick);
     }
 
     public void Update()
@@ -53,7 +58,11 @@ public class RainBullet : Projectile
         if (enemy == null) return;
         if (Vector3.Distance(enemy.transform.position, transform.position) > ((m_collider.radius/2.0f) - m_radiusArea))
         {
-            enemy.ReceiveDamage(m_damage, (enemy.transform.position - transform.position).normalized, m_power);
+            for (int i = 0; i < m_salveNumber; i++)
+            {
+                enemy.ReceiveDamage(m_damage, (enemy.transform.position - transform.position).normalized, m_power);
+            }
+           
             
             if (enemy.npcState == Enemies.NpcState.DEATH)
                 m_enemiesList.Remove(enemy);

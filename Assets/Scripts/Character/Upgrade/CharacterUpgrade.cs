@@ -15,7 +15,7 @@ public class CharacterUpgrade : MonoBehaviour
     [SerializeField] public Text m_LevelDisplay;
     [SerializeField] private int m_CurrentLevel = 1;
 
-       // UI display object
+    // UI display object
     private GameObject m_upgradeUiGODisplay;
     private GameObject m_spellBookUIDisplay;
     public GameObject m_FixeElementUI;
@@ -113,11 +113,11 @@ public class CharacterUpgrade : MonoBehaviour
     {
         if (upgradePoint == 0) return;
         m_FixeElementUI.SetActive(false);
-        m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
         for (int i = 0; i < 3; i++)
         {
             int index = Random.Range(0, m_characterShoot.maxSpellIndex);
             int spellIndex = m_characterShoot.spellEquip[index];
+            m_upgradeToChoose[i] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterShoot.bookOfSpell[spellIndex]));
             m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[spellIndex].sprite);
         }
     }
@@ -141,11 +141,11 @@ public class CharacterUpgrade : MonoBehaviour
             m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
             ApplyUpgrade(indexChoice);
             upgradePoint--;
-            m_UpgradeUiDecal.upgradAvailable.text = ""+ upgradePoint;
+            m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         }
 
         DestroyAllUpgrade();
-        if (upgradePoint == 0 )
+        if (upgradePoint == 0)
         {
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             m_FixeElementUI.SetActive(true);
@@ -155,7 +155,7 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradePoint.text = upgradePoint.ToString();
             GlobalSoundManager.PlayOneShot(30, transform.position);
             GameState.ChangeState();
-            if(had5level) { had5level = false; }
+            if (had5level) { had5level = false; }
             return;
         }
 
@@ -170,9 +170,9 @@ public class CharacterUpgrade : MonoBehaviour
         upgradePoint++;
         m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
-        if (upgradePoint >= 5) 
-        { 
-            UpgradeWindowLevel5(); 
+        if (upgradePoint >= 5)
+        {
+            UpgradeWindowLevel5();
         }
     }
 

@@ -22,15 +22,15 @@ public class Harpon : Projectile
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
         {
-            if (Vector3.Distance(transform.position, hit.point) < 0.9f)
+            if (Vector3.Distance(transform.position, hit.point) < 1.5f)
             {
-                transform.position += (transform.position - hit.point).normalized * (1.0f - Vector3.Distance(transform.position, hit.point));
+                transform.position += (transform.position - hit.point).normalized * 1.5f;            
                 return;
             }
 
-            if (Vector3.Distance(transform.position, hit.point) > 1.1f)
+            if (Vector3.Distance(transform.position, hit.point) > 2f)
             {
-                transform.position += (hit.point - transform.position).normalized * (Vector3.Distance(transform.position, hit.point) - 1.0f);
+                transform.position += (hit.point - transform.position).normalized * 1.5f;
             }
         }
     }

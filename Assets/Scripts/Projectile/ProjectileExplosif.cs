@@ -15,7 +15,7 @@ public class ProjectileExplosif : Projectile
     public Color baseEmissiveColor;
 
     [SerializeField] private bool m_ActivationVFX;
-    [SerializeField] private GameObject m_VFXObject;
+    [SerializeField] protected GameObject m_VFXObject;
     [SerializeField] public int indexSFXExplosion;
     private bool m_isStick;
     private bool m_onEnemy;
@@ -29,9 +29,13 @@ public class ProjectileExplosif : Projectile
     private float m_distanceDest;
     private Vector3 m_directionHeight;
     private Vector3 prevPosition;
+    protected bool m_isTravelFinish;
+    private UnityEngine.VFX.VisualEffect vfxBase;
 
     private void Start()
     {
+        vfxBase = GetComponentInChildren<UnityEngine.VFX.VisualEffect>();
+
         m_transform = gameObject.GetComponent<Transform>();
         m_mat_explosion = new Material(m_explosionMatToUse);
         gameObject.GetComponent<MeshRenderer>().material = m_mat_explosion;
@@ -46,10 +50,16 @@ public class ProjectileExplosif : Projectile
         Vector3 rightDirection = Quaternion.AngleAxis(90, Vector3.up) * direction.normalized;
         m_directionHeight = Quaternion.AngleAxis(-90, rightDirection.normalized) * direction.normalized;
 
+        float angleTest = Vector3.SignedAngle(m_directionHeight, Vector3.up, direction);
+        if (angleTest != 0)
+        {
+            m_directionHeight = Quaternion.AngleAxis(angleTest, direction) * m_directionHeight;
+        }
+
         m_direction = direction.normalized;
         m_direction.Normalize();
-        m_speed = GetSpeed(m_distanceDest, m_lifeTime - 0.1f, m_angleTrajectory);
-        m_gravityForce = GetGravity(m_speed, m_lifeTime - 0.1f, m_angleTrajectory, 0);
+        m_speed = GetSpeed(m_distanceDest, m_travelTime, m_angleTrajectory);
+        m_gravityForce = GetGravity(m_speed, m_travelTime, m_angleTrajectory, 0);
     }
 
     #region Physics Function
@@ -76,21 +86,22 @@ public class ProjectileExplosif : Projectile
         Move();
         StickBehavior();
         Duration();
+        UpdateTravelTime();
     }
 
 
     protected override void Move()
     {
-        if (m_isStick) return;
+        if (m_isTravelFinish || m_isStick) return;
 
         CurveTrajectory();
     }
 
     protected virtual void CurveTrajectory()
     {
-        float timer = (m_lifeTimer * m_lifeTimer) / 2.0f;
-        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * m_lifeTimer;
-        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad) * m_lifeTimer;
+        float timer = (m_travelTimer * m_travelTimer) / 2.0f;
+        float xPos = m_speed * Mathf.Cos(m_angleTrajectory * Mathf.Deg2Rad) * m_travelTimer;
+        float yPos = -m_gravityForce * timer + m_speed * Mathf.Sin(m_angleTrajectory * Mathf.Deg2Rad) * m_travelTimer;
 
         Vector3 pos = m_direction.normalized * xPos + m_directionHeight.normalized * yPos;
         transform.position += (pos - prevPosition);
@@ -113,12 +124,27 @@ public class ProjectileExplosif : Projectile
             }
 
         }
-        ScaleByTime();
     }
     protected override void Duration()
     {
         if (m_isStick) return;
-        base.Duration();
+    
+    }
+
+    protected override void UpdateTravelTime()
+    {
+        if (m_isTravelFinish) return;
+
+        if (m_travelTimer > m_travelTime)
+        {
+            transform.position = m_destination + Vector3.up * 0.5f;
+            m_isTravelFinish = true;
+        }
+        else
+        {
+            m_travelTimer += Time.deltaTime;
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -128,13 +154,15 @@ public class ProjectileExplosif : Projectile
 
     public override void CollisionEvent(Collider other)
     {
-        if (m_isStick && m_onEnemy || other.tag == "Player") return;
+        if (m_isStick && m_onEnemy || other.tag == "Player" || other.tag == "Projectile") return;
+
         if (other.tag == "Enemy")
         {
+            Debug.Log(other.name + "has been stick");
             m_onEnemy = true;
             if (m_ActivationVFX) { Instantiate(m_VFXObject, transform.position, transform.rotation, transform); }
             m_stickTransform = other.transform;
-            m_stickPosition = other.transform.position - transform.position;
+            m_stickPosition = (other.transform.position - transform.position).normalized ;
         }
         if (m_isStick) return;
         StartCoroutine(TimeToExplose(m_timeBeforeExplosion));
@@ -176,18 +204,12 @@ public class ProjectileExplosif : Projectile
                     enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
             }
 
-
+            
             stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power);
+            m_stickTransform = null;
         }
+        vfxBase.gameObject.SetActive(false);
         StartCoroutine(DelayDestroy(2));
-    }
-
-    private void ScaleByTime()
-    {
-        m_lifeTimer += Time.deltaTime;
-        float scaleByTime = scaleByTime_Curve.Evaluate(m_lifeTimer / m_timeBeforeExplosion) / 2;
-        m_transform.localScale = new Vector3(scaleByTime, scaleByTime, scaleByTime);
-        m_mat_explosion.SetColor("_EmissiveColor", baseEmissiveColor * coloriseByTime_Curve.Evaluate(m_lifeTimer / m_timeBeforeExplosion));
     }
 
     public IEnumerator DelayDestroy(float time)

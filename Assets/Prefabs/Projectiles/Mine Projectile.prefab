@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6560130638218517808}
   - component: {fileID: 1941468164468798751}
   - component: {fileID: 6072928834811389308}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: ZC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 6642326709660009111}
   - component: {fileID: 5080137577023471511}
   - component: {fileID: 7339334848954211579}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Mine Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ MonoBehaviour:
   vfxDecal: {fileID: 1941468164468798751}
 --- !u!95 &7339334848954211579
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -328,7 +328,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &4992677766322865239
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -338,8 +338,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1049819862206820822, guid: a7ea9a81a37e4544f93318a214f56fd6,
         type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049819862206820822, guid: a7ea9a81a37e4544f93318a214f56fd6,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049819863214441758, guid: a7ea9a81a37e4544f93318a214f56fd6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1049819863214441759, guid: a7ea9a81a37e4544f93318a214f56fd6,
         type: 3}
@@ -420,6 +430,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: VFX_Mine_Proxy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238928819444298018, guid: a7ea9a81a37e4544f93318a214f56fd6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4238928819444298018, guid: a7ea9a81a37e4544f93318a214f56fd6,
         type: 3}
