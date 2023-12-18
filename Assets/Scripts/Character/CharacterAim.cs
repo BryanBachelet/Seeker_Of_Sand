@@ -7,6 +7,14 @@ using System.Linq;
 namespace Character
 {
 
+    public enum AimMode
+    {
+        Automatic,
+        AimControls,
+        FullControl,
+
+    }
+
     public class CharacterAim : MonoBehaviour
     {
 
@@ -21,10 +29,12 @@ namespace Character
         [SerializeField] private LineRenderer m_lineRenderer;
         [SerializeField] private GameObject m_AreaFeedbackHolder;
         [SerializeField] private LayerMask enemyLayer;
+        [SerializeField] private bool m_hasCloseTarget = false;
         private GameObject currentFeedbackInUse;
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
+        private CharacterMouvement m_characterMouvement;
 
         private bool search;
 
@@ -47,8 +57,9 @@ namespace Character
 
         public float rangeDebug;
         public Collider[] colProche;
-        [SerializeField] private float aimAssist = 1;
+        [SerializeField] private float aimAssistDistance = 1;
 
+        private Vector3 prevAimPosition;
 
         public Collider NearestCol;
 
@@ -59,6 +70,7 @@ namespace Character
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
+            m_characterMouvement = GetComponent<CharacterMouvement>();
         }
 
 
@@ -67,15 +79,29 @@ namespace Character
         /// </summary>
         private void FindAimWorldPoint()
         {
-            if (m_characterShoot.autoAimActive && m_characterShoot.m_isCasting)
+            if (m_characterShoot.m_aimModeState != AimMode.FullControl)
             {
-                Collider[] col = Physics.OverlapSphere(GetAimFinalPoint(), m_characterShoot.GetPodRange(), enemyLayer);
+                Collider[] col = new Collider[0];
+                Vector3 position = Vector3.zero;
+
+                
+                if (m_characterShoot.m_aimModeState == AimMode.AimControls)
+                    position = prevAimPosition;
+                if (m_characterShoot.m_aimModeState == AimMode.Automatic)
+                    position = transform.position;
+
+                col = Physics.OverlapSphere(position, m_characterShoot.GetPodRange(), enemyLayer);
                 if (col.Length > 0)
                 {
-                    Vector3 nearestEnemyPos = NearestEnemy(col);
+                    m_hasCloseTarget = true;
+                    m_characterMouvement.combatState = true;
+                    Vector3 nearestEnemyPos = NearestEnemy(col, position);
                     nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
                     Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
                     m_aimScreenPoint = convertPos;
+                }else
+                {
+                    m_aimScreenPoint = m_aimInputValue;
                 }
 
             }
@@ -154,11 +180,11 @@ namespace Character
 
                 m_aimPoint = hit.point;
                 m_aimFinalPointNormal = hit.normal;
-                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimFinalPointNormal, aimAssist, enemyLayer);
+                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimFinalPointNormal, aimAssistDistance, enemyLayer);
 
                 if (nearestAimedEnemy.Length > 0)
                 {
-                    m_aimFinalPointNormal = NearestEnemy(nearestAimedEnemy);
+                    m_aimFinalPointNormal = NearestEnemy(nearestAimedEnemy, m_aimFinalPointNormal);
                 }
             }
 
@@ -272,7 +298,7 @@ namespace Character
             CalculateAimInformation();
             AimFeedback();
             //projectorVisorObject.transform.position = GetAimFinalPoint();
-        
+            prevAimPosition = GetAimFinalPoint();
             if (search) search = false;
         }
 
@@ -372,16 +398,31 @@ namespace Character
 
         }
 
-        public Vector3 NearestEnemy(Collider[] enemysPos)
+
+
+        public Vector3 NearestEnemy(Collider[] enemysPos, Vector3 position)
         {
-            var nClosest = enemysPos.OrderBy(t => (t.transform.position - transform.position).sqrMagnitude)
-                           .FirstOrDefault();   //or use .FirstOrDefault();  if you need just one
-            NearestCol = nClosest;
-            return nClosest.transform.position;
+            Vector3 closestPosition = Vector3.zero;
+            float distance = 10000.0f;
+            for (int i = 0; i < enemysPos.Length; i++)
+            {
+                float indexDistance = Vector3.Distance(enemysPos[i].transform.position, position);
+                if (indexDistance < distance)
+                {
+                    distance = indexDistance;
+                    closestPosition = enemysPos[i].transform.position;
+                }
+            }
+            return closestPosition;
         }
         private bool IsGamepad()
         {
             return m_playerInput.currentControlScheme == "Gamepad";
+        }
+
+        public bool HasCloseTarget()
+        {
+            return m_hasCloseTarget;
         }
 
         private void OnDrawGizmos()
@@ -411,7 +452,8 @@ namespace Character
                 Gizmos.DrawRay(aimTrajectoryRay.origin, aimTrajectoryRay.direction * (heightestPoint - transform.position).magnitude);
                 Gizmos.DrawLine(heightestPoint, m_aimPoint);
 
-                Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssist);
+                Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssistDistance);
+                Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
             }
         }
 
