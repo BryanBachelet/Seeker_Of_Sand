@@ -18,6 +18,7 @@ public class CristalInventory : MonoBehaviour
     void Start()
     {
         m_timeDisplaying = m_timeDisplayingSetup;
+        SetupText();
     }
 
     // Update is called once per frame

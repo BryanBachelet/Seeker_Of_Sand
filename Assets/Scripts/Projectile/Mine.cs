@@ -12,7 +12,6 @@ public class Mine : ProjectileExplosif
     //[SerializeField] private int indexSFXExplosion;
     private Animator m_animator;
 
-    private bool m_isOnGround;
     private bool m_isActive;
     private bool m_isTrigger;
 
@@ -38,42 +37,49 @@ public class Mine : ProjectileExplosif
 
     public void Update()
     {
-        Duration();
+        UpdateTravelTime();
+        //  Duration();
         Move();
         SetupMine();
     }
 
-    // Curve mouvement Life Time
+
+
     protected override void Duration()
     {
+        if (!m_isTravelFinish) return;
+
         if (m_lifeTimer > m_lifeTime)
         {
-            transform.position = m_destination + Vector3.up * 0.5f;
-            m_isOnGround = true;
+            if (!m_isTrigger)
+            {
+                Explosion();
+                m_isTrigger = true;
+            }
         }
         else
         {
             m_lifeTimer += Time.deltaTime;
         }
     }
-   
+
     // Curve Mouvement
     protected override void Move()
     {
-        if (m_isOnGround) return;
+        if (m_isTravelFinish) return;
         CurveTrajectory();
     }
 
     // Timer of setup
     private void SetupMine()
     {
-        if (m_isActive || !m_isOnGround) return;
+        if (m_isActive || !m_isTravelFinish) return;
 
         if (m_setupTimer > m_setupDuration)
         {
             m_setupTimer = 0;
-            if(vfxDecal != null) { vfxDecal.SendEvent("ActiveArea"); }
-            
+            if (vfxDecal != null) { vfxDecal.SendEvent("ActiveArea"); }
+
             m_isActive = true;
         }
         else
@@ -86,7 +92,7 @@ public class Mine : ProjectileExplosif
     public override void CollisionEvent(Collider other)
     {
 
-        if (!m_isActive || m_isTrigger || !m_isOnGround) return;
+        if (!m_isActive || m_isTrigger || !m_isTravelFinish) return;
 
         if (other.tag == "Enemy" || other.tag == "Player" || other.tag == "Cristal")
         {
@@ -107,10 +113,10 @@ public class Mine : ProjectileExplosif
         for (int i = 0; i < enemies.Length; i++)
         {
             if (enemies[i] == null) continue;
-           
+
             if (enemies[i].tag == "Player")
             {
-                enemies[i].GetComponent<Character.CharacterMouvement>().Projection((Vector3.up + (enemies[i].transform.position -transform.position ).normalized).normalized * powerPlayerProjection, ForceMode.VelocityChange);
+                enemies[i].GetComponent<Character.CharacterMouvement>().Projection((Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized * powerPlayerProjection, ForceMode.VelocityChange);
                 Debug.Log("Player explosion fonction");
                 continue;
             }
@@ -127,6 +133,7 @@ public class Mine : ProjectileExplosif
             }
 
         }
+        vfxDecal.gameObject.SetActive(false);
         StartCoroutine(DelayDestroy(2));
     }
 

@@ -50,6 +50,9 @@ namespace Render.Camera
         [SerializeField] private Vector3 m_baseOffset;
         [SerializeField] private float m_valueMinToStartSlope = 0.8f;
 
+        private float m_zoomInputGamepad = 0.0f;
+        private bool m_IsGamepad = true;
+
         [Header("Camera Zoom High Block State parameters")]
         private bool m_isZoomBlock = false;
         [SerializeField] private float m_maxZoomBlock = 0.15f;
@@ -96,6 +99,7 @@ namespace Render.Camera
         private float m_mouseDeltaValue;
 
 
+
         // Start is called before the first frame update
         void Start()
         {
@@ -111,6 +115,20 @@ namespace Render.Camera
 
         void Update()
         {
+            if (m_IsGamepad)
+            {
+
+                m_inputZoomValue = m_inputZoomSensibility * m_zoomInputGamepad;
+                if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
+
+                if (m_isDezoomingAutomatily) return;
+
+                m_currentLerpValue += m_inputZoomValue;
+                m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
+                if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
+            }
+
+
             if (playerMove.mouvementState != Character.CharacterMouvement.MouvementState.Train)
             {
                 if (m_isLerping)
@@ -157,19 +175,25 @@ namespace Render.Camera
         {
             if (ctx.performed)
             {
-                m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
-                if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
+                m_zoomInputGamepad = ctx.ReadValue<float>();
+                if (!m_IsGamepad)
+                {
 
-                if (m_isDezoomingAutomatily) return;
+                    m_inputZoomValue = m_inputZoomSensibility * m_zoomInputGamepad;
+                    if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
 
-                m_currentLerpValue += m_inputZoomValue;
-                m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
-                if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
+                    if (m_isDezoomingAutomatily) return;
+
+                    m_currentLerpValue += m_inputZoomValue;
+                    m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
+                    if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
+                }
 
             }
 
             if (ctx.canceled)
             {
+                m_zoomInputGamepad = 0.0f;
                 //m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
             }
         }

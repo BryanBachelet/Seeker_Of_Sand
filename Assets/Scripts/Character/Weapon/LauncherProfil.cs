@@ -21,6 +21,13 @@ public enum TrajectoryType
     CURVE
 }
 
+public enum FormTypeSpell
+{
+    PROJECTILE,
+    AREA,
+}
+
+
 [Serializable]
 public struct CapsuleStats
 {
@@ -30,11 +37,13 @@ public struct CapsuleStats
     public float speed;
     public float range;
     public float damage;
-    public float projectileNumber;
+    public int projectileNumber;
     public float totalShotTime;
     public float shootAngle;
     public TrajectoryType trajectory;
+    public FormTypeSpell formType;
     public float angleTrajectory;
+    public float trajectoryTimer;
     public float shootNumber;
     public float timeInterval;
     public float size;
@@ -74,7 +83,7 @@ public struct CapsuleStats
 
     public float GetTravelTime()
     {
-        return travelTime != 0 ? travelTime : lifetime;
+        return trajectoryTimer;
     }
 }
 

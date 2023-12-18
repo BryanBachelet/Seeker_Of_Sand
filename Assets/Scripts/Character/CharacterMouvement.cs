@@ -88,9 +88,9 @@ namespace Character
         public EventReference MouvementSoundReference;
 
         [SerializeField] private Sprite[] m_spriteStateAssociated;
-        [HideInInspector] public UnityEngine.UI.Image m_spriteState;
+        public UnityEngine.UI.Image m_spriteState;
 
-        [HideInInspector] public Animator m_uiStateAnimator;
+        public Animator m_uiStateAnimator;
         private bool m_changingState;
         public enum MouvementState
         {

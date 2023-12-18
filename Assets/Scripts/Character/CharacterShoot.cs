@@ -203,8 +203,6 @@ namespace Character
 
         public void GenerateNewBuild()
         {
-            // TRest
-
             for (int i = 0; i < 5; i++)
             {
                 int RndCapsule = UnityEngine.Random.Range(0, 8);
@@ -322,6 +320,49 @@ namespace Character
         {
             if (m_currentIndexCapsule == -1) EndShoot();
 
+            if (currentWeaponStats.formType == FormTypeSpell.PROJECTILE)
+            { ShootAttackProjectile(); return; }
+            if (currentWeaponStats.formType == FormTypeSpell.AREA) ShootAtttackArea();
+        }
+
+
+        public void ShootAtttackArea()
+        {
+            float angle = GetShootAngle(currentWeaponStats);
+            int mod = GetStartIndexProjectile(currentWeaponStats);
+
+            Transform transformUsed = transform;
+            Quaternion rot = m_characterAim.GetTransformHead().rotation;
+            GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
+                , transformUsed.position + new Vector3(0, 5, 0), rot);
+            projectileCreate.transform.localScale = projectileCreate.transform.localScale ;
+           
+            ProjectileData data = new ProjectileData();
+            data.direction =  m_characterAim.GetAimDirection();
+            data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
+            data.life = currentWeaponStats.lifetime;
+            data.travelTime = currentWeaponStats.trajectoryTimer;
+            data.damage = currentWeaponStats.damage;
+            data.piercingMax = currentWeaponStats.piercingMax;
+            data.salveNumber = (int)currentWeaponStats.projectileNumber;
+            data.shootNumber = (int)currentWeaponStats.shootNumber;
+            data.size = currentWeaponStats.size;
+            data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
+            Vector3 dest =  m_characterAim.GetAimFinalPoint();
+            if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
+                dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
+
+            data.destination = m_characterAim.GetAimFinalPoint();
+            pos = dest;
+
+            projectileCreate.GetComponent<Projectile>().SetProjectile(data);
+            angle = -angle;
+
+            EndShoot();
+        }
+
+       private void ShootAttackProjectile()
+        {
             float angle = GetShootAngle(currentWeaponStats);
             int mod = GetStartIndexProjectile(currentWeaponStats);
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
@@ -329,14 +370,19 @@ namespace Character
                 Transform transformUsed = transform;
                 Quaternion rot = m_characterAim.GetTransformHead().rotation;
                 GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
-                    , transformUsed.position + new Vector3(0, 3, 0), rot * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up));
+                    , transformUsed.position + new Vector3(0, 5, 0), rot * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up));
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale * (currentWeaponStats.size * currentWeaponStats.sizeMultiplicatorFactor);
                 ProjectileData data = new ProjectileData();
                 data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
                 data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
                 data.life = currentWeaponStats.lifetime;
                 data.damage = currentWeaponStats.damage;
+                data.travelTime = currentWeaponStats.trajectoryTimer;
                 data.piercingMax = currentWeaponStats.piercingMax;
+                data.salveNumber = (int)currentWeaponStats.projectileNumber;
+                data.shootNumber = (int)currentWeaponStats.shootNumber;
+                data.size = currentWeaponStats.size;
+                data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
                 Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
                 if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
                     dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
