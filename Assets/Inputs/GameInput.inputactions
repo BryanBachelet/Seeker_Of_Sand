@@ -162,7 +162,7 @@
                     "name": "CameraRotationMouse",
                     "type": "Value",
                     "id": "1d2a7610-5a32-421b-b65e-d084c7ae2255",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -509,7 +509,7 @@
                 {
                     "name": "",
                     "id": "aef83595-8195-4a3f-b728-240c0bd04905",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -553,7 +553,7 @@
                 {
                     "name": "",
                     "id": "f50d12f4-550b-45c4-bfc0-5b9ac35448b2",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -673,17 +673,6 @@
                 },
                 {
                     "name": "",
-                    "id": "0e63e846-c772-4591-be12-705f6f982ba1",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraRotationMouse",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "3d05f6e1-db35-4d61-b80c-99575f1de123",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -696,7 +685,7 @@
                 {
                     "name": "",
                     "id": "0eb94404-3759-421d-b223-4cc909e72b86",
-                    "path": "<Gamepad>/dpad/left",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -707,7 +696,7 @@
                 {
                     "name": "",
                     "id": "531bbaf2-bcf0-465f-a5c6-d5bc93a5cb24",
-                    "path": "<Gamepad>/dpad/right",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -729,7 +718,7 @@
                 {
                     "name": "",
                     "id": "06cd93f8-0d14-4f07-9d6f-7ebfe897aebf",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -738,15 +727,70 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "f9944dfc-e8f3-4d57-b960-5937cd2e5e96",
-                    "path": "<Gamepad>/dpad",
+                    "name": "Delta Mouse",
+                    "id": "1d69efe2-6e5f-434e-aacb-7bc0c2179174",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotationMouse",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "8dcdbd14-b1ee-498d-9797-f754a073ab99",
+                    "path": "<Mouse>/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CameraRotationMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "7f2cd75b-85c4-49b2-836e-1951e0b1ae4e",
+                    "path": "<Mouse>/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotationMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Delta Gamepad",
+                    "id": "69cc7c24-e5e5-4b92-b9d4-11733809d684",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotationMouse",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "ab026970-2ee0-46ba-8a55-abc08e3f5cb9",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "CameraRotationMouse",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "e76df087-e48c-4b6b-825e-29f282803dde",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "CameraRotationMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
