@@ -243,6 +243,7 @@ namespace Character
                     }
                 }
 
+
                 if (Time.time > m_lastTimeShot + m_TimeAutoWalk)
                 {
                     m_lastTimeShot = Mathf.Infinity;
@@ -336,10 +337,10 @@ namespace Character
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
                 , transformUsed.position + new Vector3(0, 5, 0), rot);
-            projectileCreate.transform.localScale = projectileCreate.transform.localScale ;
-           
+            projectileCreate.transform.localScale = projectileCreate.transform.localScale;
+
             ProjectileData data = new ProjectileData();
-            data.direction =  m_characterAim.GetAimDirection();
+            data.direction = m_characterAim.GetAimDirection();
             data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
             data.life = currentWeaponStats.lifetime;
             data.travelTime = currentWeaponStats.trajectoryTimer;
@@ -349,7 +350,7 @@ namespace Character
             data.shootNumber = (int)currentWeaponStats.shootNumber;
             data.size = currentWeaponStats.size;
             data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
-            Vector3 dest =  m_characterAim.GetAimFinalPoint();
+            Vector3 dest = m_characterAim.GetAimFinalPoint();
             if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
                 dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
 
@@ -362,7 +363,7 @@ namespace Character
             EndShoot();
         }
 
-       private void ShootAttackProjectile()
+        private void ShootAttackProjectile()
         {
             float angle = GetShootAngle(currentWeaponStats);
             int mod = GetStartIndexProjectile(currentWeaponStats);
@@ -706,6 +707,21 @@ namespace Character
                 m_lastTimeShot = Mathf.Infinity;
                 if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
                 StopCasting();
+            }
+        }
+
+
+        public void InputChangeAimLayout(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed)
+            {
+                int indexAim = (int)m_aimModeState;
+                indexAim++;
+
+                if (indexAim == 3) indexAim = 0;
+
+                m_aimModeState = (AimMode)indexAim;
+                Debug.Log("Change Aim mode : " + m_aimModeState.ToString());
             }
         }
 

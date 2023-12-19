@@ -15,28 +15,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Look",
-                    "type": "Value",
-                    "id": "cb0296e4-977e-4061-8ec8-ec88dd8eed7b",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Fire",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "854a250b-03fe-43f1-b8f9-89a08b909c18",
                     "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "StopFire",
-                    "type": "Value",
-                    "id": "42a1de34-e12c-48a4-a914-91b14be88cdd",
-                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -76,15 +58,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "RotationCamera",
-                    "type": "Value",
-                    "id": "d1741e41-58e2-411c-8a20-2efea3929e65",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 },
                 {
                     "name": "Interact",
@@ -141,15 +114,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotationCameraMouse",
-                    "type": "Value",
-                    "id": "17b5e5a3-5088-49b6-ad75-53a905eb8d45",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "CameraZoom",
                     "type": "Value",
                     "id": "6455e521-f2bb-402d-9684-51b7f9e5c9a1",
@@ -180,6 +144,15 @@
                     "name": "Slide",
                     "type": "Button",
                     "id": "b9655a3f-f07d-4dde-ae68-7d6d390a4cef",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeLayout",
+                    "type": "Button",
+                    "id": "74f052b2-9179-42f6-a4fb-a1df82939ef9",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -321,28 +294,6 @@
                 },
                 {
                     "name": "",
-                    "id": "8c8e490b-c610-4785-884f-f04217b23ca4",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse;Touch",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3e5f5442-8668-4b27-a940-df99bad7e831",
-                    "path": "<Joystick>/{Hatswitch}",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "143bb1cd-cc10-4eca-a2f0-a3664166fe91",
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
@@ -463,39 +414,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "1D Axis",
-                    "id": "1e9eac98-dfee-4961-8834-923a422b2c7a",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotationCamera",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "9de4f09a-7493-45f6-9ea0-4a550d4f46ef",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "RotationCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "4377921a-fa97-48fc-bb53-f90abee17d2d",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "RotationCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "91c99911-5903-4a51-8092-c27a358d6cea",
                     "path": "<Keyboard>/f",
@@ -580,28 +498,6 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "TakeScreenshot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cdf62ffd-e70b-4195-bd61-cc7e11e7caee",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "StopFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "41a5ecbb-0321-4369-bf25-f2a11f1d0356",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotationCameraMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -727,39 +623,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Delta Mouse",
-                    "id": "1d69efe2-6e5f-434e-aacb-7bc0c2179174",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraRotationMouse",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "8dcdbd14-b1ee-498d-9797-f754a073ab99",
-                    "path": "<Mouse>/delta/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraRotationMouse",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "7f2cd75b-85c4-49b2-836e-1951e0b1ae4e",
-                    "path": "<Mouse>/delta/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraRotationMouse",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "Delta Gamepad",
                     "id": "69cc7c24-e5e5-4b92-b9d4-11733809d684",
                     "path": "1DAxis",
@@ -791,6 +654,28 @@
                     "action": "CameraRotationMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "40d3358d-9491-4cce-b074-6716ef4aa866",
+                    "path": "<Mouse>/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CameraRotationMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "065b550a-8c8d-4f98-92e9-71b60f1ef1b4",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ChangeLayout",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

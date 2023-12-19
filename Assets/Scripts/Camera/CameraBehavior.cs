@@ -281,37 +281,11 @@ namespace Render.Camera
         }
 
         #region Camera Rotation Functions
-        public void RotationInput(InputAction.CallbackContext ctx)
-        {
-            if (ctx.performed && m_rotationKeyboardActive)
-            {
-
-                float value = ctx.ReadValue<float>();
-                if (m_inverseCameraController) value = -1 * value;
-                m_mouseDeltaValue = value;
-                m_isRotationInputPress = true;
-                timeLastRotationInput = Time.time;
-                if (value > 0)
-                {
-                    if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(true);
-
-                }
-                if (value < 0)
-                {
-                    if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(false);
-                }
-            }
-
-            if (ctx.canceled && m_rotationKeyboardActive)
-            {
-                m_isRotationInputPress = false;
-                float value = ctx.ReadValue<float>();
-            }
-        }
+      
 
         public void RotationAimInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed && m_mouseInputActivate)
+            if ( m_mouseInputActivate && this.enabled)
             {
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
@@ -324,11 +298,11 @@ namespace Render.Camera
 
             }
 
-            if (ctx.canceled && m_mouseInputActivate)
-            {
-                m_mouseDeltaValue = 0.0f;
-                //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
-            }
+            //if (ctx.canceled && m_mouseInputActivate)
+            //{
+            //    m_mouseDeltaValue = 0.0f;
+            //    //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
+            //}
         }
 
         public void RotationMouseInput(InputAction.CallbackContext ctx)
