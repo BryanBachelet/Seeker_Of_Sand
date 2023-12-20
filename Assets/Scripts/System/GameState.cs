@@ -76,17 +76,21 @@ public class GameState : MonoBehaviour
     private float m_timerBetweenDeath = 0.0f;
     private GameObject m_pauseMenuObj;
 
-     private bool m_activeDebug= true;
+    private bool m_activeDebug = true;
+    private GameManager m_gmComponent;
 
     public void Start()
     {
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
+
         GameObject gm = GameObject.Find("GameManager");
         if (gm != null)
         {
-            if(m_activeDebug) Debug.Log("Found Game manager object ");
-            profileName = gm.GetComponent<GameManager>().profileName;
+            if (m_activeDebug) Debug.Log("Found Game manager object ");
+            m_gmComponent = gm.GetComponent<GameManager>();
+            profileName = m_gmComponent.profileName;
+            m_enemyManager.m_playerTranform.GetComponent<Character.CharacterShoot>().m_aimModeState = m_gmComponent.m_aimModeChoose;
         }
         else
         {
@@ -106,7 +110,7 @@ public class GameState : MonoBehaviour
             if (!m_isDeathProcessusActive)
                 DeathEffect();
 
-            if(m_timerBetweenDeath>m_timeBetweenDeath)
+            if (m_timerBetweenDeath > m_timeBetweenDeath)
             {
 
                 m_isDeath = false;
