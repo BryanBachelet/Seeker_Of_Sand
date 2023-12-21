@@ -45,6 +45,8 @@ namespace Enemies
         private bool m_onlyOnce;
         private Vector3 dest;
 
+        [SerializeField] private UnityEngine.VFX.VisualEffect m_signAttack;
+        private bool m_SignAttackReset = true;
         public void Start()
         {
             InitComponent();
@@ -90,6 +92,12 @@ namespace Enemies
             }
             if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
             {
+                if(m_tempsPreparation - 0.25f < m_tempsEcoulePreparation && m_SignAttackReset)
+                {
+                    m_signAttack.Play();
+                    m_SignAttackReset = false;
+
+                }
                 if(m_tempsPreparation < m_tempsEcoulePreparation)
                 {
                     StartAttack();
@@ -223,6 +231,7 @@ namespace Enemies
             m_tempsEcoulePreparation = 0;
             vfxRangeAttack.SendEvent("UnActiveArea");
             m_agent.enabled = true;
+            m_SignAttackReset = true;
 
             NavMeshHit hitTest = new NavMeshHit();
             NavMesh.SamplePosition(transform.position, out hitTest, Mathf.Infinity, NavMesh.AllAreas);

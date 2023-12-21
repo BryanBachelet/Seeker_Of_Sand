@@ -35,7 +35,8 @@ namespace Enemies
 
         private Animator animator;
 
-
+        [SerializeField] private UnityEngine.VFX.VisualEffect m_signAttack;
+        private bool m_SignAttackReset = true;
 
         void Start()
         {
@@ -72,6 +73,12 @@ namespace Enemies
 
             if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
             {
+                if (m_timerOfCharge - 0.25f < timeOfCharge && m_SignAttackReset)
+                {
+                    m_signAttack.Play();
+                    m_SignAttackReset = false;
+
+                }
                 if (m_timerOfCharge > timeOfCharge)
                 {
                     m_npcHealthComponent.npcState = NpcState.ATTACK;
@@ -104,6 +111,7 @@ namespace Enemies
                     m_navMeshAgent.SetDestination(m_targetTransform.position);
                     timeofRecuperation = 0;
                     m_navMeshAgent.isStopped = false;
+                    m_SignAttackReset = true;
                 }
                 else
                 {

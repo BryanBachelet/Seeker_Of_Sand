@@ -35,7 +35,7 @@ public class CapsuleManager : MonoBehaviour
         return index;
     }
 
-    public static void RemoveSpecificCapsuleFromPool(int index)
+    public static void RemoveSpecificSpellFromSpellPool(int index)
     {
         m_capsulePool.Remove(index);
     }

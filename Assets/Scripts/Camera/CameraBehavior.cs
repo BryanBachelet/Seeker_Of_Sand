@@ -45,7 +45,8 @@ namespace Render.Camera
         [SerializeField] private Vector3 m_maxAngle;
         [SerializeField] private Vector3 m_minAngle;
         [SerializeField] private float m_currentLerpValue = 1;
-        [SerializeField] private float m_inputZoomSensibility = 1.0f;
+        [SerializeField] private float m_keyboardZoomSensibility = 1.0f;
+        [SerializeField] private float m_gamepadZoomSensibility = 7.0f;
         [SerializeField] private bool m_activeCameraZoomDebug = false;
         [SerializeField] private Vector3 m_baseOffset;
         [SerializeField] private float m_valueMinToStartSlope = 0.8f;
@@ -78,6 +79,7 @@ namespace Render.Camera
         [SerializeField] private float m_maxMouseDeltaSpeed = 500;
         [SerializeField] private float m_minMouseDeltaSpeed = 5.0f;
         [SerializeField] private float m_mouseSensibility = 1.0f;
+        [SerializeField] private float m_gamepadSensibility = 1.0f;
         [SerializeField] private float m_maxAngularSpeed = 360;
 
         // ------------------------------
@@ -98,11 +100,15 @@ namespace Render.Camera
         private bool m_isRotationInputPress;
         private float m_mouseDeltaValue;
 
-
+        private PlayerInput m_playerInputComponent;
+        private Character.CharacterShoot m_characterShootComponent;
+        private bool m_isActiveAutomaticDezoom = true;
 
         // Start is called before the first frame update
         void Start()
         {
+            m_playerInputComponent = m_targetTransform.GetComponent<PlayerInput>();
+            m_characterShootComponent = m_targetTransform.GetComponent<Character.CharacterShoot>();
             initialAngularSpeed = m_angularSpeed;
             cameraEffects = GetComponents<CameraEffect>();
             m_cameraDirection = transform.position - m_targetTransform.position;
@@ -115,20 +121,6 @@ namespace Render.Camera
 
         void Update()
         {
-            if (m_IsGamepad)
-            {
-
-                m_inputZoomValue = m_inputZoomSensibility * m_zoomInputGamepad;
-                if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
-
-                if (m_isDezoomingAutomatily) return;
-
-                m_currentLerpValue += m_inputZoomValue;
-                m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
-                if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
-            }
-
-
             if (playerMove.mouvementState != Character.CharacterMouvement.MouvementState.Train)
             {
                 if (m_isLerping)
@@ -146,11 +138,9 @@ namespace Render.Camera
                     }
 
                 }
-
                 // ------------ Camera zoom ----------
                 CameraZoom();
                 // ------------------------
-
 
                 if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_mouseDeltaValue);
 
@@ -167,38 +157,64 @@ namespace Render.Camera
                 transform.LookAt(directionsun);
             }
 
+
+            if (m_characterShootComponent.m_aimModeState != Character.AimMode.FullControl)
+            {
+                m_isActiveAutomaticDezoom = false; 
+            }
+            else
+            {
+                m_isActiveAutomaticDezoom = false; 
+            }
         }
 
-        #region CameraZoom 
+        private bool IsGamepad()
+        {
+            return m_playerInputComponent.currentControlScheme == "Gamepad";
+        }
+
+        #region Camera Zoom Functions
 
         public void InputZoom(InputAction.CallbackContext ctx)
         {
             if (ctx.performed)
             {
                 m_zoomInputGamepad = ctx.ReadValue<float>();
-                if (!m_IsGamepad)
+                if (!IsGamepad())
                 {
-
-                    m_inputZoomValue = m_inputZoomSensibility * m_zoomInputGamepad;
-                    if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
-
-                    if (m_isDezoomingAutomatily) return;
-
-                    m_currentLerpValue += m_inputZoomValue;
-                    m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
-                    if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
+                    UpdateZoomValue(m_keyboardZoomSensibility);
                 }
 
             }
 
             if (ctx.canceled)
             {
-                m_zoomInputGamepad = 0.0f;
+                if(IsGamepad()) m_zoomInputGamepad = 0.0f;
                 //m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
             }
         }
+
+        private void UpdateZoomValue(float sensibility)
+        {
+            m_inputZoomValue = sensibility * m_zoomInputGamepad;
+            if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
+
+            if (m_isDezoomingAutomatily) return;
+
+            m_currentLerpValue += m_inputZoomValue;
+            m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
+            if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
+        }
+
         private void CameraZoom()
         {
+
+            if (IsGamepad())
+            {
+                UpdateZoomValue(m_gamepadZoomSensibility);
+            }
+
+
             m_prevSlopeAngle = m_slopeAngle;
             float angle = playerMove.GetSlope();
             if (angle > m_thresholdAngle)
@@ -247,7 +263,7 @@ namespace Render.Camera
 
         public void BlockZoom(bool state)
         {
-            if (state == m_isZoomBlock) return;
+            if (state == m_isZoomBlock || !m_isActiveAutomaticDezoom) return;
 
             m_isZoomBlock = state;
 
@@ -263,55 +279,30 @@ namespace Render.Camera
         {
             return m_currentAngle;
         }
-        public void RotationInput(InputAction.CallbackContext ctx)
-        {
-            if (ctx.performed && m_rotationKeyboardActive)
-            {
 
-                float value = ctx.ReadValue<float>();
-                if (m_inverseCameraController) value = -1 * value;
-                m_mouseDeltaValue = value;
-                m_isRotationInputPress = true;
-                timeLastRotationInput = Time.time;
-                if (value > 0)
-                {
-                    if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(true);
-
-                }
-                if (value < 0)
-                {
-                    if (m_activateHeightDirectionMode && !m_isLerping) ChangeRotation(false);
-                }
-            }
-
-            if (ctx.canceled && m_rotationKeyboardActive)
-            {
-                m_isRotationInputPress = false;
-                float value = ctx.ReadValue<float>();
-            }
-        }
+        #region Camera Rotation Functions
+      
 
         public void RotationAimInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed && m_mouseInputActivate)
+            if ( m_mouseInputActivate && this.enabled)
             {
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
 
-                m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<Vector2>().x;
-
-
+                if(!IsGamepad()) m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<float>();
+               else m_mouseDeltaValue = value * m_gamepadSensibility * ctx.ReadValue<float>();
 
                 if (Mathf.Abs(m_mouseDeltaValue) < m_mousDeltaThreshold) m_mouseDeltaValue = 0;
                 //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
 
             }
 
-            if (ctx.canceled && m_mouseInputActivate)
-            {
-                m_mouseDeltaValue = 0.0f;
-                //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
-            }
+            //if (ctx.canceled && m_mouseInputActivate)
+            //{
+            //    m_mouseDeltaValue = 0.0f;
+            //    //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
+            //}
         }
 
         public void RotationMouseInput(InputAction.CallbackContext ctx)
@@ -402,7 +393,7 @@ namespace Render.Camera
             else m_lerpTimer = 0.0f;
         }
 
-
+        #endregion
 
         private void SetCameraRotation()
         {
