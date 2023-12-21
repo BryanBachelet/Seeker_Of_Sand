@@ -56,7 +56,7 @@ namespace CapsuleSystem
             name = info.name;
             description = info.description;
             projectile = info.projectile;
-            stats = info.stats;
+            profil = info.stats;
             sprite = info.sprite;
             vfx = info.vfx;
             
@@ -64,7 +64,7 @@ namespace CapsuleSystem
        
         public GameObject projectile;
         public GameObject vfx;
-        public CapsuleProfil stats;
+        public CapsuleProfil profil;
 
     }
     [Serializable]

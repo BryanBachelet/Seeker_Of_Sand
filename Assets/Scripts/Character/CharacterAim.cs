@@ -79,14 +79,11 @@ namespace Character
         /// </summary>
         private void FindAimWorldPoint()
         {
-            if (m_characterShoot.m_aimModeState != AimMode.FullControl)
+            if (m_characterShoot.m_aimModeState == AimMode.Automatic)
             {
                 Collider[] col = new Collider[0];
                 Vector3 position = Vector3.zero;
 
-                
-                if (m_characterShoot.m_aimModeState == AimMode.AimControls)
-                    position = prevAimPosition;
                 if (m_characterShoot.m_aimModeState == AimMode.Automatic)
                     position = transform.position;
 
