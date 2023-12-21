@@ -34,12 +34,12 @@ public class TerrainDropGeneration : MonoBehaviour
                     Debug.DrawRay(newPosition, raycastdirection * hit.distance, Color.cyan);
                     m_DropAreaPosition = hit.point + new Vector3(0,-5,0);
                     Instantiate(cristalDropObject[randomCristalType], m_DropAreaPosition, transform.rotation);
-                    Debug.Log("Did Hit");
+                 
                 }
                 else
                 {
                     Debug.DrawRay(newPosition, raycastdirection * 1000, Color.white);
-                    Debug.Log("Did not Hit");
+                   
                 }
             }
         }

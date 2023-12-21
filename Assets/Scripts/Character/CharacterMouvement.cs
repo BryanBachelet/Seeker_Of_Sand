@@ -126,12 +126,11 @@ namespace Character
         [Header("Debug Parameters")]
         [SerializeField] private bool m_activeDebug;
 
-
-
+        private PlayerInput m_playerInput;
 
         public void InitComponentStat(CharacterStat stat)
         {
-           
+
             runSpeed = stat.baseStat.speed;
             InitComponent();
         }
@@ -144,6 +143,7 @@ namespace Character
             m_rigidbody = GetComponent<Rigidbody>();
             initialSpeed = runSpeed;
             m_characterAim = GetComponent<CharacterAim>();
+            m_playerInput = GetComponent<PlayerInput>();
         }
 
         private void Start()
@@ -185,30 +185,44 @@ namespace Character
             }
         }
 
+
+        private bool IsGamepad()
+        {
+            return m_playerInput.currentControlScheme == "Gamepad";
+        }
+
+
+
         public void SlideInput(InputAction.CallbackContext ctx)
         {
             if (ctx.started)
             {
-                m_isSlideInputActive = true;
-                if (activeCombatModeConstant)
+                if (!IsGamepad())
                 {
-                    combatState = false;
-                    m_CharacterAnim.SetBool("Casting", false);
-                    m_BookAnim.SetBool("Casting", false);
-                    cameraPlayer.BlockZoom(false);
-                    DisplayNewCurrentState(1);
+                    m_isSlideInputActive = true;
+                    SlideActivation(true);
                 }
+                else
+                {
+                    if (combatState)
+                    {
+                        m_isSlideInputActive = true;
+                        SlideActivation(true);
+                    }
+                    else
+                    {
+                        m_isSlideInputActive = false;
+                        SlideActivation(false);
+                    }
+                }
+
             }
             if (ctx.canceled)
             {
-                m_isSlideInputActive = false;
-                if (activeCombatModeConstant)
+                if (!IsGamepad())
                 {
-                    m_CharacterAnim.SetBool("Casting", true);
-                    m_BookAnim.SetBool("Casting", true);
-                    DisplayNewCurrentState(0);
-                    cameraPlayer.BlockZoom(true);
-                    combatState = true;
+                    m_isSlideInputActive = false;
+                    SlideActivation(false);
                 }
             }
             if (!state.isPlaying)
@@ -217,6 +231,30 @@ namespace Character
                 m_isSlideInputActive = false;
             }
         }
+
+        private void SlideActivation(bool isActive)
+        {
+            if (!activeCombatModeConstant) return;
+            if (isActive)
+            {
+                combatState = false;
+                m_CharacterAnim.SetBool("Casting", false);
+                m_BookAnim.SetBool("Casting", false);
+                cameraPlayer.BlockZoom(false);
+                DisplayNewCurrentState(1);
+            }
+
+            if (!isActive)
+            {
+                m_CharacterAnim.SetBool("Casting", true);
+                m_BookAnim.SetBool("Casting", true);
+                DisplayNewCurrentState(0);
+                cameraPlayer.BlockZoom(true);
+                combatState = true;
+            }
+
+        }
+
 
         public void SetCombatMode(bool state)
         {
@@ -400,7 +438,7 @@ namespace Character
             if (combatState && inputDirection != Vector3.zero)
             {
                 float angle = Vector3.SignedAngle(newDir, inputDirection, hit.normal.normalized);
-                newDir = Quaternion.AngleAxis(angle,hit.normal.normalized) * direction;
+                newDir = Quaternion.AngleAxis(angle, hit.normal.normalized) * direction;
             }
 
             m_groundNormal = hit.normal;
