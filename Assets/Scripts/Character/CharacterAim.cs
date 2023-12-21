@@ -91,7 +91,7 @@ namespace Character
                 if (col.Length > 0)
                 {
                     m_hasCloseTarget = true;
-                    m_characterMouvement.combatState = true;
+                    m_characterMouvement.SetCombatMode(true);
                     Vector3 nearestEnemyPos = NearestEnemy(col, position);
                     nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
                     Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
