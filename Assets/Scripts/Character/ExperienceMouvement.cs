@@ -14,7 +14,7 @@ public class ExperienceMouvement : MonoBehaviour
 
     public int cristalType = 0;
 
-    private bool m_destruction = false;
+    public bool m_destruction = false;
     private bool m_isFollowPlayer = false;
     private bool m_isGrounded = false;
     private bool m_isDropping = false;
