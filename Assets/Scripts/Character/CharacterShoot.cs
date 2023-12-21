@@ -107,7 +107,7 @@ namespace Character
 
         private void Update()
         {
-            if (PauseMenu.gameState && !state.isPlaying) { return; } // Block Update during pause state
+            if ( !state.isPlaying) { return; } // Block Update during pause state
             
             if (m_CharacterMouvement.combatState)
             {
