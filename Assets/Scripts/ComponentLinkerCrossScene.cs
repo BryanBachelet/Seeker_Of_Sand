@@ -255,7 +255,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_characterShoot.m_spellGlobalCooldown = m_spellGlobalCooldown;
         m_characterShoot.m_TextSpellGlobalCooldown = m_TextSpellGlobalCooldown;
         m_characterShoot.InitCapsule();
-        m_characterShoot.InitComponent();
+        m_characterShoot.InitComponents();
 
         #endregion
         #region Character Movement
