@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 
@@ -17,6 +18,8 @@ public class CharacterProfile : MonoBehaviour
     [HideInInspector] public CharacterStat m_baseStat;
     private CharacterComponent[] m_characterComponent = new CharacterComponent[0];
     private Buff.BuffsManager m_buffManager;
+
+    [SerializeField] private GameObject m_pauseMenuObject;
 
     private void Start()
     {
@@ -43,6 +46,12 @@ public class CharacterProfile : MonoBehaviour
         }
     }
 
+
+    public void OpenPauseMenuInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed) m_pauseMenuObject.GetComponent<PauseMenu>().CallPauseMenu();
+       
+    }
 
 
 }

@@ -140,6 +140,16 @@ public class GameState : MonoBehaviour
         m_enemyManager.ChangePauseState(m_isPlaying);
     }
 
+    public static void SetState(bool state)
+    {
+        m_isPlaying = state;
+        for (int i = 0; i < listObject.Count; i++)
+        {
+            listObject[i].isPlaying = m_isPlaying;
+        }
+        m_enemyManager.ChangePauseState(m_isPlaying);
+    }
+
     public static void AddObject(ObjectState state)
     {
         listObject.Add(state);
