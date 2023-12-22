@@ -104,6 +104,7 @@ namespace Render.Camera
         private Character.CharacterShoot m_characterShootComponent;
         private bool m_isActiveAutomaticDezoom = true;
 
+
         // Start is called before the first frame update
         void Start()
         {
