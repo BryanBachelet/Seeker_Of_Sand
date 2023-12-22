@@ -78,6 +78,8 @@ namespace Character
         [SerializeField] public bool autoAimActive;
         [SerializeField] public AimMode m_aimModeState;
         [SerializeField] private bool globalCD;
+        [SerializeField] private TMPro.TMP_Text m_textCurrentLayout;
+        
 
         public float m_lastTimeShot = 0;
         [SerializeField] private float m_TimeAutoWalk = 2;
@@ -725,7 +727,13 @@ namespace Character
 
                 m_aimModeState = (AimMode)indexAim;
                 Debug.Log("Change Aim mode : " + m_aimModeState.ToString());
+                UpdateFeedbackAimLayout();
             }
+        }
+
+        public void UpdateFeedbackAimLayout()
+        {
+            m_textCurrentLayout.text = "Current layout : \n" + m_aimModeState.ToString();
         }
 
         #region Spell Functions

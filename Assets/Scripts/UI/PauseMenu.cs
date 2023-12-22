@@ -14,7 +14,7 @@ public class PauseMenu : MonoBehaviour
         this.gameObject.SetActive(!this.gameObject.activeSelf);
     }
 
-    
+
     public void QuitFunction()
     {
         Application.Quit();

@@ -71,7 +71,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         float time = Time.time;
         m_NumberEnemyKilled += (1 * m_serieController.GetXpMultiplicator());
         levelProgress = m_ExperienceQuantityControl.Evaluate(m_NumberEnemyKilled);
-        if (levelProgress > m_CurrentLevel + 1)
+        if (levelProgress > m_CurrentLevel)
         {
             LevelUp((int)m_ExperienceQuantityControl.Evaluate(m_NumberEnemyKilled));
             levelUpEffect.Play();
@@ -129,10 +129,15 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         if (collision.gameObject.tag == "Experience")
         {
-            collision.GetComponent<ExperienceMouvement>().InitDestruction();
-            //Destroy(collision.gameObject);
-            GlobalSoundManager.PlayOneShot(3, Vector3.zero);
-            OnEnemyKilled();
+            ExperienceMouvement lastXpDrop = collision.GetComponent<ExperienceMouvement>();
+            if(!lastXpDrop.m_destruction)
+            {
+                lastXpDrop.InitDestruction();
+                //Destroy(collision.gameObject);
+                GlobalSoundManager.PlayOneShot(3, Vector3.zero);
+                OnEnemyKilled();
+            }
+
         }
         else if (collision.gameObject.tag == "CristalDrop")
         {
@@ -187,11 +192,11 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         AnimationCurve tempAnimationCurve = new AnimationCurve();
         string debugdata = "";
 #if UNITY_EDITOR
-        string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet (1).csv";
+        string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet.csv";
 
 #else
 #if UNITY_STANDALONE_WIN
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet (1).csv";
+        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet.csv";
         Debug.LogError("Is Right path");
 #endif
 #endif
