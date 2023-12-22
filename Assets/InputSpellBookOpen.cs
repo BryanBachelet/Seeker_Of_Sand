@@ -8,20 +8,23 @@ public class InputSpellBookOpen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void ClicInput(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (clicOnBook && clicOnBook.enabled)
         {
-            clicOnBook.getClicEffect(Input.mousePosition);
+            if (ctx.performed)
+            {
+                clicOnBook.getClicEffect(Input.mousePosition);
+            }
         }
     }
 }
