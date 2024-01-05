@@ -7,7 +7,7 @@ using TMPro;
 
 namespace Character
 {
-    public class CharacterShoot : MonoBehaviour , CharacterComponent
+    public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
         public bool activeRandom = false;
         [HideInInspector] public int projectileNumber;
@@ -16,8 +16,7 @@ namespace Character
         public LauncherProfil launcherProfil;
         public UiSpellGrimoire spellGrimoire;
 
-        [HideInInspector]
-        public List<CapsuleSystem.Capsule> bookOfSpell = new List<CapsuleSystem.Capsule>();
+
         public int[] spellEquip;
         public int maxSpellIndex;
         private int m_currentIndexCapsule = 0;
@@ -33,6 +32,7 @@ namespace Character
         private float m_timeBetweenShoot;
 
         private bool m_canShoot;
+        private bool m_canEndShot;
         private bool m_isShooting;
         private bool m_shootInput;
         private bool m_isReloading;
@@ -40,7 +40,7 @@ namespace Character
 
         private CapsuleStats currentWeaponStats;
         [HideInInspector] public LauncherStats launcherStats;
-        [HideInInspector] public CapsuleStats[] capsuleStatsAlone;
+        [HideInInspector] public List<CapsuleStats> capsuleStatsAlone = new List<CapsuleStats>();
         public CapsuleStats weaponStat { get { return currentWeaponStats; } private set { } }
         private int currentShotNumber;
         //    private int currentIndexWeapon;
@@ -58,7 +58,7 @@ namespace Character
         [SerializeField] public GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
         [SerializeField] private Transform bookTransform;
-        [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReady = new List<UnityEngine.VFX.VisualEffect>();
+        [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
         private Rigidbody m_rigidbody;
 
         private Animator m_AnimatorSkillBar;
@@ -68,7 +68,7 @@ namespace Character
         [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
 
-        private CapsuleSystem.CapsuleType m_currentType;
+        private SpellSystem.CapsuleType m_currentType;
         private PauseMenu pauseScript;
         private ObjectState state;
 
@@ -79,10 +79,12 @@ namespace Character
         [SerializeField] public AimMode m_aimModeState;
         [SerializeField] private bool globalCD;
         [SerializeField] private TMPro.TMP_Text m_textCurrentLayout;
-        
+
 
         public float m_lastTimeShot = 0;
         [SerializeField] private float m_TimeAutoWalk = 2;
+
+        private CharacterSpellBook m_characterInventory = new CharacterSpellBook();
 
         #region Unity Functions
         private void Awake()
@@ -94,9 +96,9 @@ namespace Character
         {
             state = new ObjectState();
             GameState.AddObject(state);
-            
+
             if (activeRandom) GenerateNewBuild();
- 
+
             InitComponents();
             InitCapsule();
             InitSpriteSpell();
@@ -109,59 +111,75 @@ namespace Character
 
         private void Update()
         {
-            if ( !state.isPlaying) { return; } // Block Update during pause state
-            
+            if (!state.isPlaying) { return; } // Block Update during pause state
+
             if (m_CharacterMouvement.combatState)
             {
-                m_characterAim.FeedbackHeadRotation();
-                Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
-                avatarTransform.rotation = rotationFromHead;
-                bookTransform.rotation = rotationFromHead;
-
-                if (m_aimModeState == AimMode.Automatic && m_characterAim.HasCloseTarget() || m_aimModeState == AimMode.AimControls)
-                {
-
-                    if (!m_isShooting) Shoot();
-                    if (m_isShooting)
-                    {
-                        if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
-                        {
-                            Shoot();
-                            m_CharacterMouvement.m_lastTimeShot = Time.time;
-                            m_timeBetweenShoot = 0.0f;
-                        }
-                        else
-                        {
-                            m_timeBetweenShoot += Time.deltaTime;
-                        }
-                    }
-                }
-
+                UpdateAvatarModels();
+                AutomaticAimMode();
             }
-            if (m_aimModeState == AimMode.FullControl)
-            {
-                if (m_shootInput && !globalCD)
-                {
-                    if (!m_isShooting) Shoot();
-                }
-                if (m_isShooting && !globalCD)
-                {
-                    if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
-                    {
-                        Shoot();
-                        m_timeBetweenShoot = 0.0f;
-                    }
-                    else
-                    {
-                        m_timeBetweenShoot += Time.deltaTime;
-                    }
-                }
-            }
+            UpdateFullControlAimMode();
             ReloadShot();
             ReloadWeapon(0.5f);
         }
 
         #endregion
+
+        private void UpdateAvatarModels()
+        {
+            if (m_aimModeState == AimMode.Automatic) return;
+
+            m_characterAim.FeedbackHeadRotation();
+            Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
+            avatarTransform.rotation = rotationFromHead;
+            bookTransform.rotation = rotationFromHead;
+        }
+
+        #region Aim Mode Functions
+        private void AutomaticAimMode()
+        {
+            if (m_aimModeState == AimMode.FullControl) return;
+
+            if (!m_isShooting)
+                Shoot();
+            if (m_isShooting)
+            {
+                if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+                {
+                    Shoot();
+                    m_CharacterMouvement.m_lastTimeShot = Time.time;
+                    m_timeBetweenShoot = 0.0f;
+                }
+                else
+                {
+                    m_timeBetweenShoot += Time.deltaTime;
+                }
+            }
+        }
+
+        private void UpdateFullControlAimMode()
+        {
+            if (m_aimModeState != AimMode.FullControl) return;
+
+            if (!m_shootInput || globalCD) return;
+
+            if (!m_isShooting)
+            {
+                Shoot();
+                return;
+            }
+            if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+            {
+                Shoot();
+                m_timeBetweenShoot = 0.0f;
+            }
+            else
+            {
+                m_timeBetweenShoot += Time.deltaTime;
+            }
+        }
+        #endregion
+
 
         #region Start Functions
         public void InitComponents()
@@ -173,9 +191,6 @@ namespace Character
             m_rigidbody = GetComponent<Rigidbody>();
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
-
-
-        
         }
 
         private void InitSpriteSpell()
@@ -186,7 +201,7 @@ namespace Character
                 m_spellGlobalCooldown[i].sprite = icon_Sprite[i].sprite;
 
             }
-            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
+            if (m_currentType == SpellSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
@@ -201,24 +216,22 @@ namespace Character
         public void InitCapsule()
         {
             // Add Spell in Spell List
+            // Get the spell stats for each spell
             for (int i = 0; i < capsuleIndex.Count; i++)
             {
                 if (capsuleIndex[i] == -1) continue;
-                bookOfSpell.Add(m_capsuleManager.capsules[capsuleIndex[i]]);
-                CapsuleManager.RemoveSpecificSpellFromSpellPool(capsuleIndex[i]);
-            }
 
-            // Get the spell stats for each spell
-            capsuleStatsAlone = new CapsuleStats[bookOfSpell.Count]; // To keep an eye on
-            for (int i = 0; i < bookOfSpell.Count; i++)
-            {
-                if (bookOfSpell[i].type == CapsuleSystem.CapsuleType.ATTACK)
-                {
-                    CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[i];
-                    capsuleStatsAlone[i] = currentCap.profil.stats;
-                }
+                m_characterInventory.AddSpell(m_capsuleManager.capsules[capsuleIndex[i]]);
+                CapsuleManager.RemoveSpecificSpellFromSpellPool(capsuleIndex[i]);
+
+                if (m_characterInventory.GetSpecificSpell(i).type != SpellSystem.CapsuleType.ATTACK)
+                    capsuleStatsAlone.Add(new CapsuleStats());
                 else
-                    capsuleStatsAlone[i] = new CapsuleStats();
+                {
+                    SpellSystem.CapsuleAttack currentCap = (SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(i);
+                    capsuleStatsAlone.Add(currentCap.profil.stats);
+                }
+
             }
 
             //  Set to Spell Equip
@@ -232,13 +245,13 @@ namespace Character
             }
             m_currentIndexCapsule = spellEquip[0];
 
-            FindSpellEquipCount();
-            
+            maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
+
         }
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 int RndCapsule = UnityEngine.Random.Range(0, 8);
                 capsuleIndex.Add(RndCapsule);
@@ -248,75 +261,50 @@ namespace Character
         #endregion
 
 
-        // ================ Temps  ==================
-
-        private void SwitchCapsuleChange(bool increase)
-        {
-            if (m_isCasting) return;
-            for (int i = 0; i < capsuleIndex.Count; i++)
-            {
-                if (increase)
-                {
-                    capsuleIndex[i]++;
-                    if (capsuleIndex[i] != m_capsuleManager.capsules.Length) continue;
-
-                    capsuleIndex[i] = 0;
-                }
-                else
-                {
-                    capsuleIndex[i]--;
-
-                    if (capsuleIndex[i] >= 0) continue;
-
-                    capsuleIndex[i] = m_capsuleManager.capsules.Length - 1;
-                }
-            }
-            InitCapsule();
-        }
-
-        // ==============================================================
-
         public float GetPodRange() { return currentWeaponStats.range; }
         public CapsuleStats GetPod() { return currentWeaponStats; }
 
-
+        #region Inputs Functions
         public void ShootInput(InputAction.CallbackContext ctx)
         {
             if (ctx.performed && state.isPlaying)
             {
-                if (ManagedCastCapacity(true))
-                {
-                    m_shootInput = true;
-                    m_lastTimeShot = Time.time;
-                }
+                StartCasting();
+                m_shootInput = true;
+                m_lastTimeShot = Time.time;
             }
             if (ctx.canceled && state.isPlaying)
             {
-                m_shootInput = false;
+
             }
         }
+        #endregion
+
+        #region Shoot Function
 
         private void Shoot()
         {
             if (!m_canShoot) return;
+
             GlobalSoundManager.PlayOneShot(27, transform.position);
+
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
-            //Debug.Log("[" + m_CharacterMouvement.runSpeed + "] Run speed ");
-            if (currentShotNumber == 0)
+
+            if (currentShotNumber == 0) StartShoot();
+
+            if (m_currentIndexCapsule == -1)
             {
-                StartShoot();
+                EndShoot();
+                return;
             }
 
-            if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
-            {
-                ShootAttack();
-            }
-            if (m_currentType == CapsuleSystem.CapsuleType.BUFF)
-            {
-                ShootBuff(((CapsuleSystem.CapsuleBuff)bookOfSpell[m_currentIndexCapsule]));
-                EndShoot();
-            }
+            if (m_currentType == SpellSystem.CapsuleType.ATTACK) ShootAttack();
+
+            if (m_currentType == SpellSystem.CapsuleType.BUFF) ShootBuff(((SpellSystem.CapsuleBuff)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)));
+
+            if (m_canEndShot) EndShoot();
+
             m_CharacterAnimator.SetBool("Shooting", true);
             m_BookAnimator.SetBool("Shooting", true);
 
@@ -325,10 +313,12 @@ namespace Character
 
         private void ShootAttack()
         {
-            if (m_currentIndexCapsule == -1) EndShoot();
-
             if (currentWeaponStats.formType == FormTypeSpell.PROJECTILE)
-            { ShootAttackProjectile(); return; }
+            {
+                ShootAttackProjectile();
+                return;
+            }
+
             if (currentWeaponStats.formType == FormTypeSpell.AREA) ShootAtttackArea();
         }
 
@@ -339,33 +329,16 @@ namespace Character
             int mod = GetStartIndexProjectile(currentWeaponStats);
 
             Transform transformUsed = transform;
+            Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
-                , transformUsed.position + new Vector3(0, 5, 0), rot);
+            GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)).projectile, position, rot);
+
             projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
-            ProjectileData data = new ProjectileData();
-            data.direction = m_characterAim.GetAimDirection();
-            data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
-            data.life = currentWeaponStats.lifetime;
-            data.travelTime = currentWeaponStats.trajectoryTimer;
-            data.damage = currentWeaponStats.damage;
-            data.piercingMax = currentWeaponStats.piercingMax;
-            data.salveNumber = (int)currentWeaponStats.projectileNumber;
-            data.shootNumber = (int)currentWeaponStats.shootNumber;
-            data.size = currentWeaponStats.size;
-            data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
-            Vector3 dest = m_characterAim.GetAimFinalPoint();
-            if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
-                dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
-
-            data.destination = m_characterAim.GetAimFinalPoint();
-            pos = dest;
-
+            ProjectileData data = FillProjectileData(0, angle, transformUsed);
             projectileCreate.GetComponent<Projectile>().SetProjectile(data);
-            angle = -angle;
 
-            EndShoot();
+            m_canEndShot = true;
         }
 
         private void ShootAttackProjectile()
@@ -375,54 +348,38 @@ namespace Character
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
                 Transform transformUsed = transform;
-                Quaternion rot = m_characterAim.GetTransformHead().rotation;
-                GameObject projectileCreate = GameObject.Instantiate(((CapsuleSystem.CapsuleAttack)bookOfSpell[m_currentIndexCapsule]).projectile
-                    , transformUsed.position + new Vector3(0, 5, 0), rot * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up));
+
+                Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
+                Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
+
+                GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)).projectile, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale * (currentWeaponStats.size * currentWeaponStats.sizeMultiplicatorFactor);
-                ProjectileData data = new ProjectileData();
-                data.direction = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
-                data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
-                data.life = currentWeaponStats.lifetime;
-                data.damage = currentWeaponStats.damage;
-                data.travelTime = currentWeaponStats.trajectoryTimer;
-                data.piercingMax = currentWeaponStats.piercingMax;
-                data.salveNumber = (int)currentWeaponStats.projectileNumber;
-                data.shootNumber = (int)currentWeaponStats.shootNumber;
-                data.size = currentWeaponStats.size;
-                data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
-                Vector3 dest = Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
-                if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
-                    dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
 
-                data.destination = m_characterAim.GetAimFinalPoint();
-                pos = dest;
-
+                ProjectileData data = FillProjectileData(0, angle, transformUsed);
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
 
-
-            //GlobalSoundManager.PlayOneShot(1, Vector3.zero);
-
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotNumber++;
-            if (currentShotNumber == currentWeaponStats.shootNumber) EndShoot();
+            if (currentShotNumber == currentWeaponStats.shootNumber) m_canEndShot = true;
         }
 
-        private void ShootBuff(CapsuleSystem.CapsuleBuff capsuleBuff)
+        private void ShootBuff(SpellSystem.CapsuleBuff capsuleBuff) // TODO : No Use. Need to be rethink
         {
             Buff.BuffCharacter buff = new Buff.BuffCharacter(capsuleBuff.profil, capsuleBuff.duration);
             if (capsuleBuff.vfx) { GameObject vfxObject = Instantiate(capsuleBuff.vfx, transform.position, Quaternion.identity); }
             m_buffManager.AddBuff(buff);
             GlobalSoundManager.PlayOneShot(8, Vector3.zero);
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
+            m_canEndShot = true;
         }
 
         private void StartShoot()
         {
-            m_currentType = bookOfSpell[m_currentIndexCapsule].type;
-            m_isCasting = true;
+            m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_isShooting = true;
+            m_canEndShot = false;
             m_cameraBehavior.BlockZoom(true);
         }
 
@@ -430,22 +387,39 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
-            if (m_currentIndexCapsule != -1)
+
+            m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
+            if (m_currentType == SpellSystem.CapsuleType.ATTACK)
             {
-                m_currentType = bookOfSpell[m_currentIndexCapsule].type;
-                if (m_currentType == CapsuleSystem.CapsuleType.ATTACK)
-                {
-                    currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
-                }
+                currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
+            m_shootInput = false;
             m_canShoot = false;
             m_isShooting = false;
-
-
-
         }
 
-        #region Shoot Function
+        private ProjectileData FillProjectileData(float index, float angle, Transform transformUsed)
+        {
+            ProjectileData data = new ProjectileData();
+            data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
+            data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
+            data.life = currentWeaponStats.lifetime;
+            data.damage = currentWeaponStats.damage;
+            data.travelTime = currentWeaponStats.trajectoryTimer;
+            data.piercingMax = currentWeaponStats.piercingMax;
+            data.salveNumber = (int)currentWeaponStats.projectileNumber;
+            data.shootNumber = (int)currentWeaponStats.shootNumber;
+            data.size = currentWeaponStats.size;
+            data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
+            Vector3 dest = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
+            if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
+                dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
+
+            data.destination = m_characterAim.GetAimFinalPoint();
+            pos = dest;
+            return data;
+        }
+
 
         private float GetShootAngle(CapsuleStats weaponStats)
         {
@@ -470,7 +444,7 @@ namespace Character
             {
                 m_isReloading = true;
                 m_currentRotationIndex = 0;
-                ManagedCastCapacity(false);
+                EndCasting();
                 return spellEquip[0];
             }
             else
@@ -483,10 +457,14 @@ namespace Character
         private void ReloadShot()
         {
             if (m_canShoot || m_isReloading) return;
+
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
+
             m_CharacterMouvement.m_SpeedReduce = 1;
+
             float totalShootTime = shootTime + currentWeaponStats.timeInterval;
+
             if (m_shootTimer > totalShootTime)
             {
                 for (int i = 0; i < icon_Sprite.Count; i++)
@@ -495,8 +473,8 @@ namespace Character
                     m_TextSpellGlobalCooldown[i].text = "";
                 }
 
+                m_SpellReadyVFX[m_currentRotationIndex].Play();
                 m_canShoot = true;
-                m_SpellReady[m_currentRotationIndex].Play();
                 m_shootTimer = 0;
                 return;
             }
@@ -512,43 +490,22 @@ namespace Character
 
             }
         }
-        private void ReloadShotCast(float time)
-        {
-            m_CharacterAnimator.SetBool("Shooting", false);
-            m_BookAnimator.SetBool("Shooting", false);
-            m_CharacterMouvement.m_SpeedReduce = 1;
-            float totalShootTime = time + currentWeaponStats.timeInterval;
-            if (m_shootTimer > totalShootTime)
-            {
-
-
-
-                globalCD = false;
-                m_shootTimer = 0;
-                m_canShoot = true;
-                return;
-            }
-            else
-            {
-                m_shootTimer += Time.deltaTime;
-
-
-
-            }
-        }
 
         private void ReloadWeapon(float time)
         {
             if (m_canShoot || !m_isReloading) return;
 
-            m_isCasting = false;
             m_shootInput = false;
 
             avatarTransform.localRotation = Quaternion.identity;
             bookTransform.localRotation = Quaternion.identity;
-            //m_AnimatorSkillBar.SetBool("IsCasting", false);
+
+
             if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
+
             m_cameraBehavior.BlockZoom(false);
+
+
             float totalShootTime = time + currentWeaponStats.timeInterval;
             if (m_reloadTimer > totalShootTime)
             {
@@ -576,61 +533,34 @@ namespace Character
             }
         }
 
-        public void Debug_NewLoadout(int[] NewCapsule)
+        public void StartCasting()
         {
-            // capsuleIndex = NewCapsule;
-            InitCapsule();
+            if (m_isCasting) return;
+
+            m_isCasting = true;
+            m_CharacterAnimator.SetBool("Casting", true);
+            m_BookAnimator.SetBool("Casting", true);
+            m_CharacterMouvement.SetCombatMode(true);
+            return;
         }
 
-        public bool ManagedCastCapacity(bool stateCall)
+        public void EndCasting()
         {
-            if (stateCall)
-            {
-                if (!m_isCasting && globalCD)
-                {
+            if (autoAimActive) return;
 
-                    //m_isCasting = true;
-                    //ReloadWeapon(1.5f);
-                    m_CharacterAnimator.SetBool("Casting", true);
-                    m_BookAnimator.SetBool("Casting", true);
+            if (!m_isCasting) return;
 
-                    //m_AnimatorSkillBar.SetBool("IsCasting", true);
-                    //m_canShoot = true;
-                    m_CharacterMouvement.SetCombatMode(true);
-                    return false;
-                }
-                else
-                {
-                    m_isCasting = true;
-                    m_CharacterAnimator.SetBool("Casting", true);
-                    m_BookAnimator.SetBool("Casting", true);
-                    m_CharacterMouvement.SetCombatMode(true);
-                    return true;
-                }
-            }
-            else
-            {
-                if (autoAimActive) return true;
-                if (m_isCasting)
-                {
-                    m_isCasting = false;
-                    m_shootInput = false;
-                    m_cameraBehavior.BlockZoom(false);
+            m_isCasting = false;
+            m_shootInput = false;
+            m_cameraBehavior.BlockZoom(false);
 
+            m_lastTimeShot = Mathf.Infinity;
+            avatarTransform.localRotation = Quaternion.identity;
+            bookTransform.localRotation = Quaternion.identity;
+            if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
 
-                    m_lastTimeShot = Mathf.Infinity;
-                    avatarTransform.localRotation = Quaternion.identity;
-                    bookTransform.localRotation = Quaternion.identity;
-                    //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                    if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
-                    return false;
-                }
-                else
-                {
-                    return false;
-                }
-            }
         }
+
 
         public void GetCircleInfos()
         {
@@ -642,76 +572,26 @@ namespace Character
             for (int i = 0; i < icon_Sprite.Count; i++)
             {
                 icon_Sprite[i].color = Color.white;
-                //SignPosition[i].GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 1);
             }
-            RefreshActiveIcon(bookOfSpell.ToArray());
+            RefreshActiveIcon(m_characterInventory.GetAllSpells());
         }
 
-        public void RefreshActiveIcon(CapsuleSystem.Capsule[] capsuleState)
+        public void RefreshActiveIcon(SpellSystem.Capsule[] capsuleState)
         {
             for (int i = 0; i < spellEquip.Length; i++)
             {
                 if (spellEquip[i] == -1) continue;
 
                 int index = spellEquip[i];
-                if (capsuleState[index].type == CapsuleSystem.CapsuleType.ATTACK)
+                if (capsuleState[index].type == SpellSystem.CapsuleType.ATTACK)
                 {
-                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleAttack)capsuleState[index]).sprite;
+                    icon_Sprite[i].sprite = ((SpellSystem.CapsuleAttack)capsuleState[index]).sprite;
                 }
-                else if (capsuleState[index].type == CapsuleSystem.CapsuleType.BUFF)
+                else if (capsuleState[index].type == SpellSystem.CapsuleType.BUFF)
                 {
-                    icon_Sprite[i].sprite = ((CapsuleSystem.CapsuleBuff)capsuleState[index]).sprite;
+                    icon_Sprite[i].sprite = ((SpellSystem.CapsuleBuff)capsuleState[index]).sprite;
                 }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
-            }
-        }
-
-
-        public void StopCasting()
-        {
-            if (m_isCasting)
-            {
-                m_isCasting = false;
-                m_shootInput = false;
-                m_canShoot = false;
-                m_isReloading = true;
-                m_cameraBehavior.BlockZoom(false);
-
-                avatarTransform.localRotation = Quaternion.identity;
-                bookTransform.localRotation = Quaternion.identity;
-                //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
-                ReloadWeapon(5f);
-                m_currentRotationIndex = 0;
-                m_currentIndexCapsule = spellEquip[0];
-                return;
-            }
-            else
-            {
-                m_shootInput = false;
-                m_canShoot = false;
-                m_isReloading = true;
-                m_cameraBehavior.BlockZoom(false);
-                m_CharacterAnimator.SetBool("Casting", false);
-                m_BookAnimator.SetBool("Casting", false);
-                avatarTransform.localRotation = Quaternion.identity;
-                bookTransform.localRotation = Quaternion.identity;
-                //m_AnimatorSkillBar.SetBool("IsCasting", false);
-                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
-                ReloadWeapon(5f);
-                m_currentRotationIndex = 0;
-                m_currentIndexCapsule = spellEquip[0];
-            }
-
-        }
-
-        public void InputResetCombatMode(InputAction.CallbackContext ctx)
-        {
-            if (ctx.started)
-            {
-                m_lastTimeShot = Mathf.Infinity;
-                if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
-                StopCasting();
             }
         }
 
@@ -739,34 +619,24 @@ namespace Character
         #region Spell Functions
         public void AddSpell(int index)
         {
-            int prevIndex = bookOfSpell.Count;
+            int prevIndex = m_characterInventory.GetSpellCount();
             capsuleIndex.Add(index);
-            bookOfSpell.Add(m_capsuleManager.capsules[index]);
-
-            CapsuleStats[] newCapsuleStat = new CapsuleStats[bookOfSpell.Count];
-
-            for (int i = 0; i < prevIndex; i++)
-            {
-
-                newCapsuleStat[i] = capsuleStatsAlone[i];
-
-            }
-            capsuleStatsAlone = newCapsuleStat;
+            m_characterInventory.AddSpell(m_capsuleManager.capsules[index]);
 
             // Update New Capsule
-            if (bookOfSpell[prevIndex].type == CapsuleSystem.CapsuleType.ATTACK)
+            if (m_characterInventory.GetSpecificSpell(prevIndex).type == SpellSystem.CapsuleType.ATTACK)
             {
-                CapsuleSystem.CapsuleAttack currentCap = (CapsuleSystem.CapsuleAttack)bookOfSpell[prevIndex];
-                capsuleStatsAlone[prevIndex] = currentCap.profil.stats;
+                SpellSystem.CapsuleAttack currentCap = (SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(prevIndex);
+                capsuleStatsAlone.Add(currentCap.profil.stats);
             }
             else
-                capsuleStatsAlone[prevIndex] = new CapsuleStats();
+                capsuleStatsAlone.Add(new CapsuleStats());
 
             if (capsuleIndex.Count <= spellEquip.Length)
             {
-                spellEquip[capsuleIndex.Count - 1] = bookOfSpell.Count - 1;
-                FindSpellEquipCount();
-                RefreshActiveIcon(bookOfSpell.ToArray());
+                spellEquip[capsuleIndex.Count - 1] = m_characterInventory.GetSpellCount() - 1;
+                maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
+                RefreshActiveIcon(m_characterInventory.GetAllSpells());
             }
         }
 
@@ -776,10 +646,10 @@ namespace Character
             {
                 if (!spellGrimoire.isOpen)
                 {
-                    Sprite[] iconArray = new Sprite[bookOfSpell.Count];
+                    Sprite[] iconArray = new Sprite[m_characterInventory.GetSpellCount()];
                     for (int i = 0; i < iconArray.Length; i++)
                     {
-                        iconArray[i] = bookOfSpell[i].sprite;
+                        iconArray[i] = m_characterInventory.GetSpecificSpell(i).sprite;
                     }
 
                     spellGrimoire.OpenUI(iconArray, spellEquip);
@@ -792,7 +662,6 @@ namespace Character
 
         public bool IsSpellAlreadyUse(int indexSpell)
         {
-
             for (int i = 0; i < spellEquip.Length; i++)
             {
                 if (indexSpell == spellEquip[i]) return true;
@@ -803,26 +672,13 @@ namespace Character
         public void ChangeSpell(int spellSlot, int indexSpell)
         {
             spellEquip[spellSlot] = indexSpell;
-            RefreshActiveIcon(bookOfSpell.ToArray());
+            RefreshActiveIcon(m_characterInventory.GetAllSpells());
         }
-        public CapsuleSystem.Capsule GetCapsuleInfo(int index) { return bookOfSpell[index]; }
 
         public int GetIndexFromSpellBar(int indexSpellBar) { return spellEquip[indexSpellBar]; }
 
         #endregion
 
-        #region Spell Bar Functions
-
-        void FindSpellEquipCount()
-        {
-            maxSpellIndex = 0;
-            for (int i = 0; i < spellEquip.Length; i++)
-            {
-                if (spellEquip[i] != -1) maxSpellIndex++;
-            }
-        }
-
-        #endregion
 
     }
 

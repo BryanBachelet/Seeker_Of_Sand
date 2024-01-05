@@ -26,6 +26,7 @@ public class CharacterUpgrade : MonoBehaviour
     public UpgradeUI m_upgradeUi;
     private CharacterProfile m_characterProfil;
     private Character.CharacterShoot m_characterShoot;
+    private Character.CharacterSpellBook m_characterInventory;
 
     private Upgrade[] m_upgradeToChoose = new Upgrade[3];
 
@@ -93,6 +94,7 @@ public class CharacterUpgrade : MonoBehaviour
         //m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
         m_characterShoot = GetComponent<Character.CharacterShoot>();
+        m_characterInventory = GetComponent<Character.CharacterSpellBook>();
         m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
         m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
         m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
@@ -117,8 +119,8 @@ public class CharacterUpgrade : MonoBehaviour
         {
             int index = Random.Range(0, m_characterShoot.maxSpellIndex);
             int spellIndex = m_characterShoot.spellEquip[index];
-            m_upgradeToChoose[i] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterShoot.bookOfSpell[spellIndex]));
-            m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[spellIndex].sprite);
+            m_upgradeToChoose[i] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
+            m_upgradeToChoose[i].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
         }
     }
 
@@ -199,7 +201,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex]);
+                m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
                 break;
             default:
                 break;
@@ -217,7 +219,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex]);
+                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
                 break;
         }
     }

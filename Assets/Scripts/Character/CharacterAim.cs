@@ -313,7 +313,7 @@ namespace Character
             if (m_characterShoot.m_CharacterMouvement.combatState)
             {
                 m_exitCombatState = false;
-                FeedbackHeadRotation();
+               // FeedbackHeadRotation();
             }
             else if (!m_exitCombatState)
             {

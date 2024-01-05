@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 public class UiSpellGrimoire : MonoBehaviour
 {
     public Character.CharacterShoot m_characterShoot;
+    public Character.CharacterSpellBook m_characterInventory;
     public GameObject m_inGameUIObj;
     public GameObject mainUIObject;
     public GameObject spellGalerieObj;
@@ -160,7 +161,7 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         spellDescriptionObj.SetActive(true);
         m_iconSpellSelected.sprite = m_currentSpritsSpell[m_offset + index];
-        CapsuleSystem.Capsule info = m_characterShoot.GetCapsuleInfo(index);
+        SpellSystem.Capsule info = m_characterInventory.GetSpecificSpell(index);
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
         m_uiDecalUpdaterDisplay.SpellFocusDisplay(info);
@@ -169,7 +170,7 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         spellDescriptionObj.SetActive(true);
         int index = m_characterShoot.GetIndexFromSpellBar(indexSpellSlot);
-        CapsuleSystem.Capsule info = m_characterShoot.GetCapsuleInfo(index);
+        SpellSystem.Capsule info = m_characterInventory.GetSpecificSpell(index);
         m_iconSpellSelected.sprite = info.sprite;
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
