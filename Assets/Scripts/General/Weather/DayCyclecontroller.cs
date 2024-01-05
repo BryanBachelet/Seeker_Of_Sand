@@ -9,13 +9,17 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public VolumeProfile volumeProfile;
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
+        CloudLayer vCloudLayer;
+    [SerializeField] private AnimationCurve m_OpacityRByHour;
+    [SerializeField] private AnimationCurve m_RotationByHour;
+    
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
     static public float staticTimeOfTheDay;
     [SerializeField] private Light m_sun;
     [SerializeField] private Light m_moon;
-    [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la durée d'une journée in-game, de base 10 minutes
-    [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds à la vitesse d'écoulement du temps in-game. 1 reviens à avoir une journée de 24 secondes IRL
+    [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la durï¿½e d'une journï¿½e in-game, de base 10 minutes
+    [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds ï¿½ la vitesse d'ï¿½coulement du temps in-game. 1 reviens ï¿½ avoir une journï¿½e de 24 secondes IRL
     [SerializeField] public RectTransform m_ClockNeedle;
     [SerializeField] private GlobalSoundManager m_GSM;
     [SerializeField] static public float durationDay;
@@ -58,7 +62,7 @@ public class DayCyclecontroller : MonoBehaviour
     void Start()
     {
         time = 0;
-        m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'écouler IRL.  On multiplie le nombre de minutes réglée dans l'inspector par 60 pour le convertire en seconde.
+        m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'ï¿½couler IRL.  On multiplie le nombre de minutes rï¿½glï¿½e dans l'inspector par 60 pour le convertire en seconde.
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
         Time.timeScale = timescale;
@@ -108,6 +112,8 @@ public class DayCyclecontroller : MonoBehaviour
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
         ShadowOpacityAdjustByHour(m_timeOfDay);
+        OpacityRAdjustByHour(m_timeOfDay);
+        RotationAdjustByHour(m_timeOfDay);
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
@@ -299,4 +305,25 @@ public class DayCyclecontroller : MonoBehaviour
         }
 
     }
+    
+        public void OpacityRAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
+        }
+
+    }
+
+    
+    
+        public void RotationAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
+        }
+
+    }
+    
 }
