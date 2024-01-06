@@ -10,7 +10,7 @@ public class DamageHealthFD : MonoBehaviour
     [SerializeField] private Vector3 m_startPosition;
     [SerializeField] private bool m_active;
     [SerializeField] private TMP_Text m_text;
-    [SerializeField] private Animation m_animation;
+    [SerializeField] private Animator m_animation;
     [SerializeField] private float m_speed = 2;
     [SerializeField] private float m_animationDuration = 1;
     [SerializeField] public Camera m_cameraToLook;
@@ -21,7 +21,7 @@ public class DamageHealthFD : MonoBehaviour
     public void SetupText(HealthManager healthManager)
     {
         m_healthManager = healthManager;
-        m_animation = this.GetComponent<Animation>();
+        m_animation = this.GetComponent<Animator>();
         m_startPosition = transform.position;
     }
 
@@ -36,7 +36,7 @@ public class DamageHealthFD : MonoBehaviour
         gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
         m_text.text = damage.ToString("F0");
 
-        m_animation.Play("DamageNumberDisplaying");
+        //m_animation.Play("DamageNumberDisplaying");
         StartCoroutine(Animation());
     }
 
