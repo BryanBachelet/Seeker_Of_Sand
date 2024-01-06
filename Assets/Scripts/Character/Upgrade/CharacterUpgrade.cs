@@ -172,10 +172,7 @@ public class CharacterUpgrade : MonoBehaviour
         upgradePoint++;
         m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
-        if (upgradePoint >= 5)
-        {
-            UpgradeWindowLevel5();
-        }
+        
     }
 
     private CharacterStat CalculateStat(CharacterStat stats)
