@@ -50,7 +50,7 @@ public class UiSpellGrimoire : MonoBehaviour
 
     public Scene sceneUIBook;
     static public GameObject bookDisplayRoot;
-
+    public GameObject bookDisplayRootDisplay;
     private UpgradeUIDecal m_uiDecalUpdaterDisplay;
 
     public ClicOnBook clicOnBook;
@@ -58,16 +58,17 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
         GameObject[] otherSceneGameObject = sceneUIBook.GetRootGameObjects();
-        for (int i = 0; i < otherSceneGameObject.Length; i++)
-        {
-           if(otherSceneGameObject[i].name  == "UIBookDisplay")
-            {
-                bookDisplayRoot = otherSceneGameObject[i];
-                break;
-            }
-
-        }
-        Debug.Assert(bookDisplayRoot != null);
+        bookDisplayRoot = bookDisplayRootDisplay;
+        //for (int i = 0; i < otherSceneGameObject.Length; i++)
+        //{
+        //   if(otherSceneGameObject[i].name  == "UIBookDisplay")
+        //    {
+        //        bookDisplayRoot = otherSceneGameObject[i];
+        //        break;
+        //    }
+        //
+        //}
+        //Debug.Assert(bookDisplayRoot != null);
 
         bookDisplayRoot.SetActive(true);
         m_uiDecalUpdaterDisplay = bookDisplayRoot.GetComponent<UpgradeUIDecal>();

@@ -10,6 +10,9 @@ public class UpgradeUIDecal : MonoBehaviour
     public TMP_Text[] m_upgradeName = new TMP_Text[3];
     public Text[] m_upgradeDescription = new Text[3];
     public Image[] m_upgradeIcon = new Image[3];
+    public MeshRenderer[] m_upgradeMesh = new MeshRenderer[3];
+    public Material[] m_upgradMat;
+    public Texture[] m_upgradeText;
     public Image[] m_upgradeTypeIcon = new Image[3];
 
     public GameObject upgradePanelGameObject;
@@ -24,7 +27,8 @@ public class UpgradeUIDecal : MonoBehaviour
 
     public GameObject upgradeScreenState;
 
-    public Image capacityAffectedIcon;
+    public MeshRenderer capacityAffectedMesh;
+    [HideInInspector] public Material capacityAffectedIcon;
     public TMP_Text capacityAffectedName;
     public TMP_Text upgradeSelectedName;
     public TMP_Text upgradeDescription;
@@ -39,6 +43,12 @@ public class UpgradeUIDecal : MonoBehaviour
   
         m_iconSpellSelected = spellselectDescriptionPanelGameObject.GetComponentInChildren<Image>();
         m_textDescription = spellselectDescriptionPanelGameObject.GetComponentsInChildren<TMP_Text>();
+        for(int i = 0; i < m_upgradeMesh.Length; i++)
+        {
+            m_upgradMat[i] = m_upgradeMesh[i].material;
+            m_upgradeText[i] = m_upgradMat[i].mainTexture;
+        }
+        capacityAffectedIcon = capacityAffectedMesh.material;
     }
 
     // Update is called once per frame
@@ -54,6 +64,9 @@ public class UpgradeUIDecal : MonoBehaviour
             m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
             m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
+            Debug.Log(upgrades[i].gain.icon_Associat.texture.name);
+            m_upgradMat[i].mainTexture = upgrades[i].gain.icon_Associat.texture;
+            m_upgradeText[i] = upgrades[i].gain.icon_Associat.texture;
         }
     }
 
@@ -74,7 +87,7 @@ public class UpgradeUIDecal : MonoBehaviour
     {
         if(!upgradeSelectedDetails.activeSelf) { upgradeSelectedDetails.SetActive(true); }
 
-        capacityAffectedIcon.sprite = upgradeSelected.gain.icon_Associat;
+        capacityAffectedIcon.mainTexture = upgradeSelected.gain.icon_Associat.texture;
         upgradeSelectedName.text = upgradeSelected.gain.name;
         upgradeDescription.text = upgradeSelected.gain.description;
     }

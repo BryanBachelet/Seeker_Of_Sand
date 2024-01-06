@@ -52,6 +52,8 @@ public class UpgradeUI : MonoBehaviour
             m_uiDecalUpdaterDisplay.m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
             m_uiDecalUpdaterDisplay.m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_uiDecalUpdaterDisplay.m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
+            m_uiDecalUpdaterDisplay.m_upgradMat[i].mainTexture = upgrades[i].gain.icon_Associat.texture;
+            m_uiDecalUpdaterDisplay.m_upgradeText[i] = upgrades[i].gain.icon_Associat.texture;
             //m_uiDecalUpdaterDisplay.capacityAffectedName.text = upgrades[i].gain.nameUgrade;
             switch (upgrades[i].gain.type)
             {
@@ -95,7 +97,7 @@ public class UpgradeUI : MonoBehaviour
 
                 SelectionIcon[i].SetActive(true);
                 m_uiDecalUpdaterDisplay.capacityAffectedName.text = m_upgradeDescription[i].text;
-                m_uiDecalUpdaterDisplay.capacityAffectedIcon.sprite = m_upgradeIcon[i].sprite;
+                m_uiDecalUpdaterDisplay.capacityAffectedIcon.mainTexture = m_upgradeIcon[i].mainTexture;
                 Debug.Log(m_uiDecalUpdaterDisplay.capacityAffectedName.text);
                 //selectionAnimator[i].SetBool("Selected", true);
                 //upgradeButton[i].SetBool("Selected", true);

@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 public class DayCyclecontroller : MonoBehaviour
 {
+    [SerializeField] public VolumeProfile volumeProfile;
+    [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
+    VolumetricClouds vClouds;
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -47,6 +51,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Day Event
     public delegate void DayBeginning();
     public event DayBeginning dayStartEvent;
+
 
     bool checkNightSound = false;
     // Start is called before the first frame update
@@ -102,6 +107,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
+        ShadowOpacityAdjustByHour(m_timeOfDay);
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
@@ -247,5 +253,50 @@ public class DayCyclecontroller : MonoBehaviour
         m_instructionAnimator.SetTrigger("DisplayInstruction");
         yield return new WaitForSeconds(time);
         m_instructionAnimator.ResetTrigger("DisplayInstruction");
+    }
+
+    public void Sparse()
+    {
+        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+        {
+            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Sparse;
+            Debug.Log(vClouds.cloudPreset);
+        }
+
+    }
+    public void Cloudy()
+    {
+        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+        {
+            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Cloudy;
+            Debug.Log(vClouds.cloudPreset);
+        }
+
+    }
+    public void Overcast()
+    {
+        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+        {
+            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Overcast;
+            Debug.Log(vClouds.cloudPreset);
+        }
+
+    }
+    public void Stormy()
+    {
+        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+        {
+            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Stormy;
+            Debug.Log(vClouds.cloudPreset);
+        }
+
+    }
+    public void ShadowOpacityAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+        {
+            vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
+        }
+
     }
 }
