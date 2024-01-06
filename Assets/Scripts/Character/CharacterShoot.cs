@@ -84,7 +84,7 @@ namespace Character
         public float m_lastTimeShot = 0;
         [SerializeField] private float m_TimeAutoWalk = 2;
 
-        private CharacterSpellBook m_characterInventory = new CharacterSpellBook();
+        private CharacterSpellBook m_characterInventory;
 
         #region Unity Functions
         private void Awake()
@@ -127,7 +127,7 @@ namespace Character
 
         private void UpdateAvatarModels()
         {
-            if (m_aimModeState == AimMode.Automatic) return;
+            if (m_aimModeState == AimMode.Automatic && !m_characterAim.HasCloseTarget()) return;
 
             m_characterAim.FeedbackHeadRotation();
             Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
@@ -191,6 +191,7 @@ namespace Character
             m_rigidbody = GetComponent<Rigidbody>();
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
+            m_characterInventory = GetComponent<CharacterSpellBook>();
         }
 
         private void InitSpriteSpell()
@@ -401,7 +402,10 @@ namespace Character
         private ProjectileData FillProjectileData(float index, float angle, Transform transformUsed)
         {
             ProjectileData data = new ProjectileData();
-            data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * m_characterAim.GetAimDirection();
+
+            Vector3 baseDirection =transform.forward;
+            if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection(); 
+            data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
             data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
             data.life = currentWeaponStats.lifetime;
             data.damage = currentWeaponStats.damage;
@@ -473,7 +477,7 @@ namespace Character
                     m_TextSpellGlobalCooldown[i].text = "";
                 }
 
-                m_SpellReadyVFX[m_currentRotationIndex].Play();
+                //m_SpellReadyVFX[m_currentRotationIndex].Play();
                 m_canShoot = true;
                 m_shootTimer = 0;
                 return;

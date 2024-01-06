@@ -97,7 +97,7 @@ public class GameState : MonoBehaviour
         }
         else
         {
-            if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
+           // if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
         }
     }
 

@@ -42,29 +42,27 @@ public class UpgradeUIDecal : MonoBehaviour
     private Animator lastUpgradeAnimator;
 
     private MaterialPropertyBlock _propBlock;
-    // Start is called before the first frame update
-    void Start()
-    {
+    private bool m_isFirstOpening = true;
+  
 
+    public void InitUpgradeDecal()
+    {
         _propBlock = new MaterialPropertyBlock();
         m_iconSpellSelected = spellselectDescriptionPanelGameObject.GetComponentInChildren<Image>();
         m_textDescription = spellselectDescriptionPanelGameObject.GetComponentsInChildren<TMP_Text>();
-        for(int i = 0; i < m_upgradeMesh.Length; i++)
+        for (int i = 0; i < m_upgradeMesh.Length; i++)
         {
             m_upgradMat[i] = m_upgradeMesh[i].material;
             m_upgradeText[i] = m_upgradMat[i].mainTexture;
         }
         capacityAffectedIcon = capacityAffectedMesh.material;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        m_isFirstOpening = false;
     }
 
     public void UpdateUpgradeDisplay(Upgrade[] upgrades)
     {
+        if (m_isFirstOpening) InitUpgradeDecal();
+
         for (int i = 0; i < upgrades.Length; i++)
         {
             m_upgradeName[i].text = upgrades[i].gain.nameUgrade;

@@ -99,6 +99,7 @@ namespace Character
                 }else
                 {
                     m_aimScreenPoint = m_aimInputValue;
+                    m_hasCloseTarget = false;
                 }
 
             }
