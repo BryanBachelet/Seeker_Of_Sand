@@ -184,8 +184,6 @@ namespace Enemies
         private void StartAttack()
         {
 
-            Debug.Log("Jumping");
-
             Vector3 finalDashPos = Vector3.zero;
             RaycastHit hit = new RaycastHit();
             m_animator.SetTrigger("Attacking");

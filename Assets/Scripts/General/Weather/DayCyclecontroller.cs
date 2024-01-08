@@ -304,6 +304,11 @@ public class DayCyclecontroller : MonoBehaviour
             vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
         }
 
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            vCloudLayer.layerA.rotation.value = m_ShadowOpacityByHour.Evaluate(hour);
+        }
+
     }
     
         public void OpacityRAdjustByHour(float hour)
