@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class CharacterUpgrade : MonoBehaviour
 {
     public List<Upgrade> m_avatarUpgrade;
-    public int upgradePoint = 0;
+    public static int upgradePoint = 0;
     public GameObject upgradeUiGO;
 
     public GameObject uiLoaderDisplay;
@@ -32,6 +32,7 @@ public class CharacterUpgrade : MonoBehaviour
     private bool had5level = false;
     private UpgradeUIDecal m_UpgradeUiDecal;
 
+    public Animator bookAnimator;
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -41,10 +42,11 @@ public class CharacterUpgrade : MonoBehaviour
             m_FixeElementUI.SetActive(false);
             upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
             UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
-
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
             m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
+            bookAnimator.SetBool("BookOpen", true);
+            Debug.Log("Book open !!!!!!");
             if (upgradeUiGO.activeSelf == false)
             {
                 GameState.ChangeState();
@@ -63,11 +65,15 @@ public class CharacterUpgrade : MonoBehaviour
         if (upgradeUiGO.activeSelf == true) return;
 
         had5level = true;
+
+
         upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
         m_FixeElementUI.SetActive(false);
         UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
         m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
         m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
+        bookAnimator.SetBool("BookOpen", true);
+        Debug.Log("Book open !!!!!!");
         GlobalSoundManager.PlayOneShot(6, Vector3.zero);
         if (upgradeUiGO.activeSelf == false)
         {
@@ -78,6 +84,7 @@ public class CharacterUpgrade : MonoBehaviour
         GetNewUpgrade();
         m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
         GameState.ChangeState();
+
         // Time.timeScale = 0.02f;
     }
     #region Init Script
@@ -147,15 +154,7 @@ public class CharacterUpgrade : MonoBehaviour
         DestroyAllUpgrade();
         if (upgradePoint == 0)
         {
-            upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            m_FixeElementUI.SetActive(true);
-            UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
-            m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
-            m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
-            m_upgradePoint.text = upgradePoint.ToString();
-            GlobalSoundManager.PlayOneShot(30, transform.position);
-            GameState.ChangeState();
-            if (had5level) { had5level = false; }
+            StartCoroutine(closeBookWithDelay(2));
             return;
         }
 
@@ -221,4 +220,23 @@ public class CharacterUpgrade : MonoBehaviour
                 break;
         }
     }
+
+    public IEnumerator closeBookWithDelay(float time)
+    {
+        bookAnimator.SetBool("BookOpen", false);
+        yield return new WaitForSeconds(time);
+        upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
+        m_FixeElementUI.SetActive(true);
+
+        Debug.Log("Book close !!!!!!");
+        UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
+        m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
+        m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
+        m_upgradePoint.text = upgradePoint.ToString();
+        GlobalSoundManager.PlayOneShot(30, transform.position);
+        GameState.ChangeState();
+        if (had5level) { had5level = false; }
+    }
+
+
 }

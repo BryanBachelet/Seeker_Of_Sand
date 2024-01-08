@@ -36,11 +36,17 @@ public class UpgradeUIDecal : MonoBehaviour
     public TMP_Text newValue;
 
     public TMP_Text upgradAvailable;
+
+    public UpgradeDataInfo[] upg_DataHolder = new UpgradeDataInfo[3];
+    public UpgradeDataInfo lastUpgradeOverd;
+    private Animator lastUpgradeAnimator;
+
+    private MaterialPropertyBlock _propBlock;
     // Start is called before the first frame update
     void Start()
     {
-       
-  
+
+        _propBlock = new MaterialPropertyBlock();
         m_iconSpellSelected = spellselectDescriptionPanelGameObject.GetComponentInChildren<Image>();
         m_textDescription = spellselectDescriptionPanelGameObject.GetComponentsInChildren<TMP_Text>();
         for(int i = 0; i < m_upgradeMesh.Length; i++)
@@ -67,7 +73,9 @@ public class UpgradeUIDecal : MonoBehaviour
             Debug.Log(upgrades[i].gain.icon_Associat.texture.name);
             m_upgradMat[i].mainTexture = upgrades[i].gain.icon_Associat.texture;
             m_upgradeText[i] = upgrades[i].gain.icon_Associat.texture;
+            upg_DataHolder[i].ApplyUpgProfil(upgrades[i].gain);
         }
+
     }
 
     public void SpellFocusDisplay(CapsuleSystem.Capsule infoSpell)
@@ -90,6 +98,47 @@ public class UpgradeUIDecal : MonoBehaviour
         capacityAffectedIcon.mainTexture = upgradeSelected.gain.icon_Associat.texture;
         upgradeSelectedName.text = upgradeSelected.gain.name;
         upgradeDescription.text = upgradeSelected.gain.description;
+        
+    }
+
+    public UpgradeDataInfo ReturnUpgradeData()
+    {
+
+        return lastUpgradeOverd;
+    }
+
+    public void NewUpgradeOvered(UpgradeDataInfo NewUpgradeDataInfo)
+    {
+        if(lastUpgradeAnimator != null) 
+        {
+            lastUpgradeAnimator.SetBool("Overred", false);
+        }
+        lastUpgradeOverd = NewUpgradeDataInfo;
+        lastUpgradeAnimator = NewUpgradeDataInfo.GetComponent<Animator>();
+        upgradeSelectedName.text = lastUpgradeOverd.upg_Titre.text;
+        upgradeDescription.text = lastUpgradeOverd.upg_Description;
+        capacityAffectedIcon.mainTexture = lastUpgradeOverd.m_mat_Icon.mainTexture;
+        for(int i = 0; i < upg_DataHolder.Length; i++)
+        {
+            upg_DataHolder[i].upg_BandeauContour.GetPropertyBlock(_propBlock, 0);
+            if (upg_DataHolder[i] != lastUpgradeOverd)
+            {
+                _propBlock.SetColor("_EmissiveColor", Color.white * 0);
+                //upg_DataHolder[i].upg_BandeauContour.material.SetFloat("_EmissiveIntensity", 0);
+                //upg_DataHolder[i].upg_BandeauContour.sharedMaterial.EnableKeyword("_EMISSION");
+            }
+            else
+            {
+                _propBlock.SetColor("_EmissiveColor", Color.white * 5);
+            }
+            upg_DataHolder[i].upg_BandeauContour.SetPropertyBlock(_propBlock, 0);
+        }
+
+    }
+
+    public void DisplayModification()
+    {
+
     }
 
 }

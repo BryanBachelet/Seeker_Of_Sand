@@ -29,6 +29,8 @@ public class UpgradeUI : MonoBehaviour
     [SerializeField] public CharacterUpgrade m_upgradeCharacter ;
     public int lastUpgradeSelected = 0;
 
+    public Animator[] upgradeButtonAnimator = new Animator[3];
+
     public UpgradeUIDecal m_uiDecalUpdaterDisplay;
     private void Start()
     {
@@ -75,6 +77,7 @@ public class UpgradeUI : MonoBehaviour
     public void ChooseUpgrade(int index, int number)
     {
         m_upgradeCharacter.ChooseUpgrade(index,number);
+        upgradeButtonAnimator[index].SetTrigger("Take");
         GlobalSoundManager.PlayOneShot(31, transform.position);
     }
 
