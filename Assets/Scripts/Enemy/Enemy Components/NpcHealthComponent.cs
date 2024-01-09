@@ -56,6 +56,10 @@ namespace Enemies
         public AnimationCurve cutoutProgress;
         public AnimationCurve emissiveProgress;
         private float deathTimer;
+
+        private bool death = false;
+        private MaterialPropertyBlock _propBlock;
+        public GameObject death_vfx;
         void Awake()
         {
             InitComponent();
@@ -65,8 +69,8 @@ namespace Enemies
             m_healthSystem = new HealthSystem();
             m_healthSystem.Setup(m_maxLife);
             m_entityAnimator = GetComponentInChildren<Animator>();
-
-            for(int i = 0; i < m_SkinMeshRenderer.materials.Length; i ++)
+            _propBlock = new MaterialPropertyBlock();
+            for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i ++)
             {
                 m_materialList.Add(m_SkinMeshRenderer.materials[i]);
             }
@@ -74,6 +78,27 @@ namespace Enemies
 
         }
 
+        private void Update()
+        {
+            if(death)
+            {
+
+                float progressDeath = 1 - (timeBeforeDestruction + deathTimer - Time.time) / 2;
+                float cutoutValue = progressDeath;
+                float emissiveValue = progressDeath;
+                for (int i = 0; i < materialCutout.Length; i++)
+                {
+                    m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+                }
+                for (int i = 0; i < materialCutout.Length; i++)
+                {
+                   //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
+                   //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
+                   //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
+                    m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
+                }
+            }
+        }
         public void ResetTarget()
         {
             m_hasChangeTarget = true;
@@ -109,30 +134,26 @@ namespace Enemies
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
             npcState = NpcState.DEATH;
             this.gameObject.layer = 16;
-            destroyEvent.Invoke(direction, power);
+            //destroyEvent.Invoke(direction, power);
           
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);
-            deathTimer = Time.time;
+            if(!death)
+            {
+                deathTimer = Time.time;
+            }
+            
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
             m_enemyManager.DeathEnemy();
-            float progressDeath = timeBeforeDestruction / Time.time;
-            float cutoutValue = progressDeath;
-            float emissiveValue = progressDeath;
-            for(int i = 0; i < materialCutout.Length; i++)
-            {
-                m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
-            }
-            for (int i = 0; i < materialCutout.Length; i++)
-            {
-                m_materialList[materialCutout[i]].SetFloat("_EmissiveIntensity", emissiveProgress.Evaluate(emissiveValue));
-            }
+            death = true;
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
-            yield return new WaitForSeconds(timeBeforeDestruction);
+            yield return new WaitForSeconds(timeBeforeDestruction /2);
+            Instantiate(death_vfx, transform.position, transform.rotation);
+            yield return new WaitForSeconds(timeBeforeDestruction / 2);
            
             m_enemyManager.DestroyEnemy(this);
         }
