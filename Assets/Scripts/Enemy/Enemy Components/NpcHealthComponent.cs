@@ -49,8 +49,13 @@ namespace Enemies
         private EnemyManager m_enemyManager;
         [SerializeField] private Animator m_EnemyAnimatorDissolve;
 
-        // Hit damage
-
+        public SkinnedMeshRenderer m_SkinMeshRenderer;
+        [SerializeField] private List<Material> m_materialList = new List<Material>();        // Hit damage
+        public int[] materialCutout;
+        public int[] materialEmissive;
+        public AnimationCurve cutoutProgress;
+        public AnimationCurve emissiveProgress;
+        private float deathTimer;
         void Awake()
         {
             InitComponent();
@@ -60,6 +65,11 @@ namespace Enemies
             m_healthSystem = new HealthSystem();
             m_healthSystem.Setup(m_maxLife);
             m_entityAnimator = GetComponentInChildren<Animator>();
+
+            for(int i = 0; i < m_SkinMeshRenderer.materials.Length; i ++)
+            {
+                m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+            }
 
 
         }
@@ -103,12 +113,24 @@ namespace Enemies
           
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);
+            deathTimer = Time.time;
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
             m_enemyManager.DeathEnemy();
+            float progressDeath = timeBeforeDestruction / Time.time;
+            float cutoutValue = progressDeath;
+            float emissiveValue = progressDeath;
+            for(int i = 0; i < materialCutout.Length; i++)
+            {
+                m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+            }
+            for (int i = 0; i < materialCutout.Length; i++)
+            {
+                m_materialList[materialCutout[i]].SetFloat("_EmissiveIntensity", emissiveProgress.Evaluate(emissiveValue));
+            }
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction);
            
