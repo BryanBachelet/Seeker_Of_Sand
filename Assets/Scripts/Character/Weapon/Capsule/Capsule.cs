@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace CapsuleSystem
+namespace SpellSystem
 {
     [Serializable]
     public struct CapsuleAttackInfo

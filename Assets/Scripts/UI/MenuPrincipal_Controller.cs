@@ -10,14 +10,14 @@ public class MenuPrincipal_Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        buttonAnimator = buttonHolder.GetComponent<Animator>();
+        if (buttonAnimator) buttonAnimator = buttonHolder.GetComponent<Animator>();
         gsm = GameObject.Find("---SoundManager").GetComponent<GlobalSoundManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     IEnumerator LoadYourAsyncScene(int SceneNumber)
@@ -44,7 +44,7 @@ public class MenuPrincipal_Controller : MonoBehaviour
     public void ChangeMenuPlayLayout(int State)
     {
         bool newState = false;
-        if(State == 0)
+        if (State == 0)
         {
             newState = !newState;
         }

@@ -177,7 +177,7 @@ MonoBehaviour:
   m_ActiveDeathAnim: 0
 --- !u!95 &5212866717972345470
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -194,7 +194,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!114 &-5653570618866233606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,6 +220,69 @@ MonoBehaviour:
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
   m_EnemyAnimatorDissolve: {fileID: 0}
+  m_SkinMeshRenderer: {fileID: 7087134272507621963}
+  m_materialList: []
+  materialCutout: 010000000400000005000000
+  materialEmissive: 0000000002000000
+  cutoutProgress:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 4.305747
+      outSlope: 4.305747
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.06502937
+      value: 0.28
+      inSlope: -0.07479343
+      outSlope: -0.07479343
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.09352682
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.7700777
+      outSlope: 0.7700777
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  emissiveProgress:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 16
+      inSlope: -15
+      outSlope: -15
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -15
+      outSlope: -15
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  death_vfx: {fileID: 1991147687903976700, guid: 10301bafbe023a440a688f4c3dcb9cc6,
+    type: 3}
 --- !u!114 &530845482973330017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,6 +905,12 @@ PrefabInstance:
         type: 3}
     - target: {fileID: -4533047890425649374, guid: 422772fee99c743409b366c51b50e67d,
         type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -2400525413194768914, guid: 6b089327918d074459941cc7c122f83c,
+        type: 3}
+    - target: {fileID: -4533047890425649374, guid: 422772fee99c743409b366c51b50e67d,
+        type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -901,7 +970,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &5544838729117368727
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -918,7 +987,13 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!137 &7087134272507621963 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -4533047890425649374, guid: 422772fee99c743409b366c51b50e67d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2543953142652360041}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4686832638935266001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1392,7 +1467,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &8299514403124696946
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1409,7 +1484,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1001 &6975119103207233359
 PrefabInstance:
   m_ObjectHideFlags: 0

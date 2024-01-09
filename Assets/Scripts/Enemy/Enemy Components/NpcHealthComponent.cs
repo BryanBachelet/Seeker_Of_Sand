@@ -49,8 +49,17 @@ namespace Enemies
         private EnemyManager m_enemyManager;
         [SerializeField] private Animator m_EnemyAnimatorDissolve;
 
-        // Hit damage
+        public SkinnedMeshRenderer m_SkinMeshRenderer;
+        [SerializeField] private List<Material> m_materialList = new List<Material>();        // Hit damage
+        public int[] materialCutout;
+        public int[] materialEmissive;
+        public AnimationCurve cutoutProgress;
+        public AnimationCurve emissiveProgress;
+        private float deathTimer;
 
+        private bool death = false;
+        private MaterialPropertyBlock _propBlock;
+        public GameObject death_vfx;
         void Awake()
         {
             InitComponent();
@@ -60,10 +69,36 @@ namespace Enemies
             m_healthSystem = new HealthSystem();
             m_healthSystem.Setup(m_maxLife);
             m_entityAnimator = GetComponentInChildren<Animator>();
+            _propBlock = new MaterialPropertyBlock();
+            for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i ++)
+            {
+                m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+            }
 
 
         }
 
+        private void Update()
+        {
+            if(death)
+            {
+
+                float progressDeath = 1 - (timeBeforeDestruction + deathTimer - Time.time) / 2;
+                float cutoutValue = progressDeath;
+                float emissiveValue = progressDeath;
+                for (int i = 0; i < materialCutout.Length; i++)
+                {
+                    m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+                }
+                for (int i = 0; i < materialCutout.Length; i++)
+                {
+                   //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
+                   //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
+                   //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
+                    m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
+                }
+            }
+        }
         public void ResetTarget()
         {
             m_hasChangeTarget = true;
@@ -103,14 +138,22 @@ namespace Enemies
           
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);
+            if(!death)
+            {
+                deathTimer = Time.time;
+            }
+            
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
             m_enemyManager.DeathEnemy();
+            death = true;
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
-            yield return new WaitForSeconds(timeBeforeDestruction);
+            yield return new WaitForSeconds(timeBeforeDestruction /2);
+            Instantiate(death_vfx, transform.position, transform.rotation);
+            yield return new WaitForSeconds(timeBeforeDestruction / 2);
            
             m_enemyManager.DestroyEnemy(this);
         }

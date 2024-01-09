@@ -9,10 +9,9 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public VolumeProfile volumeProfile;
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
-        CloudLayer vCloudLayer;
+    CloudLayer vCloudLayer;
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
-    
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -173,11 +172,11 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
-        if(nightStartEvent!=null) nightStartEvent.Invoke();
+        if (nightStartEvent != null) nightStartEvent.Invoke();
         m_GSM.UpdateParameter(1, "DayOrNight");
         m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
         StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
-      //  GlobalSoundManager.PlayOneShot(34, transform.position);
+        //  GlobalSoundManager.PlayOneShot(34, transform.position);
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
@@ -238,7 +237,7 @@ public class DayCyclecontroller : MonoBehaviour
         else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.49f)
         {
             m_timeOfDay = 18.5f;
-            if(!checkNightSound)
+            if (!checkNightSound)
             {
                 checkNightSound = true;
 
@@ -310,8 +309,7 @@ public class DayCyclecontroller : MonoBehaviour
         }
 
     }
-    
-        public void OpacityRAdjustByHour(float hour)
+    public void OpacityRAdjustByHour(float hour)
     {
         if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
         {
@@ -320,9 +318,9 @@ public class DayCyclecontroller : MonoBehaviour
 
     }
 
-    
-    
-        public void RotationAdjustByHour(float hour)
+
+
+    public void RotationAdjustByHour(float hour)
     {
         if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
         {
@@ -330,5 +328,6 @@ public class DayCyclecontroller : MonoBehaviour
         }
 
     }
-    
 }
+
+
