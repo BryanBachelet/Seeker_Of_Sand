@@ -134,7 +134,7 @@ namespace Enemies
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
             npcState = NpcState.DEATH;
             this.gameObject.layer = 16;
-            //destroyEvent.Invoke(direction, power);
+            destroyEvent.Invoke(direction, power);
           
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);

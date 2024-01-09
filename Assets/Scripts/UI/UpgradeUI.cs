@@ -34,7 +34,7 @@ public class UpgradeUI : MonoBehaviour
     public UpgradeUIDecal m_uiDecalUpdaterDisplay;
     private void Start()
     {
-        //m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
+        m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
         for (int i = 0; i < SelectionIcon.Length; i++)
         {
             selectionAnimator[i] = SelectionIcon[i].GetComponent<Animator>();
