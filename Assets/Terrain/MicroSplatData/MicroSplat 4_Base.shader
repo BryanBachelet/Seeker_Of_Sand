@@ -11,7 +11,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_1_1_Base723771909"
+Shader "Hidden/Terrain_1_1_Base-2038347136"
 {
    Properties
    {
@@ -285,6 +285,7 @@ _WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -7882,6 +7883,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -15312,6 +15314,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -22810,6 +22813,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -30282,6 +30286,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -37708,6 +37713,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -45130,6 +45136,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -52581,6 +52588,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -60062,6 +60070,7 @@ void Frag(  VertexToPixel v2f
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
@@ -67506,6 +67515,7 @@ float3 GetTessFactors ()
       #define _BRANCHSAMPLESAGR 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
+      #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
