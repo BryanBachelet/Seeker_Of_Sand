@@ -250,7 +250,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         #region Character Shoot
         m_characterShoot = m_PlayerObjectRef.GetComponent<Character.CharacterShoot>();
         m_characterShoot.m_SkillBarHolder = m_skillBarHolderRef;
-        m_characterShoot.m_SpellReady = m_SpellReady;
+        m_characterShoot.m_SpellReadyVFX = m_SpellReady;
         m_characterShoot.icon_Sprite = m_icon_Sprite;
         m_characterShoot.m_spellGlobalCooldown = m_spellGlobalCooldown;
         m_characterShoot.m_TextSpellGlobalCooldown = m_TextSpellGlobalCooldown;

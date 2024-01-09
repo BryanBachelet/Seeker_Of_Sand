@@ -5,25 +5,23 @@ using UnityEditor;
 
 namespace Character
 {
-
-
-    public class CharacterInventory : MonoBehaviour
+    public class CharacterSpellBook : MonoBehaviour
     {
         [SerializeField] private int m_rotationSize = 4;
-        [SerializeField] private List<Spell.Spell> m_bookOfSpell;
-        [SerializeField] public Spell.Spell[] m_spellsRotationArray = new Spell.Spell[4];
+            private List<SpellSystem.Capsule> m_bookOfSpell = new List<SpellSystem.Capsule>();
+        [SerializeField] public SpellSystem.Capsule[] m_spellsRotationArray = new SpellSystem.Capsule[4];
 
 
         //  Need to create copy from the spell place
 
         public void Start()
         {
-            m_spellsRotationArray = new Spell.Spell[m_rotationSize];
-            
+            m_spellsRotationArray = new SpellSystem.Capsule[m_rotationSize];
+
         }
 
         #region Spell Rotation Function
-        public Spell.Spell[] GetSpellsRotations()
+        public SpellSystem.Capsule[] GetSpellsRotations()
         {
             return m_spellsRotationArray;
         }
@@ -33,7 +31,7 @@ namespace Character
             m_spellsRotationArray[indexRotation] = m_bookOfSpell[spellIndex];
         }
 
-        public Spell.Spell GetSpellOfRotation(int spellIndex)
+        public SpellSystem.Capsule GetSpellOfRotation(int spellIndex)
         {
             return m_spellsRotationArray[spellIndex];
         }
@@ -42,7 +40,12 @@ namespace Character
 
         #region Spell Inventory Functions
 
-        public void AddSpell(Spell.Spell spell)
+        public SpellSystem.Capsule GetSpecificSpell(int index)
+        {
+            return m_bookOfSpell[index];
+        }
+
+        public void AddSpell(SpellSystem.Capsule spell)
         {
             m_bookOfSpell.Add(spell);
         }
@@ -52,31 +55,20 @@ namespace Character
             m_bookOfSpell.RemoveAt(index);
         }
 
-        public Spell.Spell GetRandomSpellSimple()
+        public SpellSystem.Capsule GetRandomSpellSimple()
         {
             int indexSpell = Random.Range(0, m_bookOfSpell.Count);
             return m_bookOfSpell[indexSpell];
         }
 
-        public Spell.Spell[] GetAllSpells()
+        public SpellSystem.Capsule[] GetAllSpells()
         {
             return m_bookOfSpell.ToArray();
         }
-
+        public int GetSpellCount() { return m_bookOfSpell.Count; }
         #endregion
 
-    
 
-
-        public void OnTriggerEnter(Collider other)
-        {
-            if(other.gameObject.tag == "SpellContainer")
-            {
-                Spell.SpellContainer spellContainer = other.GetComponent<Spell.SpellContainer>();
-                AddSpell(spellContainer.GetSpell());
-                spellContainer.Destroy();
-            }
-        }
 
     }
 

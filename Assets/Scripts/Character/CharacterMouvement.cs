@@ -127,7 +127,7 @@ namespace Character
         [SerializeField] private bool m_activeDebug;
 
         private PlayerInput m_playerInput;
-
+        private CharacterShoot m_characterShoot;
         public void InitComponentStat(CharacterStat stat)
         {
 
@@ -144,6 +144,7 @@ namespace Character
             initialSpeed = runSpeed;
             m_characterAim = GetComponent<CharacterAim>();
             m_playerInput = GetComponent<PlayerInput>();
+            m_characterShoot = GetComponent<CharacterShoot>();
         }
 
         private void Start()
@@ -739,7 +740,7 @@ namespace Character
         {
             if (!m_directionInputActive) return;
 
-            if (!combatState)
+            if (!combatState || m_characterShoot.m_aimModeState == AimMode.Automatic)
             {
                 Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
@@ -750,8 +751,9 @@ namespace Character
                 m_avatarTransform.localRotation = Quaternion.identity;
             }
 
-            if (combatState)
+            if (combatState && m_characterShoot.m_aimModeState != AimMode.Automatic)
             {
+               
                 m_characterAim.FeedbackHeadRotation();
                 Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
                 m_avatarTransform.rotation = rotationFromHead;

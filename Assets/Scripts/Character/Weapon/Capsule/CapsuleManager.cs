@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CapsuleManager : MonoBehaviour
 {
-    public CapsuleSystem.Capsule[] capsules;
+    public SpellSystem.Capsule[] capsules;
 
-    public CapsuleSystem.CapsuleAttackInfo[] attackInfo;
-    public CapsuleSystem.CapsuleBuffInfo[] buffInfos;
+    public SpellSystem.CapsuleAttackInfo[] attackInfo;
+    public SpellSystem.CapsuleBuffInfo[] buffInfos;
 
 
     public static CapsuleManager instance;
@@ -40,7 +40,7 @@ public class CapsuleManager : MonoBehaviour
         m_capsulePool.Remove(index);
     }
 
-    public int GetCapsuleIndex(CapsuleSystem.Capsule capsule)
+    public int GetCapsuleIndex(SpellSystem.Capsule capsule)
     {
         int index = -1;
         for (int i = 0; i < capsules.Length; i++)
@@ -71,14 +71,14 @@ public class CapsuleManager : MonoBehaviour
     {
         for (int i = 0; i < capsules.Length; i++)
         {
-            if(capsules[i].type == CapsuleSystem.CapsuleType.ATTACK)
+            if(capsules[i].type == SpellSystem.CapsuleType.ATTACK)
             {
-                capsules[i] = new CapsuleSystem.CapsuleAttack(attackInfo[indexAttackInfo]);
+                capsules[i] = new SpellSystem.CapsuleAttack(attackInfo[indexAttackInfo]);
                 indexAttackInfo++;
             }
-            if (capsules[i].type == CapsuleSystem.CapsuleType.BUFF)
+            if (capsules[i].type == SpellSystem.CapsuleType.BUFF)
             {
-                capsules[i] = new CapsuleSystem.CapsuleBuff(buffInfos[indexBuffInfo]);
+                capsules[i] = new SpellSystem.CapsuleBuff(buffInfos[indexBuffInfo]);
                 indexBuffInfo++;
             }
         }

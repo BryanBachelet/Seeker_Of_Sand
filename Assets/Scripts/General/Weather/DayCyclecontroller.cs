@@ -9,10 +9,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public VolumeProfile volumeProfile;
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
-        CloudLayer vCloudLayer;
-    [SerializeField] private AnimationCurve m_OpacityRByHour;
-    [SerializeField] private AnimationCurve m_RotationByHour;
-    
+    CloudLayer vCloudsLayer;
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -304,9 +301,9 @@ public class DayCyclecontroller : MonoBehaviour
             vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
         }
 
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudsLayer))
         {
-            vCloudLayer.layerA.rotation.value = m_ShadowOpacityByHour.Evaluate(hour);
+            vCloudsLayer.layerA.rotation.value = m_ShadowOpacityByHour.Evaluate(hour);
         }
 
     }

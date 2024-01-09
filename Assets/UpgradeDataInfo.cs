@@ -24,25 +24,25 @@ public class UpgradeDataInfo : MonoBehaviour
 
     public UpgradeProfil upg_Profil;
     public Animator m_myanimator;
-    // Start is called before the first frame update
-    void Start()
+
+    private bool m_isFirstTimeEnable = true;
+ 
+
+    public void InitUpgradeDataInfo()
     {
         m_myanimator = this.GetComponent<Animator>();
         m_mat_Icon = upg_Icon.GetComponent<MeshRenderer>().material;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        m_isFirstTimeEnable = false;
     }
 
     public void ApplyUpgProfil(UpgradeProfil newProfil)
     {
+        if (m_isFirstTimeEnable) InitUpgradeDataInfo();
         upg_Profil = newProfil;
         m_mat_Icon.mainTexture = upg_Profil.icon_Associat.texture;
         upg_Titre.text = upg_Profil.nameUgrade;
         upg_Description = upg_Profil.description;
+
         //m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
         //m_upgradeDescription[i].text = upgrades[i].gain.description;
         //m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
