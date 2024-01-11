@@ -92,7 +92,7 @@ namespace Enemies
 
         private SerieController m_serieController;
 
-
+        [SerializeField] private GameObject m_spawningVFX;
 
         // Stats Variables
         [HideInInspector] public int altarLaunch;
@@ -123,7 +123,7 @@ namespace Enemies
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
             m_timeOfGame += Time.deltaTime;
-            if (spawningPhase)
+            if (spawningPhase && ShadowFunction.onShadowStatic)
             {
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                 SpawnCooldown();
@@ -239,6 +239,7 @@ namespace Enemies
         {
             position = FindPosition();
             posspawn.Add(position);
+            Instantiate(m_spawningVFX, position, transform.rotation);
             for (int i = 0; i < GetNumberToSpawn(); i++)
             {
                 SpawnEnemy(position + Random.insideUnitSphere * 5f);
