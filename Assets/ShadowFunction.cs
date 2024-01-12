@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD.Studio;
+using FMODUnity;
 
 public class ShadowFunction : MonoBehaviour
 {
@@ -22,10 +24,15 @@ public class ShadowFunction : MonoBehaviour
 
     public Animator detectionAnimator;
     public UnityEngine.VFX.VisualEffect vfxDetection;
+
+    public EventReference Globalsound;
+    public EventInstance shadowDetection;
+
+    public EventReference activationShadowDetection_Attribution;
     // Start is called before the first frame update
     void Start()
     {
-
+        shadowDetection = RuntimeManager.CreateInstance(Globalsound);
     }
     //ShadowDetection
     // Update is called once per frame
@@ -40,12 +47,19 @@ public class ShadowFunction : MonoBehaviour
             }
             else
             {
-                detectionAnimator.SetBool("ShadowDetection", true);
-                m_TimeOutShadow = 0;
-                onShadowSpawn = true;
-                onShadowSpawnStatic = onShadowSpawn;
-                outShadowSpawn = false;
-                outShadowSpawnStatic = outShadowSpawn;
+                if(!onShadowSpawn)
+                {
+                    detectionAnimator.SetBool("ShadowDetection", true);
+                    m_TimeOutShadow = 0;
+                    StopDetectionSoundFeedback();
+                    vfxDetection.SetInt("Rate", 0);
+                    RuntimeManager.PlayOneShot(activationShadowDetection_Attribution, transform.position);
+                    onShadowSpawn = true;
+                    onShadowSpawnStatic = onShadowSpawn;
+                    outShadowSpawn = false;
+                    outShadowSpawnStatic = outShadowSpawn;
+                }
+
             }
 
         }
@@ -58,12 +72,17 @@ public class ShadowFunction : MonoBehaviour
             }
             else
             {
-                detectionAnimator.SetBool("ShadowDetection", false);
-                m_TimeOnShadow = 0;
-                outShadowSpawn = true;
-                outShadowSpawnStatic = outShadowSpawn;
-                onShadowSpawn = false;
-                onShadowSpawnStatic = onShadowSpawn;
+                if(!outShadowSpawn)
+                {
+                    detectionAnimator.SetBool("ShadowDetection", false);
+                    m_TimeOnShadow = 0;
+                    StopDetectionSoundFeedback();
+                    outShadowSpawn = true;
+                    outShadowSpawnStatic = outShadowSpawn;
+                    onShadowSpawn = false;
+                    onShadowSpawnStatic = onShadowSpawn;
+                }
+
             }
         }
 
@@ -71,6 +90,7 @@ public class ShadowFunction : MonoBehaviour
 
     public void OnShadow()
     {
+        StartDetectionSoundFeedback();
         onShadow = true;
         outShadow = false;
         onShadowStatic = onShadow;
@@ -80,10 +100,22 @@ public class ShadowFunction : MonoBehaviour
 
     public void OutShadow()
     {
+        StopDetectionSoundFeedback();
         onShadow = false;
         outShadow = true;
         onShadowStatic = onShadow;
         outShadowStatic = outShadow;
         Debug.Log("On Shadow out !");
     }
+
+    public void StartDetectionSoundFeedback()
+    {
+        shadowDetection.start();
+    }
+
+    public void StopDetectionSoundFeedback()
+    {
+        shadowDetection.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    }
+
 }

@@ -14,6 +14,7 @@ public class CameraFacing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.forward = mainCamera.transform.forward;
         transform.LookAt(mainCamera.transform.position, Vector3.up);
     }
 }
