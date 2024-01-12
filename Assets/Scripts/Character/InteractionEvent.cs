@@ -21,6 +21,12 @@ public class InteractionEvent : MonoBehaviour
     public UnityEngine.UI.Image img_ImageReward;
     public Sprite[] sprite_List;
     public Image img_progressionBar;
+
+    public LayerMask traderLayer;
+    public float rangeTrader;
+
+    public Animator lastTrader;
+    public Collider[] collider;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,9 +36,10 @@ public class InteractionEvent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.time > lastInteractionCheck + intervalCheckInteraction)
+        if (Time.time > lastInteractionCheck + intervalCheckInteraction)
         {
             NearPossibleInteraction();
+            NearTrader();
             lastInteractionCheck = Time.time;
         }
 
@@ -41,28 +48,28 @@ public class InteractionEvent : MonoBehaviour
     public void NearPossibleInteraction()
     {
         Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, InteractibleObject);
-        if(col.Length > 0)
+        if (col.Length > 0)
         {
             if (ui_HintInteractionObject != null) { ui_HintInteractionObject.SetActive(true); };
-            if(currentInteractibleObject != col[0].transform.gameObject)
+            if (currentInteractibleObject != col[0].transform.gameObject)
             {
                 currentInteractibleObject = col[0].transform.gameObject;
                 eventDataInfo = currentInteractibleObject.GetComponent<AltarBehaviorComponent>().GetAltarData();
-                if(eventDataInfo[0] == "0")
+                if (eventDataInfo[0] == "0")
                 {
                     img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
                 }
-                else if(eventDataInfo[0] == "1")
+                else if (eventDataInfo[0] == "1")
                 {
                     img_ImageReward.sprite = sprite_List[4]; // Experience Icon
                 }
-                else if(eventDataInfo[0] == "2")
+                else if (eventDataInfo[0] == "2")
                 {
 
                     img_ImageReward.sprite = CapsuleManager.instance.capsules[int.Parse(eventDataInfo[3])].sprite;
                     //Trouver methode pour récupérer le sprite du sort obtenu
                 }
-                else if(eventDataInfo[0] == "3")
+                else if (eventDataInfo[0] == "3")
                 {
                     img_ImageReward.sprite = sprite_List[5]; //Health Quarter icon
                 }
@@ -73,7 +80,7 @@ public class InteractionEvent : MonoBehaviour
 
 
             float nearest = Vector3.Distance(transform.position, col[0].transform.position);
-            if(col.Length > 1)
+            if (col.Length > 1)
             {
                 for (int i = 0; i < col.Length; i++)
                 {
@@ -87,18 +94,59 @@ public class InteractionEvent : MonoBehaviour
             }
 
         }
-        else if(col.Length == 0)
+        else if (col.Length == 0)
         {
             currentInteractibleObject = null;
-            if(ui_HintInteractionObject != null) { ui_HintInteractionObject.SetActive(false); }
+            if (ui_HintInteractionObject != null) { ui_HintInteractionObject.SetActive(false); }
         }
     }
 
     public void ActionInteraction()
     {
-        if(currentInteractibleObject != null) { currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(); }
+        if (currentInteractibleObject != null) { currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(); }
 
     }
 
+    public void NearTrader()
+    {
+        Collider[] col = Physics.OverlapSphere(transform.position, rangeTrader, traderLayer);
+        collider = col;
+        if (col.Length > 0)
+        {
+            for (int i = 0; i < col.Length; i++)
+            {
+                if (lastTrader != null)
+                {
+                    if (lastTrader != col[i].gameObject)
+                    {
+                        lastTrader.SetBool("StandUp", false);
+                        NewTrader(col[i].gameObject.GetComponent<Animator>());
+                    }
+                }
+                else
+                {
+                    NewTrader(col[i].gameObject.GetComponent<Animator>());
+                }
 
+            }
+        }
+        else
+        {
+            if (lastTrader != null)
+            {
+                lastTrader.SetBool("StandUp", false);
+            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.localPosition, traderLayer);
+    }
+
+    public void NewTrader(Animator trader)
+    {
+        lastTrader = trader;
+        lastTrader.SetBool("StandUp", true);
+    }
 }
