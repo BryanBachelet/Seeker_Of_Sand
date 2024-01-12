@@ -37,6 +37,10 @@ public class CharacterUpgrade : MonoBehaviour
     private bool m_isFirstTime = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    public GameObject upgradeDisplayVFX;
+>>>>>>> origin/AjustementGeneral_9
 =======
     public GameObject upgradeDisplayVFX;
 >>>>>>> origin/AjustementGeneral_9
@@ -105,6 +109,10 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeToChoose[indexUpgrade] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
         m_upgradeToChoose[indexUpgrade].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        Instantiate(upgradeDisplayVFX, transform.position, transform.rotation);
+>>>>>>> origin/AjustementGeneral_9
 =======
         Instantiate(upgradeDisplayVFX, transform.position, transform.rotation);
 >>>>>>> origin/AjustementGeneral_9
@@ -121,6 +129,8 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradeToChoose[i].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
         }
     }
+
+
 
     public void DestroyAllUpgrade()
     {
