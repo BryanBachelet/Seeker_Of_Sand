@@ -116,6 +116,8 @@ public class CharacterUpgrade : MonoBehaviour
         }
     }
 
+
+
     public void DestroyAllUpgrade()
     {
         for (int i = 0; i < m_upgradeToChoose.Length; i++)
