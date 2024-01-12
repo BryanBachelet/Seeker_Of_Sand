@@ -36,14 +36,9 @@ public class CharacterUpgrade : MonoBehaviour
     public Animator bookAnimator;
     private bool m_isFirstTime = true;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
     public GameObject upgradeDisplayVFX;
->>>>>>> origin/AjustementGeneral_9
-=======
-    public GameObject upgradeDisplayVFX;
->>>>>>> origin/AjustementGeneral_9
+
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -108,14 +103,11 @@ public class CharacterUpgrade : MonoBehaviour
         int spellIndex = m_characterShoot.spellEquip[index];
         m_upgradeToChoose[indexUpgrade] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
         m_upgradeToChoose[indexUpgrade].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
+
+
         Instantiate(upgradeDisplayVFX, transform.position, transform.rotation);
->>>>>>> origin/AjustementGeneral_9
-=======
-        Instantiate(upgradeDisplayVFX, transform.position, transform.rotation);
->>>>>>> origin/AjustementGeneral_9
+
     }
 
     public void GetNewUpgrades()
