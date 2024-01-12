@@ -30,7 +30,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public TMPro.TMP_Text m_Instruction;
     [SerializeField] public Animator m_instructionAnimator;
     [SerializeField] public Image m_daySlider;
-    private bool isNight = false;
+    public bool isNight = false;
     public float timescale;
 
     [SerializeField] float[] tempsChaquePhase;
