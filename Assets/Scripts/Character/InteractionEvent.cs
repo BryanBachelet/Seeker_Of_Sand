@@ -13,10 +13,12 @@ public class InteractionEvent : MonoBehaviour
     public GameObject currentInteractibleObject;
 
     public GameObject ui_HintInteractionObject;
+    public Animator m_lastHintAnimator;
 
     public string[] eventDataInfo;
 
     public TMP_Text txt_ObjectifDescription;
+    public TMP_Text txt_ObjectifDescriptionPnj;
     public TMP_Text txt_RewardDescription;
     public UnityEngine.UI.Image img_ImageReward;
     public Sprite[] sprite_List;
@@ -27,6 +29,8 @@ public class InteractionEvent : MonoBehaviour
 
     public Animator lastTrader;
     public Collider[] collider;
+
+    public HintInteractionManager m_hintInteractionManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,11 +54,16 @@ public class InteractionEvent : MonoBehaviour
         Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, InteractibleObject);
         if (col.Length > 0)
         {
-            if (ui_HintInteractionObject != null) { ui_HintInteractionObject.SetActive(true); };
+            if (ui_HintInteractionObject != null)
+            {
+                //ui_HintInteractionObject.SetActive(true);
+                m_hintInteractionManager.activateAutelData(true);
+            }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
                 currentInteractibleObject = col[0].transform.gameObject;
                 eventDataInfo = currentInteractibleObject.GetComponent<AltarBehaviorComponent>().GetAltarData();
+                m_lastHintAnimator.SetBool("InteractionOn", true);
                 if (eventDataInfo[0] == "0")
                 {
                     img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
@@ -94,10 +103,10 @@ public class InteractionEvent : MonoBehaviour
             }
 
         }
-        else if (col.Length == 0)
+        else if (col.Length == 0 && currentInteractibleObject != null)
         {
             currentInteractibleObject = null;
-            if (ui_HintInteractionObject != null) { ui_HintInteractionObject.SetActive(false); }
+            StartCoroutine(CloseUIWithDelay(2));
         }
     }
 
@@ -113,29 +122,42 @@ public class InteractionEvent : MonoBehaviour
         collider = col;
         if (col.Length > 0)
         {
+            if (ui_HintInteractionObject != null)
+            {
+                //ui_HintInteractionObject.SetActive(true);
+                m_hintInteractionManager.activatePnjData(true);
+
+            }
             for (int i = 0; i < col.Length; i++)
             {
                 if (lastTrader != null)
                 {
-                    if (lastTrader != col[i].gameObject)
+                    if (lastTrader.gameObject != col[i].gameObject)
                     {
                         lastTrader.SetBool("StandUp", false);
                         NewTrader(col[i].gameObject.GetComponent<Animator>());
+                        m_lastHintAnimator.SetBool("InteractionOn", true);
+                        txt_ObjectifDescriptionPnj.text = col[i].GetComponent<DataInteraction.InteractionData>().instructionOnActivation;
+
                     }
                 }
                 else
                 {
                     NewTrader(col[i].gameObject.GetComponent<Animator>());
+                    m_lastHintAnimator.SetBool("InteractionOn", true);
+                    txt_ObjectifDescriptionPnj.text = col[i].GetComponent<DataInteraction.InteractionData>().instructionOnActivation;
                 }
 
             }
         }
-        else
+        else if (col.Length == 0 && lastTrader != null)
         {
-            if (lastTrader != null)
-            {
-                lastTrader.SetBool("StandUp", false);
-            }
+
+            lastTrader.SetBool("StandUp", false);
+            m_lastHintAnimator.SetBool("InteractionOn", false);
+            txt_ObjectifDescription.text = "";
+            lastTrader = null;
+            StartCoroutine(CloseUIWithDelay(2));
         }
     }
 
@@ -147,6 +169,18 @@ public class InteractionEvent : MonoBehaviour
     public void NewTrader(Animator trader)
     {
         lastTrader = trader;
+        GlobalSoundManager.PlayOneShot(39, transform.position);
         lastTrader.SetBool("StandUp", true);
     }
+
+    public IEnumerator CloseUIWithDelay(float time)
+    {
+        m_lastHintAnimator.SetBool("InteractionOn", false);
+        yield return new WaitForSeconds(time);
+        //ui_HintInteractionObject.SetActive(false);
+        m_hintInteractionManager.activateAutelData(false);
+        m_hintInteractionManager.activatePnjData(false);
+    }
+
+
 }
