@@ -11,7 +11,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_1_1_Base-2038347136"
+Shader "Hidden/Terrain_1_1_Base-1330921000"
 {
    Properties
    {
@@ -264,12 +264,12 @@ _WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -278,6 +278,7 @@ _WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -7862,12 +7863,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -7876,6 +7877,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -15293,12 +15295,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -15307,6 +15309,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -22792,12 +22795,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -22806,6 +22809,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -30265,12 +30269,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -30279,6 +30283,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -37692,12 +37697,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -37706,6 +37711,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -45115,12 +45121,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -45129,6 +45135,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -52567,12 +52574,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -52581,6 +52588,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -60049,12 +60057,12 @@ void Frag(  VertexToPixel v2f
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -60063,6 +60071,7 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
@@ -67494,12 +67503,12 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _PERTEXRIMLIGHT 1
       #define _DISABLEHEIGHTBLENDING 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
       #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -67508,6 +67517,7 @@ float3 GetTessFactors ()
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
       #define _PERTEXCONTRAST 1
+      #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
       #define _PERTEXCURVEWEIGHT 1
