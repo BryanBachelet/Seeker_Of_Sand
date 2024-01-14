@@ -54,10 +54,11 @@ public class ShadowFunction : MonoBehaviour
                     StopDetectionSoundFeedback();
                     vfxDetection.SetInt("Rate", 0);
                     RuntimeManager.PlayOneShot(activationShadowDetection_Attribution, transform.position);
+                    GlobalSoundManager.PlayOneShot(40, transform.position);
                     onShadowSpawn = true;
-                    onShadowSpawnStatic = onShadowSpawn;
+                    onShadowSpawnStatic = true;
                     outShadowSpawn = false;
-                    outShadowSpawnStatic = outShadowSpawn;
+                    outShadowSpawnStatic = false;
                 }
 
             }
@@ -78,9 +79,9 @@ public class ShadowFunction : MonoBehaviour
                     m_TimeOnShadow = 0;
                     StopDetectionSoundFeedback();
                     outShadowSpawn = true;
-                    outShadowSpawnStatic = outShadowSpawn;
+                    outShadowSpawnStatic = true;
                     onShadowSpawn = false;
-                    onShadowSpawnStatic = onShadowSpawn;
+                    onShadowSpawnStatic = false;
                 }
 
             }
@@ -93,8 +94,9 @@ public class ShadowFunction : MonoBehaviour
         StartDetectionSoundFeedback();
         onShadow = true;
         outShadow = false;
-        onShadowStatic = onShadow;
-        outShadowStatic = outShadow;
+
+        //onShadowStatic = onShadow;
+        //outShadowStatic = outShadow;
         Debug.Log("On Shadow enter !");
     }
 
@@ -103,11 +105,19 @@ public class ShadowFunction : MonoBehaviour
         StopDetectionSoundFeedback();
         onShadow = false;
         outShadow = true;
-        onShadowStatic = onShadow;
-        outShadowStatic = outShadow;
+        //onShadowStatic = onShadow;
+        //outShadowStatic = outShadow;
         Debug.Log("On Shadow out !");
     }
 
+    public void OnEnterShadow()
+    {
+        m_TimeOnShadow = 0;
+    }
+    public void OnExitShadow()
+    {
+        m_TimeOutShadow = 0;
+    }
     public void StartDetectionSoundFeedback()
     {
         shadowDetection.start();

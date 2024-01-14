@@ -125,7 +125,7 @@ namespace Enemies
             m_timeOfGame += Time.deltaTime;
             if (spawningPhase)
             {
-                if(ShadowFunction.onShadowStatic || m_dayController.isNight)
+                if(ShadowFunction.onShadowSpawnStatic || m_dayController.isNight)
                 {
                     m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                     SpawnCooldown();
@@ -244,6 +244,7 @@ namespace Enemies
             position = FindPosition();
             posspawn.Add(position);
             Instantiate(m_spawningVFX, position, transform.rotation);
+            GlobalSoundManager.PlayOneShot(37, position);
             for (int i = 0; i < GetNumberToSpawn(); i++)
             {
                 SpawnEnemy(position + Random.insideUnitSphere * 5f);

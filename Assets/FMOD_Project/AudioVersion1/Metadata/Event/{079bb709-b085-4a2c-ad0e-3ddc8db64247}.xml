@@ -104,7 +104,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{7d7cd7d6-3676-40c1-b9a9-282d75534300}">
 		<property name="volume">
-			<value>-7.5</value>
+			<value>-20.5</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -137,9 +137,9 @@
 	<object class="MixerBusEffectChain" id="{c5aa12c3-7b8d-4f50-8bff-bf129c96247c}">
 		<relationship name="effects">
 			<destination>{a410b454-2409-46a7-a77e-f01ef6cd44cc}</destination>
-			<destination>{6ac4c57c-0853-43ba-aa74-37e21b8caf59}</destination>
 			<destination>{54088c40-400b-4d85-af58-8413b2aa7e33}</destination>
 			<destination>{dfc319f6-6bbe-411d-8a0d-dbe7d327bb38}</destination>
+			<destination>{6ac4c57c-0853-43ba-aa74-37e21b8caf59}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{6dd3cc68-5ace-4452-9e21-894600fe8c73}" />
@@ -164,11 +164,6 @@
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{a410b454-2409-46a7-a77e-f01ef6cd44cc}" />
-	<object class="DelayEffect" id="{6ac4c57c-0853-43ba-aa74-37e21b8caf59}">
-		<property name="level">
-			<value>-15.5</value>
-		</property>
-	</object>
 	<object class="MultibandEqEffect" id="{54088c40-400b-4d85-af58-8413b2aa7e33}">
 		<property name="bypass">
 			<value>true</value>
@@ -177,27 +172,32 @@
 			<value>7</value>
 		</property>
 		<property name="frequencyA">
-			<value>11336.5264</value>
+			<value>924.054321</value>
 		</property>
 		<property name="frequencyC">
 			<value>134.544098</value>
 		</property>
 		<property name="qualityA">
-			<value>0.372103453</value>
+			<value>0.330241382</value>
 		</property>
 		<property name="gainC">
 			<value>22.7586212</value>
 		</property>
 	</object>
 	<object class="ThreeEQEffect" id="{dfc319f6-6bbe-411d-8a0d-dbe7d327bb38}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
 		<property name="lowGain">
 			<value>-11.5</value>
 		</property>
+		<property name="midGain">
+			<value>-12.5</value>
+		</property>
 		<property name="highGain">
-			<value>-23</value>
+			<value>-19.5</value>
+		</property>
+	</object>
+	<object class="DelayEffect" id="{6ac4c57c-0853-43ba-aa74-37e21b8caf59}">
+		<property name="level">
+			<value>-15.5</value>
 		</property>
 	</object>
 </objects>

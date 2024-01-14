@@ -12,6 +12,7 @@ public class DayCyclecontroller : MonoBehaviour
     CloudLayer vCloudLayer;
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
+    [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -110,9 +111,8 @@ public class DayCyclecontroller : MonoBehaviour
         m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
-        ShadowOpacityAdjustByHour(m_timeOfDay);
-        OpacityRAdjustByHour(m_timeOfDay);
-        RotationAdjustByHour(m_timeOfDay);
+        AdjustPostProcessByHour(m_timeOfDay);
+        //UpdatePostProcess();
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
@@ -130,6 +130,13 @@ public class DayCyclecontroller : MonoBehaviour
         CheckingNightDayTransition();
     }
 
+    private void UpdatePostProcess()
+    {
+        ShadowOpacityAdjustByHour(m_timeOfDay);
+        OpacityRAdjustByHour(m_timeOfDay);
+        RotationAdjustByHour(m_timeOfDay);
+        ShadowMultiplierAdjustByHour(m_timeOfDay);
+    }
     private void CheckingNightDayTransition()
     {
         if (isNight)
@@ -303,11 +310,6 @@ public class DayCyclecontroller : MonoBehaviour
             vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
         }
 
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
-        {
-            vCloudLayer.layerA.rotation.value = m_ShadowOpacityByHour.Evaluate(hour);
-        }
-
     }
     public void OpacityRAdjustByHour(float hour)
     {
@@ -319,7 +321,6 @@ public class DayCyclecontroller : MonoBehaviour
     }
 
 
-
     public void RotationAdjustByHour(float hour)
     {
         if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
@@ -327,6 +328,26 @@ public class DayCyclecontroller : MonoBehaviour
             vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
         }
 
+    }
+
+    public void ShadowMultiplierAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+        }
+
+    }
+
+    public void AdjustPostProcessByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            //vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
+            vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
+            vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
+            vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+        }
     }
 }
 

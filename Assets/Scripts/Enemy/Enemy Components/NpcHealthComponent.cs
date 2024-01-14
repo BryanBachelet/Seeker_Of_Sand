@@ -135,7 +135,7 @@ namespace Enemies
             npcState = NpcState.DEATH;
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
-          
+
             m_enemyManager.SpawnExp(transform.position, xpToDrop);
             m_enemyManager.IncreseAlterEnemyCount(this);
             if(!death)
@@ -150,6 +150,7 @@ namespace Enemies
         {
             m_enemyManager.DeathEnemy();
             death = true;
+            GlobalSoundManager.PlayOneShot(36, transform.position);
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction /2);
             Instantiate(death_vfx, transform.position, transform.rotation);
