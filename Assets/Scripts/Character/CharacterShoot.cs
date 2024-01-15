@@ -381,7 +381,7 @@ namespace Character
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_isShooting = true;
             m_canEndShot = false;
-            m_cameraBehavior.BlockZoom(true);
+            if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 
         private void EndShoot()
@@ -403,8 +403,8 @@ namespace Character
         {
             ProjectileData data = new ProjectileData();
 
-            Vector3 baseDirection =transform.forward;
-            if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection(); 
+            Vector3 baseDirection = transform.forward;
+            if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection();
             data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
             data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
             data.life = currentWeaponStats.lifetime;
@@ -423,7 +423,6 @@ namespace Character
             pos = dest;
             return data;
         }
-
 
         private float GetShootAngle(CapsuleStats weaponStats)
         {
@@ -490,8 +489,6 @@ namespace Character
                     m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_shootTimer) / totalShootTime;
                     m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_shootTimer).ToString(".#");
                 }
-
-
             }
         }
 
@@ -505,7 +502,8 @@ namespace Character
             bookTransform.localRotation = Quaternion.identity;
 
 
-            if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
+            if (!m_CharacterMouvement.activeCombatModeConstant)
+                m_CharacterMouvement.SetCombatMode(false);
 
             m_cameraBehavior.BlockZoom(false);
 

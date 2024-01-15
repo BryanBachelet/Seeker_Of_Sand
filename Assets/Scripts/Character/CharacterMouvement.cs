@@ -238,7 +238,7 @@ namespace Character
             if (!activeCombatModeConstant) return;
             if (isActive)
             {
-                combatState = false;
+                SetCombatMode(false);
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
                 cameraPlayer.BlockZoom(false);
@@ -251,7 +251,7 @@ namespace Character
                 m_BookAnim.SetBool("Casting", true);
                 DisplayNewCurrentState(0);
                 cameraPlayer.BlockZoom(true);
-                combatState = true;
+                SetCombatMode(true);
             }
 
         }
@@ -263,6 +263,8 @@ namespace Character
                 combatState = false;
             else
                 combatState = state;
+
+            if (!combatState) cameraPlayer.BlockZoom(false);
         }
 
         public void Update()
