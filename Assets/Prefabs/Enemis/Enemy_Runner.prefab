@@ -149,7 +149,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!95 &4201272780608832961
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -166,7 +166,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &-1539951015226756814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +192,69 @@ MonoBehaviour:
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
   m_EnemyAnimatorDissolve: {fileID: 0}
+  m_SkinMeshRenderer: {fileID: 4333177854473765387}
+  m_materialList: []
+  materialCutout: 0000000002000000
+  materialEmissive: 0100000003000000
+  cutoutProgress:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 4.305747
+      outSlope: 4.305747
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.06502937
+      value: 0.28
+      inSlope: -0.07479343
+      outSlope: -0.07479343
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.09352682
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.7700777
+      outSlope: 0.7700777
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  emissiveProgress:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 16
+      inSlope: -15
+      outSlope: -15
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -15
+      outSlope: -15
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  death_vfx: {fileID: 1991147687903976700, guid: 10301bafbe023a440a688f4c3dcb9cc6,
+    type: 3}
 --- !u!114 &-3186308383320918057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,11 +676,32 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4620840513284240480, guid: 56352f03ced117c499ce1ce7b7f759e3,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -4620840513284240480, guid: 56352f03ced117c499ce1ce7b7f759e3,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -4620840513284240480, guid: 56352f03ced117c499ce1ce7b7f759e3,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 56352f03ced117c499ce1ce7b7f759e3,
         type: 3}
       propertyPath: m_Name
       value: Runner
       objectReference: {fileID: 0}
+    - target: {fileID: 6592057886747575576, guid: 56352f03ced117c499ce1ce7b7f759e3,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7123941915542632929, guid: 1dca0d13c3fe3554d9b51fe5ae13d129,
+        type: 3}
     - target: {fileID: 6592057886747575576, guid: 56352f03ced117c499ce1ce7b7f759e3,
         type: 3}
       propertyPath: m_Materials.Array.size
@@ -645,6 +729,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: efe8844c1b50f38408884246dc36944a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56352f03ced117c499ce1ce7b7f759e3, type: 3}
+--- !u!137 &4333177854473765387 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6592057886747575576, guid: 56352f03ced117c499ce1ce7b7f759e3,
+    type: 3}
+  m_PrefabInstance: {fileID: 7447049378698184467}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6977063774069203192 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 56352f03ced117c499ce1ce7b7f759e3,
@@ -659,7 +749,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &1575469636531619741
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -676,4 +766,4 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0

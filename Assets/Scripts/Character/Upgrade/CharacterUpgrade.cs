@@ -36,6 +36,7 @@ public class CharacterUpgrade : MonoBehaviour
     public Animator bookAnimator;
     private bool m_isFirstTime = true;
 
+    public GameObject upgradeDisplayVFX;
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -74,7 +75,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void InitComponents()
     {
         m_upgradeManager = FindObjectOfType<UpgradeManager>();
-        //m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
+        m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
         m_characterProfil = GetComponent<CharacterProfile>();
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_characterInventory = GetComponent<Character.CharacterSpellBook>();
@@ -100,6 +101,7 @@ public class CharacterUpgrade : MonoBehaviour
         int spellIndex = m_characterShoot.spellEquip[index];
         m_upgradeToChoose[indexUpgrade] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
         m_upgradeToChoose[indexUpgrade].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
+        Instantiate(upgradeDisplayVFX, transform.position, transform.rotation);
     }
 
     public void GetNewUpgrades()
@@ -113,6 +115,8 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradeToChoose[i].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
         }
     }
+
+
 
     public void DestroyAllUpgrade()
     {

@@ -64,6 +64,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 5c17d279ce2734171a1575aed76f85b8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GlobalSpecularTex:
+        m_Texture: {fileID: 2800000, guid: 1f15e060d4253894d925007f2e593c28, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -85,8 +89,19 @@ Material:
           type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _PCHeightHSV:
+        m_Texture: {fileID: 7593860574389707179, guid: 6cdb1152ab4fb35468e690a49e62e580,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PCSlopeGradients:
+        m_Texture: {fileID: -3911529407022221061, guid: 6cdb1152ab4fb35468e690a49e62e580,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _PCSlopeHSV:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: -1023545674781083290, guid: 6cdb1152ab4fb35468e690a49e62e580,
+          type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PerPixelNormal:
@@ -157,11 +172,12 @@ Material:
     - _EmissiveMult: 1
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
-    - _GlitterGraininess: 0.58
-    - _GlitterShininess: 2
+    - _GlitterGraininess: 1.69
+    - _GlitterShininess: 1
     - _GlitterStrength: 0.894
-    - _GlitterThreshold: 0.616
-    - _GlitterViewDep: 0.834
+    - _GlitterThreshold: 0.757
+    - _GlitterViewDep: 0
+    - _GlobalSpecularBlend: 0
     - _HybridHeightBlendDistance: 2453
     - _OpaqueCullMode: 2
     - _RayTracing: 0
@@ -196,9 +212,9 @@ Material:
     - _TransparentZWrite: 0
     - _TraxNormalStrength: 1
     - _UseShadowThreshold: 0
-    - _WindParticulateOcclusionStrength: 0
+    - _WindParticulateOcclusionStrength: 0.646
     - _WindParticulateRotation: 0.26
-    - _WindParticulateStrength: 3
+    - _WindParticulateStrength: 2.159
     - _WindParticulateStretch: 0.3
     - _ZTestDepthEqualForOpaque: 4
     - _ZTestGBuffer: 4
@@ -207,8 +223,11 @@ Material:
     m_Colors:
     - _ClusterParams: {r: 2, g: 2, b: 13.54, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _GlitterDistFade: {r: 372.89, g: 70.1, b: 0.792, a: 0.845}
+    - _GlitterDistFade: {r: 372.89, g: 70.1, b: 0.56, a: 0.522}
     - _GlitterUVScale: {r: 100, g: 100, b: 0, a: 0}
+    - _GlobalSpecularFade: {r: 150, g: 150, b: 0, a: 0}
+    - _GlobalSpecularUVScale: {r: 10, g: 10, b: 0, a: 0}
+    - _GlobalTextureParams: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _NormalNoiseScaleStrength: {r: 0, g: 0, b: 0, a: 0}
     - _SnowParticulateAngleMask: {r: -1, g: -1, b: 1, a: 1}
     - _SnowParticulateColor: {r: 1, g: 1, b: 1, a: 1}
@@ -226,9 +245,9 @@ Material:
     - _UVScale: {r: 1, g: 1, b: 0, a: 0}
     - _WindEmissive: {r: 0, g: 0, b: 0, a: 0}
     - _WindParticulateAngleMask: {r: -1, g: 20.21, b: 1, a: 1}
-    - _WindParticulateColor: {r: 1, g: 0.7987865, b: 0.6650944, a: 1}
+    - _WindParticulateColor: {r: 1, g: 0.82450056, b: 0.6745283, a: 1}
     - _WindParticulateHeightMask: {r: 0, g: 0, b: 99999, a: 99999}
-    - _WindParticulateParams: {r: 0.5, g: 0.4, b: -0.1, a: 0.27}
+    - _WindParticulateParams: {r: 0.5, g: 0.431, b: -0.1, a: 0.27}
     - _WindParticulateShadow: {r: 0.01, g: 1, b: 0, a: 0}
     - _WindParticulateShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _WindParticulateUpMask: {r: -1, g: -1, b: 1, a: 1}

@@ -21,7 +21,7 @@ public class BoussoleComponent : MonoBehaviour
     {
         if(rendBoussole != null)
         {
-            Debug.Log(m_transformCamera.rotation.eulerAngles.y);
+            //Debug.Log(m_transformCamera.rotation.eulerAngles.y);
             valueTilling = (m_transformCamera.rotation.eulerAngles.y + 180) / 360;
             //valueTilling = valueTilling /2;
             rendBoussole.material.mainTextureOffset = offsetBoussoleTilling + new Vector2(valueTilling, 0.68f);

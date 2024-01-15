@@ -35,6 +35,7 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnim = null;
         [SerializeField] private Animator m_BookAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
+        public UnityEngine.VFX.VisualEffect m_slidingEffectVfx;
         [Range(0, 1)]
         [SerializeField] public float m_SpeedReduce;
         private Rigidbody m_rigidbody;
@@ -139,7 +140,7 @@ namespace Character
             state = new ObjectState();
             GameState.AddObject(state);
 
-
+            m_slidingEffectVfx = m_slidingEffect.GetComponentInChildren<UnityEngine.VFX.VisualEffect>();
             m_rigidbody = GetComponent<Rigidbody>();
             initialSpeed = runSpeed;
             m_characterAim = GetComponent<CharacterAim>();
@@ -312,11 +313,13 @@ namespace Character
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", false);
                     m_BookAnim.SetBool("Running", false);
+                    m_slidingEffectVfx.SetFloat("Rate", 15);
                     break;
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", false);
                     m_BookAnim.SetBool("Sliding", false);
-                    m_slidingEffect.SetActive(false);
+                    //m_slidingEffect.SetActive(false);
+                    m_slidingEffectVfx.SetFloat("Rate", 0);
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
@@ -329,6 +332,7 @@ namespace Character
                 case MouvementState.Dash:
                     m_CharacterAnim.SetBool("Shooting", false);
                     m_BookAnim.SetBool("Shooting", false);
+
                     break;
                 default:
                     break;
@@ -363,7 +367,8 @@ namespace Character
                     m_CharacterAnim.SetBool("Sliding", true);
                     m_BookAnim.SetBool("Sliding", true);
                     UpdateParameter(1, "MouvementState");
-                    m_slidingEffect.SetActive(true);
+                    //m_slidingEffect.SetActive(true);
+                    m_slidingEffectVfx.SetFloat("Rate", 100);
 
                     break;
                 case MouvementState.Glide:

@@ -9,14 +9,17 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public VolumeProfile volumeProfile;
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
-    CloudLayer vCloudsLayer;
+    CloudLayer vCloudLayer;
+    [SerializeField] private AnimationCurve m_OpacityRByHour;
+    [SerializeField] private AnimationCurve m_RotationByHour;
+    [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
     [Range(0, 24)]
     [SerializeField] private float m_timeOfDay;
     static public float staticTimeOfTheDay;
     [SerializeField] private Light m_sun;
     [SerializeField] private Light m_moon;
-    [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la durée d'une journée in-game, de base 10 minutes
-    [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds à la vitesse d'écoulement du temps in-game. 1 reviens à avoir une journée de 24 secondes IRL
+    [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la durï¿½e d'une journï¿½e in-game, de base 10 minutes
+    [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds ï¿½ la vitesse d'ï¿½coulement du temps in-game. 1 reviens ï¿½ avoir une journï¿½e de 24 secondes IRL
     [SerializeField] public RectTransform m_ClockNeedle;
     [SerializeField] private GlobalSoundManager m_GSM;
     [SerializeField] static public float durationDay;
@@ -28,7 +31,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] public TMPro.TMP_Text m_Instruction;
     [SerializeField] public Animator m_instructionAnimator;
     [SerializeField] public Image m_daySlider;
-    private bool isNight = false;
+    public bool isNight = false;
     public float timescale;
 
     [SerializeField] float[] tempsChaquePhase;
@@ -59,7 +62,7 @@ public class DayCyclecontroller : MonoBehaviour
     void Start()
     {
         time = 0;
-        m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'écouler IRL.  On multiplie le nombre de minutes réglée dans l'inspector par 60 pour le convertire en seconde.
+        m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'ï¿½couler IRL.  On multiplie le nombre de minutes rï¿½glï¿½e dans l'inspector par 60 pour le convertire en seconde.
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
         Time.timeScale = timescale;
@@ -108,7 +111,8 @@ public class DayCyclecontroller : MonoBehaviour
         m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
-        ShadowOpacityAdjustByHour(m_timeOfDay);
+        AdjustPostProcessByHour(m_timeOfDay);
+        //UpdatePostProcess();
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
@@ -126,6 +130,13 @@ public class DayCyclecontroller : MonoBehaviour
         CheckingNightDayTransition();
     }
 
+    private void UpdatePostProcess()
+    {
+        ShadowOpacityAdjustByHour(m_timeOfDay);
+        OpacityRAdjustByHour(m_timeOfDay);
+        RotationAdjustByHour(m_timeOfDay);
+        ShadowMultiplierAdjustByHour(m_timeOfDay);
+    }
     private void CheckingNightDayTransition()
     {
         if (isNight)
@@ -168,11 +179,11 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
-        if(nightStartEvent!=null) nightStartEvent.Invoke();
+        if (nightStartEvent != null) nightStartEvent.Invoke();
         m_GSM.UpdateParameter(1, "DayOrNight");
         m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
         StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
-      //  GlobalSoundManager.PlayOneShot(34, transform.position);
+        //  GlobalSoundManager.PlayOneShot(34, transform.position);
         //m_LocalNightVolume.enabled = true;
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
@@ -233,7 +244,7 @@ public class DayCyclecontroller : MonoBehaviour
         else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.49f)
         {
             m_timeOfDay = 18.5f;
-            if(!checkNightSound)
+            if (!checkNightSound)
             {
                 checkNightSound = true;
 
@@ -299,10 +310,45 @@ public class DayCyclecontroller : MonoBehaviour
             vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
         }
 
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudsLayer))
+    }
+    public void OpacityRAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
         {
-            vCloudsLayer.layerA.rotation.value = m_ShadowOpacityByHour.Evaluate(hour);
+            vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
         }
 
     }
+
+
+    public void RotationAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
+        }
+
+    }
+
+    public void ShadowMultiplierAdjustByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+        }
+
+    }
+
+    public void AdjustPostProcessByHour(float hour)
+    {
+        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        {
+            //vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
+            vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
+            vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
+            vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+        }
+    }
 }
+
+
