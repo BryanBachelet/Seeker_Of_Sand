@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 namespace Enemies
@@ -99,10 +100,13 @@ namespace Enemies
         [HideInInspector] public int altarSuccessed;
         [HideInInspector] public int killCount;
         private const string fileStatsName="\\Stats_data";
-        
+
+        private Scene scene;
 
         public void Awake()
         {
+            scene = (SceneManager.GetSceneByBuildIndex(5));
+
 
             TestReadDataSheet();
             state = new ObjectState();
@@ -120,6 +124,8 @@ namespace Enemies
 
         public void Update()
         {
+            if(scene.isLoaded) SceneManager.SetActiveScene(scene);
+
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
             m_timeOfGame += Time.deltaTime;

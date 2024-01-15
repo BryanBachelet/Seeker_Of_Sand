@@ -86,6 +86,9 @@ namespace Character
 
         private CharacterSpellBook m_characterInventory;
 
+        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
+        public event OnHit onHit = delegate {} ;
+
         #region Unity Functions
         private void Awake()
         {
@@ -376,6 +379,10 @@ namespace Character
             m_canEndShot = true;
         }
 
+        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent)
+        {
+            onHit(position, tag, agent);
+        }
         private void StartShoot()
         {
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
@@ -403,6 +410,7 @@ namespace Character
         {
             ProjectileData data = new ProjectileData();
 
+            data.characterShoot = this;
             Vector3 baseDirection = transform.forward;
             if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection();
             data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
