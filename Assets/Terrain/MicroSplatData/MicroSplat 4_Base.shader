@@ -11,7 +11,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_1_1_Base-1330921000"
+Shader "Hidden/Terrain_1_1_Base486038282"
 {
    Properties
    {
@@ -290,6 +290,7 @@ _WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -7889,6 +7890,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -15321,6 +15323,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -22821,6 +22824,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -30295,6 +30299,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -37723,6 +37728,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -45147,6 +45153,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -52600,6 +52607,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -60083,6 +60091,7 @@ void Frag(  VertexToPixel v2f
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -67529,6 +67538,7 @@ float3 GetTessFactors ()
       #define _GLOBALSPECULAROVERLAY 1
       #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
+      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
