@@ -81,7 +81,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     private int m_idSpellReward;
     private int m_enemiesCountConditionToWin = 0;
-
+    public Sprite instructionImage;
     #region Unity Functions
     void Start()
     {
@@ -194,7 +194,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-        m_enemyManager.SendInstruction("Altar protection fail...", Color.red, TerrainLocationID.currentLocationName);
+        m_enemyManager.SendInstruction("Altar protection fail...", Color.red, instructionImage);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
@@ -222,7 +222,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
             m_enemyManager.AddTarget(this.transform);
             m_enemyManager.AddAltar(transform);
-            m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, TerrainLocationID.currentLocationName);
+            m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
             progression = 0;
             m_myAnimator.SetBool("ActiveEvent", true);
 
@@ -264,7 +264,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_enemyManager.altarSuccessed++;
         m_enemyManager.RemoveTarget(transform);
         m_enemyManager.RemoveAltar(transform);
-        m_enemyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" + nextRewardTypologie + ")", Color.green, TerrainLocationID.currentLocationName);
+        m_enemyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" + nextRewardTypologie + ")", Color.green, instructionImage);
 
         // Update altar mesh color
         SetMeshesEventIntensity(.32f * (resetNumber + 1));

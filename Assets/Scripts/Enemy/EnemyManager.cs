@@ -99,7 +99,13 @@ namespace Enemies
         [HideInInspector] public int altarSuccessed;
         [HideInInspector] public int killCount;
         private const string fileStatsName="\\Stats_data";
-        
+
+        [SerializeField] public TMPro.TMP_Text m_Instruction;
+        [SerializeField] public Image m_ImageInstruction;
+        [SerializeField] public Sprite[] instructionSprite;
+        [SerializeField] public Animator m_instructionAnimator;
+
+        public bool spawningConstant = false;
 
         public void Awake()
         {
@@ -136,7 +142,15 @@ namespace Enemies
         }
 
 
-
+        public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, Sprite iconSprite)
+        {
+            m_Instruction.color = colorText;
+            m_Instruction.text = instruction;
+            m_ImageInstruction.sprite = iconSprite;
+            m_instructionAnimator.SetTrigger("DisplayInstruction");
+            yield return new WaitForSeconds(time);
+            m_instructionAnimator.ResetTrigger("DisplayInstruction");
+        }
         public void ChangePauseState(bool state)
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
@@ -473,9 +487,9 @@ namespace Enemies
 
        
 
-        public void SendInstruction(string Instruction, Color colorText, string locationName)
+        public void SendInstruction(string Instruction, Color colorText, Sprite iconAssociate)
         {
-            m_dayController.StartCoroutine(m_dayController.DisplayInstruction(Instruction, 2, colorText, locationName));
+            StartCoroutine(DisplayInstruction(Instruction, 2, colorText, iconAssociate));
         }
         public void RemoveAltar(Transform altarTarget)
         {
@@ -567,8 +581,8 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            if (spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); }
-            else { gsm.globalMusicInstance.setParameterByName("Repos", 1); }
+            if (spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0])); }
+            else { gsm.globalMusicInstance.setParameterByName("Repos", 1); StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1])); }
         }
 
         public void CreateCurveSheet()
