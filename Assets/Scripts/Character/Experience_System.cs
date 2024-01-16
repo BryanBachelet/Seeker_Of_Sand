@@ -27,7 +27,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
     private CristalInventory m_cristalInventory;
-    private health_Player m_healthPlayer;
+    private HealthPlayerComponent m_healthPlayer;
 
     private bool m_xperienceBuffered = false;
     private float lastXpBuffered = 0;
@@ -38,7 +38,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_characterUpgrade = GetComponent<CharacterUpgrade>();
         m_characterProfile = GetComponent<CharacterProfile>();
         m_cristalInventory = GetComponent<CristalInventory>();
-        m_healthPlayer = GetComponent<health_Player>();
+        m_healthPlayer = GetComponent<HealthPlayerComponent>();
         TestReadDataSheet();
     }
 

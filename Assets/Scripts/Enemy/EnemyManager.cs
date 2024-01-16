@@ -106,15 +106,15 @@ namespace Enemies
         [SerializeField] public Sprite[] instructionSprite;
         [SerializeField] public Animator m_instructionAnimator;
 
-        private Scene scene;
-
         public bool spawningConstant = false;
+
+
+        public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
+        public event OnDeath OnDeathEvent = delegate { };
 
         public void Awake()
         {
-            scene = (SceneManager.GetSceneByBuildIndex(5));
-
-
+           
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -131,7 +131,7 @@ namespace Enemies
 
         public void Update()
         {
-            if(scene.isLoaded) SceneManager.SetActiveScene(scene);
+        
 
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
@@ -534,6 +534,16 @@ namespace Enemies
             }
         }
 
+
+        public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
+        {
+
+            Vector3 position = npcHealth.transform.position;
+            SpawnExp(position, xpCount);
+            IncreseAlterEnemyCount(npcHealth);
+            float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
+            OnDeathEvent(position,EntitiesTrigger.Enemies,npcHealth.gameObject, distance);
+        }
         public void DestroyEnemy(NpcHealthComponent npcHealth)
         {
 

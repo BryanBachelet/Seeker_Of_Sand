@@ -9,10 +9,12 @@ public class CharacterArtefact : MonoBehaviour
 
     public bool activeDebug = false;
     private Character.CharacterShoot m_characterShoot;
+    private HealthPlayerComponent m_healthComponent;
 
     public void Start()
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
+        m_healthComponent = GetComponent<HealthPlayerComponent>();
 
         for (int i = 0; i < artefactsList.Count; i++)
         {
@@ -26,9 +28,13 @@ public class CharacterArtefact : MonoBehaviour
         switch (artefacts.conditionsTrigger)
         {
             case ConditionsTrigger.OnHit:
-                m_characterShoot.onHit += artefacts.ActiveArtefact;
+                m_characterShoot.onHit += artefacts.ActiveArtefactOnHit;
                 break;
             case ConditionsTrigger.OnDeath:
+                m_enemyManager.OnDeathEvent += artefacts.ActiveArtefactOnDeath;
+                break;
+            case ConditionsTrigger.Contact:
+                m_healthComponent.OnContactEvent += artefacts.ActiveArtefactOnHit;
                 break;
             default:
                 break;
