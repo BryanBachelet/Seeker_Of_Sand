@@ -29,6 +29,8 @@ public class ShadowFunction : MonoBehaviour
     public EventInstance shadowDetection;
 
     public EventReference activationShadowDetection_Attribution;
+
+    public Enemies.EnemyManager enemyManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,6 +61,7 @@ public class ShadowFunction : MonoBehaviour
                     onShadowSpawnStatic = true;
                     outShadowSpawn = false;
                     outShadowSpawnStatic = false;
+                    enemyManager.ChangeSpawningPhase(true);
                 }
 
             }
@@ -82,6 +85,7 @@ public class ShadowFunction : MonoBehaviour
                     outShadowSpawnStatic = true;
                     onShadowSpawn = false;
                     onShadowSpawnStatic = false;
+                    enemyManager.ChangeSpawningPhase(false);
                 }
 
             }

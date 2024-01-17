@@ -75,23 +75,6 @@ public class DayCyclecontroller : MonoBehaviour
         if (!GameState.IsPlaying()) return;
         time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
-        //if(isNight)
-        //{
-        //    m_timeOfDay += Time.deltaTime * m_orbitSpeed * 2;
-        //}
-        //else
-        //{
-        //    m_timeOfDay += Time.deltaTime * m_orbitSpeed;
-        //}
-        // if(m_timeOfDay > 22 || m_timeOfDay < 4 && isNight)
-        // {
-        //    m_GSM.UpdateParameter(1, "DayOrNight");
-        // }
-        //else
-        // {
-        //    m_GSM.UpdateParameter(0, "DayOrNight");
-        // }
-
         staticTimeOfTheDay = m_timeOfDay;
         UpdateTime();
     }
@@ -196,7 +179,7 @@ public class DayCyclecontroller : MonoBehaviour
 
         if (currentPhase != lastPhaseChecked)
         {
-            m_DayPhases.text = dayprogress + " - " + phaseprogress;
+            m_DayPhases.text = dayprogress + "" + phaseprogress;
             StartCoroutine(DisplayInstruction(instructionPhase[currentPhase], 2, Color.white, ""));
             lastPhaseChecked = currentPhase;
         }
@@ -216,7 +199,7 @@ public class DayCyclecontroller : MonoBehaviour
             m_TimeTransitionLastPhase = time;
             phaseprogress = nomChaquePhase[currentPhase];
             dayprogress = nomHeureChaquePhase[currentPhase];
-            m_DayPhases.text = dayprogress + " - " + phaseprogress;
+            m_DayPhases.text = dayprogress + "" + phaseprogress;
 
         }
         float sliderValue = 1 - ((m_TimeProchainePhase - time) / tempsChaquePhase[currentPhase]);
@@ -252,8 +235,8 @@ public class DayCyclecontroller : MonoBehaviour
 
         }
 
-        if (currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
-        else { m_EnemyManager.ChangeSpawningPhase(false); }
+        //if (currentPhase == 1 || currentPhase == 4 || currentPhase == 7) { m_EnemyManager.ChangeSpawningPhase(true); }
+        //else { m_EnemyManager.ChangeSpawningPhase(false); }
 
 
     }
@@ -261,7 +244,7 @@ public class DayCyclecontroller : MonoBehaviour
     public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, string locationName)
     {
         m_Instruction.color = colorText;
-        m_Instruction.text = "[" + locationName + "] " + instruction;
+        m_Instruction.text = "" + locationName + "" + instruction;
         m_instructionAnimator.SetTrigger("DisplayInstruction");
         yield return new WaitForSeconds(time);
         m_instructionAnimator.ResetTrigger("DisplayInstruction");
