@@ -39,6 +39,8 @@ Shader "Terrain_1_1"
 
 
 
+      _NoiseHeight("Noise Texture", 2D) = "grey" {}
+      _NoiseHeightData("Noise Height Data", Vector) = (1, 0.15, 0, 0)
       // terrain
       [NoScaleOffset]_NormalNoise("Normal Noise", 2D) = "bump" {}
       _NormalNoiseScaleStrength("Normal Scale", Vector) = (8, 0.5, 0, 0)
@@ -54,8 +56,6 @@ Shader "Terrain_1_1"
 
 
 
-_WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
-      _PCHeightGradients("Gradients", 2D) = "grey" {}
 
 
 
@@ -284,11 +284,11 @@ _WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -566,11 +566,6 @@ _WorldHeightRange("World Height Range", Vector) = (0, 500, 0, 0)
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -4633,150 +4628,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -7883,11 +7734,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -8175,11 +8026,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -12241,150 +12087,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -15315,11 +15017,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -15604,11 +15306,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -19668,150 +19365,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -22815,11 +22368,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -23103,11 +22656,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -27167,150 +26715,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -30289,11 +29693,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -30576,11 +29980,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -34641,150 +34040,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -37717,11 +36972,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -38004,11 +37259,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -42068,150 +41318,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -45141,11 +44247,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -45423,11 +44529,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -49485,150 +48586,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -52594,11 +51551,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -52876,11 +51833,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -56939,150 +55891,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -60077,11 +58885,11 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -60359,11 +59167,6 @@ void Frag(  VertexToPixel v2f
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -64423,150 +63226,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -67523,11 +66182,11 @@ float3 GetTessFactors ()
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
+      #define _NOISEHEIGHT 1
       #define _NORMALNOISE 1
       #define _GLOBALSPECULAR 1
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
-      #define _PCHEIGHTGRADIENT 1
       #define _TERRAINBLENDING 1
       #define _TBDITHERALPHA 1
       #define _TBNOISE 1
@@ -67805,11 +66464,6 @@ float3 GetTessFactors ()
          float2 _GlobalTexNoiseUVParams;
       #endif
 
-      float2 _WorldHeightRange;
-
-
-  
-      
 
          float3 _GMSTraxBufferPosition;
          float _GMSTraxBufferWorldSize;
@@ -71867,150 +70521,6 @@ void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2
       #endif
 
      
-
-
-      #if _PCHEIGHTGRADIENT
-         TEXTURE2D(_PCHeightGradients);
-      #endif
-      #if _PCHEIGHTHSV
-         TEXTURE2D(_PCHeightHSV);
-      #endif
-
-
-      #if _PCSLOPEGRADIENT
-         TEXTURE2D(_PCSlopeGradients);
-      #endif
-
-      #if  _PCSLOPEHSV
-         TEXTURE2D(_PCSlopeHSV);
-      #endif
-
-      half3 PCRGB2HSV(half3 c)
-      {
-          half4 K = half4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-          half4 p = lerp(half4(c.bg, K.wz), half4(c.gb, K.xy), step(c.b, c.g));
-          half4 q = lerp(half4(p.xyw, c.r), half4(c.r, p.yzx), step(p.x, c.r));
-       
-          float d = q.x - min(q.w, q.y);
-          float e = 1.0e-10;
-          return half3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-
-
-      half3 PCHSV2RGB(half3 c)
-      {
-          half4 K = half4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-          half3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-          return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
-      }
-  
-      void ProceduralGradients(Input i, inout RawSamples samples, Config c, float worldHeight, float3 worldNormal)
-      {
-         float offset = 0.5 * _PerTexProps_TexelSize.x;
-         #if _PCHEIGHTGRADIENT || _PCHEIGHTHSV
-            float center = worldHeight - _WorldHeightRange.x;
-            float range = max(0.0001, _WorldHeightRange.y - _WorldHeightRange.x);
-            float h = saturate(center / range);
-         #endif
-
-         #if _PCSLOPEGRADIENT || _PCSLOPEHSV
-            half slope = dot(float3(0,0,1), worldNormal);
-            half slope0 = slope;
-            half slope1 = slope;
-            half slope2 = slope;
-            half slope3 = slope;
-            // Take local normal into account?
-            //half slope0 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO0.xy, 1))) * 2 - 1;
-            //half slope1 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO1.xy, 1))) * 2 - 1;
-            //half slope2 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO2.xy, 1))) * 2 - 1;
-            //half slope3 = dot(float3(0,0,1), WorldNormalVector(i, float3(samples.normSAO3.xy, 1))) * 2 - 1;
-         #endif
-
-
-         #if _PCHEIGHTGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCHeightGradients, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-         
-         #if _PCSLOPEGRADIENT
-            samples.albedo0.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            samples.albedo1.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb *= SAMPLE_TEXTURE2D(_PCSlopeGradients, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)) * 2;
-            #endif
-         #endif
-
-         
-         #if _PCHEIGHTHSV || _PCSLOPEHSV
-            samples.albedo0.rgb = PCRGB2HSV(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCRGB2HSV(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCRGB2HSV(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCRGB2HSV(samples.albedo3.rgb);
-            #endif
-            
-            #if _PCHEIGHTHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCHeightHSV, shared_linear_clamp_sampler, float2(h, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-
-            #if _PCSLOPEHSV
-               samples.albedo0.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope0, c.uv0.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               samples.albedo1.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope1, c.uv1.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-            
-               #if !_MAX2LAYER
-               samples.albedo2.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope2, c.uv2.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            
-               #if !_MAX3LAYER && !_MAX2LAYER
-               samples.albedo3.rgb += SAMPLE_TEXTURE2D(_PCSlopeHSV, shared_linear_clamp_sampler, float2(slope3, c.uv3.z * _PerTexProps_TexelSize.x + offset)).xyz - 0.5;
-               #endif
-            #endif
-    
-            
-            samples.albedo0.rgb = PCHSV2RGB(samples.albedo0.rgb);
-            samples.albedo1.rgb = PCHSV2RGB(samples.albedo1.rgb);
-            
-            #if !_MAX2LAYER
-            samples.albedo2.rgb = PCHSV2RGB(samples.albedo2.rgb);
-            #endif
-            
-            #if !_MAX3LAYER && !_MAX2LAYER
-            samples.albedo3.rgb = PCHSV2RGB(samples.albedo3.rgb);
-            #endif
-            
-         #endif
-
-
-      }
-
-
-      
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -74843,7 +73353,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base486038282"
-   Fallback "Hidden/Terrain_1_1_Base486038282"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base-41813995"
+   Fallback "Hidden/Terrain_1_1_Base-41813995"
    CustomEditor "MicroSplatShaderGUI"
 }

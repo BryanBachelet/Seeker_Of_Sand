@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class DayCyclecontroller : MonoBehaviour
 {
     [SerializeField] public VolumeProfile volumeProfile;
+    [SerializeField] public Volume volumePP;
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
     CloudLayer vCloudLayer;
@@ -14,7 +15,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private AnimationCurve m_RotationByHour;
     [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
     [Range(0, 24)]
-    [SerializeField] private float m_timeOfDay;
+    [SerializeField] public float m_timeOfDay;
     static public float staticTimeOfTheDay;
     [SerializeField] private Light m_sun;
     [SerializeField] private Light m_moon;
@@ -296,7 +297,7 @@ public class DayCyclecontroller : MonoBehaviour
     }
     public void OpacityRAdjustByHour(float hour)
     {
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        if (volumePP.profile.TryGet<CloudLayer>(out vCloudLayer))
         {
             vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
         }
@@ -306,7 +307,7 @@ public class DayCyclecontroller : MonoBehaviour
 
     public void RotationAdjustByHour(float hour)
     {
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        if (volumePP.profile.TryGet<CloudLayer>(out vCloudLayer))
         {
             vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
         }
@@ -315,7 +316,7 @@ public class DayCyclecontroller : MonoBehaviour
 
     public void ShadowMultiplierAdjustByHour(float hour)
     {
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        if (volumePP.profile.TryGet<CloudLayer>(out vCloudLayer))
         {
             vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
         }
@@ -324,12 +325,13 @@ public class DayCyclecontroller : MonoBehaviour
 
     public void AdjustPostProcessByHour(float hour)
     {
-        if (volumeProfile.TryGet<CloudLayer>(out vCloudLayer))
+        if (volumePP.profile.TryGet<CloudLayer>(out vCloudLayer))
         {
             //vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
             vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
             vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
             vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+            //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
         }
     }
 }
