@@ -15,7 +15,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private AnimationCurve m_RotationByHour;
     [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
     [Range(0, 24)]
-    [SerializeField] private float m_timeOfDay;
+    [SerializeField] public float m_timeOfDay;
     static public float staticTimeOfTheDay;
     [SerializeField] private Light m_sun;
     [SerializeField] private Light m_moon;
