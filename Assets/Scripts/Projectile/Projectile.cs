@@ -16,6 +16,7 @@ public struct ProjectileData
     public int salveNumber;
     public float sizeFactor;
     public float size;
+    public Character.CharacterShoot characterShoot;
 }
 
 
@@ -41,6 +42,7 @@ public class Projectile : MonoBehaviour
     protected int m_salveNumber;
     protected float m_size;
     protected float m_sizeMultiplicateurFactor;
+    protected Character.CharacterShoot m_characterShoot;
 
     private float spawnTime;
     private bool checkSpawnTime = false;
@@ -72,6 +74,7 @@ public class Projectile : MonoBehaviour
         m_size = data.size;
         m_travelTime = data.travelTime;
         m_sizeMultiplicateurFactor = data.sizeFactor;
+        m_characterShoot = data.characterShoot;
     }
     protected virtual void Move()
     {
@@ -106,6 +109,7 @@ public class Projectile : MonoBehaviour
         {
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies,other.gameObject);
             if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
 
             enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power);

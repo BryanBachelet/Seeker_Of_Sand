@@ -79,8 +79,12 @@ public class GameState : MonoBehaviour
     private bool m_activeDebug = true;
     private GameManager m_gmComponent;
 
+    private Scene scene;
+    private bool m_activeSceneEvent = false;
+   
     public void Start()
     {
+        scene = (SceneManager.GetSceneByBuildIndex(5));
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
 
@@ -106,8 +110,19 @@ public class GameState : MonoBehaviour
         m_isDeath = true;
     }
 
+    public void ActiveMainScene()
+    {
+        if (scene.isLoaded && !m_activeSceneEvent)
+        {
+            SceneManager.SetActiveScene(scene);
+            m_activeSceneEvent = true;
+        }
+    }
+
     public void Update()
     {
+        ActiveMainScene();
+
         if (m_isDeath)
         {
             if (!m_isDeathProcessusActive)

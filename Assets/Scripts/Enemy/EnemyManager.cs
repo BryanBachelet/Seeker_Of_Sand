@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 namespace Enemies
@@ -107,9 +108,13 @@ namespace Enemies
 
         public bool spawningConstant = false;
 
+
+        public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
+        public event OnDeath OnDeathEvent = delegate { };
+
         public void Awake()
         {
-
+           
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -126,6 +131,8 @@ namespace Enemies
 
         public void Update()
         {
+        
+
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
             m_timeOfGame += Time.deltaTime;
@@ -527,6 +534,16 @@ namespace Enemies
             }
         }
 
+
+        public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
+        {
+
+            Vector3 position = npcHealth.transform.position;
+            SpawnExp(position, xpCount);
+            IncreseAlterEnemyCount(npcHealth);
+            float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
+            OnDeathEvent(position,EntitiesTrigger.Enemies,npcHealth.gameObject, distance);
+        }
         public void DestroyEnemy(NpcHealthComponent npcHealth)
         {
 
