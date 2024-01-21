@@ -16,6 +16,7 @@ public struct CameraStep
 public class CameraIntroMouvement : MonoBehaviour
 {
     [SerializeField] private CameraStep[] m_cameraSteps = new CameraStep[0];
+    [SerializeField] private AnimationCurve[] m_cameraStepsSpeeds = new AnimationCurve[0];
     private int m_prevIndex = 0;
     private int m_nextIndex = 1;
 
@@ -35,6 +36,8 @@ public class CameraIntroMouvement : MonoBehaviour
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
         GameState.ChangeState();
+        GlobalSoundManager.PlayOneShot(41, transform.position);
+
     }
     public void Update()
     {
@@ -84,12 +87,14 @@ public class CameraIntroMouvement : MonoBehaviour
                 //m_BlackOpening.SetBool("Open", true); 
                 return;
             }
+            GlobalSoundManager.PlayOneShot(41,transform.position);
             m_timerCamera = 0.0f;
         }
 
         m_timerCamera += Time.deltaTime;
-        float ratio = m_timerCamera / m_cameraSteps[m_nextIndex].duration;
 
+        float ratio = m_timerCamera / m_cameraSteps[m_nextIndex].duration;
+        ratio = m_cameraStepsSpeeds[m_nextIndex].Evaluate(ratio);
         transform.position = Vector3.Lerp(m_cameraSteps[m_prevIndex].position, m_cameraSteps[m_nextIndex].position, ratio);
         transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_cameraSteps[m_prevIndex].rotation), Quaternion.Euler(m_cameraSteps[m_nextIndex].rotation), ratio);
     }
