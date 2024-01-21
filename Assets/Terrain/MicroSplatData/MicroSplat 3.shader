@@ -4,7 +4,8 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.15f1
+//   Unity Version: 2021.3.16f1
+//   MicroSplat Version: 3.9
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
@@ -32,6 +33,24 @@ Shader "Terrain_1_1"
       _TerrainHeightmapTexture("", 2D) = "black" {}
       _TerrainNormalmapTexture("", 2D) = "bump" {}
       _HybridHeightBlendDistance("Hybrid Blend Distance", Float) = 300
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      _TriplanarUVScale("Triplanar UV Scale", Vector) = (1, 1, 0, 0)
 
       _GlitterWind ("Glitter Wind Map", 2D) = "black" {}
 
@@ -2092,6 +2111,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -7060,6 +7183,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -11847,6 +12074,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -16706,6 +17037,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -21540,6 +21975,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -26327,6 +26866,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -31104,6 +31747,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -35918,6 +36665,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -38881,7 +39732,6 @@ void Frag(  VertexToPixel v2f
             #pragma shader_feature_local _ _DISABLE_SSR
             #pragma shader_feature_local _ _DISABLE_SSR_TRANSPARENT
             #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
-            #pragma multi_compile _ WRITE_DECAL_BUFFER
                 
         
   
@@ -40763,6 +41613,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
@@ -45567,6 +46521,110 @@ TEXTURE2D(_MainTex);
         return s;
      }
      
+// Stochastic shared code
+
+// Compute local triangle barycentric coordinates and vertex IDs
+void TriangleGrid(float2 uv, float scale,
+   out float w1, out float w2, out float w3,
+   out int2 vertex1, out int2 vertex2, out int2 vertex3)
+{
+   // Scaling of the input
+   uv *= 3.464 * scale; // 2 * sqrt(3)
+
+   // Skew input space into simplex triangle grid
+   const float2x2 gridToSkewedGrid = float2x2(1.0, 0.0, -0.57735027, 1.15470054);
+   float2 skewedCoord = mul(gridToSkewedGrid, uv);
+
+   // Compute local triangle vertex IDs and local barycentric coordinates
+   int2 baseId = int2(floor(skewedCoord));
+   float3 temp = float3(frac(skewedCoord), 0);
+   temp.z = 1.0 - temp.x - temp.y;
+   if (temp.z > 0.0)
+   {
+      w1 = temp.z;
+      w2 = temp.y;
+      w3 = temp.x;
+      vertex1 = baseId;
+      vertex2 = baseId + int2(0, 1);
+      vertex3 = baseId + int2(1, 0);
+   }
+   else
+   {
+      w1 = -temp.z;
+      w2 = 1.0 - temp.y;
+      w3 = 1.0 - temp.x;
+      vertex1 = baseId + int2(1, 1);
+      vertex2 = baseId + int2(1, 0);
+      vertex3 = baseId + int2(0, 1);
+   }
+}
+
+// Fast random hash function
+float2 SimpleHash2(float2 p)
+{
+   return frac(sin(mul(float2x2(127.1, 311.7, 269.5, 183.3), p)) * 4375.85453);
+}
+
+
+half3 BaryWeightBlend(half3 iWeights, half tex0, half tex1, half tex2, half contrast)
+{
+    // compute weight with height map
+    const half epsilon = 1.0f / 1024.0f;
+    half3 weights = half3(iWeights.x * (tex0 + epsilon), 
+                             iWeights.y * (tex1 + epsilon),
+                             iWeights.z * (tex2 + epsilon));
+
+    // Contrast weights
+    half maxWeight = max(weights.x, max(weights.y, weights.z));
+    half transition = contrast * maxWeight;
+    half threshold = maxWeight - transition;
+    half scale = 1.0f / transition;
+    weights = saturate((weights - threshold) * scale);
+    // Normalize weights.
+    half weightScale = 1.0f / (weights.x + weights.y + weights.z);
+    weights *= weightScale;
+    return weights;
+}
+
+void PrepareStochasticUVs(float scale, float3 uv, out float3 uv1, out float3 uv2, out float3 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv.xy, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+void PrepareStochasticUVs(float scale, float2 uv, out float2 uv1, out float2 uv2, out float2 uv3, out half3 weights)
+{
+   // Get triangle info
+   float w1, w2, w3;
+   int2 vertex1, vertex2, vertex3;
+   TriangleGrid(uv, scale, w1, w2, w3, vertex1, vertex2, vertex3);
+
+   // Assign random offset to each triangle vertex
+   uv1 = uv;
+   uv2 = uv;
+   uv3 = uv;
+   
+   uv1.xy += SimpleHash2(vertex1);
+   uv2.xy += SimpleHash2(vertex2);
+   uv3.xy += SimpleHash2(vertex3);
+   weights = half3(w1, w2, w3);
+   
+}
+
+
       UNITY_DECLARE_TEX2D_NOSAMPLER(_GlitterWind);
 
 
