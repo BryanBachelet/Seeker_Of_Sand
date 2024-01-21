@@ -5,11 +5,14 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Tool_PositionningTerrain : MonoBehaviour
 {
-    public static bool activeDebug;
     public bool activeDebugDisplay;
+    public bool activeDebugDisplayParent;
 
     public LayerMask layerGround;
     public Vector3 directionPosition;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,8 +37,30 @@ public class Tool_PositionningTerrain : MonoBehaviour
                 Debug.DrawRay(transform.position, transform.TransformDirection(directionPosition) * 1000, Color.white);
                 Debug.Log("Did not Hit");
             }
-
+            activeDebugDisplay = false;
         }
+
+
+        if(activeDebugDisplayParent)
+        {
+            
+            for(int i = 0; i < transform.childCount; i++)
+            {
+                RaycastHit hit;
+                Transform childTransform = transform.GetChild(i);
+                // Does the ray intersect any objects excluding the player layer
+                if (Physics.Raycast(childTransform.position, directionPosition, out hit, Mathf.Infinity, layerGround))
+                {
+                    Debug.DrawRay(childTransform.position, directionPosition * hit.distance, Color.yellow);
+                    Debug.Log("Did Hit");
+                    childTransform.position = hit.point;
+                }
+            }
+
+
+            activeDebugDisplayParent = false;
+        }
+
         Debug.DrawRay(transform.position, transform.TransformDirection(directionPosition) * 1000, Color.white);
         Debug.Log("Did not Hit");
     }
