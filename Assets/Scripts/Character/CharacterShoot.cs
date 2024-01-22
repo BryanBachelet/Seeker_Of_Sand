@@ -88,7 +88,7 @@ namespace Character
 
         public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
         public event OnHit onHit = delegate {} ;
-
+        private DropInventory m_dropInventory;
         #region Unity Functions
         private void Awake()
         {
@@ -99,12 +99,16 @@ namespace Character
         {
             state = new ObjectState();
             GameState.AddObject(state);
-
+            m_dropInventory = this.GetComponent<DropInventory>();
             if (activeRandom) GenerateNewBuild();
 
             InitComponents();
             InitCapsule();
             InitSpriteSpell();
+            for(int i = 0; i < capsuleIndex.Count; i++)
+            {
+                m_dropInventory.addNewItem(i);
+            }
 
             // Init Variables
             m_currentRotationIndex = 0;

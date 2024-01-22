@@ -66,6 +66,10 @@ public class HintDropAcquisition : MonoBehaviour
 
     }
 
+    public void AddNewDrop(DropInfo newDropInfo)
+    {
+        m_dropBuffer.Add(newDropInfo);
+    }
     public void ActivationDisplayLoot()
     {
         lastdropLoot = Time.time;
