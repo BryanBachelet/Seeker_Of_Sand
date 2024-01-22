@@ -16,12 +16,13 @@ public class IntroCarrousel : MonoBehaviour
     [SerializeField] private int[] m_gameplaySceneIndex = new int[1];
     private int m_currentIndex;
 
+
     public TMPro.TMP_Text textProgression;
 
     Scene lastScene;
     private int m_currentsSceneIndex = 0;
-    AsyncOperation scene;
-    private bool m_CanLauchScene = true;
+    AsyncOperation[] scene = new AsyncOperation[3];
+
     private void Awake()
     {
         if(instance == null)
@@ -67,21 +68,16 @@ public class IntroCarrousel : MonoBehaviour
 
     public async void LoadSceneWithLoading()
     {
-
-        //var scene = SceneManager.LoadSceneAsync(m_gameplaySceneIndex[]);
-
-
-        //lastScene = SceneManager.GetSceneByBuildIndex(SceneManager.sceneCount);
-
-        if (m_currentsSceneIndex == m_gameplaySceneIndex.Length - 1)
+        scene[m_currentsSceneIndex] = SceneManager.LoadSceneAsync(m_gameplaySceneIndex[m_currentsSceneIndex], LoadSceneMode.Additive);
+      
+        if (m_currentsSceneIndex == 0)
         {
-            scene.allowSceneActivation = true;
-            lastScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+            scene[m_currentsSceneIndex].allowSceneActivation = true;
+        
         }
         else
         {
-            scene.allowSceneActivation = false;
-
+            scene[m_currentsSceneIndex].allowSceneActivation = false;
             _loaderCanvas.SetActive(true);
         }
         _target = 0;
@@ -92,56 +88,34 @@ public class IntroCarrousel : MonoBehaviour
         {
             await System.Threading.Tasks.Task.Delay(100);
 
-        } while (scene.progress < 0.9f);
-        _target = scene.progress;
+        } while (scene[m_currentsSceneIndex].progress < 0.9f && scene[0].isDone);
+        _target = scene[m_currentsSceneIndex].progress;
         await System.Threading.Tasks.Task.Delay(1000);
-        if (m_currentsSceneIndex == m_gameplaySceneIndex.Length - 1)
+
+
+        if (m_currentsSceneIndex == 0)
         {
             lastScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-
+            _loaderCanvas.SetActive(false);
+            SceneManager.SetActiveScene(lastScene); 
         }
-        else
-        {
-            m_CanLauchScene = true;
-            m_currentsSceneIndex += 1;
-        }
-
+    
+        m_currentsSceneIndex++;
         
+        if(m_currentsSceneIndex < m_gameplaySceneIndex.Length) LoadSceneWithLoading();
+
     }
 
     private void Update()
     {
+      
         _progressBar.fillAmount = Mathf.MoveTowards(_progressBar.fillAmount, _target, 3 * Time.deltaTime);
         textProgression.text = "Game is loading \n" + (_target * 100) + "%";
-
-        if(scene != null && scene.progress >= 0.9f && m_CanLauchScene && m_currentsSceneIndex != m_gameplaySceneIndex.Length)
-        {
-            m_CanLauchScene = false;
-            scene = null;
-            scene = SceneManager.LoadSceneAsync(m_gameplaySceneIndex[m_currentsSceneIndex], LoadSceneMode.Additive);
-            Debug.Log("Loading done : " + m_currentsSceneIndex);
-            LoadSceneWithLoading();
-            if(m_currentsSceneIndex == m_gameplaySceneIndex.Length -1)
-            {
-
-
-
-            }
-
-        }
-        if(scene != null && scene.isDone)
-        {
-            _loaderCanvas.SetActive(false);
-            SceneManager.SetActiveScene(lastScene);
-            scene = null;
-        }
-
     }
 
     public void ActiveLoadingSceneBuffer()
     {
-        m_CanLauchScene = false;
-        scene = SceneManager.LoadSceneAsync(m_gameplaySceneIndex[m_currentsSceneIndex], LoadSceneMode.Additive);
+        
         LoadSceneWithLoading();
     }
 }
