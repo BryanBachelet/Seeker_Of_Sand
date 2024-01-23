@@ -76,7 +76,7 @@ public class ShadowFunction : MonoBehaviour
             }
             else
             {
-                if(!outShadowSpawn)
+                if(!outShadowSpawn && !DayCyclecontroller.isNightState)
                 {
                     detectionAnimator.SetBool("ShadowDetection", false);
                     m_TimeOnShadow = 0;

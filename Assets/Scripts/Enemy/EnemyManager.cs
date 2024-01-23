@@ -136,14 +136,10 @@ namespace Enemies
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
             m_timeOfGame += Time.deltaTime;
-            if (spawningPhase)
+            if(spawningPhase || m_dayController.isNight || m_targetTransformLists.Count > 0)
             {
-                if(ShadowFunction.onShadowSpawnStatic || m_dayController.isNight)
-                {
-                    m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
-                    SpawnCooldown();
-                }
-
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
+                SpawnCooldown();
             }
 
         }
