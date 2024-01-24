@@ -27,12 +27,13 @@ Material:
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_ValidKeywords:
   - N_F_ALSL_ON
-  - N_F_AL_ON
-  - N_F_ESSAO_ON
+  - N_F_CS_ON
+  - N_F_DCS_ON
   - N_F_ESSGI_ON
   - N_F_ESSR_ON
-  - N_F_ESSS_ON
-  - N_F_PAL_ON
+  - N_F_HDLS_ON
+  - N_F_HPSAS_ON
+  - N_F_NLASOBF_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
@@ -48,6 +49,7 @@ Material:
   - RayTracingPrepass
   - MOTIONVECTORS
   - SRPDEFAULTUNLIT
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -287,10 +289,10 @@ Material:
     - _LigIgnoYNorDir: 0
     - _LightAffectOutlineColor: 0
     - _LightAffectRimLightColor: 1
-    - _LightAffectShadow: 1
+    - _LightAffectShadow: 0
     - _LightFalloffAffectShadowT: 0
     - _LightFalloffSoftness: 0.844
-    - _LightIntensity: 1
+    - _LightIntensity: 0
     - _LinkDetailsWithBase: 1
     - _MCIALO: 0
     - _MCapIntensity: 1
@@ -304,31 +306,31 @@ Material:
     - _MetallicRemapMin: 0
     - _MinFadDistance: 0
     - _MixMainTexToOutline: 0
-    - _N_F_AL: 1
+    - _N_F_AL: 0
     - _N_F_ALSL: 1
     - _N_F_CA: 0
     - _N_F_CLD: 0
     - _N_F_CO: 0
     - _N_F_COEDGL: 0
-    - _N_F_CS: 0
-    - _N_F_DCS: 0
-    - _N_F_ESSAO: 1
+    - _N_F_CS: 1
+    - _N_F_DCS: 1
+    - _N_F_ESSAO: 0
     - _N_F_ESSGI: 1
     - _N_F_ESSR: 1
-    - _N_F_ESSS: 1
+    - _N_F_ESSS: 0
     - _N_F_FR: 0
     - _N_F_GLO: 0
     - _N_F_GLOT: 0
-    - _N_F_HDLS: 0
-    - _N_F_HPSAS: 0
+    - _N_F_HDLS: 1
+    - _N_F_HPSAS: 1
     - _N_F_MC: 0
     - _N_F_MSSOLTFO: 0
     - _N_F_NFD: 0
-    - _N_F_NLASOBF: 0
+    - _N_F_NLASOBF: 1
     - _N_F_NM: 0
     - _N_F_O: 0
     - _N_F_O_NM: 0
-    - _N_F_PAL: 1
+    - _N_F_PAL: 0
     - _N_F_PT: 0
     - _N_F_R: 0
     - _N_F_RL: 0
@@ -352,7 +354,7 @@ Material:
     - _OutlineWidth: 1
     - _OutlineWidthAffectedByViewDistance: 0
     - _OutlineZPostionInCamera: 0
-    - _OverallShadowColorPower: 1
+    - _OverallShadowColorPower: 0
     - _PPDLodThreshold: 5
     - _PPDMaxSamples: 15
     - _PPDMinSamples: 5
@@ -389,11 +391,11 @@ Material:
     - _SelfShadowAffectedByLightShadowStrength: 1
     - _SelfShadowHardness: 1
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 0.88
+    - _SelfShadowRealtimeShadowIntensity: 0
     - _SelfShadowShadowTAtViewDirection: 0
     - _SelfShadowThreshold: 0.945
     - _ShadowColorTexturePower: 0
-    - _ShadowHardness: 1
+    - _ShadowHardness: 0
     - _ShadowTColorPower: 1
     - _ShadowTHardness: 1
     - _ShadowTIntensity: 0

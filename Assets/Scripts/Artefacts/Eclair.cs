@@ -9,11 +9,12 @@ namespace Artefact
         public float m_damage;
         private ArtefactData m_artefactData;
         [Header("Around Parameter")]
-        public float radiusEffect;
+        private float radiusEffect;
         public LayerMask enemyMask;
         public void Start()
         {
             m_artefactData = GetComponent<ArtefactData>();
+            radiusEffect = m_artefactData.radius;
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
         }

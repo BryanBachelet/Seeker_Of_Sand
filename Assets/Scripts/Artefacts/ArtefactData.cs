@@ -6,8 +6,9 @@ namespace Artefact
 {
     public class ArtefactData : MonoBehaviour
     {
-        public GameObject agent;
-        public EntitiesTargetSystem entitiesTargetSystem;
-        
+        [HideInInspector] public GameObject agent;
+        [HideInInspector] public GameObject characterGo;
+        [HideInInspector] public EntitiesTargetSystem entitiesTargetSystem;
+        [HideInInspector] public float radius;
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -87,12 +88,18 @@ namespace Character
         private CharacterSpellBook m_characterInventory;
 
         public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
-        public event OnHit onHit = delegate {} ;
+        public event OnHit onHit = delegate { };
+
+
+        [Header("Spell Unique ")]
+        public int numberOfUniqueSpell = 100;
+        public Coroutine[] m_spellCouroutine;
 
         #region Unity Functions
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
+            m_spellCouroutine = new Coroutine[100];
         }
 
         private void Start()
@@ -303,7 +310,7 @@ namespace Character
                 return;
             }
 
-            if (m_currentType == SpellSystem.CapsuleType.ATTACK) ShootAttack();
+            if (m_currentType == SpellSystem.CapsuleType.ATTACK) ShootAttack(m_currentIndexCapsule, ref currentShotNumber, ref m_canEndShot);
 
             if (m_currentType == SpellSystem.CapsuleType.BUFF) ShootBuff(((SpellSystem.CapsuleBuff)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)));
 
@@ -312,43 +319,93 @@ namespace Character
             m_CharacterAnimator.SetBool("Shooting", true);
             m_BookAnimator.SetBool("Shooting", true);
 
+          
+        }
+
+        public int GetCurrentCapsuleIndex()
+        {
+            return m_currentIndexCapsule;
+        }
+
+        public void LaunchShootUniqueSpell(int index)
+        {
+            for (int i = 0; i < m_spellCouroutine.Length; i++)
+            {
+                if (m_spellCouroutine[i] == null)
+                    m_spellCouroutine[i] = StartCoroutine(ShootUniqueSpell(index, i, EndCouroutine));
+            }
+               
 
         }
 
-        private void ShootAttack()
+        public void EndCouroutine(int index)
         {
-            if (currentWeaponStats.formType == FormTypeSpell.PROJECTILE)
+            m_spellCouroutine[index] = null;
+        }
+
+        private IEnumerator ShootUniqueSpell(int indexSpell,int indexCouroutine, System.Action<int> test)
+        {
+            CapsuleStats stats = GetCurrentWeaponStat(indexSpell);
+            bool isFinish = false;
+            int currentSpellCount = 0;
+            while (!isFinish)
             {
-                ShootAttackProjectile();
+                ShootSpell(indexSpell, ref currentSpellCount, ref isFinish);
+                yield return new WaitForSeconds(stats.timeBetweenShot);
+            }
+            yield return null;
+            test(indexCouroutine);
+        }
+
+        private void ShootSpell(int index, ref int currentShootCount, ref bool endShoot)
+        {
+            if (m_currentType == SpellSystem.CapsuleType.ATTACK) ShootAttack(index, ref currentShootCount, ref endShoot);
+
+            if (m_currentType == SpellSystem.CapsuleType.BUFF) ShootBuff(((SpellSystem.CapsuleBuff)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)));
+
+        }
+
+        private void ShootAttack(int index, ref int currentShootCount, ref bool endShoot)
+        {
+            CapsuleStats stats = GetCurrentWeaponStat(index);
+            if (stats.formType == FormTypeSpell.PROJECTILE)
+            {
+                endShoot = ShootAttackProjectile(index, ref currentShootCount);
                 return;
             }
 
-            if (currentWeaponStats.formType == FormTypeSpell.AREA) ShootAtttackArea();
+            if (stats.formType == FormTypeSpell.AREA)
+                endShoot = ShootAtttackArea(index);
         }
 
 
-        public void ShootAtttackArea()
+        private CapsuleStats GetCurrentWeaponStat(int index) { return capsuleStatsAlone[m_currentIndexCapsule]; }
+
+        public bool ShootAtttackArea(int capsuleIndex)
         {
-            float angle = GetShootAngle(currentWeaponStats);
-            int mod = GetStartIndexProjectile(currentWeaponStats);
+
+            CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
+            float angle = GetShootAngle(stats);
+            int mod = GetStartIndexProjectile(stats);
 
             Transform transformUsed = transform;
             Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)).projectile, position, rot);
+            GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);
 
             projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
-            ProjectileData data = FillProjectileData(0, angle, transformUsed);
+            ProjectileData data = FillProjectileData(stats, 0, angle, transformUsed);
             projectileCreate.GetComponent<Projectile>().SetProjectile(data);
 
-            m_canEndShot = true;
+            return true;
         }
 
-        private void ShootAttackProjectile()
+        private bool ShootAttackProjectile(int capsuleIndex, ref int currentShotCount)
         {
-            float angle = GetShootAngle(currentWeaponStats);
-            int mod = GetStartIndexProjectile(currentWeaponStats);
+            CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
+            float angle = GetShootAngle(stats);
+            int mod = GetStartIndexProjectile(stats);
             for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
             {
                 Transform transformUsed = transform;
@@ -356,17 +413,20 @@ namespace Character
                 Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
 
-                GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)).projectile, position, rot);
-                projectileCreate.transform.localScale = projectileCreate.transform.localScale * (currentWeaponStats.size * currentWeaponStats.sizeMultiplicatorFactor);
+                GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);
+                projectileCreate.transform.localScale = projectileCreate.transform.localScale * (stats.size * stats.sizeMultiplicatorFactor);
 
-                ProjectileData data = FillProjectileData(0, angle, transformUsed);
+                ProjectileData data = FillProjectileData(stats, 0, angle, transformUsed);
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
-            currentShotNumber++;
-            if (currentShotNumber == currentWeaponStats.shootNumber) m_canEndShot = true;
+            currentShotCount++;
+            if (currentShotCount == stats.shootNumber)
+                return true;
+            else
+                return false;
         }
 
         private void ShootBuff(SpellSystem.CapsuleBuff capsuleBuff) // TODO : No Use. Need to be rethink
@@ -406,7 +466,7 @@ namespace Character
             m_isShooting = false;
         }
 
-        private ProjectileData FillProjectileData(float index, float angle, Transform transformUsed)
+        private ProjectileData FillProjectileData(CapsuleStats stats, float index, float angle, Transform transformUsed)
         {
             ProjectileData data = new ProjectileData();
 
@@ -414,18 +474,18 @@ namespace Character
             Vector3 baseDirection = transform.forward;
             if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection();
             data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
-            data.speed = currentWeaponStats.speed + m_rigidbody.velocity.magnitude;
-            data.life = currentWeaponStats.lifetime;
-            data.damage = currentWeaponStats.damage;
-            data.travelTime = currentWeaponStats.trajectoryTimer;
-            data.piercingMax = currentWeaponStats.piercingMax;
-            data.salveNumber = (int)currentWeaponStats.projectileNumber;
-            data.shootNumber = (int)currentWeaponStats.shootNumber;
-            data.size = currentWeaponStats.size;
-            data.sizeFactor = currentWeaponStats.sizeMultiplicatorFactor;
+            data.speed = stats.speed + m_rigidbody.velocity.magnitude;
+            data.life = stats.lifetime;
+            data.damage = stats.damage;
+            data.travelTime = stats.trajectoryTimer;
+            data.piercingMax = stats.piercingMax;
+            data.salveNumber = (int)stats.projectileNumber;
+            data.shootNumber = (int)stats.shootNumber;
+            data.size = stats.size;
+            data.sizeFactor = stats.sizeMultiplicatorFactor;
             Vector3 dest = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * m_characterAim.GetAimFinalPoint();
-            if ((dest - transformUsed.position).magnitude > currentWeaponStats.range)
-                dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * currentWeaponStats.range;
+            if ((dest - transformUsed.position).magnitude > stats.range)
+                dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * stats.range;
 
             data.destination = m_characterAim.GetAimFinalPoint();
             pos = dest;

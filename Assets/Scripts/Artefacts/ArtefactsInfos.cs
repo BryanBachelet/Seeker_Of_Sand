@@ -34,6 +34,7 @@ public class ArtefactsInfos : ScriptableObject
     public EntitiesTrigger entitiesTrigger;
     public EntitiesTargetSystem entitiesTargetSystem;
     public GameObject m_artefactToSpawn;
+    [HideInInspector] public GameObject characterGo;
     public Sprite icon;
 
     public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
@@ -72,5 +73,7 @@ public class ArtefactsInfos : ScriptableObject
     {
         artefactData.agent = agent;
         artefactData.entitiesTargetSystem = entitiesTargetSystem;
+        artefactData.characterGo = characterGo;
+        artefactData.radius = radius;
     }
 }
