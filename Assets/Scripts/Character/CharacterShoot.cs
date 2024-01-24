@@ -95,6 +95,7 @@ namespace Character
         public int numberOfUniqueSpell = 100;
         public Coroutine[] m_spellCouroutine;
 
+        private DropInventory m_dropInventory;
         #region Unity Functions
         private void Awake()
         {
@@ -106,12 +107,16 @@ namespace Character
         {
             state = new ObjectState();
             GameState.AddObject(state);
-
+            m_dropInventory = this.GetComponent<DropInventory>();
             if (activeRandom) GenerateNewBuild();
 
             InitComponents();
             InitCapsule();
             InitSpriteSpell();
+            for(int i = 0; i < capsuleIndex.Count; i++)
+            {
+                m_dropInventory.addNewItem(i);
+            }
 
             // Init Variables
             m_currentRotationIndex = 0;
@@ -332,11 +337,14 @@ namespace Character
             for (int i = 0; i < m_spellCouroutine.Length; i++)
             {
                 if (m_spellCouroutine[i] == null)
+                {
                     m_spellCouroutine[i] = StartCoroutine(ShootUniqueSpell(index, i, EndCouroutine));
+                    return;
+                }
             }
-               
 
-        }
+
+            }
 
         public void EndCouroutine(int index)
         {

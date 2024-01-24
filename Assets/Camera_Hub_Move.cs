@@ -17,11 +17,13 @@ public class Camera_Hub_Move : MonoBehaviour
     private Animator m_animatorTrain;
 
     public Animator bandeNoirAnimator;
+    public SceneSwaper sceneSwaper;
     private void Start()
     {
         m_characterMove = playerRef.GetComponent<Character.CharacterMouvement>();
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
         m_animatorTrain = trainRef.GetComponent<Animator>();
+
     }
     private void Update()
     {
@@ -49,5 +51,8 @@ public class Camera_Hub_Move : MonoBehaviour
         bandeNoirAnimator.SetBool("active", true);
         yield return new WaitForSeconds(1.5f);
         bandeNoirAnimator.SetBool("Close", true);
+        yield return new WaitForSeconds(1.5f);
+        sceneSwaper.LoadSceneWithLoading();
+
     }
 }

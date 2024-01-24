@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class IntroCarrousel : MonoBehaviour
 {
     public static IntroCarrousel instance;
+    private Scene thisScene;
 
     [SerializeField] private GameObject _loaderCanvas;
     [SerializeField] private UnityEngine.UI.Image _progressBar;
@@ -23,17 +24,20 @@ public class IntroCarrousel : MonoBehaviour
     private int m_currentsSceneIndex = 0;
     AsyncOperation[] scene = new AsyncOperation[3];
 
+    private GameObject[] GOToUnload;
     private void Awake()
     {
-        if(instance == null)
+        thisScene = SceneManager.GetActiveScene();
+        if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+        GOToUnload = thisScene.GetRootGameObjects();
     }
     public void ChangeScene()
     {
@@ -97,12 +101,46 @@ public class IntroCarrousel : MonoBehaviour
         {
             lastScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
             _loaderCanvas.SetActive(false);
-            SceneManager.SetActiveScene(lastScene); 
+            SceneManager.SetActiveScene(lastScene);
+           
+
         }
-    
+        
+        if(m_currentsSceneIndex == 2)
+        {
+            GameObject[] sceneObject = lastScene.GetRootGameObjects();
+            for (int i = 0; i < sceneObject.Length; i++)
+            {
+                if (sceneObject[i].name == "GameStartArea")
+                {
+                    SceneSwaper sceneSwaperReference = sceneObject[i].GetComponentInChildren<SceneSwaper>();
+                    for (int j = scene.Length - 1; j >= 1; j--)
+                    {
+                        sceneSwaperReference.sceneToLoadAtStart.Add(scene[j]);
+                    }
+
+                }
+            }
+        }
         m_currentsSceneIndex++;
         
         if(m_currentsSceneIndex < m_gameplaySceneIndex.Length) LoadSceneWithLoading();
+        if(m_currentsSceneIndex == m_gameplaySceneIndex.Length)
+        {
+
+            Debug.Log("Every Scene loaded");
+            for(int i = 0; i < GOToUnload.Length; i++)
+            {
+                if(GOToUnload[i] != this.gameObject)
+                {
+
+                    Destroy(GOToUnload[i]);
+                }
+            }
+            SceneManager.UnloadSceneAsync(thisScene.buildIndex);
+            Destroy(this.gameObject);
+
+        }
 
     }
 
