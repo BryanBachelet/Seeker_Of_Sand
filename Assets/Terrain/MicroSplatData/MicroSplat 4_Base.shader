@@ -4,14 +4,14 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.15f1
+//   Unity Version: 2021.3.16f1
 //   MicroSplat Version: 3.9
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_1_1_Base396940443"
+Shader "Hidden/Terrain_1_1_Base-1420018839"
 {
    Properties
    {
@@ -293,7 +293,6 @@ Shader "Hidden/Terrain_1_1_Base396940443"
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -8025,7 +8024,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -15590,7 +15588,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -23223,7 +23220,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -30830,7 +30826,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -38391,7 +38386,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -45948,7 +45942,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -53534,7 +53527,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -61150,7 +61142,6 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -68729,7 +68720,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1

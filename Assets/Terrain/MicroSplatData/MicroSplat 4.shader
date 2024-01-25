@@ -4,7 +4,7 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.15f1
+//   Unity Version: 2021.3.16f1
 //   MicroSplat Version: 3.9
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
@@ -293,7 +293,6 @@ Shader "Terrain_1_1"
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -8024,7 +8023,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -15588,7 +15586,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -23220,7 +23217,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -30826,7 +30822,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -38386,7 +38381,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -45942,7 +45936,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -53527,7 +53520,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -61142,7 +61134,6 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -68720,7 +68711,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -76165,7 +76155,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base396940443"
-   Fallback "Hidden/Terrain_1_1_Base396940443"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base-1420018839"
+   Fallback "Hidden/Terrain_1_1_Base-1420018839"
    CustomEditor "MicroSplatShaderGUI"
 }
