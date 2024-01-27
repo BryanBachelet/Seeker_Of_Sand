@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
+using TMPro;
 public class DayCyclecontroller : MonoBehaviour
 {
     [SerializeField] public VolumeProfile volumeProfile;
@@ -28,11 +29,12 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Volume m_LocalNightVolume;
     [SerializeField] private Enemies.EnemyManager m_EnemyManager;
     [SerializeField] private float time;
-    [SerializeField] public TMPro.TMP_Text m_DayPhases;
-    [SerializeField] public TMPro.TMP_Text m_Instruction;
+    [SerializeField] public TMP_Text m_DayPhases;
+    [SerializeField] public TMP_Text m_Instruction;
     [SerializeField] public Animator m_instructionAnimator;
     [SerializeField] public Image m_daySlider;
     public bool isNight = false;
+    public static bool isNightState = false;
     public float timescale;
 
     [SerializeField] float[] tempsChaquePhase;
@@ -57,7 +59,9 @@ public class DayCyclecontroller : MonoBehaviour
     public delegate void DayBeginning();
     public event DayBeginning dayStartEvent;
 
-
+    [SerializeField] public TMP_Text m_DayRemain;
+    public Animator dayAnoncerAnimator;
+    private bool dayChanged = false;
     bool checkNightSound = false;
     // Start is called before the first frame update
     void Start()
@@ -103,12 +107,20 @@ public class DayCyclecontroller : MonoBehaviour
             {
                 m_moon.enabled = false;
             }
+            if(m_timeOfDay > 8f && !dayChanged)
+            {
+                m_DayRemain.text = "Day " + (1 + m_nightCount) + " ...";
+                dayChanged = true;
+                dayAnoncerAnimator.SetBool("ActiveDay", true);
+            }
         }
         else
         {
             if (!m_moon.isActiveAndEnabled)
             {
                 m_moon.enabled = true;
+                dayChanged = false;
+                dayAnoncerAnimator.SetBool("ActiveDay", false);
             }
         }
         CheckingNightDayTransition();
@@ -150,6 +162,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_sun.gameObject.SetActive(true);
         isNight = false;
+        isNightState = isNight;
         dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
@@ -163,6 +176,7 @@ public class DayCyclecontroller : MonoBehaviour
     {
         m_moon.gameObject.SetActive(true);
         isNight = true;
+        isNightState = isNight;
         if (nightStartEvent != null) nightStartEvent.Invoke();
         m_GSM.UpdateParameter(1, "DayOrNight");
         m_GSM.globalMusicInstance.setParameterByName("Repos", 1);

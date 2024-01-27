@@ -49,7 +49,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public Image progression;
     #endregion
     #region health Player
-    private health_Player m_HealthPlayer;
+    private HealthPlayerComponent m_HealthPlayer;
     [SerializeField] public Image m_healthBar_Slider_CurrentHealth;
     [SerializeField] public Image m_healthBar_Slider_CurrentHealthBuffer;
     [SerializeField] public Image m_healthBar_Slider_Quarter;
@@ -287,7 +287,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_InteractionEvent.img_progressionBar = progression;
         #endregion
         #region Health Player
-        m_HealthPlayer = m_PlayerObjectRef.GetComponent<health_Player>();
+        m_HealthPlayer = m_PlayerObjectRef.GetComponent<HealthPlayerComponent>();
         m_HealthPlayer.m_SliderCurrentHealthHighBuffer = m_healthBar_Slider_CurrentHealthBuffer;
         m_HealthPlayer.m_SliderCurrentHealthHigh = m_healthBar_Slider_CurrentHealth;
         m_HealthPlayer.m_SliderCurrentQuarterHigh = m_healthBar_Slider_Quarter;

@@ -92,7 +92,7 @@ namespace Enemies
             {
                 if (m_targetTransform.tag == "Player")
                 {
-                    m_targetTransform.GetComponent<health_Player>().GetDamageLeger(damage, transform.position);
+                    m_targetTransform.GetComponent<HealthPlayerComponent>().GetDamageLeger(damage, transform.position);
                    
                 }
                 if (m_targetTransform.tag == "Altar")

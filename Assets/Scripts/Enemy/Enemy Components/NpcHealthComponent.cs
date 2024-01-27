@@ -136,8 +136,8 @@ namespace Enemies
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
 
-            m_enemyManager.SpawnExp(transform.position, xpToDrop);
-            m_enemyManager.IncreseAlterEnemyCount(this);
+            m_enemyManager.EnemyHasDied(this,xpToDrop);
+
             if(!death)
             {
                 deathTimer = Time.time;

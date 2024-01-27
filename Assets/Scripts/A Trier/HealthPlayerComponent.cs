@@ -5,7 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
-public class health_Player : MonoBehaviour
+
+public class HealthPlayerComponent : MonoBehaviour
 {
     [SerializeField] private bool activeDeath = false;
     [SerializeField] private GameObject m_gameOverMenu;
@@ -45,6 +46,10 @@ public class health_Player : MonoBehaviour
     public float tempsEffetHit = 0.25f;
     private bool healthBuffer;
     private float lastHealth;
+
+    public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
+    public event OnContact OnContactEvent = delegate { };
+
     // Start is called before the first frame update
     void Start()
     {
@@ -233,6 +238,16 @@ public class health_Player : MonoBehaviour
     {
        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (timeLastHit - Time.time - 1) /1 );
 
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+           // Debug.Log("Coll");
+        if(collision.collider.tag == "Enemy")
+        {
+            Debug.Log("Coll valid");
+            OnContactEvent(collision.transform.position,EntitiesTrigger.Enemies,collision.gameObject);
+        }
     }
 
 }

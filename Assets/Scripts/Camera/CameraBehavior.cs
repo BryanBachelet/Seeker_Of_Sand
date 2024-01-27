@@ -264,11 +264,13 @@ namespace Render.Camera
 
         public void BlockZoom(bool state)
         {
-            if (state == m_isZoomBlock || !m_isActiveAutomaticDezoom) return;
+            if (state == m_isZoomBlock) return;
 
             m_isZoomBlock = state;
 
-            if (!m_isZoomBlock) return;
+
+            Debug.Log("Zoom");
+            if (!m_isZoomBlock || !m_isActiveAutomaticDezoom) return;
 
             StartCoroutine(DeZoomCamera());
         }

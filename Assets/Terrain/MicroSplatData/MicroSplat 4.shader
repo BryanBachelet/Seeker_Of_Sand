@@ -4,7 +4,7 @@
 //
 // Auto-generated shader code, don't hand edit!
 //
-//   Unity Version: 2021.3.15f1
+//   Unity Version: 2021.3.16f1
 //   MicroSplat Version: 3.9
 //   Render Pipeline: HDRP2021
 //   Platform: WindowsEditor
@@ -16,7 +16,6 @@ Shader "Terrain_1_1"
    Properties
    {
             [HideInInspector] _Control0 ("Control0", 2D) = "red" {}
-      [HideInInspector] _Control1 ("Control1", 2D) = "black" {}
       
 
       // Splats
@@ -174,7 +173,7 @@ Shader "Terrain_1_1"
    }
    SubShader
    {
-            Tags {"RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" "Queue" = "Geometry+255" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "8"}
+            Tags {"RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" "Queue" = "Geometry+255" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "4"}
 
       
               Pass
@@ -271,7 +270,8 @@ Shader "Terrain_1_1"
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -293,7 +293,6 @@ Shader "Terrain_1_1"
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -8001,7 +8000,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -8023,7 +8023,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -15564,7 +15563,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -15586,7 +15586,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -23195,7 +23194,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -23217,7 +23217,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -30800,7 +30799,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -30822,7 +30822,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -38359,7 +38358,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -38381,7 +38381,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -45914,7 +45913,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -45936,7 +45936,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -53498,7 +53497,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -53520,7 +53520,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -61112,7 +61111,8 @@ void Frag(  VertexToPixel v2f
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -61134,7 +61134,6 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -68689,7 +68688,8 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX8TEXTURES 1
+      #define _MAX4TEXTURES 1
+      #define _PERPIXNORMAL 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -68711,7 +68711,6 @@ float3 GetTessFactors ()
       #define _PERTEXGLOBALSPECULARSTRENGTH 1
       #define _GLOBALSPECULAROVERLAY 1
       #define _TERRAINBLENDING 1
-      #define _TBDITHERALPHA 1
       #define _TBNOISE 1
       #define _TRAXNOTEXTURE 1
       #define _PERTEXTRAXOPACITY 1
@@ -76156,7 +76155,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base2001927000"
-   Fallback "Hidden/Terrain_1_1_Base2001927000"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_1_1_Base-1420018839"
+   Fallback "Hidden/Terrain_1_1_Base-1420018839"
    CustomEditor "MicroSplatShaderGUI"
 }

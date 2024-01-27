@@ -138,7 +138,7 @@ namespace Enemies
             float distancePlayer = Vector3.Distance(transform.position, m_target.position);
             if(distancePlayer < rangeToDamageDuringDash)
             {
-                m_target.GetComponent<health_Player>().GetDamageLourd(damage);
+                m_target.GetComponent<HealthPlayerComponent>().GetDamageLourd(damage);
 
             }
             if (m_curveBehavior.IsCurveFinish())

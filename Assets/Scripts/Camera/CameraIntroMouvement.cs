@@ -26,12 +26,11 @@ public class CameraIntroMouvement : MonoBehaviour
     [SerializeField] private GameObject m_fixInterface;
     [SerializeField] private Animator m_BlackOpening;
 
+    public GameObject[] objectToActiveAfterStart;
     public void Start()
     {
-        //if(m_BlackOpening == null)
-        //{
-        //    m_BlackOpening = GameObject.Find("Black_limite_Holder").GetComponent<Animator>();
-        //}
+
+
         m_isActivate = true;
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
@@ -61,10 +60,11 @@ public class CameraIntroMouvement : MonoBehaviour
         transform.position = m_cameraSteps[m_cameraSteps.Length - 1].position;
         m_cameraScript.enabled = true;
         m_isActivate = false;
-        m_BlackOpening.SetBool("Open", true);
+        ActiveItemAfterStart();
         m_fixInterface.SetActive(true);
         GameState.ChangeState();
         this.enabled = false; 
+
     }
 
     private void UpdateCameraStatus()
@@ -81,10 +81,11 @@ public class CameraIntroMouvement : MonoBehaviour
             {
                 m_cameraScript.enabled = true;
                 m_isActivate = false;
+                ActiveItemAfterStart();
                 m_fixInterface.SetActive(true);
                 GameState.ChangeState();
                 this.enabled = false;
-                //m_BlackOpening.SetBool("Open", true); 
+
                 return;
             }
             GlobalSoundManager.PlayOneShot(41,transform.position);
@@ -97,5 +98,21 @@ public class CameraIntroMouvement : MonoBehaviour
         ratio = m_cameraStepsSpeeds[m_nextIndex].Evaluate(ratio);
         transform.position = Vector3.Lerp(m_cameraSteps[m_prevIndex].position, m_cameraSteps[m_nextIndex].position, ratio);
         transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_cameraSteps[m_prevIndex].rotation), Quaternion.Euler(m_cameraSteps[m_nextIndex].rotation), ratio);
+    }
+
+    public void ActiveItemAfterStart()
+    {
+        OpenBlackBorder();
+        if (objectToActiveAfterStart.Length == 0) return;
+        for(int i = 0; i < objectToActiveAfterStart.Length; i++)
+        {
+            objectToActiveAfterStart[i].SetActive(true);
+        }
+    }
+
+    public void OpenBlackBorder()
+    {
+        m_BlackOpening = GameObject.Find("Black_limite_Holder").GetComponent<Animator>();
+        m_BlackOpening.SetBool("Open", true);
     }
 }

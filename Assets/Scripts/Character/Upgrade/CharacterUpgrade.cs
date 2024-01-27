@@ -34,6 +34,7 @@ public class CharacterUpgrade : MonoBehaviour
     private UpgradeUIDecal m_UpgradeUiDecal;
 
     public Animator bookAnimator;
+    public GameObject upgradeDisplayGO;
     private bool m_isFirstTime = true;
 
     public GameObject upgradeDisplayVFX;
@@ -49,6 +50,7 @@ public class CharacterUpgrade : MonoBehaviour
             m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
             m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
             bookAnimator.SetBool("BookOpen", true);
+            StartCoroutine(DisplayUpgradeWithDelay(true));
             Debug.Log("Book open !!!!!!");
             GlobalSoundManager.PlayOneShot(6, Vector3.zero);
             GameState.ChangeState();
@@ -130,7 +132,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void ChooseUpgrade(int indexChoice, int numberUpgrade)
     {
 
-        //Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+     //   Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
         if (numberUpgrade > upgradePoint) return;
         for (int i = 0; i < numberUpgrade; i++)
         {
@@ -184,7 +186,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
+                m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex] = m_avatarUpgrade[index].Apply( m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
                 break;
             default:
                 break;
@@ -202,7 +204,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
+                m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex] =  m_upgradeToChoose[indexChoose].Apply(m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
                 break;
         }
     }
@@ -210,6 +212,7 @@ public class CharacterUpgrade : MonoBehaviour
     public IEnumerator closeBookWithDelay(float time)
     {
         bookAnimator.SetBool("BookOpen", false);
+        StartCoroutine(DisplayUpgradeWithDelay(false));
         yield return new WaitForSeconds(time);
         upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
         m_FixeElementUI.SetActive(true);
@@ -224,5 +227,19 @@ public class CharacterUpgrade : MonoBehaviour
         if (had5level) { had5level = false; }
     }
 
+    public IEnumerator DisplayUpgradeWithDelay(bool newState)
+    {
+        if(newState)
+        {
+            yield return new WaitForSeconds(3.5f);
+            upgradeDisplayGO.SetActive(newState);
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.1f);
+            upgradeDisplayGO.SetActive(newState);
+        }
+
+    }
 
 }

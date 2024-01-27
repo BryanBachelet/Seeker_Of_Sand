@@ -18,6 +18,7 @@ public class BirdController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         if(playerRef == null)
         {
             playerRef = GameObject.Find("Player").transform;

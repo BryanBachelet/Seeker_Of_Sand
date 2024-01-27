@@ -64,6 +64,7 @@ public class GameState : MonoBehaviour
     private static List<ObjectState> listObject = new List<ObjectState>(0);
 
     public static UIEndScreen endMenu;
+    public UIEndScreen endmenu_Attribution;
     public static string profileName = "";
 
     [SerializeField] private static bool m_isPlaying = true;
@@ -79,11 +80,15 @@ public class GameState : MonoBehaviour
     private bool m_activeDebug = true;
     private GameManager m_gmComponent;
 
+    private Scene scene;
+    private bool m_activeSceneEvent = false;
+   
     public void Start()
     {
+        scene = (SceneManager.GetSceneByBuildIndex(5));
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
-
+        endMenu = endmenu_Attribution;
         GameObject gm = GameObject.Find("GameManager");
         if (gm != null)
         {
@@ -106,8 +111,19 @@ public class GameState : MonoBehaviour
         m_isDeath = true;
     }
 
+    public void ActiveMainScene()
+    {
+        if (scene.isLoaded && !m_activeSceneEvent)
+        {
+            SceneManager.SetActiveScene(scene);
+            m_activeSceneEvent = true;
+        }
+    }
+
     public void Update()
     {
+        ActiveMainScene();
+
         if (m_isDeath)
         {
             if (!m_isDeathProcessusActive)

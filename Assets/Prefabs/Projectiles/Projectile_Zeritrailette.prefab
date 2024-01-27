@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2067060359546994014}
   - component: {fileID: 270100141013101791}
   - component: {fileID: 8778362212055262413}
-  - component: {fileID: -2108286087721741859}
   m_Layer: 0
   m_Name: Projectile_Zeritrailette
   m_TagString: Untagged
@@ -125,20 +124,6 @@ MonoBehaviour:
   m_piercingMax: 0
   m_deltaTimeMove: 0
   probability: 10
---- !u!114 &-2108286087721741859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529003561376632028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94498e1932d713041be4aae8074ed5c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabThunder: {fileID: 3582055716419181781, guid: a85bccbeda71b924bb3ff39be26ea867,
-    type: 3}
 --- !u!1 &1117572370938328834
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,6 +351,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8191699255492494557, guid: d16993c6f36650c4498bb32df8445881,
         type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8191699255492494557, guid: d16993c6f36650c4498bb32df8445881,
+        type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.y
       value: 0
       objectReference: {fileID: 0}
@@ -462,6 +452,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2033479253252674337}
     m_Modifications:
+    - target: {fileID: 6328479740686803051, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813860776056284806, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7813860776215824586, guid: 48c0bc741f0443345b961978ca2318bc,
         type: 3}
       propertyPath: m_RootOrder
@@ -517,10 +517,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7813860776215824587, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7813860776215824589, guid: 48c0bc741f0443345b961978ca2318bc,
         type: 3}
       propertyPath: m_Name
       value: Basic_Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813860776215824589, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8959128807170314322, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c0bc741f0443345b961978ca2318bc, type: 3}

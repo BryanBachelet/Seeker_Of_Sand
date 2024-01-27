@@ -11,7 +11,7 @@ public class AttackTrainingArea : MonoBehaviour
     public float rangeHit;
     public Vector3 scaleAttack;
     public Transform playerTarget;
-    public health_Player hpPlayer;
+    public HealthPlayerComponent hpPlayer;
     private VisualEffect m_Vfx;
     [SerializeField] public float lifeTimeVFX;
     [SerializeField] public LayerMask m_groundLayerMask;
@@ -42,7 +42,7 @@ public class AttackTrainingArea : MonoBehaviour
         if (playerTarget != null)
         {
             m_Vfx.SetFloat("Size", rangeHit * 3.33f);
-            hpPlayer = playerTarget.GetComponent<health_Player>();
+            hpPlayer = playerTarget.GetComponent<HealthPlayerComponent>();
             destroyScript.m_DestroyAfterTime = lifeTimeVFX;
             m_Vfx.SetFloat("TempsRealese", lifeTimeVFX);
             m_Vfx.SendEvent("ActiveArea");

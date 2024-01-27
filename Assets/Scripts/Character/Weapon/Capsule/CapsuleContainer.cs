@@ -34,6 +34,7 @@ public class CapsuleContainer : MonoBehaviour
         if (other.tag == "Player")
         {
             other.GetComponent<Character.CharacterShoot>().AddSpell(capsuleIndex);
+            other.GetComponent<DropInventory>().addNewItem(capsuleIndex);
             Destroy(gameObject);
 
         }

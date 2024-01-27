@@ -4,7 +4,8 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.AI;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
+using TMPro;
 
 namespace Enemies
 {
@@ -61,7 +62,7 @@ namespace Enemies
         [Header("Events Parameters")]
         public Image[] m_imageLifeEvents = new Image[3];
         public GameObject[] m_imageLifeEventsObj = new GameObject[3];
-        public TMPro.TMP_Text[] m_textProgressEvent = new TMPro.TMP_Text[3];
+        public TMP_Text[] m_textProgressEvent = new TMP_Text[3];
         public Image[] m_sliderProgressEvent = new Image[3];
 
         public Transform m_targetTranform;
@@ -100,16 +101,26 @@ namespace Enemies
         [HideInInspector] public int killCount;
         private const string fileStatsName="\\Stats_data";
 
-        [SerializeField] public TMPro.TMP_Text m_Instruction;
+        [SerializeField] public TMP_Text m_Instruction;
         [SerializeField] public Image m_ImageInstruction;
         [SerializeField] public Sprite[] instructionSprite;
         [SerializeField] public Animator m_instructionAnimator;
 
         public bool spawningConstant = false;
 
+
+        public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
+        public event OnDeath OnDeathEvent = delegate { };
+
+        [SerializeField] private Animator detectionAnimator;
+        [SerializeField] private Image m_enemyIcon;
+        [SerializeField] private TMP_Text m_tmpTextEnemyRemain;
+        [SerializeField] private Color[] colorSignUI = new Color[2];
+
+        public int remainEnemy = 0;
         public void Awake()
         {
-
+           
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -126,17 +137,24 @@ namespace Enemies
 
         public void Update()
         {
+        
+
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
             m_timeOfGame += Time.deltaTime;
-            if (spawningPhase)
+            remainEnemy = m_enemiesArray.Count;
+            if(remainEnemy > 0)
             {
-                if(ShadowFunction.onShadowSpawnStatic || m_dayController.isNight)
+                m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy -1);
+            }
+            if (spawningPhase || m_dayController.isNight || m_targetTransformLists.Count > 0)
+            {
+                if(m_dayController.isNight && spawningPhase == false)
                 {
-                    m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
-                    SpawnCooldown();
+                    ChangeSpawningPhase(true);
                 }
-
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
+                SpawnCooldown();
             }
 
         }
@@ -153,7 +171,7 @@ namespace Enemies
         }
         public void ChangePauseState(bool state)
         {
-            for (int i = 0; i < m_enemiesArray.Count; i++)
+            for (int i = 0; i < remainEnemy; i++)
             {
                 if (!state) m_enemiesArray[i].SetPauseState();
                 else m_enemiesArray[i].RemovePauseState();
@@ -269,7 +287,7 @@ namespace Enemies
         {
             if (m_spawnCooldown > GetTimeSpawn())
             {
-                if (m_enemiesArray.Count < m_maxUnittotal)
+                if (remainEnemy < m_maxUnittotal)
                 {
                     SpawEnemiesGroup();
                 }
@@ -410,9 +428,11 @@ namespace Enemies
 
         public void AddTarget(Transform target)
         {
+
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             if (m_targetTransformLists.Contains(target) && m_targetList.Contains(healthSystem)) return;
             m_targetTransformLists.Add(target);
+            ChangeSpawningPhase(true);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
@@ -434,10 +454,12 @@ namespace Enemies
 
         public void RemoveTarget(Transform target)
         {
+
             if (!m_targetTransformLists.Contains(target)) return;
             m_targetTransformLists.Remove(target);
             int prevCount = m_targetList.Count;
             m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
+            ChangeSpawningPhase(false);
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             healthSystem.ResetUIHealthBar();
             m_imageLifeEventsObj[prevCount - 1].SetActive(false);
@@ -527,6 +549,16 @@ namespace Enemies
             }
         }
 
+
+        public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
+        {
+
+            Vector3 position = npcHealth.transform.position;
+            SpawnExp(position, xpCount);
+            IncreseAlterEnemyCount(npcHealth);
+            float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
+            OnDeathEvent(position,EntitiesTrigger.Enemies,npcHealth.gameObject, distance);
+        }
         public void DestroyEnemy(NpcHealthComponent npcHealth)
         {
 
@@ -581,8 +613,21 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            if (spawning) { gsm.globalMusicInstance.setParameterByName("Repos", 0); StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0])); }
-            else { gsm.globalMusicInstance.setParameterByName("Repos", 1); StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1])); }
+            detectionAnimator.SetBool("ShadowDetection", spawningPhase);
+            if (spawning) 
+            { 
+                gsm.globalMusicInstance.setParameterByName("Repos", 0); 
+                StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0])); 
+                m_enemyIcon.color = colorSignUI[0];
+                m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ; 
+            }
+            else 
+            { 
+                gsm.globalMusicInstance.setParameterByName("Repos", 1); 
+                StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1])); 
+                m_enemyIcon.color = colorSignUI[1]; 
+                m_tmpTextEnemyRemain.color = colorSignUI[1]; 
+            }
         }
 
         public void CreateCurveSheet()
