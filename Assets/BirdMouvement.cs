@@ -40,7 +40,7 @@ public class BirdMouvement : MonoBehaviour
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
                 groundHeight = (int)hit.point.y;
-                Debug.Log("Did Hit");
+                //Debug.Log("Did Hit");
             }
             if (speedFlying < speedMax)
             {

@@ -54,12 +54,12 @@ public class UpgradeDataInfo : MonoBehaviour
 
     public void OnMouseOver()
     {
-        Debug.Log("Upgrade over (" + this.gameObject.name + ")");
+     //   Debug.Log("Upgrade over (" + this.gameObject.name + ")");
         if(upgradeManager.ReturnUpgradeData() != this)
         {
             upgradeManager.NewUpgradeOvered(this);
             m_myanimator.SetBool("Overred", true);
-            Debug.Log("Last Upgrade over changed (" + this.gameObject.name + ")");
+          //  Debug.Log("Last Upgrade over changed (" + this.gameObject.name + ")");
         }
         
     }

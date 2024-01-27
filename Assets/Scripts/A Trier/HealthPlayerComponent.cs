@@ -242,7 +242,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-            Debug.Log("Coll");
+           // Debug.Log("Coll");
         if(collision.collider.tag == "Enemy")
         {
             Debug.Log("Coll valid");

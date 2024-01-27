@@ -39,6 +39,9 @@ public class CharacterArtefact : MonoBehaviour
             default:
                 break;
         }
+
+        artefacts.characterGo = gameObject;
+        
     }
 
     public void AddArtefact(ArtefactsInfos artefacts)

@@ -2,19 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace Artefact
 {
-    public class Eclair : MonoBehaviour
+    public class SpellLauncher : MonoBehaviour
     {
-        public float m_damage;
         private ArtefactData m_artefactData;
-        [Header("Around Parameter")]
+        private Character.CharacterShoot m_characterShoot ;
         private float radiusEffect;
         public LayerMask enemyMask;
         public void Start()
         {
             m_artefactData = GetComponent<ArtefactData>();
             radiusEffect = m_artefactData.radius;
+            m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
         }
@@ -24,8 +25,8 @@ namespace Artefact
         {
             if (!m_artefactData.agent) return;
 
-            Enemies.NpcHealthComponent healthComponent = m_artefactData.agent.GetComponent<Enemies.NpcHealthComponent>();
-            healthComponent.ReceiveDamage(m_damage, Vector3.up, 1);
+
+            m_characterShoot.LaunchShootUniqueSpell(m_characterShoot.GetCurrentCapsuleIndex());
         }
 
         private void AroundTargetRandom()
@@ -40,8 +41,7 @@ namespace Artefact
 
             int indexEnemy = Random.Range(0, enemies.Length);
 
-            Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
-            healthComponent.ReceiveDamage(m_damage, Vector3.up, 1);
+            m_characterShoot.LaunchShootUniqueSpell(m_characterShoot.GetCurrentCapsuleIndex());
         }
     }
 }
