@@ -17,6 +17,7 @@ namespace Artefact
             radiusEffect = m_artefactData.radius;
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
+            if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.ClosestEnemyAround) ClosestTarget();
         }
 
 
@@ -39,6 +40,38 @@ namespace Artefact
             }
 
             int indexEnemy = Random.Range(0, enemies.Length);
+
+            Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
+            ApplyEffect(healthComponent);
+        }
+
+        private void ClosestTarget()
+        {
+            Collider[] enemies = Physics.OverlapSphere(transform.position, radiusEffect, enemyMask);
+
+            if (enemies.Length == 0)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            int indexEnemy = -1;
+            float minDistance = 10000;
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                float currentDistance = Vector3.Distance(m_artefactData.agent.transform.position, enemies[i].transform.position);
+                if(currentDistance < minDistance)
+                {
+                    indexEnemy = i;
+                    minDistance = currentDistance;
+                }
+            }
+            if (indexEnemy ==-1)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
 
             Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
             ApplyEffect(healthComponent);

@@ -11,19 +11,19 @@ public class RainBullet : Projectile
 
     [SerializeField] private float m_radiusArea = 2.0f;
     private List<Enemies.NpcHealthComponent> m_enemiesList = new List<Enemies.NpcHealthComponent>();
-    public SphereCollider m_collider;
+    public SphereCollider m_Spherecollider;
     private VisualEffect m_VisualEffect;
     private int[] m_EventNameIdentifier;
     public void Start()
     {
-        m_collider = GetComponent<SphereCollider>();
+        m_Spherecollider = GetComponent<SphereCollider>();
         GlobalSoundManager.PlayOneShot(24, transform.position);
         InitUpgradeSpell();
     }
 
     public void InitUpgradeSpell()
     {
-        m_collider.radius += m_size * m_sizeMultiplicateurFactor;
+        m_Spherecollider.radius += m_size * m_sizeMultiplicateurFactor;
         m_timeDamageTick -= m_shootNumber * 0.02f;
         m_timeDamageTick = Mathf.Clamp(m_timeDamageTick, m_minTimeDamageTick, m_maxTimeDamageTick);
     }
@@ -56,7 +56,7 @@ public class RainBullet : Projectile
     private void ApplyDamage(Enemies.NpcHealthComponent enemy)
     {
         if (enemy == null) return;
-        if (Vector3.Distance(enemy.transform.position, transform.position) > ((m_collider.radius/2.0f) - m_radiusArea))
+        if (Vector3.Distance(enemy.transform.position, transform.position) > ((m_Spherecollider.radius/2.0f) - m_radiusArea))
         {
             for (int i = 0; i < m_salveNumber; i++)
             {
@@ -101,8 +101,8 @@ public class RainBullet : Projectile
 
     public void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, (m_collider.radius/ 2.0f));
-        Gizmos.DrawWireSphere(transform.position, (m_collider.radius -m_radiusArea)/2.0f);
+        Gizmos.DrawWireSphere(transform.position, (m_Spherecollider.radius/ 2.0f));
+        Gizmos.DrawWireSphere(transform.position, (m_Spherecollider.radius -m_radiusArea)/2.0f);
     }
 
     public IEnumerator LaunchingPluieVfx()

@@ -23,6 +23,8 @@ public struct ProjectileData
 
 public class Projectile : MonoBehaviour
 {
+    private const int m_timeBeforeDestruction = 3;
+    private const float m_timeStartSizeShrinking = 0.75f;
     protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
     [SerializeField] protected float m_lifeTime;
@@ -48,7 +50,7 @@ public class Projectile : MonoBehaviour
     private bool checkSpawnTime = false;
     [SerializeField] private float m_deltaTimeMove;
     private bool willDestroy = false;
-    private Collider m_collider;
+    protected Collider m_collider;
     private Vector3 m_initialScale;
     void Update()
     {
@@ -101,20 +103,20 @@ public class Projectile : MonoBehaviour
     }
     protected virtual void Duration()
     {
-        if (m_lifeTimer > m_lifeTime - 0.75f)
+        if (m_lifeTimer > m_lifeTime + m_timeBeforeDestruction)
         {
-            transform.localScale = Vector3.Lerp(m_initialScale, Vector3.zero, m_lifeTimer - m_lifeTime);
-            //Destroy(this.gameObject);
+            Destroy(this.gameObject);
+            return;
         }
         if (m_lifeTimer > m_lifeTime)
         {
             willDestroy = true;
-            //Destroy(this.gameObject);
         }
-        if (m_lifeTimer > m_lifeTime + 3)
+        if (m_lifeTimer > m_lifeTime - m_timeStartSizeShrinking)
         {
-            Destroy(this.gameObject);
+            transform.localScale = Vector3.Lerp(m_initialScale, Vector3.zero, m_lifeTimer - m_lifeTime);
         }
+       
         m_lifeTimer += Time.deltaTime;
 
     }

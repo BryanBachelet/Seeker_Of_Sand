@@ -350,6 +350,22 @@ namespace Character
           
         }
 
+
+        public int GetCapsuleIndex(int offset)
+        {
+            offset = Mathf.Clamp(offset, -spellEquip.Length-1, spellEquip.Length-1);
+            int index = m_currentIndexCapsule + offset;
+            if (index >= spellEquip.Length)
+            {
+                index -= spellEquip.Length;
+            }
+            if(index <0)
+            {
+                index += spellEquip.Length;
+            }
+
+            return m_currentIndexCapsule;
+        }
         public int GetCurrentCapsuleIndex()
         {
             return m_currentIndexCapsule;
