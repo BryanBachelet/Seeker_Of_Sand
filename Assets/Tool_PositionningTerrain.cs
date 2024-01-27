@@ -62,6 +62,6 @@ public class Tool_PositionningTerrain : MonoBehaviour
         }
 
         Debug.DrawRay(transform.position, directionPosition * 1000, Color.white);
-        Debug.Log("Did not Hit");
+      //  Debug.Log("Did not Hit");
     }
 }

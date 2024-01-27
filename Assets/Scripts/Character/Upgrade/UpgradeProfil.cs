@@ -14,4 +14,18 @@ public class UpgradeProfil : ScriptableObject
     public string description;
     public string nameUgrade;
     public Sprite icon_Associat;
+
+    public UpgradeProfil Clone()
+    {
+        UpgradeProfil profil = new UpgradeProfil();
+        profil.type = type;
+        profil.characterStats = characterStats;
+        profil.weaponStats = weaponStats;
+        profil.capsulsStats = capsulsStats;
+        profil.description = description;
+        profil.nameUgrade = nameUgrade;
+        profil.icon_Associat = icon_Associat;
+
+        return profil;
+    }
 }

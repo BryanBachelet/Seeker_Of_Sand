@@ -130,7 +130,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void ChooseUpgrade(int indexChoice, int numberUpgrade)
     {
 
-        //Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+     //   Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
         if (numberUpgrade > upgradePoint) return;
         for (int i = 0; i < numberUpgrade; i++)
         {
@@ -184,7 +184,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
+                m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex] = m_avatarUpgrade[index].Apply( m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
                 break;
             default:
                 break;
@@ -202,7 +202,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
+                m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex] =  m_upgradeToChoose[indexChoose].Apply(m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
                 break;
         }
     }

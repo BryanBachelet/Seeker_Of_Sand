@@ -41,9 +41,9 @@ public class Upgrade
     {
 
     }
-    public virtual void Apply(ref CapsuleStats playerStat)
+    public virtual CapsuleStats Apply( CapsuleStats playerStat)
     {
-      
+        return playerStat;
     }
 }
 
@@ -101,9 +101,9 @@ public class UpgradeCapsule : Upgrade
         gain.icon_Associat = sprite;
     }
 
-    public override void Apply(ref CapsuleStats playerStat)
+    public override CapsuleStats Apply( CapsuleStats playerStat)
     {
-        base.Apply(ref playerStat);
+        playerStat =  base.Apply( playerStat);
         playerStat.damage += gain.capsulsStats.damage;
         playerStat.projectileNumber += gain.capsulsStats.projectileNumber;
         playerStat.range += gain.capsulsStats.range;
@@ -115,6 +115,7 @@ public class UpgradeCapsule : Upgrade
         playerStat.piercingMax += gain.capsulsStats.piercingMax;
         playerStat.lifetime += gain.capsulsStats.lifetime;
 
+        return playerStat;
         //gain.description = m_baseString;
     }
 

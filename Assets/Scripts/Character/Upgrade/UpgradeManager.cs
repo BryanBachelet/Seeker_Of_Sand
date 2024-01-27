@@ -47,7 +47,7 @@ public class UpgradeManager : MonoBehaviour
     {
         int index = m_upgradeData.RandomUpgradeSpell(indexSpell);
 
-        UpgradeProfil nxtProfil = upgradeList[index];
+        UpgradeProfil nxtProfil = upgradeList[index].Clone();
         Upgrade upgrade = new UpgradeCapsule(nxtProfil);
         return upgrade;
     }

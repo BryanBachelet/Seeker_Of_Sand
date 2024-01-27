@@ -92,7 +92,7 @@ namespace Character
 
 
         [Header("Spell Unique ")]
-        public int numberOfUniqueSpell = 100;
+        public int numberOfUniqueSpell = 10;
         public Coroutine[] m_spellCouroutine;
 
         private DropInventory m_dropInventory;
@@ -334,6 +334,7 @@ namespace Character
 
         public void LaunchShootUniqueSpell(int index)
         {
+            Debug.Log("Launch ");
             for (int i = 0; i < m_spellCouroutine.Length; i++)
             {
                 if (m_spellCouroutine[i] == null)
@@ -414,7 +415,7 @@ namespace Character
             CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(stats);
             int mod = GetStartIndexProjectile(stats);
-            for (int i = mod; i < currentWeaponStats.projectileNumber + mod; i++)
+            for (int i = mod; i < stats.projectileNumber + mod; i++)
             {
                 Transform transformUsed = transform;
 
@@ -431,7 +432,7 @@ namespace Character
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             currentShotCount++;
-            if (currentShotCount == stats.shootNumber)
+            if (currentShotCount >= stats.shootNumber)
                 return true;
             else
                 return false;
