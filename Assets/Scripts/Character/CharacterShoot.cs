@@ -90,9 +90,19 @@ namespace Character
         public event OnHit onHit = delegate {} ;
         private DropInventory m_dropInventory;
         #region Unity Functions
+
+        #region Mana Variable
+        public Image manaSlider;
+        public float manaMax;
+        public float currentManaValue;
+        public float regenPerSec;
+        public float tempsAvantActiveRegenMana = 2;
+
+        #endregion
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
+            currentManaValue = manaMax;
         }
 
         private void Start()
@@ -119,7 +129,19 @@ namespace Character
         private void Update()
         {
             if (!state.isPlaying) { return; } // Block Update during pause state
-
+            if (m_lastTimeShot + tempsAvantActiveRegenMana < Time.time)
+            {
+                float manaRegen = (Time.deltaTime * regenPerSec);
+                if (currentManaValue + manaRegen <= manaMax)
+                {
+                    currentManaValue += manaRegen;
+                }
+                else
+                {
+                    currentManaValue = manaMax;
+                }
+            }
+            manaSlider.fillAmount = currentManaValue / manaMax;
             if (m_CharacterMouvement.combatState)
             {
                 UpdateAvatarModels();
@@ -292,10 +314,11 @@ namespace Character
 
         private void Shoot()
         {
-            if (!m_canShoot) return;
+            if (!m_canShoot || currentManaValue < 2) return;
 
             GlobalSoundManager.PlayOneShot(27, transform.position);
 
+            //currentManaValue -= 2;
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
 
@@ -399,7 +422,7 @@ namespace Character
         {
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
-
+            currentManaValue -= 2;
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             if (m_currentType == SpellSystem.CapsuleType.ATTACK)
             {
@@ -471,7 +494,7 @@ namespace Character
 
         private void ReloadShot()
         {
-            if (m_canShoot || m_isReloading) return;
+            if (m_canShoot || m_isReloading ) return;
 
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
@@ -550,7 +573,7 @@ namespace Character
         public void StartCasting()
         {
             if (m_isCasting) return;
-
+            //currentManaValue -= 2;
             m_isCasting = true;
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);
