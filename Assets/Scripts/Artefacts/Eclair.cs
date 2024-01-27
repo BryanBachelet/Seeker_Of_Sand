@@ -25,7 +25,7 @@ namespace Artefact
             if (!m_artefactData.agent) return;
 
             Enemies.NpcHealthComponent healthComponent = m_artefactData.agent.GetComponent<Enemies.NpcHealthComponent>();
-            healthComponent.ReceiveDamage(m_damage, Vector3.up, 1);
+            ApplyEffect(healthComponent);
         }
 
         private void AroundTargetRandom()
@@ -41,7 +41,12 @@ namespace Artefact
             int indexEnemy = Random.Range(0, enemies.Length);
 
             Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
-            healthComponent.ReceiveDamage(m_damage, Vector3.up, 1);
+            ApplyEffect(healthComponent);
+        }
+
+        private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
+        {
+            targetHealthComponent.ReceiveDamage(m_damage, Vector3.up, 1);
         }
     }
 }
