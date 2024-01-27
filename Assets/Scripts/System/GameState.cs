@@ -64,6 +64,7 @@ public class GameState : MonoBehaviour
     private static List<ObjectState> listObject = new List<ObjectState>(0);
 
     public static UIEndScreen endMenu;
+    public UIEndScreen endmenu_Attribution;
     public static string profileName = "";
 
     [SerializeField] private static bool m_isPlaying = true;
@@ -87,7 +88,7 @@ public class GameState : MonoBehaviour
         scene = (SceneManager.GetSceneByBuildIndex(5));
         m_isDeath = false;
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
-
+        endMenu = endmenu_Attribution;
         GameObject gm = GameObject.Find("GameManager");
         if (gm != null)
         {
