@@ -22,7 +22,7 @@ public struct ProjectileData
 
 
 public class Projectile : MonoBehaviour
-{   
+{
     protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
     [SerializeField] protected float m_lifeTime;
@@ -47,14 +47,26 @@ public class Projectile : MonoBehaviour
     private float spawnTime;
     private bool checkSpawnTime = false;
     [SerializeField] private float m_deltaTimeMove;
-    void  Update()
+    private bool willDestroy = false;
+    private Collider m_collider;
+    private Vector3 m_initialScale;
+    void Update()
     {
-        if(!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
+        if (!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
         else
         {
-            if(Time.time > spawnTime + m_deltaTimeMove)
+            float currentTime = Time.time;
+            if (currentTime > spawnTime + m_deltaTimeMove)
             {
-                Move();
+                if (willDestroy)
+                {
+                    m_collider.enabled = false;
+                }
+                else
+                {
+                    Move();
+
+                }
                 Duration();
             }
         }
@@ -75,6 +87,8 @@ public class Projectile : MonoBehaviour
         m_travelTime = data.travelTime;
         m_sizeMultiplicateurFactor = data.sizeFactor;
         m_characterShoot = data.characterShoot;
+        m_initialScale = transform.localScale;
+        m_collider = this.GetComponent<Collider>();
     }
     protected virtual void Move()
     {
@@ -87,17 +101,24 @@ public class Projectile : MonoBehaviour
     }
     protected virtual void Duration()
     {
+        if (m_lifeTimer > m_lifeTime - 0.75f)
+        {
+            transform.localScale = Vector3.Lerp(m_initialScale, Vector3.zero, m_lifeTimer - m_lifeTime);
+            //Destroy(this.gameObject);
+        }
         if (m_lifeTimer > m_lifeTime)
         {
-
+            willDestroy = true;
+            //Destroy(this.gameObject);
+        }
+        if (m_lifeTimer > m_lifeTime + 3)
+        {
             Destroy(this.gameObject);
         }
-        else
-        {
-            m_lifeTimer += Time.deltaTime;
-        }
+        m_lifeTimer += Time.deltaTime;
+
     }
-     
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -105,11 +126,11 @@ public class Projectile : MonoBehaviour
     }
     public virtual void CollisionEvent(Collider other)
     {
-        if (other.gameObject.tag == "Enemy") 
+        if (other.gameObject.tag == "Enemy")
         {
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies,other.gameObject);
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
             if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
 
             enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power);
@@ -144,7 +165,7 @@ public class Projectile : MonoBehaviour
     {
         Vector3 axis = Vector3.Cross(transform.right, hitNormal);
         Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-        float angle = Vector3.SignedAngle( rotTest* Vector3.forward, axis,transform.right);
+        float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transform.right);
         transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
     }
 

@@ -11,11 +11,12 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_1_1_Base396940443"
+Shader "Hidden/Terrain_1_1_Base2001927000"
 {
    Properties
    {
             [HideInInspector] _Control0 ("Control0", 2D) = "red" {}
+      [HideInInspector] _Control1 ("Control1", 2D) = "black" {}
       
 
       // Splats
@@ -173,7 +174,7 @@ Shader "Hidden/Terrain_1_1_Base396940443"
    }
    SubShader
    {
-            Tags {"RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" "Queue" = "Geometry+255" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "4"}
+            Tags {"RenderPipeline" = "HDRenderPipeline" "RenderType" = "HDLitShader" "Queue" = "Geometry+255" "IgnoreProjector" = "False"  "TerrainCompatible" = "true" "SplatCount" = "8"}
 
       
               Pass
@@ -270,8 +271,7 @@ Shader "Hidden/Terrain_1_1_Base396940443"
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -8002,8 +8002,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -15567,8 +15566,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -23200,8 +23198,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -30807,8 +30804,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -38368,8 +38364,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -45925,8 +45920,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -53511,8 +53505,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -61127,8 +61120,7 @@ void Frag(  VertexToPixel v2f
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
@@ -68706,8 +68698,7 @@ float3 GetTessFactors ()
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX3LAYER 1
-      #define _MAX4TEXTURES 1
-      #define _PERPIXNORMAL 1
+      #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXHEIGHTOFFSET 1
