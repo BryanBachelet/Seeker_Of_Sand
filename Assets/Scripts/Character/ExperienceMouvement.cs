@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ExperienceMouvement : MonoBehaviour
 {
-    private Transform m_playerPosition;
+    public Transform m_playerPosition;
     [HideInInspector] public Vector3 GroundPosition;
     [Header("Particule Parameters")]
     [SerializeField] private float m_speed = 15;

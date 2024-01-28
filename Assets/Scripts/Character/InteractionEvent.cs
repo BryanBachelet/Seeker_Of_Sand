@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+
 public class InteractionEvent : MonoBehaviour
 {
     [SerializeField] private float radiusInteraction;
@@ -28,6 +30,11 @@ public class InteractionEvent : MonoBehaviour
     public float rangeTrader;
 
     public Animator lastTrader;
+
+    public LayerMask artefactLayer;
+    public float rangeArtefact;
+    public ArtefactHolder lastArtefact;
+
     public Collider[] collider;
 
     public HintInteractionManager m_hintInteractionManager;
@@ -44,6 +51,7 @@ public class InteractionEvent : MonoBehaviour
         {
             NearPossibleInteraction();
             NearTrader();
+            NearArtefact();
             lastInteractionCheck = Time.time;
         }
 
@@ -161,9 +169,47 @@ public class InteractionEvent : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    public void NearArtefact()
     {
-        Gizmos.DrawWireSphere(transform.localPosition, traderLayer);
+        Collider[] col = Physics.OverlapSphere(transform.position, rangeArtefact, artefactLayer);
+        collider = col;
+        if (col.Length > 0)
+        {
+            if (ui_HintInteractionObject != null)
+            {
+                //ui_HintInteractionObject.SetActive(true);
+                m_hintInteractionManager.activeArtefactData(true);
+
+            }
+            for (int i = 0; i < col.Length; i++)
+            {
+                if (lastArtefact != null)
+                {
+                    if (lastArtefact.gameObject != col[i].gameObject)
+                    {
+                        
+                        NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
+                        m_lastHintAnimator.SetBool("InteractionOn", true);
+                        txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
+
+                    }
+                }
+                else
+                {
+                    NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
+                    m_lastHintAnimator.SetBool("InteractionOn", true);
+                    txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
+                }
+
+            }
+        }
+        else if (col.Length == 0 && lastArtefact != null)
+        {
+            lastArtefact = null;
+            txt_ObjectifDescription.text = "";
+
+            StartCoroutine(CloseUIWithDelay(2));
+        }
     }
 
     public void NewTrader(Animator trader)
@@ -173,6 +219,10 @@ public class InteractionEvent : MonoBehaviour
         lastTrader.SetBool("StandUp", true);
     }
 
+    public void NewArtefact(ArtefactHolder artefact)
+    {
+        lastArtefact = artefact;
+    }
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
@@ -180,6 +230,7 @@ public class InteractionEvent : MonoBehaviour
         //ui_HintInteractionObject.SetActive(false);
         m_hintInteractionManager.activateAutelData(false);
         m_hintInteractionManager.activatePnjData(false);
+        m_hintInteractionManager.activeArtefactData(false);
     }
 
 

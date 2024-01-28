@@ -6,6 +6,7 @@ public class HintInteractionManager : MonoBehaviour
 {
     public GameObject[] autelDataHint;
     public GameObject[] pnjDataHint;
+    public GameObject[] ArtefactDataHint;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +32,14 @@ public class HintInteractionManager : MonoBehaviour
         for (int i = 0; i < pnjDataHint.Length; i++)
         {
             pnjDataHint[i].SetActive(statut);
+        }
+    }
+
+    public void activeArtefactData(bool statut)
+    {
+        for (int i = 0; i < ArtefactDataHint.Length; i++)
+        {
+            ArtefactDataHint[i].SetActive(statut);
         }
     }
 }
