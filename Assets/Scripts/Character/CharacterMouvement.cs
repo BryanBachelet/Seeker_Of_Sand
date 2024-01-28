@@ -313,13 +313,13 @@ namespace Character
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", false);
                     m_BookAnim.SetBool("Running", false);
-                    m_slidingEffectVfx.SetFloat("Rate", 15);
+                    if( m_slidingEffectVfx.HasFloat("Rate"))  m_slidingEffectVfx.SetFloat("Rate", 15);
                     break;
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", false);
                     m_BookAnim.SetBool("Sliding", false);
                     //m_slidingEffect.SetActive(false);
-                    m_slidingEffectVfx.SetFloat("Rate", 0);
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 0);
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);

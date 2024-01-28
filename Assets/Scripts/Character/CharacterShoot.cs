@@ -313,7 +313,7 @@ namespace Character
             }
             if (ctx.canceled && state.isPlaying)
             {
-
+                m_shootInput = false;
             }
         }
         #endregion
@@ -509,7 +509,7 @@ namespace Character
             {
                 currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
-            m_shootInput = false;
+         //   m_shootInput = false;
             m_canShoot = false;
             m_isShooting = false;
         }
@@ -612,7 +612,7 @@ namespace Character
         {
             if (m_canShoot || !m_isReloading) return;
 
-            m_shootInput = false;
+          //  m_shootInput = false;
 
             avatarTransform.localRotation = Quaternion.identity;
             bookTransform.localRotation = Quaternion.identity;
@@ -668,8 +668,8 @@ namespace Character
 
             if (!m_isCasting) return;
 
-            m_isCasting = false;
-            m_shootInput = false;
+           // m_isCasting = false;
+         //   m_shootInput = false;
             m_cameraBehavior.BlockZoom(false);
 
             m_lastTimeShot = Mathf.Infinity;
