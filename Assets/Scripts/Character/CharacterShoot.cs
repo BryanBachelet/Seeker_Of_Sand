@@ -36,6 +36,7 @@ namespace Character
         private bool m_canEndShot;
         private bool m_isShooting;
         private bool m_shootInput;
+        private bool m_shootInputActive;
         private bool m_isReloading;
         public bool m_isCasting;
 
@@ -198,7 +199,7 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
-            if (!m_shootInput || globalCD) return;
+            if (!m_shootInputActive || globalCD) return;
 
             if (!m_isShooting)
             {
@@ -309,6 +310,7 @@ namespace Character
             {
                 StartCasting();
                 m_shootInput = true;
+                m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
             }
             if (ctx.canceled && state.isPlaying)
@@ -509,7 +511,7 @@ namespace Character
             {
                 currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
-         //   m_shootInput = false;
+             if(!m_shootInput) m_shootInputActive = false;
             m_canShoot = false;
             m_isShooting = false;
         }
@@ -612,7 +614,7 @@ namespace Character
         {
             if (m_canShoot || !m_isReloading) return;
 
-          //  m_shootInput = false;
+           if(!m_shootInput) m_shootInputActive = false;
 
             avatarTransform.localRotation = Quaternion.identity;
             bookTransform.localRotation = Quaternion.identity;
@@ -668,8 +670,8 @@ namespace Character
 
             if (!m_isCasting) return;
 
-           // m_isCasting = false;
-         //   m_shootInput = false;
+            // m_isCasting = false;
+            if (!m_shootInput) m_shootInputActive = false;
             m_cameraBehavior.BlockZoom(false);
 
             m_lastTimeShot = Mathf.Infinity;

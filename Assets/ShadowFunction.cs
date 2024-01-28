@@ -70,7 +70,7 @@ public class ShadowFunction : MonoBehaviour
         {
             if (m_TimeOutShadow < m_TimeBeforeStopDetection)
             {
-                vfxDetection.SetInt("Rate", 0);
+              if(vfxDetection.HasInt("Rate"))  vfxDetection.SetInt("Rate", 0);
                 m_TimeOutShadow += Time.deltaTime;
             }
             else
