@@ -530,7 +530,7 @@ namespace Character
 
             data.characterShoot = this;
             Vector3 baseDirection = transform.forward;
-            if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection();
+            if ( m_characterAim.HasCloseTarget() || m_aimModeState != AimMode.AimControls) baseDirection = m_characterAim.GetAimDirection();
             data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
             data.speed = stats.speed + m_rigidbody.velocity.magnitude;
             data.life = stats.lifetime;
