@@ -99,6 +99,14 @@ namespace Enemies
                 }
             }
         }
+
+        public void SetTarget(Transform targetTransform)
+        {
+            targetData.target = targetTransform;
+            NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
+            npcMouvement.SetTarget(targetData);
+
+        }
         public void ResetTarget()
         {
             m_hasChangeTarget = true;
