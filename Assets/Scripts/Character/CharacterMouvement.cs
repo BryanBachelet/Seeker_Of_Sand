@@ -168,8 +168,12 @@ namespace Character
 
         public void MoveInput(InputAction.CallbackContext ctx)
         {
-
-            // ========== Need to be clean ================
+     
+            if (ctx.started)
+            {
+                m_inputDirection = ctx.ReadValue<Vector2>();
+                m_directionInputActive = true;
+            }
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
@@ -181,10 +185,7 @@ namespace Character
                 m_directionInputActive = false;
 
             }
-            if (!state.isPlaying)
-            {
-                ChangeState(MouvementState.None);
-            }
+         
         }
 
 
@@ -197,6 +198,7 @@ namespace Character
 
         public void SlideInput(InputAction.CallbackContext ctx)
         {
+
             if (ctx.started)
             {
                 if (!IsGamepad())
@@ -313,13 +315,13 @@ namespace Character
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", false);
                     m_BookAnim.SetBool("Running", false);
-                    m_slidingEffectVfx.SetFloat("Rate", 15);
+                    if( m_slidingEffectVfx.HasFloat("Rate"))  m_slidingEffectVfx.SetFloat("Rate", 15);
                     break;
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", false);
                     m_BookAnim.SetBool("Sliding", false);
                     //m_slidingEffect.SetActive(false);
-                    m_slidingEffectVfx.SetFloat("Rate", 0);
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 0);
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
@@ -368,7 +370,7 @@ namespace Character
                     m_BookAnim.SetBool("Sliding", true);
                     UpdateParameter(1, "MouvementState");
                     //m_slidingEffect.SetActive(true);
-                    m_slidingEffectVfx.SetFloat("Rate", 100);
+                   if(m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
 
                     break;
                 case MouvementState.Glide:

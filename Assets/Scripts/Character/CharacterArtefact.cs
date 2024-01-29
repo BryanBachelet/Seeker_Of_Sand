@@ -11,6 +11,14 @@ public class CharacterArtefact : MonoBehaviour
     private Character.CharacterShoot m_characterShoot;
     private HealthPlayerComponent m_healthComponent;
 
+    public int radiusDetectionArtefact;
+    public List<ArtefactHolder> nearArtefactHolder = new List<ArtefactHolder>();
+
+    private Collider[] m_lastArtefactCol;
+    private int nearByArtefact = 0;
+
+    public GameObject ui_HintInteractionObject;
+    public HintInteractionManager m_hintInteractionManager;
     public void Start()
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
@@ -47,6 +55,7 @@ public class CharacterArtefact : MonoBehaviour
     public void AddArtefact(ArtefactsInfos artefacts)
     {
         artefactsList.Add(artefacts);
+        SetupArtefact(artefacts);
     }
 
     public void RemoveArtefact(int index)
@@ -54,5 +63,5 @@ public class CharacterArtefact : MonoBehaviour
         artefactsList.RemoveAt(index);
     }
 
-
+    
 }

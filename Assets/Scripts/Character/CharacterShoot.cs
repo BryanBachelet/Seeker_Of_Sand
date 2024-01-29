@@ -36,6 +36,7 @@ namespace Character
         private bool m_canEndShot;
         private bool m_isShooting;
         private bool m_shootInput;
+        private bool m_shootInputActive;
         private bool m_isReloading;
         public bool m_isCasting;
 
@@ -198,7 +199,7 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
-            if (!m_shootInput || globalCD) return;
+            if (!m_shootInputActive || globalCD) return;
 
             if (!m_isShooting)
             {
@@ -289,7 +290,7 @@ namespace Character
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 int RndCapsule = UnityEngine.Random.Range(0, 8);
                 capsuleIndex.Add(RndCapsule);
@@ -309,11 +310,12 @@ namespace Character
             {
                 StartCasting();
                 m_shootInput = true;
+                m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
             }
             if (ctx.canceled && state.isPlaying)
             {
-
+                m_shootInput = false;
             }
         }
         #endregion
@@ -350,6 +352,22 @@ namespace Character
           
         }
 
+
+        public int GetCapsuleIndex(int offset)
+        {
+            offset = Mathf.Clamp(offset, -spellEquip.Length-1, spellEquip.Length-1);
+            int index = m_currentIndexCapsule + offset;
+            if (index >= spellEquip.Length)
+            {
+                index -= spellEquip.Length;
+            }
+            if(index <0)
+            {
+                index += spellEquip.Length;
+            }
+
+            return m_currentIndexCapsule;
+        }
         public int GetCurrentCapsuleIndex()
         {
             return m_currentIndexCapsule;
@@ -493,7 +511,7 @@ namespace Character
             {
                 currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             }
-            m_shootInput = false;
+             if(!m_shootInput) m_shootInputActive = false;
             m_canShoot = false;
             m_isShooting = false;
         }
@@ -596,7 +614,7 @@ namespace Character
         {
             if (m_canShoot || !m_isReloading) return;
 
-            m_shootInput = false;
+           if(!m_shootInput) m_shootInputActive = false;
 
             avatarTransform.localRotation = Quaternion.identity;
             bookTransform.localRotation = Quaternion.identity;
@@ -652,8 +670,8 @@ namespace Character
 
             if (!m_isCasting) return;
 
-            m_isCasting = false;
-            m_shootInput = false;
+            // m_isCasting = false;
+            if (!m_shootInput) m_shootInputActive = false;
             m_cameraBehavior.BlockZoom(false);
 
             m_lastTimeShot = Mathf.Infinity;

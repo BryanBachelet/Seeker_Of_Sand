@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ElementAffiliation
+{
+    Electricity,
+    Eau,
+    Terre,
+    Feu,
+}
 public enum ConditionsTrigger
 {
     OnHit,
@@ -30,12 +37,17 @@ public class ArtefactsInfos : ScriptableObject
     [Range(0, 100)]
     public float spawnRate = 5;
     public float radius = 30;
+    public ElementAffiliation elementAffiliation;
     public ConditionsTrigger conditionsTrigger;
     public EntitiesTrigger entitiesTrigger;
     public EntitiesTargetSystem entitiesTargetSystem;
+
     public GameObject m_artefactToSpawn;
     [HideInInspector] public GameObject characterGo;
     public Sprite icon;
+    [TextArea]
+    public string description;
+    public string name;
 
     public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
     {

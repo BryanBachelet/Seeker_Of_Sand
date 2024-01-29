@@ -21,6 +21,8 @@ public class TrainEventManager : MonoBehaviour
 
     private void SetDayCycleEvent()
     {
+        if (m_dayCycleScript == null) return;
+
         m_dayCycleScript.nightStartEvent += StartEvent;
         m_dayCycleScript.dayStartEvent += EndEvent;
     }

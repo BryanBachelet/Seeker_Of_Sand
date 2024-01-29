@@ -68,7 +68,7 @@ namespace Character
             if (!m_isDashValid) return;
             GlobalSoundManager.PlayOneShot(28, transform.position);
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
-            m_characterMouvement.m_slidingEffectVfx.SetFloat("Rate", 100);
+            if (m_characterMouvement.m_slidingEffectVfx.HasFloat("Rate")) m_characterMouvement.m_slidingEffectVfx.SetFloat("Rate", 100);
             m_dashTimer = 0.0f;
 
         }
@@ -107,7 +107,7 @@ namespace Character
         {
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.None);
             m_isDashValid = false;
-            m_characterMouvement.m_slidingEffectVfx.SetFloat("Rate", 0);
+            if (m_characterMouvement.m_slidingEffectVfx.HasFloat("Rate"))  m_characterMouvement.m_slidingEffectVfx.SetFloat("Rate", 0);
             m_isActiveCooldown = true;
             m_dashCooldownTimer = 0.0f;
             characterModel[0].SetActive(true);

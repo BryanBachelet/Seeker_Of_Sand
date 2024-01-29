@@ -45,15 +45,15 @@ public class ShadowFunction : MonoBehaviour
             if (m_TimeOnShadow < m_TimeBeforeDetection)
             {
                 m_TimeOnShadow += Time.deltaTime;
-                vfxDetection.SetInt("Rate", (int)(m_TimeOnShadow / m_TimeOnShadow * 5));
+                if (vfxDetection.HasInt("Rate")) vfxDetection.SetInt("Rate", (int)(m_TimeOnShadow / m_TimeOnShadow * 5));
             }
             else
             {
-                if(!onShadowSpawn)
+                if (!onShadowSpawn)
                 {
                     m_TimeOutShadow = 0;
                     StopDetectionSoundFeedback();
-                    vfxDetection.SetInt("Rate", 0);
+                    if (vfxDetection.HasFloat("Rate")) vfxDetection.SetInt("Rate", 0);
                     RuntimeManager.PlayOneShot(activationShadowDetection_Attribution, transform.position);
                     GlobalSoundManager.PlayOneShot(40, transform.position);
                     onShadowSpawn = true;
@@ -70,12 +70,12 @@ public class ShadowFunction : MonoBehaviour
         {
             if (m_TimeOutShadow < m_TimeBeforeStopDetection)
             {
-                vfxDetection.SetInt("Rate", 0);
+              if(vfxDetection.HasInt("Rate"))  vfxDetection.SetInt("Rate", 0);
                 m_TimeOutShadow += Time.deltaTime;
             }
             else
             {
-                if(!outShadowSpawn && !DayCyclecontroller.isNightState)
+                if (!outShadowSpawn && !DayCyclecontroller.isNightState)
                 {
                     m_TimeOnShadow = 0;
                     StopDetectionSoundFeedback();

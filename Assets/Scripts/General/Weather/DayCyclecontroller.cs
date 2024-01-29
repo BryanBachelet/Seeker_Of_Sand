@@ -63,6 +63,8 @@ public class DayCyclecontroller : MonoBehaviour
     public Animator dayAnoncerAnimator;
     private bool dayChanged = false;
     bool checkNightSound = false;
+    public static bool choosingArtefactStart = true;
+    public bool choosingArtefactDisplay = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +79,8 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        choosingArtefactStart = choosingArtefactDisplay;
+        if (choosingArtefactStart) return;
         if (!GameState.IsPlaying()) return;
         time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
