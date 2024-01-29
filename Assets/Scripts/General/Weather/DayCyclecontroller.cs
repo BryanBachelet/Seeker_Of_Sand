@@ -65,6 +65,7 @@ public class DayCyclecontroller : MonoBehaviour
     bool checkNightSound = false;
     public static bool choosingArtefactStart = true;
     public bool choosingArtefactDisplay = true;
+    public Chosereward choseReward;
     // Start is called before the first frame update
     void Start()
     {
@@ -110,13 +111,12 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_moon.isActiveAndEnabled)
             {
                 m_moon.enabled = false;
-            }
-            if(m_timeOfDay > 8f && !dayChanged)
-            {
                 m_DayRemain.text = "Day " + (1 + m_nightCount) + " ...";
                 dayChanged = true;
                 dayAnoncerAnimator.SetBool("ActiveDay", true);
+                choseReward.activeGeneration = true;
             }
+
         }
         else
         {

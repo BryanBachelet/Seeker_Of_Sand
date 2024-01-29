@@ -78,7 +78,7 @@ namespace Artefact
 
         public void ApplyEffect(Vector3 position)
         {
-            GameObject instance = GameObject.Instantiate(bulleGO, position, Quaternion.identity);
+            GameObject instance = GameObject.Instantiate(bulleGO, position, new Quaternion(-90,0,0,0));
 
         }
     }
