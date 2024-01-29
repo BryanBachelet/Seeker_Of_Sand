@@ -137,8 +137,8 @@ namespace Enemies
 
         public void Update()
         {
-        
 
+            if (DayCyclecontroller.choosingArtefactStart) return;
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
             m_timeOfGame += Time.deltaTime;

@@ -290,7 +290,7 @@ namespace Character
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 int RndCapsule = UnityEngine.Random.Range(0, 8);
                 capsuleIndex.Add(RndCapsule);

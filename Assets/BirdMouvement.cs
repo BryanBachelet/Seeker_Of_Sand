@@ -66,7 +66,7 @@ public class BirdMouvement : MonoBehaviour
             {
                 transform.position = Vector3.MoveTowards(transform.position, nextPosition, speedFlying * Time.deltaTime);
                 transform.position = new Vector3(transform.position.x, groundHeight + currendGroundOffset, transform.position.z);
-                transform.LookAt(-nextPosition);
+                transform.LookAt(transform.parent.rotation * (-nextPosition));
             }
             else if(remainDistance < 30 && remainDistance > 3)
             {

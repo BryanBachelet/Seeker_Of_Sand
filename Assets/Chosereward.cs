@@ -19,6 +19,8 @@ public class Chosereward : MonoBehaviour
 
     public bool activeGeneration = true;
     public InteractionEvent interactionEvent;
+
+    public Vector3[] positionArtefact = new Vector3[3];
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +39,8 @@ public class Chosereward : MonoBehaviour
 
     public void GenerateNewArtefact(int index, int type)
     {
-        Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
+        Vector3 position = positionArtefact[index];
+        //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
         m_lastPiedestal = Instantiate(piedestalReward, transform.position + new Vector3(position.x, -8, position.z), Quaternion.identity, transform);
         artefactPiedestalAnimator.Add(m_lastPiedestal.GetComponent<Animator>());
         GameObject newArtefact = Instantiate(artefactPrefab[type], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
@@ -45,15 +48,15 @@ public class Chosereward : MonoBehaviour
         artefactMouvement.Add(m_ExperienceMouvement);
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
         artefactHolder.Add(m_artefactHolder);
-        m_artefactHolder.m_artefactsInfos = artefactToChose[index];
+        m_artefactHolder.m_artefactsInfos = artefactToChose[type];
     }
 
     public void GetArtefactAttribution()
     {
         for(int i = 0; i < ArtefactQuantity-1; i++)
         {
-            int rndType = Random.Range(0, 3);
-            GenerateNewArtefact(i, (int)artefactToChose[i].elementAffiliation);
+            int rndArtefact = Random.Range(0, artefactToChose.Count);
+            GenerateNewArtefact(i, (int)artefactToChose[rndArtefact].elementAffiliation);
         }
     }
 
