@@ -292,7 +292,15 @@ namespace Character
         {
             for (int i = 0; i < 2; i++)
             {
-                int RndCapsule = UnityEngine.Random.Range(0, 8);
+                int RndCapsule = 0;
+                if (i == 0)
+                {
+                    RndCapsule = UnityEngine.Random.Range(0, 1);
+                }
+                else
+                {
+                    RndCapsule = UnityEngine.Random.Range(2, 8);
+                }
                 capsuleIndex.Add(RndCapsule);
             }
         }

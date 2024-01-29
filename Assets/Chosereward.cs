@@ -13,7 +13,7 @@ public class Chosereward : MonoBehaviour
     public List<Animator> artefactPiedestalAnimator = new List<Animator>();
     public List<ArtefactHolder> artefactHolder = new List<ArtefactHolder>();
     [HideInInspector] public List<ExperienceMouvement> artefactMouvement = new List<ExperienceMouvement>();
-    private Transform m_playerTransform;
+    public Transform m_playerTransform;
 
     [SerializeField] private GameObject m_lastPiedestal;
 
@@ -21,10 +21,13 @@ public class Chosereward : MonoBehaviour
     public InteractionEvent interactionEvent;
 
     public Vector3[] positionArtefact = new Vector3[3];
+
+    public bool isStart = true;
+    public GameObject colliderDome;
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(m_playerTransform == null) { m_playerTransform = GameObject.Find("Player").transform; }   
     }
 
     // Update is called once per frame
@@ -43,20 +46,22 @@ public class Chosereward : MonoBehaviour
         //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
         m_lastPiedestal = Instantiate(piedestalReward, transform.position + new Vector3(position.x, -8, position.z), Quaternion.identity, transform);
         artefactPiedestalAnimator.Add(m_lastPiedestal.GetComponent<Animator>());
-        GameObject newArtefact = Instantiate(artefactPrefab[type], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
+        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[type].elementAffiliation], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
         ExperienceMouvement m_ExperienceMouvement = newArtefact.GetComponent<ExperienceMouvement>();
         artefactMouvement.Add(m_ExperienceMouvement);
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
         artefactHolder.Add(m_artefactHolder);
         m_artefactHolder.m_artefactsInfos = artefactToChose[type];
+        Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.name);
     }
 
     public void GetArtefactAttribution()
     {
-        for(int i = 0; i < ArtefactQuantity-1; i++)
+        ClearArtefact();
+        for (int i = 0; i < ArtefactQuantity-1; i++)
         {
             int rndArtefact = Random.Range(0, artefactToChose.Count);
-            GenerateNewArtefact(i, (int)artefactToChose[rndArtefact].elementAffiliation);
+            GenerateNewArtefact(i, rndArtefact);
         }
     }
 
@@ -64,17 +69,39 @@ public class Chosereward : MonoBehaviour
     {
         if (ctx.performed && interactionEvent.lastArtefact != null)
         {
-            for (int i = 0; i < artefactToChose.Count; i++)
+            for (int i = 0; i < artefactHolder.Count; i++)
             {
-                if(artefactToChose[i] == interactionEvent.lastArtefact)
+                if(artefactHolder[i] == interactionEvent.lastArtefact)
                 {
-                    artefactMouvement[i].m_playerPosition = interactionEvent.gameObject.transform;
+                    artefactMouvement[i].m_playerPosition = m_playerTransform;
+                    interactionEvent.StartCoroutine(interactionEvent.CloseUIWithDelay(2));
+                    StartCoroutine(ChosedArtefact(i, 30));
+
                 }
                 else
                 {
-
+                    StartCoroutine(ChosedArtefact(i, 3));
                 }
             }
+            if(isStart)
+            {
+                isStart = false;
+                DayCyclecontroller.choosingArtefactStart = false;
+                colliderDome.SetActive(false);
+            }
         }
+    }
+
+    public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
+    {
+        artefactPiedestalAnimator[artefactToClear].SetBool("Choosed", true);
+        yield return new WaitForSeconds(timeBeforeDestroy);
+        Destroy(artefactPiedestalAnimator[artefactToClear].gameObject);
+    }
+    public void ClearArtefact()
+    {
+        artefactPiedestalAnimator.Clear();
+        artefactHolder.Clear();
+        artefactMouvement.Clear();
     }
 }

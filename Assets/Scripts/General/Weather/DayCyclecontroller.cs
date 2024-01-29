@@ -79,7 +79,7 @@ public class DayCyclecontroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        choosingArtefactStart = choosingArtefactDisplay;
+        //choosingArtefactStart = choosingArtefactDisplay;
         if (choosingArtefactStart) return;
         if (!GameState.IsPlaying()) return;
         time += Time.deltaTime;
