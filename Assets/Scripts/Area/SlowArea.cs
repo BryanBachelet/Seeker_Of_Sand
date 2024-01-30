@@ -14,6 +14,14 @@ public class SlowArea : MonoBehaviour
     private float m_slowReduceRatio;
     private float m_slowUpRatio;
 
+
+    private ObjectState state;
+    public float m_DestroyAfterTime = 3;
+
+    private bool hasToDestroy;
+    private bool canDestroy;
+    private int index;
+
     public void Awake()
     {
         m_slowReduceRatio = 1-( m_slowPercent / 100.0f);
@@ -29,10 +37,29 @@ public class SlowArea : MonoBehaviour
         {
             transform.position = hit.point;
         }
+
+        state = new ObjectState();
+        GameState.AddObject(state);
+        StartCoroutine(DestroyAfter(m_DestroyAfterTime));
     }
+
+    public void Update()
+    {
+        if(hasToDestroy)
+        {
+            if (canDestroy && index >= 1)
+                Destroy(this.gameObject);
+
+            index++;
+        }
+    
+    }
+
+
 
     public void OnTriggerEnter(Collider other)
     {
+        if (hasToDestroy) return; 
         int value = m_layersAffect.value;
         if (value == (value | 1 << other.gameObject.layer))
         {
@@ -45,6 +72,25 @@ public class SlowArea : MonoBehaviour
             }
 
         }
+    }
+
+    public void OnTriggerStay(Collider other)
+    {
+        if (!hasToDestroy) return;
+
+        int value = m_layersAffect.value;
+        if (value == (value | 1 << other.gameObject.layer))
+        {
+            Debug.Log("Test Slow Down");
+            NavMeshAgent navmeshAgent = other.GetComponent<NavMeshAgent>();
+
+            if (navmeshAgent)
+            {
+                navmeshAgent.speed *= m_slowUpRatio; ;
+            }
+
+        }
+        canDestroy = true;
     }
 
     public void OnTriggerExit(Collider other)
@@ -60,6 +106,22 @@ public class SlowArea : MonoBehaviour
             }
 
         }
+    }
+
+    public IEnumerator DestroyAfter(float time)
+    {
+        float duration = 0;
+        while (duration < time)
+        {
+            yield return Time.deltaTime;
+
+            if (state.isPlaying)
+            {
+                duration += Time.deltaTime;
+            }
+        }
+
+        hasToDestroy = true;
     }
 
 

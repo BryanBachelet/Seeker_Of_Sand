@@ -31,12 +31,12 @@ public class HintDropAcquisition : MonoBehaviour
 
     public bool stopEditMode = false;
 
-
+    private bool m_isRemove;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        lastdropLoot =  Time.time;
     }
 
     // Update is called once per frame
@@ -50,13 +50,17 @@ public class HintDropAcquisition : MonoBehaviour
         if (!stopEditMode)
         {
             float time = Time.time;
-            if (time > lastdropLoot + 5)
+            if (time > lastdropLoot + 5 && !m_isRemove)
             {
                 m_animator.SetBool("Open", false);
+                m_dropBuffer.RemoveAt(0);
+              
+                m_isRemove = true;
             }
             if (time > lastdropLoot + 10)
             {
-                m_animator.SetBool("Open", false);
+                
+                //m_animator.SetBool("Open", false);
                 if (m_dropBuffer.Count >= 1)
                 {
                     ActivationDisplayLoot();
@@ -80,7 +84,17 @@ public class HintDropAcquisition : MonoBehaviour
         m_dropDescription.text = m_dropBuffer[0].dropDescription;
         m_dropType.text = m_dropBuffer[0].m_dropType;
         m_animator.SetBool("Open", true);
-        m_dropBuffer.RemoveAt(0);
+        m_isRemove = false;
+    }
+
+    public void DeactivationDiplayLoot()
+    {
+        m_dropImageReference.sprite = null;
+        m_dropName.text ="";
+        m_dropDescription.text ="";
+        m_dropType.text = "";
+        m_animator.SetBool("Open", true);
+        m_isRemove = false;
     }
 
     public Color GetRandomColorInSprite()

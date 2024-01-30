@@ -91,6 +91,7 @@ public class Harpon : Projectile
 
                 if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
                 {
+                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
                     enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
 
                     if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
@@ -101,6 +102,7 @@ public class Harpon : Projectile
                 }
                 if (m_firstHit || m_currentDistance > m_minRangeToImpale)
                 {
+                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
                     enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
                 }
             }

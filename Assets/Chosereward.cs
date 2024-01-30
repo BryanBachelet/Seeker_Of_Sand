@@ -25,10 +25,17 @@ public class Chosereward : MonoBehaviour
 
     public bool isStart = true;
     public GameObject colliderDome;
+
+    public int[] m_artefactIndex =new int[3];
     // Start is called before the first frame update
     void Start()
     {
-        if(m_playerTransform == null) { m_playerTransform = GameObject.Find("Player").transform; }   
+        m_artefactIndex = new int[3];
+        for (int i = 0; i < m_artefactIndex.Length; i++)
+        {
+            m_artefactIndex[i] = -1;
+        }
+        if (m_playerTransform == null) { m_playerTransform = GameObject.Find("Player").transform; }   
     }
 
     // Update is called once per frame
@@ -63,7 +70,17 @@ public class Chosereward : MonoBehaviour
         ClearArtefact();
         for (int i = 0; i < ArtefactQuantity-1; i++)
         {
-            int rndArtefact = Random.Range(0, artefactToChose.Count);
+            int rndArtefact = -1;
+            for (int j = 0; j < i; j++)
+            {
+                while (rndArtefact == m_artefactIndex[j] && rndArtefact == -1)  
+                {
+                    rndArtefact = Random.Range(0, artefactToChose.Count);
+                }
+                m_artefactIndex[i] = rndArtefact;
+            }
+            if (rndArtefact == -1) 
+                rndArtefact = Random.Range(0, artefactToChose.Count);
             GenerateNewArtefact(i, rndArtefact);
         }
     }
@@ -103,6 +120,10 @@ public class Chosereward : MonoBehaviour
     }
     public void ClearArtefact()
     {
+        for (int i = 0; i < m_artefactIndex.Length; i++)
+        {
+            m_artefactIndex[i] = -1;
+        }
         artefactPiedestalAnimator.Clear();
         artefactHolder.Clear();
         artefactMouvement.Clear();

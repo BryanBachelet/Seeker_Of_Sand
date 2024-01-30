@@ -84,6 +84,7 @@ public class RainBullet : Projectile
         if (other.gameObject.tag != "Enemy") return;
 
         Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
+        m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
 
         if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
         m_enemiesList.Add(enemyTouch);
