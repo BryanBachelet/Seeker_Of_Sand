@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.VFX;
 public class Chosereward : MonoBehaviour
 {
     public int ArtefactQuantity = 3;
@@ -13,6 +13,7 @@ public class Chosereward : MonoBehaviour
     public List<Animator> artefactPiedestalAnimator = new List<Animator>();
     public List<ArtefactHolder> artefactHolder = new List<ArtefactHolder>();
     [HideInInspector] public List<ExperienceMouvement> artefactMouvement = new List<ExperienceMouvement>();
+    public List<VisualEffect> vfxArtefact = new List<VisualEffect>();
     public Transform m_playerTransform;
 
     [SerializeField] private GameObject m_lastPiedestal;
@@ -52,6 +53,8 @@ public class Chosereward : MonoBehaviour
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
         artefactHolder.Add(m_artefactHolder);
         m_artefactHolder.m_artefactsInfos = artefactToChose[type];
+        VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
+        vfxArtefact.Add(vfx);
         Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.name);
     }
 
