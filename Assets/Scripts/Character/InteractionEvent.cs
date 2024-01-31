@@ -204,15 +204,7 @@ public class InteractionEvent : MonoBehaviour
 
             }
         }
-        else if (col.Length == 0 && lastArtefact != null)
-        {
-            lastArtefact = null;
-            txt_ObjectifDescription.text = "";
-            txt_ObjectifDescriptionPnj.text = "";
-
-            StartCoroutine(CloseUIWithDelay(2));
-        }
-        else if (col.Length == 0 && lastArtefact == null && m_lastHintAnimator.GetBool("InteractionOn"))
+        else if (col.Length == 0 && lastArtefact == null && m_lastHintAnimator.GetBool("InteractionOn") && lastTrader == null && currentInteractibleObject == null)
         {
             lastArtefact = null;
             txt_ObjectifDescription.text = "";
@@ -236,6 +228,7 @@ public class InteractionEvent : MonoBehaviour
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
+        txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);
         //ui_HintInteractionObject.SetActive(false);
         m_hintInteractionManager.activateAutelData(false);

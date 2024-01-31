@@ -50,6 +50,7 @@ public class HealthPlayerComponent : MonoBehaviour
     public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
     public event OnContact OnContactEvent = delegate { };
 
+    public GameState gameStateObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,7 +65,8 @@ public class HealthPlayerComponent : MonoBehaviour
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
             GameState.LaunchEndMenu();
-           
+            gameStateObject.HideGlobalUI();
+
             isActivate = true;
             return;
         }

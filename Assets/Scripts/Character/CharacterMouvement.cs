@@ -160,7 +160,8 @@ namespace Character
 
             m_speedData.direction = Vector3.zero;
 
-            combatState = true;
+            //combatState = true;
+            SetCombatMode(true);
             mouvementSoundInstance = RuntimeManager.CreateInstance(MouvementSoundReference);
             RuntimeManager.AttachInstanceToGameObject(mouvementSoundInstance, this.transform);
             mouvementSoundInstance.start();
