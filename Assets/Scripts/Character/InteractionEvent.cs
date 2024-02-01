@@ -16,6 +16,7 @@ public class InteractionEvent : MonoBehaviour
 
     public GameObject ui_HintInteractionObject;
     public Animator m_lastHintAnimator;
+    public Transform parentHintTransform;
 
     public string[] eventDataInfo;
 
@@ -42,6 +43,7 @@ public class InteractionEvent : MonoBehaviour
     void Start()
     {
         lastInteractionCheck = 0;
+        parentHintTransform = ui_HintInteractionObject.transform.parent;
     }
 
     // Update is called once per frame
