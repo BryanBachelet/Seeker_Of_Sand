@@ -319,6 +319,7 @@ float _LinkDetailsWithBase;
 float _AlphaRemapMin;
 float _AlphaRemapMax;
 float _ObjectSpaceUVMapping;
+float _TransmissionMask; //added - Unity 2022.2.0b1
 
 CBUFFER_END
 
@@ -529,197 +530,196 @@ UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 
 
 //==  N_F_O_ON
-#define _OutlineWidth                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_OutlineWidth)
-#define _ONormMapInt                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ONormMapInt)
+#define _OutlineWidth                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _OutlineWidth)
+#define _ONormMapInt                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ONormMapInt)
 //==
 
 //==  N_F_O_SSOL
-#define _DepthThreshold                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_DepthThreshold)
-#define _NormalThreshold                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_NormalThreshold)
-#define _NormalMin                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_NormalMin)
-#define _NormalMax                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_NormalMax)
+#define _DepthThreshold                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _DepthThreshold)
+#define _NormalThreshold                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _NormalThreshold)
+#define _NormalMin                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _NormalMin)
+#define _NormalMax                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _NormalMax)
 //==
 
 //== Others
-#define _MainColor                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_MainColor)
-#define _MaiColPo										    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MaiColPo)
-#define _MVCOL                                              UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MVCOL)
-#define _MCIALO                                             UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MCIALO)
-#define _TexturePatternStyle                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_TexturePatternStyle)
-#define _HighlightColor                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_HighlightColor)
-#define _HighlightColorPower                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_HighlightColorPower)
-#define _EnableTextureTransparent                           UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_EnableTextureTransparent)
-#define _ReduSha                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ReduSha)
+#define _MainColor                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _MainColor)
+#define _MaiColPo										    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MaiColPo)
+#define _MVCOL                                              UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MVCOL)
+#define _MCIALO                                             UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MCIALO)
+#define _TexturePatternStyle                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _TexturePatternStyle)
+#define _HighlightColor                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _HighlightColor)
+#define _HighlightColorPower                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _HighlightColorPower)
+#define _EnableTextureTransparent                           UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _EnableTextureTransparent)
+#define _ReduSha                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ReduSha)
 //==
 
 //==  N_F_MC_ON
-#define _MCapIntensity                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MCapIntensity)
-#define _SPECMODE                                           UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SPECMODE)
-#define _SPECIN                                             UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SPECIN)
+#define _MCapIntensity                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MCapIntensity)
+#define _SPECMODE                                           UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SPECMODE)
+#define _SPECIN                                             UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SPECIN)
 //==
 
 //==  N_F_TRANS_ON -> N_F_CO_ON
-#define _Cutout                                             UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_Cutout)
-#define _AlphaBasedCutout                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_AlphaBasedCutout)
-#define _UseSecondaryCutoutOnly                             UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_UseSecondaryCutoutOnly)
+#define _Cutout                                             UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Cutout)
+#define _AlphaBasedCutout                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _AlphaBasedCutout)
+#define _UseSecondaryCutoutOnly                             UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _UseSecondaryCutoutOnly)
 
-#define _Glow_Color										    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_Glow_Color)
-#define _Glow_Edge_Width								    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_Glow_Edge_Width)
+#define _Glow_Color										    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _Glow_Color)
+#define _Glow_Edge_Width								    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Glow_Edge_Width)
 //==
 
 //==  N_F_TRANS_ON
-#define _Opacity                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_Opacity)
-#define _TransparentThreshold                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_TransparentThreshold)
-#define _TOAO                                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_TOAO)
+#define _Opacity                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Opacity)
+#define _TransparentThreshold                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _TransparentThreshold)
+#define _TOAO                                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _TOAO)
 //==
 
 //== N_F_CA_ON
-#define _Saturation                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_Saturation)
+#define _Saturation                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Saturation)
 //==
 
 //== N_F_SL_ON
-#define _SelfLitIntensity                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfLitIntensity)
-#define _SelfLitColor                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_SelfLitColor)
-#define _SelfLitPower                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfLitPower)
-#define _TEXMCOLINT                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_TEXMCOLINT)
-#define _SelfLitHighContrast                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfLitHighContrast)
+#define _SelfLitIntensity                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfLitIntensity)
+#define _SelfLitColor                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _SelfLitColor)
+#define _SelfLitPower                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfLitPower)
+#define _TEXMCOLINT                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _TEXMCOLINT)
+#define _SelfLitHighContrast                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfLitHighContrast)
 //==
 
 //== N_F_GLO_ON
-#define _GlossIntensity                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossIntensity)
-#define _Glossiness                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_Glossiness)
-#define _GlossSoftness                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossSoftness)
-#define _GlossColor                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_GlossColor)
-#define _GlossColorPower                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossColorPower)
+#define _GlossIntensity                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossIntensity)
+#define _Glossiness                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _Glossiness)
+#define _GlossSoftness                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossSoftness)
+#define _GlossColor                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _GlossColor)
+#define _GlossColorPower                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossColorPower)
 //==
 
 //== N_F_GLO_ON -> N_F_GLOT_ON
-#define _GlossTextureSoftness                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossTextureSoftness)
-#define _PSGLOTE                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_PSGLOTEX)
-#define _GlossTextureRotate                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossTextureRotate)
-#define _GlossTextureFollowObjectRotation                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossTextureFollowObjectRotation)
-#define _GlossTextureFollowLight                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GlossTextureFollowLight)
+#define _GlossTextureSoftness                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureSoftness)
+#define _PSGLOTE                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _PSGLOTEX)
+#define _GlossTextureRotate                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureRotate)
+#define _GlossTextureFollowObjectRotation                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureFollowObjectRotation)
+#define _GlossTextureFollowLight                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GlossTextureFollowLight)
 //==
 
 //== Others
-#define _OverallShadowColor                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_OverallShadowColor)
-#define _OverallShadowColorPower                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_OverallShadowColorPower)
-#define _SelfShadowShadowTAtViewDirection                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfShadowShadowTAtViewDirection)
-#define _ShadowHardness                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowHardness)
-#define _SelfShadowRealtimeShadowIntensity                  UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfShadowRealtimeShadowIntensity)
+#define _OverallShadowColor                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _OverallShadowColor)
+#define _OverallShadowColorPower                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _OverallShadowColorPower)
+#define _SelfShadowShadowTAtViewDirection                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfShadowShadowTAtViewDirection)
+#define _ShadowHardness                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowHardness)
+#define _SelfShadowRealtimeShadowIntensity                  UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfShadowRealtimeShadowIntensity)
 //==
 
 //== Others
-#define _SelfShadowThreshold                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfShadowThreshold)
-#define _VertexColorGreenControlSelfShadowThreshold         UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_VertexColorGreenControlSelfShadowThreshold)
-#define _SelfShadowHardness                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfShadowHardness)
-#define _LigIgnoYNorDir									    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LigIgnoYNorDir)
-#define _SelfShadowAffectedByLightShadowStrength            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfShadowAffectedByLightShadowStrength)
+#define _SelfShadowThreshold                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfShadowThreshold)
+#define _VertexColorGreenControlSelfShadowThreshold         UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _VertexColorGreenControlSelfShadowThreshold)
+#define _SelfShadowHardness                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfShadowHardness)
+#define _LigIgnoYNorDir									    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LigIgnoYNorDir)
+#define _SelfShadowAffectedByLightShadowStrength            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfShadowAffectedByLightShadowStrength)
 //==
 
 //== Others
-#define _SelfShadowRealTimeShadowColor                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_SelfShadowRealTimeShadowColor)
-#define _SelfShadowRealTimeShadowColorPower                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SelfShadowRealTimeShadowColorPower)
+#define _SelfShadowRealTimeShadowColor                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _SelfShadowRealTimeShadowColor)
+#define _SelfShadowRealTimeShadowColorPower                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SelfShadowRealTimeShadowColorPower)
 //==
 
 //== N_F_SO_ON
-#define _SmoothObjectNormal                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_SmoothObjectNormal)
-#define _VertexColorRedControlSmoothObjectNormal            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_VertexColorRedControlSmoothObjectNormal)
-#define _XYZPosition                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_XYZPosition)
-#define _ShowNormal                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShowNormal)
+#define _SmoothObjectNormal                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _SmoothObjectNormal)
+#define _VertexColorRedControlSmoothObjectNormal            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _VertexColorRedControlSmoothObjectNormal)
+#define _XYZPosition                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _XYZPosition)
+#define _ShowNormal                                         UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShowNormal)
 //==
 
 //== N_F_SCT_ON
-#define _ShadowColorTexturePower                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowColorTexturePower)
+#define _ShadowColorTexturePower                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowColorTexturePower)
 //==
 
 //== N_F_ST_ON
-#define _ShadowTIntensity                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowTIntensity)
-#define _ShadowTLightThreshol                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowTLightThreshold)
-#define _ShadowTShadowThreshold                             UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowTShadowThreshold)
-#define _ShadowTColor                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_ShadowTColor)
-#define _ShadowTColorPower                                  UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowTColorPower)
-#define _ShadowTHardness                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShadowTHardness)
-#define _STIL                                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_STIL)
-#define _ShowInAmbientLightShadowIntensity                  UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShowInAmbientLightShadowIntensity)
-#define _ShowInAmbientLightShadowThreshold                  UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ShowInAmbientLightShadowThreshold)
-#define _LightFalloffAffectShadowT                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LightFalloffAffectShadowT)
+#define _ShadowTIntensity                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowTIntensity)
+#define _ShadowTLightThreshol                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowTLightThreshold)
+#define _ShadowTShadowThreshold                             UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowTShadowThreshold)
+#define _ShadowTColor                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _ShadowTColor)
+#define _ShadowTColorPower                                  UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowTColorPower)
+#define _ShadowTHardness                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShadowTHardness)
+#define _STIL                                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _STIL)
+#define _ShowInAmbientLightShadowIntensity                  UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShowInAmbientLightShadowIntensity)
+#define _ShowInAmbientLightShadowThreshold                  UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ShowInAmbientLightShadowThreshold)
+#define _LightFalloffAffectShadowT                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightFalloffAffectShadowT)
 //==
 
 //== N_F_PT_ON
-#define _PTCol                                              UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_PTCol)
-#define _PTexturePower                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_PTexturePower)
+#define _PTCol                                              UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _PTCol)
+#define _PTexturePower                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _PTexturePower)
 //==
 
 //== N_F_RELGI_ON
-#define _GIFlatShade                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GIFlatShade)
-#define _GIShadeThreshold                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_GIShadeThreshold)
-#define _EnvironmentalLightingIntensity                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_EnvironmentalLightingIntensity)
+#define _GIFlatShade                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GIFlatShade)
+#define _GIShadeThreshold                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _GIShadeThreshold)
+#define _EnvironmentalLightingIntensity                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _EnvironmentalLightingIntensity)
 //==
 
 //== Others
-#define _LightAffectShadow                                  UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LightAffectShadow)
-#define _LightIntensity                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LightIntensity)
-#define _DirectionalLightIntensity                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_DirectionalLightIntensity)
-#define _PointSpotlightIntensity                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_PointSpotlightIntensity)
-#define _ALIntensity                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ALIntensity)
-#define __ALTuFo                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ALTuFo)
-#define _LightFalloffSoftness                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LightFalloffSoftness)
+#define _LightAffectShadow                                  UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightAffectShadow)
+#define _LightIntensity                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightIntensity)
+#define _DirectionalLightIntensity                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _DirectionalLightIntensity)
+#define _PointSpotlightIntensity                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _PointSpotlightIntensity)
+#define _ALIntensity                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ALIntensity)
+#define __ALTuFo                                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ALTuFo)
+#define _LightFalloffSoftness                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightFalloffSoftness)
 //==
 
 //==N_F_CLD_ON
-#define _CustomLightDirectionIntensity                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_CustomLightDirectionIntensity)
-#define _CustomLightDirection                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_CustomLightDirection)
-#define _CustomLightDirectionFollowObjectRotation           UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_CustomLightDirectionFollowObjectRotation)
+#define _CustomLightDirectionIntensity                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _CustomLightDirectionIntensity)
+#define _CustomLightDirection                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _CustomLightDirection)
+#define _CustomLightDirectionFollowObjectRotation           UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _CustomLightDirectionFollowObjectRotation)
 //==
 
 //== N_F_R_ON
-#define _ReflectionIntensity                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ReflectionIntensity)
-#define _ReflectionRoughtness                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_ReflectionRoughtness) //remove soon
-#define _RefMetallic                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RefMetallic)
+#define _ReflectionIntensity                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ReflectionIntensity)
+#define _ReflectionRoughtness                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _ReflectionRoughtness) //remove soon
+#define _RefMetallic                                        UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RefMetallic)
 //==
 
 //== N_F_RL_ON
-#define _RimLigInt                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RimLigInt)
-#define _RimLightUnfill                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RimLightUnfill)
-#define _RimLightSoftness                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RimLightSoftness)
-#define _LightAffectRimLightColor                           UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LightAffectRimLightColor)
-#define _RimLightColor                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_RimLightColor)
-#define _RimLightColorPower                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RimLightColorPower)
-#define _RimLightInLight                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RimLightInLight)
+#define _RimLigInt                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLigInt)
+#define _RimLightUnfill                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightUnfill)
+#define _RimLightSoftness                                   UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightSoftness)
+#define _LightAffectRimLightColor                           UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightAffectRimLightColor)
+#define _RimLightColor                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _RimLightColor)
+#define _RimLightColorPower                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightColorPower)
+#define _RimLightInLight                                    UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RimLightInLight)
 //==
 
 //== N_F_O_ON
-#define _OutlineExtrudeMethod                               UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int, Metadata_OutlineExtrudeMethod)
-#define _OutlineOffset                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float3, Metadata_OutlineOffset)
-#define _OutlineZPostionInCamera                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_OutlineZPostionInCamera)
-#define _OutlineColor                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_OutlineColor)
-#define _MixMainTexToOutline                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MixMainTexToOutline)
-#define _NoisyOutlineIntensity                              UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_NoisyOutlineIntensity)
-#define _DynamicNoisyOutline                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_DynamicNoisyOutline)
-#define _LightAffectOutlineColor                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_LightAffectOutlineColor)
-#define _LightAffectOutlineColor                            UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_OutlineWidthAffectedByViewDistance)
-#define _FarDistanceMaxWidth                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_FarDistanceMaxWidth)
-#define _VertexColorBlueAffectOutlineWitdh                  UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_VertexColorBlueAffectOutlineWitdh)
+#define _OutlineExtrudeMethod                               UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(int, _OutlineExtrudeMethod)
+#define _OutlineOffset                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float3, _OutlineOffset)
+#define _OutlineZPostionInCamera                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _OutlineZPostionInCamera)
+#define _OutlineColor                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _OutlineColor)
+#define _MixMainTexToOutline                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MixMainTexToOutline)
+#define _NoisyOutlineIntensity                              UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _NoisyOutlineIntensity)
+#define _DynamicNoisyOutline                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _DynamicNoisyOutline)
+#define _LightAffectOutlineColor                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _LightAffectOutlineColor)
+#define _LightAffectOutlineColor                            UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _OutlineWidthAffectedByViewDistance)
+#define _FarDistanceMaxWidth                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _FarDistanceMaxWidth)
+#define _VertexColorBlueAffectOutlineWitdh                  UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _VertexColorBlueAffectOutlineWitdh)
 //==
 
 //== N_F_NFD_ON
-#define _MinFadDistance                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MinFadDistance)
-#define _MaxFadDistance                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_MaxFadDistance)
+#define _MinFadDistance                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MinFadDistance)
+#define _MaxFadDistance                                     UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _MaxFadDistance)
 //==
 
 //==Tessellation is still in development
-// #define _TessellationSmoothness                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int, Metadata_TessellationSmoothness)
-// #define _TessellationTransition                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int, Metadata_TessellationTransition)
-// #define _TessellationNear                                UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int, Metadata_TessellationNear)
-// #define _TessellationFar                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(int, Metadata_TessellationFar)
+// #define _TessellationSmoothness                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(int, _TessellationSmoothness)
+// #define _TessellationTransition                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(int, _TessellationTransition)
+// #define _TessellationNear                                UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(int, _TessellationNear)
+// #define _TessellationFar                                 UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(int, _TessellationFar)
 //==
 
 //== Others
-#define _SSAOColor                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float4, Metadata_SSAOColor)
-#define _RTGIShaFallo                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RTGIShaFallo)
-#define _RecurRen                                           UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(float, Metadata_RecurRen)
-
+#define _SSAOColor                                          UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _SSAOColor)
+#define _RTGIShaFallo                                       UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RTGIShaFallo)
+#define _RecurRen                                           UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float, _RecurRen)
 #define _AlphaRemapMin                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _AlphaRemapMin)
 #define _AlphaRemapMax                                      UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _AlphaRemapMax)
 //==

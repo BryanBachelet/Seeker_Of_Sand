@@ -126,7 +126,7 @@ namespace Character
             InitSpriteSpell();
             for(int i = 0; i < capsuleIndex.Count; i++)
             {
-                m_dropInventory.addNewItem(i);
+                m_dropInventory.addNewItem(capsuleIndex[i]);
             }
 
             // Init Variables
@@ -140,17 +140,17 @@ namespace Character
             if (!state.isPlaying) { return; } // Block Update during pause state
             if (m_lastTimeShot + tempsAvantActiveRegenMana < Time.time)
             {
-                float manaRegen = (Time.deltaTime * regenPerSec);
-                if (currentManaValue + manaRegen <= manaMax)
-                {
-                    currentManaValue += manaRegen;
-                }
-                else
-                {
-                    currentManaValue = manaMax;
-                }
+                //float manaRegen = (Time.deltaTime * regenPerSec);
+                //if (currentManaValue + manaRegen <= manaMax)
+                //{
+                //    currentManaValue += manaRegen;
+                //}
+                //else
+                //{
+                //    currentManaValue = manaMax;
+                //}
             }
-            manaSlider.fillAmount = currentManaValue / manaMax;
+            //manaSlider.fillAmount = currentManaValue / manaMax;
             if (m_CharacterMouvement.combatState)
             {
                 UpdateAvatarModels();
@@ -295,11 +295,11 @@ namespace Character
                 int RndCapsule = 0;
                 if (i == 0)
                 {
-                    RndCapsule = UnityEngine.Random.Range(0, 1);
+                    RndCapsule = UnityEngine.Random.Range(0, 2);
                 }
                 else
                 {
-                    RndCapsule = UnityEngine.Random.Range(2, 8);
+                    RndCapsule = UnityEngine.Random.Range(3, 9);
                 }
                 capsuleIndex.Add(RndCapsule);
             }
@@ -332,7 +332,7 @@ namespace Character
 
         private void Shoot()
         {
-            if (!m_canShoot || currentManaValue < 2) return;
+            if (!m_canShoot) return;
 
             GlobalSoundManager.PlayOneShot(27, transform.position);
 
@@ -530,7 +530,7 @@ namespace Character
 
             data.characterShoot = this;
             Vector3 baseDirection = transform.forward;
-            if (m_characterAim.HasCloseTarget()) baseDirection = m_characterAim.GetAimDirection();
+            if ( m_characterAim.HasCloseTarget() || m_aimModeState != AimMode.AimControls) baseDirection = m_characterAim.GetAimDirection();
             data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
             data.speed = stats.speed + m_rigidbody.velocity.magnitude;
             data.life = stats.lifetime;

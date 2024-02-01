@@ -34,7 +34,7 @@ using UnityEngine;
 // 23 ColorIntensity(R)
 // 24 Scatter UV Scale (RG), blendMode (B), Alpha Mult (A)
 // 25 Scatter Height Filter (RG), Scatter SlopeFilter (BA)
-// 26 Scatter Distance Fade (R), RimLight Power (G)
+// 26 Scatter Distance Fade (R), RimLight Power (G), ScatterWeight (B)
 // 27 Rim Light Color, intensity (A)
 // 28 Outline Color and intensity
 // 29 Slope Texture Angle (R), Contrast (G)

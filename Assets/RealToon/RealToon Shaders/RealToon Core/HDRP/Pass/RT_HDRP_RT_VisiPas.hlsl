@@ -4,7 +4,7 @@
 #include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/RT_HDRP_Other.hlsl"
 
 [shader("closesthit")]
-void ClosestHitVisibility(inout RayIntersection rayIntersection : SV_RayPayload, AttributeData attributeData : SV_IntersectionAttributes)
+void ClosestHitVisibility(inout RayIntersectionVisibility rayIntersection : SV_RayPayload, AttributeData attributeData : SV_IntersectionAttributes)
 {
 
 	UNITY_XR_ASSIGN_VIEW_INDEX(DispatchRaysIndex().z);
@@ -24,7 +24,7 @@ void ClosestHitVisibility(inout RayIntersection rayIntersection : SV_RayPayload,
 }
 
 [shader("anyhit")]
-void AnyHitVisibility(inout RayIntersection rayIntersection : SV_RayPayload, AttributeData attributeData : SV_IntersectionAttributes)
+void AnyHitVisibility(inout RayIntersectionVisibility rayIntersection : SV_RayPayload, AttributeData attributeData : SV_IntersectionAttributes)
 {
 
 	UNITY_XR_ASSIGN_VIEW_INDEX(DispatchRaysIndex().z);

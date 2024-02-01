@@ -63,7 +63,24 @@ namespace Enemies
         public void SetTarget(TargetData target)
         {
             targetData = target;
+            if (m_navMeshAgent == null) m_navMeshAgent = GetComponent<NavMeshAgent>();
+            m_navMeshAgent.enabled = true;
+            bool state = m_navMeshAgent.SetDestination(targetData.target.position);
+            if (!targetData.isMoving)
+            {
+                Debug.Log("Test");
+            }
+            if (!m_navMeshAgent.hasPath)
+            {
+                Debug.Log("Has hit");
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
+                {
 
+                    state = m_navMeshAgent.SetDestination(hit.position);
+
+                }
+            }
         }
 
         public void Update()
@@ -79,6 +96,14 @@ namespace Enemies
             }
             m_isPauseActive = false;
 
+
+
+            if (!targetData.target.name.Equals("Player"))
+            {
+                Debug.Log("Test");
+            }
+
+
             if (m_npcHealthComponent.npcState == NpcState.MOVE)
             {
                 if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
@@ -86,6 +111,11 @@ namespace Enemies
                 if (isAffectedBySlope)
                 {
                     m_navMeshAgent.speed = CalculateSlopeSpeed();
+                }
+
+                if (Vector3.Distance(transform.position, targetData.target.position) > 1)
+                {
+                    Move();
                 }
 
                 if (targetData.isMoving) Move();
@@ -125,10 +155,15 @@ namespace Enemies
 
         public void Move()
         {
-            Vector3 directionToDestination = m_navMeshAgent.destination - transform.position; 
+            Vector3 directionToDestination = m_navMeshAgent.destination - transform.position;
             Vector3 directionToTarget = targetData.target.position - transform.position;
             float dot = Vector3.Dot(directionToDestination.normalized, directionToTarget.normalized);
             float distancePos = Vector3.Distance(transform.position, targetData.target.position);
+
+            if (targetData.target.name != "Player")
+            {
+                Debug.Log("Test");
+            }
 
             // Repositionning enemi when to far 
             if (distancePos > m_distanceBeforeRepositionning)
@@ -142,19 +177,30 @@ namespace Enemies
                     m_navMeshAgent.nextPosition = transform.position;
 
                     return;
-          
+
                 }
-                
+
 
 
             }
-            if(distancePos > minDistanceToFullyActive  && dot > m_directionMinDot && !m_isAlwaysUpdate)
+            if (distancePos > minDistanceToFullyActive && dot > m_directionMinDot && !m_isAlwaysUpdate)
             {
 
                 return;
             }
             m_navMeshAgent.enabled = true;
-            m_navMeshAgent.destination = targetData.target.position;
+            m_navMeshAgent.SetDestination(targetData.target.position);
+            if (!m_navMeshAgent.hasPath)
+            {
+                Debug.Log("Has hit");
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
+                {
+
+                    m_navMeshAgent.SetDestination(hit.position);
+
+                }
+            }
         }
 
         public void OnDeath(Vector3 direction, float power)
@@ -167,7 +213,7 @@ namespace Enemies
 
                 m_rigidbody.isKinematic = false;
                 m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
-               //m_rigidbody.AddForce((direction.normalized + Vector3.up).normalized * power, ForceMode.Impulse);
+                //m_rigidbody.AddForce((direction.normalized + Vector3.up).normalized * power, ForceMode.Impulse);
             }
 
             this.enabled = false;

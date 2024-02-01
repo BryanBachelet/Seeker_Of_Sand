@@ -1,0 +1,166 @@
+﻿         Pass
+        {
+            // based on HDLitPass.template
+            Name "GBuffer"
+            Tags { "LightMode" = "GBuffer" }
+            //-------------------------------------------------------------------------------------
+            // Render Modes (Blend, Cull, ZTest, Stencil, etc)
+            //-------------------------------------------------------------------------------------
+            
+            Cull [_CullMode]
+            ZTest [_ZTestGBuffer]
+            Stencil
+               {
+                  WriteMask [_StencilWriteMaskGBuffer]
+                  Ref [_StencilRefGBuffer]
+                  CompFront Always
+                  PassFront Replace
+                  CompBack Always
+                  PassBack Replace
+               }
+
+                ColorMask [_LightLayersMaskBuffer4] 4
+                ColorMask [_LightLayersMaskBuffer5] 5
+
+            %PASSGBUFFER%
+            
+            //-------------------------------------------------------------------------------------
+            // End Render Modes
+            //-------------------------------------------------------------------------------------
+        
+            HLSLPROGRAM
+        
+            #pragma target %SHADERTARGET%
+            #pragma only_renderers d3d11 playstation xboxone xboxseries vulkan metal switch
+            #pragma multi_compile_instancing
+            //#pragma instancing_options renderinglayer
+            #pragma multi_compile_local _ _ALPHATEST_ON
+
+            #pragma multi_compile _ LIGHT_LAYERS
+            #pragma shader_feature _ _SURFACE_TYPE_TRANSPARENT
+            #pragma shader_feature_local _BLENDMODE_OFF _BLENDMODE_ALPHA _BLENDMODE_ADD _BLENDMODE_PRE_MULTIPLY
+            #pragma shader_feature_local _ _DOUBLESIDED_ON
+            #pragma shader_feature_local _ _ADD_PRECOMPUTED_VELOCITY
+            #pragma shader_feature_local _ _TRANSPARENT_WRITES_MOTION_VEC
+            #pragma multi_compile _ DEBUG_DISPLAY
+            #pragma shader_feature_local _ _DISABLE_DECALS
+            #pragma shader_feature_local _ _DISABLE_SSR
+            #pragma shader_feature_local _ _DISABLE_SSR_TRANSPARENT
+            #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+            #pragma multi_compile_fragment PROBE_VOLUMES_OFF PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
+            #pragma multi_compile_raytracing PROBE_VOLUMES_OFF PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
+            #pragma multi_compile _ DYNAMICLIGHTMAP_ON
+            #pragma multi_compile_fragment _ SHADOWS_SHADOWMASK
+            #pragma multi_compile_raytracing _ SHADOWS_SHADOWMASK
+            #pragma multi_compile_fragment DECALS_OFF DECALS_3RT DECALS_4RT
+            #pragma multi_compile_fragment _ DECAL_SURFACE_GRADIENT
+            #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
+
+
+            //-------------------------------------------------------------------------------------
+            // Variant Definitions (active field translations to HDRP defines)
+            //-------------------------------------------------------------------------------------
+            // #define _MATERIAL_FEATURE_SUBSURFACE_SCATTERING 1
+            // #define _MATERIAL_FEATURE_TRANSMISSION 1
+            // #define _MATERIAL_FEATURE_ANISOTROPY 1
+            // #define _MATERIAL_FEATURE_IRIDESCENCE 1
+            // #define _MATERIAL_FEATURE_SPECULAR_COLOR 1
+            #define _ENABLE_FOG_ON_TRANSPARENT 1
+            #define _AMBIENT_OCCLUSION 1
+            #define _SPECULAR_OCCLUSION_FROM_AO 1
+            // #define _SPECULAR_OCCLUSION_FROM_AO_BENT_NORMAL 1
+            // #define _SPECULAR_OCCLUSION_CUSTOM 1
+            #define _ENERGY_CONSERVING_SPECULAR 1
+            // #define _ENABLE_GEOMETRIC_SPECULAR_AA 1
+            // #define _HAS_REFRACTION 1
+            // #define _REFRACTION_PLANE 1
+            // #define _REFRACTION_SPHERE 1
+            // #define _DISABLE_DECALS 1
+            // #define _DISABLE_SSR 1
+            // #define _ADD_PRECOMPUTED_VELOCITY
+            // #define _WRITE_TRANSPARENT_MOTION_VECTOR 1
+            // #define _DEPTHOFFSET_ON 1
+            // #define _BLENDMODE_PRESERVE_SPECULAR_LIGHTING 1
+
+
+
+            %DEFINES%
+
+            %PRAGMAS%
+        
+           
+            //-------------------------------------------------------------------------------------
+            // Defines
+            //-------------------------------------------------------------------------------------
+
+
+            #define SHADERPASS SHADERPASS_GBUFFER
+            #define RAYTRACING_SHADER_GRAPH_DEFAULT
+            #define REQUIRE_DEPTH_TEXTURE
+
+            %HDRPINCLUDE%
+
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/NormalSurfaceGradient.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalUtilities.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitDecalData.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderGraphFunctions.hlsl"
+    
+
+
+            %TEMPLATE_SHARED%
+
+
+            %CUSTOMCBUFFER%
+
+            %CUSTOMINSTANCEPROPS%
+
+            %CODE%
+
+            %SHADERDESC%
+
+            %VERT%
+
+            %TESSELLATION%
+
+            %HDRPSHARED%
+
+            void Frag(  VertexToPixel v2f,
+                        OUTPUT_GBUFFER(outGBuffer)
+                        #ifdef _DEPTHOFFSET_ON
+                        , out float outputDepth : SV_Depth
+                        #endif
+                        )
+            {
+                  UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(v2f);
+                  FragInputs input = BuildFragInputs(v2f);
+
+                  // input.positionSS is SV_Position
+                  PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS);
+
+          
+                  float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
+
+
+                  SurfaceData surfaceData;
+                  BuiltinData builtinData;
+                  Surface l;
+                  ShaderData d;
+                  GetSurfaceAndBuiltinData(v2f, input, V, posInput, surfaceData, builtinData, l, d);
+
+         
+                  ENCODE_INTO_GBUFFER(surfaceData, builtinData, posInput.positionSS, outGBuffer);
+
+                  #ifdef _DEPTHOFFSET_ON
+                        outputDepth = l.outputDepth;
+                  #endif
+            }
+
+            ENDHLSL
+        }
+        

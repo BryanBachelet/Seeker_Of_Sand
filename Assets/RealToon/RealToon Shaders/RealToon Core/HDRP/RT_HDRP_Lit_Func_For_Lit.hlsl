@@ -4,6 +4,9 @@
 //=========================
 //=========================
 
+#ifndef REALTOON_HDRP_FOR_LIT_HLSL
+#define REALTOON_HDRP_FOR_LIT_HLSL
+
 //RT REF ENV
 float3 RT_REF_ENV( BuiltinData builtinData , float3 Normal , float3 viewReflectDirection , PositionInputs posInput , LightLoopContext context , in float3 reflected , bool isRT)
 {
@@ -690,3 +693,5 @@ void RT_AL( LightLoopContext context , LightData Alight , PositionInputs posInpu
 		}
 
 }
+
+#endif

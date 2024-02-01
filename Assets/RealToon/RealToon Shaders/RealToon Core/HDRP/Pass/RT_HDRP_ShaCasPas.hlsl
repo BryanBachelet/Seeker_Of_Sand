@@ -24,6 +24,7 @@ struct Varyings
 
 	float2 uv           : TEXCOORD0;
 	float4 projPos		: TEXCOORD1;
+	float3 positionWS	: TEXCOORD2;
 	float4 positionCS   : SV_POSITION;
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 	UNITY_VERTEX_OUTPUT_STEREO
@@ -67,6 +68,7 @@ Varyings ShadowPassVertex(Attributes input)
 
 	float4 objPos = mul (GetObjectToWorldMatrix(), float4(0.0,0.0,0.0,1.0) );
 
+	output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
     output.positionCS = TransformWorldToHClip(TransformObjectToWorld(input.positionOS.xyz));
     output.projPos = ComputeScreenPos (output.positionCS);
 	output.positionCS = GetShadowPositionHClip(input);
@@ -75,7 +77,9 @@ Varyings ShadowPassVertex(Attributes input)
 
 }
 
-float4 ShadowPassFragment(Varyings input) : SV_Target
+void ShadowPassFragment(Varyings input
+						, out float4 outColor : SV_Target0
+)
 {
 
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -83,12 +87,19 @@ float4 ShadowPassFragment(Varyings input) : SV_Target
 
 	float4 objPos = mul ( GetObjectToWorldMatrix(), float4(0.0,0.0,0.0,1.0) );
     float2 sceneUVs = (input.projPos.xy / input.projPos.w);
+	float3 viewDirection = GetWorldSpaceNormalizeViewDir(input.positionWS);
 
 	float2 RTD_OB_VP_CAL = distance(objPos.xyz, GetCurrentViewPosition());
 	float2 RTD_VD_Cal = (float2((sceneUVs.x * 2.0 - 1.0)*(_ScreenParams.r/_ScreenParams.g), sceneUVs.y * 2.0 - 1.0).rg*RTD_OB_VP_CAL);
 
     float2 _TexturePatternStyle_var = lerp( input.uv, RTD_VD_Cal, _TexturePatternStyle );
     float4 _MainTex_var = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex , TRANSFORM_TEX(_TexturePatternStyle_var, _MainTex) );
+
+	#if !defined(SHADER_STAGE_RAY_TRACING) //&& !defined(_TESSELLATION_DISPLACEMENT)
+		#ifdef LOD_FADE_CROSSFADE 
+			LODDitheringTransition(ComputeFadeMaskSeed(viewDirection, input.positionCS.xy), unity_LODFade.x);
+		#endif
+	#endif
 
 	#if N_F_TRANS_ON
 
@@ -116,8 +127,8 @@ float4 ShadowPassFragment(Varyings input) : SV_Target
 
 	//RT_NFD
 	#ifdef N_F_NFD_ON
-		RT_NFD(input.positionCS);
+		RT_NFD(input.positionCS.xy);
 	#endif
 
-	return 0;
+	outColor = 0;
 }

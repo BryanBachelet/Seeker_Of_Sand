@@ -61,6 +61,7 @@ public struct EndInfoStats
 public class GameState : MonoBehaviour
 {
     private static Enemies.EnemyManager m_enemyManager;
+    public GameObject fixeElementHolder;
     private static List<ObjectState> listObject = new List<ObjectState>(0);
 
     public static UIEndScreen endMenu;
@@ -194,6 +195,12 @@ public class GameState : MonoBehaviour
     {
         EndInfoStats stats = m_enemyManager.FillEndStat();
         endMenu.ActiveUIEndScreen(stats);
+
         ChangeState();
+    }
+
+    public void HideGlobalUI()
+    {
+        fixeElementHolder.SetActive(false);
     }
 }

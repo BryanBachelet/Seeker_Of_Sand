@@ -21,7 +21,7 @@ public class Stone : Projectile
     {
         yield return new WaitForSeconds(1.0f);
         GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position);
-        m_rigidbody.velocity = m_direction * m_speed;
+        m_rigidbody.velocity = m_direction.normalized * m_speed;
         m_hasStart = true;
         yield return null;
     }
@@ -73,7 +73,7 @@ public class Stone : Projectile
         if (other.gameObject.tag != "Enemy") return;
         //GlobalSoundManager.PlayOneShot(10, transform.position);
         Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
-
+        m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
         if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
         enemyTouch.ReceiveDamage(m_rigidbody.velocity.magnitude * m_damage, (other.transform.position - transform.position).normalized, m_power);
     }

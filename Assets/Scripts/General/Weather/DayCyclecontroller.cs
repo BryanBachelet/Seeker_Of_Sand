@@ -269,42 +269,42 @@ public class DayCyclecontroller : MonoBehaviour
         m_instructionAnimator.ResetTrigger("DisplayInstruction");
     }
 
-    public void Sparse()
-    {
-        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
-        {
-            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Sparse;
-            Debug.Log(vClouds.cloudPreset);
-        }
-
-    }
-    public void Cloudy()
-    {
-        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
-        {
-            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Cloudy;
-            Debug.Log(vClouds.cloudPreset);
-        }
-
-    }
-    public void Overcast()
-    {
-        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
-        {
-            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Overcast;
-            Debug.Log(vClouds.cloudPreset);
-        }
-
-    }
-    public void Stormy()
-    {
-        if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
-        {
-            vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Stormy;
-            Debug.Log(vClouds.cloudPreset);
-        }
-
-    }
+    //public void Sparse()
+    //{
+    //    if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+    //    {
+    //        vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Sparse;
+    //        Debug.Log(vClouds.cloudPreset);
+    //    }
+    //
+    //}
+    //public void Cloudy()
+    //{
+    //    if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+    //    {
+    //        vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Cloudy;
+    //        Debug.Log(vClouds.cloudPreset);
+    //    }
+    //
+    //}
+    //public void Overcast()
+    //{
+    //    if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+    //    {
+    //        vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Overcast;
+    //        Debug.Log(vClouds.cloudPreset);
+    //    }
+    //
+    //}
+    //public void Stormy()
+    //{
+    //    if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))
+    //    {
+    //        vClouds.cloudPreset.value = VolumetricClouds.CloudPresets.Stormy;
+    //        Debug.Log(vClouds.cloudPreset);
+    //    }
+    //
+    //}
     public void ShadowOpacityAdjustByHour(float hour)
     {
         if (volumeProfile.TryGet<VolumetricClouds>(out vClouds))

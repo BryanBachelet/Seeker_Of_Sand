@@ -18,6 +18,12 @@ PackedVaryingsType Vert(AttributesMesh inputMesh,
 	return MotionVectorVS(varyingsType, inputMesh, inputPass);
 }
 
+#if defined(WRITE_MSAA_DEPTH)
+	#define SV_TARGET_NORMAL SV_Target2
+#else
+	#define SV_TARGET_NORMAL SV_Target1
+#endif
+
 void Frag(  PackedVaryingsToPS packedInput
 
 	        #ifdef WRITE_MSAA_DEPTH
@@ -28,7 +34,7 @@ void Frag(  PackedVaryingsToPS packedInput
             #endif
 
             #ifdef WRITE_NORMAL_BUFFER
-				, out float4 outNormalBuffer : SV_Target1
+				, out float4 outNormalBuffer : SV_TARGET_NORMAL
             #endif
 
             #ifdef _DEPTHOFFSET_ON

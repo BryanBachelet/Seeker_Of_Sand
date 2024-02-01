@@ -402,21 +402,22 @@ namespace Enemies
 
             if (EnemyTargetPlayer)
             {
-                npcHealth.targetData.target = m_playerTranform;
                 npcHealth.targetData.isMoving = true;
+                npcHealth.SetTarget( m_playerTranform);
             }
             else
             {
 
                 if (focusPlayer)
                 {
-                    npcHealth.targetData.target = m_playerTranform;
                     npcHealth.targetData.isMoving = true;
+                    npcHealth.SetTarget(m_playerTranform);
+                   
 
                 }
                 else
                 {
-                    npcHealth.targetData.target = m_targetTranform;
+                     npcHealth.SetTarget( m_targetTranform);
                     npcHealth.targetData.isMoving = false;
                     m_enemiesFocusAltar.Add(npcHealth);
                 }

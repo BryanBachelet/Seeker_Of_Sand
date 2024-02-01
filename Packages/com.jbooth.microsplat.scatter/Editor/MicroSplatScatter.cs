@@ -9,6 +9,7 @@ using System.Collections;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using System.Collections.Generic;
+using static JBooth.MicroSplat.MicroSplatTriplanar;
 
 namespace JBooth.MicroSplat
 {
@@ -47,6 +48,7 @@ namespace JBooth.MicroSplat
          _PERTEXSCATTERALPHABOOST,
          _PERTEXSCATTERFADE,
          _SPLATTERSECONDLAYER,
+         _PERTEXSCATTERWEIGHT,
          kNumFeatures,
       }
 
@@ -65,6 +67,7 @@ namespace JBooth.MicroSplat
       bool perTexBlendMode;
       bool perTexScatterAlphaBoost;
       bool perTexScatterFade;
+      bool perTexScatterWeight;
 
       static TextAsset properties;
       static TextAsset funcs;
@@ -125,6 +128,7 @@ namespace JBooth.MicroSplat
       static GUIContent ptBlendMode = new GUIContent ("Blend Mode", "Allows you to control how this is blended with the texture");
       static GUIContent ptAlphaBoost = new GUIContent ("Alpha Multiplier", "Allows you to scale up/down the alpha channel");
       static GUIContent ptAlphaFade = new GUIContent ("Alpha Fade", "Allows you to fade out the scatter based on the mip level used. This is useful when the lower mips of the texture turn the scatter into a solid color, changing the overall color of the terrain.");
+      static GUIContent ptScatterWeight = new GUIContent("Scatter Weight", "Allows you to adjust scatter alpha based on underlying texture weights");
 
       public override void DrawFeatureGUI (MicroSplatKeywords keywords)
       {
@@ -175,7 +179,19 @@ namespace JBooth.MicroSplat
          return false;
       }
 
-      static GUIContent CUVScale2 = new GUIContent ("Second Layer UV scale/offset", "Scale and offset for second layer");
+        public override void DrawPerTextureGUI(int index, MicroSplatKeywords keywords, Material mat, MicroSplatPropData propData)
+        {
+            if (scatter != ScatterMode.Off)
+            {
+                InitPropData(26, propData, new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+                perTexScatterWeight = DrawPerTexFloatSlider(index, 26, GetFeatureName(DefineFeature._PERTEXSCATTERWEIGHT),
+                   keywords, propData, Channel.B, ptScatterWeight, 0, 1);
+
+            }
+        }
+
+        static GUIContent CUVScale2 = new GUIContent ("Second Layer UV scale/offset", "Scale and offset for second layer");
 
       public override void DrawShaderGUI (MicroSplatShaderGUI shaderGUI, MicroSplatKeywords keywords, Material mat, MaterialEditor materialEditor, MaterialProperty [] props)
       {
@@ -262,6 +278,10 @@ namespace JBooth.MicroSplat
          {
             features.Add (GetFeatureName (DefineFeature._PERTEXSCATTERFADE));
          }
+         if (perTexScatterWeight)
+         {
+            features.Add(GetFeatureName(DefineFeature._PERTEXSCATTERWEIGHT));
+         }
         
          return features.ToArray ();
       }
@@ -285,6 +305,7 @@ namespace JBooth.MicroSplat
          perTexSlopeFilter = HasFeature (keywords, DefineFeature._PERTEXSCATTERSLOPEFILTER);
          perTexScatterAlphaBoost = HasFeature (keywords, DefineFeature._PERTEXSCATTERALPHABOOST);
          perTexScatterFade = HasFeature (keywords, DefineFeature._PERTEXSCATTERFADE);
+         perTexScatterWeight = HasFeature(keywords, DefineFeature._PERTEXSCATTERWEIGHT);
       }
 
       public override void InitCompiler (string [] paths)

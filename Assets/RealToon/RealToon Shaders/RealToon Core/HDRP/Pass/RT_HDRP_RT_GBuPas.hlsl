@@ -37,8 +37,8 @@ void ClosestHitGBuffer(inout RayIntersectionGBuffer rayIntersectionGbuffer : SV_
 	float3 smoNorm = float3(0.0, 0.0, 0.0);
 
 	#if N_F_SON_ON
-		float3 ObPos = TransformWorldToObject(fragInput.positionRWS).xyz; //
-		smoNorm = calcNorm(float3(-ObPos.x + ((-_XYZPosition.x) * 0.1), ObPos.y + ((_XYZPosition.y) * 0.1), (-ObPos.z) + ((-_XYZPosition.z) * 0.1))); //
+		float3 ObPos = TransformWorldToObject(fragInput.positionRWS).xyz;
+		smoNorm = calcNorm(float3(-ObPos.x + ((-_XYZPosition.x) * 0.1), ObPos.y + ((_XYZPosition.y) * 0.1), (-ObPos.z) + ((-_XYZPosition.z) * 0.1)));
 	#endif
 
 	//RT_NM
@@ -74,6 +74,9 @@ void ClosestHitGBuffer(inout RayIntersectionGBuffer rayIntersectionGbuffer : SV_
 	context.shadowValue = 1;			
 	context.sampleReflection = 0;
 	context.splineVisibility = -1;
+#ifdef APPLY_FOG_ON_SKY_REFLECTIONS
+	context.positionWS = posInput.positionWS;
+#endif
 	
 	uint i=0;
 	uint cellIndex;
@@ -88,7 +91,11 @@ void ClosestHitGBuffer(inout RayIntersectionGBuffer rayIntersectionGbuffer : SV_
 		builtinData.shadowMask3 = shaMask.w;
 	#endif
 
-	builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#if UNITY_VERSION >= 202310
+		builtinData.renderingLayers = GetMeshRenderingLayerMask();
+	#else
+		builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#endif
 
 	//=========//
 	//=========//
@@ -257,7 +264,7 @@ void ClosestHitGBuffer(inout RayIntersectionGBuffer rayIntersectionGbuffer : SV_
 
 	//RT_RELGI_SUB1
 	float ref_int_val;
-	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1( posInput ,RTD_GI_FS_OO , RTD_SHAT_COL , RTD_MCIALO , RTD_STIAL , RTD_RT_GI_Sha_FO , ref_int_val , (float3)0.0 , true);
+	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1( posInput, viewReflectDirection, viewDirection, RTD_GI_FS_OO , RTD_SHAT_COL , RTD_MCIALO , RTD_STIAL , RTD_RT_GI_Sha_FO , ref_int_val , (float3)0.0 , true);
 
 	//RT_SS
 	float RTD_SS = RT_SS( fragInput.color , RTD_NDOTL , attenuation , DirLigDim );
@@ -597,7 +604,7 @@ void ClosestHitGBuffer(inout RayIntersectionGBuffer rayIntersectionGbuffer : SV_
 
 	//===================================================================
 
-	rayIntersectionGbuffer.gbuffer0 = float4(finalRGBA.rgb,1.0);
+	rayIntersectionGbuffer.gbuffer0 = 0.0; //float4(finalRGBA.rgb,1.0); //Futher Checking
 
 	NormalData normalData;
 	normalData.normalWS = normalDirection;

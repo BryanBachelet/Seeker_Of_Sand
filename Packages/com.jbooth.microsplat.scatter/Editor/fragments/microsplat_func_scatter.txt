@@ -143,7 +143,7 @@
       }
       #endif
 
-      void SampleLayer(Input i, inout half4 albedo, inout half4 normalSAO, inout half3 surfGrad, float2 uv, float camDist,
+      void SampleLayer(Input i, float ptWeight, inout half4 albedo, inout half4 normalSAO, inout half3 surfGrad, float2 uv, float camDist,
          int i0, int i1, int i2, half3 weights, float alpha, float2 uvOffset)
       {
       
@@ -260,19 +260,11 @@
          if (i2 < 0) { a2 = albedo; n2 = normalSAO; }
 
 
-         #if _STARREACHFORMAT
-            // this format has alpha in the AO channel, and height in the regular height channel.
-            // AO is computed analytically
-            a0.a = n0.w; n0.w = length(n0.xy);
-            a1.a = n1.w; n1.w = length(n1.xy);
-            a2.a = n2.w; n2.w = length(n2.xy);
-         #endif
-
          // bias alpha to half current value over the mip range
          #if _PERTEXSCATTERFADE
-            float4 ptDF0 = SAMPLE_TEXTURE_LOD(_PerTexProps, shared_point_clamp_sampler, float2((float)i0*_PerTexProps_TexelSize.x, 26.5/32), 0);
-            float4 ptDF1 = SAMPLE_TEXTURE_LOD(_PerTexProps, shared_point_clamp_sampler, float2((float)i1*_PerTexProps_TexelSize.x, 26.5/32), 0);
-            float4 ptDF2 = SAMPLE_TEXTURE_LOD(_PerTexProps, shared_point_clamp_sampler, float2((float)i2*_PerTexProps_TexelSize.x, 26.5/32), 0);
+            float4 ptDF0 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2((float)i0*_PerTexProps_TexelSize.x, 26.5/32), 0);
+            float4 ptDF1 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2((float)i1*_PerTexProps_TexelSize.x, 26.5/32), 0);
+            float4 ptDF2 = SAMPLE_TEXTURE2D_LOD(_PerTexProps, shared_point_clamp_sampler, float2((float)i2*_PerTexProps_TexelSize.x, 26.5/32), 0);
 
             float mip0 = ComputeMipLevel(uv * scale0, _ScatterDiffuse_TexelSize.zw);
             float mip1 = ComputeMipLevel(uv * scale1, _ScatterDiffuse_TexelSize.zw);
@@ -287,6 +279,8 @@
             alphaMult1 *= (1-mip1);
             alphaMult2 *= (1-mip2);
          #endif
+
+         alpha *= ptWeight;
 
          albedo.rgb = ScatterBlendAlbedo(albedo, a0, blend0, alpha * mask0, alphaMult0, weights.x);
          albedo.rgb = ScatterBlendAlbedo(albedo, a1, blend1, alpha * mask1, alphaMult1, weights.y);
@@ -305,37 +299,30 @@
       }
 
       void ApplyScatter(
-         #if _MEGASPLAT
-            Config config, 
-         #endif
+            Config config, float4 heightWeights, 
          Input i, inout half4 albedo, inout half4 normalSAO, inout half3 surfGrad, float2 controlUV, float camDist)
       {
+         float ptWeight = 1;
+         #if _PERTEXSCATTERWEIGHT
+            SAMPLE_PER_TEX(ptw, 26.5, config, half4(1, 1, 1, 1));
+            ptWeight = ptw0.z * heightWeights.x + ptw1.z * heightWeights.y + ptw2.z * heightWeights.z + ptw3.z * heightWeights.w;
+         #endif
 
          #if _MEGASPLAT
-            MSBRANCHOTHER(i.scatter0.w)
+            MSBRANCHOTHER(i.scatter0.w * ptWeight)
             {
                int i0 = round((i.scatter0.x * 255) / max(i.baryWeights.x, 0.00001));
                int i1 = round((i.scatter0.y * 255) / max(i.baryWeights.y, 0.00001));
                int i2 = round((i.scatter0.z * 255) / max(i.baryWeights.z, 0.00001));
-               #if _STARREACHFORMAT
-                  if (i0 == 255) i0 = config.uv0.z;
-                  if (i1 == 255) i1 = config.uv0.z;
-                  if (i2 == 255) i2 = config.uv0.z;
-               #endif
-               SampleLayer(i, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale, camDist, i0, i1, i2, i.baryWeights.xyz, i.scatter0.w, float2(0, 0));
+               SampleLayer(i, ptWeight, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale, camDist, i0, i1, i2, i.baryWeights.xyz, i.scatter0.w, float2(0, 0));
             }
             #if _SPLATTERSECONDLAYER
-            MSBRANCHOTHER(i.scatter1.w)
+            MSBRANCHOTHER(i.scatter1.w* ptWeight)
             {
                int i3 = round((i.scatter1.x * 255) / max(i.baryWeights.x, 0.00001));
                int i4 = round((i.scatter1.y * 255) / max(i.baryWeights.y, 0.00001));
                int i5 = round((i.scatter1.z * 255) / max(i.baryWeights.z, 0.00001));
-               #if _STARREACHFORMAT
-                  if (i3 == 255) i3 = config.uv0.z;
-                  if (i4 == 255) i4 = config.uv0.z;
-                  if (i5 == 255) i5 = config.uv0.z;
-               #endif
-               SampleLayer(i, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale2.xy + _ScatterUVScale2.zw, camDist, i3, i4, i5, i.baryWeights.xyz, i.scatter1.w, float2(0.5, 0.5));
+               SampleLayer(i, ptWeight, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale2.xy + _ScatterUVScale2.zw, camDist, i3, i4, i5, i.baryWeights.xyz, i.scatter1.w, float2(0.5, 0.5));
             }
             #endif
          #else
@@ -345,6 +332,8 @@
             #if _SPLATTERSECONDLAYER
                brnch += c.b;
             #endif
+
+            brnch *= ptWeight;
 
             // note, second layer is swizzled wz so alpha of 1 doesn't cause an issue.
 
@@ -358,7 +347,7 @@
                   i0 = (m.c0.r * 64) - 1;
                   i1 = (m.c1.r * 64) - 1;
                   i2 = (m.c2.r * 64) - 1;
-                  SampleLayer(i, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale, camDist, i0, i1, i2, m.weights.xyz, c.g, float2(0, 0));
+                  SampleLayer(i, ptWeight, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale, camDist, i0, i1, i2, m.weights.xyz, c.g, float2(0, 0));
                }
 
                #if _SPLATTERSECONDLAYER
@@ -368,7 +357,7 @@
                   i1 = (m.c1.a * 64) - 1;
                   i2 = (m.c2.a * 64) - 1;
 
-                  SampleLayer(i, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale2.xy + _ScatterUVScale2.zw, camDist, i0, i1, i2, m.weights.xyz, c.b, float2(0.5, 0.5));
+                  SampleLayer(i, ptWeight, albedo, normalSAO, surfGrad, controlUV * _ScatterUVScale2.xy + _ScatterUVScale2.zw, camDist, i0, i1, i2, m.weights.xyz, c.b, float2(0.5, 0.5));
                }
                #endif
             }

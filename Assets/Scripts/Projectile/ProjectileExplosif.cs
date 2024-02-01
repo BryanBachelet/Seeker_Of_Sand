@@ -187,6 +187,7 @@ public class ProjectileExplosif : Projectile
     {
         if (m_stickTransform != null)
         {
+
             Enemies.NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<Enemies.NpcHealthComponent>();
             Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
             GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
@@ -204,7 +205,7 @@ public class ProjectileExplosif : Projectile
                     enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
             }
 
-            
+            m_characterShoot.ActiveOnHit(stickyEnemy.transform.position, EntitiesTrigger.Enemies, stickyEnemy.gameObject);
             stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power);
             m_stickTransform = null;
         }

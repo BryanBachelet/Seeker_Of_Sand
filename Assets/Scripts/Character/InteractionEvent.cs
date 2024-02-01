@@ -164,6 +164,7 @@ public class InteractionEvent : MonoBehaviour
             lastTrader.SetBool("StandUp", false);
             m_lastHintAnimator.SetBool("InteractionOn", false);
             txt_ObjectifDescription.text = "";
+            txt_ObjectifDescriptionPnj.text = "";
             lastTrader = null;
             StartCoroutine(CloseUIWithDelay(2));
         }
@@ -187,7 +188,7 @@ public class InteractionEvent : MonoBehaviour
                 {
                     if (lastArtefact.gameObject != col[i].gameObject)
                     {
-                        
+
                         NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
                         m_lastHintAnimator.SetBool("InteractionOn", true);
                         txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
@@ -203,10 +204,11 @@ public class InteractionEvent : MonoBehaviour
 
             }
         }
-        else if (col.Length == 0 && lastArtefact != null)
+        else if (col.Length == 0 && lastArtefact == null && m_lastHintAnimator.GetBool("InteractionOn") && lastTrader == null && currentInteractibleObject == null)
         {
             lastArtefact = null;
             txt_ObjectifDescription.text = "";
+            txt_ObjectifDescriptionPnj.text = "";
 
             StartCoroutine(CloseUIWithDelay(2));
         }
@@ -226,6 +228,7 @@ public class InteractionEvent : MonoBehaviour
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
+        txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);
         //ui_HintInteractionObject.SetActive(false);
         m_hintInteractionManager.activateAutelData(false);

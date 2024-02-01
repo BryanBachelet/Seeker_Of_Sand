@@ -290,6 +290,7 @@ namespace Render.Camera
         {
             if ( m_mouseInputActivate && this.enabled)
             {
+                //Cursor. = CursorLockMode.Locked;
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
 
@@ -301,9 +302,11 @@ namespace Render.Camera
 
             }
 
-            //if (ctx.canceled && m_mouseInputActivate)
+            //if (ctx.canceled && m_mouseInputActivate && this.enabled)
             //{
-            //    m_mouseDeltaValue = 0.0f;
+            //    //Cursor.lockState = CursorLockMode.None;
+            //    Debug.Log("Unlock Cursor");
+            //    //m_mouseDeltaValue = 0.0f;
             //    //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
             //}
         }

@@ -1,6 +1,6 @@
 //RealToon - DeNorSob Outline Effect (HDRP - Post Processing)
 //MJQStudioWorks
-//2022
+//2023
 
 Shader  "Hidden/HDRP/RealToon/Effects/DeNorSobOutline"
 {
