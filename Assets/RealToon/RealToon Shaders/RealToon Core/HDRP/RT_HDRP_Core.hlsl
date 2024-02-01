@@ -3,6 +3,9 @@
 
 //=========================
 
+#ifndef REALTOON_HDRP_CORE_HLSL
+#define REALTOON_HDRP_CORE_HLSL
+
 float RTD_LVLC_F( float3 Light_Color_f3 )
 {
 
@@ -167,7 +170,14 @@ float EdgDet(float2 uv, float4 PosCS)
 	edgeNormal = smoothstep(_NormalMin, _NormalMax, edgeNormal * _NormalThreshold);
 	edgeNormal *= obj_only;
 
-	return max(edgeNormal, edgeDepth);
+	#ifdef N_F_CO_ON
+		return max(edgeNormal, edgeDepth);
+	#elif !N_F_CO_ON && N_F_TRANS_ON
+		return 1.0;
+	#else
+		return max(edgeNormal, edgeDepth);
+	#endif
+
 }
 
 
@@ -351,7 +361,7 @@ float3 RT_RELGI( float3 RTD_SON )
 }
 
 //RT_RELGI_SUB1
-float3 RT_RELGI_SUB1( PositionInputs posInput , float3 RTD_GI_FS_OO , float3 RTD_SHAT_COL , float3 RTD_MCIALO , float RTD_STIAL , out float RTD_RT_GI_Sha_FO , out float ref_int_val , in float3 ref_dif , bool isNonRT)
+float3 RT_RELGI_SUB1( PositionInputs posInput , float3 viewReflectDirection, float3 viewDirection , float3 RTD_GI_FS_OO , float3 RTD_SHAT_COL , float3 RTD_MCIALO , float RTD_STIAL , out float RTD_RT_GI_Sha_FO , out float ref_int_val , in float3 ref_dif , bool isNonRT)
 {
 
 	RTD_RT_GI_Sha_FO = 1.0;
@@ -359,7 +369,40 @@ float3 RT_RELGI_SUB1( PositionInputs posInput , float3 RTD_GI_FS_OO , float3 RTD
 	float3 RTD_SL_OFF_OTHERS = float3(1.0,1.0,1.0);
 	float3 IDT = float3(1.0, 1.0, 1.0);
 	float4 IDTex = LOAD_TEXTURE2D_X(_IndirectDiffuseTexture, posInput.positionSS);
-	float3 ALGI = AL_GI(lerp(float3(0.0, 0.0, 0.0), float3(1.0, 1.0, 1.0), RTD_GI_FS_OO), posInput.positionWS);
+	float3 ALGI = float3(1.0, 1.0, 1.0);
+
+	#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
+		if (_EnableProbeVolumes)
+		{
+
+			BuiltinData tempBuiltinData;
+			ZERO_INITIALIZE(BuiltinData, tempBuiltinData);
+
+			float3 lightInReflDir = float3(-0, -0, -0);
+
+			EvaluateAdaptiveProbeVolume(GetAbsolutePositionWS(posInput.positionWS),
+				RTD_GI_FS_OO,
+				-RTD_GI_FS_OO,
+				viewReflectDirection,
+				viewDirection,
+				posInput.positionSS,
+				tempBuiltinData.bakeDiffuseLighting,
+				tempBuiltinData.backBakeDiffuseLighting,
+				RTD_GI_FS_OO);
+
+
+				ALGI = tempBuiltinData.bakeDiffuseLighting;
+		}
+		else 
+		{
+			EvaluateAmbientProbe(lerp(float3(0.0, 0.0, 0.0), float3(1.0, 1.0, 1.0), RTD_GI_FS_OO));
+		}
+
+	#else
+
+		ALGI = AL_GI(lerp(float3(0.0, 0.0, 0.0), float3(1.0, 1.0, 1.0), RTD_GI_FS_OO), posInput.positionWS);
+
+	#endif
 
 	#if N_F_RELGI_ON 
 
@@ -378,11 +421,11 @@ float3 RT_RELGI_SUB1( PositionInputs posInput , float3 RTD_GI_FS_OO , float3 RTD
 
 			#if N_F_ESSGI_ON
 
-				if (_IndirectDiffuseMode == INDIRECTDIFFUSEMODE_RAYTRACE)
+				if (_IndirectDiffuseMode == INDIRECTDIFFUSEMODE_RAY_TRACED)
 				{ 
 					#if SHADERPASS == SHADERPASS_FORWARD && !defined(N_F_TRANS_ON) || SHADERPASS == SHADERPASS_FORWARD && defined(N_F_CO_ON)
 
-						if (_IndirectDiffuseMode == INDIRECTDIFFUSEMODE_RAYTRACE)
+						if (_IndirectDiffuseMode == INDIRECTDIFFUSEMODE_RAY_TRACED)
 						{
 							IDT = IDTex.xyz + ref_dif;
 							RTD_RT_GI_Sha_FO = smoothstep( -0.01 , _RTGIShaFallo ,(float)lerp(0.0, 1.0 , IDT * _EnvironmentalLightingIntensity) ); 
@@ -887,6 +930,8 @@ float3 RT_SSAO(float2 positionSS)
 }
 //
 
+#endif
+
 //RT_NFD
 void RT_NFD(float2 positionCS)
 {
@@ -906,3 +951,13 @@ void RT_NFD(float2 positionCS)
 	Remap_Float( distance(_WorldSpaceCameraPos, UNITY_MATRIX_M._m03_m13_m23) , float2(_MinFadDistance, _MaxFadDistance), float2 (0, 1), dit );
 	clip(-(dither_out - dit));
 }
+
+/* Shared - Contribute by a RealToon User.
+// Soon to implement
+//RT_PerAdj
+void RT_PerAdj(inout float4 positionCS)
+{
+	float Cen_Vi_Spa_Z = mul(GetWorldToViewMatrix(), float4(GetObjectToWorldMatrix()._m03_m13_m23, 1.0)).z;
+	positionCS.xy *= lerp(1.0,(abs(positionCS.w) / -Cen_Vi_Spa_Z), _ReduSha);
+}
+*/

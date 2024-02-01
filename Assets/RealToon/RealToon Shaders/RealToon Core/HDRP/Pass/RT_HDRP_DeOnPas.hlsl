@@ -97,7 +97,7 @@ void Frag(  PackedVaryingsToPS packedInput
 	#ifdef SCENESELECTIONPASS
 		outColor = float4(_ObjectId, _PassValue, 1.0, 1.0);
 	#elif defined(SCENEPICKINGPASS)
-		outColor = _SelectionID;
+		outColor = unity_SelectionID;
 	#else
 		#ifdef WRITE_MSAA_DEPTH
 			depthColor = packedInput.vmesh.positionCS.z;

@@ -163,5 +163,8 @@
                   SSSThickness = lerp(SSSThickness, sssThickness, inAlpha * _StandardSSSBlend);
                   SSSTint = lerp(SSSTint, _StandardSSSTint, inAlpha * _StandardSSSBlend);
                #endif
+
+               // prevent stripping.
+               inNormal *= saturate(diff.x + 1);
             }
 

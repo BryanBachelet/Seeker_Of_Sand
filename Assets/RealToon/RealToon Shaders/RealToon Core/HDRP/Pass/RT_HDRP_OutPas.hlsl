@@ -105,7 +105,15 @@ Varyings LitPassVertex(Attributes input)
 }
 
 
-float4 LitPassFragment(Varyings input) : SV_Target
+void LitPassFragment(Varyings input
+				, out float4 outColor : SV_Target0
+			#ifdef UNITY_VIRTUAL_TEXTURING
+				, out float4 outVTFeedback : SV_Target1
+			#endif
+			#ifdef _DEPTHOFFSET_ON
+				, out float outputDepth : DEPTH_OFFSET_SEMANTIC
+			#endif
+)
 {
 
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -119,7 +127,12 @@ float4 LitPassFragment(Varyings input) : SV_Target
 	float3 lightColor = (float3)0.0;
 
 	BuiltinData builtinData;
-	builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+
+	#if UNITY_VERSION >= 202310
+		builtinData.renderingLayers = GetMeshRenderingLayerMask();
+	#else
+		builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#endif
 
 	for (uint i = 0; i < _DirectionalLightCount; ++i)
 	{
@@ -140,6 +153,12 @@ float4 LitPassFragment(Varyings input) : SV_Target
 	float2 RTD_TC_TP_OO = lerp( input.uv, RTD_VD_Cal, _TexturePatternStyle );
 
 	float4 _MainTex_var = SAMPLE_TEXTURE2D( _MainTex, sampler_MainTex ,TRANSFORM_TEX(RTD_TC_TP_OO, _MainTex) );
+
+	#if !defined(SHADER_STAGE_RAY_TRACING) //&& !defined(_TESSELLATION_DISPLACEMENT)
+		#ifdef LOD_FADE_CROSSFADE 
+			LODDitheringTransition(ComputeFadeMaskSeed(VDir, posInput.positionSS), unity_LODFade.x);
+		#endif
+	#endif
 
 	//RT_TRANS_CO
 	float RTD_TRAN_OPA_Sli;
@@ -235,11 +254,25 @@ if (LIGHTFEATUREFLAGS_PUNCTUAL)
 
 	//RT_NFD
 	#ifdef N_F_NFD_ON
-		RT_NFD(input.positionCS);
+		RT_NFD(input.positionCS.xy);
 	#endif
 
 	float4 finalRGBA = float4(RTD_OL_LAOC_OO, Trans_Val);
 	
-	return EL_AT_SC(posInput, VDir, finalRGBA);
+	outColor = EL_AT_SC(posInput, VDir, finalRGBA);
+
+	//
+	#ifdef _DEPTHOFFSET_ON 
+		outputDepth = posInput.deviceDepth;
+	#endif
+	//
+
+	//
+	#ifdef UNITY_VIRTUAL_TEXTURING
+		float vtAlphaValue = builtinData.opacity;
+		outVTFeedback = PackVTFeedbackWithAlpha(builtinData.vtPackedFeedback, input.positionSS.xy, finalRGBA);
+	#endif
+	//
+
 
 }

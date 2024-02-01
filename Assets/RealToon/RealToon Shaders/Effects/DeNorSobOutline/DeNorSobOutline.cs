@@ -1,6 +1,6 @@
 ﻿//RealToon - DeNorSobOutline Effect (HDRP - Post Processing)
 //MJQStudioWorks
-//©2021
+//©2023
 
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,7 +13,7 @@ namespace RealToon.Effects
     [Serializable, VolumeComponentMenu("Post-processing/RealToon/DeNorSob Outline")]
     public sealed class DeNorSobOutline : CustomPostProcessVolumeComponent, IPostProcessComponent
     {
-        public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.BeforeTAA;
+        public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.AfterOpaqueAndSky;
 
         const string kShaderName = "Hidden/HDRP/RealToon/Effects/DeNorSobOutline";
 

@@ -313,10 +313,10 @@
             half albedo = SAMPLE_TEXTURE2D_LOD(_TraxDiff, sampler_Diffuse, uv, mipLevel).a;
             
 
-            h0 = lerp(albedo - offset, h0, traxBuffer0);
-            h1 = lerp(albedo - offset, h1, traxBuffer1);
-            h2 = lerp(albedo - offset, h2, traxBuffer2);
-            h3 = lerp(albedo - offset, h3, traxBuffer3);
+            h0 = lerp(albedo - offset0, h0, traxBuffer0);
+            h1 = lerp(albedo - offset1, h1, traxBuffer1);
+            h2 = lerp(albedo - offset2, h2, traxBuffer2);
+            h3 = lerp(albedo - offset3, h3, traxBuffer3);
          #elif _TRAXARRAY
             float2 uv = config.uv * _TraxUVScales.xy;
             traxBuffer = 1 - ((1 - traxBuffer) * _TraxTextureBlend);
