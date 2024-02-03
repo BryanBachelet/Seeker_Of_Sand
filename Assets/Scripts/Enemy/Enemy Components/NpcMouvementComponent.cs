@@ -46,11 +46,9 @@ namespace Enemies
         public void Start()
         {
             InitComponent();
-            SetTarget(m_npcHealthComponent.targetData);
+
             m_npcHealthComponent.destroyEvent += OnDeath;
-            m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
-            m_navMeshAgent.speed = m_baseSpeed;
-            m_navMeshAgent.destination = (targetData.target.position);
+            RestartObject();
         }
 
         public void InitComponent()
@@ -68,11 +66,11 @@ namespace Enemies
             bool state = m_navMeshAgent.SetDestination(targetData.target.position);
             if (!targetData.isMoving)
             {
-                Debug.Log("Test");
+                //Debug.Log("Test");
             }
             if (!m_navMeshAgent.hasPath)
             {
-                Debug.Log("Has hit");
+                //Debug.Log("Has hit");
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
@@ -95,13 +93,13 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
+            //Debug.Log(""+m_navMeshAgent.nextPosition);
 
 
-
-            if (!targetData.target.name.Equals("Player"))
-            {
-                Debug.Log("Test");
-            }
+            //if (!targetData.target.name.Equals("Player"))
+            //{
+            //    Debug.Log("Test");
+            //}
 
 
             if (m_npcHealthComponent.npcState == NpcState.MOVE)
@@ -168,24 +166,24 @@ namespace Enemies
             // Repositionning enemi when to far 
             if (distancePos > m_distanceBeforeRepositionning)
             {
-
+            
                 m_navMeshAgent.enabled = false;
                 if (enemiesManager.ReplaceFarEnemy(this.gameObject))
                 {
                     distancePos = Vector3.Distance(transform.position, targetData.target.position);
                     m_navMeshAgent.destination = targetData.target.position;
                     m_navMeshAgent.nextPosition = transform.position;
-
+            
                     return;
-
+            
                 }
-
-
-
+            
+            
+            
             }
             if (distancePos > minDistanceToFullyActive && dot > m_directionMinDot && !m_isAlwaysUpdate)
             {
-
+            
                 return;
             }
             m_navMeshAgent.enabled = true;
@@ -198,6 +196,7 @@ namespace Enemies
                 {
 
                     m_navMeshAgent.SetDestination(hit.position);
+                    
 
                 }
             }
@@ -217,6 +216,15 @@ namespace Enemies
             }
 
             this.enabled = false;
+        }
+
+        public void RestartObject()
+        {
+            SetTarget(m_npcHealthComponent.targetData);
+            m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
+            m_navMeshAgent.speed = m_baseSpeed;
+            m_navMeshAgent.destination = (targetData.target.position);
+            //targetData.isMoving = true;
         }
     }
 }

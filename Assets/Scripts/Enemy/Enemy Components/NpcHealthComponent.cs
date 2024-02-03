@@ -24,6 +24,7 @@ namespace Enemies
 
     public class NpcHealthComponent : MonoBehaviour
     {
+        public int indexEnemy = 0;
         [Header("Health Parameter")]
         public float m_maxLife;
         public GameObject m_vfxHitFeedback;
@@ -60,6 +61,8 @@ namespace Enemies
         private bool death = false;
         private MaterialPropertyBlock _propBlock;
         public GameObject death_vfx;
+
+
         void Awake()
         {
             InitComponent();
@@ -67,14 +70,13 @@ namespace Enemies
         private void InitComponent()
         {
             m_healthSystem = new HealthSystem();
-            m_healthSystem.Setup(m_maxLife);
             m_entityAnimator = GetComponentInChildren<Animator>();
             _propBlock = new MaterialPropertyBlock();
             for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i ++)
             {
                 m_materialList.Add(m_SkinMeshRenderer.materials[i]);
             }
-
+            RestartObject();
 
         }
 
@@ -151,7 +153,8 @@ namespace Enemies
                 deathTimer = Time.time;
             }
             
-            StartCoroutine(Death());
+            //StartCoroutine(Death());
+            StartCoroutine(TeleportToPool());
         }
 
         private IEnumerator Death()
@@ -167,6 +170,33 @@ namespace Enemies
             m_enemyManager.DestroyEnemy(this);
         }
 
+        private IEnumerator TeleportToPool()
+        {
+            m_enemyManager.DeathEnemy();
+            death = true;
+            GlobalSoundManager.PlayOneShot(36, transform.position);
+            //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
+            yield return new WaitForSeconds(timeBeforeDestruction / 2);
+            Instantiate(death_vfx, transform.position, transform.rotation);
+            yield return new WaitForSeconds(timeBeforeDestruction / 2);
+            float progressDeath = 0;
+            float cutoutValue = progressDeath;
+            float emissiveValue = progressDeath;
+            for (int i = 0; i < materialCutout.Length; i++)
+            {
+                m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+            }
+            for (int i = 0; i < materialCutout.Length; i++)
+            {
+                //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
+                //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
+                //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
+                m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
+            }
+            m_enemyManager.TeleportEnemyOut(this);
+
+        }
+
         public void SetPauseState()
         {
             m_previousNpcState = (int)npcState;
@@ -177,6 +207,12 @@ namespace Enemies
             npcState = (NpcState)m_previousNpcState;
         }
 
-
+        public void RestartObject()
+        {
+            m_healthSystem.Setup(m_maxLife);
+            death = false;
+            npcState = NpcState.MOVE;
+            this.gameObject.layer = 6;
+        }
     }
 }
