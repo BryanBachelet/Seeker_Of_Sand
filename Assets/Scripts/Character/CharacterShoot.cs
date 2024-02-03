@@ -324,6 +324,7 @@ namespace Character
             if (ctx.canceled && state.isPlaying)
             {
                 m_shootInput = false;
+                m_shootInputActive = false;
             }
         }
         #endregion
