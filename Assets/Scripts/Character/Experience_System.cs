@@ -10,6 +10,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private AnimationCurve m_ExperienceQuantityControl;
     [SerializeField] private float m_NumberEnemyKilled = 0;
     [SerializeField] private int m_CurrentLevel = 1;
+    [SerializeField] public int m_LevelTaken = 1;
 
     [SerializeField] public Image m_LevelDisplayFill;
     [SerializeField] private float m_RadiusPickupXp;

@@ -13,10 +13,12 @@ public class InteractionEvent : MonoBehaviour
     private float lastInteractionCheck;
     public float intervalCheckInteraction;
     public GameObject currentInteractibleObject;
+    private Transform m_socleTransform;
 
     public GameObject ui_HintInteractionObject;
+    private RectTransform ui_RectTransformHintInteraction;
     public Animator m_lastHintAnimator;
-    public Transform parentHintTransform;
+    public RectTransform parentHintTransform;
 
     public string[] eventDataInfo;
 
@@ -35,15 +37,19 @@ public class InteractionEvent : MonoBehaviour
     public LayerMask artefactLayer;
     public float rangeArtefact;
     public ArtefactHolder lastArtefact;
+    [SerializeField] private RectTransform CanvasRect;
 
     public Collider[] collider;
 
     public HintInteractionManager m_hintInteractionManager;
+
+    [SerializeField] private Camera mainCamera;
     // Start is called before the first frame update
     void Start()
     {
         lastInteractionCheck = 0;
-        parentHintTransform = ui_HintInteractionObject.transform.parent;
+        ui_RectTransformHintInteraction = ui_HintInteractionObject.transform.parent.GetComponent<RectTransform>();
+        parentHintTransform = ui_RectTransformHintInteraction;
     }
 
     // Update is called once per frame
@@ -56,7 +62,14 @@ public class InteractionEvent : MonoBehaviour
             NearArtefact();
             lastInteractionCheck = Time.time;
         }
-
+        if(currentInteractibleObject != null)
+        {
+            CalculateWorldPosition(currentInteractibleObject);
+        }
+        else if(lastArtefact != null)
+        {
+            CalculateWorldPosition(lastArtefact.gameObject);
+        }
     }
 
     public void NearPossibleInteraction()
@@ -72,6 +85,7 @@ public class InteractionEvent : MonoBehaviour
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
                 currentInteractibleObject = col[0].transform.gameObject;
+                m_socleTransform = GameObject.Find("low_Socle").transform;
                 eventDataInfo = currentInteractibleObject.GetComponent<AltarBehaviorComponent>().GetAltarData();
                 m_lastHintAnimator.SetBool("InteractionOn", true);
                 if (eventDataInfo[0] == "0")
@@ -107,6 +121,7 @@ public class InteractionEvent : MonoBehaviour
                     if (nearest >= newDistance)
                     {
                         currentInteractibleObject = col[i].transform.gameObject;
+                        m_socleTransform = GameObject.Find("low_Socle").transform;
                         nearest = newDistance;
                     }
                 }
@@ -116,6 +131,7 @@ public class InteractionEvent : MonoBehaviour
         else if (col.Length == 0 && currentInteractibleObject != null)
         {
             currentInteractibleObject = null;
+            m_socleTransform = null;
             StartCoroutine(CloseUIWithDelay(2));
         }
     }
@@ -238,5 +254,14 @@ public class InteractionEvent : MonoBehaviour
         m_hintInteractionManager.activeArtefactData(false);
     }
 
+    public void CalculateWorldPosition(GameObject objectToDisplayInfo)
+    {
+        Vector2 ViewportPosition = mainCamera.WorldToViewportPoint(objectToDisplayInfo.transform.position);
+        Vector2 WorldObject_ScreenPosition = new Vector2(
+        ((ViewportPosition.x * CanvasRect.sizeDelta.x) - (CanvasRect.sizeDelta.x * 0.5f)),
+        ((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * 0.5f)));
 
+        //now you can set the position of the ui element
+        parentHintTransform.anchoredPosition = WorldObject_ScreenPosition;
+    }
 }

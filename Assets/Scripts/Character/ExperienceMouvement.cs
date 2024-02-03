@@ -22,9 +22,12 @@ public class ExperienceMouvement : MonoBehaviour
 
     private float m_timeSpawned = 0;
     private float m_tempsEcoule;
+
+    private Collider m_coll;
     private void Start()
     {
         m_timeSpawned = Time.time;
+        m_coll = this.GetComponent<Collider>();
     }
     // Update is called once per frame
     void Update()
@@ -76,6 +79,7 @@ public class ExperienceMouvement : MonoBehaviour
     public void InitDestruction()
     {
         m_destruction = true;
+        m_coll.enabled = false;
     }
 
     public void MoveDestination()

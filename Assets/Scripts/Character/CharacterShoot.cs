@@ -383,7 +383,7 @@ namespace Character
 
         public void LaunchShootUniqueSpell(int index)
         {
-            Debug.Log("Launch ");
+            //Debug.Log("Launch ");
             for (int i = 0; i < m_spellCouroutine.Length; i++)
             {
                 if (m_spellCouroutine[i] == null)

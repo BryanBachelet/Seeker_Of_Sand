@@ -9,7 +9,6 @@ using TMPro;
 
 namespace Enemies
 {
-
     public class EnemyManager : MonoBehaviour
     {
         private ObjectState state;
@@ -36,6 +35,7 @@ namespace Enemies
         private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private Transform m_enemyHolder;
 
+        #region EnemyParameter
         [Header("Enemy Target Rate")]
         [Range(0, 1.0f)] [SerializeField] private float m_bodylessEventTargetRate = .5f;
         [Range(0, 1.0f)] [SerializeField] private float m_fullBodyEventTargetRate = .5f;
@@ -43,10 +43,30 @@ namespace Enemies
         [Range(0, 1.0f)] [SerializeField] private float m_runnerEventTargetRate = 0.0f;
         [Range(0, 1.0f)] [SerializeField] private float m_tankEventTargetRate = 0.25f;
 
+        public List<GameObject> totalEnemyPool = new List<GameObject>();
+        [Header("HealComponent Pool")]
+        [SerializeField] private List<NpcHealthComponent> bodyLessHealth = new List<NpcHealthComponent>();
+        [SerializeField] private List<NpcHealthComponent> bodufullHealth = new List<NpcHealthComponent>();
+        [SerializeField] private List<NpcHealthComponent> chamanHealth = new List<NpcHealthComponent>();
+        [SerializeField] private List<NpcHealthComponent> runnerHealth = new List<NpcHealthComponent>();
+        [SerializeField] private List<NpcHealthComponent> tankHealth = new List<NpcHealthComponent>();
+        [Header("MouvementComponent Pool")]
+        [SerializeField] private List<NpcMouvementComponent> bodyLessMouvement = new List<NpcMouvementComponent>();
+        [SerializeField] private List<NpcMouvementComponent> bodufullMouvement = new List<NpcMouvementComponent>();
+        [SerializeField] private List<NpcMouvementComponent> chamanMouvement = new List<NpcMouvementComponent>();
+        [SerializeField] private List<NpcMouvementComponent> runnerMouvement = new List<NpcMouvementComponent>();
+        [SerializeField] private List<NpcMouvementComponent> tankMouvement = new List<NpcMouvementComponent>();
+        [Header("Maximum Pool")]
+        [SerializeField] private AnimationCurve bodyLessMouvementPool;
+        [SerializeField] private AnimationCurve bodufullMouvementPool;
+        [SerializeField] private AnimationCurve chamanMouvementPool;
+        [SerializeField] private AnimationCurve runnerMouvementPool;
+        [SerializeField] private AnimationCurve tankMouvementPool;
+        [SerializeField] private int[] ennemyCount = new int[5];
         [Header("Enemy Bonus")]
         [SerializeField] private GameObject m_expBonus;
         [Range(0, 1.0f)] [SerializeField] private float m_spawnRateExpBonus = 0.01f;
-
+        #endregion
 
         private Experience_System m_experienceSystemComponent;
 
@@ -99,7 +119,7 @@ namespace Enemies
         [HideInInspector] public int altarLaunch;
         [HideInInspector] public int altarSuccessed;
         [HideInInspector] public int killCount;
-        private const string fileStatsName="\\Stats_data";
+        private const string fileStatsName = "\\Stats_data";
 
         [SerializeField] public TMP_Text m_Instruction;
         [SerializeField] public Image m_ImageInstruction;
@@ -120,7 +140,7 @@ namespace Enemies
         public int remainEnemy = 0;
         public void Awake()
         {
-           
+
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -141,15 +161,16 @@ namespace Enemies
             if (DayCyclecontroller.choosingArtefactStart) return;
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
+
             m_timeOfGame += Time.deltaTime;
             remainEnemy = m_enemiesArray.Count;
-            if(remainEnemy > 0)
+            if (remainEnemy > 0)
             {
-                m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy -1);
+                m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy - 1);
             }
             if (spawningPhase || m_dayController.isNight || m_targetTransformLists.Count > 0)
             {
-                if(m_dayController.isNight && spawningPhase == false)
+                if (m_dayController.isNight && spawningPhase == false)
                 {
                     ChangeSpawningPhase(true);
                 }
@@ -260,7 +281,7 @@ namespace Enemies
         }
         private float GetTimeSpawn()
         {
-            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame/ 2.0f)) + 1.3f) / 2.0f));
+            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame / 2.0f)) + 1.3f) / 2.0f));
         }
 
         private int GetNumberToSpawn()
@@ -275,11 +296,12 @@ namespace Enemies
         {
             position = FindPosition();
             posspawn.Add(position);
-            Instantiate(m_spawningVFX, position, transform.rotation);
-            GlobalSoundManager.PlayOneShot(37, position);
+
             for (int i = 0; i < GetNumberToSpawn(); i++)
             {
-                SpawnEnemy(position + Random.insideUnitSphere * 5f);
+                //Debug.Log("Spawning Group ( i : " + i + " ) ---> " + GetNumberToSpawn());
+                //SpawnEnemy(position + Random.insideUnitSphere * 5f);
+                SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
             }
         }
 
@@ -289,6 +311,7 @@ namespace Enemies
             {
                 if (remainEnemy < m_maxUnittotal)
                 {
+                    VerifyPoolSize();
                     SpawEnemiesGroup();
                 }
 
@@ -403,7 +426,7 @@ namespace Enemies
             if (EnemyTargetPlayer)
             {
                 npcHealth.targetData.isMoving = true;
-                npcHealth.SetTarget( m_playerTranform);
+                npcHealth.SetTarget(m_playerTranform);
             }
             else
             {
@@ -412,12 +435,12 @@ namespace Enemies
                 {
                     npcHealth.targetData.isMoving = true;
                     npcHealth.SetTarget(m_playerTranform);
-                   
+
 
                 }
                 else
                 {
-                     npcHealth.SetTarget( m_targetTranform);
+                    npcHealth.SetTarget(m_targetTranform);
                     npcHealth.targetData.isMoving = false;
                     m_enemiesFocusAltar.Add(npcHealth);
                 }
@@ -425,7 +448,183 @@ namespace Enemies
             }
             m_enemiesArray.Add(npcHealth);
         }
+        private void SpawnEnemyByPool(Vector3 positionSpawn)
+        {
+            int indexNextSpawn = -1;
+            GameObject goToMoveIn = null;
+            NpcHealthComponent npcHealth = null;
+            NpcMouvementComponent npcMove = null;
+            int randomEnemyTry = -1;
+            int countTentative = 0;
+            while(indexNextSpawn < 0 && countTentative < 10)
+            {
+                countTentative++;
+                randomEnemyTry = Random.Range(0, 4);
+                if (randomEnemyTry == 0)
+                {
+                    if (ennemyCount[0] < Mathf.RoundToInt(bodyLessMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                    {
 
+                        int random = Random.Range(ennemyCount[0], (int)bodufullMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken));
+                        goToMoveIn = bodyLessHealth[random].gameObject;
+                        if (!goToMoveIn.activeSelf)
+                        {
+                            goToMoveIn.SetActive(true);
+                            indexNextSpawn = 0;
+                            goToMoveIn.transform.position = positionSpawn;
+                            npcHealth = bodyLessHealth[random];
+                            npcMove = bodyLessMouvement[random];
+                        }
+                    }
+                }
+                else if (randomEnemyTry == 1)
+                {
+                    if (ennemyCount[1] < Mathf.RoundToInt(bodufullMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                    {
+
+                        int random = Random.Range(ennemyCount[1], (int)bodufullMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken));
+                        goToMoveIn = bodufullHealth[random].gameObject;
+                        if (!goToMoveIn.activeSelf)
+                        {
+                            goToMoveIn.SetActive(true);
+                            indexNextSpawn = 1;
+                            goToMoveIn.transform.position = positionSpawn;
+                            npcHealth = bodufullHealth[random];
+                            npcMove = bodufullMouvement[random];
+                        }
+                    }
+                }
+                else if (randomEnemyTry == 2)
+                {
+                    if (ennemyCount[2] < Mathf.RoundToInt(chamanMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                    {
+
+                        int random = Random.Range(ennemyCount[2], (int)chamanMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken));
+                        goToMoveIn = chamanHealth[random].gameObject;
+                        if (!goToMoveIn.activeSelf)
+                        {
+                            goToMoveIn.SetActive(true);
+                            indexNextSpawn = 2;
+                            goToMoveIn.transform.position = positionSpawn;
+                            npcHealth = chamanHealth[random];
+                            npcMove = chamanMouvement[random];
+                        }
+                    }
+                }
+                else if (randomEnemyTry == 3)
+                {
+                    if (ennemyCount[3] < Mathf.RoundToInt(runnerMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                    {
+
+                        int random = Random.Range(ennemyCount[3], (int)runnerMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken));
+                        goToMoveIn = runnerHealth[random].gameObject;
+                        if (!goToMoveIn.activeSelf)
+                        {
+                            indexNextSpawn = 3;
+                            goToMoveIn.SetActive(true);
+                            goToMoveIn.transform.position = positionSpawn;
+                            npcHealth = runnerHealth[random];
+                            npcMove = runnerMouvement[random];
+                        }
+                    }
+                }
+                else if (randomEnemyTry == 4)
+                {
+                    if (ennemyCount[4] < Mathf.RoundToInt(tankMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                    {
+
+                        int random = Random.Range(ennemyCount[4], (int)tankMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken));
+                        goToMoveIn = tankHealth[random].gameObject;
+                        if (!goToMoveIn.activeSelf)
+                        {
+                            indexNextSpawn = 4;
+                            goToMoveIn.SetActive(true);
+                            goToMoveIn.transform.position = positionSpawn;
+                            npcHealth = tankHealth[random];
+                            npcMove = tankMouvement[random];
+                        }
+                    }
+                }
+            }
+
+            
+            if(indexNextSpawn < 0) { return; }
+            ennemyCount[indexNextSpawn] += 1;
+            //int rnd = Random.Range(0, 520);
+            //GameObject enemySpawn;
+            Instantiate(m_spawningVFX, position, transform.rotation);
+            GlobalSoundManager.PlayOneShot(37, position);
+            float targetRate = 0.0f;
+            bool focusPlayer = true;
+            if (!EnemyTargetPlayer)
+            {
+                if (m_targetTransformLists.Count <= 0) { return; }
+                ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
+                m_targetTranform = nearestAltar.transform;
+
+                targetRate = Random.Range(0.0f, 1.0f);
+            }
+            npcMove.enemiesManager = this;
+            npcHealth.SetInitialData(m_healthManager, this);
+
+            if (EnemyTargetPlayer)
+            {
+                npcHealth.targetData.isMoving = true;
+                npcHealth.RestartObject();
+                npcHealth.SetTarget(m_playerTranform);
+
+            }
+            else
+            {
+
+                if (focusPlayer)
+                {
+                    npcHealth.targetData.isMoving = true;
+                    npcHealth.RestartObject();
+                    npcHealth.SetTarget(m_playerTranform);
+
+
+                }
+                else
+                {
+                    npcHealth.SetTarget(m_targetTranform);
+                    npcHealth.RestartObject();
+                    npcHealth.targetData.isMoving = false;
+                    m_enemiesFocusAltar.Add(npcHealth);
+                }
+
+            }
+            npcHealth.RestartObject();
+            m_enemiesArray.Add(npcHealth);
+        }
+        private GameObject SpawnEnemyInPool(int indexEnnemy)
+        {
+            //int rnd = Random.Range(0, 520);
+            Vector3 positionToSpawn = new Vector3(0, -1000, 0);
+            GameObject enemySpawn;
+            float targetRate = 0.0f;
+            bool focusPlayer = false;
+            if (!EnemyTargetPlayer)
+            {
+                if (m_targetTransformLists.Count <= 0) { return null; }
+                ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionToSpawn);
+                m_targetTranform = nearestAltar.transform;
+
+                targetRate = Random.Range(0.0f, 1.0f);
+            }
+
+            enemySpawn = Instantiate(m_enemyGO[indexEnnemy], positionToSpawn, transform.rotation, m_enemyHolder);
+            //if (!EnemyTargetPlayer)
+            //{
+            //    if (targetRate > m_bodylessEventTargetRate)
+            //    {
+            //        focusPlayer = true;
+            //    }
+            //}
+
+            enemySpawn.SetActive(false);
+            return enemySpawn;
+        }
 
         public void AddTarget(Transform target)
         {
@@ -440,7 +639,7 @@ namespace Enemies
             healthSystemReference.m_eventLifeUIFeedback = m_imageLifeEvents[indexTargetList];
             healthSystemReference.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[indexTargetList];
             healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
-            if(target.GetComponent<AltarBehaviorComponent>())
+            if (target.GetComponent<AltarBehaviorComponent>())
             {
                 altarLaunch++;
                 target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
@@ -491,7 +690,7 @@ namespace Enemies
             for (int i = 0; i < m_targetTransformLists.Count; i++)
             {
                 RemoveTarget(m_targetTransformLists[i]);
-            }   
+            }
         }
 
         public void RemoveAllAltar()
@@ -508,7 +707,7 @@ namespace Enemies
             m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
-       
+
 
         public void SendInstruction(string Instruction, Color colorText, Sprite iconAssociate)
         {
@@ -558,7 +757,7 @@ namespace Enemies
             SpawnExp(position, xpCount);
             IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
-            OnDeathEvent(position,EntitiesTrigger.Enemies,npcHealth.gameObject, distance);
+            OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);
         }
         public void DestroyEnemy(NpcHealthComponent npcHealth)
         {
@@ -571,6 +770,22 @@ namespace Enemies
             m_enemiesArray.Remove(npcHealth);
             Destroy(npcHealth.gameObject);
         }
+        public void TeleportEnemyOut(NpcHealthComponent npcHealth)
+        {
+
+            if (!m_enemiesArray.Contains(npcHealth)) return;
+
+            killCount++;
+            m_enemyKillRatio.AddEnemiKill();
+            ennemyCount[npcHealth.indexEnemy]--;
+            if (m_enemiesFocusAltar.Contains(npcHealth)) m_enemiesFocusAltar.Remove(npcHealth);
+            m_enemiesArray.Remove(npcHealth);
+            npcHealth.gameObject.transform.position = new Vector3(0, -2000, 0);
+            npcHealth.gameObject.SetActive(false);
+            //Destroy(npcHealth.gameObject);
+        }
+
+
 
         public void DeathEnemy()
         {
@@ -594,6 +809,60 @@ namespace Enemies
             return altarScript;
         }
 
+        public void VerifyPoolSize()
+        {
+            if (bodyLessHealth.Count < (int)bodyLessMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken))
+            {
+                GameObject newBodyLess = SpawnEnemyInPool(0);
+                totalEnemyPool.Add(newBodyLess);
+                NpcHealthComponent npcHealth = newBodyLess.GetComponent<NpcHealthComponent>();
+                NpcMouvementComponent npcMove = newBodyLess.GetComponent<NpcMouvementComponent>();
+                npcHealth.npcState = NpcState.PAUSE;
+                bodyLessHealth.Add(npcHealth);
+                bodyLessMouvement.Add(npcMove);
+                bool focusPlayer = false;
+            }
+            else if (bodufullHealth.Count < (int)bodufullMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken))
+            {
+                GameObject newBodyfull = SpawnEnemyInPool(1);
+                totalEnemyPool.Add(newBodyfull);
+                NpcHealthComponent npcHealth = newBodyfull.GetComponent<NpcHealthComponent>();
+                NpcMouvementComponent npcMove = newBodyfull.GetComponent<NpcMouvementComponent>();
+                bodufullHealth.Add(npcHealth);
+                bodufullMouvement.Add(npcMove);
+                bool focusPlayer = false;
+            }
+            else if (chamanHealth.Count < (int)chamanMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken))
+            {
+                GameObject newChaman = SpawnEnemyInPool(2);
+                totalEnemyPool.Add(newChaman);
+                NpcHealthComponent npcHealth = newChaman.GetComponent<NpcHealthComponent>();
+                NpcMouvementComponent npcMove = newChaman.GetComponent<NpcMouvementComponent>();
+                chamanHealth.Add(npcHealth);
+                chamanMouvement.Add(npcMove);
+                bool focusPlayer = false;
+            }
+            else if (runnerHealth.Count < (int)runnerMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken))
+            {
+                GameObject newRunner = SpawnEnemyInPool(3);
+                totalEnemyPool.Add(newRunner);
+                NpcHealthComponent npcHealth = newRunner.GetComponent<NpcHealthComponent>();
+                NpcMouvementComponent npcMove = newRunner.GetComponent<NpcMouvementComponent>();
+                runnerHealth.Add(npcHealth);
+                runnerMouvement.Add(npcMove);
+                bool focusPlayer = false;
+            }
+            else if (tankHealth.Count < (int)tankMouvementPool.Evaluate(m_experienceSystemComponent.m_LevelTaken))
+            {
+                GameObject newTank = SpawnEnemyInPool(4);
+                totalEnemyPool.Add(newTank);
+                NpcHealthComponent npcHealth = newTank.GetComponent<NpcHealthComponent>();
+                NpcMouvementComponent npcMove = newTank.GetComponent<NpcMouvementComponent>();
+                tankHealth.Add(npcHealth);
+                tankMouvement.Add(npcMove);
+                bool focusPlayer = false;
+            }
+        }
         public ObjectHealthSystem CheckDistanceTarget(Vector3 position)
         {
             float distancePlusProche = 10000;
@@ -615,19 +884,19 @@ namespace Enemies
         {
             spawningPhase = spawning;
             detectionAnimator.SetBool("ShadowDetection", spawningPhase);
-            if (spawning) 
-            { 
-                gsm.globalMusicInstance.setParameterByName("Repos", 0); 
-                StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0])); 
+            if (spawning)
+            {
+                gsm.globalMusicInstance.setParameterByName("Repos", 0);
+                StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
                 m_enemyIcon.color = colorSignUI[0];
-                m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ; 
+                m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
             }
-            else 
-            { 
-                gsm.globalMusicInstance.setParameterByName("Repos", 1); 
-                StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1])); 
-                m_enemyIcon.color = colorSignUI[1]; 
-                m_tmpTextEnemyRemain.color = colorSignUI[1]; 
+            else
+            {
+                gsm.globalMusicInstance.setParameterByName("Repos", 1);
+                StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1]));
+                m_enemyIcon.color = colorSignUI[1];
+                m_tmpTextEnemyRemain.color = colorSignUI[1];
             }
         }
 
@@ -697,7 +966,7 @@ namespace Enemies
             for (int i = 0; i < dataTransformed.Length; i++)
             {
                 if (data_values[i] == "") continue;
-                dataTransformed[i] = long.Parse(data_values[i] );
+                dataTransformed[i] = long.Parse(data_values[i]);
                 tempAnimationCurve.AddKey(i, dataTransformed[i]);
                 debugdata = debugdata + " , " + dataTransformed[i];
 
@@ -719,30 +988,33 @@ namespace Enemies
             endInfoStats.altarSuccessed = altarSuccessed;
             endInfoStats.altarRepeated = altarLaunch;
             endInfoStats.bigestCombo = m_serieController.m_biggestMultiplicator;
-            endInfoStats.nightValidate = m_dayController.m_nightCount ;
+            endInfoStats.nightValidate = m_dayController.m_nightCount;
 
             CheckEndStat(endInfoStats);
             return endInfoStats;
         }
 
+        public void AddDataInPool(NpcHealthComponent npcHealth)
+        {
 
+        }
         public void CheckEndStat(EndInfoStats stats)
         {
 #if UNITY_EDITOR
-            string filePath = Application.dataPath +"\\Temp"+ fileStatsName + GameState.profileName + ".sost";
+            string filePath = Application.dataPath + "\\Temp" + fileStatsName + GameState.profileName + ".sost";
 #else
             string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
 #endif
             EndInfoStats statsSave = Save.SaveManager.ReadEndStats(filePath);
-            if(statsSave.HasSuperiorValue(stats))
+            if (statsSave.HasSuperiorValue(stats))
             {
                 Save.SaveManager.WriteEndStats(filePath, stats);
             }
         }
-      
 
 
-#endregion
+
+        #endregion
 
     }
 

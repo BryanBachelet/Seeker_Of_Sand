@@ -269,7 +269,7 @@ namespace Render.Camera
             m_isZoomBlock = state;
 
 
-            Debug.Log("Zoom");
+            //Debug.Log("Zoom");
             if (!m_isZoomBlock || !m_isActiveAutomaticDezoom) return;
 
             StartCoroutine(DeZoomCamera());
