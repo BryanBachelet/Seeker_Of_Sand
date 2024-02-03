@@ -61,6 +61,8 @@ namespace Enemies
         private bool death = false;
         private MaterialPropertyBlock _propBlock;
         public GameObject death_vfx;
+
+
         void Awake()
         {
             InitComponent();

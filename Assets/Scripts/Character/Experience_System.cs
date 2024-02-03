@@ -8,6 +8,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
     [SerializeField] private AnimationCurve m_ExperienceQuantityControl;
+    [SerializeField] private AnimationCurve m_ExperienceQuantitySansCSV;
     [SerializeField] private float m_NumberEnemyKilled = 0;
     [SerializeField] private int m_CurrentLevel = 1;
     [SerializeField] public int m_LevelTaken = 1;
@@ -67,14 +68,14 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         }
     }
 
-    public void OnEnemyKilled()
+    public void OnEnemyKilled(int quantity)
     {
         float time = Time.time;
-        m_NumberEnemyKilled += (1 * m_serieController.GetXpMultiplicator());
-        levelProgress = m_ExperienceQuantityControl.Evaluate(m_NumberEnemyKilled);
+        m_NumberEnemyKilled += (quantity * m_serieController.GetXpMultiplicator());
+        levelProgress = m_ExperienceQuantitySansCSV.Evaluate(m_NumberEnemyKilled);
         if (levelProgress > m_CurrentLevel)
         {
-            LevelUp((int)m_ExperienceQuantityControl.Evaluate(m_NumberEnemyKilled));
+            LevelUp((int)m_ExperienceQuantitySansCSV.Evaluate(m_NumberEnemyKilled));
             levelUpEffect.Play();
             levelUpEffectUi.Play();
             GlobalSoundManager.PlayOneShot(7, Vector3.zero);
@@ -87,7 +88,29 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
     }
-
+    public void OnEnemyKilledNew(int quantity)
+    {
+        float time = Time.time;
+        m_NumberEnemyKilled += (quantity * m_serieController.GetXpMultiplicator());
+        levelProgress = m_ExperienceQuantitySansCSV.Evaluate(m_CurrentLevel);
+        if (m_NumberEnemyKilled > levelProgress)
+        {
+            m_CurrentLevel += 1;
+            ChooseUpgrade(m_CurrentLevel);
+            //LevelUp(1);
+            m_NumberEnemyKilled = 0;
+            levelUpEffect.Play();
+            levelUpEffectUi.Play();
+            GlobalSoundManager.PlayOneShot(7, Vector3.zero);
+        }
+        else
+        {
+            //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
+            lastXpBuffered = time;
+            m_xperienceBuffered = true;
+            //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
+        }
+    }
     public void LevelUp(int newLevel)
     {
         for (int i = 0; i < newLevel - m_CurrentLevel; i++)
@@ -136,7 +159,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
                 lastXpDrop.InitDestruction();
                 //Destroy(collision.gameObject);
                 GlobalSoundManager.PlayOneShot(3, Vector3.zero);
-                OnEnemyKilled();
+                //OnEnemyKilled(lastXpDrop.quantity);
+                OnEnemyKilledNew(lastXpDrop.quantity);
             }
 
         }

@@ -25,7 +25,7 @@ namespace Enemies
         static float currentMaxUnitValue;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
-        [SerializeField] private GameObject m_ExperiencePrefab;
+        [SerializeField] private GameObject[] m_ExperiencePrefab = new GameObject[5];
 
         [Header("Enemy Spawn Parameters")]
         [SerializeField] private float m_minimumRadiusOfSpawn = 100;
@@ -286,8 +286,10 @@ namespace Enemies
 
         private int GetNumberToSpawn()
         {
-            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
-            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            //int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
+            int currentMaxUnit = totalEnemyPool.Count / 6;
+            //int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            int number = currentMaxUnit;
             number = number <= 0 ? 1 : number;
             return number;
         }
@@ -720,14 +722,16 @@ namespace Enemies
             m_altarList.Remove(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
-        public void SpawnExp(Vector3 position, int count)
+        public void SpawnExp(Vector3 position, int count, int indexMob)
         {
             for (int i = 0; i < count; i++)
             {
-                GameObject expObj = Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
-                m_experienceSystemComponent.AddExpParticule(expObj.GetComponent<ExperienceMouvement>());
-            }
 
+            }
+            GameObject expObj = Instantiate(m_ExperiencePrefab[indexMob], position, Quaternion.identity);
+            ExperienceMouvement experienceMouvement = expObj.GetComponent<ExperienceMouvement>();
+            m_experienceSystemComponent.AddExpParticule(experienceMouvement);
+            
             float rate = Random.Range(0.0f, 1.0f);
             if (rate <= m_spawnRateExpBonus)
             {
@@ -754,7 +758,7 @@ namespace Enemies
         {
 
             Vector3 position = npcHealth.transform.position;
-            SpawnExp(position, xpCount);
+            SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);

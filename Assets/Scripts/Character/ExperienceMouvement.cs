@@ -11,6 +11,7 @@ public class ExperienceMouvement : MonoBehaviour
     [SerializeField] private float m_speedUp = 40;
     [SerializeField] private TrailRenderer m_trail;
     [SerializeField] private float m_timeBeforeDestruction = 3;
+    public int quantity;
 
     public int cristalType = 0;
 
