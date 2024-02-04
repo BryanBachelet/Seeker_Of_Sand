@@ -79,6 +79,8 @@ namespace Enemies
 
                 }
             }
+
+
         }
 
         public void Update()
@@ -124,6 +126,7 @@ namespace Enemies
             }
         }
 
+
         public void SetupPause()
         {
             if (m_navMeshAgent.isActiveAndEnabled) m_navMeshAgent.isStopped = !m_navMeshAgent.isStopped;
@@ -166,28 +169,28 @@ namespace Enemies
             // Repositionning enemi when to far 
             if (distancePos > m_distanceBeforeRepositionning)
             {
-            
+
                 m_navMeshAgent.enabled = false;
                 if (enemiesManager.ReplaceFarEnemy(this.gameObject))
                 {
                     distancePos = Vector3.Distance(transform.position, targetData.target.position);
                     m_navMeshAgent.destination = targetData.target.position;
                     m_navMeshAgent.nextPosition = transform.position;
-            
+
                     return;
-            
+
                 }
-            
-            
-            
+
+
+
             }
             if (distancePos > minDistanceToFullyActive && dot > m_directionMinDot && !m_isAlwaysUpdate)
             {
-            
+
                 return;
             }
             m_navMeshAgent.enabled = true;
-            m_navMeshAgent.SetDestination(targetData.target.position);
+            if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(targetData.target.position);
             if (!m_navMeshAgent.hasPath)
             {
                 Debug.Log("Has hit");
@@ -195,8 +198,16 @@ namespace Enemies
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
 
-                    m_navMeshAgent.SetDestination(hit.position);
-                    
+                    if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(hit.position);
+                    else
+                    {
+                        if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
+                        {
+                            Debug.Log(name + "is not on the navMesh");
+                            m_navMeshAgent.Warp(hit.position);
+                        }
+                    }
+
 
                 }
             }

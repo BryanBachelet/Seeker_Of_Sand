@@ -208,7 +208,7 @@ namespace Character
             }
             if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
             {
-                Shoot();
+               Shoot();
                 m_timeBetweenShoot = 0.0f;
             }
             else
@@ -426,6 +426,7 @@ namespace Character
 
         private void ShootAttack(int index, ref int currentShootCount, ref bool endShoot)
         {
+
             CapsuleStats stats = GetCurrentWeaponStat(index);
             if (stats.formType == FormTypeSpell.PROJECTILE)
             {

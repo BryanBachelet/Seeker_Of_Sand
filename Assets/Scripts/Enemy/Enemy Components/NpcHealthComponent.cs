@@ -108,6 +108,7 @@ namespace Enemies
             NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
             npcMouvement.SetTarget(targetData);
 
+
         }
         public void ResetTarget()
         {
@@ -157,18 +158,6 @@ namespace Enemies
             StartCoroutine(TeleportToPool());
         }
 
-        private IEnumerator Death()
-        {
-            m_enemyManager.DeathEnemy();
-            death = true;
-            GlobalSoundManager.PlayOneShot(36, transform.position);
-            //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
-            yield return new WaitForSeconds(timeBeforeDestruction /2);
-            Instantiate(death_vfx, transform.position, transform.rotation);
-            yield return new WaitForSeconds(timeBeforeDestruction / 2);
-           
-            m_enemyManager.DestroyEnemy(this);
-        }
 
         private IEnumerator TeleportToPool()
         {
