@@ -83,7 +83,7 @@ public class GameState : MonoBehaviour
 
     private Scene scene;
     private bool m_activeSceneEvent = false;
-   
+
     public void Start()
     {
         scene = (SceneManager.GetSceneByBuildIndex(5));
@@ -99,11 +99,11 @@ public class GameState : MonoBehaviour
             Character.CharacterShoot charaShoot = m_enemyManager.m_playerTranform.GetComponent<Character.CharacterShoot>();
             charaShoot.m_aimModeState = m_gmComponent.m_aimModeChoose;
             charaShoot.UpdateFeedbackAimLayout();
-            
+
         }
         else
         {
-           // if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
+            // if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
         }
     }
 
@@ -157,7 +157,7 @@ public class GameState : MonoBehaviour
         {
             listObject[i].isPlaying = m_isPlaying;
         }
-        m_enemyManager.ChangePauseState(m_isPlaying);
+        if (m_enemyManager) m_enemyManager.ChangePauseState(m_isPlaying);
     }
 
     public static void SetState(bool state)

@@ -28,6 +28,8 @@ public class HealthManager : MonoBehaviour
         m_activeText = new List<DamageHealthFD>(m_damageFDMax);
         for (int i = 0; i < m_damageHealthFDs.Length; i++)
         {
+            if (m_damageHealthFDs[i] == null) continue;
+
             m_damageHealthFDs[i].SetupText(this);
             m_damageHealthFDs[i].m_cameraToLook = m_cameraReference;
             m_inactiveText.Add(m_damageHealthFDs[i]);

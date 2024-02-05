@@ -247,7 +247,7 @@ public class HealthPlayerComponent : MonoBehaviour
            // Debug.Log("Coll");
         if(collision.collider.tag == "Enemy")
         {
-            Debug.Log("Coll valid");
+            //Debug.Log("Coll valid");
             OnContactEvent(collision.transform.position,EntitiesTrigger.Enemies,collision.gameObject);
         }
     }

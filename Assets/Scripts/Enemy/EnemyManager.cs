@@ -9,6 +9,24 @@ using TMPro;
 
 namespace Enemies
 {
+    [System.Serializable]
+    public enum EnemyType
+    {
+        BODYLESS,
+        BODYFULL,
+        CHAMAN,
+        TANK,
+        RUNNER,
+    }
+
+    [System.Serializable]
+    public struct EnemyTypeStats
+    {
+        public EnemyType type;
+        public int instanceCount;
+        public AnimationCurve animationCurve;
+    }
+
 
     public class EnemyManager : MonoBehaviour
     {
@@ -26,7 +44,7 @@ namespace Enemies
         static float currentMaxUnitValue;
         [SerializeField] private HealthManager m_healthManager;
         [SerializeField] private float m_radiusspawn;
-        [SerializeField] private GameObject m_ExperiencePrefab;
+        [SerializeField] private GameObject[] m_ExperiencePrefab = new GameObject[5];
 
         [Header("Enemy Spawn Parameters")]
         [SerializeField] private float m_minimumRadiusOfSpawn = 100;
@@ -36,6 +54,7 @@ namespace Enemies
         private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private Transform m_enemyHolder;
 
+        #region EnemyParameter
         [Header("Enemy Target Rate")]
         [Range(0, 1.0f)] [SerializeField] private float m_bodylessEventTargetRate = .5f;
         [Range(0, 1.0f)] [SerializeField] private float m_fullBodyEventTargetRate = .5f;
@@ -43,10 +62,21 @@ namespace Enemies
         [Range(0, 1.0f)] [SerializeField] private float m_runnerEventTargetRate = 0.0f;
         [Range(0, 1.0f)] [SerializeField] private float m_tankEventTargetRate = 0.25f;
 
+
+        [Header("Maximum Pool")]
+        [SerializeField] private AnimationCurve bodyLessMouvementPool;
+        [SerializeField] private AnimationCurve bodufullMouvementPool;
+        [SerializeField] private AnimationCurve chamanMouvementPool;
+        [SerializeField] private AnimationCurve runnerMouvementPool;
+        [SerializeField] private AnimationCurve tankMouvementPool;
+        [SerializeField] private int[] ennemyCount = new int[5];
+
+        [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[5];
+
         [Header("Enemy Bonus")]
         [SerializeField] private GameObject m_expBonus;
         [Range(0, 1.0f)] [SerializeField] private float m_spawnRateExpBonus = 0.01f;
-
+        #endregion
 
         private Experience_System m_experienceSystemComponent;
 
@@ -99,7 +129,7 @@ namespace Enemies
         [HideInInspector] public int altarLaunch;
         [HideInInspector] public int altarSuccessed;
         [HideInInspector] public int killCount;
-        private const string fileStatsName="\\Stats_data";
+        private const string fileStatsName = "\\Stats_data";
 
         [SerializeField] public TMP_Text m_Instruction;
         [SerializeField] public Image m_ImageInstruction;
@@ -117,10 +147,12 @@ namespace Enemies
         [SerializeField] private TMP_Text m_tmpTextEnemyRemain;
         [SerializeField] private Color[] colorSignUI = new Color[2];
 
+        private PullingSystem m_pullingSystem;
+
         public int remainEnemy = 0;
         public void Awake()
         {
-           
+
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -132,6 +164,8 @@ namespace Enemies
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
             m_serieController = m_playerTranform.GetComponent<SerieController>();
             m_timeOfGame = 0;
+            m_pullingSystem = GetComponent<PullingSystem>();
+            m_pullingSystem.InitializePullingSystem();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -141,15 +175,16 @@ namespace Enemies
             if (DayCyclecontroller.choosingArtefactStart) return;
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
+
             m_timeOfGame += Time.deltaTime;
             remainEnemy = m_enemiesArray.Count;
-            if(remainEnemy > 0)
+            if (remainEnemy > 0)
             {
-                m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy -1);
+                m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy - 1);
             }
             if (spawningPhase || m_dayController.isNight || m_targetTransformLists.Count > 0)
             {
-                if(m_dayController.isNight && spawningPhase == false)
+                if (m_dayController.isNight && spawningPhase == false)
                 {
                     ChangeSpawningPhase(true);
                 }
@@ -260,13 +295,15 @@ namespace Enemies
         }
         private float GetTimeSpawn()
         {
-            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame/ 2.0f)) + 1.3f) / 2.0f));
+            return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame / 2.0f)) + 1.3f) / 2.0f));
         }
 
         private int GetNumberToSpawn()
         {
-            int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
-            int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            //int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
+            int currentMaxUnit = 5;
+            //int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            int number = currentMaxUnit;
             number = number <= 0 ? 1 : number;
             return number;
         }
@@ -275,11 +312,12 @@ namespace Enemies
         {
             position = FindPosition();
             posspawn.Add(position);
-            Instantiate(m_spawningVFX, position, transform.rotation);
-            GlobalSoundManager.PlayOneShot(37, position);
+
             for (int i = 0; i < GetNumberToSpawn(); i++)
             {
-                SpawnEnemy(position + Random.insideUnitSphere * 5f);
+                //Debug.Log("Spawning Group ( i : " + i + " ) ---> " + GetNumberToSpawn());
+                //SpawnEnemy(position + Random.insideUnitSphere * 5f);
+                SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
             }
         }
 
@@ -403,7 +441,7 @@ namespace Enemies
             if (EnemyTargetPlayer)
             {
                 npcHealth.targetData.isMoving = true;
-                npcHealth.SetTarget( m_playerTranform);
+                npcHealth.SetTarget(m_playerTranform);
             }
             else
             {
@@ -412,12 +450,12 @@ namespace Enemies
                 {
                     npcHealth.targetData.isMoving = true;
                     npcHealth.SetTarget(m_playerTranform);
-                   
+
 
                 }
                 else
                 {
-                     npcHealth.SetTarget( m_targetTranform);
+                    npcHealth.SetTarget(m_targetTranform);
                     npcHealth.targetData.isMoving = false;
                     m_enemiesFocusAltar.Add(npcHealth);
                 }
@@ -425,6 +463,84 @@ namespace Enemies
             }
             m_enemiesArray.Add(npcHealth);
         }
+
+
+        private void SpawnEnemyByPool(Vector3 positionSpawn)
+        {
+            int indexNextSpawn = -1;
+            GameObject goToMoveIn = null;
+            NpcHealthComponent npcHealth = null;
+            NpcMouvementComponent npcMove = null;
+            int randomEnemyTry = -1;
+            int countTentative = 0;
+            while (indexNextSpawn < 0 && countTentative < 10)
+            {
+                countTentative++;
+                randomEnemyTry = Random.Range(0, 5);
+
+                if (!m_pullingSystem.IsStillInstanceOf((EnemyType)randomEnemyTry)) continue;
+
+                if (enemyTypeStats[randomEnemyTry].instanceCount < Mathf.RoundToInt(enemyTypeStats[randomEnemyTry].animationCurve.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                {
+                    goToMoveIn = m_pullingSystem.GetEnemy((EnemyType)randomEnemyTry);
+                    enemyTypeStats[randomEnemyTry].instanceCount += 1;
+                    indexNextSpawn = randomEnemyTry;
+                    goToMoveIn.transform.position = positionSpawn;
+                    goToMoveIn.GetComponent<NavMeshAgent>().updatePosition = true;
+                    goToMoveIn.GetComponent<NavMeshAgent>().Warp(positionSpawn);
+                    npcHealth = goToMoveIn.GetComponent<NpcHealthComponent>();
+                    npcMove = goToMoveIn.GetComponent<NpcMouvementComponent>();
+                    break;
+                }
+
+            }
+            if (goToMoveIn == null) return;
+            Instantiate(m_spawningVFX, position, transform.rotation);
+            GlobalSoundManager.PlayOneShot(37, position);
+            float targetRate = 0.0f;
+            bool focusPlayer = true;
+            if (!EnemyTargetPlayer)
+            {
+                if (m_targetTransformLists.Count <= 0) { return; }
+                ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
+                m_targetTranform = nearestAltar.transform;
+
+                targetRate = Random.Range(0.0f, 1.0f);
+            }
+            npcMove.enemiesManager = this;
+            npcHealth.SetInitialData(m_healthManager, this);
+
+            if (EnemyTargetPlayer)
+            {
+                npcHealth.targetData.isMoving = true;
+                npcHealth.RestartObject();
+                npcHealth.SetTarget(m_playerTranform);
+
+            }
+            else
+            {
+
+                if (focusPlayer)
+                {
+                    npcHealth.targetData.isMoving = true;
+                    npcHealth.RestartObject();
+                    npcHealth.SetTarget(m_playerTranform);
+
+
+                }
+                else
+                {
+                    npcHealth.SetTarget(m_targetTranform);
+                    npcHealth.RestartObject();
+                    npcHealth.targetData.isMoving = false;
+                    m_enemiesFocusAltar.Add(npcHealth);
+                }
+
+            }
+            npcHealth.RestartObject();
+            m_enemiesArray.Add(npcHealth);
+        }
+
 
 
         public void AddTarget(Transform target)
@@ -440,7 +556,7 @@ namespace Enemies
             healthSystemReference.m_eventLifeUIFeedback = m_imageLifeEvents[indexTargetList];
             healthSystemReference.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[indexTargetList];
             healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
-            if(target.GetComponent<AltarBehaviorComponent>())
+            if (target.GetComponent<AltarBehaviorComponent>())
             {
                 altarLaunch++;
                 target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
@@ -491,7 +607,7 @@ namespace Enemies
             for (int i = 0; i < m_targetTransformLists.Count; i++)
             {
                 RemoveTarget(m_targetTransformLists[i]);
-            }   
+            }
         }
 
         public void RemoveAllAltar()
@@ -508,7 +624,7 @@ namespace Enemies
             m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
-       
+
 
         public void SendInstruction(string Instruction, Color colorText, Sprite iconAssociate)
         {
@@ -521,13 +637,15 @@ namespace Enemies
             m_altarList.Remove(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 
-        public void SpawnExp(Vector3 position, int count)
+        public void SpawnExp(Vector3 position, int count, int indexMob)
         {
             for (int i = 0; i < count; i++)
             {
-                GameObject expObj = Instantiate(m_ExperiencePrefab, position, Quaternion.identity);
-                m_experienceSystemComponent.AddExpParticule(expObj.GetComponent<ExperienceMouvement>());
+
             }
+            GameObject expObj = Instantiate(m_ExperiencePrefab[indexMob], position, Quaternion.identity);
+            ExperienceMouvement experienceMouvement = expObj.GetComponent<ExperienceMouvement>();
+            m_experienceSystemComponent.AddExpParticule(experienceMouvement);
 
             float rate = Random.Range(0.0f, 1.0f);
             if (rate <= m_spawnRateExpBonus)
@@ -555,22 +673,29 @@ namespace Enemies
         {
 
             Vector3 position = npcHealth.transform.position;
-            SpawnExp(position, xpCount);
+            SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
-            OnDeathEvent(position,EntitiesTrigger.Enemies,npcHealth.gameObject, distance);
+            OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);
         }
-        public void DestroyEnemy(NpcHealthComponent npcHealth)
-        {
 
+        public void TeleportEnemyOut(NpcHealthComponent npcHealth)
+        {
             if (!m_enemiesArray.Contains(npcHealth)) return;
 
+            EnemyType type = npcHealth.GetComponent<NpcMetaInfos>().type;
             killCount++;
             m_enemyKillRatio.AddEnemiKill();
-            if (m_enemiesFocusAltar.Contains(npcHealth)) m_enemiesFocusAltar.Remove(npcHealth);
+
+            if (m_enemiesFocusAltar.Contains(npcHealth)) 
+                m_enemiesFocusAltar.Remove(npcHealth);
+
+            enemyTypeStats[(int)type].instanceCount -= 1;
             m_enemiesArray.Remove(npcHealth);
-            Destroy(npcHealth.gameObject);
+            m_pullingSystem.ResetEnemy(npcHealth.gameObject, type);
         }
+
+
 
         public void DeathEnemy()
         {
@@ -615,19 +740,19 @@ namespace Enemies
         {
             spawningPhase = spawning;
             detectionAnimator.SetBool("ShadowDetection", spawningPhase);
-            if (spawning) 
-            { 
-                gsm.globalMusicInstance.setParameterByName("Repos", 0); 
-                StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0])); 
+            if (spawning)
+            {
+                gsm.globalMusicInstance.setParameterByName("Repos", 0);
+                StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
                 m_enemyIcon.color = colorSignUI[0];
-                m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ; 
+                m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
             }
-            else 
-            { 
-                gsm.globalMusicInstance.setParameterByName("Repos", 1); 
-                StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1])); 
-                m_enemyIcon.color = colorSignUI[1]; 
-                m_tmpTextEnemyRemain.color = colorSignUI[1]; 
+            else
+            {
+                gsm.globalMusicInstance.setParameterByName("Repos", 1);
+                StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1]));
+                m_enemyIcon.color = colorSignUI[1];
+                m_tmpTextEnemyRemain.color = colorSignUI[1];
             }
         }
 
@@ -687,7 +812,7 @@ namespace Enemies
         string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet.csv";
        
 
-#endif 
+#endif
 
             int lineNumber = 5;
 
@@ -697,7 +822,7 @@ namespace Enemies
             for (int i = 0; i < dataTransformed.Length; i++)
             {
                 if (data_values[i] == "") continue;
-                dataTransformed[i] = long.Parse(data_values[i] );
+                dataTransformed[i] = long.Parse(data_values[i]);
                 tempAnimationCurve.AddKey(i, dataTransformed[i]);
                 debugdata = debugdata + " , " + dataTransformed[i];
 
@@ -719,31 +844,45 @@ namespace Enemies
             endInfoStats.altarSuccessed = altarSuccessed;
             endInfoStats.altarRepeated = altarLaunch;
             endInfoStats.bigestCombo = m_serieController.m_biggestMultiplicator;
-            endInfoStats.nightValidate = m_dayController.m_nightCount ;
+            endInfoStats.nightValidate = m_dayController.m_nightCount;
 
             CheckEndStat(endInfoStats);
             return endInfoStats;
         }
 
+        public void AddDataInPool(NpcHealthComponent npcHealth)
+        {
 
+        }
         public void CheckEndStat(EndInfoStats stats)
         {
 #if UNITY_EDITOR
-            string filePath = Application.dataPath +"\\Temp"+ fileStatsName + GameState.profileName + ".sost";
+            string filePath = Application.dataPath + "\\Temp" + fileStatsName + GameState.profileName + ".sost";
 #else
             string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
 #endif
             EndInfoStats statsSave = Save.SaveManager.ReadEndStats(filePath);
-            if(statsSave.HasSuperiorValue(stats))
+            if (statsSave.HasSuperiorValue(stats))
             {
                 Save.SaveManager.WriteEndStats(filePath, stats);
             }
         }
-      
 
 
-#endregion
+
+        #endregion
+
+        public void OnValidate()
+        {
+            if (enemyTypeStats.Length <= 0) return;
+            for (int i = 0; i < enemyTypeStats.Length; i++)
+            {
+                enemyTypeStats[i].type = (EnemyType)i;
+            }
+        }
 
     }
 
 }
+
+

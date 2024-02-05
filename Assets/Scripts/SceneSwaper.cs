@@ -17,10 +17,12 @@ public class SceneSwaper : MonoBehaviour
     Scene[] lastScene;
     private GameObject[] GOToUnload;
     public Camera_Hub_Move CameraHubMove;
+    private GuerhoubaTools.SceneLoaderComponent m_sceneLoaderComponent;
     // Start is called before the first frame update
     void Start()
     {
         thisScene = SceneManager.GetActiveScene();
+        m_sceneLoaderComponent = FindAnyObjectByType<GuerhoubaTools.SceneLoaderComponent>();
         GOToUnload = thisScene.GetRootGameObjects();
     }
 
@@ -40,7 +42,7 @@ public class SceneSwaper : MonoBehaviour
                 {
                     awaitForStart = false;
                     CameraHubMove.inputDebut = true;
-                    //LoadSceneWithLoading();
+
                 }
             }
         }
@@ -68,45 +70,10 @@ public class SceneSwaper : MonoBehaviour
         }
     }
 
-    public async void LoadSceneWithLoading()
+    public void LoadSceneWithLoading()
     {
-        for (int i = 0; i < sceneToLoadAtStart.Count; i++)
-        {
-            sceneToLoadAtStart[i].allowSceneActivation = true;
-            Debug.Log(sceneToLoadAtStart.Count);
-            do
-            {
-                await System.Threading.Tasks.Task.Delay(100);
-
-            } while (sceneToLoadAtStart[i].progress < 0.9f);
-            await System.Threading.Tasks.Task.Delay(1000);
-            //Debug.Log(lastScene.name);
-        }
-
-        //Debug.Log(lastScene.Length);
-        //for (int i = 1; i < lastScene.Length - 1; i++)
-        //{
-        //
-        //    lastScene[i] = SceneManager.GetSceneAt(SceneManager.sceneCount + 2 + i);
-        //    SceneManager.SetActiveScene(lastScene[i]);
-        //
-        //}
-
-        for (int j = 0; j < GOToUnload.Length; j++)
-        {
-            if (GOToUnload[j] != this.gameObject)
-            {
-                Destroy(GOToUnload[j]);
-            }
-        }
-        Scene[] activeScene = SceneManager.GetAllScenes();
-        string DebugSceneActive = "";
-        for(int i = 0; i < SceneManager.sceneCount; i++)
-        {
-            DebugSceneActive = DebugSceneActive + SceneManager.GetSceneAt(i).name + " [Active] || ";
-        }
-        SceneManager.UnloadSceneAsync("Hub - 1");
-        Destroy(this.gameObject);
+        m_sceneLoaderComponent.ActiveSceneRender();
+       
     }
 
 

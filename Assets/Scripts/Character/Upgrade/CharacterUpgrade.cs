@@ -38,6 +38,8 @@ public class CharacterUpgrade : MonoBehaviour
     private bool m_isFirstTime = true;
 
     public GameObject upgradeDisplayVFX;
+
+    private Experience_System m_experienceSystem;
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -84,6 +86,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
         m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
         m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
+        m_experienceSystem = this.GetComponent<Experience_System>();
 
         m_upgradeUi.m_upgradeButtonFunction += ChooseUpgrade;
         for (int i = 0; i < m_upgradeUi.upgradeButtons.Length; i++)
@@ -139,6 +142,7 @@ public class CharacterUpgrade : MonoBehaviour
             m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
             ApplyUpgrade(indexChoice);
             upgradePoint--;
+            m_experienceSystem.m_LevelTaken++;
             m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         }
 

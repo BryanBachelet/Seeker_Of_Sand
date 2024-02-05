@@ -208,7 +208,7 @@ namespace Character
             }
             if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
             {
-                Shoot();
+               Shoot();
                 m_timeBetweenShoot = 0.0f;
             }
             else
@@ -324,6 +324,7 @@ namespace Character
             if (ctx.canceled && state.isPlaying)
             {
                 m_shootInput = false;
+                m_shootInputActive = false;
             }
         }
         #endregion
@@ -383,7 +384,7 @@ namespace Character
 
         public void LaunchShootUniqueSpell(int index)
         {
-            Debug.Log("Launch ");
+            //Debug.Log("Launch ");
             for (int i = 0; i < m_spellCouroutine.Length; i++)
             {
                 if (m_spellCouroutine[i] == null)
@@ -425,6 +426,7 @@ namespace Character
 
         private void ShootAttack(int index, ref int currentShootCount, ref bool endShoot)
         {
+
             CapsuleStats stats = GetCurrentWeaponStat(index);
             if (stats.formType == FormTypeSpell.PROJECTILE)
             {

@@ -1,0 +1,109 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class Punketone : MonoBehaviour
+{
+    public GameObject fireVfxEffect;
+    public LineRenderer lineRenderer;
+    public int distanceToAbsorb = 10;
+    public float distanceEntreVfx = 3;
+    public float tempsEcouleLastFire = 0;
+    private Vector3 positionLastFire = Vector3.zero;
+    public bool spawningFire = false;
+
+    public float speed;
+    public LayerMask groundLayer;
+
+    public GameObject target;
+    public Transform targetFocus;
+
+
+    private Rigidbody m_rigidbody;
+    private NavMeshAgent m_navMeshAgent;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        m_navMeshAgent = GetComponent<NavMeshAgent>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        if(target != null)
+        {
+
+            if (Vector3.Distance(transform.position, target.transform.position) < distanceToAbsorb)
+            {
+                Vector3[] position = new Vector3[2];
+                lineRenderer.positionCount = position.Length;
+                position[1] = transform.position + new Vector3(0, transform.GetChild(0).position.y + 18, 0);
+                position[0] = targetFocus.position;
+                lineRenderer.SetPositions(position);
+                m_navMeshAgent.isStopped = true;
+            }
+            else
+            {
+
+                Move();
+            }
+
+
+            if (Vector3.Distance(transform.position, positionLastFire) > distanceEntreVfx)
+            {
+
+
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position + new Vector3(0, 20, 0), Vector3.down, out hit, Mathf.Infinity, groundLayer))
+                {
+                    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                    GameObject newFire = Instantiate(fireVfxEffect, hit.point, transform.rotation);
+                    newFire.transform.position = hit.point;
+                    positionLastFire = hit.point;
+                    Debug.Log("Did Hit || " + hit.point);
+                }
+                else
+                {
+                    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+                    Debug.Log("Did not Hit");
+                }
+
+            }
+
+        }
+    }
+
+    public void Move()
+    {
+        Vector3 directionToDestination = m_navMeshAgent.destination - transform.position;
+        Vector3 directionToTarget = target.transform.position - transform.position;
+        float dot = Vector3.Dot(directionToDestination.normalized, directionToTarget.normalized);
+        float distancePos = Vector3.Distance(transform.position, target.transform.position);
+
+        m_navMeshAgent.enabled = true;
+        if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(target.transform.position);
+        if (!m_navMeshAgent.hasPath)
+        {
+            Debug.Log("Has hit");
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(target.transform.position, out hit, 100.0f, NavMesh.AllAreas))
+            {
+
+                if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(hit.position);
+                else
+                {
+                    if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
+                    {
+                        Debug.Log(name + "is not on the navMesh");
+                        m_navMeshAgent.Warp(hit.position);
+                    }
+                }
+
+
+            }
+        }
+    }
+}

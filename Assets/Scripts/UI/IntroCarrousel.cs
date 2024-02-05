@@ -17,33 +17,25 @@ public class IntroCarrousel : MonoBehaviour
     [SerializeField] private int[] m_gameplaySceneIndex = new int[1];
     private int m_currentIndex;
 
-
     public TMPro.TMP_Text textProgression;
 
-    Scene lastScene;
-    private int m_currentsSceneIndex = 0;
-    AsyncOperation[] scene = new AsyncOperation[3];
 
-    private GameObject[] GOToUnload;
+    private GuerhoubaTools.SceneLoaderComponent m_sceneLoaderComponent;
     private void Awake()
     {
         thisScene = SceneManager.GetActiveScene();
         if (instance == null)
         {
             instance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
-        GOToUnload = thisScene.GetRootGameObjects();
-    }
-    public void ChangeScene()
-    {
-        SceneManager.LoadScene(m_gameplaySceneIndex[0]);
+        m_sceneLoaderComponent = FindAnyObjectByType<GuerhoubaTools.SceneLoaderComponent>();
     }
 
+    #region Panel Functions
     public void ChangeUp()
     {
         m_panelInfo[m_currentIndex].SetActive(false);
@@ -54,7 +46,6 @@ public class IntroCarrousel : MonoBehaviour
             m_currentIndex++;
 
         m_panelInfo[m_currentIndex].SetActive(true);
-        Debug.Log("Change up !");
     }
 
     public void ChangeDown()
@@ -62,98 +53,27 @@ public class IntroCarrousel : MonoBehaviour
         m_panelInfo[m_currentIndex].SetActive(false);
 
         if (m_currentIndex - 1 == -1)
-            m_currentIndex = m_panelInfo.Length-1;
+            m_currentIndex = m_panelInfo.Length - 1;
         else
             m_currentIndex--;
 
         m_panelInfo[m_currentIndex].SetActive(true);
     }
+    #endregion 
 
 
-    public async void LoadSceneWithLoading()
+    public void ActiveLoadScene()
     {
-        scene[m_currentsSceneIndex] = SceneManager.LoadSceneAsync(m_gameplaySceneIndex[m_currentsSceneIndex], LoadSceneMode.Additive);
-      
-        if (m_currentsSceneIndex == 0)
-        {
-            scene[m_currentsSceneIndex].allowSceneActivation = true;
-        
-        }
-        else
-        {
-            scene[m_currentsSceneIndex].allowSceneActivation = false;
-            _loaderCanvas.SetActive(true);
-        }
-        _target = 0;
-        _progressBar.fillAmount = 0;
-
-
-        do
-        {
-            await System.Threading.Tasks.Task.Delay(100);
-
-        } while (scene[m_currentsSceneIndex].progress < 0.9f && scene[0].isDone);
-        _target = scene[m_currentsSceneIndex].progress;
-        await System.Threading.Tasks.Task.Delay(1000);
-
-
-        if (m_currentsSceneIndex == 0)
-        {
-            lastScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-            _loaderCanvas.SetActive(false);
-            SceneManager.SetActiveScene(lastScene);
-           
-
-        }
-        
-        if(m_currentsSceneIndex == 2)
-        {
-            GameObject[] sceneObject = lastScene.GetRootGameObjects();
-            for (int i = 0; i < sceneObject.Length; i++)
-            {
-                if (sceneObject[i].name == "GameStartArea")
-                {
-                    SceneSwaper sceneSwaperReference = sceneObject[i].GetComponentInChildren<SceneSwaper>();
-                    for (int j = scene.Length - 1; j >= 1; j--)
-                    {
-                        sceneSwaperReference.sceneToLoadAtStart.Add(scene[j]);
-                    }
-
-                }
-            }
-        }
-        m_currentsSceneIndex++;
-        
-        if(m_currentsSceneIndex < m_gameplaySceneIndex.Length) LoadSceneWithLoading();
-        if(m_currentsSceneIndex == m_gameplaySceneIndex.Length)
-        {
-
-            Debug.Log("Every Scene loaded");
-            for(int i = 0; i < GOToUnload.Length; i++)
-            {
-                if(GOToUnload[i] != this.gameObject)
-                {
-
-                    Destroy(GOToUnload[i]);
-                }
-            }
-            SceneManager.UnloadSceneAsync(thisScene.buildIndex);
-            Destroy(this.gameObject);
-
-        }
-
+        _loaderCanvas.SetActive(true);
+        m_sceneLoaderComponent.LoadHubScene();
     }
 
     private void Update()
     {
-      
-        _progressBar.fillAmount = Mathf.MoveTowards(_progressBar.fillAmount, _target, 3 * Time.deltaTime);
+
+        _progressBar.fillAmount = m_sceneLoaderComponent.GetLoadProgress();
         textProgression.text = "Game is loading \n" + (_target * 100) + "%";
     }
 
-    public void ActiveLoadingSceneBuffer()
-    {
-        
-        LoadSceneWithLoading();
-    }
+
 }

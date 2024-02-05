@@ -46,11 +46,9 @@ namespace Enemies
         public void Start()
         {
             InitComponent();
-            SetTarget(m_npcHealthComponent.targetData);
+
             m_npcHealthComponent.destroyEvent += OnDeath;
-            m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
-            m_navMeshAgent.speed = m_baseSpeed;
-            m_navMeshAgent.destination = (targetData.target.position);
+            RestartObject();
         }
 
         public void InitComponent()
@@ -68,11 +66,11 @@ namespace Enemies
             bool state = m_navMeshAgent.SetDestination(targetData.target.position);
             if (!targetData.isMoving)
             {
-                Debug.Log("Test");
+                //Debug.Log("Test");
             }
             if (!m_navMeshAgent.hasPath)
             {
-                Debug.Log("Has hit");
+                //Debug.Log("Has hit");
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
@@ -81,6 +79,8 @@ namespace Enemies
 
                 }
             }
+
+
         }
 
         public void Update()
@@ -95,14 +95,6 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-
-
-
-            if (!targetData.target.name.Equals("Player"))
-            {
-                Debug.Log("Test");
-            }
-
 
             if (m_npcHealthComponent.npcState == NpcState.MOVE)
             {
@@ -125,6 +117,7 @@ namespace Enemies
 
             }
         }
+
 
         public void SetupPause()
         {
@@ -189,7 +182,7 @@ namespace Enemies
                 return;
             }
             m_navMeshAgent.enabled = true;
-            m_navMeshAgent.SetDestination(targetData.target.position);
+            if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(targetData.target.position);
             if (!m_navMeshAgent.hasPath)
             {
                 Debug.Log("Has hit");
@@ -197,7 +190,16 @@ namespace Enemies
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
 
-                    m_navMeshAgent.SetDestination(hit.position);
+                    if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(hit.position);
+                    else
+                    {
+                        if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
+                        {
+                            Debug.Log(name + "is not on the navMesh");
+                            m_navMeshAgent.Warp(hit.position);
+                        }
+                    }
+
 
                 }
             }
@@ -217,6 +219,15 @@ namespace Enemies
             }
 
             this.enabled = false;
+        }
+
+        public void RestartObject()
+        {
+            SetTarget(m_npcHealthComponent.targetData);
+            m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
+            m_navMeshAgent.speed = m_baseSpeed;
+            m_navMeshAgent.destination = (targetData.target.position);
+            //targetData.isMoving = true;
         }
     }
 }
