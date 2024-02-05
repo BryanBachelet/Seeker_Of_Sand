@@ -494,7 +494,7 @@ namespace Enemies
                 }
 
             }
-
+            if (goToMoveIn == null) return;
             Instantiate(m_spawningVFX, position, transform.rotation);
             GlobalSoundManager.PlayOneShot(37, position);
             float targetRate = 0.0f;

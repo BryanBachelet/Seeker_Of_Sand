@@ -95,14 +95,6 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-            //Debug.Log(""+m_navMeshAgent.nextPosition);
-
-
-            //if (!targetData.target.name.Equals("Player"))
-            //{
-            //    Debug.Log("Test");
-            //}
-
 
             if (m_npcHealthComponent.npcState == NpcState.MOVE)
             {

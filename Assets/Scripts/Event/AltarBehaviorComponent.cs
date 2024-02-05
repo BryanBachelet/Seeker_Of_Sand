@@ -79,10 +79,19 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     private float progression = 0;
 
+    public GameObject punkeleton;
+
     private int m_idSpellReward;
     private int m_enemiesCountConditionToWin = 0;
     public Sprite instructionImage;
     private InteractionEvent m_interactionEvent;
+    private GameObject[] punketon = new GameObject[0];
+    public float tempsEntrePunk = 10;
+    private float tempsEcoulePunk = 0;
+    public LayerMask groundLayer;
+
+    public Transform skeletonFocus;
+    public int skeletonCount = 0;
     #region Unity Functions
     void Start()
     {
@@ -123,6 +132,32 @@ public class AltarBehaviorComponent : MonoBehaviour
 
             SucceedEvent();
             return;
+        }
+        if(tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)
+        {
+            tempsEcoulePunk = 0;
+            Vector2 rndPosition = Random.insideUnitCircle;
+            rndPosition.Normalize();
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position + new Vector3(rndPosition.x, 40, rndPosition.y) * 150, Vector3.down, out hit, Mathf.Infinity, groundLayer))
+            {
+                GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
+                skeletonCount++;
+                Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
+                lastPunketone.target = this.gameObject;
+                lastPunketone.targetFocus = skeletonFocus;
+            }
+            else
+            {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+                Debug.Log("Did not Hit");
+            }
+
+
+        }
+        else
+        {
+            tempsEcoulePunk += Time.deltaTime;
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         m_eventProgressionSlider.fillAmount = progression;

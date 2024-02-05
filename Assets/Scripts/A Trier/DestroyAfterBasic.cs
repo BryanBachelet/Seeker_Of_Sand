@@ -17,6 +17,7 @@ public class DestroyAfterBasic : MonoBehaviour
     public IEnumerator DestroyAfter(float time)
     {
         float duration = 0;
+        Debug.Log("Destroy In 3 secondes");
         while (duration<time)
         {
             yield return Time.deltaTime;

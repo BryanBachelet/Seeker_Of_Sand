@@ -30,26 +30,26 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHATEST_ON
-  - _DISABLE_DECALS
-  - _DISABLE_SSR_TRANSPARENT
-  - _DOUBLESIDED_ON
   - _ENABLE_FOG_ON_TRANSPARENT
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
+  - _DISABLE_DECALS
+  - _DISABLE_SSR_TRANSPARENT
+  - _DOUBLESIDED_ON
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2757
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
     RenderType: Transparent
   disabledShaderPasses:
   - TransparentDepthPrepass
-  - TransparentDepthPostpass
+  - MOTIONVECTORS
   - TransparentBackface
   - RayTracingPrepass
-  - MOTIONVECTORS
+  - TransparentDepthPostpass
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -59,7 +59,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Base:
-        m_Texture: {fileID: 2800000, guid: 1f8daeabccb2b87419ed9bc12a5b237c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 561323fbda0ba734cbd3a321b2c20a20, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseColorMap:
@@ -135,7 +135,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2DAsset_6752c9e9750f4654b564e453c7cc3bec_Out_0_Texture2D:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 36aad4ffccc45404181d0e0da4fe6c75, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2DAsset_f165af3107aa4fbba672cc0a43a1efaa_Out_0:
@@ -168,8 +168,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _A: -2.09
-    - _AO: 35.32
+    - _A: 0
+    - _AO: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -186,7 +186,7 @@ Material:
     - _AlphaToMaskInspectorValue: 0
     - _Alpha_Threshold: 0
     - _Anisotropy: 0
-    - _B: -1.72
+    - _B: 0
     - _BlendMode: 1
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
@@ -204,7 +204,7 @@ Material:
     - _DisplacementLockTilingScale: 1
     - _DisplacementMode: 0
     - _DoubleSidedEnable: 1
-    - _DoubleSidedGIMode: 0
+    - _DoubleSidedGIMode: 1
     - _DoubleSidedNormalMode: 0
     - _DstBlend: 1
     - _EmissiveColorMode: 1
@@ -247,7 +247,7 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
-    - _RenderQueueType: 3
+    - _RenderQueueType: 4
     - _RequireSplitLighting: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
@@ -258,16 +258,16 @@ Material:
     - _Speed_1: 0
     - _SrcBlend: 1
     - _StencilRef: 0
-    - _StencilRefDepth: 0
+    - _StencilRefDepth: 1
     - _StencilRefDistortionVec: 4
     - _StencilRefGBuffer: 2
-    - _StencilRefMV: 32
+    - _StencilRefMV: 33
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 9
     - _StencilWriteMaskDistortionVec: 4
     - _StencilWriteMaskGBuffer: 15
-    - _StencilWriteMaskMV: 41
-    - _Strengh: 76.44
+    - _StencilWriteMaskMV: 43
+    - _Strengh: 0
     - _SubsurfaceMask: 1
     - _SupportDecals: 0
     - _SurfaceType: 1
@@ -279,9 +279,9 @@ Material:
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
     - _TransparentDepthPrepassEnable: 0
-    - _TransparentSortPriority: 7
+    - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
-    - _TransparentZWrite: 1
+    - _TransparentZWrite: 0
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
@@ -291,12 +291,12 @@ Material:
     - _ZTestDepthEqualForOpaque: 4
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.15739058, g: 0, b: 1.4980392, a: 1}
-    - _Color_1: {r: 119.42823, g: 31.254343, b: 0, a: 1}
+    - _Color: {r: 51.37787, g: 20.712545, b: 0, a: 1}
+    - _Color_1: {r: 63.094162, g: 16.847132, b: 0, a: 0}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: -1, g: -1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
