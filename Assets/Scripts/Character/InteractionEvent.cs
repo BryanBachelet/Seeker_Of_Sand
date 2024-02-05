@@ -44,6 +44,8 @@ public class InteractionEvent : MonoBehaviour
     public HintInteractionManager m_hintInteractionManager;
 
     [SerializeField] private Camera mainCamera;
+
+    public GameObject currentInteractibleObjectActive = null;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,7 +59,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (Time.time > lastInteractionCheck + intervalCheckInteraction)
         {
-            NearPossibleInteraction();
+            if (currentInteractibleObjectActive == null) { NearPossibleInteraction(); }
             NearTrader();
             NearArtefact();
             lastInteractionCheck = Time.time;
@@ -138,7 +140,13 @@ public class InteractionEvent : MonoBehaviour
 
     public void ActionInteraction()
     {
-        if (currentInteractibleObject != null) { currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(); }
+        if (currentInteractibleObject != null)
+        { 
+            currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(this);
+            currentInteractibleObjectActive = currentInteractibleObject;
+            m_socleTransform = null;
+            StartCoroutine(CloseUIWithDelay(2));
+        }
 
     }
 

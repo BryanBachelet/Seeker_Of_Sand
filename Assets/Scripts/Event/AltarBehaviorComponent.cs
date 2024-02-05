@@ -82,6 +82,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     private int m_idSpellReward;
     private int m_enemiesCountConditionToWin = 0;
     public Sprite instructionImage;
+    private InteractionEvent m_interactionEvent;
     #region Unity Functions
     void Start()
     {
@@ -199,6 +200,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_hasEventActivate = true;
         m_isEventOccuring = false;
         isAltarDestroy = true;
+        m_interactionEvent.currentInteractibleObjectActive = null;
         m_enemyManager.RemoveTarget(transform);
         m_enemyManager.RemoveAltar(transform);
         Debug.Log("Destroy event");
@@ -214,8 +216,9 @@ public class AltarBehaviorComponent : MonoBehaviour
     #region State Altar Functions
 
     // Need to set active
-    public void ActiveEvent()
+    public void ActiveEvent(InteractionEvent intercationEvent)
     {
+        if(m_interactionEvent == null) { m_interactionEvent = intercationEvent; }
         if (!m_objectHealthSystem.IsEventActive())
         {
             m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
@@ -259,7 +262,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         progression = 0;
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
-
+        m_interactionEvent.currentInteractibleObjectActive = null;
         // Update Enemies Manager  ==> Create One functions from the enemyManager
         m_enemyManager.altarSuccessed++;
         m_enemyManager.RemoveTarget(transform);
