@@ -26,12 +26,12 @@ public class TerrainLocationID : MonoBehaviour
         {
             if (!hit.transform.GetComponent<TerrainLocationID>()) return;
             TerrainLocationID newterrainlocation = hit.transform.GetComponent<TerrainLocationID>();
-            if(newterrainlocation != lastLocation)
+            if (newterrainlocation != lastLocation)
             {
                 ChangeCurrentLocation(newterrainlocation);
             }
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-           
+
         }
         else
         {
@@ -44,6 +44,6 @@ public class TerrainLocationID : MonoBehaviour
         currentTerrainID = terrainIDRef.terrainID;
         currentLocationName = terrainIDRef.locationName;
         lastLocation = terrainIDRef;
-        locationText.text = currentLocationName;
+        if (locationText) locationText.text = currentLocationName;
     }
 }

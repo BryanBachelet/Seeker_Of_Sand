@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 3874809854638184052}
   - component: {fileID: -4669882926715339747}
   - component: {fileID: 3209565809213415622}
+  - component: {fileID: -2185532337184438129}
   m_Layer: 6
   m_Name: Enemy_Chaman
   m_TagString: Enemy
@@ -116,10 +117,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.46373892
-  m_Height: 4.7494392
+  m_Radius: 0.5
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1.595941, z: 0.0071093244}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!195 &3294013781257085868
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -344,6 +345,19 @@ MonoBehaviour:
   m_projectileThrow: {fileID: 7631094258834407991, guid: 1c87d17322e573e46b5739335820ad37,
     type: 3}
   m_signAttack: {fileID: 6286340996950384726}
+--- !u!114 &-2185532337184438129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57070b1248b063c45a8a25d7a7c0672b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
 --- !u!1001 &580041293520765996
 PrefabInstance:
   m_ObjectHideFlags: 0

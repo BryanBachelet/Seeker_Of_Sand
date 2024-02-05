@@ -15,6 +15,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
     [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
+    [SerializeField] private AnimationCurve m_colorTemperatureOverTime;
     [Range(0, 24)]
     [SerializeField] public float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -104,6 +105,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
+
         AdjustPostProcessByHour(m_timeOfDay);
         //UpdatePostProcess();
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
@@ -349,8 +351,10 @@ public class DayCyclecontroller : MonoBehaviour
             vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
             vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
             vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+
             //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
         }
+        m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
     }
 }
 

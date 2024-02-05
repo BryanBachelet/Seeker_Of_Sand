@@ -108,7 +108,7 @@ namespace Enemies
                         m_navMeshAgent.SetDestination(hit.position);
 
                     }
-                    m_navMeshAgent.SetDestination(m_targetTransform.position);
+                    m_navMeshAgent.SetDestination(m_targetTransform.position);  
                     timeofRecuperation = 0;
                     m_navMeshAgent.isStopped = false;
                     m_SignAttackReset = true;
