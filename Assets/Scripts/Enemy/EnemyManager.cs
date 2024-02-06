@@ -148,7 +148,7 @@ namespace Enemies
         [SerializeField] private Color[] colorSignUI = new Color[2];
 
         private PullingSystem m_pullingSystem;
-
+        public GameObject[] punketoneLifeBar;
         public int remainEnemy = 0;
         public void Awake()
         {
