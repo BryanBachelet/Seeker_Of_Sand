@@ -6,10 +6,16 @@ using UnityEngine.AI;
 public class Punketone : MonoBehaviour
 {
     public GameObject fireVfxEffect;
+    [SerializeField] private float HPMax;
+    public float currentHP;
+    public float percentHP;
+
     public LineRenderer lineRenderer;
     public int distanceToAbsorb = 10;
     public float distanceEntreVfx = 3;
     public float tempsEcouleLastFire = 0;
+    public float tempsAvantAbsorb = 5;
+    public float tempsCurrentAbsorb = 1;
     private Vector3 positionLastFire = Vector3.zero;
     public bool spawningFire = false;
 
@@ -23,17 +29,26 @@ public class Punketone : MonoBehaviour
     private Rigidbody m_rigidbody;
     private NavMeshAgent m_navMeshAgent;
 
+    public AltarBehaviorComponent altarRefered;
+    private ObjectHealthSystem objectHealthSystem;
+
+    public GameObject deathDestroyVfx;
     // Start is called before the first frame update
     void Start()
     {
         m_navMeshAgent = GetComponent<NavMeshAgent>();
+        currentHP = HPMax;
+        percentHP = currentHP / HPMax;
+        objectHealthSystem = altarRefered.GetComponent<ObjectHealthSystem>();
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if(target != null)
+        percentHP = currentHP / HPMax;
+        if (target != null)
         {
 
             if (Vector3.Distance(transform.position, target.transform.position) < distanceToAbsorb)
@@ -44,6 +59,12 @@ public class Punketone : MonoBehaviour
                 position[0] = targetFocus.position;
                 lineRenderer.SetPositions(position);
                 m_navMeshAgent.isStopped = true;
+                tempsCurrentAbsorb += Time.deltaTime;
+                if(tempsCurrentAbsorb > tempsAvantAbsorb)
+                {
+                    tempsCurrentAbsorb = 0;
+                    objectHealthSystem.TakeDamage((int)10);
+                }
             }
             else
             {
@@ -73,6 +94,12 @@ public class Punketone : MonoBehaviour
 
             }
 
+        }
+        if(percentHP < 0.01f)
+        {
+            altarRefered.punketonHP.Remove(this);
+            altarRefered.skeletonCount--;
+            Destroy(this.gameObject);
         }
     }
 
@@ -105,5 +132,10 @@ public class Punketone : MonoBehaviour
 
             }
         }
+    }
+
+    public void OnDestroy()
+    {
+        Instantiate(deathDestroyVfx, transform.position, transform.rotation);
     }
 }

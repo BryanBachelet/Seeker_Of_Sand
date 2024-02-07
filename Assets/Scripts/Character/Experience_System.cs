@@ -17,8 +17,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private float m_RadiusPickupXp;
     [SerializeField] private bool m_ActiveGizmo;
     [SerializeField] private LayerMask m_ExperienceLayer;
-    [SerializeField] private float m_posXInit = -930;
-    [SerializeField] private float m_posXFinal = 950;
+
     [SerializeField] private RectTransform m_xpPointer;
     [SerializeField] private VisualEffect levelUpEffect;
     [SerializeField] public VisualEffect levelUpEffectUi;

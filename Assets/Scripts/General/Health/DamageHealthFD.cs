@@ -11,7 +11,6 @@ public class DamageHealthFD : MonoBehaviour
     [SerializeField] private bool m_active;
     [SerializeField] private TMP_Text m_text;
     [SerializeField] private Animator m_animation;
-    [SerializeField] private float m_speed = 2;
     [SerializeField] private float m_animationDuration = 1;
     [SerializeField] public Camera m_cameraToLook;
 

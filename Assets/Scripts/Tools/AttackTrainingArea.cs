@@ -49,8 +49,7 @@ public class AttackTrainingArea : MonoBehaviour
         }
         RaycastHit hit = new RaycastHit();
 
-        if (Physics.Raycast(transform.position + Vector3.up * 3, -Vector3.up, out hit, 10, m_groundLayerMask)) ;
-
+        if (Physics.Raycast(transform.position + Vector3.up * 3, -Vector3.up, out hit, 10, m_groundLayerMask))
         {
             float angle = Vector3.SignedAngle(Vector3.up, hit.normal, Vector3.forward);
 

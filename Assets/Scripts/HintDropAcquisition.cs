@@ -26,8 +26,6 @@ public class HintDropAcquisition : MonoBehaviour
     public bool activeGetColor = false;
 
     float lastdropLoot;
-    [SerializeField] private float m_durationDisplay = 10;
-    [SerializeField] private int m_countRemaining = 0;
 
     public bool stopEditMode = false;
 

@@ -62,7 +62,7 @@ public class Chosereward : MonoBehaviour
         m_artefactHolder.m_artefactsInfos = artefactToChose[type];
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
         vfxArtefact.Add(vfx);
-        Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.name);
+        Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
     }
 
     public void GetArtefactAttribution()

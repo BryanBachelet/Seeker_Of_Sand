@@ -64,7 +64,7 @@ namespace Character
         public Collider NearestCol;
 
         private bool m_exitCombatState = false;
-
+        public Vector3 v3Ref;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
@@ -125,10 +125,12 @@ namespace Character
             if (!m_isNewTarget) return;
 
             CheckAimPointDistance();
-
+            v3Ref.Normalize();
             m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetPod());
             m_aimDirection = (m_aimFinalPoint - transform.position).normalized;
             m_aimPointToPlayerDistance = (m_aimFinalPoint - transform.position).magnitude;
+            projectorVisorObject.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
+            projectorVisorObject.transform.LookAt(this.transform);
             m_aimInputPointUI = m_camera.WorldToScreenPoint(m_rawAimPoint);
             m_aimFinalPointUI = m_camera.WorldToScreenPoint(m_aimFinalPoint);
 

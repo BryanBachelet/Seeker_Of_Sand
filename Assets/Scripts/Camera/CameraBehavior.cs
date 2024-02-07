@@ -30,8 +30,6 @@ namespace Render.Camera
         private bool m_isLerping = false;
         private float m_lerpTime = 0.3f;
         private float m_lerpTimer = 0.0f;
-        private bool attachedToTrain = false;
-
 
         private CameraEffect[] cameraEffects;
         public Transform sun;
@@ -59,7 +57,6 @@ namespace Render.Camera
         [SerializeField] private float m_maxZoomBlock = 0.15f;
         [SerializeField] private float m_transitionDuration = 2;
         [SerializeField] private float m_minZoomBlock = .85f;
-        private bool m_boolTest = false;
         private bool m_isDezoomingAutomatily;
 
         private float m_inputZoomValue;
@@ -75,7 +72,6 @@ namespace Render.Camera
 
         [Header("Camera Mouse Parameters")]
         [SerializeField] private float m_mousDeltaThreshold = 3.0f;
-        [SerializeField] private bool m_activeDebugMouseRotation = false;
         [SerializeField] private float m_maxMouseDeltaSpeed = 500;
         [SerializeField] private float m_minMouseDeltaSpeed = 5.0f;
         [SerializeField] private float m_mouseSensibility = 1.0f;
@@ -92,7 +88,6 @@ namespace Render.Camera
         [SerializeField] private bool m_inverseCameraController = false;
         [SerializeField] private bool m_activateHeightDirectionMode = false;
         [SerializeField] private bool m_mouseInputActivate = true;
-        [SerializeField] private bool m_rotationKeyboardActive = true;
 
         private float initialAngularSpeed;
         private float timeLastRotationInput;

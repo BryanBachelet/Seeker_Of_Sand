@@ -63,7 +63,8 @@ namespace Character
             Instantiate(vfxDash, transform.position, transform.rotation);
             characterModel[0].SetActive(false);
             characterModel[1].SetActive(false);
-            characterModel[2].SetActive(true);
+            //characterModel[2].SetActive(true);
+            characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
             m_isDashValid = CalculateDashEndPoint();
             if (!m_isDashValid) return;
             GlobalSoundManager.PlayOneShot(28, transform.position);
@@ -112,7 +113,8 @@ namespace Character
             m_dashCooldownTimer = 0.0f;
             characterModel[0].SetActive(true);
             characterModel[1].SetActive(true);
-            characterModel[2].SetActive(false);
+            //characterModel[2].SetActive(false);
+            characterModel[2].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
 
         private void DashMouvement()

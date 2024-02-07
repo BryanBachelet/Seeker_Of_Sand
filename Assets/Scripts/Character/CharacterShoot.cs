@@ -355,7 +355,8 @@ namespace Character
 
             if (m_canEndShot) EndShoot();
 
-            m_CharacterAnimator.SetBool("Shooting", true);
+            //m_CharacterAnimator.SetBool("Shooting", true);
+            m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
 
           
@@ -516,6 +517,7 @@ namespace Character
             currentShotNumber = 0;
             m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
+            m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             if (m_currentType == SpellSystem.CapsuleType.ATTACK)
             {

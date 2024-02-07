@@ -8,7 +8,6 @@ public class Harpon : Projectile
     [Range(0, 100)]
     [SerializeField] private float m_minRangeToImpale = 20.0f;
     [SerializeField] private float m_impalementDamageRatio = 1.5f;
-    [SerializeField] private float m_wallHitDamageRatio = 2.0f;
     private Enemies.NpcHealthComponent m_enemyImpale;
     private bool m_firstHit;
     private float m_currentDistance;

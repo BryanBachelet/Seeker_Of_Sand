@@ -7,10 +7,9 @@ public class BirdMouvement : MonoBehaviour
     public float speedFlying = 0;
     public float speedMax = 10;
     public float accelerationTimeSpeed = 1;
-    public int rangeDetectPlayer;
     public bool changeSpot = false;
     private bool activeAcceleration = false;
-    public int currentSpot;
+
 
     public Vector3 nextPosition;
     public LayerMask groundLayer;
