@@ -108,6 +108,7 @@ public class DayCyclecontroller : MonoBehaviour
 
         AdjustPostProcessByHour(m_timeOfDay);
         //UpdatePostProcess();
+        if (!Application.isPlaying) return; 
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
