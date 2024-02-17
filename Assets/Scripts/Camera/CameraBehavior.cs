@@ -99,7 +99,7 @@ namespace Render.Camera
         private Character.CharacterShoot m_characterShootComponent;
         private bool m_isActiveAutomaticDezoom = true;
 
-
+        private Vector2 m_registerMousePositionRotation = Vector3.zero;
         // Start is called before the first frame update
         void Start()
         {
@@ -285,7 +285,7 @@ namespace Render.Camera
         {
             if ( m_mouseInputActivate && this.enabled)
             {
-                //Cursor. = CursorLockMode.Locked;
+           
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
 
@@ -294,6 +294,10 @@ namespace Render.Camera
 
                 if (Mathf.Abs(m_mouseDeltaValue) < m_mousDeltaThreshold) m_mouseDeltaValue = 0;
                 //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
+
+            }
+            else
+            {
 
             }
 
@@ -310,19 +314,23 @@ namespace Render.Camera
         {
             if (ctx.performed && m_mouseInputActivate)
             {
-
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
                 //Cursor.visible = false;
                 Cursor.SetCursor(m_cursorTex[0], Vector2.zero, CursorMode.ForceSoftware);
                 m_isRotationInputPress = true;
+                m_registerMousePositionRotation = Mouse.current.position.value;
 
             }
             if (ctx.canceled && m_mouseInputActivate)
             {
                 Cursor.SetCursor(m_cursorTex[1], Vector2.zero, CursorMode.ForceSoftware);
                 m_isRotationInputPress = false;
-                //Cursor.lockState = CursorLockMode.None;
-                //Cursor.visible = true;
-            }
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Mouse.current.WarpCursorPosition(m_registerMousePositionRotation);
+              }
+
         }
 
         public Vector3 TurnDirectionForCamera(Vector3 direction)
