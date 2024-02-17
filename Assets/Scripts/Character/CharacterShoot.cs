@@ -295,11 +295,16 @@ namespace Character
                 int RndCapsule = 0;
                 if (i == 0)
                 {
-                    RndCapsule = UnityEngine.Random.Range(0, 2);
+                    RndCapsule = UnityEngine.Random.Range(0, 3);
+
+                }
+                else if(i == 1)
+                {
+                    RndCapsule = UnityEngine.Random.Range(4, 8);
                 }
                 else
                 {
-                    RndCapsule = UnityEngine.Random.Range(3, 9);
+                    RndCapsule = UnityEngine.Random.Range(9, 16);
                 }
                 capsuleIndex.Add(RndCapsule);
             }
@@ -336,7 +341,8 @@ namespace Character
             if (!m_canShoot) return;
 
             GlobalSoundManager.PlayOneShot(27, transform.position);
-
+            m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
+            m_BookAnimator.SetBool("Shooting", true);
             //currentManaValue -= 2;
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
@@ -356,8 +362,7 @@ namespace Character
             if (m_canEndShot) EndShoot();
 
             //m_CharacterAnimator.SetBool("Shooting", true);
-            m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
-            m_BookAnimator.SetBool("Shooting", true);
+
 
           
         }
@@ -471,7 +476,7 @@ namespace Character
             {
                 Transform transformUsed = transform;
 
-                Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
+                Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 5, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
 
                 GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);

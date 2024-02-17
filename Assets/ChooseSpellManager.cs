@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SpellSystem;
+using TMPro;
 public class ChooseSpellManager : MonoBehaviour
 {
     public GameObject[] vfxChooseSpell = new GameObject[4];
@@ -16,6 +17,13 @@ public class ChooseSpellManager : MonoBehaviour
 
     public GameObject[] vfxHolder = new GameObject[3];
     public List<GameObject> vfxLastChooseSpell = new List<GameObject>();
+    public PopupFunction[] popupFunction = new PopupFunction[3];
+    public TMP_Text name;
+    public TMP_Text description;
+    public Image iconSpell;
+    private PopupFunction lastSpell = null;
+    public GameObject descriptionHolder = null;
+    public bool overable = false;
 
     private Animator m_animator;
     // Start is called before the first frame update
@@ -34,6 +42,7 @@ public class ChooseSpellManager : MonoBehaviour
     {
         m_animator.ResetTrigger("Choosed");
         m_animator.SetTrigger("ActiveChoose");
+        overable = true;
     }
     public void ResetRandomSpell()
     {
@@ -73,5 +82,21 @@ public class ChooseSpellManager : MonoBehaviour
             }
         }
     }
+
+    public void SpellOverrring(int spellIndex, PopupFunction popup)
+    {
+        if (lastSpell == popup) return;
+        if (!overable) return;
+        descriptionHolder.SetActive(true);
+        lastSpell = popup;
+        name.text = newSpell[spellIndex].name;
+        description.text = newSpell[spellIndex].description;
+        iconSpell.sprite = newSpell[spellIndex].sprite;
+        //description.text = popup.des
+    }
     
+    public void SpellOverringExit()
+    {
+        descriptionHolder.SetActive(false);
+    }
 }
