@@ -300,7 +300,7 @@ namespace Character
                 }
                 else if(i == 1)
                 {
-                    RndCapsule = UnityEngine.Random.Range(4, 8);
+                    RndCapsule = UnityEngine.Random.Range(9, 13);
                 }
                 else
                 {
