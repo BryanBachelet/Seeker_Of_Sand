@@ -733,6 +733,19 @@ namespace Character
         }
 
 
+        public Sprite[] GetSpellSprite()
+        {
+            Sprite[] spriteArray = new Sprite[maxSpellIndex];
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                if (spellEquip[i] == -1) continue;
+                int index = spellEquip[i];
+                spriteArray[i] = m_characterInventory.GetAllSpells()[index].sprite;
+            }
+
+            return spriteArray;
+        }
+
         public void InputChangeAimLayout(InputAction.CallbackContext ctx)
         {
             if (ctx.performed)

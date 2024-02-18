@@ -40,7 +40,7 @@ public class UpgradeDataInfo : MonoBehaviour
         if (m_isFirstTimeEnable) InitUpgradeDataInfo();
         upg_Profil = newProfil;
         m_mat_Icon.mainTexture = upg_Profil.icon_Associat.texture;
-        upg_Titre.text = upg_Profil.nameUgrade;
+        upg_Titre.text = upg_Profil.nameUpgrade;
         upg_Description = upg_Profil.description;
 
         //m_upgradeName[i].text = upgrades[i].gain.nameUgrade;

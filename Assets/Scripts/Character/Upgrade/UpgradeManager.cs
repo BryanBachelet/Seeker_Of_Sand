@@ -1,20 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 
-
+public struct UpgradeLevelingData
+{
+    public int spellCount;
+    public int upgradePoint;
+    public int indexSpellFocus;
+    public CapsuleStats[] spellState;
+    public Sprite[] iconSpell;
+    public Upgrade[] upgradeChoose;
+}
 
 public class UpgradeManager : MonoBehaviour
 {
+    private const int upgradeGenerateCount = 3;
     public UpgradeProfil[] upgradeList;
+    public CharacterUpgrade m_characterUpgradeComponent;
+    [Header("UI Upgrade")]
+    [Tooltip("Not neccessary")]
+    public GameObject upgradeLevelUi;
+    private UpgradeChoosing m_upgradeChoosingComponent;
+    private bool isUpgradeUILevel;
+
+    private UpgradeLevelingData m_upgradeLevelingData ;
 
     private UpgradeData.UpgradeTable m_upgradeData = new UpgradeData.UpgradeTable();
 
     public void Start()
     {
+
         string path = Application.dataPath + "\\Resources\\UpgradeTable.csv";
         LoadUpgradeTable(path);
+        if (!upgradeLevelUi) return;
+        m_upgradeChoosingComponent = upgradeLevelUi.GetComponent<UpgradeChoosing>();
+        m_upgradeChoosingComponent.m_upgradeManager = this;
     }
 
     public Upgrade[] RandomUpgrade(int count)
@@ -43,7 +65,7 @@ public class UpgradeManager : MonoBehaviour
         return upgrades;
     }
 
-    public Upgrade GetRamdomUpgradeToSpell(int indexSpell)
+    public Upgrade GetRandomUpgradeToSpell(int indexSpell)
     {
         int index = m_upgradeData.RandomUpgradeSpell(indexSpell);
 
@@ -51,6 +73,20 @@ public class UpgradeManager : MonoBehaviour
         Upgrade upgrade = new UpgradeCapsule(nxtProfil);
         return upgrade;
     }
+
+   public Upgrade[] GetRandomUpgradesToSpecificSpell(int spellIndex)
+    {
+        Upgrade[] upgradeGenerate = new Upgrade[upgradeGenerateCount];
+        for (int i = 0; i < upgradeGenerate.Length; i++)
+        {
+            int index = m_upgradeData.RandomUpgradeSpell(spellIndex);
+            UpgradeProfil nxtProfil = upgradeList[index].Clone();
+            upgradeGenerate[i] = new UpgradeCapsule(nxtProfil);
+        }
+        return upgradeGenerate;
+    }
+
+
 
     public int[] GetRandomIndex(int elementRange, int length)
     {
@@ -70,7 +106,6 @@ public class UpgradeManager : MonoBehaviour
 
         return indexChoose;
     }
-
 
     public void LoadUpgradeTable(string path)
     {
@@ -96,6 +131,55 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeData.ReadDocumentData(upgradeTableData, spellNumber, upgradeNumber);
 
     }
+
+    #region Upgrade Level UI Functions
+    public void OpenUpgradeUI(UpgradeLevelingData upgradeLevelingData)
+    {
+        if (!upgradeLevelUi) return;
+        upgradeLevelUi.SetActive(true);
+        if (m_upgradeLevelingData.upgradeChoose == null)
+        {
+            int indexSpell = Random.Range(0, m_upgradeLevelingData.spellCount);
+            m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell);
+            m_upgradeLevelingData.indexSpellFocus = indexSpell;
+        }
+
+        m_upgradeLevelingData.spellCount = upgradeLevelingData.spellCount;
+        m_upgradeLevelingData.spellState = upgradeLevelingData.spellState;
+        m_upgradeLevelingData.iconSpell = upgradeLevelingData.iconSpell;
+        m_upgradeLevelingData.upgradePoint = upgradeLevelingData.upgradePoint;
+    
+        m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
+        Debug.Log("Open Upgrade interface");
+    }
+
+    public void UpdateUpgradeLevelingData(UpgradeLevelingData upgradeLevelingData)
+    {
+        m_upgradeLevelingData = upgradeLevelingData;
+    }
+
+    public void CloseUpgradeUI()
+    {
+        if (!upgradeLevelUi) return;
+        upgradeLevelUi.SetActive(false);
+
+        Debug.Log("Close Upgrade interface");
+    }
+
+
+    public void SendUpgrade(Upgrade upgradeChoose)
+    {
+        m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
+
+        int indexSpell = Random.Range(0, m_upgradeLevelingData.spellCount);
+        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell);
+        m_upgradeLevelingData.indexSpellFocus = indexSpell;
+        m_upgradeLevelingData.upgradePoint--;
+        m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
+    }
+
+
+    #endregion
 }
 
 

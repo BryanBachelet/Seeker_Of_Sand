@@ -8,6 +8,7 @@ public class CharacterUpgrade : MonoBehaviour
 {
     public List<Upgrade> m_avatarUpgrade;
     public static int upgradePoint = 0;
+    [SerializeField] private int startPoint = 0;
     public GameObject upgradeUiGO;
 
     public GameObject uiLoaderDisplay;
@@ -39,31 +40,27 @@ public class CharacterUpgrade : MonoBehaviour
     public GameObject upgradeDisplayVFX;
 
     private Experience_System m_experienceSystem;
+
+    private bool isUpgradeWindowOpen;
+    [SerializeField] private bool isDebugActive = false;
+
     public void UpgradeWindowInput(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
         {
+            if (upgradePoint == 0 || had5level)
+                return;
 
-            if (upgradePoint == 0 || had5level) return;
-            upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            m_FixeElementUI.SetActive(false);
-            UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
-            m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
-            m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
-            bookAnimator.SetBool("BookOpen", true);
-            StartCoroutine(DisplayUpgradeWithDelay(true));
-            Debug.Log("Book open !!!!!!");
-            GlobalSoundManager.PlayOneShot(6, Vector3.zero);
-            GameState.ChangeState();
-            if (upgradeUiGO.activeSelf == false)
+            if (!isUpgradeWindowOpen)
             {
-                
+                ShowUpgradeWindow();
                 return;
             }
-            if(m_isFirstTime) GetNewUpgrades();
-            m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
-            
-            // Time.timeScale = 0.02f;
+            if (isUpgradeWindowOpen)
+            {
+                UnShowUpgradeWindow();
+                return;
+            }
         }
     }
 
@@ -71,8 +68,8 @@ public class CharacterUpgrade : MonoBehaviour
     #region Init Script
     public void Start()
     {
+        upgradePoint = startPoint;
         InitComponents();
-     
     }
 
     public void InitComponents()
@@ -99,11 +96,41 @@ public class CharacterUpgrade : MonoBehaviour
     }
     #endregion
 
+
+    public void ShowUpgradeWindow()
+    {
+        isUpgradeWindowOpen = true;
+
+        // -> Deactivate player in game interface
+        m_FixeElementUI.SetActive(false);
+
+        UpgradeLevelingData data = new UpgradeLevelingData();
+        data.spellState = m_characterShoot.capsuleStatsAlone.ToArray();
+        data.spellCount = m_characterShoot.maxSpellIndex;
+        data.iconSpell = m_characterShoot.GetSpellSprite();
+        data.upgradePoint = upgradePoint;
+        m_upgradeManager.OpenUpgradeUI(data);
+
+
+        GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
+        GameState.ChangeState(); // Set Game in pause
+
+    }
+
+    public void UnShowUpgradeWindow()
+    {
+        isUpgradeWindowOpen = false;
+        m_FixeElementUI.SetActive(true);
+        m_upgradeManager.CloseUpgradeUI();
+
+        GameState.ChangeState();
+    }
+
     public void ReplaceNewUpgrade(int indexUpgrade)
     {
         int index = Random.Range(0, m_characterShoot.maxSpellIndex);
         int spellIndex = m_characterShoot.spellEquip[index];
-        m_upgradeToChoose[indexUpgrade] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
+        m_upgradeToChoose[indexUpgrade] = m_upgradeManager.GetRandomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
         m_upgradeToChoose[indexUpgrade].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
         Instantiate(upgradeDisplayVFX, transform.position, transform.rotation);
     }
@@ -115,7 +142,7 @@ public class CharacterUpgrade : MonoBehaviour
         {
             int index = Random.Range(0, m_characterShoot.maxSpellIndex);
             int spellIndex = m_characterShoot.spellEquip[index];
-            m_upgradeToChoose[i] = m_upgradeManager.GetRamdomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
+            m_upgradeToChoose[i] = m_upgradeManager.GetRandomUpgradeToSpell(m_characterShoot.m_capsuleManager.GetCapsuleIndex(m_characterInventory.GetSpecificSpell(spellIndex)));
             m_upgradeToChoose[i].Setup(index, m_characterInventory.GetSpecificSpell(spellIndex).sprite);
         }
     }
@@ -134,7 +161,7 @@ public class CharacterUpgrade : MonoBehaviour
     public void ChooseUpgrade(int indexChoice, int numberUpgrade)
     {
 
-     //   Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
+        //   Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
         if (numberUpgrade > upgradePoint) return;
         for (int i = 0; i < numberUpgrade; i++)
         {
@@ -148,11 +175,11 @@ public class CharacterUpgrade : MonoBehaviour
         ReplaceNewUpgrade(indexChoice);
         if (upgradePoint == 0)
         {
-            StartCoroutine(closeBookWithDelay(2));
+            StartCoroutine(CloseBookWithDelay(2));
             return;
         }
 
-       
+
         m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
         m_upgradePoint.text = upgradePoint.ToString();
     }
@@ -163,7 +190,7 @@ public class CharacterUpgrade : MonoBehaviour
         upgradePoint++;
         m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
-        
+
     }
 
     private CharacterStat CalculateStat(CharacterStat stats)
@@ -189,7 +216,7 @@ public class CharacterUpgrade : MonoBehaviour
                 m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex] = m_avatarUpgrade[index].Apply( m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
+                m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex] = m_avatarUpgrade[index].Apply(m_characterShoot.capsuleStatsAlone.ToArray()[m_avatarUpgrade[index].capsuleIndex]);
                 break;
             default:
                 break;
@@ -207,12 +234,24 @@ public class CharacterUpgrade : MonoBehaviour
                 m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.launcherStats);
                 break;
             case UpgradeType.CAPSULE:
-                m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex] =  m_upgradeToChoose[indexChoose].Apply(m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
+                m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex] = m_upgradeToChoose[indexChoose].Apply(m_characterShoot.capsuleStatsAlone.ToArray()[m_upgradeToChoose[indexChoose].capsuleIndex]);
                 break;
         }
     }
 
-    public IEnumerator closeBookWithDelay(float time)
+    public void ApplyUpgrade(Upgrade upgradeChoose)
+    {
+        upgradePoint--;
+        m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
+        m_upgradePoint.text = upgradePoint.ToString();
+
+        if (isDebugActive) Debug.Log("Upgrade choose is " + upgradeChoose.gain.nameUpgrade);
+        m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex] = upgradeChoose.Apply(m_characterShoot.capsuleStatsAlone.ToArray()[upgradeChoose.capsuleIndex]);
+        if (upgradePoint == 0 && isUpgradeWindowOpen)
+            UnShowUpgradeWindow();
+    }
+
+    public IEnumerator CloseBookWithDelay(float time)
     {
         bookAnimator.SetBool("BookOpen", false);
         StartCoroutine(DisplayUpgradeWithDelay(false));
@@ -232,7 +271,7 @@ public class CharacterUpgrade : MonoBehaviour
 
     public IEnumerator DisplayUpgradeWithDelay(bool newState)
     {
-        if(newState)
+        if (newState)
         {
             yield return new WaitForSeconds(3.5f);
             upgradeDisplayGO.SetActive(newState);
