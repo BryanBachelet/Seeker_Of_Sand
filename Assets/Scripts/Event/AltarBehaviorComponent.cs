@@ -364,6 +364,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
             if (nextRewardTypologie == 2)
                 rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+                
 
             ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
             expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
