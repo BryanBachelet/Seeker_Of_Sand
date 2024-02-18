@@ -15,7 +15,7 @@ namespace SpellSystem
         public GameObject vfx;
         public CapsuleProfil stats;
         public Sprite sprite;
-
+        public Element element;
     }
 
     [Serializable]
@@ -39,6 +39,13 @@ namespace SpellSystem
        BUFF
     }
 
+    public enum Element
+    {
+        WATER,
+        AIR,
+        FIRE,
+        EARTH
+    }
     [Serializable]
     public class Capsule 
     {
@@ -46,6 +53,7 @@ namespace SpellSystem
         [TextArea]
         public string description;
         public CapsuleType type;
+        public Element elementType;
         public Sprite sprite;
     }
     [Serializable]
@@ -59,13 +67,15 @@ namespace SpellSystem
             profil = info.stats;
             sprite = info.sprite;
             vfx = info.vfx;
-            
+            elementType = info.element;
+
+
         }
        
         public GameObject projectile;
         public GameObject vfx;
         public CapsuleProfil profil;
-
+        public Element element;
     }
     [Serializable]
     public class CapsuleBuff : Capsule

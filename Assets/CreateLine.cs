@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class CreateLine : MonoBehaviour
 {
     public int numberOfPoint = 1;

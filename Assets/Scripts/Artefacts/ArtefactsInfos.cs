@@ -47,7 +47,7 @@ public class ArtefactsInfos : ScriptableObject
     public Sprite icon;
     [TextArea]
     public string description;
-    public string name;
+    public string nameArtefact;
 
     public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
     {

@@ -39,7 +39,7 @@ public class InteractionEvent : MonoBehaviour
     public ArtefactHolder lastArtefact;
     [SerializeField] private RectTransform CanvasRect;
 
-    public Collider[] collider;
+    public Collider[] colliderProche;
 
     public HintInteractionManager m_hintInteractionManager;
 
@@ -153,7 +153,7 @@ public class InteractionEvent : MonoBehaviour
     public void NearTrader()
     {
         Collider[] col = Physics.OverlapSphere(transform.position, rangeTrader, traderLayer);
-        collider = col;
+        colliderProche = col;
         if (col.Length > 0)
         {
             if (ui_HintInteractionObject != null)
@@ -199,7 +199,7 @@ public class InteractionEvent : MonoBehaviour
     public void NearArtefact()
     {
         Collider[] col = Physics.OverlapSphere(transform.position, rangeArtefact, artefactLayer);
-        collider = col;
+        colliderProche = col;
         if (col.Length > 0)
         {
             if (ui_HintInteractionObject != null)

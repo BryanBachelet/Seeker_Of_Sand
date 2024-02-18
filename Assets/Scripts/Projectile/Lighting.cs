@@ -48,7 +48,7 @@ public class Lighting : ProjectileExplosif
             GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
             for (int i = 0; i < enemies.Length; i++)
             {
-                for (int j = 0; i < m_salveNumber; i++)
+                for (int j = 0; j < m_salveNumber; j++)
                 {
                     Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
                     if (enemyTouch == null) continue;

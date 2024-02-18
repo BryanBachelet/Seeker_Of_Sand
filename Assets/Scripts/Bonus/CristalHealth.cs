@@ -8,7 +8,6 @@ public class CristalHealth : MonoBehaviour
 
     [SerializeField] private float m_healthMax;
     [SerializeField] private float m_currentHealth;
-    [SerializeField] private int m_cristalToDropPerHealth = 1;
     [SerializeField] private GameObject m_cristalLootPrefab;
     private bool[] state = new bool[3];
     [Range(0, 3)]

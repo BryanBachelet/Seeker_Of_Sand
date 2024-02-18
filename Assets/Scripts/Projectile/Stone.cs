@@ -5,7 +5,6 @@ using UnityEngine;
 public class Stone : Projectile
 {
 
-    [SerializeField] private float m_damagePerSpeed = 0.5f;
 
     private Rigidbody m_rigidbody;
     private bool m_hasRoll;

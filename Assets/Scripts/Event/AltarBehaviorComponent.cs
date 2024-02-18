@@ -23,7 +23,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     public int rangeEvent = 100;
 
     [Header("Reward Parameters")]
-    [SerializeField] private int XpQuantity = 100;
+
     [SerializeField] private GameObject[] rewardObject;
     [SerializeField] private float m_ImpusleForceXp;
 
@@ -90,13 +90,14 @@ public class AltarBehaviorComponent : MonoBehaviour
     private float tempsEcoulePunk = 0;
     public LayerMask groundLayer;
 
+    public List<Punketone> punketonHP = new List<Punketone>();
     public Transform skeletonFocus;
     public int skeletonCount = 0;
     #region Unity Functions
     void Start()
     {
         InitComponent();
-
+        tempsEcoulePunk = tempsEntrePunk - tempsEntrePunk / 3;
         eventElementType = Random.Range(0, 4);
         m_questMarker.icon = spriteEventCompass[eventElementType];
         ownNumber = altarCount;
@@ -144,8 +145,10 @@ public class AltarBehaviorComponent : MonoBehaviour
                 GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
                 skeletonCount++;
                 Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
+                punketonHP.Add(lastPunketone);
                 lastPunketone.target = this.gameObject;
                 lastPunketone.targetFocus = skeletonFocus;
+                lastPunketone.altarRefered = this;
             }
             else
             {
@@ -335,8 +338,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_isEventOccuring = false;
 
         m_CurrentKillCount = 0;
-        
-        float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
+        for(int i = 0; i < punketonHP.Count; i++)
+        {
+            Destroy(punketonHP[i].gameObject);
+            punketonHP.RemoveAt(i);
+        }
+        float maxHealth = 100;
         
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
@@ -357,6 +364,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
             if (nextRewardTypologie == 2)
                 rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+                
 
             ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
             expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
@@ -432,6 +440,10 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     }
 
+    public void GetDamage(int damage)
+    {
+
+    }
 
     #endregion
 

@@ -37,8 +37,7 @@ namespace Enemies
         [SerializeField] private Vector3 m_offsetSpawnPos;
         [SerializeField] private Vector3 position;
         [SerializeField] private float m_spawnTime = 3.0f;
-        [SerializeField] private int m_maxUnitPerGroup = 3;
-        [SerializeField] private int m_minUnitPerGroup = 2;
+
         [SerializeField] public int m_maxUnittotal = 400;
         [SerializeField] private AnimationCurve m_MaxUnitControl;
         static float currentMaxUnitValue;
@@ -105,7 +104,7 @@ namespace Enemies
 
         [SerializeField] private float m_tempsEntrePause;
         [SerializeField] private float m_tempsPause;
-        private float tempsEcoulePause = 0;
+
         public bool spawningPhase = true;
 
         public GlobalSoundManager gsm;
@@ -148,7 +147,14 @@ namespace Enemies
         [SerializeField] private Color[] colorSignUI = new Color[2];
 
         private PullingSystem m_pullingSystem;
+        public GameObject[] punketoneLifeBar;
+        public Animator[] punketonLifeBarAnimator;
+        public Image[] punketoneLifeBarfill;
+        
 
+        private AltarBehaviorComponent lastAltarActivated;
+        private List<Punketone> punketoneInvoked = new List<Punketone>();
+        private int lastSkeletonCount;
         public int remainEnemy = 0;
         public void Awake()
         {
@@ -166,6 +172,13 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<PullingSystem>();
             m_pullingSystem.InitializePullingSystem();
+            if(punketoneLifeBar.Length > 0)
+            {
+                for(int i = 0; i < punketoneLifeBar.Length; i++)
+                {
+                    punketonLifeBarAnimator[i] = punketoneLifeBar[i].GetComponent<Animator>();
+                }
+            }
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -190,6 +203,43 @@ namespace Enemies
                 }
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                 SpawnCooldown();
+            }
+            if(lastAltarActivated != null)
+            {
+                lastSkeletonCount = lastAltarActivated.skeletonCount;
+                if (lastSkeletonCount != punketoneInvoked.Count)
+                {
+                    punketoneInvoked.Clear();
+                    for (int i = 0; i < lastSkeletonCount; i++)
+                    {
+                        punketoneInvoked.Add(lastAltarActivated.punketonHP[i]);
+                        punketoneLifeBar[i].SetActive(true);
+                        punketoneLifeBarfill[i].fillAmount = punketoneInvoked[i].percentHP;
+                        punketonLifeBarAnimator[i].SetBool("Open", true);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < lastSkeletonCount; i++)
+                    {
+                        punketoneLifeBarfill[i].fillAmount = punketoneInvoked[i].percentHP;
+                    }
+                }
+                
+            }
+            else
+            {
+                if(punketoneInvoked.Count > 0)
+                {
+                    for (int i = 0; i < lastSkeletonCount; i++)
+                    {
+
+                        punketoneLifeBarfill[i].fillAmount = 0;
+                        punketonLifeBarAnimator[i].SetBool("Open", false);
+                        punketoneLifeBar[i].SetActive(false);
+                    }
+                    punketoneInvoked.Clear();
+                }
             }
 
         }
@@ -621,7 +671,8 @@ namespace Enemies
         public void AddAltar(Transform altarTarget)
         {
             m_altarTransform.Add(altarTarget);
-            m_altarList.Add(altarTarget.GetComponent<AltarBehaviorComponent>());
+            lastAltarActivated = altarTarget.GetComponent<AltarBehaviorComponent>();
+            m_altarList.Add(lastAltarActivated);
         }
 
 
@@ -634,6 +685,7 @@ namespace Enemies
         {
             if (!m_altarTransform.Contains(altarTarget)) return;
             m_altarTransform.Remove(altarTarget);
+            lastAltarActivated = null;
             m_altarList.Remove(altarTarget.GetComponent<AltarBehaviorComponent>());
         }
 

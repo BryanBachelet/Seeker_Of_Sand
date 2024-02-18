@@ -32,7 +32,7 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.m_dropType = "[Artefact]";
         lastDropInfo.m_dropImage = artefact.icon;
         lastDropInfo.dropDescription = artefact.description;
-        lastDropInfo.dropName = artefact.name;
+        lastDropInfo.dropName = artefact.nameArtefact;
         hintDropAcquisitionObject.AddNewDrop(lastDropInfo);
     }
 }

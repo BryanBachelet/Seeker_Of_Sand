@@ -14,9 +14,6 @@ public class CharacterArtefact : MonoBehaviour
     public int radiusDetectionArtefact;
     public List<ArtefactHolder> nearArtefactHolder = new List<ArtefactHolder>();
 
-    private Collider[] m_lastArtefactCol;
-    private int nearByArtefact = 0;
-
     public GameObject ui_HintInteractionObject;
     public HintInteractionManager m_hintInteractionManager;
     public void Start()
@@ -32,7 +29,7 @@ public class CharacterArtefact : MonoBehaviour
 
     private void SetupArtefact(ArtefactsInfos artefacts)
     {
-        if (activeDebug) Debug.Log("Artefacts " + artefacts.name + " setup");
+        if (activeDebug) Debug.Log("Artefacts " + artefacts.nameArtefact + " setup");
         switch (artefacts.conditionsTrigger)
         {
             case ConditionsTrigger.OnHit:

@@ -29,7 +29,6 @@ public class HealthPlayerComponent : MonoBehaviour
 
     private bool m_isInvulnerableLeger = false;
     private bool m_isInvulnerableLourd = false;
-    private float m_lastHitTime = 0;
 
     public bool updateHealthValues = false;
 

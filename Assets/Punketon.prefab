@@ -12,9 +12,11 @@ GameObject:
   - component: {fileID: 5652785963891307039}
   - component: {fileID: 6128250571291997054}
   - component: {fileID: 2814648303865164684}
-  m_Layer: 0
+  - component: {fileID: 5277838017930383517}
+  - component: {fileID: 1787236958002337530}
+  m_Layer: 6
   m_Name: Punketon
-  m_TagString: Untagged
+  m_TagString: DPSCheck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -70,16 +72,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireVfxEffect: {fileID: 7587883716651881126, guid: ef3b34fe27187e746a1af6b64e93aef4,
     type: 3}
+  HPMax: 50
+  currentHP: 50
+  percentHP: 0
   lineRenderer: {fileID: 5694637808317496223}
   distanceToAbsorb: 75
   distanceEntreVfx: 3
   tempsEcouleLastFire: 0
+  tempsAvantAbsorb: 5
+  tempsCurrentAbsorb: 1
   spawningFire: 1
   speed: 3
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   target: {fileID: 0}
+  targetFocus: {fileID: 0}
+  altarRefered: {fileID: 0}
+  deathDestroyVfx: {fileID: 2179472764962545647, guid: ec2d67643421f3143b5761453ea8fc0e,
+    type: 3}
 --- !u!195 &2814648303865164684
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -102,6 +113,54 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!65 &5277838017930383517
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929153900087907049}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 8.154784, y: 19.918072, z: 6.6311007}
+  m_Center: {x: 0.81069934, y: 5.174376, z: -0.8415305}
+--- !u!54 &1787236958002337530
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929153900087907049}
+  serializedVersion: 4
+  m_Mass: 5
+  m_Drag: 0.5
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &2708672933582243033
 GameObject:
   m_ObjectHideFlags: 0

@@ -154,6 +154,37 @@ public class Projectile : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+        else if (other.gameObject.tag == "DPSCheck")
+        {
+            Punketone enemyTouch = other.GetComponent<Punketone>();
+
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
+
+            enemyTouch.currentHP -= m_damage;
+
+            piercingCount++;
+            if (piercingCount >= m_piercingMax)
+            {
+
+                Destroy(this.gameObject);
+            }
+        }
+        else if (other.gameObject.tag == "Dummy")
+        {
+            dummy enemyTouch = other.GetComponent<dummy>();
+
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
+            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power);
+
+            enemyTouch.currentHP -= m_damage;
+
+            piercingCount++;
+            if (piercingCount >= m_piercingMax)
+            {
+
+                Destroy(this.gameObject);
+            }
+        }
         else return;
 
 

@@ -31,7 +31,6 @@ namespace Enemies
         [SerializeField] private float m_distanceBeforeRepositionning = 400;
         [SerializeField] private bool m_isAlwaysUpdate;
 
-        private float m_timerBetweenNavRefresh = 0;
 
         private bool m_isPauseActive;
         private float m_directionMinDot = 0.45f;
