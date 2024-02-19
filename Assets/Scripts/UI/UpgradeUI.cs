@@ -48,10 +48,10 @@ public class UpgradeUI : MonoBehaviour
         m_uiDecalUpdaterDisplay.UpdateUpgradeDisplay(upgrades);
         for (int i = 0; i < upgrades.Length; i++)
         {
-            m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
+            m_upgradeName[i].text = upgrades[i].gain.nameUpgrade;
             m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
-            m_uiDecalUpdaterDisplay.m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
+            m_uiDecalUpdaterDisplay.m_upgradeName[i].text = upgrades[i].gain.nameUpgrade;
             m_uiDecalUpdaterDisplay.m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_uiDecalUpdaterDisplay.m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
             m_uiDecalUpdaterDisplay.m_upgradMat[i].mainTexture = upgrades[i].gain.icon_Associat.texture;

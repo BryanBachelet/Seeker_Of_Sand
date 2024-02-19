@@ -128,10 +128,12 @@ namespace Character
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
+
+
         public void InitComponentStat(CharacterStat stat)
         {
-
             runSpeed = stat.baseStat.speed;
+            LogSystem.CreateLogFile("Test1", runSpeed, mouvementState);
             InitComponent();
         }
         private void InitComponent()
