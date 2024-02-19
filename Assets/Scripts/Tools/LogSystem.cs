@@ -6,7 +6,7 @@ using UnityEngine;
 public static class LogSystem 
 {
     private static bool m_isLogFileOpen;
-    private static string path = "C:/Users/Utilisateur/Desktop/Projet/Guerhouba/K-Train/Assets/testLog.txt";
+    private static string path = Application.dataPath + "/Assets/testLog.txt";
 
     public static void CreateLogFile(params object[] testObj)
     {

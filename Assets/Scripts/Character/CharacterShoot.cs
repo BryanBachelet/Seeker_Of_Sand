@@ -17,12 +17,12 @@ namespace Character
         public LauncherProfil launcherProfil;
         public UiSpellGrimoire spellGrimoire;
 
-
+        public GameObject[] vfxElementSign = new GameObject[4];
         public int[] spellEquip;
         public int maxSpellIndex;
         private int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
-
+        public SpellSystem.Element lastElement;
         public List<int> capsuleIndex;
         [SerializeField] private ChooseSkillManualy[] debugCapsule = new ChooseSkillManualy[4];
 
@@ -97,6 +97,7 @@ namespace Character
         public Coroutine[] m_spellCouroutine;
 
         private DropInventory m_dropInventory;
+        public Animator castingVFXAnimator;
         #region Unity Functions
 
         #region Mana Variable
@@ -343,6 +344,7 @@ namespace Character
             GlobalSoundManager.PlayOneShot(27, transform.position);
             m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
+            //castingVFXAnimator.SetTrigger("Shot");
             //currentManaValue -= 2;
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
@@ -523,16 +525,33 @@ namespace Character
             m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
+           //castingVFXAnimator.ResetTrigger("Shot");
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             if (m_currentType == SpellSystem.CapsuleType.ATTACK)
             {
                 currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
+                lastElement = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType;
+                ChangeVfxElement(((int)lastElement));
             }
              if(!m_shootInput) m_shootInputActive = false;
             m_canShoot = false;
             m_isShooting = false;
         }
 
+        public void ChangeVfxElement(int elementIndex)
+        {
+            for(int i = 0; i < ((int)SpellSystem.Element.EARTH)+1;i++)
+            {
+                if(i == elementIndex)
+                {
+                    vfxElementSign[i].SetActive(true);
+                }
+                else
+                {
+                    vfxElementSign[i].SetActive(false);
+                }
+            }
+        }
         private ProjectileData FillProjectileData(CapsuleStats stats, float index, float angle, Transform transformUsed)
         {
             ProjectileData data = new ProjectileData();
@@ -588,6 +607,7 @@ namespace Character
             else
             {
                 m_currentRotationIndex++;
+
                 return spellEquip[m_currentRotationIndex];
             }
         }
@@ -622,6 +642,7 @@ namespace Character
                 for (int i = m_currentRotationIndex; i < m_spellGlobalCooldown.Count; i++)
                 {
                     m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_shootTimer) / totalShootTime;
+                    Debug.Log(((totalShootTime - m_shootTimer) / totalShootTime));
                     m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_shootTimer).ToString(".#");
                 }
             }
