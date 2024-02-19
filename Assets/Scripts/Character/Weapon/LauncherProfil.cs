@@ -51,6 +51,19 @@ public struct CapsuleStats
     public string description;
 
 
+    public void DebugStat()
+    {
+        string debugString = "Lifetime :" + lifetime.ToString() +"\n";
+        debugString += "Speed : " + speed.ToString() + "\n";
+        debugString += "Range : " +range.ToString() + "\n";
+        debugString += "Damage : " + damage.ToString() + "\n"; 
+        debugString += "Projectile Number : " + projectileNumber.ToString() + "\n"; 
+        debugString += "Shoot Number : " + shootNumber.ToString() + "\n";
+        debugString += "Piercing Max : " + piercingMax.ToString() + "\n";
+        Debug.Log(debugString);
+    }
+
+
     [HideInInspector] public float timeBetweenShot
     {
         get

@@ -245,8 +245,17 @@ public class CharacterUpgrade : MonoBehaviour
         m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
 
-        if (isDebugActive) Debug.Log("Upgrade choose is " + upgradeChoose.gain.nameUpgrade);
+        if (isDebugActive)
+        {
+            Debug.Log("Upgrade choose is " + upgradeChoose.gain.nameUpgrade);
+            m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].DebugStat();
+        }
         m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex] = upgradeChoose.Apply(m_characterShoot.capsuleStatsAlone.ToArray()[upgradeChoose.capsuleIndex]);
+       
+        if (isDebugActive)
+        {
+            m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].DebugStat();
+        }
         if (upgradePoint == 0 && isUpgradeWindowOpen)
             UnShowUpgradeWindow();
     }

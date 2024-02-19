@@ -48,6 +48,7 @@ public class ArtefactsInfos : ScriptableObject
     [TextArea]
     public string description;
     public string nameArtefact;
+    public bool isDebugActive = false;
 
     public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
     {
@@ -66,15 +67,16 @@ public class ArtefactsInfos : ScriptableObject
 
     public void ActiveArtefactOnDeath(Vector3 position, EntitiesTrigger tag, GameObject agent, float distance)
     {
-        Debug.Log("Artefact not in range");
+        if(isDebugActive) Debug.Log("Artefact not in range");
+
         if (entitiesTrigger != tag || distance > radius) return;
 
-        Debug.Log ("Artefact in range");
+        if (isDebugActive) Debug.Log ("Artefact in range");
 
         float change = Random.Range(0, 100);
         if (change < spawnRate)
         {
-            Debug.Log("Artefact in launch");
+            if (isDebugActive) Debug.Log("Artefact in launch");
             GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData,agent);

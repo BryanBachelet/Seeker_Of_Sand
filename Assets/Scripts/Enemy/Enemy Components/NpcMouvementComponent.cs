@@ -41,6 +41,7 @@ namespace Enemies
         public EnemyManager enemiesManager;
 
         public TargetData targetData;
+        public bool isDebugActive = false;
 
         public void Start()
         {
@@ -184,7 +185,7 @@ namespace Enemies
             if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(targetData.target.position);
             if (!m_navMeshAgent.hasPath)
             {
-                Debug.Log("Has hit");
+               if(isDebugActive) Debug.Log("Has hit");
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
@@ -194,7 +195,7 @@ namespace Enemies
                     {
                         if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
                         {
-                            Debug.Log(name + "is not on the navMesh");
+                            if(isDebugActive) Debug.Log(name + "is not on the navMesh");
                             m_navMeshAgent.Warp(hit.position);
                         }
                     }
