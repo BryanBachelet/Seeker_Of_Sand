@@ -133,7 +133,7 @@ namespace Character
         public void InitComponentStat(CharacterStat stat)
         {
             runSpeed = stat.baseStat.speed;
-            //LogSystem.CreateLogFile("Test1", runSpeed, mouvementState);
+            LogSystem.CreateLogFile("Test1", runSpeed, mouvementState);
             InitComponent();
         }
         private void InitComponent()

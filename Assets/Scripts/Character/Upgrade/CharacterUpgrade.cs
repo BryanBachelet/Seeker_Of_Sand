@@ -108,6 +108,7 @@ public class CharacterUpgrade : MonoBehaviour
         data.spellState = m_characterShoot.capsuleStatsAlone.ToArray();
         data.spellCount = m_characterShoot.maxSpellIndex;
         data.iconSpell = m_characterShoot.GetSpellSprite();
+        data.capsuleIndex = m_characterShoot.capsuleIndex.ToArray();
         data.upgradePoint = upgradePoint;
         m_upgradeManager.OpenUpgradeUI(data);
 

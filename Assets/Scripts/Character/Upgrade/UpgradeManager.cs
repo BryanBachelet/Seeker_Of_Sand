@@ -9,6 +9,7 @@ public struct UpgradeLevelingData
     public int spellCount;
     public int upgradePoint;
     public int indexSpellFocus;
+    public int[] capsuleIndex;
     public CapsuleStats[] spellState;
     public Sprite[] iconSpell;
     public Upgrade[] upgradeChoose;
@@ -77,7 +78,7 @@ public class UpgradeManager : MonoBehaviour
         return upgrade;
     }
 
-   public Upgrade[] GetRandomUpgradesToSpecificSpell(int spellIndex)
+   public Upgrade[] GetRandomUpgradesToSpecificSpell(int spellIndex,int indexSpellEquip)
     {
         Upgrade[] upgradeGenerate = new Upgrade[upgradeGenerateCount];
         for (int i = 0; i < upgradeGenerate.Length; i++)
@@ -85,6 +86,7 @@ public class UpgradeManager : MonoBehaviour
             int index = m_upgradeData.RandomUpgradeSpell(spellIndex);
             UpgradeProfil nxtProfil = upgradeList[index].Clone();
             upgradeGenerate[i] = new UpgradeCapsule(nxtProfil);
+            upgradeGenerate[i].capsuleIndex = indexSpellEquip;
         }
         return upgradeGenerate;
     }
@@ -141,11 +143,13 @@ public class UpgradeManager : MonoBehaviour
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(true);
         upgradeBook.SetActive(true);
+        m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
         if (m_upgradeLevelingData.upgradeChoose == null)
         {
-            int indexSpell = Random.Range(0, m_upgradeLevelingData.spellCount);
-            m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell);
-            m_upgradeLevelingData.indexSpellFocus = indexSpell;
+            int indexSpellEquip = Random.Range(0, m_upgradeLevelingData.spellCount);
+            int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
+            m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
+            m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         }
 
         m_upgradeLevelingData.spellCount = upgradeLevelingData.spellCount;
@@ -175,9 +179,10 @@ public class UpgradeManager : MonoBehaviour
     public void SendUpgrade(Upgrade upgradeChoose)
     {
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
-        int indexSpell = Random.Range(0, m_upgradeLevelingData.spellCount);
-        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell);
-        m_upgradeLevelingData.indexSpellFocus = indexSpell;
+        int indexSpellEquip = Random.Range(0, m_upgradeLevelingData.spellCount);
+        int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
+        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
+        m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
