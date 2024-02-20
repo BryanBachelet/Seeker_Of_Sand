@@ -19,9 +19,11 @@ public class UpgradeManager : MonoBehaviour
     private const int upgradeGenerateCount = 3;
     public UpgradeProfil[] upgradeList;
     public CharacterUpgrade m_characterUpgradeComponent;
+    [HideInInspector] public DropInventory m_dropInventory;
     [Header("UI Upgrade")]
     [Tooltip("Not neccessary")]
     public GameObject upgradeLevelUi;
+    public GameObject upgradeBook;
     private UpgradeChoosing m_upgradeChoosingComponent;
     private bool isUpgradeUILevel;
 
@@ -37,6 +39,7 @@ public class UpgradeManager : MonoBehaviour
         if (!upgradeLevelUi) return;
         m_upgradeChoosingComponent = upgradeLevelUi.GetComponent<UpgradeChoosing>();
         m_upgradeChoosingComponent.m_upgradeManager = this;
+        m_dropInventory = m_characterUpgradeComponent.GetComponent<DropInventory>();
     }
 
     public Upgrade[] RandomUpgrade(int count)
@@ -137,6 +140,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(true);
+        upgradeBook.SetActive(true);
         if (m_upgradeLevelingData.upgradeChoose == null)
         {
             int indexSpell = Random.Range(0, m_upgradeLevelingData.spellCount);
@@ -162,6 +166,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(false);
+        upgradeBook.SetActive(false);
 
         Debug.Log("Close Upgrade interface");
     }
@@ -170,12 +175,12 @@ public class UpgradeManager : MonoBehaviour
     public void SendUpgrade(Upgrade upgradeChoose)
     {
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
-
         int indexSpell = Random.Range(0, m_upgradeLevelingData.spellCount);
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell);
         m_upgradeLevelingData.indexSpellFocus = indexSpell;
         m_upgradeLevelingData.upgradePoint--;
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
+
     }
 
 

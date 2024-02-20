@@ -46,6 +46,7 @@ public class UpgradeChoosing : MonoBehaviour
     public void ChooseUpgrade(int index)
     {
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
+        m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
     }
 
 }
