@@ -695,6 +695,12 @@ namespace Character
         {
             if (m_isCasting) return;
             //currentManaValue -= 2;
+            if(m_CharacterMouvement.isSliding)
+            {
+                m_CharacterMouvement.isSliding = false;
+                m_CharacterAnimator.SetBool("sliding", false);
+                m_BookAnimator.SetBool("sliding", false);
+            }
             m_isCasting = true;
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);
