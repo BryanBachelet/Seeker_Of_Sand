@@ -642,7 +642,7 @@ namespace Character
                 for (int i = m_currentRotationIndex; i < m_spellGlobalCooldown.Count; i++)
                 {
                     m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_shootTimer) / totalShootTime;
-                    Debug.Log(((totalShootTime - m_shootTimer) / totalShootTime));
+                  
                     m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_shootTimer).ToString(".#");
                 }
             }

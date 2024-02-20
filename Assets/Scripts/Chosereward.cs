@@ -27,6 +27,7 @@ public class Chosereward : MonoBehaviour
     public GameObject colliderDome;
 
     public int[] m_artefactIndex =new int[3];
+    public bool IsDebugActive=false;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,7 +63,7 @@ public class Chosereward : MonoBehaviour
         m_artefactHolder.m_artefactsInfos = artefactToChose[type];
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
         vfxArtefact.Add(vfx);
-        Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
+       if(IsDebugActive) Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
     }
 
     public void GetArtefactAttribution()
