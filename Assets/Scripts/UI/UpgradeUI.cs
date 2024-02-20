@@ -76,7 +76,7 @@ public class UpgradeUI : MonoBehaviour
 
     public void ChooseUpgrade(int index, int number)
     {
-        m_upgradeCharacter.ChooseUpgrade(index,number);
+        //m_upgradeCharacter.ChooseUpgrade(index,number);
         upgradeButtonAnimator[index].SetTrigger("Take");
         GlobalSoundManager.PlayOneShot(31, transform.position);
     }
