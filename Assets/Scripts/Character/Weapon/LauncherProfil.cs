@@ -27,7 +27,6 @@ public enum FormTypeSpell
     AREA,
 }
 
-
 [Serializable]
 public struct CapsuleStats
 {
@@ -51,14 +50,29 @@ public struct CapsuleStats
     public int piercingMax;
     public string description;
 
-  
-    [HideInInspector] public float timeBetweenShot 
-    { 
-        get 
-        {   if (shootNumber == 1) return 0.2f;
-            
-            return (totalShotTime / shootNumber); } 
-        private set { } 
+
+    public void DebugStat()
+    {
+        string debugString = "Lifetime :" + lifetime.ToString() +"\n";
+        debugString += "Speed : " + speed.ToString() + "\n";
+        debugString += "Range : " +range.ToString() + "\n";
+        debugString += "Damage : " + damage.ToString() + "\n"; 
+        debugString += "Projectile Number : " + projectileNumber.ToString() + "\n"; 
+        debugString += "Shoot Number : " + shootNumber.ToString() + "\n";
+        debugString += "Piercing Max : " + piercingMax.ToString() + "\n";
+        Debug.Log(debugString);
+    }
+
+
+    [HideInInspector] public float timeBetweenShot
+    {
+        get
+        {
+            if (shootNumber == 1) return 0.2f;
+
+            return (totalShotTime / shootNumber);
+        }
+        private set { }
     }
 
     public float GetSpeed(float rangeGive)
@@ -77,7 +91,7 @@ public struct CapsuleStats
         float speed = GetSpeed(rangeGive);
         float angle = angleTrajectory * Mathf.Deg2Rad;
         float gravity = 2 * (speed * Mathf.Sin(angle) * (GetTravelTime()) + height);
-        gravity = gravity / ((GetTravelTime()) * (GetTravelTime()) );
+        gravity = gravity / ((GetTravelTime()) * (GetTravelTime()));
         return gravity;
     }
 

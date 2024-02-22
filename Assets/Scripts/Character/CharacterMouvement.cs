@@ -128,10 +128,12 @@ namespace Character
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
+
+
         public void InitComponentStat(CharacterStat stat)
         {
-
             runSpeed = stat.baseStat.speed;
+            //LogSystem.CreateLogFile("Test1", runSpeed, mouvementState);
             InitComponent();
         }
         private void InitComponent()
@@ -205,6 +207,10 @@ namespace Character
                 {
                     m_isSlideInputActive = true;
                     SlideActivation(true);
+                    m_CharacterAnim.SetBool("Running", true);
+                    m_BookAnim.SetBool("Running", true);
+                    m_CharacterAnim.SetBool("Casting", false);
+                    m_BookAnim.SetBool("Running", false);
                 }
                 else
                 {
@@ -227,6 +233,11 @@ namespace Character
                 {
                     m_isSlideInputActive = false;
                     SlideActivation(false);
+                    m_CharacterAnim.SetBool("Running", false);
+                    m_BookAnim.SetBool("Running", false);
+                    m_CharacterAnim.SetBool("Casting", true);
+                    m_BookAnim.SetBool("Running", true);
+                    //if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
                 }
             }
             if (!state.isPlaying)
@@ -354,9 +365,13 @@ namespace Character
                     UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Classic:
-                    m_CharacterAnim.SetBool("Running", true);
-                    m_BookAnim.SetBool("Running", true);
-                    UpdateParameter(0.10f, "MouvementState");
+                    if(m_isSlideInputActive)
+                    {
+                        m_CharacterAnim.SetBool("Running", true);
+                        m_BookAnim.SetBool("Running", true);
+                        UpdateParameter(0.10f, "MouvementState");
+                    }
+
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
                     if (m_isSlowdown)
                     {

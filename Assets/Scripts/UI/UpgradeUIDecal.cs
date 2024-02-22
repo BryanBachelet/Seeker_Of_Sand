@@ -65,7 +65,7 @@ public class UpgradeUIDecal : MonoBehaviour
 
         for (int i = 0; i < upgrades.Length; i++)
         {
-            m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
+            m_upgradeName[i].text = upgrades[i].gain.nameUpgrade;
             m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
         //   Debug.Log(upgrades[i].gain.icon_Associat.texture.name);

@@ -27,6 +27,7 @@ public class Chosereward : MonoBehaviour
     public GameObject colliderDome;
 
     public int[] m_artefactIndex =new int[3];
+    public bool IsDebugActive=false;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,7 +63,7 @@ public class Chosereward : MonoBehaviour
         m_artefactHolder.m_artefactsInfos = artefactToChose[type];
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
         vfxArtefact.Add(vfx);
-        Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
+       if(IsDebugActive) Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
     }
 
     public void GetArtefactAttribution()
@@ -112,6 +113,24 @@ public class Chosereward : MonoBehaviour
         }
     }
 
+    public void GenerateNewArtefactReward(Transform positionAltar)
+    {
+        int rndArtefact = Random.Range(0, artefactToChose.Count);
+        Vector3 position = positionAltar.position;
+        //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
+        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[rndArtefact].elementAffiliation], position, transform.rotation, positionAltar);
+        ExperienceMouvement m_ExperienceMouvement = newArtefact.GetComponent<ExperienceMouvement>();
+        ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
+        VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
+        m_ExperienceMouvement.m_playerPosition = m_playerTransform;
+        //interactionEvent.StartCoroutine(interactionEvent.CloseUIWithDelay(2));
+        //StartCoroutine(ChosedArtefact(i, 30));
+        if (IsDebugActive)
+        {
+            Debug.Log("Artefact (" + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
+            Debug.Log(" Artefact N°" + rndArtefact);
+        }
+    }
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
     {
         artefactPiedestalAnimator[artefactToClear].SetBool("Choosed", true);

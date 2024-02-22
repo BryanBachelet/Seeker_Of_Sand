@@ -35,4 +35,13 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.dropName = artefact.nameArtefact;
         hintDropAcquisitionObject.AddNewDrop(lastDropInfo);
     }
+
+    public void AddNewUpgrade(Upgrade upgradeData, Sprite spriteSpell)
+    {
+        lastDropInfo.m_dropType = "[Upgrade]";
+        lastDropInfo.m_dropImage = spriteSpell;
+        lastDropInfo.dropDescription = upgradeData.gain.description;
+        lastDropInfo.dropName = upgradeData.gain.nameUpgrade;
+        hintDropAcquisitionObject.AddNewDrop(lastDropInfo);
+    }
 }

@@ -8,11 +8,7 @@ public class LevelUpSignOnUI : MonoBehaviour
     public GameObject[] levelUpSignVfx = new GameObject[2];
     private bool vfxIsActive = false;
     private int lastLevelUpTake = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     // Update is called once per frame
     void Update()

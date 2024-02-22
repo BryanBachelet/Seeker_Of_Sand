@@ -90,7 +90,7 @@ public class UpgradeCapsule : Upgrade
     public UpgradeCapsule(UpgradeProfil profil) : base(profil)
     {
         gain.type = UpgradeType.CAPSULE;
-        m_baseString = gain.nameUgrade;
+        m_baseString = gain.nameUpgrade;
         m_baseStringDescription = gain.description;
     }
 
@@ -122,7 +122,7 @@ public class UpgradeCapsule : Upgrade
     public override void Destroy()
     {
         gain.description = m_baseStringDescription;
-        gain.nameUgrade = m_baseString;
+        gain.nameUpgrade = m_baseString;
     }
 }
 

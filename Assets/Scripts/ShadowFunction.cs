@@ -30,6 +30,7 @@ public class ShadowFunction : MonoBehaviour
 
     public EventReference activationShadowDetection_Attribution;
 
+    public bool IsDebugActive = false;
     public Enemies.EnemyManager enemyManager;
     // Start is called before the first frame update
     void Start()
@@ -99,7 +100,7 @@ public class ShadowFunction : MonoBehaviour
 
         //onShadowStatic = onShadow;
         //outShadowStatic = outShadow;
-        Debug.Log("On Shadow enter !");
+     if(IsDebugActive)   Debug.Log("On Shadow enter !");
     }
 
     public void OutShadow()
@@ -109,7 +110,7 @@ public class ShadowFunction : MonoBehaviour
         outShadow = true;
         //onShadowStatic = onShadow;
         //outShadowStatic = outShadow;
-        Debug.Log("On Shadow out !");
+        if (IsDebugActive) Debug.Log("On Shadow out !");
     }
 
     public void OnEnterShadow()

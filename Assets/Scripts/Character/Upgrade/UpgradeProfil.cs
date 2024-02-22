@@ -12,7 +12,7 @@ public class UpgradeProfil : ScriptableObject
     public LauncherStats weaponStats;
     public CapsuleStats capsulsStats;
     public string description;
-    public string nameUgrade;
+    public string nameUpgrade;
     public Sprite icon_Associat;
 
     public UpgradeProfil Clone()
@@ -23,7 +23,7 @@ public class UpgradeProfil : ScriptableObject
         profil.weaponStats = weaponStats;
         profil.capsulsStats = capsulsStats;
         profil.description = description;
-        profil.nameUgrade = nameUgrade;
+        profil.nameUpgrade = nameUpgrade;
         profil.icon_Associat = icon_Associat;
 
         return profil;

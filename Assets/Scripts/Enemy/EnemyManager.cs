@@ -256,7 +256,7 @@ namespace Enemies
         }
         public void ChangePauseState(bool state)
         {
-            for (int i = 0; i < remainEnemy; i++)
+            for (int i = 0; i < m_enemiesArray.Count; i++)
             {
                 if (!state) m_enemiesArray[i].SetPauseState();
                 else m_enemiesArray[i].RemovePauseState();
