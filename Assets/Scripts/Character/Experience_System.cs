@@ -207,7 +207,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
     private void BufferXpDisplay(float time, float levelProgress)
     {
-        m_LevelDisplayFill.fillAmount = Mathf.Lerp(m_LevelDisplayFill.fillAmount, (levelProgress - m_CurrentLevel), Time.time - time);
+        m_LevelDisplayFill.fillAmount = Mathf.Lerp(m_LevelDisplayFill.fillAmount, m_NumberEnemyKilled / levelProgress, Time.time - time);
         
     }
 
