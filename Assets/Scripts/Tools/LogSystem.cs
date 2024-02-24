@@ -11,7 +11,7 @@ namespace GuerhoubaTools
         private static bool m_isLogFileOpen;
         private static string path = Application.dataPath + "/SeekerOfSand_Log.txt";
         private static StreamWriter writer;
-        private static bool isFirstTime = false;
+        private static bool isFirstTime = true;
         public static void CreateLogFile()
         {
             writer = new StreamWriter(path);

@@ -346,16 +346,19 @@ public class DayCyclecontroller : MonoBehaviour
 
     public void AdjustPostProcessByHour(float hour)
     {
-        if (volumePP.profile.TryGet<CloudLayer>(out vCloudLayer))
+        if (volumePP)
         {
-            //vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
-            vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
-            vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
-            vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
+            if (volumePP.profile.TryGet<CloudLayer>(out vCloudLayer))
+            {
+                //vClouds.shadowOpacity.value = m_ShadowOpacityByHour.Evaluate(hour);
+                vCloudLayer.layerA.opacityR.value = m_OpacityRByHour.Evaluate(hour);
+                vCloudLayer.layerA.rotation.value = m_RotationByHour.Evaluate(hour);
+                vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
 
-            //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
+                //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
+            }
         }
-        m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
+       if(m_sun) m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
     }
 }
 

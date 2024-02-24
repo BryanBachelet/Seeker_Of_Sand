@@ -6,11 +6,19 @@ using UnityEngine.InputSystem;
 
 namespace Render.Camera
 {
+
+    public enum CameraMode
+    {   
+        THIRD_VIEW = 0,
+        HIGH_VIEW = 1,
+    }
+
     public class CameraBehavior : MonoBehaviour
     {
         [SerializeField] private Transform cameraTrainTransform;
         [SerializeField] private Character.CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;
+        [SerializeField] private SkinnedMeshRenderer m_targetMeshRenderer;
         [SerializeField] private float m_distanceToTarget;
         [HideInInspector] public Vector3 m_offsetPos;
 
@@ -31,10 +39,13 @@ namespace Render.Camera
         private float m_lerpTime = 0.3f;
         private float m_lerpTimer = 0.0f;
 
+        public CameraMode cameraMode = CameraMode.HIGH_VIEW;
         private CameraEffect[] cameraEffects;
         public Transform sun;
         [SerializeField] private Texture2D[] m_cursorTex = new Texture2D[2];
 
+        [Header("Cameara Collider Parameters")]
+        public LayerMask obstacleLayerMask;
         // -- Test Camera Zoom ---- 
 
         [Header("Camera Zoom parameter")]
@@ -100,9 +111,17 @@ namespace Render.Camera
         private bool m_isActiveAutomaticDezoom = true;
 
         private Vector2 m_registerMousePositionRotation = Vector3.zero;
+
+        // Debug Value 
+        private Vector3 normalDebug;
+        private Vector3 hitPoint;
+        private Vector3 directionDebug;
+        private Ray collsionRayDebug;
+
         // Start is called before the first frame update
         void Start()
         {
+            cameraMode = CameraMode.HIGH_VIEW;
             m_playerInputComponent = m_targetTransform.GetComponent<PlayerInput>();
             m_characterShootComponent = m_targetTransform.GetComponent<Character.CharacterShoot>();
             initialAngularSpeed = m_angularSpeed;
@@ -200,6 +219,9 @@ namespace Render.Camera
             m_currentLerpValue += m_inputZoomValue;
             m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
             if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
+
+            if (m_currentLerpValue> 0.6f) cameraMode = CameraMode.THIRD_VIEW;
+            else cameraMode = CameraMode.HIGH_VIEW;
         }
 
         private void CameraZoom()
@@ -211,20 +233,71 @@ namespace Render.Camera
             }
 
 
-            m_prevSlopeAngle = m_slopeAngle;
+           m_prevSlopeAngle = m_slopeAngle;
             float angle = playerMove.GetSlope();
             if (angle > m_thresholdAngle)
             {
                 m_nextSlopeAngle = angle;
-            }
+           }
 
             m_slopeAngle = Mathf.Lerp(m_prevSlopeAngle, m_nextSlopeAngle, 0.2f);
             Vector3 slopeAngle = new Vector3(0, 0.0f, 0);
 
-            if (m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle, 0.0f, 0);
-            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle;
+   
+            if (m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle/2, 0.0f, 0);
+            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue)  + slopeAngle;
             m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
             m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
+            m_distanceToTarget = CheckGroundCamera(m_cameraDirection);
+
+        }
+
+        // Check if they is a ground obstacle
+        public float CheckGroundCamera(Vector3 direction)
+        {
+            if (cameraMode != CameraMode.THIRD_VIEW) return m_distanceToTarget;
+
+            direction = Quaternion.Euler(0.0f, m_nextAngle, 0.0f) * direction;
+            directionDebug = direction;
+            RaycastHit hit = new RaycastHit();
+            float targetDistance = m_distanceToTarget;
+            Ray ray = new Ray(m_targetTransform.position, direction.normalized);
+            collsionRayDebug = ray;
+            if (Physics.Raycast(ray,out hit, targetDistance, obstacleLayerMask))
+            {
+                float distance = Vector3.Distance(m_targetTransform.position, hit.point);
+
+                //if(distance > 15 )
+                //{
+                //    for (int i = 0; i < m_targetMeshRenderer.materials.Length; i++)
+                //    {
+
+                //        m_targetMeshRenderer.materials[i].SetFloat("_Opacity", 0.0f);
+                //    }
+                //}else
+                //{
+                //    for (int i = 0; i < m_targetMeshRenderer.materials.Length; i++)
+                //    {
+                //        m_targetMeshRenderer.materials[i].SetFloat("_Opacity", 1.0f);
+                //    }
+                //}
+
+                return distance;
+            }
+
+            return m_distanceToTarget;
+        }
+
+
+        private Vector3 GetForwardDirection(Vector3 normal)
+        {
+            return Vector3.Cross(transform.right, normal);
+        }
+
+        private float GetSlopeAngle(Vector3 direction)
+        {
+            Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+            return Vector3.SignedAngle(rotTest * Vector3.forward, direction, Vector3.right);
         }
 
         IEnumerator DeZoomCamera()
@@ -416,7 +489,7 @@ namespace Render.Camera
         {
             m_finalPosition = m_targetTransform.position;
             m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget;
-
+            if (cameraMode == CameraMode.THIRD_VIEW) m_finalPosition += m_baseOffset;
             for (int i = 0; i < cameraEffects.Length; i++)
             {
                 m_finalPosition += cameraEffects[i].GetEffectPos();
@@ -427,6 +500,16 @@ namespace Render.Camera
         {
             transform.position = m_finalPosition;
             transform.rotation = Quaternion.Euler(m_finalRotation);
+        }
+
+
+        public void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawRay(hitPoint, normalDebug * 100);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(collsionRayDebug.origin, collsionRayDebug.direction * 100);
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(m_targetTransform.position, directionDebug * m_distanceToTarget);
         }
     }
 }
