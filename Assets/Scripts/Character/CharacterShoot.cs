@@ -655,8 +655,8 @@ namespace Character
 
            if(!m_shootInput) m_shootInputActive = false;
 
-            avatarTransform.localRotation = Quaternion.identity;
-            bookTransform.localRotation = Quaternion.identity;
+            //avatarTransform.localRotation = Quaternion.identity;
+            //bookTransform.localRotation = Quaternion.identity;
 
 
             if (!m_CharacterMouvement.activeCombatModeConstant)

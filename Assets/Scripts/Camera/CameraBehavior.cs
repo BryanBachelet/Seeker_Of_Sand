@@ -266,22 +266,6 @@ namespace Render.Camera
             if (Physics.Raycast(ray,out hit, targetDistance, obstacleLayerMask))
             {
                 float distance = Vector3.Distance(m_targetTransform.position, hit.point);
-
-                //if(distance > 15 )
-                //{
-                //    for (int i = 0; i < m_targetMeshRenderer.materials.Length; i++)
-                //    {
-
-                //        m_targetMeshRenderer.materials[i].SetFloat("_Opacity", 0.0f);
-                //    }
-                //}else
-                //{
-                //    for (int i = 0; i < m_targetMeshRenderer.materials.Length; i++)
-                //    {
-                //        m_targetMeshRenderer.materials[i].SetFloat("_Opacity", 1.0f);
-                //    }
-                //}
-
                 return distance;
             }
 

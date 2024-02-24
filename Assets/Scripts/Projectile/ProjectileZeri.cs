@@ -62,11 +62,6 @@ public class ProjectileZeri : Projectile
 
     private void OnDestroy()
     {
-        int random = Random.Range(0, 100);
-        if (random > probability) { return; }
-
-        GlobalSoundManager.PlayOneShot(35, transform.position);
-        //     mLightingStrike.CallLightingStrike(transform.position);
     }
 
     private void TriggerEffect()

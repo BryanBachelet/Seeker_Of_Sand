@@ -84,12 +84,10 @@ public class Punketone : MonoBehaviour
                     GameObject newFire = Instantiate(fireVfxEffect, hit.point, transform.rotation);
                     newFire.transform.position = hit.point;
                     positionLastFire = hit.point;
-                    Debug.Log("Did Hit || " + hit.point);
                 }
                 else
                 {
                     Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-                    Debug.Log("Did not Hit");
                 }
 
             }
@@ -114,7 +112,6 @@ public class Punketone : MonoBehaviour
         if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(target.transform.position);
         if (!m_navMeshAgent.hasPath)
         {
-            Debug.Log("Has hit");
             NavMeshHit hit;
             if (NavMesh.SamplePosition(target.transform.position, out hit, 100.0f, NavMesh.AllAreas))
             {

@@ -50,7 +50,15 @@ public class ExperienceMouvement : MonoBehaviour
         {
             if (m_playerPosition)
             {
-                MoveDestination();
+                if (Vector3.Distance(transform.position, m_playerPosition.position) < 1) 
+                { 
+                    m_isGrounded = true; 
+                }
+                else
+                {
+                    MoveDestination();
+                }
+
 
             }
         }
