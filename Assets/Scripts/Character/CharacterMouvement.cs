@@ -133,7 +133,7 @@ namespace Character
         public void InitComponentStat(CharacterStat stat)
         {
             runSpeed = stat.baseStat.speed;
-            GuerhoubaTools.LogSystem.LogMsg("Test1 " + runSpeed.ToString(),false);
+            GuerhoubaTools.LogSystem.LogMsg("Test1 " + runSpeed.ToString(),true);
             InitComponent();
         }
         private void InitComponent()
@@ -855,5 +855,12 @@ namespace Character
 
             //m_uiStateAnimator.ResetTrigger("ChangeDisplay");
         }
+
+#if UNITY_EDITOR
+        public void OnDestroy()
+        {
+            GuerhoubaTools.LogSystem.Close();
+        }
+#endif
     }
 }

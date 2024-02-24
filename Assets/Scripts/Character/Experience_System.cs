@@ -95,8 +95,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         if (m_NumberEnemyKilled > levelProgress)
         {
             m_CurrentLevel += 1;
-            ChooseUpgrade(m_CurrentLevel);
-            //LevelUp(1);
+            GetUpgradePoint(m_CurrentLevel);
             m_NumberEnemyKilled = 0;
             levelUpEffect.Play();
             levelUpEffectUi.Play();
@@ -114,7 +113,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         for (int i = 0; i < newLevel - m_CurrentLevel; i++)
         {
-            ChooseUpgrade(m_CurrentLevel + i);
+            GetUpgradePoint(m_CurrentLevel + i);
         }
         m_CurrentLevel = newLevel;
 
@@ -136,7 +135,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_worldExp.Clear();
     }
 
-    public void ChooseUpgrade(int level)
+    public void GetUpgradePoint(int level)
     {
         //Debug.Log("Add new upgrade : " + level);
         m_characterUpgrade.GainLevel();

@@ -123,6 +123,7 @@ public class Chosereward : MonoBehaviour
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
         m_ExperienceMouvement.m_playerPosition = m_playerTransform;
+        m_artefactHolder.m_artefactsInfos = artefactToChose[rndArtefact];
         //interactionEvent.StartCoroutine(interactionEvent.CloseUIWithDelay(2));
         //StartCoroutine(ChosedArtefact(i, 30));
         if (IsDebugActive)

@@ -32,7 +32,11 @@ namespace GuerhoubaTools
 
         public static void Close()
         {
+            writer.Flush();
             writer.Close();
+            writer = null;
+            isFirstTime = true;
+            Debug.Log("Test");
         }
     }
 }

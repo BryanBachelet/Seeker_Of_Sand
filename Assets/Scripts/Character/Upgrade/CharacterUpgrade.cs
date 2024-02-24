@@ -27,6 +27,7 @@ public class CharacterUpgrade : MonoBehaviour
     private CharacterProfile m_characterProfil;
     private Character.CharacterShoot m_characterShoot;
     private Character.CharacterSpellBook m_characterInventory;
+    private Experience_System experience;
 
     private Upgrade[] m_upgradeToChoose = new Upgrade[3];
 
@@ -78,6 +79,7 @@ public class CharacterUpgrade : MonoBehaviour
         m_characterProfil = GetComponent<CharacterProfile>();
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_characterInventory = GetComponent<Character.CharacterSpellBook>();
+        experience = GetComponent<Experience_System>();
         m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
         m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
         m_upgradePoint.text = upgradePoint.ToString();
@@ -129,7 +131,7 @@ public class CharacterUpgrade : MonoBehaviour
         upgradePoint--;
         m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
         m_upgradePoint.text = upgradePoint.ToString();
-
+        experience.m_LevelTaken++;
         if (isDebugActive)
         {
             Debug.Log("Upgrade choose is " + upgradeChoose.gain.nameUpgrade);
