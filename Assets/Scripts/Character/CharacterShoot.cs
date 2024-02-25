@@ -471,6 +471,7 @@ namespace Character
 
         private bool ShootAttackProjectile(int capsuleIndex, ref int currentShotCount)
         {
+
             CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(stats);
             int mod = GetStartIndexProjectile(stats);

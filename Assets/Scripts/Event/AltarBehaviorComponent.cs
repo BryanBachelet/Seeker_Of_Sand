@@ -343,7 +343,9 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             Destroy(punketonHP[i].gameObject);
             punketonHP.RemoveAt(i);
+           
         }
+        skeletonCount = 0;
         float maxHealth = 100;
         
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);

@@ -128,12 +128,12 @@ namespace Character
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
-
+        public LayerMask obstacleLayerMask;
 
         public void InitComponentStat(CharacterStat stat)
         {
             runSpeed = stat.baseStat.speed;
-            //LogSystem.CreateLogFile("Test1", runSpeed, mouvementState);
+            GuerhoubaTools.LogSystem.LogMsg("Test1 " + runSpeed.ToString(),true);
             InitComponent();
         }
         private void InitComponent()
@@ -605,9 +605,34 @@ namespace Character
                 m_speedData.currentSpeed = m_velMovement.magnitude;
                 return;
             }
-            m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
-            m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
-            m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+
+            RaycastHit hit = new RaycastHit();
+            float targetDistance = m_rigidbody.velocity.magnitude;
+           
+            Ray ray = new Ray(transform.position, m_velMovement.normalized);
+            if (Physics.Raycast(ray, out hit, 20, obstacleLayerMask))
+            {
+                Vector3 direction = GetForwardDirection(hit.normal);
+                float slopeAngle = GetSlopeAngleAbs(direction);
+                if (slopeAngle >= 60)
+                {
+                    m_rigidbody.velocity = Vector3.zero;
+                }
+                else
+                {
+                    m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
+                    m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                    m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                }
+
+            }
+            else
+            {
+                m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+            }
+       
 
         }
 
@@ -830,5 +855,12 @@ namespace Character
 
             //m_uiStateAnimator.ResetTrigger("ChangeDisplay");
         }
+
+#if UNITY_EDITOR
+        public void OnDestroy()
+        {
+            GuerhoubaTools.LogSystem.Close();
+        }
+#endif
     }
 }

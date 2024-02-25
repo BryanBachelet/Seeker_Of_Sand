@@ -96,9 +96,13 @@ public class GameState : MonoBehaviour
             if (m_activeDebug) Debug.Log("Found Game manager object ");
             m_gmComponent = gm.GetComponent<GameManager>();
             profileName = m_gmComponent.profileName;
-            Character.CharacterShoot charaShoot = m_enemyManager.m_playerTranform.GetComponent<Character.CharacterShoot>();
-            charaShoot.m_aimModeState = m_gmComponent.m_aimModeChoose;
-            charaShoot.UpdateFeedbackAimLayout();
+            if (m_enemyManager)
+            {
+                Character.CharacterShoot charaShoot = m_enemyManager.m_playerTranform.GetComponent<Character.CharacterShoot>();
+                charaShoot.m_aimModeState = m_gmComponent.m_aimModeChoose;
+                charaShoot.UpdateFeedbackAimLayout();
+            }
+          
 
         }
         else

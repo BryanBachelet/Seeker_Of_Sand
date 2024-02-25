@@ -17,6 +17,7 @@ public class PauseMenu : MonoBehaviour
 
     public void QuitFunction()
     {
+        GuerhoubaTools.LogSystem.LogMsg("Quit Game", true);
         Application.Quit();
     }
 }

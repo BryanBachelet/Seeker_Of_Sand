@@ -40,14 +40,16 @@ Material:
   - N_F_RL_ON
   - N_F_R_ON
   - N_F_SS_ON
+  - N_F_TRANS_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -226,8 +228,8 @@ Material:
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _Anisotropy: 0
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _BlendMode: 0
     - _CoatMask: 0
     - _CullMode: 2
@@ -385,9 +387,9 @@ Material:
     - _RimLightUnfill: 2.02
     - _SPECIN: 1
     - _SPECMODE: 0
-    - _SSRefDeOn: 8
-    - _SSRefGBu: 10
-    - _SSRefMoVe: 40
+    - _SSRefDeOn: 0
+    - _SSRefGBu: 2
+    - _SSRefMoVe: 32
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
@@ -431,7 +433,7 @@ Material:
     - _SurfaceType: 0
     - _TEXMCOLINT: 0
     - _TOAO: 1
-    - _TRANSMODE: 0
+    - _TRANSMODE: 1
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _TexturePatternStyle: 0
@@ -455,7 +457,7 @@ Material:
     - _VertexColorBlueAffectOutlineWitdh: 0
     - _VertexColorGreenControlSelfShadowThreshold: 0
     - _VertexColorRedControlSmoothObjectNormal: 0
-    - _ZTeForLiOpa: 3
+    - _ZTeForLiOpa: 4
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
