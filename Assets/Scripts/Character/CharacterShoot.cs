@@ -291,7 +291,7 @@ namespace Character
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 3; i++)
             {
                 int RndCapsule = 0;
                 if (i == 0)
@@ -303,9 +303,9 @@ namespace Character
                 {
                     RndCapsule = UnityEngine.Random.Range(9, 13);
                 }
-                else
+                else if(i == 2)
                 {
-                    RndCapsule = UnityEngine.Random.Range(9, 16);
+                    RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
                 capsuleIndex.Add(RndCapsule);
             }
@@ -471,6 +471,7 @@ namespace Character
 
         private bool ShootAttackProjectile(int capsuleIndex, ref int currentShotCount)
         {
+
             CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(stats);
             int mod = GetStartIndexProjectile(stats);
@@ -654,8 +655,8 @@ namespace Character
 
            if(!m_shootInput) m_shootInputActive = false;
 
-            avatarTransform.localRotation = Quaternion.identity;
-            bookTransform.localRotation = Quaternion.identity;
+            //avatarTransform.localRotation = Quaternion.identity;
+            //bookTransform.localRotation = Quaternion.identity;
 
 
             if (!m_CharacterMouvement.activeCombatModeConstant)

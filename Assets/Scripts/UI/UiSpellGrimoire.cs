@@ -56,8 +56,11 @@ public class UiSpellGrimoire : MonoBehaviour
     public ClicOnBook clicOnBook;
     public void Start()
     {
-        sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
-        GameObject[] otherSceneGameObject = sceneUIBook.GetRootGameObjects();
+        //sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
+        //if (sceneUIBook != null)
+        //{
+        //    GameObject[] otherSceneGameObject = sceneUIBook.GetRootGameObjects();
+        //}
         bookDisplayRoot = bookDisplayRootDisplay;
         //for (int i = 0; i < otherSceneGameObject.Length; i++)
         //{

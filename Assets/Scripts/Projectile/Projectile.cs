@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour
             {
                 if (willDestroy)
                 {
-                    m_collider.enabled = false;
+                  if(m_collider)  m_collider.enabled = false;
                 }
                 else
                 {
@@ -121,6 +121,10 @@ public class Projectile : MonoBehaviour
 
     }
 
+    private void ActiveDeath()
+    {
+
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -141,7 +145,9 @@ public class Projectile : MonoBehaviour
             if (piercingCount >= m_piercingMax)
             {
 
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
+                m_lifeTimer = m_lifeTime;
+                //willDestroy = true;
             }
         }
         else if (other.gameObject.tag == "Cristal")
@@ -151,7 +157,9 @@ public class Projectile : MonoBehaviour
             if (piercingCount >= m_piercingMax)
             {
 
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
+                m_lifeTimer = m_lifeTime;
+                //willDestroy = true;
             }
         }
         else if (other.gameObject.tag == "DPSCheck")
@@ -166,7 +174,9 @@ public class Projectile : MonoBehaviour
             if (piercingCount >= m_piercingMax)
             {
 
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
+                //willDestroy = true;
+                m_lifeTimer = m_lifeTime;
             }
         }
         else if (other.gameObject.tag == "Dummy")
@@ -182,7 +192,9 @@ public class Projectile : MonoBehaviour
             if (piercingCount >= m_piercingMax)
             {
 
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
+                //willDestroy = true;
+                m_lifeTimer = m_lifeTime;
             }
         }
         else return;

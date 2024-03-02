@@ -204,6 +204,8 @@ namespace Enemies
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                 SpawnCooldown();
             }
+
+
             if(lastAltarActivated != null)
             {
                 lastSkeletonCount = lastAltarActivated.skeletonCount;
@@ -527,11 +529,13 @@ namespace Enemies
             {
                 countTentative++;
                 randomEnemyTry = Random.Range(0, 5);
+           
 
                 if (!m_pullingSystem.IsStillInstanceOf((EnemyType)randomEnemyTry)) continue;
 
-                if (enemyTypeStats[randomEnemyTry].instanceCount < Mathf.RoundToInt(enemyTypeStats[randomEnemyTry].animationCurve.Evaluate(m_experienceSystemComponent.m_LevelTaken)))
+                if (CanEnemySpawn(randomEnemyTry))
                 {
+
                     goToMoveIn = m_pullingSystem.GetEnemy((EnemyType)randomEnemyTry);
                     enemyTypeStats[randomEnemyTry].instanceCount += 1;
                     indexNextSpawn = randomEnemyTry;
@@ -592,6 +596,13 @@ namespace Enemies
         }
 
 
+        private bool CanEnemySpawn(int enemyType)
+        {
+            float value = enemyTypeStats[enemyType].animationCurve.Evaluate(m_experienceSystemComponent.m_LevelTaken);
+            int maxInstance = Mathf.RoundToInt(value);
+            bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
+            return canSpawn;
+    }
 
         public void AddTarget(Transform target)
         {

@@ -154,7 +154,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             else
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-                Debug.Log("Did not Hit");
+                //Debug.Log("Did not Hit");
             }
 
 
@@ -165,7 +165,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         m_eventProgressionSlider.fillAmount = progression;
-        Debug.Log("Progression : " + progression + "(" + this.name + ")");
+        //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI
 
@@ -290,7 +290,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         else
         {
-            Debug.Log("Cette objet [" + this.name + "] ne peut pas �tre activ�");
+           // Debug.Log("Cet objet [" + this.name + "] ne peut pas �tre activ�");
         }
     }
 
@@ -343,7 +343,9 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             Destroy(punketonHP[i].gameObject);
             punketonHP.RemoveAt(i);
+           
         }
+        skeletonCount = 0;
         float maxHealth = 100;
         
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);

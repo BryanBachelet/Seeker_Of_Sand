@@ -96,7 +96,8 @@ namespace Character
                     nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
                     Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
                     m_aimScreenPoint = convertPos;
-                }else
+                }
+                else
                 {
                     m_aimScreenPoint = m_aimInputValue;
                     m_hasCloseTarget = false;
