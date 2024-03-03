@@ -23,7 +23,7 @@ public class UpgradePointSelectionOver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(CharacterUpgrade.upgradePoint < upgradePointCost)
+        if(Character.CharacterUpgrade.upgradePoint < upgradePointCost)
         {
             upgradePointAssociated.color = Color.red;
         }

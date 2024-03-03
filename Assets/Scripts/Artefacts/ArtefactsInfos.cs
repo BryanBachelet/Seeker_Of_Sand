@@ -55,9 +55,13 @@ public class ArtefactsInfos : ScriptableObject
 
         if (entitiesTrigger != tag) return;
 
-        float change = Random.Range(0, 100);
+        float change = Random.Range(0, 100.0f);
         if (change < spawnRate)
         {
+            if (isDebugActive)
+            { 
+                Debug.Log("Artefact active OnHit"); 
+            }
             GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData, objectPre);

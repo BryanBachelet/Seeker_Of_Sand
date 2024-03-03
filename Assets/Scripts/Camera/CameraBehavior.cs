@@ -18,7 +18,6 @@ namespace Render.Camera
         [SerializeField] private Transform cameraTrainTransform;
         [SerializeField] private Character.CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;
-        [SerializeField] private SkinnedMeshRenderer m_targetMeshRenderer;
         [SerializeField] private float m_distanceToTarget;
         [HideInInspector] public Vector3 m_offsetPos;
 

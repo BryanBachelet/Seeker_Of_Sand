@@ -32,7 +32,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
     [SerializeField] public VisualEffect m_levelUpEffectDisplay;
     #endregion
     #region Character Upgrade
-    private CharacterUpgrade m_CharacterUpgrade;
+    private Character.CharacterUpgrade m_CharacterUpgrade;
     [SerializeField] public GameObject m_upgradeUIGO;
     [SerializeField] public TMP_Text m_upgradePoint_Txt;
     [SerializeField] public Text m_levelDisplay;
@@ -269,12 +269,10 @@ public class ComponentLinkerCrossScene : MonoBehaviour
         m_ExperienceSysteme.levelUpEffectUi = m_levelUpEffectDisplay;
         #endregion
         #region Character Upgrade
-        m_CharacterUpgrade = m_PlayerObjectRef.GetComponent<CharacterUpgrade>();
-        m_CharacterUpgrade.upgradeUiGO = m_upgradeUIGO;
-        m_CharacterUpgrade.m_upgradePoint = m_upgradePoint_Txt;
-        m_CharacterUpgrade.m_LevelDisplay = m_levelDisplay;
-        m_CharacterUpgrade.m_upgradeUi = m_UpgradeUI;
-        m_CharacterUpgrade.m_FixeElementUI = m_FixeElementUI;
+        m_CharacterUpgrade = m_PlayerObjectRef.GetComponent<Character.CharacterUpgrade>();
+        
+        m_CharacterUpgrade.upgradePointTextDisplay = m_upgradePoint_Txt;
+        m_CharacterUpgrade.baseGameInterfaceUI = m_FixeElementUI;
         m_CharacterUpgrade.InitComponents();
 
         #endregion
@@ -321,7 +319,7 @@ public class ComponentLinkerCrossScene : MonoBehaviour
 
         #region Upgrade Screen
         //m_UpgradeUI = m_UpgradeScreenReference.GetComponent<UpgradeUI>();
-        m_UpgradeUI.m_upgradeCharacter = m_PlayerObjectRef.GetComponent<CharacterUpgrade>();
+        m_UpgradeUI.m_upgradeCharacter = m_PlayerObjectRef.GetComponent<Character.CharacterUpgrade>();
         m_UpgradeScreenReference.GetComponent<UpgradeUI>().upgradeButtons = m_UpgradeUI.upgradeButtons;
 
         #endregion

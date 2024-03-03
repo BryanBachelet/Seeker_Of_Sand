@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using SpellSystem;
 using TMPro;
+
 public class ChooseSpellManager : MonoBehaviour
 {
+    private const double minAnimTime = 0.20;
     public GameObject[] vfxChooseSpell = new GameObject[4];
     public int[] randomSpellToChoose = new int[3];
     public CapsuleManager capsuleManager;
@@ -24,63 +26,127 @@ public class ChooseSpellManager : MonoBehaviour
     private PopupFunction lastSpell = null;
     public GameObject descriptionHolder = null;
     public bool overable = false;
+    public TMP_Text textSpellFeedback;
+    [HideInInspector] public UpgradeManager m_upgradeManagerComponenet;
 
     private Animator m_animator;
-    // Start is called before the first frame update
+    private bool m_hasChooseSpell = false;
+    private int m_indexSpellChoose = -1;
+
+
+    #region Unity Functions
     void Start()
     {
         m_animator = this.GetComponent<Animator>();
+    }
+    #endregion
+
+
+    public void Update()
+    {
+        AnimatorStateInfo animatorStateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
+        if (animatorStateInfo.IsName("StartState"))
+        {
+            if (m_hasChooseSpell)
+            {
+                m_animator.SetBool("ActiveChoice", true);
+            }
+        }
+            if (animatorStateInfo.IsName("NewSpellChoice_Open"))
+        {
+            if ( m_hasChooseSpell)
+            {
+                ClearVfxInstance();
+                m_hasChooseSpell = false;
+                textSpellFeedback.alpha = 0;
+
+                for (int i = 0; i < vfxHolder.Length; i++)
+                {
+                    vfxHolder[i].SetActive(false) ;
+                    spellHolder[i].SetActive(false);
+                    vfxSpell[i].enabled = false;
+                    vfxSpell[i].sprite = null;
+                    
+                }
+                m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
+               
+            }
+        }
 
     }
 
-    // Update is called once per frame
-    void Update()
+    // Reset the animation state of the UI at his first state
+    private void ResetUIAnimation()
     {
-    }
+        m_hasChooseSpell = false;
+        m_indexSpellChoose = -1;
 
-    public void ActiveAnimation()
-    {
+        if(!m_animator) m_animator = this.GetComponent<Animator>();
         m_animator.ResetTrigger("Choosed");
-        m_animator.SetTrigger("ActiveChoose");
-        overable = true;
+        m_animator.SetBool("ActiveChoice",true);
+        overable = true; // --> Je sais pas
     }
-    public void ResetRandomSpell()
+
+    private void ActivateChoiceAnimation()
+    {
+        m_hasChooseSpell = true;
+        m_animator.SetBool("ActiveChoice", false);
+        m_animator.SetTrigger("Choosed");
+    }
+
+
+    private void ClearVfxInstance()
     {
         if (vfxLastChooseSpell.Count > 0)
         {
-            for(int i = 0; i < vfxLastChooseSpell.Count; i ++)
+            for (int i = 0; i < vfxLastChooseSpell.Count; i++)
             {
                 Destroy(vfxLastChooseSpell[i]);
             }
             vfxLastChooseSpell.Clear();
         }
-        for(int i = 0; i < randomSpellToChoose.Length; i++)
+    }
+
+
+    public void ResetRandomSpell()
+    {
+        ClearVfxInstance();
+
+        for (int i = 0; i < randomSpellToChoose.Length; i++)
         {
-            vfxHolder[i].SetActive(true);
-            spellHolder[i].SetActive(true);
+            // ---------------------
             randomSpellToChoose[i] = CapsuleManager.GetRandomCapsuleIndex();
             newSpell[i] = capsuleManager.capsules[randomSpellToChoose[i]];
+            // --------------------
+
             vfxSpell[i].sprite = newSpell[i].sprite;
+            vfxHolder[i].SetActive(true);
+            spellHolder[i].SetActive(true);
+            vfxSpell[i].enabled = true;
             newSpell[i].elementType = capsuleManager.capsules[randomSpellToChoose[i]].elementType;
             Debug.Log(newSpell[i].elementType);
             GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].elementType], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
         }
-        ActiveAnimation();
+        ResetUIAnimation();
     }
 
     public void Choose(int indexChoice)
     {
-        m_animator.ResetTrigger("ActiveChoose");
-        m_animator.SetTrigger("Choosed");
-        for(int i = 0; i < vfxHolder.Length; i++)
+        ActivateChoiceAnimation();
+        for (int i = 0; i < vfxHolder.Length; i++)
         {
-            if(i != indexChoice)
+            if (i != indexChoice)
             {
                 vfxHolder[i].SetActive(false);
                 spellHolder[i].SetActive(false);
+              
             }
         }
+        m_indexSpellChoose = indexChoice;
+        int capsuleIndex = randomSpellToChoose[indexChoice];
+        CapsuleManager.RemoveSpecificSpellFromSpellPool(capsuleIndex);
+
     }
 
     public void SpellOverrring(int spellIndex, PopupFunction popup)
@@ -94,7 +160,7 @@ public class ChooseSpellManager : MonoBehaviour
         iconSpell.sprite = newSpell[spellIndex].sprite;
         //description.text = popup.des
     }
-    
+
     public void SpellOverringExit()
     {
         descriptionHolder.SetActive(false);

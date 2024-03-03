@@ -563,6 +563,7 @@ namespace Enemies
             }
             npcMove.enemiesManager = this;
             npcHealth.SetInitialData(m_healthManager, this);
+            npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
 
             if (EnemyTargetPlayer)
             {

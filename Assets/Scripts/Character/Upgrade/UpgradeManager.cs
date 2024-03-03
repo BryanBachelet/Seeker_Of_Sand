@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using Character;
 
 public struct UpgradeLevelingData
 {
@@ -24,8 +25,11 @@ public class UpgradeManager : MonoBehaviour
     [Header("UI Upgrade")]
     [Tooltip("Not neccessary")]
     public GameObject upgradeLevelUi;
+    public GameObject spellChoiceUI;
     public GameObject upgradeBook;
     private UpgradeChoosing m_upgradeChoosingComponent;
+    private ChooseSpellManager m_chooseSpellManagerComponent;
+
     private bool isUpgradeUILevel;
 
     private UpgradeLevelingData m_upgradeLevelingData ;
@@ -40,6 +44,8 @@ public class UpgradeManager : MonoBehaviour
         if (!upgradeLevelUi) return;
         m_upgradeChoosingComponent = upgradeLevelUi.GetComponent<UpgradeChoosing>();
         m_upgradeChoosingComponent.m_upgradeManager = this;
+        m_chooseSpellManagerComponent = spellChoiceUI.GetComponent<ChooseSpellManager>();
+        m_chooseSpellManagerComponent.m_upgradeManagerComponenet = this;
         m_dropInventory = m_characterUpgradeComponent.GetComponent<DropInventory>();
     }
 
@@ -78,7 +84,7 @@ public class UpgradeManager : MonoBehaviour
         return upgrade;
     }
 
-   public Upgrade[] GetRandomUpgradesToSpecificSpell(int spellIndex,int indexSpellEquip)
+    public Upgrade[] GetRandomUpgradesToSpecificSpell(int spellIndex,int indexSpellEquip)
     {
         Upgrade[] upgradeGenerate = new Upgrade[upgradeGenerateCount];
         for (int i = 0; i < upgradeGenerate.Length; i++)
@@ -90,8 +96,6 @@ public class UpgradeManager : MonoBehaviour
         }
         return upgradeGenerate;
     }
-
-
 
     public int[] GetRandomIndex(int elementRange, int length)
     {
@@ -137,12 +141,36 @@ public class UpgradeManager : MonoBehaviour
 
     }
 
+    public void OpenSpellChoiceUI()
+    {
+        if (!spellChoiceUI) return;
+        spellChoiceUI.SetActive(true);
+        upgradeBook.SetActive(true);
+        m_chooseSpellManagerComponent.ResetRandomSpell();
+        Debug.Log("Open Spell Choice interface");
+    }
+
+    public void SendSpell(SpellSystem.Capsule capsule)
+    {
+        m_characterUpgradeComponent.ApplySpellChoise(capsule);
+    }
+
+    public void CloseSpellChoiceUI()
+    {
+        if (!spellChoiceUI) return;
+        spellChoiceUI.SetActive(false);
+        upgradeBook.SetActive(false);
+
+        Debug.Log("Close Spell Choice interface");
+    }
+
     #region Upgrade Level UI Functions
     public void OpenUpgradeUI(UpgradeLevelingData upgradeLevelingData)
     {
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(true);
         upgradeBook.SetActive(true);
+
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
         if (m_upgradeLevelingData.upgradeChoose == null)
         {
@@ -175,7 +203,6 @@ public class UpgradeManager : MonoBehaviour
         Debug.Log("Close Upgrade interface");
     }
 
-
     public void SendUpgrade(Upgrade upgradeChoose)
     {
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
@@ -187,7 +214,6 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }
-
 
     #endregion
 }

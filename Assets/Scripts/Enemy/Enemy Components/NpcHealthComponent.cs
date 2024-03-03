@@ -27,6 +27,9 @@ namespace Enemies
         public int indexEnemy = 0;
         [Header("Health Parameter")]
         public float m_maxLife;
+        public float gainPerMinute = 2;
+        public int spawnMinute;
+        private float m_baseLife;
         public GameObject m_vfxHitFeedback;
         public float timeBeforeDestruction;
         public bool hasDeathAnimation = false;
@@ -62,6 +65,7 @@ namespace Enemies
         private MaterialPropertyBlock _propBlock;
         public GameObject death_vfx;
 
+        public bool IsDebugActive = false;
 
         void Awake()
         {
@@ -77,7 +81,12 @@ namespace Enemies
                 m_materialList.Add(m_SkinMeshRenderer.materials[i]);
             }
             RestartObject();
+            
+        }
 
+        public void SetMinuteLife(int min)
+        {
+            spawnMinute = min;
         }
 
         private void Update()
@@ -198,7 +207,11 @@ namespace Enemies
 
         public void RestartObject()
         {
-            m_healthSystem.Setup(m_maxLife);
+            if(IsDebugActive)
+            {
+                Debug.Log("Setup current max life : " + (m_maxLife + spawnMinute * gainPerMinute));
+            }
+            m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
             death = false;
             npcState = NpcState.MOVE;
             this.gameObject.layer = 6;
