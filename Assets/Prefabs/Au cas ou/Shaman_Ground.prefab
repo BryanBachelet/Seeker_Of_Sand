@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1205151830306799833}
   - component: {fileID: 1205151830306799839}
   - component: {fileID: 1205151830306799832}
+  - component: {fileID: -4055359867857901382}
   m_Layer: 0
   m_Name: Shaman_Ground
   m_TagString: Untagged
@@ -25,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1205151830306799834}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.000000011175871, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &1205151830306799839
 VisualEffect:
@@ -46,6 +47,7 @@ VisualEffect:
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
+  m_AllowInstancing: 1
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
@@ -113,3 +115,16 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &-4055359867857901382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205151830306799834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ae8b0f64a51428419a73977888279a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DestroyAfterTime: 3
