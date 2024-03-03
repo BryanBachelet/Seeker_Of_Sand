@@ -74,7 +74,6 @@ namespace Enemies
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
-
                     state = m_navMeshAgent.SetDestination(hit.position);
 
                 }

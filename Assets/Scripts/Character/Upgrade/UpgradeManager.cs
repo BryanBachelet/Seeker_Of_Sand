@@ -147,12 +147,13 @@ public class UpgradeManager : MonoBehaviour
         spellChoiceUI.SetActive(true);
         upgradeBook.SetActive(true);
         m_chooseSpellManagerComponent.ResetRandomSpell();
-        Debug.Log("Open Spell Choice interface");
+        GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
     }
 
     public void SendSpell(SpellSystem.Capsule capsule)
     {
         m_characterUpgradeComponent.ApplySpellChoise(capsule);
+        GuerhoubaTools.LogSystem.LogMsg("Spell Choose is" + capsule.name);
     }
 
     public void CloseSpellChoiceUI()
@@ -161,7 +162,7 @@ public class UpgradeManager : MonoBehaviour
         spellChoiceUI.SetActive(false);
         upgradeBook.SetActive(false);
 
-        Debug.Log("Close Spell Choice interface");
+        GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
     }
 
     #region Upgrade Level UI Functions

@@ -510,6 +510,7 @@ namespace Enemies
                     npcHealth.SetTarget(m_targetTranform);
                     npcHealth.targetData.isMoving = false;
                     m_enemiesFocusAltar.Add(npcHealth);
+                    Debug.Log("Has another target than player");
                 }
 
             }
@@ -589,6 +590,7 @@ namespace Enemies
                     npcHealth.RestartObject();
                     npcHealth.targetData.isMoving = false;
                     m_enemiesFocusAltar.Add(npcHealth);
+                    Debug.Log("Has another target than player");
                 }
 
             }
@@ -650,6 +652,7 @@ namespace Enemies
                     npcHealth.targetData.target = m_playerTranform;
                     npcHealth.targetData.isMoving = true;
                     npcHealth.ResetTarget();
+                    Debug.Log("Has reset target on player");
                 }
             }
 
