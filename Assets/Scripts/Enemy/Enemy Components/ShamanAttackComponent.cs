@@ -73,6 +73,7 @@ namespace Enemies
 
             if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
             {
+                transform.LookAt(m_targetTransform);
                 if (m_timerOfCharge - 0.25f < timeOfCharge && m_SignAttackReset)
                 {
                     m_signAttack.Play();
@@ -96,6 +97,7 @@ namespace Enemies
 
             if (m_npcHealthComponent.npcState == NpcState.RECUPERATION)
             {
+                transform.LookAt(m_targetTransform);
                 if (m_timerOfRecuperation > timeofRecuperation)
                 {
                     m_npcHealthComponent.npcState = NpcState.MOVE;

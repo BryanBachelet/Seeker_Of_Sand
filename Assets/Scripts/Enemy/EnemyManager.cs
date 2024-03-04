@@ -39,6 +39,7 @@ namespace Enemies
         [SerializeField] private float m_spawnTime = 3.0f;
 
         [SerializeField] public int m_maxUnittotal = 400;
+        [SerializeField] private int m_groupEnemySize = 5;
         [SerializeField] private AnimationCurve m_MaxUnitControl;
         static float currentMaxUnitValue;
         [SerializeField] private HealthManager m_healthManager;
@@ -129,6 +130,7 @@ namespace Enemies
         [HideInInspector] public int altarSuccessed;
         [HideInInspector] public int killCount;
         private const string fileStatsName = "\\Stats_data";
+        private const int m_tryCountToSpawnEnemy = 10;
 
         [SerializeField] public TMP_Text m_Instruction;
         [SerializeField] public Image m_ImageInstruction;
@@ -150,7 +152,7 @@ namespace Enemies
         public GameObject[] punketoneLifeBar;
         public Animator[] punketonLifeBarAnimator;
         public Image[] punketoneLifeBarfill;
-        
+
 
         private AltarBehaviorComponent lastAltarActivated;
         private List<Punketone> punketoneInvoked = new List<Punketone>();
@@ -172,9 +174,9 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<PullingSystem>();
             m_pullingSystem.InitializePullingSystem();
-            if(punketoneLifeBar.Length > 0)
+            if (punketoneLifeBar.Length > 0)
             {
-                for(int i = 0; i < punketoneLifeBar.Length; i++)
+                for (int i = 0; i < punketoneLifeBar.Length; i++)
                 {
                     punketonLifeBarAnimator[i] = punketoneLifeBar[i].GetComponent<Animator>();
                 }
@@ -206,7 +208,7 @@ namespace Enemies
             }
 
 
-            if(lastAltarActivated != null)
+            if (lastAltarActivated != null)
             {
                 lastSkeletonCount = lastAltarActivated.skeletonCount;
                 if (lastSkeletonCount != punketoneInvoked.Count)
@@ -227,11 +229,11 @@ namespace Enemies
                         punketoneLifeBarfill[i].fillAmount = punketoneInvoked[i].percentHP;
                     }
                 }
-                
+
             }
             else
             {
-                if(punketoneInvoked.Count > 0)
+                if (punketoneInvoked.Count > 0)
                 {
                     for (int i = 0; i < lastSkeletonCount; i++)
                     {
@@ -364,11 +366,9 @@ namespace Enemies
         {
             position = FindPosition();
             posspawn.Add(position);
-
-            for (int i = 0; i < GetNumberToSpawn(); i++)
+            InstantiateSpawnFeedback();
+            for (int i = 0; i < m_groupEnemySize; i++)
             {
-                //Debug.Log("Spawning Group ( i : " + i + " ) ---> " + GetNumberToSpawn());
-                //SpawnEnemy(position + Random.insideUnitSphere * 5f);
                 SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
             }
         }
@@ -403,198 +403,56 @@ namespace Enemies
             }
         }
 
-        private void SpawnEnemy(Vector3 positionSpawn)
+        private int FindValidTypeEnemyToSpawn()
         {
-            int rnd = Random.Range(0, 520);
-            GameObject enemySpawn;
-            float targetRate = 0.0f;
-            bool focusPlayer = false;
-            if (!EnemyTargetPlayer)
+            int enemyIndex = -1;
+            int countTentative = 0;
+            while (countTentative < m_tryCountToSpawnEnemy)
             {
-                if (m_targetTransformLists.Count <= 0) { return; }
-                ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
-                m_targetTranform = nearestAltar.transform;
+                countTentative++;
+                enemyIndex = Random.Range(0, 5);
+                if (!CanEnemySpawn(enemyIndex)) continue;
+                if (!m_pullingSystem.IsStillInstanceOf((EnemyType)enemyIndex)) continue;
 
-                targetRate = Random.Range(0.0f, 1.0f);
-            }
-
-            if (rnd < 450)
-            {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation, m_enemyHolder);
-                if (!EnemyTargetPlayer)
-                {
-                    if (targetRate > m_bodylessEventTargetRate)
-                    {
-                        focusPlayer = true;
-                    }
-                }
-            }
-            else if (rnd < 495 && rnd >= 450)
-            {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[1], positionSpawn, transform.rotation, m_enemyHolder);
-                if (!EnemyTargetPlayer)
-                {
-                    if (targetRate > m_fullBodyEventTargetRate)
-                    {
-                        focusPlayer = true;
-                    }
-                }
-            }
-            else if (rnd >= 496 && rnd < 501)
-            {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[2], positionSpawn, transform.rotation, m_enemyHolder);
-                if (!EnemyTargetPlayer)
-                {
-                    if (targetRate > m_tankEventTargetRate)
-                    {
-                        focusPlayer = true;
-                    }
-                }
-            }
-            else if (rnd > 500 && rnd <= 510)
-            {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[3], positionSpawn, transform.rotation, m_enemyHolder);
-                if (!EnemyTargetPlayer)
-                {
-                    if (targetRate > m_shamanEventTargetRate)
-                    {
-                        focusPlayer = true;
-                    }
-                }
-            }
-            else if (rnd > 510)
-            {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[4], positionSpawn, transform.rotation, m_enemyHolder);
-                if (!EnemyTargetPlayer)
-                {
-                    if (targetRate > m_runnerEventTargetRate)
-                    {
-                        focusPlayer = true;
-                    }
-                }
-            }
-            else
-            {
-                enemySpawn = GameObject.Instantiate(m_enemyGO[0], positionSpawn, transform.rotation, m_enemyHolder);
-                if (!EnemyTargetPlayer)
-                {
-                    if (targetRate > m_bodylessEventTargetRate)
-                    {
-                        focusPlayer = true;
-                    }
-                }
-            }
-
-            NpcHealthComponent npcHealth = enemySpawn.GetComponent<NpcHealthComponent>();
-            NpcMouvementComponent npcMove = enemySpawn.GetComponent<NpcMouvementComponent>();
-            npcMove.enemiesManager = this;
-            npcHealth.SetInitialData(m_healthManager, this);
-
-            if (EnemyTargetPlayer)
-            {
-                npcHealth.targetData.isMoving = true;
-                npcHealth.SetTarget(m_playerTranform);
-            }
-            else
-            {
-
-                if (focusPlayer)
-                {
-                    npcHealth.targetData.isMoving = true;
-                    npcHealth.SetTarget(m_playerTranform);
-
-
-                }
-                else
-                {
-                    npcHealth.SetTarget(m_targetTranform);
-                    npcHealth.targetData.isMoving = false;
-                    m_enemiesFocusAltar.Add(npcHealth);
-                    Debug.Log("Has another target than player");
-                }
+                break;
 
             }
-            m_enemiesArray.Add(npcHealth);
+            return enemyIndex;
         }
 
+        private void InstantiateSpawnFeedback()
+        {
+            Instantiate(m_spawningVFX, position, transform.rotation);
+            GlobalSoundManager.PlayOneShot(37, position);
+        }
 
         private void SpawnEnemyByPool(Vector3 positionSpawn)
         {
-            int indexNextSpawn = -1;
-            GameObject goToMoveIn = null;
+            int enemyIndexChoose = FindValidTypeEnemyToSpawn();
+
+            if (enemyIndexChoose == -1) return;
+
+            GameObject enemyObjectPull = null;
             NpcHealthComponent npcHealth = null;
             NpcMouvementComponent npcMove = null;
-            int randomEnemyTry = -1;
-            int countTentative = 0;
-            while (indexNextSpawn < 0 && countTentative < 10)
-            {
-                countTentative++;
-                randomEnemyTry = Random.Range(0, 5);
-           
 
-                if (!m_pullingSystem.IsStillInstanceOf((EnemyType)randomEnemyTry)) continue;
+            enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);
+            enemyTypeStats[enemyIndexChoose].instanceCount += 1;
+            enemyObjectPull.transform.position = positionSpawn;
+            enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
+            enemyObjectPull.GetComponent<NavMeshAgent>().Warp(positionSpawn);
 
-                if (CanEnemySpawn(randomEnemyTry))
-                {
-
-                    goToMoveIn = m_pullingSystem.GetEnemy((EnemyType)randomEnemyTry);
-                    enemyTypeStats[randomEnemyTry].instanceCount += 1;
-                    indexNextSpawn = randomEnemyTry;
-                    goToMoveIn.transform.position = positionSpawn;
-                    goToMoveIn.GetComponent<NavMeshAgent>().updatePosition = true;
-                    goToMoveIn.GetComponent<NavMeshAgent>().Warp(positionSpawn);
-                    npcHealth = goToMoveIn.GetComponent<NpcHealthComponent>();
-                    npcMove = goToMoveIn.GetComponent<NpcMouvementComponent>();
-                    break;
-                }
-
-            }
-            if (goToMoveIn == null) return;
-            Instantiate(m_spawningVFX, position, transform.rotation);
-            GlobalSoundManager.PlayOneShot(37, position);
-            float targetRate = 0.0f;
-            bool focusPlayer = true;
-            if (!EnemyTargetPlayer)
-            {
-                if (m_targetTransformLists.Count <= 0) { return; }
-                ObjectHealthSystem nearestAltar = CheckDistanceTarget(positionSpawn);
-                m_targetTranform = nearestAltar.transform;
-
-                targetRate = Random.Range(0.0f, 1.0f);
-            }
+            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
+            npcMove.enabled = true;
             npcMove.enemiesManager = this;
+
+            npcHealth = enemyObjectPull.GetComponent<NpcHealthComponent>();
             npcHealth.SetInitialData(m_healthManager, this);
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
-
-            if (EnemyTargetPlayer)
-            {
-                npcHealth.targetData.isMoving = true;
-                npcHealth.RestartObject();
-                npcHealth.SetTarget(m_playerTranform);
-
-            }
-            else
-            {
-
-                if (focusPlayer)
-                {
-                    npcHealth.targetData.isMoving = true;
-                    npcHealth.RestartObject();
-                    npcHealth.SetTarget(m_playerTranform);
-
-
-                }
-                else
-                {
-                    npcHealth.SetTarget(m_targetTranform);
-                    npcHealth.RestartObject();
-                    npcHealth.targetData.isMoving = false;
-                    m_enemiesFocusAltar.Add(npcHealth);
-                    Debug.Log("Has another target than player");
-                }
-
-            }
+            npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject();
+            npcHealth.SetTarget(m_playerTranform);
+
             m_enemiesArray.Add(npcHealth);
         }
 
@@ -605,104 +463,58 @@ namespace Enemies
             int maxInstance = Mathf.RoundToInt(value);
             bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
             return canSpawn;
-    }
-
-        public void AddTarget(Transform target)
-        {
-
-            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
-            if (m_targetTransformLists.Contains(target) && m_targetList.Contains(healthSystem)) return;
-            m_targetTransformLists.Add(target);
-            ChangeSpawningPhase(true);
-            m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
-            int indexTargetList = m_targetList.Count - 1;
-            ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
-            healthSystemReference.m_eventLifeUIFeedback = m_imageLifeEvents[indexTargetList];
-            healthSystemReference.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[indexTargetList];
-            healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
-            if (target.GetComponent<AltarBehaviorComponent>())
-            {
-                altarLaunch++;
-                target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
-                m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
-            }
-            m_imageLifeEventsObj[indexTargetList].SetActive(true);
-            m_imageLifeEvents[indexTargetList].gameObject.SetActive(true);
-            m_textProgressEvent[indexTargetList].gameObject.SetActive(true);
-            EnemyTargetPlayer = false;
         }
-
-
-        public void RemoveTarget(Transform target)
-        {
-
-            if (!m_targetTransformLists.Contains(target)) return;
-            m_targetTransformLists.Remove(target);
-            int prevCount = m_targetList.Count;
-            m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
-            ChangeSpawningPhase(false);
-            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
-            healthSystem.ResetUIHealthBar();
-            m_imageLifeEventsObj[prevCount - 1].SetActive(false);
-            for (int i = 0; i < m_enemiesFocusAltar.Count; i++)
-            {
-                NpcHealthComponent npcHealth = m_enemiesFocusAltar[i];
-                if (npcHealth)
-                {
-                    npcHealth.targetData.target = m_playerTranform;
-                    npcHealth.targetData.isMoving = true;
-                    npcHealth.ResetTarget();
-                    Debug.Log("Has reset target on player");
-                }
-            }
-
-            if (m_targetTransformLists.Count <= 0)
-            {
-                EnemyTargetPlayer = true;
-            }
-            else
-            {
-                EnemyTargetPlayer = false;
-            }
-        }
-
-
-        public void RemoveAllTarget()
-        {
-            for (int i = 0; i < m_targetTransformLists.Count; i++)
-            {
-                RemoveTarget(m_targetTransformLists[i]);
-            }
-        }
-
-        public void RemoveAllAltar()
-        {
-            for (int i = 0; i < m_altarTransform.Count; i++)
-            {
-                RemoveAltar(m_altarTransform[i]);
-            }
-        }
-
-        public void AddAltar(Transform altarTarget)
-        {
-            m_altarTransform.Add(altarTarget);
-            lastAltarActivated = altarTarget.GetComponent<AltarBehaviorComponent>();
-            m_altarList.Add(lastAltarActivated);
-        }
-
 
 
         public void SendInstruction(string Instruction, Color colorText, Sprite iconAssociate)
         {
             StartCoroutine(DisplayInstruction(Instruction, 2, colorText, iconAssociate));
         }
-        public void RemoveAltar(Transform altarTarget)
+
+
+        public void ActiveEvent(Transform target)
         {
-            if (!m_altarTransform.Contains(altarTarget)) return;
-            m_altarTransform.Remove(altarTarget);
-            lastAltarActivated = null;
-            m_altarList.Remove(altarTarget.GetComponent<AltarBehaviorComponent>());
+
+            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
+
+
+            ChangeSpawningPhase(true);
+            m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
+            int indexTargetList = m_targetList.Count - 1;
+            ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
+            healthSystemReference.indexUIEvent = indexTargetList;
+            healthSystemReference.m_eventLifeUIFeedback = m_imageLifeEvents[indexTargetList];
+            healthSystemReference.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[indexTargetList];
+            healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
+            if (target.GetComponent<AltarBehaviorComponent>())
+            {
+                altarLaunch++;
+                m_altarList.Add(target.GetComponent<AltarBehaviorComponent>());
+                m_altarTransform.Add(target);
+                target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
+                m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
+            }
+            m_imageLifeEventsObj[indexTargetList].SetActive(true);
+            m_imageLifeEvents[indexTargetList].gameObject.SetActive(true);
+            m_textProgressEvent[indexTargetList].gameObject.SetActive(true);
         }
+
+        public void DeactiveEvent(Transform target)
+        {
+            m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
+            ChangeSpawningPhase(false);
+            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
+            healthSystem.ResetUIHealthBar();
+            int indexTargetList = healthSystem.indexUIEvent;
+            m_imageLifeEventsObj[indexTargetList].SetActive(false);
+            m_imageLifeEventsObj[indexTargetList].SetActive(false);
+            m_imageLifeEvents[indexTargetList].gameObject.SetActive(false);
+            m_textProgressEvent[indexTargetList].gameObject.SetActive(false);
+            m_sliderProgressEvent[indexTargetList].gameObject.SetActive(false);
+            m_altarList.Remove(target.GetComponent<AltarBehaviorComponent>());
+            m_altarTransform.Remove(target);
+        }
+
 
         public void SpawnExp(Vector3 position, int count, int indexMob)
         {
@@ -724,14 +536,10 @@ namespace Enemies
 
         public void IncreseAlterEnemyCount(NpcHealthComponent npcHealth)
         {
-            if (!EnemyTargetPlayer)
+            AltarBehaviorComponent nearestAltar = FindClosestAltar(npcHealth.transform.position);
+            if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
             {
-                AltarBehaviorComponent nearestAltar = FindClosestAltar(npcHealth.transform.position);
-                if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
-                {
-                    nearestAltar.IncreaseKillCount();
-                }
-
+                nearestAltar.IncreaseKillCount();
             }
         }
 
@@ -754,7 +562,7 @@ namespace Enemies
             killCount++;
             m_enemyKillRatio.AddEnemiKill();
 
-            if (m_enemiesFocusAltar.Contains(npcHealth)) 
+            if (m_enemiesFocusAltar.Contains(npcHealth))
                 m_enemiesFocusAltar.Remove(npcHealth);
 
             enemyTypeStats[(int)type].instanceCount -= 1;
@@ -802,7 +610,6 @@ namespace Enemies
             }
             return altarSript;
         }
-
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;

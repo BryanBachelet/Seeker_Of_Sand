@@ -264,7 +264,7 @@ namespace Render.Camera
             collsionRayDebug = ray;
             if (Physics.Raycast(ray,out hit, targetDistance, obstacleLayerMask))
             {
-                float distance = Vector3.Distance(m_targetTransform.position, hit.point);
+                float distance = Vector3.Distance(m_targetTransform.position, hit.point) - 0.3f;
                 return distance;
             }
 

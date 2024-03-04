@@ -131,7 +131,6 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         if (m_enemiesCountConditionToWin <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
-
             SucceedEvent();
             return;
         }
@@ -240,9 +239,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_isEventOccuring = false;
         isAltarDestroy = true;
         m_interactionEvent.currentInteractibleObjectActive = null;
-        m_enemyManager.RemoveTarget(transform);
-        m_enemyManager.RemoveAltar(transform);
-        Debug.Log("Destroy event");
+        m_enemyManager.DeactiveEvent(transform);
+        GuerhoubaTools.LogSystem.LogMsg("Destroy Altar");
     }
     #endregion
 
@@ -261,9 +259,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         if (!m_objectHealthSystem.IsEventActive())
         {
             m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
-
-            m_enemyManager.AddTarget(this.transform);
-            m_enemyManager.AddAltar(transform);
+            m_enemyManager.ActiveEvent(transform);
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
             progression = 0;
             m_myAnimator.SetBool("ActiveEvent", true);
@@ -285,6 +281,8 @@ public class AltarBehaviorComponent : MonoBehaviour
 
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
 
+            
+
             m_hasEventActivate = false;
             m_isEventOccuring = true;
         }
@@ -304,10 +302,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_interactionEvent.currentInteractibleObjectActive = null;
         // Update Enemies Manager  ==> Create One functions from the enemyManager
         m_enemyManager.altarSuccessed++;
-        m_enemyManager.RemoveTarget(transform);
-        m_enemyManager.RemoveAltar(transform);
         m_enemyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" + nextRewardTypologie + ")", Color.green, instructionImage);
-
+        m_enemyManager.DeactiveEvent(transform);
         // Update altar mesh color
         SetMeshesEventIntensity(.32f * (resetNumber + 1));
 
