@@ -131,7 +131,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         if (m_enemiesCountConditionToWin <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
-            SucceedEvent();
+           SucceedEvent();
             return;
         }
         if(tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)

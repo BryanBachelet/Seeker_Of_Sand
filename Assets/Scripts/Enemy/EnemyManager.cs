@@ -27,6 +27,13 @@ namespace Enemies
         public AnimationCurve animationCurve;
     }
 
+    public enum EnemySpawnCause
+    {
+        SHADOW,
+        EVENT,
+        NIGHT
+    }
+
 
     public class EnemyManager : MonoBehaviour
     {
@@ -137,6 +144,7 @@ namespace Enemies
         [SerializeField] public Sprite[] instructionSprite;
         [SerializeField] public Animator m_instructionAnimator;
 
+
         public bool spawningConstant = false;
 
 
@@ -158,6 +166,11 @@ namespace Enemies
         private List<Punketone> punketoneInvoked = new List<Punketone>();
         private int lastSkeletonCount;
         public int remainEnemy = 0;
+
+        // Spawn Cause Variable
+        private bool[] m_spawnCauseState = new bool[3];
+
+
         public void Awake()
         {
 
@@ -197,16 +210,14 @@ namespace Enemies
             {
                 m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy - 1);
             }
-            if (spawningPhase || m_dayController.isNight || m_targetTransformLists.Count > 0)
+            if (spawningPhase)
             {
-                if (m_dayController.isNight && spawningPhase == false)
-                {
-                    ChangeSpawningPhase(true);
-                }
+
                 m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
                 SpawnCooldown();
             }
 
+            ActiveSpawnPhase(m_dayController.isNight, EnemySpawnCause.NIGHT);
 
             if (lastAltarActivated != null)
             {
@@ -478,7 +489,7 @@ namespace Enemies
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
 
 
-            ChangeSpawningPhase(true);
+            ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
@@ -493,6 +504,7 @@ namespace Enemies
                 m_altarTransform.Add(target);
                 target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
                 m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
+                lastAltarActivated = target.GetComponent<AltarBehaviorComponent>();
             }
             m_imageLifeEventsObj[indexTargetList].SetActive(true);
             m_imageLifeEvents[indexTargetList].gameObject.SetActive(true);
@@ -502,7 +514,7 @@ namespace Enemies
         public void DeactiveEvent(Transform target)
         {
             m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
-            ChangeSpawningPhase(false);
+            ActiveSpawnPhase(false, EnemySpawnCause.EVENT);
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             healthSystem.ResetUIHealthBar();
             int indexTargetList = healthSystem.indexUIEvent;
@@ -513,6 +525,7 @@ namespace Enemies
             m_sliderProgressEvent[indexTargetList].gameObject.SetActive(false);
             m_altarList.Remove(target.GetComponent<AltarBehaviorComponent>());
             m_altarTransform.Remove(target);
+            lastAltarActivated = null;
         }
 
 
@@ -610,8 +623,28 @@ namespace Enemies
             }
             return altarSript;
         }
+
+        private bool CanActiveSpawnPhase()
+        {
+            for (int i = 0; i < m_spawnCauseState.Length; i++)
+            {
+                if (m_spawnCauseState[i] == true) 
+                    return true;
+            }
+            return false;
+        }
+        public void ActiveSpawnPhase(bool state, EnemySpawnCause spawnCause)
+        {
+            m_spawnCauseState[(int)spawnCause] = state;
+            if (CanActiveSpawnPhase() != spawningPhase)
+            {
+                ChangeSpawningPhase(!spawningPhase);
+            }
+        }
+
         public void ChangeSpawningPhase(bool spawning)
         {
+            Debug.Log("Active SpawingPhase :" + spawning);
             spawningPhase = spawning;
             detectionAnimator.SetBool("ShadowDetection", spawningPhase);
             if (spawning)

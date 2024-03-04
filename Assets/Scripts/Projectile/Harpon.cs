@@ -51,19 +51,17 @@ public class Harpon : Projectile
             Destroy(this.gameObject);
         }
 
-        transform.position += transform.forward * m_speed * Time.deltaTime;
-        m_currentDistance += m_speed * Time.deltaTime;
-
         if (!m_enemyImpale && Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
         {
 
             SetSlopeRotation(hit.normal);
         }
 
+        transform.position += transform.forward * m_speed * Time.deltaTime;
+        m_currentDistance += m_speed * Time.deltaTime;
+
         if (m_firstHit && m_enemyImpale != null)
             m_enemyImpale.transform.position = transform.position;
-
-
 
     }
     private void OnTriggerEnter(Collider other)
