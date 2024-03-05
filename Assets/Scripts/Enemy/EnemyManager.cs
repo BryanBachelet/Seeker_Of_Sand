@@ -422,12 +422,20 @@ namespace Enemies
             {
                 countTentative++;
                 enemyIndex = Random.Range(0, 5);
-                if (!CanEnemySpawn(enemyIndex)) continue;
-                if (!m_pullingSystem.IsStillInstanceOf((EnemyType)enemyIndex)) continue;
-
+                if (!CanEnemySpawn(enemyIndex))
+                {
+                    enemyIndex = -1;
+                    continue;
+                }
+                if (!m_pullingSystem.IsStillInstanceOf((EnemyType)enemyIndex))
+                {
+                    enemyIndex = -1;
+                    continue;
+                }
                 break;
 
             }
+            
             return enemyIndex;
         }
 
