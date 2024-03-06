@@ -107,7 +107,7 @@ public class DayCyclecontroller : MonoBehaviour
 
         AdjustPostProcessByHour(m_timeOfDay);
         //UpdatePostProcess();
-        if (!Application.isPlaying) return; 
+        if (!Application.isPlaying) return;
         if (m_timeOfDay > 5.12f && m_timeOfDay < 18.5f)
         {
             if (m_moon.isActiveAndEnabled)
@@ -356,12 +356,15 @@ public class DayCyclecontroller : MonoBehaviour
 
                 //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
             }
-            if(volumePP.profile.TryGet<Exposure>(out vExposure))
+            if (volumePP.profile.TryGet<Exposure>(out vExposure))
             {
                 vExposure.compensation.value = m_ExposureCompensationByHour.Evaluate(hour);
             }
         }
-       if(m_sun) m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
+        if (m_sun)
+        {
+            m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
+        }
     }
 }
 

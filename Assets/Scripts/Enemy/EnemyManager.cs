@@ -1,3 +1,6 @@
+
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,8 +11,10 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using SeekerOfSand.UI;
 
+
 namespace Enemies
 {
+
     [System.Serializable]
     public enum EnemyType
     {
@@ -122,12 +127,10 @@ namespace Enemies
         [SerializeField] public Image m_ImageInstruction;
         [SerializeField] public Sprite[] instructionSprite;
         [SerializeField] public Animator m_instructionAnimator;
-
-        [Header("Debug / Tests Parameters")]
-        public bool activeTestPhase;
-        public bool activeSpawnConstantDebug = false;
-
-
+#if UNITY_EDITOR
+        [HideInInspector] public bool activeTestPhase;
+        [HideInInspector] public bool activeSpawnConstantDebug = false;
+#endif
         public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
         public event OnDeath OnDeathEvent = delegate { };
 
@@ -167,16 +170,21 @@ namespace Enemies
             m_pullingSystem.InitializePullingSystem();
             if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
 
+#if UNITY_EDITOR
             if (activeSpawnConstantDebug)
                 ActiveSpawnPhase(activeSpawnConstantDebug, EnemySpawnCause.DEBUG);
-
+#endif
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
         {
 
+#if UNITY_EDITOR
             if (!activeTestPhase && DayCyclecontroller.choosingArtefactStart) return;
+#else
+            if (DayCyclecontroller.choosingArtefactStart) return;
+#endif
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
 
@@ -714,7 +722,7 @@ namespace Enemies
         }
 
 
-        #region EndStat
+#region EndStat
 
         public EndInfoStats FillEndStat()
         {
@@ -751,7 +759,7 @@ namespace Enemies
 
 
 
-        #endregion
+#endregion
 
         public void OnValidate()
         {
