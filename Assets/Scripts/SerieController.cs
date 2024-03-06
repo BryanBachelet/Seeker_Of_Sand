@@ -43,7 +43,7 @@ public class SerieController : MonoBehaviour
         {
             m_currentCount += 1;
             if (m_biggestMultiplicator < m_currentCount) m_biggestMultiplicator = m_currentCount;
-            m_serieKillCount.text = "Kill combo : \n" + m_currentCount;
+            m_serieKillCount.text = "" + m_currentCount;
             m_SerieActive = true;
         }
     }

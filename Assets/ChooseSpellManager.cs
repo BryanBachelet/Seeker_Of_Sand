@@ -25,6 +25,7 @@ public class ChooseSpellManager : MonoBehaviour
     public Image iconSpell;
     private PopupFunction lastSpell = null;
     public GameObject descriptionHolder = null;
+    private Animator descriptionHolderAnimator;
     public bool overable = false;
     public TMP_Text textSpellFeedback;
     [HideInInspector] public UpgradeManager m_upgradeManagerComponenet;
@@ -38,6 +39,8 @@ public class ChooseSpellManager : MonoBehaviour
     void Start()
     {
         m_animator = this.GetComponent<Animator>();
+        if(descriptionHolder !=  null) { descriptionHolderAnimator = descriptionHolder.GetComponent<Animator>(); }
+
     }
     #endregion
 
@@ -91,6 +94,7 @@ public class ChooseSpellManager : MonoBehaviour
     {
         m_hasChooseSpell = true;
         m_animator.SetBool("ActiveChoice", false);
+        if (descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", false); }
         m_animator.SetTrigger("Choosed");
     }
 
@@ -154,6 +158,7 @@ public class ChooseSpellManager : MonoBehaviour
         if (lastSpell == popup) return;
         if (!overable) return;
         descriptionHolder.SetActive(true);
+        if(descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", true); }
         lastSpell = popup;
         name.text = newSpell[spellIndex].name;
         description.text = newSpell[spellIndex].description;
@@ -164,5 +169,6 @@ public class ChooseSpellManager : MonoBehaviour
     public void SpellOverringExit()
     {
         descriptionHolder.SetActive(false);
+        if (descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", false); }
     }
 }

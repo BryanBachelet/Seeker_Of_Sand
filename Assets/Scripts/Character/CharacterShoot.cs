@@ -288,7 +288,7 @@ namespace Character
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 1; i++)
             {
                 int RndCapsule = 0;
                 if (i == 0)

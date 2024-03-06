@@ -183,8 +183,12 @@ namespace Enemies
             m_timeOfGame += Time.deltaTime;
             remainEnemy = m_enemiesArray.Count;
             if (remainEnemy > 0)
+            {//<size=130%>999 <voffset=0.2em> \n<size=100%>Remain
+                m_tmpTextEnemyRemain.text = "<size=130%>" + remainEnemy +"<voffset=0.2em> \n<size=100%>Remain" ;
+            }
+            else
             {
-                m_tmpTextEnemyRemain.text = "Remain : " + (remainEnemy - 1);
+                m_tmpTextEnemyRemain.text = "<size=130%>" + 0 + "<voffset=0.2em> \n<size=100%>Remain";
             }
             if (spawningPhase)
             {
@@ -211,7 +215,7 @@ namespace Enemies
                 {
                     for (int i = 0; i < lastSkeletonCount; i++)
                     {
-                        m_UiEventManager.UpdateUIBossLifebar(i, punketoneInvoked[i].percentHP);
+                        m_UiEventManager.UpdateUIBossLifebar(i, punketoneInvoked[i].percentHP, punketoneInvoked[i].currentHP);
                     }
                 }
 

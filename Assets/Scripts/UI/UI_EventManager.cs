@@ -14,6 +14,7 @@ namespace SeekerOfSand
         {
             [SerializeField] private GameObject[] m_punketoneLifeBar;
             [SerializeField] private Image[] m_punketoneLifeBarfill;
+            [SerializeField] private TMP_Text[] m_punketonLifeRemain;
             private Animator[] m_punketonLifeBarAnimator ;
 
             [Header("Event UI")]
@@ -45,9 +46,10 @@ namespace SeekerOfSand
             }
 
             // Update Punketon UI Event
-            public void UpdateUIBossLifebar(int index, float value)
+            public void UpdateUIBossLifebar(int index, float value,float currentHP)
             {
                 m_punketoneLifeBarfill[index].fillAmount = value;
+                m_punketonLifeRemain[index].text = "" + currentHP;
             }
 
             public void RemoveUIBoss(int index)
