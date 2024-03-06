@@ -74,7 +74,6 @@ namespace Enemies
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
-
                     state = m_navMeshAgent.SetDestination(hit.position);
 
                 }
@@ -153,11 +152,6 @@ namespace Enemies
             float dot = Vector3.Dot(directionToDestination.normalized, directionToTarget.normalized);
             float distancePos = Vector3.Distance(transform.position, targetData.target.position);
 
-            if (targetData.target.name != "Player")
-            {
-                Debug.Log("Test");
-            }
-
             // Repositionning enemi when to far 
             if (distancePos > m_distanceBeforeRepositionning)
             {
@@ -185,7 +179,6 @@ namespace Enemies
             if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(targetData.target.position);
             if (!m_navMeshAgent.hasPath)
             {
-               if(isDebugActive) Debug.Log("Has hit");
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
@@ -215,7 +208,7 @@ namespace Enemies
 
                 m_rigidbody.isKinematic = false;
                 m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
-                //m_rigidbody.AddForce((direction.normalized + Vector3.up).normalized * power, ForceMode.Impulse);
+             
             }
 
             this.enabled = false;
@@ -227,7 +220,6 @@ namespace Enemies
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
             m_navMeshAgent.destination = (targetData.target.position);
-            //targetData.isMoving = true;
         }
     }
 }

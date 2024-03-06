@@ -61,7 +61,7 @@ public class ShadowFunction : MonoBehaviour
                     onShadowSpawnStatic = true;
                     outShadowSpawn = false;
                     outShadowSpawnStatic = false;
-                    enemyManager.ChangeSpawningPhase(true);
+                    enemyManager.ActiveSpawnPhase(true,Enemies.EnemySpawnCause.SHADOW);
                 }
 
             }
@@ -84,7 +84,7 @@ public class ShadowFunction : MonoBehaviour
                     outShadowSpawnStatic = true;
                     onShadowSpawn = false;
                     onShadowSpawnStatic = false;
-                    enemyManager.ChangeSpawningPhase(false);
+                    enemyManager.ActiveSpawnPhase(false,Enemies.EnemySpawnCause.SHADOW);
                 }
 
             }

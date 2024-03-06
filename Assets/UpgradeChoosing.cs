@@ -19,9 +19,6 @@ public class UpgradeChoosing : MonoBehaviour
     [HideInInspector] public UpgradeManager m_upgradeManager;
 
 
-    public void Update()
-    {
-    }
     public void SetNewUpgradeData(UpgradeLevelingData data)
     {
         m_upgradeLevelingData = data;

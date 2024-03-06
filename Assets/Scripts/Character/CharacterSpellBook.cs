@@ -48,7 +48,10 @@ namespace Character
         public void AddSpell(SpellSystem.Capsule spell)
         {
             m_bookOfSpell.Add(spell);
+            
         }
+
+        public int GetSpellIndex(SpellSystem.Capsule spell) { return m_bookOfSpell.IndexOf(spell); }
 
         public void RemoveSpell(int index)
         {

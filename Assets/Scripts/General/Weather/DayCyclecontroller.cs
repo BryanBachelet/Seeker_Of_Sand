@@ -12,10 +12,12 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
     CloudLayer vCloudLayer;
+    Exposure vExposure;
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
     [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
     [SerializeField] private AnimationCurve m_colorTemperatureOverTime;
+    [SerializeField] private AnimationCurve m_ExposureCompensationByHour;
     [Range(0, 24)]
     [SerializeField] public float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -356,6 +358,10 @@ public class DayCyclecontroller : MonoBehaviour
                 vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
 
                 //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
+            }
+            if(volumePP.profile.TryGet<Exposure>(out vExposure))
+            {
+                vExposure.compensation.value = m_ExposureCompensationByHour.Evaluate(hour);
             }
         }
        if(m_sun) m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);

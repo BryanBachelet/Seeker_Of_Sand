@@ -133,7 +133,6 @@ namespace Character
         public void InitComponentStat(CharacterStat stat)
         {
             runSpeed = stat.baseStat.speed;
-            GuerhoubaTools.LogSystem.LogMsg("Test1 " + runSpeed.ToString(),true);
             InitComponent();
         }
         private void InitComponent()

@@ -29,7 +29,8 @@ public class CharacterArtefact : MonoBehaviour
 
     private void SetupArtefact(ArtefactsInfos artefacts)
     {
-        if (activeDebug) Debug.Log("Artefacts " + artefacts.nameArtefact + " setup");
+ 
+        artefacts.isDebugActive = activeDebug;
         switch (artefacts.conditionsTrigger)
         {
             case ConditionsTrigger.OnHit:
