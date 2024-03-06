@@ -32,7 +32,8 @@ namespace Enemies
     {
         SHADOW,
         EVENT,
-        NIGHT
+        NIGHT,
+        DEBUG,
     }
 
 
@@ -122,8 +123,9 @@ namespace Enemies
         [SerializeField] public Sprite[] instructionSprite;
         [SerializeField] public Animator m_instructionAnimator;
 
-
-        public bool spawningConstant = false;
+        [Header("Debug / Tests Parameters")]
+        public bool activeTestPhase;
+        public bool activeSpawnConstantDebug = false;
 
 
         public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
@@ -145,7 +147,7 @@ namespace Enemies
         public int remainEnemy = 0;
 
         // Spawn Cause Variable
-        private bool[] m_spawnCauseState = new bool[3];
+        private bool[] m_spawnCauseState = new bool[4];
 
 
         public void Awake()
@@ -165,13 +167,16 @@ namespace Enemies
             m_pullingSystem.InitializePullingSystem();
             if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
 
+            if (activeSpawnConstantDebug)
+                ActiveSpawnPhase(activeSpawnConstantDebug, EnemySpawnCause.DEBUG);
+
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
         public void Update()
         {
 
-            if (DayCyclecontroller.choosingArtefactStart) return;
+            if (!activeTestPhase && DayCyclecontroller.choosingArtefactStart) return;
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
 
@@ -462,9 +467,6 @@ namespace Enemies
 
         public void ActiveEvent(Transform target)
         {
-
-
-
             ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
