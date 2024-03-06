@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using SeekerOfSand.UI;
 
 namespace Enemies
 {
@@ -62,21 +63,6 @@ namespace Enemies
         [SerializeField] private Transform m_enemyHolder;
 
         #region EnemyParameter
-        [Header("Enemy Target Rate")]
-        [Range(0, 1.0f)] [SerializeField] private float m_bodylessEventTargetRate = .5f;
-        [Range(0, 1.0f)] [SerializeField] private float m_fullBodyEventTargetRate = .5f;
-        [Range(0, 1.0f)] [SerializeField] private float m_shamanEventTargetRate = 1f;
-        [Range(0, 1.0f)] [SerializeField] private float m_runnerEventTargetRate = 0.0f;
-        [Range(0, 1.0f)] [SerializeField] private float m_tankEventTargetRate = 0.25f;
-
-
-        [Header("Maximum Pool")]
-        [SerializeField] private AnimationCurve bodyLessMouvementPool;
-        [SerializeField] private AnimationCurve bodufullMouvementPool;
-        [SerializeField] private AnimationCurve chamanMouvementPool;
-        [SerializeField] private AnimationCurve runnerMouvementPool;
-        [SerializeField] private AnimationCurve tankMouvementPool;
-        [SerializeField] private int[] ennemyCount = new int[5];
 
         [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[5];
 
@@ -96,12 +82,6 @@ namespace Enemies
 
         static public bool EnemyTargetPlayer = true;
 
-        [Header("Events Parameters")]
-        public Image[] m_imageLifeEvents = new Image[3];
-        public GameObject[] m_imageLifeEventsObj = new GameObject[3];
-        public TMP_Text[] m_textProgressEvent = new TMP_Text[3];
-        public Image[] m_sliderProgressEvent = new Image[3];
-
         public Transform m_targetTranform;
         private ObjectHealthSystem m_targetScript;
         public List<Transform> m_targetTransformLists = new List<Transform>();
@@ -109,9 +89,6 @@ namespace Enemies
 
         private List<Transform> m_altarTransform = new List<Transform>();
         private List<AltarBehaviorComponent> m_altarList = new List<AltarBehaviorComponent>();
-
-        [SerializeField] private float m_tempsEntrePause;
-        [SerializeField] private float m_tempsPause;
 
         public bool spawningPhase = true;
 
@@ -139,6 +116,7 @@ namespace Enemies
         private const string fileStatsName = "\\Stats_data";
         private const int m_tryCountToSpawnEnemy = 10;
 
+        [Header("Instruction UI")]
         [SerializeField] public TMP_Text m_Instruction;
         [SerializeField] public Image m_ImageInstruction;
         [SerializeField] public Sprite[] instructionSprite;
@@ -157,10 +135,9 @@ namespace Enemies
         [SerializeField] private Color[] colorSignUI = new Color[2];
 
         private PullingSystem m_pullingSystem;
-        public GameObject[] punketoneLifeBar;
-        public Animator[] punketonLifeBarAnimator;
-        public Image[] punketoneLifeBarfill;
 
+        public GameObject m_uiManagerGameObject;
+        private UI_EventManager m_UiEventManager;
 
         private AltarBehaviorComponent lastAltarActivated;
         private List<Punketone> punketoneInvoked = new List<Punketone>();
@@ -173,7 +150,6 @@ namespace Enemies
 
         public void Awake()
         {
-
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -187,13 +163,8 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<PullingSystem>();
             m_pullingSystem.InitializePullingSystem();
-            if (punketoneLifeBar.Length > 0)
-            {
-                for (int i = 0; i < punketoneLifeBar.Length; i++)
-                {
-                    punketonLifeBarAnimator[i] = punketoneLifeBar[i].GetComponent<Animator>();
-                }
-            }
+            if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
+
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -219,7 +190,7 @@ namespace Enemies
 
             ActiveSpawnPhase(m_dayController.isNight, EnemySpawnCause.NIGHT);
 
-            if (lastAltarActivated != null)
+            if (m_uiManagerGameObject && lastAltarActivated != null)
             {
                 lastSkeletonCount = lastAltarActivated.skeletonCount;
                 if (lastSkeletonCount != punketoneInvoked.Count)
@@ -228,16 +199,14 @@ namespace Enemies
                     for (int i = 0; i < lastSkeletonCount; i++)
                     {
                         punketoneInvoked.Add(lastAltarActivated.punketonHP[i]);
-                        punketoneLifeBar[i].SetActive(true);
-                        punketoneLifeBarfill[i].fillAmount = punketoneInvoked[i].percentHP;
-                        punketonLifeBarAnimator[i].SetBool("Open", true);
+                        m_UiEventManager.SetupUIBoss(i);
                     }
                 }
                 else
                 {
                     for (int i = 0; i < lastSkeletonCount; i++)
                     {
-                        punketoneLifeBarfill[i].fillAmount = punketoneInvoked[i].percentHP;
+                        m_UiEventManager.UpdateUIBossLifebar(i, punketoneInvoked[i].percentHP);
                     }
                 }
 
@@ -248,10 +217,7 @@ namespace Enemies
                 {
                     for (int i = 0; i < lastSkeletonCount; i++)
                     {
-
-                        punketoneLifeBarfill[i].fillAmount = 0;
-                        punketonLifeBarAnimator[i].SetBool("Open", false);
-                        punketoneLifeBar[i].SetActive(false);
+                        m_UiEventManager.RemoveUIBoss(i);
                     }
                     punketoneInvoked.Clear();
                 }
@@ -262,6 +228,9 @@ namespace Enemies
 
         public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, Sprite iconSprite)
         {
+            if (!m_Instruction)
+                yield break;
+
             m_Instruction.color = colorText;
             m_Instruction.text = instruction;
             m_ImageInstruction.sprite = iconSprite;
@@ -435,7 +404,7 @@ namespace Enemies
                 break;
 
             }
-            
+
             return enemyIndex;
         }
 
@@ -494,29 +463,22 @@ namespace Enemies
         public void ActiveEvent(Transform target)
         {
 
-            ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
 
 
             ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
-            healthSystemReference.indexUIEvent = indexTargetList;
-            healthSystemReference.m_eventLifeUIFeedback = m_imageLifeEvents[indexTargetList];
-            healthSystemReference.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[indexTargetList];
-            healthSystemReference.m_eventProgressUIFeedback = m_textProgressEvent[indexTargetList];
+          
             if (target.GetComponent<AltarBehaviorComponent>())
             {
                 altarLaunch++;
                 m_altarList.Add(target.GetComponent<AltarBehaviorComponent>());
                 m_altarTransform.Add(target);
-                target.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[indexTargetList];
-                m_sliderProgressEvent[indexTargetList].gameObject.SetActive(true);
                 lastAltarActivated = target.GetComponent<AltarBehaviorComponent>();
             }
-            m_imageLifeEventsObj[indexTargetList].SetActive(true);
-            m_imageLifeEvents[indexTargetList].gameObject.SetActive(true);
-            m_textProgressEvent[indexTargetList].gameObject.SetActive(true);
+
+            m_UiEventManager.SetupEventUI(healthSystemReference, indexTargetList);
         }
 
         public void DeactiveEvent(Transform target)
@@ -526,14 +488,12 @@ namespace Enemies
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             healthSystem.ResetUIHealthBar();
             int indexTargetList = healthSystem.indexUIEvent;
-            m_imageLifeEventsObj[indexTargetList].SetActive(false);
-            m_imageLifeEventsObj[indexTargetList].SetActive(false);
-            m_imageLifeEvents[indexTargetList].gameObject.SetActive(false);
-            m_textProgressEvent[indexTargetList].gameObject.SetActive(false);
-            m_sliderProgressEvent[indexTargetList].gameObject.SetActive(false);
+          
             m_altarList.Remove(target.GetComponent<AltarBehaviorComponent>());
             m_altarTransform.Remove(target);
             lastAltarActivated = null;
+
+            m_UiEventManager.RemoveEventUI(indexTargetList);
         }
 
 
@@ -636,7 +596,7 @@ namespace Enemies
         {
             for (int i = 0; i < m_spawnCauseState.Length; i++)
             {
-                if (m_spawnCauseState[i] == true) 
+                if (m_spawnCauseState[i] == true)
                     return true;
             }
             return false;

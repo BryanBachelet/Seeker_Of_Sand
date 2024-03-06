@@ -34,11 +34,12 @@ namespace GuerhoubaTools
 
         public static void Close()
         {
+            LogMsg("Close Log", true);
             writer.Flush();
             writer.Close();
             writer = null;
             isFirstTime = true;
-            Debug.Log("Test");
+            
         }
     }
 }

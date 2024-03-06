@@ -23,7 +23,6 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Light m_moon;
     [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la dur�e d'une journ�e in-game, de base 10 minutes
     [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds � la vitesse d'�coulement du temps in-game. 1 reviens � avoir une journ�e de 24 secondes IRL
-    [SerializeField] public RectTransform m_ClockNeedle;
     [SerializeField] private GlobalSoundManager m_GSM;
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
@@ -100,9 +99,7 @@ public class DayCyclecontroller : MonoBehaviour
         float alpha = m_timeOfDay / 24.0f;
         float sunRotation = Mathf.Lerp(-90, 270, alpha);
         float moonRotation = sunRotation - 180;
-        float clockRotation = Mathf.Lerp(0, -360, alpha);
 
-        m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
 

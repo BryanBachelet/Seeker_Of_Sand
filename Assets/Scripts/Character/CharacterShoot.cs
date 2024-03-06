@@ -57,13 +57,11 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Animator m_BookAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
-        [SerializeField] public GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
         [SerializeField] private Transform bookTransform;
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
         private Rigidbody m_rigidbody;
 
-        private Animator m_AnimatorSkillBar;
 
         [SerializeField] public List<Image> icon_Sprite;
         [SerializeField] public List<Image> m_spellGlobalCooldown;
@@ -74,8 +72,7 @@ namespace Character
         private PauseMenu pauseScript;
         private ObjectState state;
 
-        // Temp 
-        private Vector3 pos;
+
 
         [SerializeField] public bool autoAimActive;
         [SerializeField] public AimMode m_aimModeState;
@@ -227,7 +224,6 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>();
             pauseScript = GetComponent<PauseMenu>();
-            m_AnimatorSkillBar = m_SkillBarHolder.GetComponent<Animator>();
             m_rigidbody = GetComponent<Rigidbody>();
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
@@ -577,7 +573,7 @@ namespace Character
                 dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * stats.range;
 
             data.destination = m_characterAim.GetAimFinalPoint();
-            pos = dest;
+
             return data;
         }
 
