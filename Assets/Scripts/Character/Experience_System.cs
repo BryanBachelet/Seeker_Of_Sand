@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
 using System.IO;
+using Character;
 public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
@@ -90,6 +91,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     public void OnEnemyKilledNew(int quantity)
     {
         float time = Time.time;
+       
         m_NumberEnemyKilled += (quantity * m_serieController.GetXpMultiplicator());
         levelProgress = m_ExperienceQuantitySansCSV.Evaluate(m_CurrentLevel);
         if (m_NumberEnemyKilled > levelProgress)
@@ -118,6 +120,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_CurrentLevel = newLevel;
 
     }
+
+    public int GetCurrentLevel() { return m_CurrentLevel; }
     // Add xp particule to the list
     public void AddExpParticule(ExperienceMouvement xpMvtScript)
     {
@@ -129,7 +133,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         ExperienceMouvement[] expArray = m_worldExp.ToArray();
         for (int i = 0; i < expArray.Length; i++)
         {
-            expArray[i].ActiveExperienceParticule(this.transform);
+          if(expArray[i])  expArray[i].ActiveExperienceParticule(this.transform);
         }
 
         m_worldExp.Clear();

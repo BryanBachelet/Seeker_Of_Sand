@@ -230,7 +230,6 @@ GameObject:
   - component: {fileID: 3294013781257085871}
   - component: {fileID: 3294013781257085868}
   - component: {fileID: -3431584024930899228}
-  - component: {fileID: -984922616853698352}
   - component: {fileID: -7824561366192684373}
   - component: {fileID: 4435284738777021273}
   - component: {fileID: 2510152453898684457}
@@ -340,34 +339,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 46
   m_CollisionDetection: 0
---- !u!114 &-984922616853698352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3294013781257085869}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d111f6adaf64c04419fcd1b36b8b9f5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_agentStat:
-    healthMax: 1
-    speed: 18
-    armor: 1
-    regeneration: 1
-    damage: 1
-  m_target: {fileID: 0}
-  m_speedThreshold: 0.5
-  m_ExperiencePrefab: {fileID: 1278518001253408458, guid: 2c0c58b6d9328634eb9085bd7fb2127b,
-    type: 3}
-  m_xpDrop: 1
-  m_debugActive: 0
-  m_hitVfx: {fileID: 602918771122814874, guid: 23962c5172d38db48a3b3e041cc4b5ef, type: 3}
-  m_TimeBtwRefresh: 0.2
-  myAnimator: {fileID: 8689520365587293952}
-  m_ActiveDeathAnim: 0
 --- !u!114 &-7824561366192684373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,6 +353,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexEnemy: 0
   m_maxLife: 1
+  gainPerMinute: 1
+  spawnMinute: 0
   m_vfxHitFeedback: {fileID: 2575186347912425037, guid: 69a1bec963035b943bda3a2bfb1f638f,
     type: 3}
   timeBeforeDestruction: 2
@@ -457,6 +430,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   death_vfx: {fileID: 1991147687903976700, guid: 10301bafbe023a440a688f4c3dcb9cc6,
     type: 3}
+  IsDebugActive: 0
 --- !u!114 &4435284738777021273
 MonoBehaviour:
   m_ObjectHideFlags: 0

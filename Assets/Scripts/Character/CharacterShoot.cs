@@ -57,13 +57,11 @@ namespace Character
         [SerializeField] private Animator m_CharacterAnimator;
         [SerializeField] private Animator m_BookAnimator;
         [SerializeField] private Transform m_OuterCircleHolder;
-        [SerializeField] public GameObject m_SkillBarHolder;
         [SerializeField] private Transform avatarTransform;
         [SerializeField] private Transform bookTransform;
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
         private Rigidbody m_rigidbody;
 
-        private Animator m_AnimatorSkillBar;
 
         [SerializeField] public List<Image> icon_Sprite;
         [SerializeField] public List<Image> m_spellGlobalCooldown;
@@ -74,8 +72,7 @@ namespace Character
         private PauseMenu pauseScript;
         private ObjectState state;
 
-        // Temp 
-        private Vector3 pos;
+
 
         [SerializeField] public bool autoAimActive;
         [SerializeField] public AimMode m_aimModeState;
@@ -106,6 +103,7 @@ namespace Character
         public float currentManaValue;
         public float regenPerSec;
         public float tempsAvantActiveRegenMana = 2;
+        private bool activeDebug;
 
         #endregion
         private void Awake()
@@ -125,7 +123,7 @@ namespace Character
             InitComponents();
             InitCapsule();
             InitSpriteSpell();
-            for(int i = 0; i < capsuleIndex.Count; i++)
+            for (int i = 0; i < capsuleIndex.Count; i++)
             {
                 m_dropInventory.addNewItem(capsuleIndex[i]);
             }
@@ -209,7 +207,7 @@ namespace Character
             }
             if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
             {
-               Shoot();
+                Shoot();
                 m_timeBetweenShoot = 0.0f;
             }
             else
@@ -226,7 +224,6 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>();
             pauseScript = GetComponent<PauseMenu>();
-            m_AnimatorSkillBar = m_SkillBarHolder.GetComponent<Animator>();
             m_rigidbody = GetComponent<Rigidbody>();
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
@@ -291,7 +288,7 @@ namespace Character
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 1; i++)
             {
                 int RndCapsule = 0;
                 if (i == 0)
@@ -299,7 +296,7 @@ namespace Character
                     RndCapsule = UnityEngine.Random.Range(0, 3);
 
                 }
-                else if(i == 1)
+                else if (i == 1)
                 {
                     RndCapsule = UnityEngine.Random.Range(9, 13);
                 }
@@ -366,19 +363,19 @@ namespace Character
             //m_CharacterAnimator.SetBool("Shooting", true);
 
 
-          
+
         }
 
 
         public int GetCapsuleIndex(int offset)
         {
-            offset = Mathf.Clamp(offset, -spellEquip.Length-1, spellEquip.Length-1);
+            offset = Mathf.Clamp(offset, -spellEquip.Length - 1, spellEquip.Length - 1);
             int index = m_currentIndexCapsule + offset;
             if (index >= spellEquip.Length)
             {
                 index -= spellEquip.Length;
             }
-            if(index <0)
+            if (index < 0)
             {
                 index += spellEquip.Length;
             }
@@ -403,14 +400,14 @@ namespace Character
             }
 
 
-            }
+        }
 
         public void EndCouroutine(int index)
         {
             m_spellCouroutine[index] = null;
         }
 
-        private IEnumerator ShootUniqueSpell(int indexSpell,int indexCouroutine, System.Action<int> test)
+        private IEnumerator ShootUniqueSpell(int indexSpell, int indexCouroutine, System.Action<int> test)
         {
             CapsuleStats stats = GetCurrentWeaponStat(indexSpell);
             bool isFinish = false;
@@ -510,6 +507,7 @@ namespace Character
 
         public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent)
         {
+
             onHit(position, tag, agent);
         }
         private void StartShoot()
@@ -526,7 +524,7 @@ namespace Character
             m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
-           //castingVFXAnimator.ResetTrigger("Shot");
+            //castingVFXAnimator.ResetTrigger("Shot");
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             if (m_currentType == SpellSystem.CapsuleType.ATTACK)
             {
@@ -534,16 +532,16 @@ namespace Character
                 lastElement = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType;
                 ChangeVfxElement(((int)lastElement));
             }
-             if(!m_shootInput) m_shootInputActive = false;
+            if (!m_shootInput) m_shootInputActive = false;
             m_canShoot = false;
             m_isShooting = false;
         }
 
         public void ChangeVfxElement(int elementIndex)
         {
-            for(int i = 0; i < ((int)SpellSystem.Element.EARTH)+1;i++)
+            for (int i = 0; i < ((int)SpellSystem.Element.EARTH) + 1; i++)
             {
-                if(i == elementIndex)
+                if (i == elementIndex)
                 {
                     vfxElementSign[i].SetActive(true);
                 }
@@ -559,7 +557,7 @@ namespace Character
 
             data.characterShoot = this;
             Vector3 baseDirection = transform.forward;
-            if ( m_characterAim.HasCloseTarget() || m_aimModeState != AimMode.AimControls) baseDirection = m_characterAim.GetAimDirection();
+            if (m_characterAim.HasCloseTarget() || m_aimModeState != AimMode.AimControls) baseDirection = m_characterAim.GetAimDirection();
             data.direction = Quaternion.AngleAxis(angle * ((index + 1) / 2), transformUsed.up) * baseDirection;
             data.speed = stats.speed + m_rigidbody.velocity.magnitude;
             data.life = stats.lifetime;
@@ -575,7 +573,7 @@ namespace Character
                 dest = transformUsed.position - (Vector3.up * 0.5f) + (dest - transformUsed.position).normalized * stats.range;
 
             data.destination = m_characterAim.GetAimFinalPoint();
-            pos = dest;
+
             return data;
         }
 
@@ -615,7 +613,7 @@ namespace Character
 
         private void ReloadShot()
         {
-            if (m_canShoot || m_isReloading ) return;
+            if (m_canShoot || m_isReloading) return;
 
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
@@ -643,7 +641,7 @@ namespace Character
                 for (int i = m_currentRotationIndex; i < m_spellGlobalCooldown.Count; i++)
                 {
                     m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_shootTimer) / totalShootTime;
-                  
+
                     m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_shootTimer).ToString(".#");
                 }
             }
@@ -653,7 +651,7 @@ namespace Character
         {
             if (m_canShoot || !m_isReloading) return;
 
-           if(!m_shootInput) m_shootInputActive = false;
+            if (!m_shootInput) m_shootInputActive = false;
 
             //avatarTransform.localRotation = Quaternion.identity;
             //bookTransform.localRotation = Quaternion.identity;
@@ -696,7 +694,7 @@ namespace Character
         {
             if (m_isCasting) return;
             //currentManaValue -= 2;
-            if(m_CharacterMouvement.isSliding)
+            if (m_CharacterMouvement.isSliding)
             {
                 m_CharacterMouvement.isSliding = false;
                 m_CharacterAnimator.SetBool("sliding", false);
@@ -795,6 +793,12 @@ namespace Character
         }
 
         #region Spell Functions
+
+        public void UpdateSpellRotation()
+        {
+
+        }
+
         public void AddSpell(int index)
         {
             int prevIndex = m_characterInventory.GetSpellCount();

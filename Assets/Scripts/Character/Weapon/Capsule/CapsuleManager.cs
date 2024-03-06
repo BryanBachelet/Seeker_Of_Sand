@@ -18,7 +18,7 @@ public class CapsuleManager : MonoBehaviour
     private int indexAttackInfo;
     private int indexBuffInfo;
     
-    public static int GetRandomCapsuleIndex()
+    public static int GetRandomCapsuleIndex(bool activeRemove =false)
     {
         int index = -1;
 
@@ -30,7 +30,7 @@ public class CapsuleManager : MonoBehaviour
 
         int listIndex = Random.Range(0, m_capsulePool.Count);
         index = m_capsulePool[listIndex];
-        m_capsulePool.RemoveAt(listIndex);
+      if(activeRemove)  m_capsulePool.RemoveAt(listIndex);
 
         return index;
     }

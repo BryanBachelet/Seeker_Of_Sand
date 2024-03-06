@@ -12,10 +12,12 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
     CloudLayer vCloudLayer;
+    Exposure vExposure;
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
     [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
     [SerializeField] private AnimationCurve m_colorTemperatureOverTime;
+    [SerializeField] private AnimationCurve m_ExposureCompensationByHour;
     [Range(0, 24)]
     [SerializeField] public float m_timeOfDay;
     static public float staticTimeOfTheDay;
@@ -23,7 +25,6 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] private Light m_moon;
     [SerializeField] private float m_SettingDurationDay = 10; // Correspond au nombre de minute IRL de la dur�e d'une journ�e in-game, de base 10 minutes
     [SerializeField] public float m_orbitSpeed = 1.0f; // Correponds � la vitesse d'�coulement du temps in-game. 1 reviens � avoir une journ�e de 24 secondes IRL
-    [SerializeField] public RectTransform m_ClockNeedle;
     [SerializeField] private GlobalSoundManager m_GSM;
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
@@ -100,9 +101,7 @@ public class DayCyclecontroller : MonoBehaviour
         float alpha = m_timeOfDay / 24.0f;
         float sunRotation = Mathf.Lerp(-90, 270, alpha);
         float moonRotation = sunRotation - 180;
-        float clockRotation = Mathf.Lerp(0, -360, alpha);
 
-        m_ClockNeedle.rotation = Quaternion.Euler(0, 0, clockRotation + 180);
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
 
@@ -356,6 +355,10 @@ public class DayCyclecontroller : MonoBehaviour
                 vCloudLayer.shadowMultiplier.value = m_ShadowMultiplierByHour.Evaluate(hour);
 
                 //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
+            }
+            if(volumePP.profile.TryGet<Exposure>(out vExposure))
+            {
+                vExposure.compensation.value = m_ExposureCompensationByHour.Evaluate(hour);
             }
         }
        if(m_sun) m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);

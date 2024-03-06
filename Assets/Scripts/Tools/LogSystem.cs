@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System.Runtime.CompilerServices;
+using System;
 
 namespace GuerhoubaTools
 {
@@ -25,18 +26,20 @@ namespace GuerhoubaTools
 
             int index = filePath.LastIndexOf('\\');
             filePath = filePath.Substring(index + 1);
-            
-            writer.WriteLine("("+filePath + ":" + line + ")-->" + memberName +": "+msg);
+
+            string hourMinute = DateTime.Now.ToString("HH:mm::ss");
+            writer.WriteLine(hourMinute + " (" +filePath + ":" + line + ")-->" + memberName +": "+msg);
             if (showInConsole) Debug.Log("(" + filePath + ":" + line + ")-- > " + memberName + ": " + msg);
         }
 
         public static void Close()
         {
+            LogMsg("Close Log", true);
             writer.Flush();
             writer.Close();
             writer = null;
             isFirstTime = true;
-            Debug.Log("Test");
+            
         }
     }
 }

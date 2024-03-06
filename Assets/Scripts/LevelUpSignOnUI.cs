@@ -13,9 +13,9 @@ public class LevelUpSignOnUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(lastLevelUpTake != CharacterUpgrade.upgradePoint)
+        if(lastLevelUpTake != Character.CharacterUpgrade.upgradePoint)
         {
-            lastLevelUpTake = CharacterUpgrade.upgradePoint;
+            lastLevelUpTake = Character.CharacterUpgrade.upgradePoint;
             if(!vfxIsActive)
             {
                 vfxIsActive = true;
