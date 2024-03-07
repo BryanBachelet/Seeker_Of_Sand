@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class CombatSceneManager : MonoBehaviour
 {
     [Header("Combat Scene Setup")]
@@ -11,9 +12,11 @@ public class CombatSceneManager : MonoBehaviour
     [Header("Combat Scene Options")]
     public bool constantSpawning;
     public bool stopPlayerExperience;
+    public bool specialEnemisSquad;
 
     private Enemies.EnemyManager m_enemyManager;
     private Experience_System m_experienceSystem;
+    [HideInInspector] public int[] mobCount = new int[3];
 
 #if UNITY_EDITOR
 
