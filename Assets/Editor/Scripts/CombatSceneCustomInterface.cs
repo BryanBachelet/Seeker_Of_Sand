@@ -36,6 +36,7 @@ public class CombatSceneCustomInterface : Editor
         titleStyle.normal.textColor = new Color(200f / 255, 200f / 255, 200f / 255, 1);
 
         EditorGUILayout.LabelField("Enemis Squad Preset", titleStyle);
+  
 
         Enemies.EnemyType enemyType;
         for (int i = 0; i < mobCountProperty.arraySize; i++)
@@ -45,6 +46,8 @@ public class CombatSceneCustomInterface : Editor
             value = value[0] + value.Substring(1).ToLower();
             mobCountProperty.GetArrayElementAtIndex(i).intValue = EditorGUILayout.IntField(value, mobCountProperty.GetArrayElementAtIndex(i).intValue);
         }
+        EditorGUILayout.HelpBox("Spawn Input : T", MessageType.Info);
+
         serializedObject.ApplyModifiedProperties();
     }
 }

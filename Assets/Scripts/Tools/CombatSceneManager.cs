@@ -36,6 +36,17 @@ public class CombatSceneManager : MonoBehaviour
     {
         m_enemyManager.activeTestPhase = true;
         m_enemyManager.activeSpawnConstantDebug = constantSpawning;
+        m_enemyManager.activeSpecialSquad = specialEnemisSquad;
+        if (specialEnemisSquad)
+            m_enemyManager.SetSpawnSquad(mobCount);
+        m_enemyManager.DebugInit();
+    }
+
+    public void OnValidate()
+    {
+        m_enemyManager = enemisManager.GetComponent<Enemies.EnemyManager>();
+        if (specialEnemisSquad)
+            m_enemyManager.SetSpawnSquad(mobCount);
     }
 
 #endif
