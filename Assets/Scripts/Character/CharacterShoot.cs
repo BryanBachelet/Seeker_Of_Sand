@@ -213,8 +213,8 @@ namespace Character
 
 
             float ratio = m_spellTimer / m_totalSpellDuration;
-           if(noUpdate) m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
-           else m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio + Time.deltaTime/2);
+           m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+           //else m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio + Time.deltaTime/2);
             if (m_activeSpellLoad)
             {
                 if (m_spellTimer >= currentWeaponStats.spellCanalisation + m_baseCanalisationTime)
@@ -222,8 +222,8 @@ namespace Character
                     m_hasBeenLoad = true;
                     m_activeSpellLoad = false;
                     m_isShooting = true;
-                    noUpdate = false;
                     m_spellTimer -= m_spellTimer - (currentWeaponStats.spellCanalisation + m_baseCanalisationTime);
+                    m_spellTimer += Time.deltaTime;
                 }
                 else
                 {
@@ -242,8 +242,8 @@ namespace Character
             }
             if (m_timeBetweenShoot >= currentWeaponStats.timeBetweenShot)
             {
-                noUpdate = false;
                 m_spellTimer -= m_timeBetweenShoot - currentWeaponStats.timeBetweenShot;
+                m_spellTimer += Time.deltaTime;
                 m_timeBetweenShoot = 0.0f;
                 Shoot();
             }
@@ -565,7 +565,7 @@ namespace Character
         }
         private void StartShoot()
         {
-            m_totalSpellDuration = currentWeaponStats.spellCanalisation + m_baseCanalisationTime + (currentWeaponStats.shootNumber) * currentWeaponStats.timeBetweenShot;
+            m_totalSpellDuration = currentWeaponStats.spellCanalisation + m_baseCanalisationTime + (currentWeaponStats.shootNumber) * currentWeaponStats.timeBetweenShot +  (currentWeaponStats.shootNumber *Time.deltaTime);
             m_uiPlayerInfos.ActiveSpellCanalisationUI();
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_canEndShot = false;
