@@ -55,9 +55,10 @@ public class Punketone : MonoBehaviour
             {
                 Vector3[] position = new Vector3[2];
                 lineRenderer.positionCount = position.Length;
-                position[1] = transform.position + new Vector3(0, transform.GetChild(0).position.y + 18, 0);
+                position[1] = transform.localPosition + new Vector3(0, transform.GetChild(0).position.y + 18, 0);
                 position[0] = targetFocus.position;
                 lineRenderer.SetPositions(position);
+                
                 m_navMeshAgent.isStopped = true;
                 tempsCurrentAbsorb += Time.deltaTime;
                 if(tempsCurrentAbsorb > tempsAvantAbsorb)
