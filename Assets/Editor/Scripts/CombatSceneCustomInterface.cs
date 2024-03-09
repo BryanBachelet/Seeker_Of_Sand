@@ -26,6 +26,7 @@ public class CombatSceneCustomInterface : Editor
     {
         CombatSceneManager combatSceneManager = (CombatSceneManager)target;
         base.OnInspectorGUI();
+
         if (!combatSceneManager.specialEnemisSquad) return;
         serializedObject.Update();
 
@@ -46,6 +47,7 @@ public class CombatSceneCustomInterface : Editor
             value = value[0] + value.Substring(1).ToLower();
             mobCountProperty.GetArrayElementAtIndex(i).intValue = EditorGUILayout.IntField(value, mobCountProperty.GetArrayElementAtIndex(i).intValue);
         }
+
         EditorGUILayout.HelpBox("Spawn Input : T", MessageType.Info);
 
         serializedObject.ApplyModifiedProperties();

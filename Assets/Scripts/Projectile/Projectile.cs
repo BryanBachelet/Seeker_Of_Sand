@@ -25,6 +25,7 @@ public class Projectile : MonoBehaviour
 {
     private const int m_timeBeforeDestruction = 3;
     private const float m_timeStartSizeShrinking = 0.75f;
+    private const int maxSlopeAngle = 30;
     protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
     [SerializeField] protected float m_lifeTime;
@@ -52,6 +53,10 @@ public class Projectile : MonoBehaviour
     private bool willDestroy = false;
     protected Collider m_collider;
     private Vector3 m_initialScale;
+
+
+    private Vector3 normalHit;
+    private Vector3 hitPoint;
     void Update()
     {
         if (!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
@@ -99,7 +104,18 @@ public class Projectile : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        transform.position += m_direction.normalized * m_speed * Time.deltaTime;
+        RaycastHit hit = new RaycastHit();
+
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
+        {
+            normalHit = hit.normal;
+            hitPoint = hit.point;
+
+            SetSlopeRotation(hit.normal);
+
+
+        }
+        transform.position += transform.forward * m_speed * Time.deltaTime;
     }
     protected virtual void Duration()
     {
@@ -211,6 +227,8 @@ public class Projectile : MonoBehaviour
         Vector3 axis = Vector3.Cross(transform.right, hitNormal);
         Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
         float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transform.right);
+        if ( Mathf.Abs(angle) > maxSlopeAngle) 
+            return;
         transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
     }
 

@@ -32,16 +32,5 @@ public class ProjectileSaw : Projectile
         }
     }
 
-    protected override void Move()
-    {
-        RaycastHit hit = new RaycastHit();
-      
-        transform.position += transform.forward * m_speed * Time.deltaTime;
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
-        {
-
-            SetSlopeRotation(hit.normal);
-        }
-    }
 
 }

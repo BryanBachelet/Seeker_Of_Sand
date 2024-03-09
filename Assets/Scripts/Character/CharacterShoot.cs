@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
-
+using SeekerOfSand.UI;
 
 namespace Character
 {
@@ -30,6 +30,7 @@ namespace Character
 
         private float m_shootTimer;
         private float m_reloadTimer;
+        private float m_baseCanalisationTime = 0.25f;
         private float m_timeBetweenShoot;
 
         private bool m_canShoot;
@@ -62,17 +63,13 @@ namespace Character
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
         private Rigidbody m_rigidbody;
 
-
         [SerializeField] public List<Image> icon_Sprite;
         [SerializeField] public List<Image> m_spellGlobalCooldown;
         [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
-
         private SpellSystem.CapsuleType m_currentType;
         private PauseMenu pauseScript;
         private ObjectState state;
-
-
 
         [SerializeField] public bool autoAimActive;
         [SerializeField] public AimMode m_aimModeState;
@@ -88,6 +85,10 @@ namespace Character
         public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
         public event OnHit onHit = delegate { };
 
+        [Header("UI Object")]
+        public GameObject uiManager;
+        private UI_PlayerInfos m_uiPlayerInfos;
+
 
         [Header("Spell Unique ")]
         public int numberOfUniqueSpell = 10;
@@ -95,6 +96,15 @@ namespace Character
 
         private DropInventory m_dropInventory;
         public Animator castingVFXAnimator;
+
+        private bool m_hasCancel;
+        private bool m_activeSpellLoad;
+        private bool m_hasBeenLoad;
+
+        private float m_totalSpellDuration;
+        private float m_spellTimer;
+        private bool noUpdate;
+
         #region Unity Functions
 
         #region Mana Variable
@@ -131,6 +141,7 @@ namespace Character
             // Init Variables
             m_currentRotationIndex = 0;
             m_currentIndexCapsule = spellEquip[0];
+            currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             m_canShoot = true;
         }
 
@@ -198,21 +209,49 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
-            if (!m_shootInputActive || globalCD) return;
+            if (globalCD || !m_shootInputActive) return;
+
+
+            float ratio = m_spellTimer / m_totalSpellDuration;
+           if(noUpdate) m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+           else m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio + Time.deltaTime/2);
+            if (m_activeSpellLoad)
+            {
+                if (m_spellTimer >= currentWeaponStats.spellCanalisation + m_baseCanalisationTime)
+                {
+                    m_hasBeenLoad = true;
+                    m_activeSpellLoad = false;
+                    m_isShooting = true;
+                    noUpdate = false;
+                    m_spellTimer -= m_spellTimer - (currentWeaponStats.spellCanalisation + m_baseCanalisationTime);
+                }
+                else
+                {
+                    noUpdate = true;
+                    m_spellTimer += Time.deltaTime;
+                    return;
+                }
+
+
+            }
 
             if (!m_isShooting)
             {
                 Shoot();
                 return;
             }
-            if (m_timeBetweenShoot > currentWeaponStats.timeBetweenShot)
+            if (m_timeBetweenShoot >= currentWeaponStats.timeBetweenShot)
             {
-                Shoot();
+                noUpdate = false;
+                m_spellTimer -= m_timeBetweenShoot - currentWeaponStats.timeBetweenShot;
                 m_timeBetweenShoot = 0.0f;
+                Shoot();
             }
             else
             {
+                noUpdate = true;
                 m_timeBetweenShoot += Time.deltaTime;
+                m_spellTimer += Time.deltaTime;
             }
         }
         #endregion
@@ -228,6 +267,7 @@ namespace Character
             m_buffManager = GetComponent<Buff.BuffsManager>();
             m_chracterProfil = GetComponent<CharacterProfile>();
             m_characterInventory = GetComponent<CharacterSpellBook>();
+            m_uiPlayerInfos = uiManager.GetComponent<UI_PlayerInfos>();
         }
 
         private void InitSpriteSpell()
@@ -300,7 +340,7 @@ namespace Character
                 {
                     RndCapsule = UnityEngine.Random.Range(9, 13);
                 }
-                else if(i == 2)
+                else if (i == 2)
                 {
                     RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
@@ -323,16 +363,28 @@ namespace Character
                 m_shootInput = true;
                 m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
+                m_hasCancel = false;
             }
             if (ctx.canceled && state.isPlaying)
             {
                 m_shootInput = false;
                 m_shootInputActive = false;
+                CancelShoot();
             }
         }
         #endregion
 
         #region Shoot Function
+
+        private bool CancelShoot()
+        {
+            if (!m_shootInputActive)
+            {
+                if (!m_canEndShot) EndShoot();
+                return true;
+            }
+            return false;
+        }
 
         private void Shoot()
         {
@@ -341,12 +393,14 @@ namespace Character
             GlobalSoundManager.PlayOneShot(27, transform.position);
             m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
-            //castingVFXAnimator.SetTrigger("Shot");
-            //currentManaValue -= 2;
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
 
-            if (currentShotNumber == 0) StartShoot();
+            if (currentShotNumber == 0 && !m_hasBeenLoad)
+            {
+                StartShoot();
+                return;
+            }
 
             if (m_currentIndexCapsule == -1)
             {
@@ -443,7 +497,6 @@ namespace Character
                 endShoot = ShootAtttackArea(index);
         }
 
-
         private CapsuleStats GetCurrentWeaponStat(int index) { return capsuleStatsAlone[m_currentIndexCapsule]; }
 
         public bool ShootAtttackArea(int capsuleIndex)
@@ -512,15 +565,25 @@ namespace Character
         }
         private void StartShoot()
         {
+            m_totalSpellDuration = currentWeaponStats.spellCanalisation + m_baseCanalisationTime + (currentWeaponStats.shootNumber) * currentWeaponStats.timeBetweenShot;
+            m_uiPlayerInfos.ActiveSpellCanalisationUI();
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
-            m_isShooting = true;
             m_canEndShot = false;
+            m_activeSpellLoad = true;
             if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 
         private void EndShoot()
         {
+
+            Debug.Log("Total Timer " + m_totalSpellDuration);
+            Debug.Log("Spell Ratio " + m_spellTimer / m_totalSpellDuration);
+            Debug.Log("Spell Timer " + m_spellTimer);
+            Debug.Log("Curren Shoot " + currentShotNumber);
+            Debug.Log("Curren Shoot " + currentWeaponStats.shootNumber);
             currentShotNumber = 0;
+            m_spellTimer = 0.0f;
+            m_uiPlayerInfos.DeactiveSpellCanalisation();
             m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
@@ -535,6 +598,7 @@ namespace Character
             if (!m_shootInput) m_shootInputActive = false;
             m_canShoot = false;
             m_isShooting = false;
+            m_hasBeenLoad = false;
         }
 
         public void ChangeVfxElement(int elementIndex)
@@ -723,7 +787,6 @@ namespace Character
             if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
 
         }
-
 
         public void GetCircleInfos()
         {

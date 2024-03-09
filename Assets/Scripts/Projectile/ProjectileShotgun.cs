@@ -30,16 +30,5 @@ public class ProjectileShotgun : Projectile
         }
     }
 
-    protected override void Move()
-    {
-        RaycastHit hit = new RaycastHit();
-
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
-        {
-            SetSlopeRotation(hit.normal);
-        }
-
-        transform.position += transform.forward * m_speed * Time.deltaTime;
-    }
 
 }

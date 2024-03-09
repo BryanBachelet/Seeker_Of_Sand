@@ -9,13 +9,6 @@ public class ProjectileZeri : Projectile
         base.Duration();
     }
 
-    private Vector3 normalHit;
-    private Vector3 hitPoint;
-
-    private ApplyLightingStrike mLightingStrike;
-    [Range(1, 100)]
-    public int probability;
-
     public void Start()
     {
         RaycastHit hit = new RaycastHit();
@@ -32,36 +25,7 @@ public class ProjectileZeri : Projectile
             //    transform.position += (hit.point - transform.position).normalized * -3f;
             //}
         }
-        mLightingStrike = this.GetComponent<ApplyLightingStrike>();
     }
 
-    protected override void Move()
-    {
-        RaycastHit hit = new RaycastHit();
-
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
-        {
-            normalHit = hit.normal;
-            hitPoint = hit.point;
-
-            SetSlopeRotation(hit.normal);
-
-
-        }
-        transform.position += transform.forward * m_speed * Time.deltaTime;
-    }
-
-    private void OnDestroy()
-    {
-    }
-
-    private void TriggerEffect()
-    {
-
-    }
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(hitPoint, hitPoint + normalHit.normalized * 5);
-    }
 
 }

@@ -48,7 +48,9 @@ public struct CapsuleStats
     public float size;
     public float sizeMultiplicatorFactor;
     public int piercingMax;
+    public float spellCanalisation;
     public string description;
+    
 
 
     public void DebugStat()
