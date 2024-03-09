@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 477.59918, g: 578.66656, b: 783.04895, a: 1}
+  m_IndirectSpecularColor: {r: 407.70172, g: 493.99225, b: 668.8555, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -417,6 +417,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &787451807 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3616907135029895165, guid: b08724ba61b6b1645b690f0f00661221,
+    type: 3}
+  m_PrefabInstance: {fileID: 1697584621}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &932341776
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,6 +470,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackSlashPrefab: {fileID: 9128085722508876103, guid: 5589d87e7b9177548b98d8616d99e31f,
     type: 3}
+  swordMaterial: {fileID: 0}
+  skinnedMesh_Renderer: {fileID: 787451807}
 --- !u!1 &1165311727
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,6 +918,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fille_VI
       objectReference: {fileID: 0}
+    - target: {fileID: 3616907135029895165, guid: b08724ba61b6b1645b690f0f00661221,
+        type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: df4cf023d04394a458e36951ecdb4bbb, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -949,7 +962,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 4017.6924
+  m_Intensity: 3430.0835
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1026,7 +1039,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 4017.6924
+  m_Intensity: 3430.0835
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
