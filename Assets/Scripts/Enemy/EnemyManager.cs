@@ -1,3 +1,6 @@
+
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +10,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using SeekerOfSand.UI;
+using UnityEngine.InputSystem;
+
 
 namespace Enemies
 {
+
     [System.Serializable]
     public enum EnemyType
     {
@@ -123,10 +129,17 @@ namespace Enemies
         [SerializeField] public Sprite[] instructionSprite;
         [SerializeField] public Animator m_instructionAnimator;
 
-        [Header("Debug / Tests Parameters")]
-        public bool activeTestPhase;
-        public bool activeSpawnConstantDebug = false;
-
+        // Test Variable
+#if UNITY_EDITOR
+        [HideInInspector] public bool activeTestPhase;
+        [HideInInspector] public bool activeSpawnConstantDebug = false;
+        // Allow the enemis to spawn only a enemy type
+        [HideInInspector] public bool activeSpecialSquad = false;
+        [HideInInspector] public PlayerInput playerInput;
+#endif
+        [HideInInspector] public int[] specialSquadSelect;
+        private int m_squadCount;
+        // --------------------
 
         public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
         public event OnDeath OnDeathEvent = delegate { };
@@ -152,6 +165,12 @@ namespace Enemies
 
         public void Awake()
         {
+#if UNITY_EDITOR
+            playerInput = m_playerTranform.GetComponent<PlayerInput>();
+            InputAction action = playerInput.actions.FindAction("SpawnEnemy");
+            action.performed += InputSpawnSquad;
+#endif
+
             TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
@@ -167,16 +186,28 @@ namespace Enemies
             m_pullingSystem.InitializePullingSystem();
             if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
 
-            if (activeSpawnConstantDebug)
-                ActiveSpawnPhase(activeSpawnConstantDebug, EnemySpawnCause.DEBUG);
 
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
+        public void DebugInit()
+        {
+#if UNITY_EDITOR
+            if (activeTestPhase)
+                ActiveSpawnPhase(activeSpawnConstantDebug, EnemySpawnCause.DEBUG);
+#endif
+
+        }
+
+
         public void Update()
         {
 
+#if UNITY_EDITOR
             if (!activeTestPhase && DayCyclecontroller.choosingArtefactStart) return;
+#else
+            if (DayCyclecontroller.choosingArtefactStart) return;
+#endif
             if (!GameState.IsPlaying()) return;
             repositionningCount = 0;
 
@@ -184,7 +215,7 @@ namespace Enemies
             remainEnemy = m_enemiesArray.Count;
             if (remainEnemy > 0)
             {//<size=130%>999 <voffset=0.2em> \n<size=100%>Remain
-                m_tmpTextEnemyRemain.text = "<size=130%>" + remainEnemy +"<voffset=0.2em> \n<size=100%>Remain" ;
+                m_tmpTextEnemyRemain.text = "<size=130%>" + remainEnemy + "<voffset=0.2em> \n<size=100%>Remain";
             }
             else
             {
@@ -233,6 +264,17 @@ namespace Enemies
             }
 
         }
+
+#if UNITY_EDITOR
+
+        public void InputSpawnSquad(InputAction.CallbackContext ctx)
+        {
+            if(ctx.performed)
+            {
+                SpawEnemiesGroup();
+            }
+        }
+#endif
 
 
         public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, Sprite iconSprite)
@@ -344,8 +386,8 @@ namespace Enemies
         private int GetNumberToSpawn()
         {
             //int currentMaxUnit = (int)Mathf.Lerp(m_minUnitPerGroup, (m_maxUnitPerGroup), m_enemyKillRatio.GetRatioValue());
-            int currentMaxUnit = 5;
             //int number = Mathf.FloorToInt((currentMaxUnit * ((Mathf.Sin(m_timeOfGame / 2.0f + 7.5f)) + 1.3f) / 2.0f));
+            int currentMaxUnit = 5;
             int number = currentMaxUnit;
             number = number <= 0 ? 1 : number;
             return number;
@@ -356,6 +398,15 @@ namespace Enemies
             position = FindPosition();
             posspawn.Add(position);
             InstantiateSpawnFeedback();
+#if UNITY_EDITOR
+            if (activeSpecialSquad)
+            {
+                SpawnSpecificSquad(position);
+                m_spawnCooldown = 0;
+                return;
+            }
+#endif
+
             for (int i = 0; i < m_groupEnemySize; i++)
             {
                 SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
@@ -366,10 +417,13 @@ namespace Enemies
         {
             if (m_spawnCooldown > GetTimeSpawn())
             {
+
                 if (remainEnemy < m_maxUnittotal)
                 {
                     SpawEnemiesGroup();
                 }
+
+            
 
                 m_spawnCooldown = 0;
             }
@@ -453,6 +507,54 @@ namespace Enemies
             m_enemiesArray.Add(npcHealth);
         }
 
+        public void SetSpawnSquad(int[] mobCount)
+        {
+            specialSquadSelect = mobCount; 
+             m_squadCount = 0;
+            for (int i = 0; i < specialSquadSelect.Length; i++)
+            {
+                m_squadCount += specialSquadSelect[i];
+            }
+        }
+        private void SpawnSpecificSquad(Vector3 positionSpawn)
+        {
+            for (int i = 0; i < specialSquadSelect.Length; i++)
+            {
+                for (int j = 0; j < specialSquadSelect[i]; j++)
+                {
+                    if (!m_pullingSystem.IsStillInstanceOf((EnemyType)i)) continue;
+
+                    SpawnDirectEnemy(positionSpawn, i);
+                }
+            }
+        }
+
+        private void SpawnDirectEnemy(Vector3 position, int enemyType)
+        {
+            GameObject enemyObjectPull = null;
+            NpcHealthComponent npcHealth = null;
+            NpcMouvementComponent npcMove = null;
+
+            enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyType);
+            enemyTypeStats[enemyType].instanceCount += 1;
+            enemyObjectPull.transform.position = position;
+            enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
+            enemyObjectPull.GetComponent<NavMeshAgent>().Warp(position);
+
+            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
+            npcMove.enabled = true;
+            npcMove.enemiesManager = this;
+
+            npcHealth = enemyObjectPull.GetComponent<NpcHealthComponent>();
+            npcHealth.SetInitialData(m_healthManager, this);
+            npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
+            npcHealth.targetData.isMoving = true;
+            npcHealth.RestartObject();
+            npcHealth.SetTarget(m_playerTranform);
+
+            m_enemiesArray.Add(npcHealth);
+        }
+
 
         private bool CanEnemySpawn(int enemyType)
         {
@@ -475,7 +577,7 @@ namespace Enemies
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
-          
+
             if (target.GetComponent<AltarBehaviorComponent>())
             {
                 altarLaunch++;
@@ -494,7 +596,7 @@ namespace Enemies
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             healthSystem.ResetUIHealthBar();
             int indexTargetList = healthSystem.indexUIEvent;
-          
+
             m_altarList.Remove(target.GetComponent<AltarBehaviorComponent>());
             m_altarTransform.Remove(target);
             lastAltarActivated = null;

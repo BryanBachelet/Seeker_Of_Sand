@@ -25,7 +25,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     [SerializeField] private SerieController m_serieController;
 
 
-    private List<ExperienceMouvement> m_worldExp =  new List<ExperienceMouvement>(); 
+    private List<ExperienceMouvement> m_worldExp = new List<ExperienceMouvement>();
     private CharacterUpgrade m_characterUpgrade;
     private CharacterProfile m_characterProfile;
     private CristalInventory m_cristalInventory;
@@ -34,6 +34,11 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private bool m_xperienceBuffered = false;
     private float lastXpBuffered = 0;
     private float levelProgress;
+
+#if UNITY_EDITOR
+    [HideInInspector] public bool cancelGainExperience;
+#endif
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,41 +62,24 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         {
             for (int i = 0; i < experienceTouched.Length; i++)
             {
-                ExperienceMouvement xpMvtScript  = experienceTouched[i].GetComponent<ExperienceMouvement>();
+                ExperienceMouvement xpMvtScript = experienceTouched[i].GetComponent<ExperienceMouvement>();
                 xpMvtScript.ActiveExperienceParticule(this.transform);
                 m_worldExp.Remove(xpMvtScript);
             }
         }
-        if(m_xperienceBuffered)
+        if (m_xperienceBuffered)
         {
             BufferXpDisplay(lastXpBuffered, levelProgress);
         }
     }
 
-    public void OnEnemyKilled(int quantity)
-    {
-        float time = Time.time;
-        m_NumberEnemyKilled += (quantity * m_serieController.GetXpMultiplicator());
-        levelProgress = m_ExperienceQuantitySansCSV.Evaluate(m_NumberEnemyKilled);
-        if (levelProgress > m_CurrentLevel)
-        {
-            LevelUp((int)m_ExperienceQuantitySansCSV.Evaluate(m_NumberEnemyKilled));
-            levelUpEffect.Play();
-            levelUpEffectUi.Play();
-            GlobalSoundManager.PlayOneShot(7, Vector3.zero);
-        }
-        else
-        {
-            //Debug.Log("Progression is : " + (levelProgress - m_CurrentLevel) + "%");
-            lastXpBuffered = time;
-            m_xperienceBuffered = true;
-            //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
-        }
-    }
     public void OnEnemyKilledNew(int quantity)
     {
+#if UNITY_EDITOR
+        if (cancelGainExperience) return;
+#endif
         float time = Time.time;
-       
+
         m_NumberEnemyKilled += (quantity * m_serieController.GetXpMultiplicator());
         levelProgress = m_ExperienceQuantitySansCSV.Evaluate(m_CurrentLevel);
         if (m_NumberEnemyKilled > levelProgress)
@@ -100,7 +88,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             GetUpgradePoint(m_CurrentLevel);
             m_NumberEnemyKilled = 0;
             levelUpEffect.Play();
-            levelUpEffectUi.Play();
             GlobalSoundManager.PlayOneShot(7, Vector3.zero);
         }
         else
@@ -111,15 +98,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             //m_xpPointer.anchoredPosition = new Vector3(Mathf.Lerp(m_posXInit, m_posXFinal, (levelProgress - m_CurrentLevel)), -520, 0);
         }
     }
-    public void LevelUp(int newLevel)
-    {
-        for (int i = 0; i < newLevel - m_CurrentLevel; i++)
-        {
-            GetUpgradePoint(m_CurrentLevel + i);
-        }
-        m_CurrentLevel = newLevel;
 
-    }
 
     public int GetCurrentLevel() { return m_CurrentLevel; }
     // Add xp particule to the list
@@ -133,7 +112,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         ExperienceMouvement[] expArray = m_worldExp.ToArray();
         for (int i = 0; i < expArray.Length; i++)
         {
-          if(expArray[i])  expArray[i].ActiveExperienceParticule(this.transform);
+            if (expArray[i]) expArray[i].ActiveExperienceParticule(this.transform);
         }
 
         m_worldExp.Clear();
@@ -156,7 +135,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         if (collision.gameObject.tag == "Experience")
         {
             ExperienceMouvement lastXpDrop = collision.GetComponent<ExperienceMouvement>();
-            if(!lastXpDrop.m_destruction)
+            if (!lastXpDrop.m_destruction)
             {
                 lastXpDrop.InitDestruction();
                 //Destroy(collision.gameObject);
@@ -211,7 +190,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private void BufferXpDisplay(float time, float levelProgress)
     {
         m_LevelDisplayFill.fillAmount = Mathf.Lerp(m_LevelDisplayFill.fillAmount, m_NumberEnemyKilled / levelProgress, Time.time - time);
-        
+
     }
 
     public void TestReadDataSheet()
@@ -244,7 +223,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
 
         m_ExperienceQuantityControl = tempAnimationCurve;
-      //  Debug.Log(debugdata);
+        //  Debug.Log(debugdata);
 
     }
 }
