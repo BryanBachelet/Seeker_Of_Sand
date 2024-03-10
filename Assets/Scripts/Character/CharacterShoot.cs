@@ -101,7 +101,8 @@ namespace Character
         private bool m_activeSpellLoad;
         private bool m_hasBeenLoad;
 
-        private float m_totalSpellDuration;
+        private float m_totalCanalisationDuration;
+        private float m_totalLaunchingDuration;
         private float m_spellTimer;
         private bool noUpdate;
 
@@ -212,11 +213,12 @@ namespace Character
             if (globalCD || !m_shootInputActive) return;
 
 
-            float ratio = m_spellTimer / m_totalSpellDuration;
-           m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
-           //else m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio + Time.deltaTime/2);
+           
+
+            //else m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio + Time.deltaTime/2);
             if (m_activeSpellLoad)
             {
+               
                 if (m_spellTimer >= currentWeaponStats.spellCanalisation + m_baseCanalisationTime)
                 {
                     m_hasBeenLoad = true;
@@ -224,26 +226,36 @@ namespace Character
                     m_isShooting = true;
                     m_spellTimer -= m_spellTimer - (currentWeaponStats.spellCanalisation + m_baseCanalisationTime);
                     m_spellTimer += Time.deltaTime;
+                    float ratio = m_spellTimer / m_totalCanalisationDuration;
+                    m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+
                 }
                 else
                 {
                     noUpdate = true;
                     m_spellTimer += Time.deltaTime;
+                    float ratio = m_spellTimer / m_totalCanalisationDuration;
+                    m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
                     return;
                 }
 
 
             }
 
+          
+
             if (!m_isShooting)
             {
+                m_spellTimer = m_totalLaunchingDuration;
                 Shoot();
                 return;
             }
+            float ratio2 = m_spellTimer / m_totalLaunchingDuration;
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio2);
             if (m_timeBetweenShoot >= currentWeaponStats.timeBetweenShot)
             {
-                m_spellTimer -= m_timeBetweenShoot - currentWeaponStats.timeBetweenShot;
-                m_spellTimer += Time.deltaTime;
+              //  m_spellTimer += m_timeBetweenShoot - currentWeaponStats.timeBetweenShot;
+                m_spellTimer -= Time.deltaTime;
                 m_timeBetweenShoot = 0.0f;
                 Shoot();
             }
@@ -251,7 +263,7 @@ namespace Character
             {
                 noUpdate = true;
                 m_timeBetweenShoot += Time.deltaTime;
-                m_spellTimer += Time.deltaTime;
+                m_spellTimer -= Time.deltaTime;
             }
         }
         #endregion
@@ -565,7 +577,9 @@ namespace Character
         }
         private void StartShoot()
         {
-            m_totalSpellDuration = currentWeaponStats.spellCanalisation + m_baseCanalisationTime + (currentWeaponStats.shootNumber) * currentWeaponStats.timeBetweenShot +  (currentWeaponStats.shootNumber *Time.deltaTime);
+            m_spellTimer = 0;
+            m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + m_baseCanalisationTime + Time.deltaTime;
+            m_totalLaunchingDuration =  (currentWeaponStats.shootNumber) * currentWeaponStats.timeBetweenShot + ((currentWeaponStats.shootNumber-1) * Time.deltaTime);
             m_uiPlayerInfos.ActiveSpellCanalisationUI();
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_canEndShot = false;
@@ -576,8 +590,8 @@ namespace Character
         private void EndShoot()
         {
 
-            Debug.Log("Total Timer " + m_totalSpellDuration);
-            Debug.Log("Spell Ratio " + m_spellTimer / m_totalSpellDuration);
+            Debug.Log("Total Timer " + m_totalLaunchingDuration);
+            Debug.Log("Spell Ratio " + m_spellTimer / m_totalLaunchingDuration);
             Debug.Log("Spell Timer " + m_spellTimer);
             Debug.Log("Curren Shoot " + currentShotNumber);
             Debug.Log("Curren Shoot " + currentWeaponStats.shootNumber);
