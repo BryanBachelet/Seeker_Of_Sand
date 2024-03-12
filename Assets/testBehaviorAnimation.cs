@@ -10,7 +10,7 @@ public class testBehaviorAnimation : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //animator.transform.parent.gameObject.GetComponent<attaqueSister>().GenerateSlashAttack();
-        animator.transform.parent.gameObject.GetComponent<attaqueSister>().SetGlow();
+        animator.transform.parent.gameObject.GetComponent<attaqueSister>().SetGlow(attaqueNumber);
         timeEnterState = Time.time;
     }
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
