@@ -31,6 +31,8 @@ namespace Character
         private float m_shootTimer;
         private float m_reloadTimer;
         public float m_baseCanalisationTime = 0.5f;
+        [Range(0,1)]
+        public float m_speedReduction = 0.5f;
         private float m_timeBetweenShoot;
 
         private bool m_canShoot;
@@ -107,6 +109,7 @@ namespace Character
         private float m_spellTimerTest;
         private float m_deltaTimeFrame;
         private bool m_test;
+        
 
         #region Unity Functions
 
@@ -441,7 +444,7 @@ namespace Character
             m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
             m_lastTimeShot = Time.time;
-            m_CharacterMouvement.m_SpeedReduce = 0.25f;
+            m_CharacterMouvement.m_SpeedReduce = m_speedReduction;
 
             if (currentShotNumber == 0 && !m_hasBeenLoad)
             {
