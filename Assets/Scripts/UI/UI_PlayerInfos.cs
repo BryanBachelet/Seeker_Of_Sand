@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 namespace SeekerOfSand
 {
     namespace UI
@@ -11,12 +11,40 @@ namespace SeekerOfSand
         {
             public GameObject playerTarget;
             private Character.CharacterShoot m_characterShoot;
+
             [Header("Spell Canalisation Objects")]
             public Image m_canalisationBar;
+            [Header("Spell Stacking Object")]
+            public GameObject stackingUIHolder;
+            private TMP_Text[] m_stackingText;
+
             void Start()
             {
                 m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
+                InitStackingObjects();
             }
+
+            #region Spell Stacking
+
+            public void InitStackingObjects()
+            {
+                m_stackingText = stackingUIHolder.GetComponentsInChildren<TMP_Text>();
+            }
+
+            public void UpdateStackingObjects(int index, int value)
+            {
+                m_stackingText[index].text = value.ToString();
+            }
+
+            public void UpdateStackingObjects(int[] value)
+            {
+                for (int i = 0; i < value.Length; i++)
+                {
+                    m_stackingText[i].text = value[i].ToString();
+                }
+            }
+            #endregion
+
             #region Spell Canalisation
             public void ActiveSpellCanalisationUI()
             {

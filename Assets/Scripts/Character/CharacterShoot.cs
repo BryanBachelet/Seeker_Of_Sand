@@ -5,32 +5,70 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 using SeekerOfSand.UI;
+using GuerhoubaTools.Gameplay;
 
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
-        public bool activeRandom = false;
+        public LauncherProfil launcherProfil;
         [HideInInspector] public int projectileNumber;
+
+        [Header("Shoot Parameters")]
         public float shootTime;
         public float reloadTime;
-        public LauncherProfil launcherProfil;
-        public UiSpellGrimoire spellGrimoire;
+        public float baseCanalisationTime = 0.5f;
+        public bool autoAimActive;
+        public bool activeRandom = false;
 
-        public GameObject[] vfxElementSign = new GameObject[4];
+        [Header("Spell Composition Parameters")]
         public int[] spellEquip;
-        public int maxSpellIndex;
+        [HideInInspector] public int maxSpellIndex;
+        public List<int> capsuleIndex;
+
         private int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
-        public SpellSystem.Element lastElement;
-        public List<int> capsuleIndex;
-        [SerializeField] private ChooseSkillManualy[] debugCapsule = new ChooseSkillManualy[4];
 
+        [Header("Shoot Component Setup")]
         public CapsuleManager m_capsuleManager;
+        [SerializeField] private Transform m_OuterCircleHolder;
+        [SerializeField] private Transform avatarTransform;
+        [SerializeField] private Transform bookTransform;
+
+        private CapsuleStats currentWeaponStats;
+        [HideInInspector] public LauncherStats launcherStats;
+        [HideInInspector] public List<CapsuleStats> capsuleStatsAlone = new List<CapsuleStats>();
+        public CapsuleStats weaponStat { get { return currentWeaponStats; } private set { } }
+        private int currentShotNumber;
+
+        [SerializeField] private Render.Camera.CameraShake m_cameraShake;
+        [SerializeField] private Render.Camera.CameraBehavior m_cameraBehavior;
+
+        private CharacterAim m_characterAim;
+        [HideInInspector] public CharacterMouvement m_CharacterMouvement; // Add reference to move script
+        private Buff.BuffsManager m_buffManager;
+        private CharacterProfile m_chracterProfil;
+        private Rigidbody m_rigidbody;
+
+        private Animator m_CharacterAnimator;
+        private Animator m_BookAnimator;
+
+
+        [Header("Shoot Infos")]
+        public SpellSystem.Element lastElement;
+        [SerializeField] public AimMode m_aimModeState;
+        public bool isCasting;
+        [SerializeField] private bool globalCD;
+
+
+        [Header("Shoot Feedback")]
+        [SerializeField] private float m_shakeDuration = 0.1f;
+        public GameObject[] vfxElementSign = new GameObject[4];
+        [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
+
 
         private float m_shootTimer;
         private float m_reloadTimer;
-        public float m_baseCanalisationTime = 0.5f;
         private float m_timeBetweenShoot;
 
         private bool m_canShoot;
@@ -39,41 +77,11 @@ namespace Character
         private bool m_shootInput;
         private bool m_shootInputActive;
         private bool m_isReloading;
-        public bool m_isCasting;
-
-        private CapsuleStats currentWeaponStats;
-        [HideInInspector] public LauncherStats launcherStats;
-        [HideInInspector] public List<CapsuleStats> capsuleStatsAlone = new List<CapsuleStats>();
-        public CapsuleStats weaponStat { get { return currentWeaponStats; } private set { } }
-        private int currentShotNumber;
-        //    private int currentIndexWeapon;
-
-        private CharacterAim m_characterAim;
-        [HideInInspector] public CharacterMouvement m_CharacterMouvement; // Add reference to move script
-        [SerializeField] private Render.Camera.CameraShake m_cameraShake;
-        [SerializeField] private Render.Camera.CameraBehavior m_cameraBehavior;
-        [SerializeField] private float m_shakeDuration = 0.1f;
-        [SerializeField] private Buff.BuffsManager m_buffManager;
-        [SerializeField] private CharacterProfile m_chracterProfil;
-        [SerializeField] private Animator m_CharacterAnimator;
-        [SerializeField] private Animator m_BookAnimator;
-        [SerializeField] private Transform m_OuterCircleHolder;
-        [SerializeField] private Transform avatarTransform;
-        [SerializeField] private Transform bookTransform;
-        [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
-        private Rigidbody m_rigidbody;
-
-        [SerializeField] public List<Image> icon_Sprite;
-        [SerializeField] public List<Image> m_spellGlobalCooldown;
-        [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
         private SpellSystem.CapsuleType m_currentType;
         private PauseMenu pauseScript;
         private ObjectState state;
 
-        [SerializeField] public bool autoAimActive;
-        [SerializeField] public AimMode m_aimModeState;
-        [SerializeField] private bool globalCD;
         [SerializeField] private TMPro.TMP_Text m_textCurrentLayout;
 
 
@@ -88,6 +96,9 @@ namespace Character
         [Header("UI Object")]
         public GameObject uiManager;
         private UI_PlayerInfos m_uiPlayerInfos;
+        [SerializeField] public List<Image> icon_Sprite;
+        [SerializeField] public List<Image> m_spellGlobalCooldown;
+        [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
 
         [Header("Spell Unique ")]
@@ -101,16 +112,28 @@ namespace Character
         private bool m_activeSpellLoad;
         private bool m_hasBeenLoad;
 
+        public enum CanalisationBarType
+        {
+            ByPart,
+            Continious,
+        }
+
+        [Header("CanalisationBar")]
+        [SerializeField] private CanalisationBarType m_canalisationType;
         private float m_totalCanalisationDuration;
         private float m_totalLaunchingDuration;
         private float m_spellTimer;
-        private float m_spellTimerTest;
+        private float m_spellLaunchTime;
         private float m_deltaTimeFrame;
         private bool m_test;
 
-        #region Unity Functions
+        // Stacking Variable
+        private ClockTimer[] m_stackingClock;
+        private int[] m_currentStack = new int[4];
+
 
         #region Mana Variable
+        [Header("Mana Parameters")]
         public Image manaSlider;
         public float manaMax;
         public float currentManaValue;
@@ -119,6 +142,10 @@ namespace Character
         private bool activeDebug;
 
         #endregion
+
+        #region Unity Functions
+
+
         private void Awake()
         {
             launcherStats = launcherProfil.stats;
@@ -126,16 +153,18 @@ namespace Character
             currentManaValue = manaMax;
         }
 
+
+
         private void Start()
         {
             state = new ObjectState();
             GameState.AddObject(state);
             m_dropInventory = this.GetComponent<DropInventory>();
             if (activeRandom) GenerateNewBuild();
-
             InitComponents();
             InitCapsule();
             InitSpriteSpell();
+            InitStacking();
             for (int i = 0; i < capsuleIndex.Count; i++)
             {
                 m_dropInventory.addNewItem(capsuleIndex[i]);
@@ -170,6 +199,7 @@ namespace Character
                 AutomaticAimMode();
             }
             UpdateFullControlAimMode();
+            UpdateStackingSystem();
             ReloadShot();
             ReloadWeapon(0.5f);
         }
@@ -212,8 +242,7 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
-            if (globalCD || !m_shootInputActive ) return;
-
+            if (globalCD || !m_shootInputActive) return;
 
             InitShot();
 
@@ -223,21 +252,17 @@ namespace Character
             if (!m_isShooting)
             {
                 m_isShooting = true;
-                m_spellTimer = m_totalLaunchingDuration ;
+                if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime = m_totalLaunchingDuration;
                 m_timeBetweenShoot = currentWeaponStats.timeBetweenShot;
                 Shoot();
                 return;
             }
-            
+
             if (m_timeBetweenShoot >= currentWeaponStats.timeBetweenShot)
             {
-                //  m_spellTimer += m_timeBetweenShoot - currentWeaponStats.timeBetweenShot;
-                // m_spellTimer = (currentWeaponStats.shootNumber-currentShotNumber) * currentWeaponStats.timeBetweenShot;
-                //  m_spellTimer -= m_deltaTimeFrame;
-                 m_spellTimer -= 1;
-                // Debug.Break();
 
-                Debug.Log("Shoot");
+                if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
+
                 m_timeBetweenShoot = 0.0f;
                 if (m_canEndShot) EndShoot();
                 Shoot();
@@ -246,17 +271,15 @@ namespace Character
             {
 
                 m_timeBetweenShoot += Time.deltaTime;
-                m_spellTimer -= Time.deltaTime;
-                m_spellTimerTest += Time.deltaTime;
-               
+                if (m_canalisationType == CanalisationBarType.Continious) m_spellLaunchTime += Time.deltaTime;
+
             }
-           // float ratio = (m_totalLaunchingDuration - m_spellTimerTest) / m_totalLaunchingDuration;
-            float ratio = m_spellTimer / m_totalLaunchingDuration;
+            float ratio = 0;
+            if (m_canalisationType == CanalisationBarType.Continious) ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
+            if (m_canalisationType == CanalisationBarType.ByPart) ratio = m_spellLaunchTime / m_totalLaunchingDuration;
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
-       }
+        }
         #endregion
-
-
 
         #region Start Functions
         public void InitComponents()
@@ -269,6 +292,8 @@ namespace Character
             m_chracterProfil = GetComponent<CharacterProfile>();
             m_characterInventory = GetComponent<CharacterSpellBook>();
             m_uiPlayerInfos = uiManager.GetComponent<UI_PlayerInfos>();
+            m_CharacterAnimator = avatarTransform.GetComponent<Animator>();
+            m_BookAnimator = bookTransform.GetComponent<Animator>();
         }
 
         private void InitSpriteSpell()
@@ -349,6 +374,16 @@ namespace Character
             }
         }
 
+        private void InitStacking()
+        {
+            m_stackingClock = new ClockTimer[4];
+            for (int i = 0; i < maxSpellIndex; i++)
+            {
+                m_stackingClock[i] = new ClockTimer();
+                m_stackingClock[i].isActivate = true;
+                m_stackingClock[i].SetTimerDuration(capsuleStatsAlone[i].stackDuration);
+            }
+        }
         #endregion
 
 
@@ -383,9 +418,14 @@ namespace Character
 
             m_activeSpellLoad = true;
             m_deltaTimeFrame = Time.deltaTime;
-            m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + m_baseCanalisationTime + m_deltaTimeFrame;
-              m_totalLaunchingDuration = (currentWeaponStats.shootNumber);
-           // m_totalLaunchingDuration = /*(currentWeaponStats.shootNumber * m_deltaTimeFrame)*/ + ((currentWeaponStats.timeBetweenShot) * (currentWeaponStats.shootNumber+1));
+            m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
+
+            if (m_canalisationType == CanalisationBarType.ByPart)
+                m_totalLaunchingDuration = (currentWeaponStats.shootNumber);
+
+            if (m_canalisationType == CanalisationBarType.Continious)
+                m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (currentWeaponStats.shootNumber + 1));
+
             m_uiPlayerInfos.ActiveSpellCanalisationUI();
             m_canEndShot = false;
             m_isShooting = true;
@@ -398,7 +438,7 @@ namespace Character
 
 
             UpdateCanalisationBar(m_totalCanalisationDuration);
-            if (m_spellTimer >= currentWeaponStats.spellCanalisation + m_baseCanalisationTime)
+            if (m_spellTimer >= currentWeaponStats.spellCanalisation + baseCanalisationTime)
             {
                 m_hasBeenLoad = true;
                 m_activeSpellLoad = false;
@@ -459,7 +499,7 @@ namespace Character
 
             if (m_currentType == SpellSystem.CapsuleType.BUFF) ShootBuff(((SpellSystem.CapsuleBuff)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)));
 
-           
+
 
             //m_CharacterAnimator.SetBool("Shooting", true);
 
@@ -588,8 +628,9 @@ namespace Character
             }
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
-            currentShotCount++;
-            if (currentShotCount >= stats.shootNumber)
+            m_currentStack[m_currentRotationIndex]--;
+            m_uiPlayerInfos.UpdateStackingObjects(m_currentRotationIndex, m_currentStack[m_currentRotationIndex]);
+            if (m_currentStack[m_currentRotationIndex] <= 0)
                 return true;
             else
                 return false;
@@ -622,16 +663,11 @@ namespace Character
         private void EndShoot()
         {
 
-            Debug.Log("======================================================================================");
-            Debug.Log("Total Timer " + m_totalLaunchingDuration);
-            Debug.Log("Spell Ratio " + m_spellTimer / m_totalLaunchingDuration);
-            Debug.Log("Spell Timer " + m_spellTimer);
-            Debug.Log("Spell Timer Test " + m_spellTimerTest);
-            Debug.Log("Curren Shoot " + currentShotNumber);
-            Debug.Log("Curren Shoot " + currentWeaponStats.shootNumber);
+
             currentShotNumber = 0;
             m_spellTimer = 0.0f;
-            m_spellTimerTest = 0.0f;
+            m_spellLaunchTime = 0.0f;
+            m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
             m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
@@ -707,6 +743,45 @@ namespace Character
 
         #endregion
 
+        #region Stacking Functions
+        public void UpdateStackingSystem()
+        {   
+            for (int i = 0; i < maxSpellIndex; i++)
+            {
+                bool inputTest = !m_shootInputActive || i != m_currentRotationIndex;
+
+                if (inputTest && m_stackingClock[i].UpdateTimer())
+                {
+                    int index = spellEquip[i];
+                    CapsuleStats stats = capsuleStatsAlone[index];
+                    m_currentStack[i] += capsuleStatsAlone[index].stackPerGain;
+                    m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, (int)stats.shootNumber);
+                    capsuleStatsAlone[index] = stats;
+                    m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
+                }
+                ////else
+                //{
+                //    // Setup UI Display
+                //}
+            }
+        }
+
+        public void AddSpellStack()
+        {
+            int[] value = new int[maxSpellIndex];
+            for (int i = 0; i < maxSpellIndex; i++)
+            {
+                int index = spellEquip[i];
+                CapsuleStats stats = capsuleStatsAlone[index];
+                m_currentStack[i] += capsuleStatsAlone[index].stackPerGain;
+                m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, (int)stats.shootNumber);
+                value[i] = m_currentStack[i];
+                capsuleStatsAlone[index] = stats;
+            }
+            m_uiPlayerInfos.UpdateStackingObjects(value);
+        }
+        #endregion
+
         private int ChangeProjecileIndex()
         {
             if (m_currentRotationIndex == maxSpellIndex - 1)
@@ -719,7 +794,6 @@ namespace Character
             else
             {
                 m_currentRotationIndex++;
-
                 return spellEquip[m_currentRotationIndex];
             }
         }
@@ -784,6 +858,7 @@ namespace Character
                 globalCD = false;
                 m_reloadTimer = 0;
                 ActiveIcon();
+                AddSpellStack();
                 for (int i = 0; i < icon_Sprite.Count; i++)
                 {
                     icon_Sprite[i].color = Color.white;
@@ -806,7 +881,7 @@ namespace Character
 
         public void StartCasting()
         {
-            if (m_isCasting) return;
+            if (isCasting) return;
             //currentManaValue -= 2;
             if (m_CharacterMouvement.isSliding)
             {
@@ -814,7 +889,7 @@ namespace Character
                 m_CharacterAnimator.SetBool("sliding", false);
                 m_BookAnimator.SetBool("sliding", false);
             }
-            m_isCasting = true;
+            isCasting = true;
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);
             m_CharacterMouvement.SetCombatMode(true);
@@ -825,7 +900,7 @@ namespace Character
         {
             if (autoAimActive) return;
 
-            if (!m_isCasting) return;
+            if (!isCasting) return;
 
             // m_isCasting = false;
             if (!m_shootInput) m_shootInputActive = false;
@@ -932,26 +1007,6 @@ namespace Character
                 spellEquip[capsuleIndex.Count - 1] = m_characterInventory.GetSpellCount() - 1;
                 maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
                 RefreshActiveIcon(m_characterInventory.GetAllSpells());
-            }
-        }
-
-        public void OpenGrimoire(InputAction.CallbackContext ctx)
-        {
-            if (ctx.started)
-            {
-                if (!spellGrimoire.isOpen)
-                {
-                    Sprite[] iconArray = new Sprite[m_characterInventory.GetSpellCount()];
-                    for (int i = 0; i < iconArray.Length; i++)
-                    {
-                        iconArray[i] = m_characterInventory.GetSpecificSpell(i).sprite;
-                    }
-
-                    spellGrimoire.OpenUI(iconArray, spellEquip);
-                    return;
-                }
-                spellGrimoire.CloseUI();
-
             }
         }
 
