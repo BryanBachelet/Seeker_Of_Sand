@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CanEditMultipleObjects]
 [CustomEditor(typeof(CapsuleProfil))]
+[CanEditMultipleObjects()]
 public class CapsuleProfil_UI : Editor
 {
 
@@ -30,6 +30,7 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty stackDurationProperty;
     SerializedProperty stackPerGainProperty;
 
+
     public void OnEnable()
     {
         rangeProperty = serializedObject.FindProperty("stats.range");
@@ -53,6 +54,7 @@ public class CapsuleProfil_UI : Editor
         formSpellProperty = serializedObject.FindProperty("stats.formType");
         stackDurationProperty = serializedObject.FindProperty("stats.stackDuration");
         stackPerGainProperty = serializedObject.FindProperty("stats.stackPerGain");
+
         
 
     }
