@@ -167,7 +167,7 @@ namespace Character
             InitStacking();
             for (int i = 0; i < capsuleIndex.Count; i++)
             {
-                m_dropInventory.addNewItem(capsuleIndex[i]);
+                m_dropInventory.AddNewItem(capsuleIndex[i]);
             }
 
             // Init Variables
@@ -421,10 +421,10 @@ namespace Character
             m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
 
             if (m_canalisationType == CanalisationBarType.ByPart)
-                m_totalLaunchingDuration = (currentWeaponStats.shootNumber);
+                m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
 
             if (m_canalisationType == CanalisationBarType.Continious)
-                m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (currentWeaponStats.shootNumber + 1));
+                m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
 
             m_uiPlayerInfos.ActiveSpellCanalisationUI();
             m_canEndShot = false;
@@ -612,12 +612,12 @@ namespace Character
             CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(stats);
             int mod = GetStartIndexProjectile(stats);
-            for (int i = mod; i < stats.projectileNumber + mod; i++)
+            for (int i = 0; i < stats.projectileNumber ; i++)
             {
                 Transform transformUsed = transform;
 
                 Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 5, 0);
-                Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
+                Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i+1)/2) ,transformUsed.up);
 
                 GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale * (stats.size * stats.sizeMultiplicatorFactor);

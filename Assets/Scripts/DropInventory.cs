@@ -18,7 +18,7 @@ public class DropInventory : MonoBehaviour
         
     }
 
-    public void addNewItem(int capsuleID)
+    public void AddNewItem(int capsuleID)
     {
         lastDropInfo.m_dropType = "[Spell]";
         lastDropInfo.m_dropImage = CapsuleManager.instance.attackInfo[capsuleID].sprite;
