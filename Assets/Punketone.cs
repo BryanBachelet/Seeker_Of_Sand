@@ -37,10 +37,12 @@ public class Punketone : MonoBehaviour
     void Start()
     {
         m_navMeshAgent = GetComponent<NavMeshAgent>();
+        m_navMeshAgent.Warp(transform.position);
         currentHP = HPMax;
         percentHP = currentHP / HPMax;
         objectHealthSystem = altarRefered.GetComponent<ObjectHealthSystem>();
 
+        Move();
 
     }
 
@@ -55,13 +57,13 @@ public class Punketone : MonoBehaviour
             {
                 Vector3[] position = new Vector3[2];
                 lineRenderer.positionCount = position.Length;
-                position[0] = transform.position + Vector3.up * 18; 
+                position[0] = transform.position + Vector3.up * 18;
                 position[1] = targetFocus.position;
                 lineRenderer.SetPositions(position);
-                
+
                 m_navMeshAgent.isStopped = true;
                 tempsCurrentAbsorb += Time.deltaTime;
-                if(tempsCurrentAbsorb > tempsAvantAbsorb)
+                if (tempsCurrentAbsorb > tempsAvantAbsorb)
                 {
                     tempsCurrentAbsorb = 0;
                     objectHealthSystem.TakeDamage((int)10);
@@ -70,7 +72,6 @@ public class Punketone : MonoBehaviour
             else
             {
 
-                Move();
             }
 
 
@@ -94,7 +95,7 @@ public class Punketone : MonoBehaviour
             }
 
         }
-        if(percentHP < 0.01f)
+        if (percentHP < 0.01f)
         {
             altarRefered.punketonHP.Remove(this);
             altarRefered.skeletonCount--;
@@ -110,7 +111,19 @@ public class Punketone : MonoBehaviour
         float distancePos = Vector3.Distance(transform.position, target.transform.position);
 
         m_navMeshAgent.enabled = true;
-        if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(target.transform.position);
+        if (m_navMeshAgent.isOnNavMesh)
+        {
+
+            m_navMeshAgent.SetDestination(target.transform.position);
+            //if(!m_navMeshAgent.hasPath)
+            //{
+            //    NavMeshPath path = new NavMeshPath();
+            //    bool result = m_navMeshAgent.CalculatePath(target.transform.position, path);
+            //    Debug.Log("New Path result" + result);
+            //    Debug.Log("New Path status" + path.status); 
+            //}
+            Debug.Log("Test Debug Punketon");
+        }
         if (!m_navMeshAgent.hasPath)
         {
             NavMeshHit hit;

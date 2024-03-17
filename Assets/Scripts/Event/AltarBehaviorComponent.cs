@@ -136,25 +136,34 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         if(tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)
         {
-            tempsEcoulePunk = 0;
-            Vector2 rndPosition = Random.insideUnitCircle;
-            rndPosition.Normalize();
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position + new Vector3(rndPosition.x, 40, rndPosition.y) * 150, Vector3.down, out hit, Mathf.Infinity, groundLayer))
+            bool isSpawn = false;
+            while (!isSpawn)
             {
-                GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
-                skeletonCount++;
-                Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
-                punketonHP.Add(lastPunketone);
-                lastPunketone.target = this.gameObject;
-                lastPunketone.targetFocus = skeletonFocus;
-                lastPunketone.altarRefered = this;
+                tempsEcoulePunk = 0;
+                Vector2 rndPosition = Random.insideUnitCircle;
+                rndPosition.Normalize();
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position + new Vector3(rndPosition.x, 40, rndPosition.y) * 150, Vector3.down, out hit, Mathf.Infinity, groundLayer))
+                {
+                    if (hit.collider.gameObject.layer == 3)
+                    {
+                        GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
+                        skeletonCount++;
+                        Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
+                        punketonHP.Add(lastPunketone);
+                        lastPunketone.target = this.gameObject;
+                        lastPunketone.targetFocus = skeletonFocus;
+                        lastPunketone.altarRefered = this;
+                        isSpawn = true;
+                    }
+                }
+                else
+                {
+                    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+                    //Debug.Log("Did not Hit");
+                }
             }
-            else
-            {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-                //Debug.Log("Did not Hit");
-            }
+            
 
 
         }
@@ -335,10 +344,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_isEventOccuring = false;
 
         m_CurrentKillCount = 0;
-        for(int i = 0; i < punketonHP.Count; i++)
+        int count = punketonHP.Count;
+        for (int i = 0; i < count; i++)
         {
-            Destroy(punketonHP[i].gameObject);
+            GameObject obj = punketonHP[i].gameObject;
             punketonHP.RemoveAt(i);
+            Destroy(obj);
            
         }
         skeletonCount = 0;
@@ -364,13 +375,9 @@ public class AltarBehaviorComponent : MonoBehaviour
             if (nextRewardTypologie == 2)
             {
                 //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-
                 rewardManagerReference.GenerateNewArtefactReward(this.transform);
 
-
             }
-
-                
 
             ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
             expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
