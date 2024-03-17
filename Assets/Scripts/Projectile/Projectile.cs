@@ -25,7 +25,7 @@ public class Projectile : MonoBehaviour
 {
     private const int m_timeBeforeDestruction = 3;
     private const float m_timeStartSizeShrinking = 0.75f;
-    private const int maxSlopeAngle = 30;
+    private const int maxSlopeAngle = 90;
     protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
     [SerializeField] protected float m_lifeTime;

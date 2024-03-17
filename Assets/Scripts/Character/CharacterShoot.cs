@@ -442,7 +442,6 @@ namespace Character
             UpdateCanalisationBar(m_totalCanalisationDuration);
             if (m_spellTimer >= currentWeaponStats.spellCanalisation + baseCanalisationTime)
             {
-                m_hasBeenLoad = true;
                 m_activeSpellLoad = false;
                 m_isShooting = false;
                 m_spellTimer = m_totalCanalisationDuration;
@@ -618,7 +617,7 @@ namespace Character
             {
                 Transform transformUsed = transform;
 
-                Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 5, 0);
+                Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 2, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i+1)/2) ,transformUsed.up);
 
                 GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);
@@ -656,7 +655,7 @@ namespace Character
         private void StartShoot()
         {
             m_spellTimer = 0;
-
+            m_hasBeenLoad = true;
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_canEndShot = false;
             if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
