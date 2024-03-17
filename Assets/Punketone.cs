@@ -115,14 +115,7 @@ public class Punketone : MonoBehaviour
         {
 
             m_navMeshAgent.SetDestination(target.transform.position);
-            //if(!m_navMeshAgent.hasPath)
-            //{
-            //    NavMeshPath path = new NavMeshPath();
-            //    bool result = m_navMeshAgent.CalculatePath(target.transform.position, path);
-            //    Debug.Log("New Path result" + result);
-            //    Debug.Log("New Path status" + path.status); 
-            //}
-            Debug.Log("Test Debug Punketon");
+
         }
         if (!m_navMeshAgent.hasPath)
         {

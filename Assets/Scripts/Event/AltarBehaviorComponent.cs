@@ -335,8 +335,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     }
 
     public void ResetAltarEvent()
-    {
-       
+    {    
         resetNumber++;
         GenerateNextReward(resetNumber);
 
@@ -347,8 +346,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         int count = punketonHP.Count;
         for (int i = 0; i < count; i++)
         {
-            GameObject obj = punketonHP[i].gameObject;
-            punketonHP.RemoveAt(i);
+            GameObject obj = punketonHP[0].gameObject;
+            punketonHP.RemoveAt(0);
             Destroy(obj);
            
         }
