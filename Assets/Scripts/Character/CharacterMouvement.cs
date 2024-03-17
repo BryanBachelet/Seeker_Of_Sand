@@ -631,8 +631,8 @@ namespace Character
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
             }
-       
 
+            m_rigidbody.velocity *= m_SpeedReduce;
         }
 
         public void FixedUpdate()

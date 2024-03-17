@@ -15,6 +15,7 @@ public class Chosereward : MonoBehaviour
     [HideInInspector] public List<ExperienceMouvement> artefactMouvement = new List<ExperienceMouvement>();
     public List<VisualEffect> vfxArtefact = new List<VisualEffect>();
     public Transform m_playerTransform;
+    private InteractionEvent m_interactionEventScript;
 
     [SerializeField] private GameObject m_lastPiedestal;
 
@@ -36,7 +37,8 @@ public class Chosereward : MonoBehaviour
         {
             m_artefactIndex[i] = -1;
         }
-        if (m_playerTransform == null) { m_playerTransform = GameObject.Find("Player").transform; }   
+        if (m_playerTransform == null) { m_playerTransform = GameObject.Find("Player").transform; }
+        m_interactionEventScript = m_playerTransform.GetComponent<InteractionEvent>();
     }
 
     // Update is called once per frame
@@ -134,7 +136,16 @@ public class Chosereward : MonoBehaviour
     }
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
     {
+
         artefactPiedestalAnimator[artefactToClear].SetBool("Choosed", true);
+        m_interactionEventScript.m_lastHintAnimator.SetTrigger("ActiveLoot");
+        if(m_interactionEventScript.m_lastArtefactAnimator != null)
+        {
+            m_interactionEventScript.m_lastArtefactAnimator.transform.parent = null;
+            m_interactionEventScript.m_lastArtefactAnimator.gameObject.AddComponent<DestroyAfterBasic>();
+            m_interactionEventScript.m_lastArtefactAnimator.gameObject.GetComponent<ArtefactEffect>().ActiveEffect();
+            m_interactionEventScript.m_lastArtefactAnimator.enabled = false;
+        }
         yield return new WaitForSeconds(timeBeforeDestroy);
         Destroy(artefactPiedestalAnimator[artefactToClear].gameObject);
     }

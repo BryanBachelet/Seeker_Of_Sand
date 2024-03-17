@@ -9,7 +9,7 @@ public class InteractionEvent : MonoBehaviour
 {
     [SerializeField] private float radiusInteraction;
     [SerializeField] private LayerMask InteractibleObject;
-
+    [SerializeField] private Vector2 offsetPopUpDisplay;
     private float lastInteractionCheck;
     public float intervalCheckInteraction;
     public GameObject currentInteractibleObject;
@@ -18,6 +18,7 @@ public class InteractionEvent : MonoBehaviour
     public GameObject ui_HintInteractionObject;
     private RectTransform ui_RectTransformHintInteraction;
     public Animator m_lastHintAnimator;
+    [HideInInspector] public Animator m_lastArtefactAnimator;
     public RectTransform parentHintTransform;
 
     public string[] eventDataInfo;
@@ -218,6 +219,7 @@ public class InteractionEvent : MonoBehaviour
                         NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
                         m_lastHintAnimator.SetBool("InteractionOn", true);
                         txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
+                        m_lastArtefactAnimator.SetBool("PlayerProxi", true);
 
                     }
                 }
@@ -226,13 +228,16 @@ public class InteractionEvent : MonoBehaviour
                     NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
                     m_lastHintAnimator.SetBool("InteractionOn", true);
                     txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
+                    m_lastArtefactAnimator.SetBool("PlayerProxi", true);
                 }
 
             }
         }
-        else if (col.Length == 0 && lastArtefact == null && m_lastHintAnimator.GetBool("InteractionOn") && lastTrader == null && currentInteractibleObject == null)
+        else if (col.Length == 0 && m_lastHintAnimator.GetBool("InteractionOn") && lastTrader == null && currentInteractibleObject == null)
         {
             lastArtefact = null;
+            m_lastArtefactAnimator.SetBool("PlayerProxi", false);
+            m_lastArtefactAnimator = null;
             txt_ObjectifDescription.text = "";
             txt_ObjectifDescriptionPnj.text = "";
 
@@ -250,10 +255,12 @@ public class InteractionEvent : MonoBehaviour
     public void NewArtefact(ArtefactHolder artefact)
     {
         lastArtefact = artefact;
+        m_lastArtefactAnimator = artefact.transform.parent.GetComponentInChildren<Animator>();
     }
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
+        m_lastArtefactAnimator.SetBool("PlayerProxi", false);
         txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);
         //ui_HintInteractionObject.SetActive(false);
@@ -270,6 +277,6 @@ public class InteractionEvent : MonoBehaviour
         ((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * 0.5f)));
 
         //now you can set the position of the ui element
-        parentHintTransform.anchoredPosition = WorldObject_ScreenPosition;
+        parentHintTransform.anchoredPosition = WorldObject_ScreenPosition + offsetPopUpDisplay;
     }
 }

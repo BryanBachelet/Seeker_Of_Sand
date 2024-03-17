@@ -145,6 +145,7 @@ namespace Character
            // m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
             upgradePointTextDisplay.text = upgradePoint.ToString();
             experience.m_LevelTaken++;
+            experience.m_UiPlayerInfo.AddLevelTaken();
             LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.gain.nameUpgrade,isDebugActive);
             if (isDebugActive)
             {

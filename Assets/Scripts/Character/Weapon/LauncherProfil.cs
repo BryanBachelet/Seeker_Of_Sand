@@ -50,7 +50,8 @@ public struct CapsuleStats
     public int piercingMax;
     public float spellCanalisation;
     public string description;
-    
+    public float stackDuration;
+    public int stackPerGain;
 
 
     public void DebugStat()

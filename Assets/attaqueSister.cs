@@ -23,11 +23,13 @@ public class attaqueSister : MonoBehaviour
     public void GenerateSlashAttack()
     {
         Instantiate(attackSlashPrefab, transform.position, transform.rotation);
+
     }
 
-    public void SetGlow()
+    public void SetGlow(int attaqueNumber)
     {
         swordMaterial.SetFloat("_SelfLitPower", 0);
+        GlobalSoundManager.PlayOneShot(attaqueNumber-1, transform.position);
     }
 
     public void ModifyGlow(float progress)
@@ -39,6 +41,7 @@ public class attaqueSister : MonoBehaviour
     public void ExitGlow(int attaqueNumber)
     {
         swordMaterial.SetFloat("_SelfLitPower", 50);
+
         if(attaqueNumber == 3)
         {
             Instantiate(attackSlashPrefab, transform.position, transform.rotation);

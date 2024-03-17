@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CanEditMultipleObjects]
 [CustomEditor(typeof(CapsuleProfil))]
+[CanEditMultipleObjects()]
 public class CapsuleProfil_UI : Editor
 {
 
@@ -27,6 +27,9 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty piercingMaxProperty;
     SerializedProperty descriptionProperty;
     SerializedProperty formSpellProperty;
+    SerializedProperty stackDurationProperty;
+    SerializedProperty stackPerGainProperty;
+
 
     public void OnEnable()
     {
@@ -49,6 +52,9 @@ public class CapsuleProfil_UI : Editor
         descriptionProperty = serializedObject.FindProperty("stats.description");
         trajectoryTimerProperty = serializedObject.FindProperty("stats.trajectoryTimer");
         formSpellProperty = serializedObject.FindProperty("stats.formType");
+        stackDurationProperty = serializedObject.FindProperty("stats.stackDuration");
+        stackPerGainProperty = serializedObject.FindProperty("stats.stackPerGain");
+
         
 
     }
@@ -84,6 +90,8 @@ public class CapsuleProfil_UI : Editor
         piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
         descriptionProperty.stringValue = EditorGUILayout.TextField(descriptionProperty.displayName, descriptionProperty.stringValue);
         EditorGUILayout.PropertyField(formSpellProperty);
+        stackDurationProperty.floatValue = EditorGUILayout.FloatField(stackDurationProperty.displayName, stackDurationProperty.floatValue);
+        stackPerGainProperty.intValue = EditorGUILayout.IntField(stackPerGainProperty.displayName, stackPerGainProperty.intValue);
 
         serializedObject.ApplyModifiedProperties();
     }
