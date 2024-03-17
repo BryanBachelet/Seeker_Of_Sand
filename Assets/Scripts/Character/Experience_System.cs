@@ -30,10 +30,12 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     private CharacterProfile m_characterProfile;
     private CristalInventory m_cristalInventory;
     private HealthPlayerComponent m_healthPlayer;
+    [HideInInspector] public SeekerOfSand.UI.UI_PlayerInfos m_UiPlayerInfo;
 
     private bool m_xperienceBuffered = false;
     private float lastXpBuffered = 0;
     private float levelProgress;
+
 
 #if UNITY_EDITOR
     [HideInInspector] public bool cancelGainExperience;
@@ -46,6 +48,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_characterProfile = GetComponent<CharacterProfile>();
         m_cristalInventory = GetComponent<CristalInventory>();
         m_healthPlayer = GetComponent<HealthPlayerComponent>();
+        m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
         TestReadDataSheet();
     }
 

@@ -20,11 +20,14 @@ namespace SeekerOfSand
             private TMP_Text[] m_stackingText;
             private Image[] m_stackingImageClock;
 
+            public TMP_Text levelTaken;
+            private int m_level;
 
             void Start()
             {
                 m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
                 InitStackingObjects();
+                m_level = 0;
             }
 
             #region Spell Stacking
@@ -64,6 +67,17 @@ namespace SeekerOfSand
                 m_canalisationBar.gameObject.SetActive(false);
             }
 
+            public void AddLevelTaken()
+            {
+                m_level += 1;
+                levelTaken.text = "" + m_level;
+            }
+
+            public void MinusLevelTaken()
+            {
+                m_level -= 1;
+                levelTaken.text = "" + m_level;
+            }
             public Image[] ReturnClock()
             {
                 return m_stackingImageClock;

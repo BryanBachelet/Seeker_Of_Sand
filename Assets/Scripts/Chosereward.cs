@@ -136,8 +136,16 @@ public class Chosereward : MonoBehaviour
     }
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
     {
+
         artefactPiedestalAnimator[artefactToClear].SetBool("Choosed", true);
         m_interactionEventScript.m_lastHintAnimator.SetTrigger("ActiveLoot");
+        if(m_interactionEventScript.m_lastArtefactAnimator != null)
+        {
+            m_interactionEventScript.m_lastArtefactAnimator.transform.parent = null;
+            m_interactionEventScript.m_lastArtefactAnimator.gameObject.AddComponent<DestroyAfterBasic>();
+            m_interactionEventScript.m_lastArtefactAnimator.gameObject.GetComponent<ArtefactEffect>().ActiveEffect();
+            m_interactionEventScript.m_lastArtefactAnimator.enabled = false;
+        }
         yield return new WaitForSeconds(timeBeforeDestroy);
         Destroy(artefactPiedestalAnimator[artefactToClear].gameObject);
     }

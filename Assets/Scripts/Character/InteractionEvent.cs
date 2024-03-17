@@ -18,7 +18,7 @@ public class InteractionEvent : MonoBehaviour
     public GameObject ui_HintInteractionObject;
     private RectTransform ui_RectTransformHintInteraction;
     public Animator m_lastHintAnimator;
-    private Animator m_lastArtefactAnimator;
+    [HideInInspector] public Animator m_lastArtefactAnimator;
     public RectTransform parentHintTransform;
 
     public string[] eventDataInfo;
