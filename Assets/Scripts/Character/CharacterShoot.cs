@@ -130,7 +130,7 @@ namespace Character
         // Stacking Variable
         private ClockTimer[] m_stackingClock;
         private int[] m_currentStack = new int[4];
-
+        private Image[] m_clockImage;
 
         #region Mana Variable
         [Header("Mana Parameters")]
@@ -294,6 +294,7 @@ namespace Character
             m_uiPlayerInfos = uiManager.GetComponent<UI_PlayerInfos>();
             m_CharacterAnimator = avatarTransform.GetComponent<Animator>();
             m_BookAnimator = bookTransform.GetComponent<Animator>();
+            m_clockImage = m_uiPlayerInfos.ReturnClock();
         }
 
         private void InitSpriteSpell()
@@ -381,7 +382,8 @@ namespace Character
             {
                 m_stackingClock[i] = new ClockTimer();
                 m_stackingClock[i].isActivate = true;
-                m_stackingClock[i].SetTimerDuration(capsuleStatsAlone[i].stackDuration);
+                m_stackingClock[i].SetTimerDuration(capsuleStatsAlone[i].stackDuration, m_clockImage[i]);
+
             }
         }
         #endregion
@@ -1005,6 +1007,9 @@ namespace Character
             if (capsuleIndex.Count <= spellEquip.Length)
             {
                 spellEquip[capsuleIndex.Count - 1] = m_characterInventory.GetSpellCount() - 1;
+                m_stackingClock[maxSpellIndex] = new ClockTimer();
+                m_stackingClock[maxSpellIndex].isActivate = true;
+                m_stackingClock[maxSpellIndex].SetTimerDuration(capsuleStatsAlone[maxSpellIndex].stackDuration, m_clockImage[maxSpellIndex]);
                 maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
                 RefreshActiveIcon(m_characterInventory.GetAllSpells());
             }

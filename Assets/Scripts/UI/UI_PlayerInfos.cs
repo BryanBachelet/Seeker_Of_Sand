@@ -16,7 +16,10 @@ namespace SeekerOfSand
             public Image m_canalisationBar;
             [Header("Spell Stacking Object")]
             public GameObject stackingUIHolder;
+            public GameObject clockUIHolder;
             private TMP_Text[] m_stackingText;
+            private Image[] m_stackingImageClock;
+
 
             void Start()
             {
@@ -29,6 +32,7 @@ namespace SeekerOfSand
             public void InitStackingObjects()
             {
                 m_stackingText = stackingUIHolder.GetComponentsInChildren<TMP_Text>();
+                m_stackingImageClock = clockUIHolder.GetComponentsInChildren<Image>();
             }
 
             public void UpdateStackingObjects(int index, int value)
@@ -58,6 +62,11 @@ namespace SeekerOfSand
             public void DeactiveSpellCanalisation()
             {
                 m_canalisationBar.gameObject.SetActive(false);
+            }
+
+            public Image[] ReturnClock()
+            {
+                return m_stackingImageClock;
             }
 
             #endregion
