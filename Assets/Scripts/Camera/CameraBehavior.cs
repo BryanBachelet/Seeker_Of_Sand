@@ -215,7 +215,7 @@ namespace Render.Camera
 
             if (m_isDezoomingAutomatily) return;
 
-            m_currentLerpValue += m_inputZoomValue;
+            if (!m_isZoomBlock) m_currentLerpValue += m_inputZoomValue;
             m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
             if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
 

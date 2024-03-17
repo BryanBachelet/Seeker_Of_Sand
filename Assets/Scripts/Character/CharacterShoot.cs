@@ -381,7 +381,7 @@ namespace Character
             for (int i = 0; i < maxSpellIndex; i++)
             {
                 m_stackingClock[i] = new ClockTimer();
-                m_stackingClock[i].isActivate = true;
+                m_stackingClock[i].ActiaveClock();
                 m_stackingClock[i].SetTimerDuration(capsuleStatsAlone[i].stackDuration, m_clockImage[i]);
 
             }
@@ -613,12 +613,12 @@ namespace Character
             CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(stats);
             int mod = GetStartIndexProjectile(stats);
-            for (int i = 0; i < stats.projectileNumber ; i++)
+            for (int i = 0; i < stats.projectileNumber; i++)
             {
                 Transform transformUsed = transform;
 
                 Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 2, 0);
-                Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i+1)/2) ,transformUsed.up);
+                Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
 
                 GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale * (stats.size * stats.sizeMultiplicatorFactor);
@@ -746,19 +746,24 @@ namespace Character
 
         #region Stacking Functions
         public void UpdateStackingSystem()
-        {   
+        {
             for (int i = 0; i < maxSpellIndex; i++)
             {
                 bool inputTest = !m_shootInputActive || i != m_currentRotationIndex;
+                int index = spellEquip[i];
+                CapsuleStats stats = capsuleStatsAlone[index];
+
+                if (m_currentStack[i] != (int)stats.shootNumber) m_stackingClock[i].ActiaveClock();
 
                 if (inputTest && m_stackingClock[i].UpdateTimer())
                 {
-                    int index = spellEquip[i];
-                    CapsuleStats stats = capsuleStatsAlone[index];
+
+
                     m_currentStack[i] += capsuleStatsAlone[index].stackPerGain;
                     m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, (int)stats.shootNumber);
                     capsuleStatsAlone[index] = stats;
                     m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
+                    if (m_currentStack[i] == (int)stats.shootNumber) m_stackingClock[i].DeactivateClock();
                 }
                 ////else
                 //{
@@ -1007,7 +1012,7 @@ namespace Character
             {
                 spellEquip[capsuleIndex.Count - 1] = m_characterInventory.GetSpellCount() - 1;
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
-                m_stackingClock[maxSpellIndex].isActivate = true;
+                m_stackingClock[maxSpellIndex].ActiaveClock();
                 m_stackingClock[maxSpellIndex].SetTimerDuration(capsuleStatsAlone[maxSpellIndex].stackDuration, m_clockImage[maxSpellIndex]);
                 maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
                 RefreshActiveIcon(m_characterInventory.GetAllSpells());
