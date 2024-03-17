@@ -172,14 +172,14 @@ namespace Render.Camera
             }
 
 
-            if (m_characterShootComponent.m_aimModeState != Character.AimMode.FullControl)
-            {
-                m_isActiveAutomaticDezoom = false; 
-            }
-            else
-            {
-                m_isActiveAutomaticDezoom = false; 
-            }
+            //if (m_characterShootComponent.m_aimModeState != Character.AimMode.FullControl)
+            //{
+            //    m_isActiveAutomaticDezoom = false; 
+            //}
+            //else
+            //{
+            //    m_isActiveAutomaticDezoom = false; 
+            //}
         }
 
         private bool IsGamepad()
@@ -319,11 +319,11 @@ namespace Render.Camera
 
             m_isZoomBlock = state;
 
-
             //Debug.Log("Zoom");
             if (!m_isZoomBlock || !m_isActiveAutomaticDezoom) return;
 
             StartCoroutine(DeZoomCamera());
+
         }
 
 
