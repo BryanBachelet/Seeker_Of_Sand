@@ -242,6 +242,7 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
+            if (!m_shootInputActive ) m_CharacterMouvement.m_SpeedReduce = 1;
             if (globalCD || !m_shootInputActive) return;
 
             InitShot();
@@ -408,6 +409,7 @@ namespace Character
                 m_shootInput = false;
                 m_shootInputActive = false;
                 CancelShoot();
+                m_CharacterMouvement.m_SpeedReduce = 1;
             }
         }
         #endregion
