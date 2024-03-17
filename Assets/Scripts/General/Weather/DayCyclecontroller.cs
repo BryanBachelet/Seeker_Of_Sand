@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 using TMPro;
+
 public class DayCyclecontroller : MonoBehaviour
 {
     [SerializeField] public VolumeProfile volumeProfile;
@@ -356,12 +357,12 @@ public class DayCyclecontroller : MonoBehaviour
 
                 //Debug.Log("Cloud Layer Debug : (" + vCloudLayer.layerA.opacityR.value + ") opacity || (" + vCloudLayer.layerA.rotation.value + ") rotation || (" + vCloudLayer.shadowMultiplier.value + ") shadowMultiplier");
             }
-            if (volumePP.profile.TryGet<Exposure>(out vExposure))
+            if (m_ExposureCompensationByHour != null && volumePP.profile.TryGet<Exposure>(out vExposure))
             {
                 vExposure.compensation.value = m_ExposureCompensationByHour.Evaluate(hour);
             }
         }
-        if (m_sun)
+        if (m_sun && m_colorTemperatureOverTime != null)
         {
             m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
         }

@@ -205,7 +205,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
 #else
 #if UNITY_STANDALONE_WIN
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet.csv";
+        string filePath = Application.dataPath + "\\Progression Demo -SpawnSheet.csv";
         Debug.LogError("Is Right path");
 #endif
 #endif

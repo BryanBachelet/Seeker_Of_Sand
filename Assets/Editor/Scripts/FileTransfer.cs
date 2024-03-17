@@ -9,11 +9,13 @@ public class FileTransfer
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
         string pathFile = "Assets\\Resources\\UpgradeTable.csv";
-        string destination = pathToBuiltProject + "\\Seekers Of Sand_Data\\Resources";
+        int lastIndex = pathToBuiltProject.LastIndexOf('/');
+        string destination = pathToBuiltProject.Substring(0, lastIndex);
+        destination = destination + "\\Seekers Of Sand_Data\\Resources" + "\\UpgradeTable.csv";
         File.Copy(pathFile, destination);
         pathFile = "Assets\\Game data use\\Progression Demo - SpawnSheet.csv";
-
-        destination = pathToBuiltProject + "\\Seekers Of Sand_Data\\";
+        destination = pathToBuiltProject.Substring(0, lastIndex);
+        destination = destination + "\\Seekers Of Sand_Data\\" + "\\Progression Demo -SpawnSheet.csv";
         File.Copy(pathFile, destination);
         Debug.Log(pathToBuiltProject);
     }

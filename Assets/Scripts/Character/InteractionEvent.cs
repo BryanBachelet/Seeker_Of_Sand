@@ -236,7 +236,8 @@ public class InteractionEvent : MonoBehaviour
         else if (col.Length == 0 && m_lastHintAnimator.GetBool("InteractionOn") && lastTrader == null && currentInteractibleObject == null)
         {
             lastArtefact = null;
-            m_lastArtefactAnimator.SetBool("PlayerProxi", false);
+            if (m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
+
             m_lastArtefactAnimator = null;
             txt_ObjectifDescription.text = "";
             txt_ObjectifDescriptionPnj.text = "";
@@ -260,7 +261,8 @@ public class InteractionEvent : MonoBehaviour
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
-        m_lastArtefactAnimator.SetBool("PlayerProxi", false);
+        if(m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
+
         txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);
         //ui_HintInteractionObject.SetActive(false);

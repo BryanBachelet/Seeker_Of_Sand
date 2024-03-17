@@ -105,7 +105,7 @@ namespace Enemies
         private Character.CharacterMouvement m_characterMouvement;
 
 
-        private int repositionningLimit = 10;
+        private int repositionningLimit = 2;
         private int repositionningCount;
 
 
@@ -349,7 +349,7 @@ namespace Enemies
         private Vector3 FindPositionAroundTarget(Transform targetTransform)
         {
             float magnitude = (targetTransform.position - m_cameraTransform.position).magnitude;
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector3 basePosition = targetTransform.transform.position;
                 basePosition += Vector3.up * m_upperStartPositionMagnitude;
@@ -792,7 +792,7 @@ namespace Enemies
             string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet.csv";
 #else
 
-        string filePath = Application.dataPath + "\\Progression Demo - SpawnSheet.csv";
+        string filePath = Application.dataPath + "\\Progression Demo -SpawnSheet.csv";
        
 
 #endif
