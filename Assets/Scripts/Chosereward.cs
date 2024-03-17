@@ -143,6 +143,7 @@ public class Chosereward : MonoBehaviour
         {
             m_interactionEventScript.m_lastArtefactAnimator.transform.parent = null;
             m_interactionEventScript.m_lastArtefactAnimator.gameObject.AddComponent<DestroyAfterBasic>();
+            m_interactionEventScript.m_lastArtefactAnimator.gameObject.GetComponent<DestroyAfterBasic>().m_DestroyAfterTime = 6;
             m_interactionEventScript.m_lastArtefactAnimator.gameObject.GetComponent<ArtefactEffect>().ActiveEffect();
             m_interactionEventScript.m_lastArtefactAnimator.enabled = false;
         }
