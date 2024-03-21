@@ -12,11 +12,13 @@ public class FileTransfer
         int lastIndex = pathToBuiltProject.LastIndexOf('/');
         string destination = pathToBuiltProject.Substring(0, lastIndex);
         destination = destination + "\\Seekers Of Sand_Data\\Resources" + "\\UpgradeTable.csv";
-        File.Copy(pathFile, destination);
+
+        File.Copy(pathFile, destination,true) ;
+
         pathFile = "Assets\\Game data use\\Progression Demo - SpawnSheet.csv";
         destination = pathToBuiltProject.Substring(0, lastIndex);
         destination = destination + "\\Seekers Of Sand_Data\\" + "\\Progression Demo -SpawnSheet.csv";
-        File.Copy(pathFile, destination);
-        Debug.Log(pathToBuiltProject);
+        File.Copy(pathFile, destination, true);
+
     }
 }

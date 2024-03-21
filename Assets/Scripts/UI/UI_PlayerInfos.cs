@@ -80,6 +80,7 @@ namespace SeekerOfSand
             }
             public Image[] ReturnClock()
             {
+                InitStackingObjects();
                 return m_stackingImageClock;
             }
 

@@ -199,6 +199,10 @@ namespace Enemies
 
         }
 
+        public void OnApplicationQuit()
+        {
+            GuerhoubaTools.LogSystem.Close();
+        }
 
         public void Update()
         {
