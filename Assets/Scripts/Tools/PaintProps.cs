@@ -11,24 +11,25 @@ public class PaintProps : MonoBehaviour
     public Vector3 nextPaint;
     public float range;
     public GameObject[] prefabProps;
+    public bool[] isRotatingProps;
     public LayerMask groundLayer;
     public int density;
     public bool activeDebug;
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(savePosToPaint)
+        if (savePosToPaint)
         {
             nextPaint = newPaint;
             savePosToPaint = false;
         }
-        if(activePainting)
+        if (activePainting)
         {
             GenerateNewThings(nextPaint);
             //activePainting = false;
@@ -51,7 +52,7 @@ public class PaintProps : MonoBehaviour
         GameObject parent = new GameObject();
         parent.name = "new PropsHolder";
         parent.transform.parent = this.transform;
-        for (int i =0; i < density; i++)
+        for (int i = 0; i < density; i++)
         {
             Vector3 newPosition = Random.insideUnitCircle * range;
             position = new Vector3(position.x + newPosition.x, posY, position.z + newPosition.y);
@@ -61,12 +62,14 @@ public class PaintProps : MonoBehaviour
             if (Physics.Raycast(origineRaycast, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundLayer))
             {
                 Debug.DrawRay(origineRaycast, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-                if(!activeDebug)
+                if (!activeDebug)
                 {
                     int rnd = Random.Range(0, prefabProps.Length);
-                    Instantiate(prefabProps[rnd], hit.point, Quaternion.identity, parent.transform);
+                    Quaternion rotationProp = Quaternion.identity;
+                    if (isRotatingProps[rnd]) rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                    Instantiate(prefabProps[rnd], hit.point, rotationProp, parent.transform);
                 }
-                
+
                 Debug.Log("Did Hit");
             }
             else
