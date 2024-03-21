@@ -11,7 +11,7 @@ public class PaintProps : MonoBehaviour
     public Vector3 nextPaint;
     public float range;
     public GameObject[] prefabProps;
-    public bool[] isRotatingProps;
+    public List<bool> isRotatingProps;
     public LayerMask groundLayer;
     public int density;
     public bool activeDebug;
@@ -76,6 +76,27 @@ public class PaintProps : MonoBehaviour
             {
                 Debug.DrawRay(origineRaycast, transform.TransformDirection(Vector3.down) * 1000, Color.white);
                 Debug.Log("Did not Hit");
+            }
+        }
+    }
+
+    public void OnValidate()
+    {
+        if (isRotatingProps.Count == prefabProps.Length) return;
+
+        if (isRotatingProps.Count < prefabProps.Length)
+        {
+            for (int i = isRotatingProps.Count; i < prefabProps.Length; i++)
+            {
+                isRotatingProps.Add(false);
+            }
+        }
+        else
+        {
+            int count = isRotatingProps.Count;
+            for (int i = count-1; i >= prefabProps.Length; i--)
+            {
+                isRotatingProps.RemoveAt(i);
             }
         }
     }
