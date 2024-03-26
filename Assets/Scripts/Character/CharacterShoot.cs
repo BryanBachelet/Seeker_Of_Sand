@@ -611,6 +611,8 @@ namespace Character
 
         private bool ShootAttackProjectile(int capsuleIndex, ref int currentShotCount)
         {
+            if (m_currentStack[m_currentRotationIndex] <= 0)
+                return true;
 
             CapsuleStats stats = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(stats);

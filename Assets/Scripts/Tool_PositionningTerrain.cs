@@ -11,7 +11,7 @@ public class Tool_PositionningTerrain : MonoBehaviour
     public LayerMask layerGround;
     public Vector3 directionPosition;
 
-
+    public List<bool> isRotatingProps;
 
     // Start is called before the first frame update
     void Start()
@@ -50,10 +50,14 @@ public class Tool_PositionningTerrain : MonoBehaviour
                 Transform childTransform = transform.GetChild(i);
                 // Does the ray intersect any objects excluding the player layer
                 if (Physics.Raycast(childTransform.position, directionPosition, out hit, Mathf.Infinity, layerGround))
+
                 {
                     Debug.DrawRay(childTransform.position, directionPosition * hit.distance, Color.yellow);
                     Debug.Log("Did Hit");
+                    Quaternion rotationChild = Quaternion.identity;
+                    rotationChild = Quaternion.FromToRotation(Vector3.up, hit.normal);
                     childTransform.position = hit.point;
+                    childTransform.rotation = rotationChild;
                 }
             }
 
@@ -64,4 +68,11 @@ public class Tool_PositionningTerrain : MonoBehaviour
         Debug.DrawRay(transform.position, directionPosition * 1000, Color.white);
       //  Debug.Log("Did not Hit");
     }
+
+
+
+
+  
+
+
 }

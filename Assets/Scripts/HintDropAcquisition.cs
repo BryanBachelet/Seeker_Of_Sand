@@ -51,7 +51,7 @@ public class HintDropAcquisition : MonoBehaviour
             if (time > lastdropLoot + 5 && !m_isRemove)
             {
                 m_animator.SetBool("Open", false);
-                m_dropBuffer.RemoveAt(0);
+                if(m_dropBuffer.Count!= 0) m_dropBuffer.RemoveAt(0);
               
                 m_isRemove = true;
             }

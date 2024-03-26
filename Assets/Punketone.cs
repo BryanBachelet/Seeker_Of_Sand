@@ -140,6 +140,6 @@ public class Punketone : MonoBehaviour
 
     public void OnDestroy()
     {
-        Instantiate(deathDestroyVfx, transform.position, transform.rotation);
+       // Instantiate(deathDestroyVfx, transform.position, transform.rotation);
     }
 }

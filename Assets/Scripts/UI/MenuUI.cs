@@ -11,6 +11,7 @@ public class MenuUI : MonoBehaviour
     }
     public void Quit()
     {
+        Debug.Log("Quit app");
         Application.Quit();
     }
 }

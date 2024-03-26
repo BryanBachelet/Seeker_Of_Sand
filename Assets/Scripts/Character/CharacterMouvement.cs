@@ -137,8 +137,11 @@ namespace Character
         }
         private void InitComponent()
         {
-            state = new ObjectState();
-            GameState.AddObject(state);
+            if (state == null)
+            {
+                state = new ObjectState();
+                GameState.AddObject(state);
+            }
 
             m_slidingEffectVfx = m_slidingEffect.GetComponentInChildren<UnityEngine.VFX.VisualEffect>();
             m_rigidbody = GetComponent<Rigidbody>();
@@ -146,6 +149,7 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
+               
         }
 
         private void Start()
@@ -159,7 +163,10 @@ namespace Character
             m_speedData.currentSpeed = 0;
 
             m_speedData.direction = Vector3.zero;
-
+            if(state == null)
+            {
+                InitComponent();
+            }
             //combatState = true;
             SetCombatMode(true);
             mouvementSoundInstance = RuntimeManager.CreateInstance(MouvementSoundReference);
