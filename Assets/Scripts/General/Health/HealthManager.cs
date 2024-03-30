@@ -41,7 +41,7 @@ public class HealthManager : MonoBehaviour
     {
         if (m_textActiveCount == m_damageFDMax) return;
 
-        m_serieController.RefreshSeries(true);
+       if(m_serieController) m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
         currentDamageFD.StartDamageFeeback(position,damage);
 
