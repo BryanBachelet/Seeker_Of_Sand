@@ -5,8 +5,10 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Tool_PositionningTerrain : MonoBehaviour
 {
+    public bool changeRotationAlso = false;
     public bool activeDebugDisplay;
     public bool activeDebugDisplayParent;
+
 
     public LayerMask layerGround;
     public Vector3 directionPosition;
@@ -30,6 +32,12 @@ public class Tool_PositionningTerrain : MonoBehaviour
             {
                 Debug.DrawRay(transform.position, directionPosition * hit.distance, Color.yellow);
                 Debug.Log("Did Hit");
+                Quaternion rotationProp = Quaternion.identity;
+                if (changeRotationAlso)
+                {
+                    rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal) * new Quaternion(-90, 0, 0, 0);
+                    transform.localRotation = rotationProp;
+                }
                 transform.position = hit.point;
             }
             else
@@ -54,10 +62,14 @@ public class Tool_PositionningTerrain : MonoBehaviour
                 {
                     Debug.DrawRay(childTransform.position, directionPosition * hit.distance, Color.yellow);
                     Debug.Log("Did Hit");
-                    Quaternion rotationChild = Quaternion.identity;
-                    rotationChild = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                    Quaternion rotationProp = Quaternion.identity;
+                    if (changeRotationAlso)
+                    {
+                        rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal) * new Quaternion(90,0,0,0); 
+                        childTransform.localRotation = rotationProp;
+                    }
                     childTransform.position = hit.point;
-                    childTransform.rotation = rotationChild;
+                    //RotateProps(childTransform);
                 }
             }
 
@@ -65,8 +77,12 @@ public class Tool_PositionningTerrain : MonoBehaviour
             activeDebugDisplayParent = false;
         }
 
-        Debug.DrawRay(transform.position, directionPosition * 1000, Color.white);
-      //  Debug.Log("Did not Hit");
+        Debug.DrawRay(transform.GetChild(0).position, directionPosition * 1000, Color.white);
+    }
+
+    public void RotateProps(Transform propsToPosition)
+    {
+
     }
 
 

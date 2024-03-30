@@ -16,11 +16,18 @@ public class CharacterArtefact : MonoBehaviour
 
     public GameObject ui_HintInteractionObject;
     public HintInteractionManager m_hintInteractionManager;
+
+    public GameObject[] artefactAround_Prefab;
+    public GameObject targetObjectAround;
+    public List<GameObject> artefactAround_List = new List<GameObject>();
+
+    public float rangeRandom = 5;
+    private Vector3 positionRandom;
     public void Start()
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_healthComponent = GetComponent<HealthPlayerComponent>();
-
+        positionRandom = Random.insideUnitSphere * rangeRandom;
         for (int i = 0; i < artefactsList.Count; i++)
         {
             SetupArtefact(artefactsList[i]);
@@ -29,7 +36,7 @@ public class CharacterArtefact : MonoBehaviour
 
     private void SetupArtefact(ArtefactsInfos artefacts)
     {
- 
+
         artefacts.isDebugActive = activeDebug;
         switch (artefacts.conditionsTrigger)
         {
@@ -47,19 +54,28 @@ public class CharacterArtefact : MonoBehaviour
         }
 
         artefacts.characterGo = gameObject;
-        
+
     }
 
     public void AddArtefact(ArtefactsInfos artefacts)
     {
         artefactsList.Add(artefacts);
+        GenerateNewArtefactAround(artefacts);
         SetupArtefact(artefacts);
     }
 
+    public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
+    {
+
+        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefacts.elementAffiliation], transform.position, transform.rotation);
+        newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
+        artefactAround_List.Add(newArtefactAround);
+
+    }
     public void RemoveArtefact(int index)
     {
         artefactsList.RemoveAt(index);
     }
 
-    
+
 }
