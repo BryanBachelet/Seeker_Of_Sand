@@ -228,11 +228,12 @@ namespace Render.Camera
 
             if (IsGamepad())
             {
-                UpdateZoomValue(m_gamepadZoomSensibility);
+              
             }
 
+            UpdateZoomValue(m_gamepadZoomSensibility);
 
-           m_prevSlopeAngle = m_slopeAngle;
+            m_prevSlopeAngle = m_slopeAngle;
             float angle = playerMove.GetSlope();
             if (angle > m_thresholdAngle)
             {
