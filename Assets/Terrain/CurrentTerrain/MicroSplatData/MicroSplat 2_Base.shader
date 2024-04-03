@@ -11,7 +11,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_Mid_Base240202785"
+Shader "Hidden/Terrain_Mid_Base-891797342"
 {
    Properties
    {
@@ -262,6 +262,7 @@ Shader "Hidden/Terrain_Mid_Base240202785"
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -6070,6 +6071,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -11706,6 +11708,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -17412,6 +17415,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -23090,6 +23094,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -28722,6 +28727,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -34350,6 +34356,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -40007,6 +40014,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -45694,6 +45702,7 @@ void Frag(  VertexToPixel v2f
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -51344,6 +51353,7 @@ float3 GetTessFactors ()
       #define _MAX8TEXTURES 1
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
+      #define _PERTEXFUZZYSHADE 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
