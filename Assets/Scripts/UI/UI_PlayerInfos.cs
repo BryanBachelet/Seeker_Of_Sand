@@ -14,6 +14,8 @@ namespace SeekerOfSand
 
             [Header("Spell Canalisation Objects")]
             public Image m_canalisationBar;
+            public Image m_canalisationBarSegment;
+            public Image m_canalisationSpell;
             [Header("Spell Stacking Object")]
             public GameObject stackingUIHolder;
             public GameObject clockUIHolder;
@@ -23,9 +25,13 @@ namespace SeekerOfSand
             public TMP_Text levelTaken;
             private int m_level;
 
+            public Animator canalisationBarDisplay;
+
+            public Sprite[] canalisationBarreSprites;
             void Start()
             {
                 m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
+                canalisationBarDisplay = m_canalisationBar.transform.parent.GetComponent<Animator>();
                 InitStackingObjects();
                 m_level = 0;
             }
@@ -53,18 +59,30 @@ namespace SeekerOfSand
             #endregion
 
             #region Spell Canalisation
-            public void ActiveSpellCanalisationUI()
+            public void ActiveSpellCanalisationUI(int stack, Image spell)
             {
-                m_canalisationBar.gameObject.SetActive(true);
+                //m_canalisationBar.gameObject.SetActive(true);
+                m_canalisationSpell.sprite = spell.sprite;
+                canalisationBarDisplay.SetBool("Canalisation", true);
+                if (stack < 8)
+                {
+                    m_canalisationBarSegment.sprite = canalisationBarreSprites[stack - 1];
+                }
+                else
+                {
+                    m_canalisationBarSegment.sprite = canalisationBarreSprites[6];
+                }
             }
 
-            public void UpdateSpellCanalisationUI(float value)
+            public void UpdateSpellCanalisationUI(float value, int stack)
             {
                 m_canalisationBar.fillAmount = value;
+
             }
             public void DeactiveSpellCanalisation()
             {
-                m_canalisationBar.gameObject.SetActive(false);
+                //m_canalisationBar.gameObject.SetActive(false);
+                canalisationBarDisplay.SetBool("Canalisation", false);
             }
 
             public void AddLevelTaken()

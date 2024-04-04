@@ -278,7 +278,7 @@ namespace Character
             float ratio = 0;
             if (m_canalisationType == CanalisationBarType.Continious) ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
             if (m_canalisationType == CanalisationBarType.ByPart) ratio = m_spellLaunchTime / m_totalLaunchingDuration;
-            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
         #endregion
 
@@ -430,7 +430,8 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.Continious)
                 m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
 
-            m_uiPlayerInfos.ActiveSpellCanalisationUI();
+            Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
+            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_canEndShot = false;
             m_isShooting = true;
             m_spellTimer = 0.0f;
@@ -463,7 +464,7 @@ namespace Character
         private void UpdateCanalisationBar(float maxValue)
         {
             float ratio = m_spellTimer / maxValue;
-            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
 
         private bool CancelShoot()
