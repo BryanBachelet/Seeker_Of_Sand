@@ -276,8 +276,15 @@ namespace Character
 
             }
             float ratio = 0;
-            if (m_canalisationType == CanalisationBarType.Continious) ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
-            if (m_canalisationType == CanalisationBarType.ByPart) ratio = m_spellLaunchTime / m_totalLaunchingDuration;
+            if (m_canalisationType == CanalisationBarType.Continious)
+            {
+                ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
+            }
+            if (m_canalisationType == CanalisationBarType.ByPart)
+            {
+                ratio = m_spellLaunchTime / m_totalLaunchingDuration;
+                
+            }
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
         #endregion
