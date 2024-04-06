@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Editor/AI/BehaviorTreeEditor.uss?fileID=7433441132597879392&amp;guid=9f39bcf479e03744c99b337a02b373cc&amp;type=3#BehaviorTreeEditor" />
+    <uie:Toolbar>
+        <uie:ToolbarMenu tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" text="Assets" />
+    </uie:Toolbar>
+    <GuerhoubaTools.Gameplay.SplitView fixed-pane-initial-dimension="300">
+        <ui:VisualElement name="LeftPane" style="flex-grow: 1;">
+            <GuerhoubaTools.Gameplay.SplitView orientation="Vertical" fixed-pane-initial-dimension="422">
+                <ui:VisualElement name="inspector-container" style="flex-grow: 1;">
+                    <ui:Label tabindex="-1" text="Inspector" parse-escape-sequences="true" display-tooltip-when-elided="true" style="background-color: rgb(37, 37, 37);" />
+                    <GuerhoubaTools.Gameplay.InspectorView style="flex-grow: 1; background-color: rgb(56, 56, 56);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="blackboard-container" style="flex-grow: 1;">
+                    <ui:Label tabindex="-1" text="Blackboard" parse-escape-sequences="true" display-tooltip-when-elided="true" style="background-color: rgb(37, 37, 37);" />
+                    <ui:IMGUIContainer />
+                </ui:VisualElement>
+            </GuerhoubaTools.Gameplay.SplitView>
+        </ui:VisualElement>
+        <ui:VisualElement name="RightPane" style="flex-grow: 1; padding-left: 4px;">
+            <ui:Label tabindex="-1" text="Tree View" parse-escape-sequences="true" display-tooltip-when-elided="true" style="background-color: rgb(37, 37, 37);" />
+            <GuerhoubaTools.Gameplay.BehaviorTreeView focusable="true" name="BehaviorTreeView" style="flex-grow: 1; align-items: stretch; flex-direction: column; background-color: rgba(5, 5, 5, 0.67);" />
+        </ui:VisualElement>
+    </GuerhoubaTools.Gameplay.SplitView>
+</ui:UXML>
