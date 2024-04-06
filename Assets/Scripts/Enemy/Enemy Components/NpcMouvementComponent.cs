@@ -111,10 +111,7 @@ namespace Enemies
 
                 if (targetData.isMoving) Move();
             }
-            else
-            {
 
-            }
         }
 
 

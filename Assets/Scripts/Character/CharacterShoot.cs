@@ -242,7 +242,7 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
-            if (!m_shootInputActive ) m_CharacterMouvement.m_SpeedReduce = 1;
+            if (!m_shootInputActive) m_CharacterMouvement.m_SpeedReduce = 1;
             if (globalCD || !m_shootInputActive) return;
 
             InitShot();
@@ -408,7 +408,7 @@ namespace Character
             {
                 m_shootInput = false;
                 m_shootInputActive = false;
-                CancelShoot();
+               CancelShoot();
                 m_CharacterMouvement.m_SpeedReduce = 1;
             }
         }
@@ -674,7 +674,7 @@ namespace Character
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
-            m_currentIndexCapsule = ChangeProjecileIndex();
+            if (!m_activeSpellLoad) m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
             //castingVFXAnimator.ResetTrigger("Shot");
