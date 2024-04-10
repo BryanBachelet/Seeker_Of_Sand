@@ -11,6 +11,7 @@ namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
+        public GlobalSoundManager gsm;
         public LauncherProfil launcherProfil;
         [HideInInspector] public int projectileNumber;
 
@@ -247,6 +248,7 @@ namespace Character
 
             InitShot();
 
+
             ShotCanalisation();
             if (m_activeSpellLoad) return;
 
@@ -263,6 +265,7 @@ namespace Character
             {
 
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
+                gsm.CanalisationParameterLaunch(0.5f, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
 
                 m_timeBetweenShoot = 0.0f;
                 if (m_canEndShot) EndShoot();
@@ -406,6 +409,7 @@ namespace Character
             if (ctx.performed && state.isPlaying)
             {
                 StartCasting();
+                gsm.CanalisationParameterLaunch(0, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
                 m_shootInput = true;
                 m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
@@ -416,6 +420,7 @@ namespace Character
                 m_shootInput = false;
                 m_shootInputActive = false;
                CancelShoot();
+                gsm.CanalisationParameterLaunch(1, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
             }
         }
@@ -488,7 +493,7 @@ namespace Character
         {
             if (!m_canShoot) return;
 
-            GlobalSoundManager.PlayOneShot(27, transform.position);
+            //GlobalSoundManager.PlayOneShot(27, transform.position);
             m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
             m_lastTimeShot = Time.time;
@@ -682,6 +687,7 @@ namespace Character
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
+            gsm.CanalisationParameterLaunch(1, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
             if (!m_activeSpellLoad) m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
@@ -983,6 +989,7 @@ namespace Character
             if (ctx.performed)
             {
                 int indexAim = (int)m_aimModeState;
+                gsm.CanalisationParameterStop();
                 indexAim++;
 
                 if (indexAim == 3) indexAim = 0;

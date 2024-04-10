@@ -24,7 +24,7 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.m_dropImage = CapsuleManager.instance.attackInfo[capsuleID].sprite;
         lastDropInfo.dropDescription = CapsuleManager.instance.attackInfo[capsuleID].description;
         lastDropInfo.dropName = CapsuleManager.instance.attackInfo[capsuleID].name;
-        hintDropAcquisitionObject.AddNewDrop(lastDropInfo);
+        hintDropAcquisitionObject.AddNewMinorDrop(lastDropInfo);
     }
 
     public void AddNewArtefact(ArtefactsInfos artefact)
@@ -33,7 +33,7 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.m_dropImage = artefact.icon;
         lastDropInfo.dropDescription = artefact.description;
         lastDropInfo.dropName = artefact.nameArtefact;
-        hintDropAcquisitionObject.AddNewDrop(lastDropInfo);
+        hintDropAcquisitionObject.AddNewMinorDrop(lastDropInfo);
     }
 
     public void AddNewUpgrade(Upgrade upgradeData, Sprite spriteSpell)
@@ -42,6 +42,6 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.m_dropImage = spriteSpell;
         lastDropInfo.dropDescription = upgradeData.gain.description;
         lastDropInfo.dropName = upgradeData.gain.nameUpgrade;
-        hintDropAcquisitionObject.AddNewDrop(lastDropInfo);
+        hintDropAcquisitionObject.AddNewMinorDrop(lastDropInfo);
     }
 }

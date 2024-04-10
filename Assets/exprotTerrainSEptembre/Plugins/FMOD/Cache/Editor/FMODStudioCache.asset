@@ -42,10 +42,10 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638456290857393896
+  lastModified: 638483498609205800
   FileSizes:
   - Name: Desktop
-    Value: 14964320
+    Value: 15447392
   Exists: 1
 --- !u!114 &-8635909272977938358
 MonoBehaviour:
@@ -515,10 +515,10 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638456290857434603
+  lastModified: 638483498609235725
   FileSizes:
   - Name: Desktop
-    Value: 3750
+    Value: 3880
   Exists: 1
 --- !u!114 &-4289898622486494815
 MonoBehaviour:
@@ -917,12 +917,13 @@ MonoBehaviour:
   - {fileID: 1080290151571108375}
   - {fileID: 2713292183240943611}
   - {fileID: -7701976049270449187}
+  - {fileID: 1797960245178800948}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8677712679824705693}
   StringsBanks:
   - {fileID: -4488664334871958410}
-  cacheTime: 638456290857671138
+  cacheTime: 638483498609471533
   cacheVersion: 131609
 --- !u!114 &649305040045780963
 MonoBehaviour:
@@ -1032,6 +1033,35 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 420
+--- !u!114 &1797960245178800948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player/Canalisation
+  m_EditorClassIdentifier: 
+  Path: event:/Player/Canalisation
+  Guid:
+    Data1: 494526988
+    Data2: 1328063205
+    Data3: 2069726388
+    Data4: -1838082501
+  Banks:
+  - {fileID: -8677712679824705693}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 2728966151302296222}
+  - {fileID: 3594524319404995294}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 15000
 --- !u!114 &1843041941824893241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,6 +1170,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 350
   Length: 1544
+--- !u!114 &2728966151302296222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Canalisation/Element
+  m_EditorClassIdentifier: 
+  Name: Element
+  StudioPath: 
+  Min: 0
+  Max: 4
+  Default: 0
+  ID:
+    data1: 442122730
+    data2: 3416535722
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &2819078975073943978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1195,6 +1249,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 250
   Length: 2977
+--- !u!114 &3594524319404995294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Canalisation/CanalisationState
+  m_EditorClassIdentifier: 
+  Name: CanalisationState
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3167748869
+    data2: 1474695882
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &3678440317235289224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1452,7 +1530,7 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Sfx.bank
   Name: Sfx
   StudioPath: bank:/Sfx
-  lastModified: 638456290857671138
+  lastModified: 638483498609471533
   FileSizes:
   - Name: Desktop
     Value: 311968

@@ -26,14 +26,14 @@ namespace SeekerOfSand
             public void Start()
             {
              
-                if (m_punketoneLifeBar.Length > 0)
-                {
-                    m_punketonLifeBarAnimator = new Animator[m_punketoneLifeBar.Length];
-                    for (int i = 0; i < m_punketoneLifeBar.Length; i++)
-                    {
-                        m_punketonLifeBarAnimator[i] = m_punketoneLifeBar[i].GetComponent<Animator>();
-                    }
-                }
+                //if (m_punketoneLifeBar.Length > 0)
+                //{
+                //    m_punketonLifeBarAnimator = new Animator[m_punketoneLifeBar.Length];
+                //    for (int i = 0; i < m_punketoneLifeBar.Length; i++)
+                //    {
+                //        m_punketonLifeBarAnimator[i] = m_punketoneLifeBar[i].GetComponent<Animator>();
+                //    }
+                //}
             }
 
 
@@ -42,7 +42,7 @@ namespace SeekerOfSand
             public void SetupUIBoss(int index)
             {
                 m_punketoneLifeBar[index].SetActive(true);
-                m_punketonLifeBarAnimator[index].SetBool("Open", true);
+                //m_punketonLifeBarAnimator[index].SetBool("Open", true);
             }
 
             // Update Punketon UI Event
@@ -55,7 +55,7 @@ namespace SeekerOfSand
             public void RemoveUIBoss(int index)
             {
                 m_punketoneLifeBar[index].SetActive(false);
-                m_punketonLifeBarAnimator[index].SetBool("Open", false);
+                //m_punketonLifeBarAnimator[index].SetBool("Open", false);
             }
             #endregion
 
