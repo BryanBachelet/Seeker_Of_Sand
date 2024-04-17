@@ -14,6 +14,7 @@ public class HintDropAcquisition : MonoBehaviour
     }
 
     #region minorDrop
+    [SerializeField] private float m_timeDisplayMinorLoot = 1;
     [SerializeField] private Animator m_animatorMinor;
     [SerializeField] public List<DropInfo> m_minorDropBuffer = new List<DropInfo>();
     [SerializeField] public Image m_minorBackGroundImageReference;
@@ -26,6 +27,7 @@ public class HintDropAcquisition : MonoBehaviour
     float lastminorDropLoot;
     #endregion
     #region majorDrop
+    [SerializeField] private float m_timeDisplayMajorLoot = 1;
     [SerializeField] private Animator m_animatorMajor;
     [SerializeField] public List<DropInfo> m_majorDropBuffer = new List<DropInfo>();
     [SerializeField] public Image m_majorBackGroundImageReference;
@@ -62,14 +64,14 @@ public class HintDropAcquisition : MonoBehaviour
         if (!stopEditMode)
         {
             float time = Time.time;
-            if (time > lastminorDropLoot + 5 && !m_isMinorRemove)
+            if (time > lastminorDropLoot + (m_timeDisplayMinorLoot / 2) && !m_isMinorRemove)
             {
                 m_animatorMinor.SetBool("Open", false);
                 if(m_minorDropBuffer.Count!= 0) m_minorDropBuffer.RemoveAt(0);
               
                 m_isMinorRemove = true;
             }
-            if (time > lastminorDropLoot + 10)
+            if (time > lastminorDropLoot + m_timeDisplayMinorLoot)
             {
                 
                 //m_animator.SetBool("Open", false);
@@ -79,14 +81,14 @@ public class HintDropAcquisition : MonoBehaviour
                 }
             }
 
-            if (time > lastmajorDropLoot + 5 && !m_isMajorRemove)
+            if (time > lastmajorDropLoot + (m_timeDisplayMajorLoot / 2) && !m_isMajorRemove)
             {
                 m_animatorMajor.SetBool("Open", false);
                 if (m_majorDropBuffer.Count != 0) m_majorDropBuffer.RemoveAt(0);
 
                 m_isMajorRemove = true;
             }
-            if (time > lastmajorDropLoot + 10)
+            if (time > lastmajorDropLoot + m_timeDisplayMajorLoot)
             {
 
                 //m_animator.SetBool("Open", false);
@@ -111,19 +113,7 @@ public class HintDropAcquisition : MonoBehaviour
     public void ActivationDisplayMinorLoot()
     {
         lastminorDropLoot = Time.time;
-        majorCurrentBackGroundColor = GetRandomColorInSprite();
-        m_minorBackGroundImageReference.color = majorCurrentBackGroundColor;
-        m_minorDropImageReference.sprite = m_minorDropBuffer[0].m_dropImage;
-        m_minorDropName.text = m_minorDropBuffer[0].dropName;
-        m_minorDropDescription.text = m_minorDropBuffer[0].dropDescription;
-        m_minorDropType.text = m_minorDropBuffer[0].m_dropType;
-        m_animatorMinor.SetBool("Open", true);
-        m_isMajorRemove = false;
-    }
-    public void ActivationDisplayMajorLoot()
-    {
-        lastmajorDropLoot = Time.time;
-        majorCurrentBackGroundColor = GetRandomColorInSprite();
+        majorCurrentBackGroundColor = GetRandomColorInSprite(m_minorDropBuffer[0].m_dropImage);
         m_minorBackGroundImageReference.color = majorCurrentBackGroundColor;
         m_minorDropImageReference.sprite = m_minorDropBuffer[0].m_dropImage;
         m_minorDropName.text = m_minorDropBuffer[0].dropName;
@@ -131,6 +121,18 @@ public class HintDropAcquisition : MonoBehaviour
         m_minorDropType.text = m_minorDropBuffer[0].m_dropType;
         m_animatorMinor.SetBool("Open", true);
         m_isMinorRemove = false;
+    }
+    public void ActivationDisplayMajorLoot()
+    {
+        lastmajorDropLoot = Time.time;
+        majorCurrentBackGroundColor = GetRandomColorInSprite(m_majorDropBuffer[0].m_dropImage);
+        m_majorBackGroundImageReference.color = majorCurrentBackGroundColor;
+        m_majorDropImageReference.sprite = m_majorDropBuffer[0].m_dropImage;
+        m_majorDropName.text = m_majorDropBuffer[0].dropName;
+        m_majorDropDescription.text = m_majorDropBuffer[0].dropDescription;
+        m_majorDropType.text = m_majorDropBuffer[0].m_dropType;
+        m_animatorMajor.SetBool("Open", true);
+        m_isMajorRemove = false;
     }
 
     public void DeactivationDiplayLoot()
@@ -143,9 +145,9 @@ public class HintDropAcquisition : MonoBehaviour
         m_isMinorRemove = false;
     }
 
-    public Color GetRandomColorInSprite()
+    public Color GetRandomColorInSprite(Sprite sprite)
     {
-        Sprite currentDropSprite = m_minorDropBuffer[0].m_dropImage;
+        Sprite currentDropSprite = sprite;
         float width = currentDropSprite.rect.width / 2;
         float height = currentDropSprite.rect.height / 2;
         int rndW = Random.Range(0, (int)width);
