@@ -124,6 +124,7 @@ public class ChooseSpellManager : MonoBehaviour
             // --------------------
 
             vfxSpell[i].sprite = newSpell[i].sprite;
+            vfxSpell[i].material = newSpell[i].materialToUse;
             vfxHolder[i].SetActive(true);
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;

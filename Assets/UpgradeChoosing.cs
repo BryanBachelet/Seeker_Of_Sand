@@ -25,6 +25,7 @@ public class UpgradeChoosing : MonoBehaviour
         for (int i = 0; i < m_upgradeLevelingData.spellCount; i++)
         {
             spellInBar[i].sprite = m_upgradeLevelingData.iconSpell[i];
+
         }
 
         upgradePointText.text = m_upgradeLevelingData.upgradePoint.ToString();

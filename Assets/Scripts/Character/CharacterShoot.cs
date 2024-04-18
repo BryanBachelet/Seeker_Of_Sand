@@ -961,10 +961,12 @@ namespace Character
                 if (capsuleState[index].type == SpellSystem.CapsuleType.ATTACK)
                 {
                     icon_Sprite[i].sprite = ((SpellSystem.CapsuleAttack)capsuleState[index]).sprite;
+                    icon_Sprite[i].material = ((SpellSystem.CapsuleAttack)capsuleState[index]).materialToUse;
                 }
                 else if (capsuleState[index].type == SpellSystem.CapsuleType.BUFF)
                 {
                     icon_Sprite[i].sprite = ((SpellSystem.CapsuleBuff)capsuleState[index]).sprite;
+                    icon_Sprite[i].material = ((SpellSystem.CapsuleBuff)capsuleState[index]).materialToUse;
                 }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
