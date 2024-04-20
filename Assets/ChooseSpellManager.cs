@@ -14,6 +14,9 @@ public class ChooseSpellManager : MonoBehaviour
     public Capsule[] newSpell = new Capsule[3];
     public Image[] vfxSpell = new Image[3];
     public GameObject[] spellHolder = new GameObject[3];
+    public TMPro.TMP_Text[] textObject = new TMPro.TMP_Text[3];
+    public string[] nextSpellName = new string[3];
+
 
     public bool activeGeneration = false;
 
@@ -129,6 +132,8 @@ public class ChooseSpellManager : MonoBehaviour
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;
             newSpell[i].elementType = capsuleManager.capsules[randomSpellToChoose[i]].elementType;
+            nextSpellName[i] = newSpell[i].name;
+            textObject[i].text = nextSpellName[i];
             Debug.Log(newSpell[i].elementType);
             GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].elementType], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
