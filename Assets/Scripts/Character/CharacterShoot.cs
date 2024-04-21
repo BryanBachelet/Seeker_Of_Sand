@@ -440,7 +440,6 @@ namespace Character
         {
             if (!m_activeSpellLoad) return false;
 
-
             UpdateCanalisationBar(m_totalCanalisationDuration);
             if (m_spellTimer >= currentWeaponStats.spellCanalisation + baseCanalisationTime)
             {
@@ -456,8 +455,6 @@ namespace Character
 
                 return false;
             }
-
-            return true;
         }
 
         private void UpdateCanalisationBar(float maxValue)
@@ -501,12 +498,6 @@ namespace Character
             if (m_currentType == SpellSystem.CapsuleType.ATTACK) ShootAttack(m_currentIndexCapsule, ref currentShotNumber, ref m_canEndShot);
 
             if (m_currentType == SpellSystem.CapsuleType.BUFF) ShootBuff(((SpellSystem.CapsuleBuff)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)));
-
-
-
-            //m_CharacterAnimator.SetBool("Shooting", true);
-
-
 
         }
 

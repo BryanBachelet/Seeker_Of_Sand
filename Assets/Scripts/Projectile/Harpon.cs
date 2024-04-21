@@ -36,17 +36,17 @@ public class Harpon : Projectile
 
     protected override void Move()
     {
-        if(m_enemyImpale == null || m_enemyImpale.npcState == Enemies.NpcState.DEATH)
+        if(m_enemyImpale == null || m_enemyImpale.m_npcInfo.state == Enemies.NpcState.DEATH)
         {
             m_enemyImpale = null;
         }
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(transform.position, transform.forward, out hit, m_speed * Time.deltaTime, m_layer))
         {
-            if (m_enemyImpale != null && m_firstHit && m_enemyImpale.npcState != Enemies.NpcState.DEATH)
+            if (m_enemyImpale != null && m_firstHit && m_enemyImpale.m_npcInfo.state != Enemies.NpcState.DEATH)
             {
                 m_enemyImpale.ReceiveDamage(m_damage * m_impalementDamageRatio, m_enemyImpale.transform.position - transform.position, m_power);
-                m_enemyImpale.npcState = Enemies.NpcState.PAUSE;
+                m_enemyImpale.m_npcInfo.state = Enemies.NpcState.PAUSE;
             }
             Destroy(this.gameObject);
         }
@@ -84,18 +84,18 @@ public class Harpon : Projectile
             if (other.tag == "Enemy")
             {
                 Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
-                if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+                if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
                 if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
                     enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
 
-                    if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+                    if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
                     m_firstHit = true;
                     m_enemyImpale = enemyTouch;
-                    m_enemyImpale.npcState = Enemies.NpcState.PAUSE;
+                    m_enemyImpale.m_npcInfo.state = Enemies.NpcState.PAUSE;
                 }
                 if (m_firstHit || m_currentDistance > m_minRangeToImpale)
                 {

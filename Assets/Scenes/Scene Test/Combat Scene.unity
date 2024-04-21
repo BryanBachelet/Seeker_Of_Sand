@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1138.1681, g: 948.66125, b: 919.1456, a: 1}
+  m_IndirectSpecularColor: {r: 1152.8341, g: 962.56946, b: 938.0665, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7097,8 +7097,8 @@ MonoBehaviour:
   enemisManager: {fileID: 2091721615}
   constantSpawning: 0
   stopPlayerExperience: 0
-  specialEnemisSquad: 0
-  mobCount: 0300000002000000010000000000000000000000
+  specialEnemisSquad: 1
+  mobCount: 0000000001000000000000000000000000000000
 --- !u!4 &403950736
 Transform:
   m_ObjectHideFlags: 0
@@ -35704,6 +35704,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 59767753}
+    - targetCorrespondingSourceObject: {fileID: 4333526769792634081, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 649042082}
     - targetCorrespondingSourceObject: {fileID: 6632142262200979151, guid: 209ed8e3012a4944d94dcdbb26abcfb5,
         type: 3}
       insertIndex: -1
@@ -37372,6 +37376,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 647607303}
   m_CullTransparentMesh: 1
+--- !u!1 &649042081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 649042082}
+  m_Layer: 6
+  m_Name: BaseTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &649042082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649042081}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.369, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 581625186}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &650576244
 GameObject:
   m_ObjectHideFlags: 0
@@ -66823,6 +66858,11 @@ PrefabInstance:
       propertyPath: ui_DangerLevelObject
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
+        type: 3}
+      propertyPath: m_basePlayerTransform
+      value: 
+      objectReference: {fileID: 649042082}
     - target: {fileID: 1866458878302752456, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
         type: 3}
       propertyPath: m_instructionAnimator

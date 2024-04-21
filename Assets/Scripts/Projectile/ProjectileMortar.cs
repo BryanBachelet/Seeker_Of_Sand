@@ -90,7 +90,7 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetDamageLeger(m_projectileData.damage,transform.position);
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(m_projectileData.damage,transform.position);
 
                 }
                 if (m_projectileData.target.tag == "Altar")
@@ -115,7 +115,7 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetDamageLeger(m_projectileData.damage,transform.position);
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(m_projectileData.damage,transform.position);
                     
                 }
             }

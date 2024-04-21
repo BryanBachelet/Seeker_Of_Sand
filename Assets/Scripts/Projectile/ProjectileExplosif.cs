@@ -196,7 +196,7 @@ public class ProjectileExplosif : Projectile
                 Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
                 if (enemyTouch == null) continue;
 
-                if (enemyTouch.npcState == Enemies.NpcState.DEATH)
+                if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH)
                 {
                     Destroy(this.gameObject);
                     return;
