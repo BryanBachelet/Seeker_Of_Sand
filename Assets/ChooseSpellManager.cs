@@ -14,6 +14,13 @@ public class ChooseSpellManager : MonoBehaviour
     public Capsule[] newSpell = new Capsule[3];
     public Image[] vfxSpell = new Image[3];
     public GameObject[] spellHolder = new GameObject[3];
+    public TMPro.TMP_Text[] textObject = new TMPro.TMP_Text[3];
+    public string[] nextSpellName = new string[3];
+    [SerializeField] private Image[] m_imageBandeau = new Image[3];
+    [SerializeField] private Material[] m_materialBandeauDissolve = new Material[3];
+    public GameObject[] decorationHolder = new GameObject[3];
+    public float timeSolve;
+
 
     public bool activeGeneration = false;
 
@@ -30,16 +37,33 @@ public class ChooseSpellManager : MonoBehaviour
     public TMP_Text textSpellFeedback;
     [HideInInspector] public UpgradeManager m_upgradeManagerComponenet;
 
+
     private Animator m_animator;
     private bool m_hasChooseSpell = false;
     private int m_indexSpellChoose = -1;
 
 
     #region Unity Functions
+
+    private void Awake()
+    {
+        if (m_imageBandeau != null)
+        {
+            for (int i = 0; i < m_imageBandeau.Length; i++)
+            {
+                Material mat = Instantiate(m_imageBandeau[i].material);
+
+                m_materialBandeauDissolve[i] = mat;
+                m_imageBandeau[i].material = mat;
+            }
+        }
+    }
     void Start()
     {
         m_animator = this.GetComponent<Animator>();
         if(descriptionHolder !=  null) { descriptionHolderAnimator = descriptionHolder.GetComponent<Animator>(); }
+        
+
 
     }
     #endregion
@@ -69,7 +93,10 @@ public class ChooseSpellManager : MonoBehaviour
                     spellHolder[i].SetActive(false);
                     vfxSpell[i].enabled = false;
                     vfxSpell[i].sprite = null;
-                    
+                    m_materialBandeauDissolve[i].SetFloat("_Fade_Step", -0.5f);
+
+
+
                 }
                 m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
                
@@ -122,12 +149,15 @@ public class ChooseSpellManager : MonoBehaviour
             randomSpellToChoose[i] = CapsuleManager.GetRandomCapsuleIndex();
             newSpell[i] = capsuleManager.capsules[randomSpellToChoose[i]];
             // --------------------
-
+            StartCoroutine(SpellFadeIn(i, Time.time));
             vfxSpell[i].sprite = newSpell[i].sprite;
+            vfxSpell[i].material = newSpell[i].materialToUse;
             vfxHolder[i].SetActive(true);
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;
             newSpell[i].elementType = capsuleManager.capsules[randomSpellToChoose[i]].elementType;
+            nextSpellName[i] = newSpell[i].name;
+            textObject[i].text = nextSpellName[i];
             Debug.Log(newSpell[i].elementType);
             GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].elementType], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
@@ -143,8 +173,8 @@ public class ChooseSpellManager : MonoBehaviour
             if (i != indexChoice)
             {
                 vfxHolder[i].SetActive(false);
-                spellHolder[i].SetActive(false);
-              
+                //spellHolder[i].SetActive(false);
+                StartCoroutine(SpellFadeOut(i, Time.time));
             }
         }
         m_indexSpellChoose = indexChoice;
@@ -170,5 +200,29 @@ public class ChooseSpellManager : MonoBehaviour
     {
         descriptionHolder.SetActive(false);
         if (descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", false); }
+    }
+
+    public IEnumerator SpellFadeOut(int spellNumber, float time)
+    {
+        decorationHolder[spellNumber].SetActive(false);
+        while (time + timeSolve - Time.time > 0)
+        {
+            m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (time + timeSolve - Time.time) / timeSolve - 0.5f);
+            yield return Time.deltaTime;
+        }
+        m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", -0.5f);
+
+    }
+
+    public IEnumerator SpellFadeIn(int spellNumber, float time)
+    {
+        while(Time.time - time < timeSolve)
+        {
+            m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (Time.time - time) / timeSolve - 0.5f);
+            yield return Time.deltaTime;
+        }
+        m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", 0.6f);
+        decorationHolder[spellNumber].SetActive(true);
+
     }
 }

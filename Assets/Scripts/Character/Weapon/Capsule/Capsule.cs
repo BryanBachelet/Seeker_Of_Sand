@@ -16,6 +16,7 @@ namespace SpellSystem
         public CapsuleProfil stats;
         public Sprite sprite;
         public Element element;
+        public Material materialToUse;
     }
 
     [Serializable]
@@ -28,6 +29,7 @@ namespace SpellSystem
         public float duration;
         public Sprite sprite;
         public GameObject vfx;
+        public Material materialToUse;
 
     }
 
@@ -55,6 +57,7 @@ namespace SpellSystem
         public CapsuleType type;
         public Element elementType;
         public Sprite sprite;
+        public Material materialToUse;
     }
     [Serializable]
     public class CapsuleAttack: Capsule
@@ -68,6 +71,7 @@ namespace SpellSystem
             sprite = info.sprite;
             vfx = info.vfx;
             elementType = info.element;
+            materialToUse = info.materialToUse;
 
 
         }
@@ -76,6 +80,7 @@ namespace SpellSystem
         public GameObject vfx;
         public CapsuleProfil profil;
         public Element element;
+        public Material material;
     }
     [Serializable]
     public class CapsuleBuff : Capsule
@@ -89,6 +94,7 @@ namespace SpellSystem
             duration = info.duration;
             sprite = info.sprite;
             vfx = info.vfx;
+            materialToUse = info.materialToUse;
 
         }
         

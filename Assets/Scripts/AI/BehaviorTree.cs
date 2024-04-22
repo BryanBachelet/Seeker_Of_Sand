@@ -106,8 +106,7 @@ namespace GuerhoubaGames.AI
                 EditorUtility.SetDirty(composite);
             }
         }
-
-#endif 
+#endif
         public List<Node> GetChildren(Node parent)
         {
             List<Node> children = new List<Node>();
@@ -159,5 +158,6 @@ namespace GuerhoubaGames.AI
             });
 
         }
+
     }
 }

@@ -21,6 +21,10 @@ public class GlobalSoundManager : MonoBehaviour
     public EventReference GlobalMusic;
     public EventInstance globalMusicInstance;
 
+
+    public EventReference canalisationReference;
+    public EventInstance canalisationInstance;
+
     public bool changing = false;
 
     public float delayMusic = 0;
@@ -71,6 +75,23 @@ public class GlobalSoundManager : MonoBehaviour
     {
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        canalisationInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
+
+    public void CanalisationParameterLaunch(float canalisationState, float element)
+    {
+        canalisationInstance = RuntimeManager.CreateInstance(canalisationReference);
+        canalisationInstance.setParameterByName("CanalisationState", canalisationState);
+        Debug.Log(element);
+        canalisationInstance.setParameterByName("Element", element);
+        canalisationInstance.start();
+    }
+
+    public void CanalisationParameterStop()
+    {
+        canalisationInstance.setParameterByName("CanalisationState", 0);
+        canalisationInstance.setParameterByName("Element", 0);
+        globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
 }

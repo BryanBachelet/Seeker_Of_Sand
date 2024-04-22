@@ -106,6 +106,7 @@ namespace Character
             m_upgradeManager.CloseSpellChoiceUI();
             GameState.ChangeState();
             isSpellUpgradeWindowOpen = false;
+            ChangeBaseInterfaceDisplay(true);
         }
 
         #region Upgrade Functions
@@ -114,7 +115,7 @@ namespace Character
             isUpgradeWindowOpen = true;
 
             // -> Deactivate player in game interface
-            baseGameInterfaceUI.SetActive(false);
+            ChangeBaseInterfaceDisplay(false);
 
             UpgradeLevelingData data = new UpgradeLevelingData();
             data.spellState = m_characterShoot.capsuleStatsAlone.ToArray();
@@ -133,7 +134,7 @@ namespace Character
         public void CloseUpgradeWindow()
         {
             isUpgradeWindowOpen = false;
-            baseGameInterfaceUI.SetActive(true);
+            ChangeBaseInterfaceDisplay(true);
             m_upgradeManager.CloseUpgradeUI();
 
             GameState.ChangeState();
@@ -171,6 +172,7 @@ namespace Character
             if(baseSpellIndex < spellUpgradeConfigs.Length && spellUpgradeConfigs[baseSpellIndex].levelToGainSpell <= experience.GetCurrentLevel())
             {
                 ShowSpellChoiceInteface();
+                ChangeBaseInterfaceDisplay(false);
                 baseSpellIndex++;
                
             }
@@ -179,7 +181,10 @@ namespace Character
 
 
       
-
+        public void ChangeBaseInterfaceDisplay(bool willBeAble)
+        {
+            baseGameInterfaceUI.SetActive(willBeAble);
+        }
 
     }
 

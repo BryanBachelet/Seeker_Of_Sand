@@ -11,6 +11,7 @@ namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
+        public GlobalSoundManager gsm;
         public LauncherProfil launcherProfil;
         [HideInInspector] public int projectileNumber;
 
@@ -247,6 +248,7 @@ namespace Character
 
             InitShot();
 
+
             ShotCanalisation();
             if (m_activeSpellLoad) return;
 
@@ -263,6 +265,7 @@ namespace Character
             {
 
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
+                gsm.CanalisationParameterLaunch(0.5f, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
 
                 m_timeBetweenShoot = 0.0f;
                 if (m_canEndShot) EndShoot();
@@ -276,9 +279,16 @@ namespace Character
 
             }
             float ratio = 0;
-            if (m_canalisationType == CanalisationBarType.Continious) ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
-            if (m_canalisationType == CanalisationBarType.ByPart) ratio = m_spellLaunchTime / m_totalLaunchingDuration;
-            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+            if (m_canalisationType == CanalisationBarType.Continious)
+            {
+                ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
+            }
+            if (m_canalisationType == CanalisationBarType.ByPart)
+            {
+                ratio = m_spellLaunchTime / m_totalLaunchingDuration;
+                
+            }
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
         #endregion
 
@@ -399,6 +409,7 @@ namespace Character
             if (ctx.performed && state.isPlaying)
             {
                 StartCasting();
+                gsm.CanalisationParameterLaunch(0, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
                 m_shootInput = true;
                 m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
@@ -409,6 +420,7 @@ namespace Character
                 m_shootInput = false;
                 m_shootInputActive = false;
                CancelShoot();
+                gsm.CanalisationParameterLaunch(1, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
             }
         }
@@ -430,7 +442,8 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.Continious)
                 m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
 
-            m_uiPlayerInfos.ActiveSpellCanalisationUI();
+            Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
+            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_canEndShot = false;
             m_isShooting = true;
             m_spellTimer = 0.0f;
@@ -460,7 +473,7 @@ namespace Character
         private void UpdateCanalisationBar(float maxValue)
         {
             float ratio = m_spellTimer / maxValue;
-            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio);
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
 
         private bool CancelShoot()
@@ -477,7 +490,7 @@ namespace Character
         {
             if (!m_canShoot) return;
 
-            GlobalSoundManager.PlayOneShot(27, transform.position);
+            //GlobalSoundManager.PlayOneShot(27, transform.position);
             m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
             m_lastTimeShot = Time.time;
@@ -665,6 +678,7 @@ namespace Character
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
+            gsm.CanalisationParameterLaunch(1, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
             if (!m_activeSpellLoad) m_currentIndexCapsule = ChangeProjecileIndex();
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
@@ -938,10 +952,12 @@ namespace Character
                 if (capsuleState[index].type == SpellSystem.CapsuleType.ATTACK)
                 {
                     icon_Sprite[i].sprite = ((SpellSystem.CapsuleAttack)capsuleState[index]).sprite;
+                    icon_Sprite[i].material = ((SpellSystem.CapsuleAttack)capsuleState[index]).materialToUse;
                 }
                 else if (capsuleState[index].type == SpellSystem.CapsuleType.BUFF)
                 {
                     icon_Sprite[i].sprite = ((SpellSystem.CapsuleBuff)capsuleState[index]).sprite;
+                    icon_Sprite[i].material = ((SpellSystem.CapsuleBuff)capsuleState[index]).materialToUse;
                 }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
@@ -966,6 +982,7 @@ namespace Character
             if (ctx.performed)
             {
                 int indexAim = (int)m_aimModeState;
+                gsm.CanalisationParameterStop();
                 indexAim++;
 
                 if (indexAim == 3) indexAim = 0;

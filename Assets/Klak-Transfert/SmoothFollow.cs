@@ -160,7 +160,7 @@ namespace Klak.Motion
             if (target == null) return;
             Vector3 positionRange = transform.position - target.position ;
             Vector3 newPositionRange = positionRandom + target.position + positionRange.normalized * 5;
-            Debug.Log(this.name + " goes to [" + newPositionRange);
+            //Debug.Log(this.name + " goes to [" + newPositionRange);
             
             if (_interpolator == Interpolator.Exponential)
             {
