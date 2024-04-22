@@ -27,6 +27,7 @@ public class HintDropAcquisition : MonoBehaviour
     float lastminorDropLoot;
     #endregion
     #region majorDrop
+    [SerializeField] private Image m_bandeauObject;
     [SerializeField] private float m_timeDisplayMajorLoot = 1;
     [SerializeField] private Animator m_animatorMajor;
     [SerializeField] public List<DropInfo> m_majorDropBuffer = new List<DropInfo>();
@@ -38,6 +39,7 @@ public class HintDropAcquisition : MonoBehaviour
     public Color majorCurrentBackGroundColor;
     private bool m_isMajorRemove;
     float lastmajorDropLoot;
+    float lastMajorDropTime = 0;
     
     #endregion
 
@@ -85,8 +87,22 @@ public class HintDropAcquisition : MonoBehaviour
             {
                 m_animatorMajor.SetBool("Open", false);
                 if (m_majorDropBuffer.Count != 0) m_majorDropBuffer.RemoveAt(0);
-
                 m_isMajorRemove = true;
+                lastMajorDropTime = Time.time;
+            }
+            else if(!m_isMajorRemove)
+            {
+                float fadeStep = (Time.time - lastMajorDropTime) / 2 - 0.5f;
+                m_bandeauObject.material.SetFloat("_Fade_Step", fadeStep);
+                Debug.Log(fadeStep);
+
+            }
+            else if (m_isMajorRemove)
+            {
+                float fadeStep = (lastMajorDropTime + 1 - Time.time) / 1 - 0.5f;
+                m_bandeauObject.material.SetFloat("_Fade_Step", fadeStep);
+                Debug.Log(fadeStep);
+
             }
             if (time > lastmajorDropLoot + m_timeDisplayMajorLoot)
             {
@@ -133,6 +149,8 @@ public class HintDropAcquisition : MonoBehaviour
         m_majorDropType.text = m_majorDropBuffer[0].m_dropType;
         m_animatorMajor.SetBool("Open", true);
         m_isMajorRemove = false;
+        lastMajorDropTime = Time.time;
+
     }
 
     public void DeactivationDiplayLoot()

@@ -32,6 +32,10 @@ public class ShadowFunction : MonoBehaviour
 
     public bool IsDebugActive = false;
     public Enemies.EnemyManager enemyManager;
+
+    public Sprite[] spritesEyes;
+    public AnimationCurve spriteAnimation;
+    public Sprite currentSpriteDetection;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,7 +50,9 @@ public class ShadowFunction : MonoBehaviour
             if (m_TimeOnShadow < m_TimeBeforeDetection)
             {
                 m_TimeOnShadow += Time.deltaTime;
-                if (vfxDetection.HasInt("Rate")) vfxDetection.SetInt("Rate", (int)(m_TimeOnShadow / m_TimeOnShadow * 5));
+                float progressTimeShadow = m_TimeOnShadow / m_TimeOnShadow;
+                if (vfxDetection.HasInt("Rate")) vfxDetection.SetInt("Rate", (int)(progressTimeShadow * 5));
+                currentSpriteDetection = spritesEyes[(int)spriteAnimation.Evaluate(progressTimeShadow)];
             }
             else
             {
@@ -72,7 +78,7 @@ public class ShadowFunction : MonoBehaviour
             if (m_TimeOutShadow < m_TimeBeforeStopDetection)
             {
               if(vfxDetection.HasInt("Rate"))  vfxDetection.SetInt("Rate", 0);
-                m_TimeOutShadow += Time.deltaTime;
+              m_TimeOutShadow += Time.deltaTime;
             }
             else
             {
