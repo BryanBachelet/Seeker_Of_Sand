@@ -14,7 +14,6 @@ public class CloseAttackComponent : MonoBehaviour
         targetTouch.Clear();
     }
 
-
     public void OnTriggerEnter(Collider other)
     {
         if (other.tag != "Player") return;
@@ -25,7 +24,6 @@ public class CloseAttackComponent : MonoBehaviour
             if(!isHeavyAttack) healthPlayerComponent.GetLightDamage(damage, basePosition.position);
             if(isHeavyAttack) healthPlayerComponent.GetHeavyDamage(damage);
             targetTouch.Add(other.gameObject);
-            Debug.Log("As touch Target");
         }
     }
 
