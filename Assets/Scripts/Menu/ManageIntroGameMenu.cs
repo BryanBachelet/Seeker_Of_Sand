@@ -9,6 +9,7 @@ public class ManageIntroGameMenu : MonoBehaviour
     public GameObject m_activeUI;
     public VideoPlayer m_videoPlayer;
 
+    public Animator dayControllerAnimator;
     private bool startPlaying = false;
     public void Update()
     {
@@ -26,8 +27,11 @@ public class ManageIntroGameMenu : MonoBehaviour
 
     public void ActiveMenu()
     {
-        if (m_activeUI.activeSelf) return;
         m_activeUI.SetActive(true);
+        m_videoPlayer.gameObject.SetActive(false);
+        if (m_activeUI.activeSelf) return;
+
+        //
     }
 
     public void SkipIntro(InputAction.CallbackContext ctx)
@@ -37,5 +41,12 @@ public class ManageIntroGameMenu : MonoBehaviour
             m_videoPlayer.Stop();
             ActiveMenu();
         }
+    }
+
+    public void SetInactive()
+    {
+        dayControllerAnimator.gameObject.SetActive(true);
+        dayControllerAnimator.SetTrigger("ActivationMenu");
+        this.gameObject.SetActive(false);
     }
 }

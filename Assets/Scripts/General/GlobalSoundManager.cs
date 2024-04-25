@@ -37,6 +37,10 @@ public class GlobalSoundManager : MonoBehaviour
 
     }
 
+    public void ReceiveButtonInput(int sNumber)
+    {
+        PlayOneShot(sNumber, this.transform.position);
+    }
     public static void PlayOneShot(int sNumber, Vector3 position)
     {
 

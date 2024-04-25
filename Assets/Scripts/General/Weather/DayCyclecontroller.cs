@@ -69,6 +69,8 @@ public class DayCyclecontroller : MonoBehaviour
     public static bool choosingArtefactStart = true;
     public bool choosingArtefactDisplay = true;
     public Chosereward choseReward;
+
+    public bool menuMovement = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -84,8 +86,16 @@ public class DayCyclecontroller : MonoBehaviour
     void Update()
     {
         //choosingArtefactStart = choosingArtefactDisplay;
+        if(menuMovement)
+        {
+            staticTimeOfTheDay = m_timeOfDay;
+            UpdateTime();
+        }
+        Debug.Log("Test Phase 1");
         if (choosingArtefactStart) return;
+        Debug.Log("Test Phase 2");
         if (!GameState.IsPlaying()) return;
+        Debug.Log("Test Phase 3");
         time += Time.deltaTime;
         CheckPhase(m_timeOfDay);
         staticTimeOfTheDay = m_timeOfDay;
