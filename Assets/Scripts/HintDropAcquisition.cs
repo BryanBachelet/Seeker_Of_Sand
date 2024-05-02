@@ -94,14 +94,14 @@ public class HintDropAcquisition : MonoBehaviour
             {
                 float fadeStep = (Time.time - lastMajorDropTime) / 2 - 0.5f;
                 m_bandeauObject.material.SetFloat("_Fade_Step", fadeStep);
-                Debug.Log(fadeStep);
+                //Debug.Log(fadeStep);
 
             }
             else if (m_isMajorRemove)
             {
                 float fadeStep = (lastMajorDropTime + 1 - Time.time) / 1 - 0.5f;
                 m_bandeauObject.material.SetFloat("_Fade_Step", fadeStep);
-                Debug.Log(fadeStep);
+                //Debug.Log(fadeStep);
 
             }
             if (time > lastmajorDropLoot + m_timeDisplayMajorLoot)
