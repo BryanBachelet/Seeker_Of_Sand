@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
+using UnityEngine.UI;
 
 public class ShadowFunction : MonoBehaviour
 {
@@ -35,7 +36,14 @@ public class ShadowFunction : MonoBehaviour
 
     public Sprite[] spritesEyes;
     public AnimationCurve spriteAnimation;
+
     public Sprite currentSpriteDetection;
+    public Image[] spriteUsed = new Image[2];
+    public Image[] spriteProgress = new Image[4]; //Progression fill effect image
+    private float progressTimeShadow = 0;
+    private int signedProgress = 0;
+
+    public Animator newAnimatorEyes;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,9 +58,12 @@ public class ShadowFunction : MonoBehaviour
             if (m_TimeOnShadow < m_TimeBeforeDetection)
             {
                 m_TimeOnShadow += Time.deltaTime;
-                float progressTimeShadow = m_TimeOnShadow / m_TimeOnShadow;
+                progressTimeShadow = m_TimeOnShadow / m_TimeBeforeDetection;
                 if (vfxDetection.HasInt("Rate")) vfxDetection.SetInt("Rate", (int)(progressTimeShadow * 5));
                 currentSpriteDetection = spritesEyes[(int)spriteAnimation.Evaluate(progressTimeShadow)];
+                Debug.Log(progressTimeShadow);
+                newAnimatorEyes.SetBool("OnShadowEnter", false);
+                newAnimatorEyes.SetBool("OnShadowExit", false);
             }
             else
             {
@@ -67,6 +78,8 @@ public class ShadowFunction : MonoBehaviour
                     onShadowSpawnStatic = true;
                     outShadowSpawn = false;
                     outShadowSpawnStatic = false;
+                    newAnimatorEyes.SetBool("OnShadowEnter", true);
+                    newAnimatorEyes.SetTrigger("Enter");
                     enemyManager.ActiveSpawnPhase(true,Enemies.EnemySpawnCause.SHADOW);
                 }
 
@@ -78,7 +91,12 @@ public class ShadowFunction : MonoBehaviour
             if (m_TimeOutShadow < m_TimeBeforeStopDetection)
             {
               if(vfxDetection.HasInt("Rate"))  vfxDetection.SetInt("Rate", 0);
-              m_TimeOutShadow += Time.deltaTime;
+                newAnimatorEyes.SetBool("OnShadowExit", false);
+                newAnimatorEyes.SetBool("OnShadowEnter", false);
+                m_TimeOutShadow += Time.deltaTime;
+                progressTimeShadow = 1 - (m_TimeOutShadow / m_TimeBeforeStopDetection);
+                currentSpriteDetection = spritesEyes[(int)spriteAnimation.Evaluate(progressTimeShadow)];
+                Debug.Log(progressTimeShadow);
             }
             else
             {
@@ -90,11 +108,14 @@ public class ShadowFunction : MonoBehaviour
                     outShadowSpawnStatic = true;
                     onShadowSpawn = false;
                     onShadowSpawnStatic = false;
+                    newAnimatorEyes.SetTrigger("Exit");
                     enemyManager.ActiveSpawnPhase(false,Enemies.EnemySpawnCause.SHADOW);
                 }
 
             }
         }
+        ActualiseSprites(currentSpriteDetection,  progressTimeShadow);
+
 
     }
 
@@ -135,6 +156,15 @@ public class ShadowFunction : MonoBehaviour
     public void StopDetectionSoundFeedback()
     {
         shadowDetection.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    }
+
+    public void ActualiseSprites(Sprite sprite, float progress)
+    {
+        spriteUsed[0].sprite = currentSpriteDetection;
+        spriteProgress[0].fillAmount = progress;
+        spriteProgress[1].fillAmount = progress;
+        spriteProgress[2].fillAmount = progress;
+        spriteProgress[3].fillAmount = progress;
     }
 
 }
