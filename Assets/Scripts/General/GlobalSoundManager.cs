@@ -86,7 +86,7 @@ public class GlobalSoundManager : MonoBehaviour
     {
         canalisationInstance = RuntimeManager.CreateInstance(canalisationReference);
         canalisationInstance.setParameterByName("CanalisationState", canalisationState);
-        Debug.Log(element);
+        //Debug.Log(element);
         canalisationInstance.setParameterByName("Element", element);
         canalisationInstance.start();
     }
