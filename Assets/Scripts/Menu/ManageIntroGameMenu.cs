@@ -11,6 +11,8 @@ public class ManageIntroGameMenu : MonoBehaviour
 
     public Animator dayControllerAnimator;
     private bool startPlaying = false;
+
+    public GameObject playMenu;
     public void Update()
     {
         if (m_videoPlayer.isPlaying)
@@ -48,5 +50,6 @@ public class ManageIntroGameMenu : MonoBehaviour
         dayControllerAnimator.gameObject.SetActive(true);
         dayControllerAnimator.SetTrigger("ActivationMenu");
         this.gameObject.SetActive(false);
+        playMenu.SetActive(true);
     }
 }

@@ -79,7 +79,7 @@ namespace Artefact
 
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
-            if(targetHealthComponent) targetHealthComponent.ReceiveDamage(m_damage, Vector3.up, 1);
+            if(targetHealthComponent) targetHealthComponent.ReceiveDamage(m_damage, Vector3.up, 1, 0);
         }
     }
 }

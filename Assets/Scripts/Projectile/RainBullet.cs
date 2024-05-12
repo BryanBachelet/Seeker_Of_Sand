@@ -60,7 +60,7 @@ public class RainBullet : Projectile
         {
             for (int i = 0; i < m_salveNumber; i++)
             {
-                enemy.ReceiveDamage(m_damage, (enemy.transform.position - transform.position).normalized, m_power);
+                enemy.ReceiveDamage(m_damage, (enemy.transform.position - transform.position).normalized, m_power, -1);
             }
            
             

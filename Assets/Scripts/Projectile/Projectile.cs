@@ -155,7 +155,7 @@ public class Projectile : MonoBehaviour
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
             if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
 
-            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power);
+            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power,-1);
 
             piercingCount++;
             if (piercingCount >= m_piercingMax)
@@ -200,7 +200,7 @@ public class Projectile : MonoBehaviour
             dummy enemyTouch = other.GetComponent<dummy>();
 
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
-            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power);
+            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power, -1);
 
             enemyTouch.currentHP -= m_damage;
 

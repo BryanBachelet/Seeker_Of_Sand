@@ -109,14 +109,14 @@ namespace Enemies
             m_healthManager = healthManager;
         }
 
-        public void HitEnemy(float damage, Vector3 direction,float power)
+        public void HitEnemy(float damage, Vector3 direction,float power, int element)
         {
             Instantiate(m_hitVfx, transform.position, Quaternion.identity);
             GlobalSoundManager.PlayOneShot(12, transform.position);
             myAnimator.SetTrigger("TakeDamage");
             damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage);
+            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage, element);
 
 
             if (m_healthSystem.health > 0) return;

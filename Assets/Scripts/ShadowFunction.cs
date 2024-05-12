@@ -121,10 +121,10 @@ public class ShadowFunction : MonoBehaviour
 
     public void OnShadow()
     {
-        StartDetectionSoundFeedback();
         onShadow = true;
         outShadow = false;
 
+        if(!onShadowSpawn) { StartDetectionSoundFeedback(); }
         //onShadowStatic = onShadow;
         //outShadowStatic = outShadow;
      if(IsDebugActive)   Debug.Log("On Shadow enter !");

@@ -144,7 +144,7 @@ namespace ShadowDetect
         [SerializeField]
         private bool _isAuto = true;
         [SerializeField]
-        public List<Light> _lights;
+        private List<Light> _lights;
 
         [SerializeField]
         public int _minimumNbTargetOnShadow = 1;

@@ -14,6 +14,10 @@ public class HealthManager : MonoBehaviour
 
     [SerializeField] public Camera m_cameraReference;
     [SerializeField] public SerieController m_serieController;
+
+    public Character.CharacterShoot characterShoot;
+
+    public Color[] elementDamageColor = new Color[4];
     private void Start()
     {
         InitTextFeedback();
@@ -37,13 +41,33 @@ public class HealthManager : MonoBehaviour
         }
     }
 
-    public void CallDamageEvent(Vector3 position, float damage)
+    public void CallDamageEvent(Vector3 position, float damage, int colorElementType)
     {
         if (m_textActiveCount == m_damageFDMax) return;
 
        if(m_serieController) m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
-        currentDamageFD.StartDamageFeeback(position,damage);
+        if(colorElementType < 0)
+        {
+            if (characterShoot.lastElement == SpellSystem.Element.AIR)
+            {
+                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
+            }
+            else if (characterShoot.lastElement == SpellSystem.Element.FIRE)
+            {
+                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
+            }
+            else if (characterShoot.lastElement == SpellSystem.Element.WATER)
+            {
+                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
+            }
+            else if (characterShoot.lastElement == SpellSystem.Element.EARTH)
+            {
+                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
+            }
+        }
+
+
 
         m_activeText[ m_textActiveCount] = currentDamageFD;
         m_inactiveText[m_damageFDMax - m_textActiveCount] = null;

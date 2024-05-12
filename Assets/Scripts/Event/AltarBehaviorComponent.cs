@@ -277,13 +277,14 @@ public class AltarBehaviorComponent : MonoBehaviour
             {
                 m_myAnimator.SetTrigger("Activation");
             }
-            if (resetNumber - 2 >= 0)
+            if (resetNumber >= 0)
             {
-                lastItemInstantiate = Instantiate(DangerAddition[resetNumber -2], transform.position, transform.rotation);
+                lastItemInstantiate = Instantiate(DangerAddition[resetNumber], transform.position, transform.rotation);
+                lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
             }
             
 
-            SetMeshesEventIntensity(0.15f * (resetNumber + 1));
+            SetMeshesEventIntensity(0.33f * (resetNumber + 1));
             m_visualEffectActivation.Play();
             
             GlobalSoundManager.PlayOneShot(13, transform.position);
@@ -305,6 +306,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     private void SucceedEvent()
     {
         m_isEventOccuring = false;
+        m_myAnimator.SetTrigger("FinishOnce");
+        m_myAnimator.SetTrigger("Repetition");
         progression = 0;
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
@@ -466,6 +469,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
             altarAllMesh[i].material.SetFloat("_SelfLitIntensity", intensity);
         }
     }

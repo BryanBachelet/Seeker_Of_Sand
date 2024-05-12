@@ -45,7 +45,7 @@ public class Harpon : Projectile
         {
             if (m_enemyImpale != null && m_firstHit && m_enemyImpale.npcState != Enemies.NpcState.DEATH)
             {
-                m_enemyImpale.ReceiveDamage(m_damage * m_impalementDamageRatio, m_enemyImpale.transform.position - transform.position, m_power);
+                m_enemyImpale.ReceiveDamage(m_damage * m_impalementDamageRatio, m_enemyImpale.transform.position - transform.position, m_power, -1);
                 m_enemyImpale.npcState = Enemies.NpcState.PAUSE;
             }
             Destroy(this.gameObject);
@@ -89,7 +89,7 @@ public class Harpon : Projectile
                 if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
-                    enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power);
+                    enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power, -1);
 
                     if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
 
@@ -100,7 +100,7 @@ public class Harpon : Projectile
                 if (m_firstHit || m_currentDistance > m_minRangeToImpale)
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
-                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power, -1);
                 }
             }
             if (other.tag == "Cristal")
