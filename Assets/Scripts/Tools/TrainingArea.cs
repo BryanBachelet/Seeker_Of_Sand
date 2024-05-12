@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TrainingArea : MonoBehaviour
 {
+    public GameObject shotVfx;
     public GameObject[] attack;
     public Texture[] AreaFeedback;
     public float[] cdAttack;
@@ -37,6 +38,9 @@ public class TrainingArea : MonoBehaviour
     public int difficulty;
     [Range(1,10)]
     public int numberByDifficulty;
+
+    public GameObject altarAssociated;
+    public Vector3 offSetSign;
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +73,8 @@ public class TrainingArea : MonoBehaviour
                     else
                     {
                         GameObject attackInstiate = Instantiate(attack[i], foundNewPosition() + (playerRigidBodyVelocity * predictionPercent[i]), transform.rotation, transform);
+                        GameObject vfx = Instantiate(shotVfx, altarAssociated.transform.position + offSetSign, transform.rotation);
+                        vfx.GetComponent<SignAttack>().positionToGo = attackInstiate.transform.position;
                         //Debug.Log("Attack spawned : " + attackInstiate.name);
                         AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
                         dataLife.lifeTimeVFX = tempsRealese[i];

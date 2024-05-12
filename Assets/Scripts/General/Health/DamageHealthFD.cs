@@ -26,7 +26,7 @@ public class DamageHealthFD : MonoBehaviour
 
     #region Component Function
 
-    public void StartDamageFeeback(Vector3 position, float damage)
+    public void StartDamageFeeback(Vector3 position, float damage, Color color)
     {
         m_active = true;
 
@@ -34,7 +34,7 @@ public class DamageHealthFD : MonoBehaviour
         gameObject.transform.position = position;
         gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
         m_text.text = damage.ToString("F0");
-
+        m_text.color = color;
         //m_animation.Play("DamageNumberDisplaying");
         StartCoroutine(Animation());
     }

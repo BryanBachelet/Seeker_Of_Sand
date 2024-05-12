@@ -59,7 +59,7 @@ public class Lighting : ProjectileExplosif
                         return;
                     }
 
-                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power,-1);
                 }
             }
             m_baseTime = m_timerBeforeExplosion;

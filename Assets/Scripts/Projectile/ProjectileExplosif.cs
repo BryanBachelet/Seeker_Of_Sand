@@ -202,11 +202,11 @@ public class ProjectileExplosif : Projectile
                     return;
                 }
                 if (enemyTouch != stickyEnemy)
-                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power);
+                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power, -1);
             }
 
             m_characterShoot.ActiveOnHit(stickyEnemy.transform.position, EntitiesTrigger.Enemies, stickyEnemy.gameObject);
-            stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power);
+            stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power, -1);
             m_stickTransform = null;
         }
         vfxBase.gameObject.SetActive(false);
