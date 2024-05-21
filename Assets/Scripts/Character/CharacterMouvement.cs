@@ -242,7 +242,6 @@ namespace Character
                     m_CharacterAnim.SetBool("Running", false);
                     m_BookAnim.SetBool("Running", false);
                     m_CharacterAnim.SetBool("Casting", true);
-                    Debug.Log("AfterSlideTest");
                     m_BookAnim.SetBool("Running", true);
                     //if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
                 }
@@ -269,7 +268,6 @@ namespace Character
             if (!isActive)
             {
                 m_CharacterAnim.SetBool("Casting", true);
-                Debug.Log("SlideTest");
                 m_BookAnim.SetBool("Casting", true);
                 DisplayNewCurrentState(0);
                 cameraPlayer.BlockZoom(true);

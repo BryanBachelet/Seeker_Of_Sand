@@ -48,6 +48,7 @@ namespace Enemies
         private ObjectState state;
         [SerializeField] public Transform m_playerTranform;
         [SerializeField] private Transform m_cameraTransform;
+
         [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
         [SerializeField] private Vector3 m_offsetSpawnPos;
         [SerializeField] private Vector3 position;
@@ -724,7 +725,6 @@ namespace Enemies
 
         public void ChangeSpawningPhase(bool spawning)
         {
-            Debug.Log("Active SpawingPhase :" + spawning);
             spawningPhase = spawning;
             detectionAnimator.SetBool("ShadowDetection", spawningPhase);
             if (spawning)

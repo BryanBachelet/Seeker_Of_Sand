@@ -28,7 +28,7 @@ public class PullingSystem : MonoBehaviour
     private Vector3 m_spawnPosition = new Vector3(0, -1000, 0);
     #endregion
 
-
+    public GameObject gameObjectHolder;
     // Init all the system
     public void InitializePullingSystem()
     {
@@ -49,7 +49,7 @@ public class PullingSystem : MonoBehaviour
     {
         for (int i = 0; i < enemyTypeInfo.maxCount; i++)
         {
-            GameObject instance = GameObject.Instantiate(enemyTypeInfo.prefabToSpawn, m_spawnPosition, Quaternion.identity);
+            GameObject instance = GameObject.Instantiate(enemyTypeInfo.prefabToSpawn, m_spawnPosition, Quaternion.identity, gameObjectHolder.transform);
             instance.SetActive(false);
             instance.GetComponent<NpcHealthComponent>().SetPauseState();
             enemyTypeInfo.instanceArray.Add(instance);

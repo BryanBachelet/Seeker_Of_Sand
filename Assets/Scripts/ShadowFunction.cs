@@ -96,7 +96,6 @@ public class ShadowFunction : MonoBehaviour
                 m_TimeOutShadow += Time.deltaTime;
                 progressTimeShadow = 1 - (m_TimeOutShadow / m_TimeBeforeStopDetection);
                 currentSpriteDetection = spritesEyes[(int)spriteAnimation.Evaluate(progressTimeShadow)];
-                Debug.Log(progressTimeShadow);
             }
             else
             {
