@@ -30,6 +30,8 @@ Material:
   m_ValidKeywords:
   - N_F_ALSL_ON
   - N_F_AL_ON
+  - N_F_COEDGL_ON
+  - N_F_CO_ON
   - N_F_CS_ON
   - N_F_ESSGI_ON
   - N_F_ESSR_ON
@@ -47,9 +49,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Transparent
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -161,7 +163,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondaryCutout:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: -8690803729050252947, guid: dbfd2130f1e20d24db2bde4f89402fc1,
+          type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowColorTexture:
@@ -278,7 +281,7 @@ Material:
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
     - _Glossiness: 0.6
-    - _Glow_Edge_Width: 1
+    - _Glow_Edge_Width: 1.09
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
     - _HeightMapParametrization: 0
@@ -317,8 +320,8 @@ Material:
     - _N_F_ALSL: 1
     - _N_F_CA: 0
     - _N_F_CLD: 0
-    - _N_F_CO: 0
-    - _N_F_COEDGL: 0
+    - _N_F_CO: 1
+    - _N_F_COEDGL: 1
     - _N_F_CS: 1
     - _N_F_DCS: 0
     - _N_F_ESSAO: 0
@@ -387,9 +390,9 @@ Material:
     - _RimLightUnfill: 2.02
     - _SPECIN: 1
     - _SPECMODE: 0
-    - _SSRefDeOn: 0
-    - _SSRefGBu: 2
-    - _SSRefMoVe: 32
+    - _SSRefDeOn: 8
+    - _SSRefGBu: 10
+    - _SSRefMoVe: 40
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
@@ -451,13 +454,13 @@ Material:
     - _UVDetail: 0
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
-    - _UseSecondaryCutoutOnly: 0
+    - _UseSecondaryCutoutOnly: 1
     - _UseShadowThreshold: 0
     - _UseTLB: 0
     - _VertexColorBlueAffectOutlineWitdh: 0
     - _VertexColorGreenControlSelfShadowThreshold: 0
     - _VertexColorRedControlSmoothObjectNormal: 0
-    - _ZTeForLiOpa: 4
+    - _ZTeForLiOpa: 3
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
@@ -473,7 +476,7 @@ Material:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Glow_Color: {r: 0.7997803, g: 0.18992525, b: 3.6603773, a: 1}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
