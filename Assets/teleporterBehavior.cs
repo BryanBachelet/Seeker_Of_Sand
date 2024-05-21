@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class teleporterBehavior : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class teleporterBehavior : MonoBehaviour
     public CameraFadeFunction cameraFadeFunction;
     public TerrainGenerator terrainGen;
 
+    public VisualEffect apparitionVFX;
+    public VisualEffect disparitionVFX;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +39,9 @@ public class teleporterBehavior : MonoBehaviour
 
     public void ActivationTeleportation()
     {
+
         this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
+        apparitionVFX.Play();
         cameraFadeFunction.fadeOutActivation = true;
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
     }

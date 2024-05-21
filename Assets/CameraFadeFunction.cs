@@ -42,6 +42,7 @@ public class CameraFadeFunction : MonoBehaviour
                 fadeProgress = 1;
                 fadeInActive = false;
                 tpBehavior.ActivationTeleportation();
+
             }
             ChangeFadeAlpha(fadeProgress);
         }
