@@ -25,6 +25,8 @@ public class TerrainGenerator : MonoBehaviour
 
     public CameraFadeFunction cameraFadeFunction;
     private int lastTerrainSelected = 0;
+
+
     // Start is called before the first frame update
     void Start()
     {
