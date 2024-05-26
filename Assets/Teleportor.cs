@@ -13,7 +13,7 @@ public class Teleportor : MonoBehaviour
     public Material socleMaterial;
 
     static private TerrainGenerator terrainGen;
-
+    public AltarBehaviorComponent altarBehavior;
     // Start is called before the first frame update
     void Start()
     {

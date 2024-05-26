@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.VFX;
 public class AltarBehaviorComponent : MonoBehaviour
 {
+    #region Variable
     [Header("Event Parameters")]
     [SerializeField] public QuestMarker m_questMarker;
     [Range(0, 3)]
@@ -94,6 +95,9 @@ public class AltarBehaviorComponent : MonoBehaviour
     public List<Punketone> punketonHP = new List<Punketone>();
     public Transform skeletonFocus;
     public int skeletonCount = 0;
+
+    public EventHolder eventHolder;
+    #endregion Variable
     #region Unity Functions
     void Start()
     {
@@ -279,7 +283,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             }
             if (resetNumber >= 0)
             {
-                lastItemInstantiate = Instantiate(DangerAddition[resetNumber], transform.position, transform.rotation);
+                lastItemInstantiate = Instantiate(eventHolder.DangerAddition[resetNumber], transform.position, transform.rotation);
                 lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
             }
             

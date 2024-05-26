@@ -7,6 +7,8 @@ public class EventHolder : MonoBehaviour
     public List<AltarBehaviorComponent> altarBehaviorList = new List<AltarBehaviorComponent>();
     static public Vector3[] altarTransformTab;
     public Vector3[] altarTransformTabDisplay;
+
+    [SerializeField] public GameObject[] DangerAddition;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,12 +26,14 @@ public class EventHolder : MonoBehaviour
         altarBehaviorList.Clear();
         int childCount = transform.childCount;
         Vector3[] newAltarTransform = new Vector3[childCount];
-        for(int i = 0; i < childCount; i++)
+        for (int i = 0; i < childCount; i++)
         {
             if (transform.GetChild(i).GetComponent<AltarBehaviorComponent>())
             {
-                altarBehaviorList.Add(transform.GetChild(i).GetComponent<AltarBehaviorComponent>());
-                newAltarTransform[i] = transform.GetChild(i).transform.position;
+                AltarBehaviorComponent altarBehaviorComponent = transform.GetChild(i).GetComponent<AltarBehaviorComponent>();
+                altarBehaviorList.Add(altarBehaviorComponent);
+                newAltarTransform[i] = altarBehaviorComponent.transform.position;
+                altarBehaviorComponent.eventHolder = this;
             }
         }
         altarTransformTab = newAltarTransform;
@@ -47,5 +51,19 @@ public class EventHolder : MonoBehaviour
         Vector4 nextAltarPosition = altarTransformTab[newSpotNumber];
         nextAltarPosition.w = newSpotNumber;
         return nextAltarPosition;
+    }
+
+    public AltarBehaviorComponent GetNewAltar(AltarBehaviorComponent newAltar)
+    {
+        altarBehaviorList.Clear();
+        altarBehaviorList[0] = newAltar;
+        Vector3[] newAltarTransform = new Vector3[1];
+
+        altarBehaviorList.Add(newAltar);
+        newAltarTransform[0] = newAltar.transform.position;
+
+        altarTransformTab = newAltarTransform;
+        altarTransformTabDisplay = altarTransformTab;
+        return altarBehaviorList[0];
     }
 }

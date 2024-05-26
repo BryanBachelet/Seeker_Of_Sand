@@ -14,9 +14,13 @@ public class teleporterBehavior : MonoBehaviour
 
     public CameraFadeFunction cameraFadeFunction;
     public TerrainGenerator terrainGen;
+    public AltarBehaviorComponent altarBehavior;
 
     public VisualEffect apparitionVFX;
     public VisualEffect disparitionVFX;
+
+
+    public EventHolder eventHolder;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +38,7 @@ public class teleporterBehavior : MonoBehaviour
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
         nextTerrainNumber = tpObject.TeleporterNumber;
-
+       // eventHolder.GetNewAltar(tpObject.altarBehavior);
     }
 
     public void ActivationTeleportation()
