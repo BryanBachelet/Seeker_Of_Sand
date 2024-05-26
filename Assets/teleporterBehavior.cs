@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class teleporterBehavior : MonoBehaviour
+public class TeleporterBehavior : MonoBehaviour
 {
-    public Teleportor lastTeleportor;
+    public Teleporter lastTeleportor;
     public Vector3 lastTpPosition;
     public bool activationTP;
-    public Teleportor nextTeleporter;
+    public Teleporter nextTeleporter;
     public Vector3 nextTpPosition;
     private int nextTerrainNumber = 0;
 
@@ -33,7 +33,7 @@ public class teleporterBehavior : MonoBehaviour
         
     }
 
-    public void GetTeleportorData(Teleportor tpObject)
+    public void GetTeleportorData(Teleporter tpObject)
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;

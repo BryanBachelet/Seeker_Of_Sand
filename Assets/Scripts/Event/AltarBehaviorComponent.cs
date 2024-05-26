@@ -98,6 +98,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public EventHolder eventHolder;
     #endregion Variable
+
     #region Unity Functions
     void Start()
     {
@@ -126,6 +127,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         InitVisualElements();
 
         StartCoroutine(LastStart());
+        if(eventHolder == null)
+        {
+            eventHolder = EventHolder.GetInstance();
+            eventHolder.GetNewAltar(this);
+        }
+      
     }
 
     void Update()
@@ -330,6 +337,9 @@ public class AltarBehaviorComponent : MonoBehaviour
         StartCoroutine(ResetEventWithDelay(1.5f));
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+
+
+        FindAnyObjectByType<RoomManager>().ActiveTeleporter();
 
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);

@@ -11,7 +11,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> terrainPool = new List<GameObject>();
     public List<GameObject> terrainInstantiated = new List<GameObject>();
     public List<GameObject> previousTerrain = new List<GameObject>();
-    public List<Teleportor> teleporter = new List<Teleportor>();
+    public List<Teleporter> teleporter = new List<Teleporter>();
     public int poolNumber;
     public int generation = 1;
 
@@ -20,12 +20,13 @@ public class TerrainGenerator : MonoBehaviour
     public int selectedTerrain = 0;
 
     public GameObject player;
-    private teleporterBehavior playerTeleportorBehavior;
+    private TeleporterBehavior playerTeleportorBehavior;
     Transform transformReference;
 
     public CameraFadeFunction cameraFadeFunction;
     private int lastTerrainSelected = 0;
 
+    private RoomManager currentRoomManager;
 
     // Start is called before the first frame update
     void Start()
@@ -33,15 +34,11 @@ public class TerrainGenerator : MonoBehaviour
         poolNumber = terrainPool.Count;
         transformReference = lastTerrainPlay;
         previousTerrain = terrainInstantiated;
-        ActiveGenerationTerrain(0);
+         ActiveGenerationTerrain(0);
+        currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         AssociateNewReward(selectedTerrain);
-        playerTeleportorBehavior = player.GetComponent<teleporterBehavior>();
+        playerTeleportorBehavior = player.GetComponent<TeleporterBehavior>();
         if(cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public void GenerateTerrain(int selectedTerrainNumber)
@@ -55,6 +52,7 @@ public class TerrainGenerator : MonoBehaviour
             int randomTerrain = Random.Range(0, poolNumber);
             GameObject newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
             terrainInstantiated.Add(newTerrain);
+            currentRoomManager = newTerrain.GetComponentInChildren<RoomManager>();
         }
         //AssociateNewReward(selectedTerrainNumber);
         generation++;
@@ -70,25 +68,28 @@ public class TerrainGenerator : MonoBehaviour
             //Transform transformReference = lastTerrainPlay;
             RaycastHit hit;
             // Does the ray intersect any objects excluding the player layer
-            if (Physics.Raycast(transformReference.position + new Vector3(0,500,0), transformReference.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundLayer))
+            if (Physics.Raycast(transformReference.position + new Vector3(0, 500, 0), transformReference.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundLayer))
             {
                 Debug.DrawRay(transformReference.position + new Vector3(0, 500, 0), transformReference.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-                GameObject newTp = Instantiate(teleporterPrefab, hit.point + new Vector3(50 * i,5,0), transform.rotation, transformReference);
-                Teleportor tpScript = newTp.GetComponent<Teleportor>();
+                GameObject newTp = Instantiate(teleporterPrefab, hit.point + new Vector3(50 * i, 5, 0), transform.rotation, transformReference);
+                Teleporter tpScript = newTp.GetComponent<Teleporter>();
                 tpScript.TeleporterNumber = i;
                 teleporter.Add(tpScript);
+                currentRoomManager.AddTeleporter(tpScript);
+                currentRoomManager.SetupRoomType(  (RoomType)Random.Range(0, 3));
+
+
+
             }
 
         }
-
-
     }
 
     public void SelectTerrain(int selectedTerrain)
     {
-        Teleportor teleportorAssociated = null;
+        Teleporter teleportorAssociated = null;
         lastTerrainSelected = selectedTerrain;
-        teleportorAssociated = terrainInstantiated[selectedTerrain].transform.GetChild(0).GetComponent<Teleportor>();
+        teleportorAssociated = terrainInstantiated[selectedTerrain].transform.GetChild(0).GetComponent<Teleporter>();
         transformReference = terrainInstantiated[selectedTerrain].transform;
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         cameraFadeFunction.fadeInActivation = true;

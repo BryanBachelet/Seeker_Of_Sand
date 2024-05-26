@@ -144,6 +144,8 @@ namespace Enemies
 
         public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
         public event OnDeath OnDeathEvent = delegate { };
+        public delegate void OnDeathSimple();
+        public event OnDeathSimple OnDeathSimpleEvent = delegate { };
 
         [SerializeField] private Animator detectionAnimator;
         [SerializeField] private Image m_enemyIcon;
@@ -219,7 +221,8 @@ namespace Enemies
             m_timeOfGame += Time.deltaTime;
             remainEnemy = m_enemiesArray.Count;
             if (remainEnemy > 0)
-            {//<size=130%>999 <voffset=0.2em> \n<size=100%>Remain
+            {
+                //<size=130%>999 <voffset=0.2em> \n<size=100%>Remain
                 m_tmpTextEnemyRemain.text = "<size=130%>" + remainEnemy + "<voffset=0.2em> \n<size=100%>Remain";
             }
             else
@@ -274,7 +277,7 @@ namespace Enemies
 
         public void InputSpawnSquad(InputAction.CallbackContext ctx)
         {
-            if(ctx.performed)
+            if (ctx.performed)
             {
                 SpawEnemiesGroup();
             }
@@ -428,7 +431,7 @@ namespace Enemies
                     SpawEnemiesGroup();
                 }
 
-            
+
 
                 m_spawnCooldown = 0;
             }
@@ -514,8 +517,8 @@ namespace Enemies
 
         public void SetSpawnSquad(int[] mobCount)
         {
-            specialSquadSelect = mobCount; 
-             m_squadCount = 0;
+            specialSquadSelect = mobCount;
+            m_squadCount = 0;
             for (int i = 0; i < specialSquadSelect.Length; i++)
             {
                 m_squadCount += specialSquadSelect[i];
@@ -646,6 +649,7 @@ namespace Enemies
             IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);
+            OnDeathSimpleEvent();
         }
 
         public void TeleportEnemyOut(NpcHealthComponent npcHealth)
@@ -868,8 +872,30 @@ namespace Enemies
             }
         }
 
+
+        public void DestroyAllEnemy()
+        {
+
+            ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
+            for (int i = 0; i < m_enemiesArray.Count; i++)
+            {
+                NpcHealthComponent npcHealth = m_enemiesArray[i];
+
+                EnemyType type = npcHealth.GetComponent<NpcMetaInfos>().type;
+                if (m_enemiesFocusAltar.Contains(npcHealth))
+                    m_enemiesFocusAltar.Remove(npcHealth);
+
+                enemyTypeStats[(int)type].instanceCount -= 1;
+             
+                m_pullingSystem.ResetEnemy(npcHealth.gameObject, type);
+            }
+            m_enemiesArray.Clear();
+        }
     }
 
+
 }
+
+
 
 
