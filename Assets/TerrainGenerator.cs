@@ -80,9 +80,6 @@ public class TerrainGenerator : MonoBehaviour
                 teleporter.Add(tpScript);
                 currentRoomManager.AddTeleporter(tpScript);
                 
-
-
-
             }
           
         }
