@@ -48,5 +48,7 @@ public class TeleporterBehavior : MonoBehaviour
         apparitionVFX.Play();
         cameraFadeFunction.fadeOutActivation = true;
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
+
+        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
     }
 }

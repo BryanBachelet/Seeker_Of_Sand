@@ -338,8 +338,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
-
-        FindAnyObjectByType<RoomManager>().ActiveTeleporter();
+       transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
 
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
@@ -391,7 +390,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             if (nextRewardTypologie == 2)
             {
                 //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-                rewardManagerReference.GenerateNewArtefactReward(this.transform);
+               if(rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
 
             }
 

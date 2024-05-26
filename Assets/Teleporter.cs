@@ -7,6 +7,7 @@ public class Teleporter : MonoBehaviour
     public int TeleporterNumber;
     public bool usedTeleporter = false;
 
+    public bool isReceiver;
     public bool isSpawn;
     public bool activation = false;
     public bool teleportorIsActive = false;
@@ -48,7 +49,7 @@ public class Teleporter : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player"  && teleportorIsActive)
+        if(other.tag == "Player"  && teleportorIsActive && !isReceiver)
         {
             enemyManager.DestroyAllEnemy();
             terrainGen.SelectTerrain(TeleporterNumber);

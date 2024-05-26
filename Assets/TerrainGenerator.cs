@@ -35,8 +35,8 @@ public class TerrainGenerator : MonoBehaviour
         transformReference = lastTerrainPlay;
         previousTerrain = terrainInstantiated;
          ActiveGenerationTerrain(0);
-        currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
-        AssociateNewReward(selectedTerrain);
+        currentRoomManager.ActivateRoom();
+       // AssociateNewReward(selectedTerrain);
         playerTeleportorBehavior = player.GetComponent<TeleporterBehavior>();
         if(cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
     }
@@ -47,12 +47,13 @@ public class TerrainGenerator : MonoBehaviour
         terrainInstantiated.Clear();
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * generation + terrainInstantiated.Count;
-        for(int i = 0; i < randomNextTerrainNumber; i++)
+
+        for (int i = 0; i < randomNextTerrainNumber; i++)
         {
             int randomTerrain = Random.Range(0, poolNumber);
             GameObject newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
             terrainInstantiated.Add(newTerrain);
-            currentRoomManager = newTerrain.GetComponentInChildren<RoomManager>();
+          
         }
         //AssociateNewReward(selectedTerrainNumber);
         generation++;
@@ -63,6 +64,8 @@ public class TerrainGenerator : MonoBehaviour
         Debug.Log("NextTerrainSelected : " + lastTerrainSelected);
         int terrainSelected = selectedTerrainNumber;
         teleporter.Clear();
+        currentRoomManager.roomType = (RoomType)Random.Range(0, 3);
+        currentRoomManager.ActivateRoom();
         for (int i = 0; i < terrainInstantiated.Count; i++)
         {
             //Transform transformReference = lastTerrainPlay;
@@ -76,13 +79,15 @@ public class TerrainGenerator : MonoBehaviour
                 tpScript.TeleporterNumber = i;
                 teleporter.Add(tpScript);
                 currentRoomManager.AddTeleporter(tpScript);
-                currentRoomManager.SetupRoomType(  (RoomType)Random.Range(0, 3));
+                
 
 
 
             }
-
+          
         }
+        currentRoomManager.SetupRoomType(currentRoomManager.roomType);
+
     }
 
     public void SelectTerrain(int selectedTerrain)
@@ -98,8 +103,10 @@ public class TerrainGenerator : MonoBehaviour
 
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
+        
         selectedTerrain = selectedTerrainNumber;
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
+        currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);
     }
