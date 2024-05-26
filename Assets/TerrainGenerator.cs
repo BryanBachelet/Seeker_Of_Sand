@@ -26,6 +26,7 @@ public class TerrainGenerator : MonoBehaviour
     public CameraFadeFunction cameraFadeFunction;
     private int lastTerrainSelected = 0;
 
+    public DayCyclecontroller dayController;
 
     // Start is called before the first frame update
     void Start()
@@ -92,6 +93,7 @@ public class TerrainGenerator : MonoBehaviour
         transformReference = terrainInstantiated[selectedTerrain].transform;
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         cameraFadeFunction.fadeInActivation = true;
+        dayController.UpdateTimeByStep();
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
     }
 
