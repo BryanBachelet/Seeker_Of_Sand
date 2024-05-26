@@ -50,7 +50,7 @@ public class TeleporterFeebackController : MonoBehaviour
             zoneAutourVFX.enabled = true;
             if (random) 
             { 
-                int IDReward = Random.Range(0, 3);
+                int IDReward = Random.Range(0, 5);
                 int IDElement = Random.Range(0, 3);
                 ChangeRewardID(IDReward);
                 ChangeColorID(IDElement);
