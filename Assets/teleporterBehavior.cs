@@ -21,6 +21,7 @@ public class TeleporterBehavior : MonoBehaviour
 
 
     public EventHolder eventHolder;
+    public DayCyclecontroller dayController;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +38,9 @@ public class TeleporterBehavior : MonoBehaviour
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
-      //  nextTerrainNumber = tpObject.TeleporterNumber;
-       // eventHolder.GetNewAltar(tpObject.altarBehavior);
+        dayController.UpdateTimeByStep();
+        //  nextTerrainNumber = tpObject.TeleporterNumber;
+        // eventHolder.GetNewAltar(tpObject.altarBehavior);
     }
 
     public void ActivationTeleportation()

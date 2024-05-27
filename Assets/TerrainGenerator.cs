@@ -29,7 +29,7 @@ public class TerrainGenerator : MonoBehaviour
     private RoomManager currentRoomManager;
 
     public ObjectifAndReward_Ui_Function objAndReward;
-    public DayCyclecontroller dayController;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -103,7 +103,7 @@ public class TerrainGenerator : MonoBehaviour
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
-        dayController.UpdateTimeByStep();
+        objAndReward.currentRoomManager = currentRoomManager;
         objAndReward.UpdateObjectifAndReward();
     }
 
@@ -115,7 +115,7 @@ public class TerrainGenerator : MonoBehaviour
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);
-        objAndReward.currentRoomManager = currentRoomManager;
+
 
     }
 
