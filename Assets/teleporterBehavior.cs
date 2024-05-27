@@ -10,7 +10,7 @@ public class TeleporterBehavior : MonoBehaviour
     public bool activationTP;
     public Teleporter nextTeleporter;
     public Vector3 nextTpPosition;
-    private int nextTerrainNumber = 0;
+    public int nextTerrainNumber = 0;
 
     public CameraFadeFunction cameraFadeFunction;
     public TerrainGenerator terrainGen;
@@ -37,7 +37,7 @@ public class TeleporterBehavior : MonoBehaviour
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
-        nextTerrainNumber = tpObject.TeleporterNumber;
+      //  nextTerrainNumber = tpObject.TeleporterNumber;
        // eventHolder.GetNewAltar(tpObject.altarBehavior);
     }
 

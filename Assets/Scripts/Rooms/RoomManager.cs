@@ -26,12 +26,12 @@ public class RoomManager : MonoBehaviour
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
 
-    [HideInInspector] public Teleporter[] teleporterArray = new Teleporter[3];
+     public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
 
     private Enemies.EnemyManager m_enemyManager;
     private bool isRoomHasBeenValidate = true;
-
+    private Chosereward choserewardRef;
 
 
     public void ActivateRoom()
@@ -48,9 +48,9 @@ public class RoomManager : MonoBehaviour
         newInstance.DesactivationTeleportor();
 
         newInstance.enemyManager = m_enemyManager;
-        if (m_currentTeleporterCount >= 2)
+        if (m_currentTeleporterCount > 2)
         {
-            GuerhoubaTools.LogSystem.LogMsg("They are alreay the max count of teleporter", true);
+            Debug.Log("Too much teleporter");
             return;
         }
 
@@ -111,8 +111,12 @@ public class RoomManager : MonoBehaviour
                 m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowSpellChoiceInteface();
                 break;
             case RewardType.ARTEFACT:
+                if(choserewardRef == null) 
+                    choserewardRef = FindAnyObjectByType<Chosereward>();
+                choserewardRef.GiveArtefact();
                 break;
             case RewardType.HEAL:
+                m_enemyManager.m_playerTranform.GetComponent<HealthPlayerComponent>().RestoreHealQuarter(1);
                 break;
             default:
                 break;

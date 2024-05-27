@@ -10,7 +10,7 @@ public class ExperienceMouvement : MonoBehaviour
     [SerializeField] private float m_speed = 15;
     [SerializeField] private float m_speedUp = 40;
     [SerializeField] private TrailRenderer m_trail;
-    [SerializeField] private float m_timeBeforeDestruction = 3;
+    [HideInInspector] public float m_timeBeforeDestruction = 3;
     public int quantity;
 
     public int cristalType = 0;
@@ -69,10 +69,16 @@ public class ExperienceMouvement : MonoBehaviour
         if (m_destruction)
         {
             m_timeBeforeDestruction -= Time.deltaTime;
-            m_trail.time = m_timeBeforeDestruction;
+          if(m_trail)  m_trail.time = m_timeBeforeDestruction;
             if (m_timeBeforeDestruction < 0) Destroy(this.gameObject);
         }
     }
+
+    public void DestoyObject()
+    {
+        Destroy(this.gameObject);
+    }
+
 
     public IEnumerator MoveToDestination()
     {
@@ -92,7 +98,7 @@ public class ExperienceMouvement : MonoBehaviour
     {
         GameState.RemoveObject(state);
         m_destruction = true;
-        m_coll.enabled = false;
+      if(m_coll)  m_coll.enabled = false;
     }
 
     public void MoveDestination()

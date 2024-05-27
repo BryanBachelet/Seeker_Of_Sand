@@ -54,6 +54,7 @@ public class Teleporter : MonoBehaviour
             enemyManager.DestroyAllEnemy();
             terrainGen.SelectTerrain(TeleporterNumber);
             usedTeleporter = true;
+           
         }
     }
 }

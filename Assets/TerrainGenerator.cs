@@ -94,6 +94,7 @@ public class TerrainGenerator : MonoBehaviour
         teleportorAssociated = terrainInstantiated[selectedTerrain].transform.GetChild(0).GetComponent<Teleporter>();
         transformReference = terrainInstantiated[selectedTerrain].transform;
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
+        playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
     }
