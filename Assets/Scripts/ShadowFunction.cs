@@ -165,4 +165,16 @@ public class ShadowFunction : MonoBehaviour
         spriteProgress[3].fillAmount = progress;
     }
 
+    public void ResetPlayerShadowStatus()
+    {
+        m_TimeOnShadow = 0;
+        StopDetectionSoundFeedback();
+        outShadowSpawn = true;
+        outShadowSpawnStatic = true;
+        onShadowSpawn = false;
+        onShadowSpawnStatic = false;
+        newAnimatorEyes.SetTrigger("Exit");
+        enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.SHADOW);
+    }
+
 }

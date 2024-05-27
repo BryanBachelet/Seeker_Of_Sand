@@ -34,16 +34,23 @@ public class RoomManager : MonoBehaviour
     private Chosereward choserewardRef;
 
     static RewardDistribution playerRewardDistribution;
-    public void ActivateRoom()
+
+    public void RetriveComponent()
     {
         isRoomHasBeenValidate = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
-        if(playerRewardDistribution == null)
+        if (playerRewardDistribution == null)
         {
             playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
         }
+    }
+    public void ActivateRoom()
+    {
+     
       if(roomType == RoomType.Enemy)  m_enemyManager.OnDeathSimpleEvent += CountEnemy;
         currentCountOfEnemy = 0;
+
+        SetupRoomType();
     }
 
     // Setup room teleporter 
@@ -65,10 +72,9 @@ public class RoomManager : MonoBehaviour
     }
 
 
-    public void SetupRoomType(RoomType newType)
+    public void SetupRoomType()
     {
-        roomType = newType;
-        switch (newType)
+        switch (roomType)
         {
             case RoomType.Free:
                 ValidateRoom();
@@ -132,6 +138,19 @@ public class RoomManager : MonoBehaviour
 
     #endregion
 
+    public void ExcludeReward()
+    {
+
+    }
+
+    public void IntegreReward()
+    {
+
+    }
+    public void SetRandomReward()
+    {
+       
+    }
 
     private void DeactivateAltar() // Temp function 
     {
