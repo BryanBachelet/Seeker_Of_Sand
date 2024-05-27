@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class teleporterBehavior : MonoBehaviour
+public class TeleporterBehavior : MonoBehaviour
 {
-    public Teleportor lastTeleportor;
+    public Teleporter lastTeleportor;
     public Vector3 lastTpPosition;
     public bool activationTP;
-    public Teleportor nextTeleporter;
+    public Teleporter nextTeleporter;
     public Vector3 nextTpPosition;
-    private int nextTerrainNumber = 0;
+    public int nextTerrainNumber = 0;
 
     public CameraFadeFunction cameraFadeFunction;
     public TerrainGenerator terrainGen;
@@ -33,11 +33,11 @@ public class teleporterBehavior : MonoBehaviour
         
     }
 
-    public void GetTeleportorData(Teleportor tpObject)
+    public void GetTeleportorData(Teleporter tpObject)
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
-        nextTerrainNumber = tpObject.TeleporterNumber;
+      //  nextTerrainNumber = tpObject.TeleporterNumber;
        // eventHolder.GetNewAltar(tpObject.altarBehavior);
     }
 
@@ -48,5 +48,7 @@ public class teleporterBehavior : MonoBehaviour
         apparitionVFX.Play();
         cameraFadeFunction.fadeOutActivation = true;
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
+
+        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
     }
 }

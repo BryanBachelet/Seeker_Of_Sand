@@ -89,9 +89,13 @@ namespace Character
 
         public void ShowSpellChoiceInteface()
         {
-            m_upgradeManager.OpenSpellChoiceUI();
-            GameState.ChangeState();
-            isSpellUpgradeWindowOpen = true;
+            if(m_upgradeManager)
+            {
+                m_upgradeManager.OpenSpellChoiceUI();
+                GameState.ChangeState();
+                isSpellUpgradeWindowOpen = true;
+            }
+           
           //  Debug.Break();
         }
 
@@ -112,6 +116,7 @@ namespace Character
         #region Upgrade Functions
         public void ShowUpgradeWindow()
         {
+            if (!m_characterShoot) return;
             isUpgradeWindowOpen = true;
 
             // -> Deactivate player in game interface
@@ -167,6 +172,7 @@ namespace Character
 
         public void GainLevel()
         {
+            return;
             upgradePoint++;
             upgradePointTextDisplay.text = upgradePoint.ToString();
             if(baseSpellIndex < spellUpgradeConfigs.Length && spellUpgradeConfigs[baseSpellIndex].levelToGainSpell <= experience.GetCurrentLevel())
@@ -179,7 +185,11 @@ namespace Character
 
         }
 
-
+        public void GiveUpgradePoint()
+        {
+            upgradePoint++;
+            upgradePointTextDisplay.text = upgradePoint.ToString();
+        }
       
         public void ChangeBaseInterfaceDisplay(bool willBeAble)
         {

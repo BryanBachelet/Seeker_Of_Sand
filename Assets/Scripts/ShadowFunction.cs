@@ -61,7 +61,6 @@ public class ShadowFunction : MonoBehaviour
                 progressTimeShadow = m_TimeOnShadow / m_TimeBeforeDetection;
                 if (vfxDetection.HasInt("Rate")) vfxDetection.SetInt("Rate", (int)(progressTimeShadow * 5));
                 currentSpriteDetection = spritesEyes[(int)spriteAnimation.Evaluate(progressTimeShadow)];
-                Debug.Log(progressTimeShadow);
                 newAnimatorEyes.SetBool("OnShadowEnter", false);
                 newAnimatorEyes.SetBool("OnShadowExit", false);
             }

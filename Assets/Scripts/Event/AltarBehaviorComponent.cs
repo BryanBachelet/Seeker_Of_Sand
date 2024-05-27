@@ -98,6 +98,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public EventHolder eventHolder;
     #endregion Variable
+
     #region Unity Functions
     void Start()
     {
@@ -126,6 +127,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         InitVisualElements();
 
         StartCoroutine(LastStart());
+        if(eventHolder == null)
+        {
+            eventHolder = EventHolder.GetInstance();
+            eventHolder.GetNewAltar(this);
+        }
+      
     }
 
     void Update()
@@ -331,6 +338,8 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
+       transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
+
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
     }
@@ -381,7 +390,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             if (nextRewardTypologie == 2)
             {
                 //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-                rewardManagerReference.GenerateNewArtefactReward(this.transform);
+               if(rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
 
             }
 

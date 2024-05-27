@@ -55,7 +55,7 @@ public class BirdController : MonoBehaviour
     
     public void ChangeSpotFunction()
     {
-        nextPosition = EventHolder.newSpot((int)nextPosition.w);
+        nextPosition = EventHolder.NewSpot((int)nextPosition.w);
         for(int i = 0; i < activeBirdChild.Length; i++)
         {
             m_activeBirdChildMouvement[i].GetNewPositionToGo(nextPosition);

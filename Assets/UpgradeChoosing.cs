@@ -50,7 +50,7 @@ public class UpgradeChoosing : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).gain.nameUpgrade;
-            StartCoroutine(SpellFadeIn(i, Time.time));
+           if(gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
         }
     }
 
@@ -67,7 +67,7 @@ public class UpgradeChoosing : MonoBehaviour
         {
             if(i != index)
             {
-                StartCoroutine(SpellFadeOut(i, Time.time));
+                if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
             }
         }
 

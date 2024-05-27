@@ -4,21 +4,32 @@ using UnityEngine;
 
 public class EventHolder : MonoBehaviour
 {
+    static EventHolder instance;
+
     public List<AltarBehaviorComponent> altarBehaviorList = new List<AltarBehaviorComponent>();
-    static public Vector3[] altarTransformTab;
-    public Vector3[] altarTransformTabDisplay;
+    static public List<Vector3> altarTransformTab = new List<Vector3>();
+    public List<Vector3> altarTransformTabDisplay = new List<Vector3>();
 
     [SerializeField] public GameObject[] DangerAddition;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        instance = this;
+
+    }
     void Start()
     {
         GetAltar();
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    ///  Singleton function
+    /// </summary>
+    /// <returns></returns>
+    public static EventHolder GetInstance()
     {
-
+        return instance;
     }
 
     public List<AltarBehaviorComponent> GetAltar()
@@ -32,38 +43,33 @@ public class EventHolder : MonoBehaviour
             {
                 AltarBehaviorComponent altarBehaviorComponent = transform.GetChild(i).GetComponent<AltarBehaviorComponent>();
                 altarBehaviorList.Add(altarBehaviorComponent);
-                newAltarTransform[i] = altarBehaviorComponent.transform.position;
+                altarTransformTab.Add(altarBehaviorComponent.transform.position);
                 altarBehaviorComponent.eventHolder = this;
             }
         }
-        altarTransformTab = newAltarTransform;
+   
         altarTransformTabDisplay = altarTransformTab;
         return altarBehaviorList;
     }
 
-    static public Vector4 newSpot(int currentSpot)
+    static public Vector4 NewSpot(int currentSpot)
     {
         int newSpotNumber = currentSpot;
         while (newSpotNumber == currentSpot)
         {
-            newSpotNumber = Random.Range(0, altarTransformTab.Length);
+            newSpotNumber = Random.Range(0, altarTransformTab.Count);
         }
         Vector4 nextAltarPosition = altarTransformTab[newSpotNumber];
         nextAltarPosition.w = newSpotNumber;
         return nextAltarPosition;
     }
 
-    public AltarBehaviorComponent GetNewAltar(AltarBehaviorComponent newAltar)
+    public void GetNewAltar(AltarBehaviorComponent newAltar)
     {
-        altarBehaviorList.Clear();
-        altarBehaviorList[0] = newAltar;
-        Vector3[] newAltarTransform = new Vector3[1];
 
         altarBehaviorList.Add(newAltar);
-        newAltarTransform[0] = newAltar.transform.position;
-
-        altarTransformTab = newAltarTransform;
+        altarTransformTab.Add(newAltar.transform.position);
         altarTransformTabDisplay = altarTransformTab;
-        return altarBehaviorList[0];
+
     }
 }

@@ -134,6 +134,15 @@ public class Chosereward : MonoBehaviour
             Debug.Log(" Artefact N°" + rndArtefact);
         }
     }
+
+    public void GiveArtefact()
+    {
+        int rndArtefact = Random.Range(0, artefactToChose.Count);
+
+        m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactToChose[rndArtefact]);
+        m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactToChose[rndArtefact]);
+    }
+
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
     {
 
