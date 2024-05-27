@@ -218,10 +218,10 @@ MonoBehaviour:
     type: 3}
   timeBeforeDestruction: 2
   hasDeathAnimation: 0
-  npcState: 0
   xpToDrop: 3
   targetData:
     target: {fileID: 0}
+    baseTarget: {fileID: 0}
     isMoving: 0
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
@@ -289,6 +289,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   death_vfx: {fileID: 1991147687903976700, guid: 10301bafbe023a440a688f4c3dcb9cc6,
     type: 3}
+  m_npcInfo: {fileID: 0}
   IsDebugActive: 0
 --- !u!114 &-4669882926715339747
 MonoBehaviour:
@@ -302,8 +303,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50837e8005842504697e4bb3f4d69c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minTargetDistance: 1
   speed: 18
   speedThreshold: 1
+  isSlow: 0
+  baseTransform: {fileID: 3294013781257085864}
   isAffectedBySlope: 0
   maxVariation: 1.5
   minVariation: 0.5
@@ -319,6 +323,7 @@ MonoBehaviour:
   enemiesManager: {fileID: 0}
   targetData:
     target: {fileID: 0}
+    baseTarget: {fileID: 0}
     isMoving: 0
   isDebugActive: 0
 --- !u!114 &3209565809213415622
@@ -362,6 +367,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  state: 0
+  attackComponent: {fileID: 0}
+  moveComponent: {fileID: 0}
+  manager: {fileID: 0}
+  behaviorTreeComponent: {fileID: 0}
 --- !u!1001 &580041293520765996
 PrefabInstance:
   m_ObjectHideFlags: 0

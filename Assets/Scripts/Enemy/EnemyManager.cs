@@ -885,6 +885,7 @@ namespace Enemies
         public void DestroyAllEnemy()
         {
 
+            m_playerTranform.GetComponent<ShadowFunction>().ResetPlayerShadowStatus();
             ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {

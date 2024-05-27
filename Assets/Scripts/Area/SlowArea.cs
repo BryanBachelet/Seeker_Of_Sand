@@ -24,7 +24,7 @@ public class SlowArea : MonoBehaviour
 
     public void Awake()
     {
-        m_slowReduceRatio = 1-( m_slowPercent / 100.0f);
+        m_slowReduceRatio = 1 - (m_slowPercent / 100.0f);
         m_slowUpRatio = 1.0f / m_slowReduceRatio;
         transform.localScale = Vector3.one * areaRadius;
 
@@ -45,21 +45,21 @@ public class SlowArea : MonoBehaviour
 
     public void Update()
     {
-        if(hasToDestroy)
+        if (hasToDestroy)
         {
             if (canDestroy && index >= 1)
                 Destroy(this.gameObject);
 
             index++;
         }
-    
+
     }
 
 
 
     public void OnTriggerEnter(Collider other)
     {
-        if (hasToDestroy) return; 
+        if (hasToDestroy) return;
         int value = m_layersAffect.value;
         if (value == (value | 1 << other.gameObject.layer))
         {
@@ -79,7 +79,9 @@ public class SlowArea : MonoBehaviour
         {
             Debug.Log("Test Slow Down");
             NavMeshAgent navmeshAgent = other.GetComponent<NavMeshAgent>();
-            other.GetComponent<Enemies.NpcMouvementComponent>().isSlow = true;
+            Enemies.NpcMouvementComponent mvtComponent = other.GetComponent<Enemies.NpcMouvementComponent>();
+            if (mvtComponent)
+                mvtComponent.isSlow = true;
 
         }
         canDestroy = true;
