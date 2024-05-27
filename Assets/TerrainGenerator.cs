@@ -28,6 +28,8 @@ public class TerrainGenerator : MonoBehaviour
 
     private RoomManager currentRoomManager;
 
+    public ObjectifAndReward_Ui_Function objAndReward;
+    public DayCyclecontroller dayController;
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +79,9 @@ public class TerrainGenerator : MonoBehaviour
                 Debug.DrawRay(transformReference.position + new Vector3(0, 500, 0), transformReference.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
                 GameObject newTp = Instantiate(teleporterPrefab, hit.point + new Vector3(50 * i, 5, 0), transform.rotation, transformReference);
                 Teleporter tpScript = newTp.GetComponent<Teleporter>();
+                TeleporterFeebackController tpFeedback = tpScript.GetComponentInChildren<TeleporterFeebackController>();
+                tpFeedback.rewardToUse = (int)currentRoomManager.rewardType;
+                tpFeedback.ChangeRewardID(tpFeedback.rewardToUse);
                 tpScript.TeleporterNumber = i;
                 teleporter.Add(tpScript);
                 currentRoomManager.AddTeleporter(tpScript);
@@ -98,6 +103,8 @@ public class TerrainGenerator : MonoBehaviour
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
+        dayController.UpdateTimeByStep();
+        objAndReward.UpdateObjectifAndReward();
     }
 
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
@@ -108,6 +115,8 @@ public class TerrainGenerator : MonoBehaviour
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);
+        objAndReward.currentRoomManager = currentRoomManager;
+
     }
 
     public void DestroyPreviousTerrain()

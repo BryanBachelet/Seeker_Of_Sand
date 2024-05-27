@@ -17,8 +17,9 @@ public class Teleporter : MonoBehaviour
     public AltarBehaviorComponent altarBehavior;
     public Enemies.EnemyManager enemyManager;
 
+    public TeleporterFeebackController tpFeedbackController;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if (socleMaterial == null) socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
     
@@ -26,13 +27,14 @@ public class Teleporter : MonoBehaviour
         {
             terrainGen = GameObject.Find("TerrainGenerator").GetComponent<TerrainGenerator>();
         }
+        tpFeedbackController = gameObject.GetComponentInChildren<TeleporterFeebackController>();
     }
 
 
     public void ActivationTeleportor()
     {
         teleportorIsActive = true;
-
+        tpFeedbackController.activeChange = true;
         if (socleMaterial == null)
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
 

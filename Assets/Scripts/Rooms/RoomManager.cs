@@ -33,11 +33,15 @@ public class RoomManager : MonoBehaviour
     private bool isRoomHasBeenValidate = true;
     private Chosereward choserewardRef;
 
-
+    static RewardDistribution playerRewardDistribution;
     public void ActivateRoom()
     {
         isRoomHasBeenValidate = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
+        if(playerRewardDistribution == null)
+        {
+            playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
+        }
       if(roomType == RoomType.Enemy)  m_enemyManager.OnDeathSimpleEvent += CountEnemy;
         currentCountOfEnemy = 0;
     }
@@ -96,31 +100,33 @@ public class RoomManager : MonoBehaviour
         for (int i = 0; i < m_currentTeleporterCount; i++)
         {
             teleporterArray[i].ActivationTeleportor();
+            //teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>().activeChange = true;
         }
     }
 
     private void GiveRoomReward()
     {
-        switch (rewardType)
-        {
-            case RewardType.UPGRADE:
-                m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint();
-                m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowUpgradeWindow();
-                break;
-            case RewardType.SPELL:
-                m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowSpellChoiceInteface();
-                break;
-            case RewardType.ARTEFACT:
-                if(choserewardRef == null) 
-                    choserewardRef = FindAnyObjectByType<Chosereward>();
-                choserewardRef.GiveArtefact();
-                break;
-            case RewardType.HEAL:
-                m_enemyManager.m_playerTranform.GetComponent<HealthPlayerComponent>().RestoreHealQuarter(1);
-                break;
-            default:
-                break;
-        }
+        playerRewardDistribution.GiveReward(rewardType);
+        //switch (rewardType)
+        //{
+        //    case RewardType.UPGRADE:
+        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint();
+        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowUpgradeWindow();
+        //        break;
+        //    case RewardType.SPELL:
+        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowSpellChoiceInteface();
+        //        break;
+        //    case RewardType.ARTEFACT:
+        //        if(choserewardRef == null) 
+        //            choserewardRef = FindAnyObjectByType<Chosereward>();
+        //        choserewardRef.GiveArtefact();
+        //        break;
+        //    case RewardType.HEAL:
+        //        m_enemyManager.m_playerTranform.GetComponent<HealthPlayerComponent>().RestoreHealQuarter(1);
+        //        break;
+        //    default:
+        //        break;
+        //}
     }
 
 

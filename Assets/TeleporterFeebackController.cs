@@ -30,7 +30,7 @@ public class TeleporterFeebackController : MonoBehaviour
 
     public bool random = false;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if(socleMesh)
         {
@@ -48,18 +48,18 @@ public class TeleporterFeebackController : MonoBehaviour
         {
             activeChange = false;
             zoneAutourVFX.enabled = true;
-            if (random) 
-            { 
-                int IDReward = Random.Range(0, 5);
-                int IDElement = Random.Range(0, 3);
-                ChangeRewardID(IDReward);
-                ChangeColorID(IDElement);
-            }
-            else
-            {
-                ChangeRewardID(rewardToUse);
-                ChangeColorID(elementToUse);
-            }
+            //if (random) 
+            //{ 
+            //    int IDReward = Random.Range(0, 5);
+            //    int IDElement = Random.Range(0, 3);
+            //    ChangeRewardID(IDReward);
+            //    ChangeColorID(IDElement);
+            //}
+            //else
+            //{
+            //    ChangeRewardID(rewardToUse);
+            //    ChangeColorID(elementToUse);
+            //}
 
         }
         
