@@ -7,6 +7,7 @@ namespace Enemies
 {
     public class NpcMouvementComponent : MonoBehaviour
     {
+        public bool selected = false;
         private const float slowSpeed = .7f;
         public float minTargetDistance = 1;
         [Header("Movement Parameters")]
@@ -170,6 +171,12 @@ namespace Enemies
 
         public void Move()
         {
+
+            if (selected)
+            {
+                Debug.Log("Lets dig");
+            }
+
             Vector3 directionToDestination = m_navMeshAgent.destination - transform.position;
             Vector3 directionToTarget = targetData.target.position - transform.position;
             float dot = Vector3.Dot(directionToDestination.normalized, directionToTarget.normalized);
@@ -194,6 +201,7 @@ namespace Enemies
             {
                 return;
             }
+
             m_navMeshAgent.enabled = true;
             if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(targetData.target.position);
             if (!m_navMeshAgent.hasPath)

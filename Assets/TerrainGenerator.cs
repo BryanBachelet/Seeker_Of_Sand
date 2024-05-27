@@ -166,7 +166,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             oldTerrain[i].GetComponent <NavMeshSurface>().RemoveData();
             oldTerrain[i].GetComponent <NavMeshSurface>().enabled =false;
-            oldTerrain[i].SetActive(false);
+            oldTerrain[i].SetActive(false); 
         }
 
         selectedTerrain = selectedTerrainNumber;
