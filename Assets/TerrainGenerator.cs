@@ -65,6 +65,7 @@ public class TerrainGenerator : MonoBehaviour
         int terrainSelected = selectedTerrainNumber;
         teleporter.Clear();
         currentRoomManager.roomType = (RoomType)Random.Range(0, 3);
+        currentRoomManager.rewardType = (RewardType)Random.Range(0, 4);
         currentRoomManager.ActivateRoom();
         for (int i = 0; i < terrainInstantiated.Count; i++)
         {
