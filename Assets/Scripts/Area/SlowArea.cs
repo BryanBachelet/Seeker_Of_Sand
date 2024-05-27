@@ -65,11 +65,7 @@ public class SlowArea : MonoBehaviour
         {
             Debug.Log("Test Slow Down");
             NavMeshAgent navmeshAgent = other.GetComponent<NavMeshAgent>();
-
-            if (navmeshAgent)
-            {
-                navmeshAgent.speed *= m_slowReduceRatio;
-            }
+            other.GetComponent<Enemies.NpcMouvementComponent>().isSlow = true;
 
         }
     }
@@ -83,11 +79,7 @@ public class SlowArea : MonoBehaviour
         {
             Debug.Log("Test Slow Down");
             NavMeshAgent navmeshAgent = other.GetComponent<NavMeshAgent>();
-
-            if (navmeshAgent)
-            {
-                navmeshAgent.speed *= m_slowUpRatio; ;
-            }
+            other.GetComponent<Enemies.NpcMouvementComponent>().isSlow = true;
 
         }
         canDestroy = true;
@@ -99,11 +91,7 @@ public class SlowArea : MonoBehaviour
         if (value == (value | 1 << other.gameObject.layer))
         {
             NavMeshAgent navmeshAgent = other.GetComponent<NavMeshAgent>();
-
-            if (navmeshAgent)
-            {
-                navmeshAgent.speed *= m_slowUpRatio;
-            }
+            other.GetComponent<Enemies.NpcMouvementComponent>().isSlow = false;
 
         }
     }

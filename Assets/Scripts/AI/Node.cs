@@ -35,7 +35,7 @@ namespace GuerhoubaGames.AI
         [HideInInspector] public string guid;
         [HideInInspector] public Vector2 position;
         [HideInInspector] public Blackboard blackboard;
-        [HideInInspector] public NPCAgent agent;
+        [HideInInspector] public Enemies.NpcMetaInfos agent;
         [TextArea] public string description;
         
 

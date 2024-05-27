@@ -7,12 +7,13 @@ namespace Enemies
 {
     public class NpcMouvementComponent : MonoBehaviour
     {
-
-
+        private const float slowSpeed = .7f;
+        public float minTargetDistance = 1;
         [Header("Movement Parameters")]
         public float speed = 5;
         public float speedThreshold = 1;
-
+        [HideInInspector] public bool isSlow;
+        public Transform  baseTransform;
         private float m_baseSpeed;
         private float m_currentSpeed;
 
@@ -37,6 +38,7 @@ namespace Enemies
 
         private Rigidbody m_rigidbody;
         private NavMeshAgent m_navMeshAgent;
+        private NpcMetaInfos m_npcInfo;
         private NpcHealthComponent m_npcHealthComponent;
         public EnemyManager enemiesManager;
 
@@ -46,7 +48,6 @@ namespace Enemies
         public void Start()
         {
             InitComponent();
-
             m_npcHealthComponent.destroyEvent += OnDeath;
             RestartObject();
         }
@@ -56,6 +57,7 @@ namespace Enemies
             m_rigidbody = GetComponent<Rigidbody>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_navMeshAgent = GetComponent<NavMeshAgent>();
+            m_npcInfo = GetComponent<NpcMetaInfos>();
         }
 
         public void SetTarget(TargetData target)
@@ -64,13 +66,10 @@ namespace Enemies
             if (m_navMeshAgent == null) m_navMeshAgent = GetComponent<NavMeshAgent>();
             m_navMeshAgent.enabled = true;
             bool state = m_navMeshAgent.SetDestination(targetData.target.position);
-            if (!targetData.isMoving)
-            {
-                //Debug.Log("Test");
-            }
+
             if (!m_navMeshAgent.hasPath)
             {
-                //Debug.Log("Has hit");
+
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
                 {
@@ -84,7 +83,7 @@ namespace Enemies
 
         public void Update()
         {
-            if (m_npcHealthComponent.npcState == NpcState.PAUSE)
+            if (m_npcInfo.state == NpcState.PAUSE)
             {
                 if (!m_isPauseActive)
                 {
@@ -95,29 +94,56 @@ namespace Enemies
             }
             m_isPauseActive = false;
 
-            if (m_npcHealthComponent.npcState == NpcState.MOVE)
+            if (m_npcInfo.state == NpcState.MOVE)
             {
-                if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
+              
 
-                if (isAffectedBySlope)
+                if (!IsInRange())
                 {
-                    m_navMeshAgent.speed = CalculateSlopeSpeed();
-                }
+                    if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
 
-                if (Vector3.Distance(transform.position, targetData.target.position) > 1)
-                {
+                    if (isAffectedBySlope)
+                    {
+                        m_navMeshAgent.speed = CalculateSlopeSpeed();
+                        if (isSlow) m_navMeshAgent.speed *= slowSpeed;
+                    }
+                    else
+                    {
+                        m_navMeshAgent.speed = speed;
+                        if (isSlow) m_navMeshAgent.speed *= slowSpeed;
+                    }
+
                     Move();
+                    if (targetData.isMoving) Move();
+                }
+                else
+                {
+                    
+                    m_navMeshAgent.isStopped = true;
+                    m_navMeshAgent.velocity = Vector3.zero;
+                    m_rigidbody.velocity = Vector3.zero;
                 }
 
-                if (targetData.isMoving) Move();
+                
             }
 
+        }
+
+        public bool IsInRange()
+        {
+            float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
+
+            return distance  < minTargetDistance;
         }
 
 
         public void SetupPause()
         {
-            if (m_navMeshAgent.isActiveAndEnabled) m_navMeshAgent.isStopped = !m_navMeshAgent.isStopped;
+            if (m_navMeshAgent.isActiveAndEnabled)
+            {
+                m_rigidbody.velocity = Vector3.zero;
+                m_navMeshAgent.isStopped = !m_navMeshAgent.isStopped;
+            }
         }
 
         public float CalculateSlopeSpeed()
@@ -163,13 +189,9 @@ namespace Enemies
                     return;
 
                 }
-
-
-
             }
             if (distancePos > minDistanceToFullyActive && dot > m_directionMinDot && !m_isAlwaysUpdate)
             {
-
                 return;
             }
             m_navMeshAgent.enabled = true;
@@ -189,8 +211,6 @@ namespace Enemies
                             m_navMeshAgent.Warp(hit.position);
                         }
                     }
-
-
                 }
             }
         }

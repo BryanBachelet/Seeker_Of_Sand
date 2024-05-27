@@ -94,7 +94,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     }
 
-    public void GetDamageLeger(float damage, Vector3 position)
+    public void GetLightDamage(float damage, Vector3 position)
     {
         if (m_isInvulnerableLourd) return;
         if (m_isInvulnerableLeger) return;
@@ -130,7 +130,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     }
 
-    public void GetDamageLourd(float damage)
+    public void GetHeavyDamage(float damage)
     {
         if (m_isInvulnerableLourd) return;
         else
@@ -226,7 +226,7 @@ public class HealthPlayerComponent : MonoBehaviour
         //  Debug.Log("Hit an Object !");
         if (collision.transform.tag != "Enemy" || !GameState.IsPlaying()  ) return;
        // Debug.Log("Object was an Enemy !");
-        GetDamageLeger(2,collision.transform.position);
+     //   GetLightDamage(2,collision.transform.position);
     }
 
     private void ActiveBufferHealth(float time, float health)

@@ -153,7 +153,7 @@ public class Projectile : MonoBehaviour
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
-            if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+            if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
             enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power,-1);
 

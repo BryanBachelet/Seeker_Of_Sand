@@ -16,10 +16,11 @@ namespace GuerhoubaGames.AI
 
         public Node.State Update()
         {
-            if (rootNode.state == Node.State.RUNNING)
+            if (rootNode.state == Node.State.SUCCESS)
             {
-                treeState = rootNode.Evaluate();
+                rootNode.state = Node.State.RUNNING;
             }
+            treeState = rootNode.Evaluate();
             return treeState;
         }
 #if UNITY_EDITOR
@@ -128,7 +129,6 @@ namespace GuerhoubaGames.AI
             }
             return children;
         }
-
         public void  Traverse(Node node, System.Action<Node> visiter)
         {
             if(node)
@@ -138,19 +138,19 @@ namespace GuerhoubaGames.AI
                 children.ForEach((n) => Traverse(n, visiter));
             }
         }
-        public BehaviorTree Clone()
+        public BehaviorTree CloneTree()
         {
-            BehaviorTree Tree = Instantiate(this);
-            Tree.rootNode = Tree.rootNode.Clone();
-            Tree.nodes = new List<Node>();
-            Traverse(Tree.rootNode, (n) =>
+            BehaviorTree treeCreate = Instantiate(this);
+            treeCreate.rootNode = treeCreate.rootNode.Clone();
+            treeCreate.nodes = new List<Node>();
+            Traverse(treeCreate.rootNode, (n) =>
             {
-                Tree.nodes.Add(n);
+                treeCreate.nodes.Add(n);
             });
-            return Tree;
+            return treeCreate;
         }
 
-        public void Bind(NPCAgent agent)
+        public void BindTree(Enemies.NpcMetaInfos agent)
         {
             Traverse(rootNode, node => {
                 node.agent = agent;

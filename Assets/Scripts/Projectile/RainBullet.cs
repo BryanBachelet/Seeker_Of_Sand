@@ -64,7 +64,7 @@ public class RainBullet : Projectile
             }
            
             
-            if (enemy.npcState == Enemies.NpcState.DEATH)
+            if (enemy.m_npcInfo.state == Enemies.NpcState.DEATH)
                 m_enemiesList.Remove(enemy);
         }
     }
@@ -86,7 +86,7 @@ public class RainBullet : Projectile
         Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
         m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
 
-        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+        if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
         m_enemiesList.Add(enemyTouch);
     }
 
@@ -96,7 +96,7 @@ public class RainBullet : Projectile
 
         Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-        if (enemyTouch.npcState == Enemies.NpcState.DEATH) return;
+        if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
         m_enemiesList.Remove(enemyTouch);
     }
 

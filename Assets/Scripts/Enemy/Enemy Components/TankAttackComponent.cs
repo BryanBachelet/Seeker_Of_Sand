@@ -22,6 +22,7 @@ namespace Enemies
         private Transform m_targetTransform;
         public Animator m_tankAnimator;
         private NpcHealthComponent m_npcHealthComponent;
+        private NpcMetaInfos m_npcMeta;
 
         private Animator m_entityAnimator;
 
@@ -30,6 +31,7 @@ namespace Enemies
         public void Start()
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_npcMeta = GetComponent<NpcMetaInfos>();
             m_entityAnimator = m_npcHealthComponent.m_entityAnimator;
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_targetTransform = m_npcHealthComponent.targetData.target;
@@ -37,13 +39,13 @@ namespace Enemies
 
         public void Update()
         {
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, m_monsterBodyTransform.position) < radiusOfAttack)
+            if (m_npcMeta.state == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, m_monsterBodyTransform.position) < radiusOfAttack)
             {
-                m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
+                m_npcMeta.state = NpcState.PREP_ATTACK;
 
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
+            if (m_npcMeta.state == NpcState.PREP_ATTACK)
             {
                 if (m_timerOfCharge - 0.25f < timeOfCharge && m_SignAttackReset)
                 {
@@ -53,7 +55,7 @@ namespace Enemies
                 }
                 if (m_timerOfCharge > timeOfCharge)
                 {
-                    m_npcHealthComponent.npcState = NpcState.ATTACK;
+                    m_npcMeta.state = NpcState.ATTACK;
                     m_timerOfCharge = 0;
                     vfxRangeAttack.SendEvent("ActiveArea");
                     AttackTank();
@@ -66,11 +68,11 @@ namespace Enemies
 
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.RECUPERATION)
+            if (m_npcMeta.state == NpcState.RECUPERATION)
             {
                 if (m_timerOfRecuperation > timeofRecuperation)
                 {
-                    m_npcHealthComponent.npcState = NpcState.MOVE;
+                    m_npcMeta.state = NpcState.MOVE;
                     timeofRecuperation = 0;
                     m_entityAnimator.SetBool("Attack", false);
                     vfxRangeAttack.SendEvent("UnActiveArea");
@@ -92,7 +94,7 @@ namespace Enemies
             {
                 if (m_targetTransform.tag == "Player")
                 {
-                    m_targetTransform.GetComponent<HealthPlayerComponent>().GetDamageLeger(damage, transform.position);
+                    m_targetTransform.GetComponent<HealthPlayerComponent>().GetLightDamage(damage, transform.position);
                    
                 }
                 if (m_targetTransform.tag == "Altar")
@@ -101,7 +103,7 @@ namespace Enemies
 
                 }
             }
-            m_npcHealthComponent.npcState = NpcState.RECUPERATION;
+            m_npcMeta.state = NpcState.RECUPERATION;
 
 
         }

@@ -124,8 +124,8 @@ public class Mine : ProjectileExplosif
             {
                 Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
 
-                if (enemyTouch.npcState == Enemies.NpcState.DEATH) continue;
-                enemyTouch.ReceiveDamage(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power,-1);
+                if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) continue;
+                enemyTouch.ReceiveDamage(m_damage, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power, (int)m_characterShoot.lastElement);
             }
             else if (enemies[i].tag == "Cristal")
             {

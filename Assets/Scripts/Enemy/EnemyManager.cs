@@ -47,6 +47,7 @@ namespace Enemies
     {
         private ObjectState state;
         [SerializeField] public Transform m_playerTranform;
+        [SerializeField] public Transform m_basePlayerTransform;
         [SerializeField] private Transform m_cameraTransform;
 
         [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
@@ -85,8 +86,8 @@ namespace Enemies
         private float m_spawnCooldown;
 
 
-        public List<NpcHealthComponent> m_enemiesArray = new List<NpcHealthComponent>();
-        public List<NpcHealthComponent> m_enemiesFocusAltar = new List<NpcHealthComponent>();
+        public List<NpcMetaInfos> m_enemiesArray = new List<NpcMetaInfos>();
+        public List<NpcMetaInfos> m_enemiesFocusAltar = new List<NpcMetaInfos>();
 
         static public bool EnemyTargetPlayer = true;
 
@@ -491,12 +492,16 @@ namespace Enemies
             GameObject enemyObjectPull = null;
             NpcHealthComponent npcHealth = null;
             NpcMouvementComponent npcMove = null;
+            NpcMetaInfos npcInfo = null;
 
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);
             enemyTypeStats[enemyIndexChoose].instanceCount += 1;
             enemyObjectPull.transform.position = positionSpawn;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             enemyObjectPull.GetComponent<NavMeshAgent>().Warp(positionSpawn);
+
+            npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
+            npcInfo.manager = this;
 
             npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
             npcMove.enabled = true;
@@ -507,9 +512,9 @@ namespace Enemies
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject();
-            npcHealth.SetTarget(m_playerTranform);
+            npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
 
-            m_enemiesArray.Add(npcHealth);
+            m_enemiesArray.Add(npcInfo);
         }
 
         public void SetSpawnSquad(int[] mobCount)
@@ -539,12 +544,16 @@ namespace Enemies
             GameObject enemyObjectPull = null;
             NpcHealthComponent npcHealth = null;
             NpcMouvementComponent npcMove = null;
+            NpcMetaInfos npcInfo = null;
 
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyType);
             enemyTypeStats[enemyType].instanceCount += 1;
             enemyObjectPull.transform.position = position;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             enemyObjectPull.GetComponent<NavMeshAgent>().Warp(position);
+
+            npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
+            npcInfo.manager = this;
 
             npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
             npcMove.enabled = true;
@@ -555,9 +564,9 @@ namespace Enemies
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject();
-            npcHealth.SetTarget(m_playerTranform);
+            npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
 
-            m_enemiesArray.Add(npcHealth);
+            m_enemiesArray.Add(npcInfo);
         }
 
 
@@ -648,20 +657,20 @@ namespace Enemies
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);
         }
 
-        public void TeleportEnemyOut(NpcHealthComponent npcHealth)
+        public void TeleportEnemyOut(NpcMetaInfos npcInfos)
         {
-            if (!m_enemiesArray.Contains(npcHealth)) return;
+            if (!m_enemiesArray.Contains(npcInfos)) return;
 
-            EnemyType type = npcHealth.GetComponent<NpcMetaInfos>().type;
+            EnemyType type = npcInfos.type;
             killCount++;
             m_enemyKillRatio.AddEnemiKill();
 
-            if (m_enemiesFocusAltar.Contains(npcHealth))
-                m_enemiesFocusAltar.Remove(npcHealth);
+            if (m_enemiesFocusAltar.Contains(npcInfos))
+                m_enemiesFocusAltar.Remove(npcInfos);
 
             enemyTypeStats[(int)type].instanceCount -= 1;
-            m_enemiesArray.Remove(npcHealth);
-            m_pullingSystem.ResetEnemy(npcHealth.gameObject, type);
+            m_enemiesArray.Remove(npcInfos);
+            m_pullingSystem.ResetEnemy(npcInfos.gameObject, type);
         }
 
 
