@@ -185,9 +185,9 @@ namespace Character
 
         }
 
-        public void GiveUpgradePoint()
+        public void GiveUpgradePoint(int upgradeNumber)
         {
-            upgradePoint++;
+            upgradePoint+= upgradeNumber;
             upgradePointTextDisplay.text = upgradePoint.ToString();
         }
       

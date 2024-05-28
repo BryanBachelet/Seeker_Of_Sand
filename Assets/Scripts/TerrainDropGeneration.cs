@@ -34,14 +34,14 @@ public class TerrainDropGeneration : MonoBehaviour
     {
         raycastdirection = new Vector3(0, -25, 0);
         int dropToGenerate = dropQuantity + Random.Range(-random, random);
-
+        int randomCristalType = Random.Range(0, 3);
 
         if (dropToGenerate > 0)
         {
             for (int i = 0; i < dropToGenerate; i++)
             {
                 Vector2 rnd = Random.insideUnitCircle * rangeFromCenter;
-                int randomCristalType = Random.Range(0, 3);
+
                 RaycastHit hit;
                 Vector3 newPosition = transform.position + new Vector3(rnd.x, 100, rnd.y);
                 if (Physics.Raycast(newPosition, raycastdirection * 150, out hit, Mathf.Infinity, groundLayer))

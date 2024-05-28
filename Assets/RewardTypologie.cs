@@ -31,7 +31,7 @@ public class RewardTypologie : MonoBehaviour
             switch (rewardType)
             {
                 case RewardType.UPGRADE:
-                    other.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint();
+                    other.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint(3);
                     other.GetComponent<Character.CharacterUpgrade>().ShowUpgradeWindow();
                     break;
                 case RewardType.SPELL:

@@ -78,7 +78,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  dropQuantity: 4
+  dropQuantity: 2
   random: 1
   rangeFromCenter: 500
   m_DropAreaPosition: {x: 0, y: 0, z: 0}
@@ -236,6 +236,71 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8274922921493295543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3187430451411979495
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1755551561321308032}
+  - component: {fileID: 3546756137205232286}
+  - component: {fileID: 3488075195197678650}
+  m_Layer: 3
+  m_Name: NavMesh Modifier Volume_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1755551561321308032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187430451411979495}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2790397747959186004}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3546756137205232286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187430451411979495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Size: {x: 1100, y: 100, z: 1100}
+  m_Center: {x: 29.8, y: 21.2, z: -88.75}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
+--- !u!114 &3488075195197678650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187430451411979495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Size: {x: 1200, y: 100, z: 1200}
+  m_Center: {x: 0, y: -169.7, z: -47.04}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &3465882330085052561
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,6 +532,7 @@ Transform:
   m_Children:
   - {fileID: 7641239257474935892}
   - {fileID: 8985645546275716870}
+  - {fileID: 1755551561321308032}
   - {fileID: 2153301012557498159}
   - {fileID: 8625505374437343889}
   - {fileID: 6583564542425369878}
@@ -508,7 +574,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 85d372afd23dd89448967f55f58ddaf9, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: df0852395174ef34294c4dbed6a261ec, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &4419961006837680730
 GameObject:

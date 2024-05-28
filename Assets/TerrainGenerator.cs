@@ -36,6 +36,7 @@ public class TerrainGenerator : MonoBehaviour
 
     private List<RewardType> rewardList = new List<RewardType>();
 
+    public TMPro.TMP_Text roomGeneration_text;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,8 +65,8 @@ public class TerrainGenerator : MonoBehaviour
     {
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         currentRoomManager.RetriveComponent();
-        currentRoomManager.roomType = (RoomType)Random.Range(0, 3);
-        currentRoomManager.rewardType = (RewardType)Random.Range(0, rewardList.Count);
+        currentRoomManager.roomType = RoomType.Free;
+        currentRoomManager.rewardType = RewardType.SPELL;
 
         for (int i = 0; i < teleporter.Count; i++)
         {
@@ -150,7 +151,8 @@ public class TerrainGenerator : MonoBehaviour
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
-        dayController.UpdateTimeByStep();
+        //dayController.UpdateTimeByStep();
+        roomGeneration_text.text = "Room " + generation;
 
     }
 

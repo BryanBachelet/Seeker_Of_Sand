@@ -5,8 +5,8 @@ using UnityEngine.VFX;
 
 public class TeleporterFeebackController : MonoBehaviour
 {
-    [Range(0, 3)]
-    public int elementToUse = 0; //0 --> Feu. 1 --> Elec. 2-->Eau. 3-->Terre
+    [Range(0, 4)]
+    public int elementToUse = 0; //0 --> Feu. 1 --> Elec. 2-->Eau. 3-->Terre. 4 --> Neutre
 
     public Gradient[] colorZoneAutour = new Gradient[4];
     [ColorUsage(true, true)]
@@ -58,7 +58,7 @@ public class TeleporterFeebackController : MonoBehaviour
             //else
             //{
             //    ChangeRewardID(rewardToUse);
-            //    ChangeColorID(elementToUse);
+                ChangeColorID(4);
             //}
 
         }
