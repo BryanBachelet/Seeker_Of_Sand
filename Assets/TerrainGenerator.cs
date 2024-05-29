@@ -171,6 +171,7 @@ public class TerrainGenerator : MonoBehaviour
 
         selectedTerrain = selectedTerrainNumber;
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
+        currentRoomManager.DeactivateRoom();
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
 
 
@@ -179,6 +180,7 @@ public class TerrainGenerator : MonoBehaviour
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);
         currentRoomManager.ActivateRoom();
+       
         objAndReward.currentRoomManager = currentRoomManager;
         objAndReward.UpdateObjectifAndReward();
       

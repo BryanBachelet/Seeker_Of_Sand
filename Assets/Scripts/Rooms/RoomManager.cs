@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum RoomType 
+public enum RoomType
 {
     Free = 0,
     Event = 1,
@@ -26,7 +26,7 @@ public class RoomManager : MonoBehaviour
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
 
-     public Teleporter[] teleporterArray = new Teleporter[3];
+    public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
 
     private Enemies.EnemyManager m_enemyManager;
@@ -34,6 +34,7 @@ public class RoomManager : MonoBehaviour
     private Chosereward choserewardRef;
 
     static RewardDistribution playerRewardDistribution;
+    static ObjectifAndReward_Ui_Function objectifRewardFunction;
 
     public void RetriveComponent()
     {
@@ -42,16 +43,28 @@ public class RoomManager : MonoBehaviour
         if (playerRewardDistribution == null)
         {
             playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
+            objectifRewardFunction = playerRewardDistribution.GetComponent<ObjectifAndReward_Ui_Function>();
         }
     }
     public void ActivateRoom()
     {
-     
-      if(roomType == RoomType.Enemy)  m_enemyManager.OnDeathSimpleEvent += CountEnemy;
-        currentCountOfEnemy = 0;
 
+        if (roomType == RoomType.Enemy)
+        {
+            m_enemyManager.OnDeathSimpleEvent += CountEnemy;
+            m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
+        }
+        currentCountOfEnemy = 0;
+        if (roomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
+        else m_enemyManager.isStopSpawn = false;
         SetupRoomType();
     }
+
+    public void DeactivateRoom()
+    {
+        m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
+    }
+
 
     // Setup room teleporter 
     public void AddTeleporter(Teleporter newInstance)
@@ -65,7 +78,7 @@ public class RoomManager : MonoBehaviour
             return;
         }
 
-       
+
         teleporterArray[m_currentTeleporterCount] = newInstance;
         m_currentTeleporterCount++;
 
@@ -97,6 +110,9 @@ public class RoomManager : MonoBehaviour
         if (isRoomHasBeenValidate) return;
         ActivateTeleporters();
         GiveRoomReward();
+        objectifRewardFunction.FinishRoomChallenge();
+        m_enemyManager.DestroyAllEnemy();
+        m_enemyManager.isStopSpawn = true;
         isRoomHasBeenValidate = true;
     }
 
@@ -113,49 +129,16 @@ public class RoomManager : MonoBehaviour
     private void GiveRoomReward()
     {
         playerRewardDistribution.GiveReward(rewardType);
-        //switch (rewardType)
-        //{
-        //    case RewardType.UPGRADE:
-        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint();
-        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowUpgradeWindow();
-        //        break;
-        //    case RewardType.SPELL:
-        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowSpellChoiceInteface();
-        //        break;
-        //    case RewardType.ARTEFACT:
-        //        if(choserewardRef == null) 
-        //            choserewardRef = FindAnyObjectByType<Chosereward>();
-        //        choserewardRef.GiveArtefact();
-        //        break;
-        //    case RewardType.HEAL:
-        //        m_enemyManager.m_playerTranform.GetComponent<HealthPlayerComponent>().RestoreHealQuarter(1);
-        //        break;
-        //    default:
-        //        break;
-        //}
     }
 
 
     #endregion
 
-    public void ExcludeReward()
-    {
-
-    }
-
-    public void IntegreReward()
-    {
-
-    }
-    public void SetRandomReward()
-    {
-       
-    }
 
     private void DeactivateAltar() // Temp function 
     {
         AltarBehaviorComponent obj = transform.parent.GetComponentInChildren<AltarBehaviorComponent>();
-        if(obj != null)
+        if (obj != null)
         {
             obj.gameObject.SetActive(false);
         }
@@ -163,8 +146,8 @@ public class RoomManager : MonoBehaviour
 
     private void CountEnemy()
     {
-        currentCountOfEnemy ++;
-        if(currentCountOfEnemy>enemyToKillCount && roomType == RoomType.Enemy)
+        currentCountOfEnemy++;
+        if (currentCountOfEnemy > enemyToKillCount && roomType == RoomType.Enemy)
         {
             ValidateRoom();
         }

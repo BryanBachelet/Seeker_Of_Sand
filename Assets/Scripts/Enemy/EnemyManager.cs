@@ -163,6 +163,8 @@ namespace Enemies
         private int lastSkeletonCount;
         public int remainEnemy = 0;
 
+
+        [HideInInspector] public bool isStopSpawn;
         // Spawn Cause Variable
         private bool[] m_spawnCauseState = new bool[4];
 
@@ -404,6 +406,7 @@ namespace Enemies
 
         private void SpawEnemiesGroup()
         {
+            if (isStopSpawn) return;
             position = FindPosition();
             posspawn.Add(position);
             InstantiateSpawnFeedback();
@@ -488,6 +491,9 @@ namespace Enemies
 
         private void SpawnEnemyByPool(Vector3 positionSpawn)
         {
+
+            if (isStopSpawn) return;
+
             int enemyIndexChoose = FindValidTypeEnemyToSpawn();
 
             if (enemyIndexChoose == -1) return;
@@ -594,7 +600,7 @@ namespace Enemies
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
-
+            isStopSpawn = false;
             if (target.GetComponent<AltarBehaviorComponent>())
             {
                 altarLaunch++;

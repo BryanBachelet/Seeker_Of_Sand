@@ -92,12 +92,9 @@ public class DayCyclecontroller : MonoBehaviour
         {
             staticTimeOfTheDay = m_timeOfDay;
             UpdateTime();
-        }
-        Debug.Log("Test Phase 1");
+        };
         if (choosingArtefactStart) return;
-        Debug.Log("Test Phase 2");
         if (!GameState.IsPlaying()) return;
-        Debug.Log("Test Phase 3");
 
         if(timeByGeneration)
         {

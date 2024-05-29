@@ -19,18 +19,16 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     public Sprite[] spriteReward_tab;
 
     public RoomManager currentRoomManager;
-    // Start is called before the first frame update
-    void Start()
+
+
+    public void FinishRoomChallenge()
     {
-        
+        img_Objectif.sprite = spriteObjectif_tab[2];
+        txtPro_Objectif.text = text_Objectif[2];
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
+    //TODO: Need change if statement for switch
     public void UpdateObjectifAndReward()
     {
         objectifAnimator.ResetTrigger("ActiveDisplay");
