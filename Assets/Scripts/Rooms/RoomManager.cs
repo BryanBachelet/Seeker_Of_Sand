@@ -34,7 +34,7 @@ public class RoomManager : MonoBehaviour
     private Chosereward choserewardRef;
 
     static RewardDistribution playerRewardDistribution;
-
+    static ObjectifAndReward_Ui_Function objAndReward_UI;
     public void RetriveComponent()
     {
         isRoomHasBeenValidate = false;
@@ -42,6 +42,7 @@ public class RoomManager : MonoBehaviour
         if (playerRewardDistribution == null)
         {
             playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
+            objAndReward_UI = playerRewardDistribution.GetComponent<ObjectifAndReward_Ui_Function>();
         }
     }
     public void ActivateRoom()
@@ -85,7 +86,8 @@ public class RoomManager : MonoBehaviour
                 break;
             case RoomType.Enemy:
                 DeactivateAltar();
-                enemyToKillCount = Random.Range(20, 100);
+                int enemyCount = 20 + 20 * TerrainGenerator.generation;
+                enemyToKillCount = Random.Range(enemyCount / 2, enemyCount);
                 break;
             default:
                 break;
@@ -97,6 +99,7 @@ public class RoomManager : MonoBehaviour
         if (isRoomHasBeenValidate) return;
         ActivateTeleporters();
         GiveRoomReward();
+        //ObjectifAndReward_Ui_Function.StopEventDisplay();
         isRoomHasBeenValidate = true;
     }
 
@@ -164,10 +167,24 @@ public class RoomManager : MonoBehaviour
     private void CountEnemy()
     {
         currentCountOfEnemy ++;
-        if(currentCountOfEnemy>enemyToKillCount && roomType == RoomType.Enemy)
+        float progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
+        Debug.Log("Enemy Count" + progress);
+        if(roomType == RoomType.Enemy)
         {
-            ValidateRoom();
+            if (progress >= 1)
+            {
+                ValidateRoom();
+                ObjectifAndReward_Ui_Function.UpdateProgress(1);
+
+            }
+            else
+            {
+                //Debug.Log("Event progress " + progress);
+                ObjectifAndReward_Ui_Function.UpdateProgress(progress);
+            }
         }
+
+
     }
 
 }

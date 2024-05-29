@@ -22,7 +22,7 @@ public class RewardDistribution : MonoBehaviour
 
     public void GiveReward(RewardType rewardType)
     {
-        GameObject NewReward = Instantiate(rewardHolderPrefan, this.transform.position + new Vector3(0,50,0), this.transform.rotation);
+        GameObject NewReward = Instantiate(rewardHolderPrefan, this.transform.position + new Vector3(0,100,0), this.transform.rotation);
         ExperienceMouvement newXp  = NewReward.GetComponent<ExperienceMouvement>();
         newXp.m_playerPosition = this.transform;
         newXp.ActiveExperienceParticule(this.transform);

@@ -184,6 +184,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         m_eventProgressionSlider.fillAmount = progression;
+        ObjectifAndReward_Ui_Function.UpdateProgress(progression);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI
@@ -282,6 +283,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             m_enemyManager.ActiveEvent(transform);
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
             progression = 0;
+
             m_myAnimator.SetBool("ActiveEvent", true);
 
             if (resetNumber == 0)
@@ -320,6 +322,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");
         progression = 0;
+        ObjectifAndReward_Ui_Function.StopEventDisplay();
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
         m_interactionEvent.currentInteractibleObjectActive = null;

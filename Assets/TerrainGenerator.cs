@@ -16,7 +16,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> oldTerrain = new List<GameObject>();
     public List<Teleporter> teleporter = new List<Teleporter>();
     public int poolNumber;
-    public int generation = 1;
+    static public int generation = 1;
 
     public bool generateNewTerrain;
 

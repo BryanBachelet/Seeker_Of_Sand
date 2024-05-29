@@ -442,7 +442,7 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.Continious)
                 m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
 
-            Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
+            //Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
             m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_canEndShot = false;
             m_isShooting = true;
