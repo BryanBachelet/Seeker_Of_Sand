@@ -171,6 +171,7 @@ namespace Enemies
 
         public void Awake()
         {
+            NavMesh.pathfindingIterationsPerFrame = 300;
 #if UNITY_EDITOR
             playerInput = m_playerTranform.GetComponent<PlayerInput>();
             InputAction action = playerInput.actions.FindAction("SpawnEnemy");
