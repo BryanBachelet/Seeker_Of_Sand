@@ -5,20 +5,12 @@ using System;
 namespace Enemies
 {
 
-    public enum NpcState
-    {
-        MOVE,
-        ATTACK,
-        PREP_ATTACK,
-        RECUPERATION,
-        DEATH,
-        PAUSE,
-    }
 
     [Serializable]
     public struct TargetData
     {
         public Transform target;
+        public Transform baseTarget;
         public bool isMoving;
     }
 
@@ -35,7 +27,6 @@ namespace Enemies
         public bool hasDeathAnimation = false;
 
         [Header("NPC State")]
-        public NpcState npcState;
         public ObjectState m_objectGameState;
         public int xpToDrop;
         private int m_previousNpcState;
@@ -65,6 +56,8 @@ namespace Enemies
         private MaterialPropertyBlock _propBlock;
         public GameObject death_vfx;
 
+        [HideInInspector] public NpcMetaInfos m_npcInfo;
+
         public bool IsDebugActive = false;
 
         void Awake()
@@ -74,14 +67,15 @@ namespace Enemies
         private void InitComponent()
         {
             m_healthSystem = new HealthSystem();
+            m_npcInfo = GetComponent<NpcMetaInfos>();
             m_entityAnimator = GetComponentInChildren<Animator>();
             _propBlock = new MaterialPropertyBlock();
-            for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i ++)
+            for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
             {
                 m_materialList.Add(m_SkinMeshRenderer.materials[i]);
             }
             RestartObject();
-            
+
         }
 
         public void SetMinuteLife(int min)
@@ -91,7 +85,7 @@ namespace Enemies
 
         private void Update()
         {
-            if(death)
+            if (death)
             {
 
                 float progressDeath = 1 - (timeBeforeDestruction + deathTimer - Time.time) / 2;
@@ -103,17 +97,18 @@ namespace Enemies
                 }
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
-                   //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
-                   //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
-                   //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
+                    //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
+                    //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
+                    //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
                     m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
                 }
             }
         }
 
-        public void SetTarget(Transform targetTransform)
+        public void SetTarget(Transform targetTransform,Transform baseTranform)
         {
             targetData.target = targetTransform;
+            targetData.baseTarget = baseTranform;
             NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
             npcMouvement.SetTarget(targetData);
 
@@ -149,20 +144,20 @@ namespace Enemies
 
         public void GetDestroy(Vector3 direction, float power)
         {
-            if (npcState == NpcState.DEATH) return;
+            if (m_npcInfo.state == NpcState.DEATH) return;
 
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
-            npcState = NpcState.DEATH;
+            m_npcInfo.state = NpcState.DEATH;
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
 
-            m_enemyManager.EnemyHasDied(this,xpToDrop);
+            m_enemyManager.EnemyHasDied(this, xpToDrop);
 
-            if(!death)
+            if (!death)
             {
                 deathTimer = Time.time;
             }
-            
+
             //StartCoroutine(Death());
             StartCoroutine(TeleportToPool());
         }
@@ -191,29 +186,29 @@ namespace Enemies
                 //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
                 m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
             }
-            m_enemyManager.TeleportEnemyOut(this);
+            m_npcInfo.TeleportToPool();
 
         }
 
         public void SetPauseState()
         {
-            m_previousNpcState = (int)npcState;
-            npcState = NpcState.PAUSE;
+            m_previousNpcState = (int)m_npcInfo.state;
+            m_npcInfo.state = NpcState.PAUSE;
         }
         public void RemovePauseState()
         {
-            npcState = (NpcState)m_previousNpcState;
+            m_npcInfo.state = (NpcState)m_previousNpcState;
         }
 
         public void RestartObject()
         {
-            if(IsDebugActive)
+            if (IsDebugActive)
             {
                 Debug.Log("Setup current max life : " + (m_maxLife + spawnMinute * gainPerMinute));
             }
             m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
             death = false;
-            npcState = NpcState.MOVE;
+            m_npcInfo.state = NpcState.MOVE;
             this.gameObject.layer = 6;
         }
     }

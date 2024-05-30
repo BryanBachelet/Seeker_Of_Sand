@@ -51,7 +51,7 @@ public class PullingSystem : MonoBehaviour
         {
             GameObject instance = GameObject.Instantiate(enemyTypeInfo.prefabToSpawn, m_spawnPosition, Quaternion.identity, gameObjectHolder.transform);
             instance.SetActive(false);
-            instance.GetComponent<NpcHealthComponent>().SetPauseState();
+            instance.GetComponent<NpcMetaInfos>().SetPauseState();
             enemyTypeInfo.instanceArray.Add(instance);
         }
 
@@ -86,8 +86,8 @@ public class PullingSystem : MonoBehaviour
 
     public void ResetEnemy(GameObject instance,EnemyType type)
     {
-        instance.GetComponent<NpcHealthComponent>().npcState = NpcState.MOVE;
-        instance.GetComponent<NpcHealthComponent>().SetPauseState();
+        instance.GetComponent<NpcMetaInfos>().state = NpcState.MOVE;
+        instance.GetComponent<NpcMetaInfos>().SetPauseState();
         instance.GetComponent<NavMeshAgent>().updatePosition = false;
         instance.SetActive(false);
         m_enemyInfoArray[(int)type].instanceArray.Add(instance);

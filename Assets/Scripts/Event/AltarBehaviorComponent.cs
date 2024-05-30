@@ -98,6 +98,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     public EventHolder eventHolder;
     #endregion Variable
+
     #region Unity Functions
     void Start()
     {
@@ -126,6 +127,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         InitVisualElements();
 
         StartCoroutine(LastStart());
+        if(eventHolder == null)
+        {
+            eventHolder = EventHolder.GetInstance();
+            eventHolder.GetNewAltar(this);
+        }
+      
     }
 
     void Update()
@@ -177,6 +184,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         m_eventProgressionSlider.fillAmount = progression;
+        ObjectifAndReward_Ui_Function.UpdateProgress(progression);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI
@@ -268,13 +276,16 @@ public class AltarBehaviorComponent : MonoBehaviour
     // Need to set active
     public void ActiveEvent(InteractionEvent intercationEvent)
     {
+        if (resetNumber >= 1) return;
         if(m_interactionEvent == null) { m_interactionEvent = intercationEvent; }
         if (!m_objectHealthSystem.IsEventActive())
         {
             m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
             m_enemyManager.ActiveEvent(transform);
+            
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
             progression = 0;
+
             m_myAnimator.SetBool("ActiveEvent", true);
 
             if (resetNumber == 0)
@@ -313,6 +324,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");
         progression = 0;
+        //ObjectifAndReward_Ui_Function.StopEventDisplay();
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
         m_interactionEvent.currentInteractibleObjectActive = null;
@@ -330,6 +342,8 @@ public class AltarBehaviorComponent : MonoBehaviour
         StartCoroutine(ResetEventWithDelay(1.5f));
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+
+       transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
 
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
@@ -381,7 +395,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             if (nextRewardTypologie == 2)
             {
                 //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-                rewardManagerReference.GenerateNewArtefactReward(this.transform);
+               if(rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
 
             }
 

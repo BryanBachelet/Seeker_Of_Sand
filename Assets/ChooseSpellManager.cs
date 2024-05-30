@@ -158,7 +158,6 @@ public class ChooseSpellManager : MonoBehaviour
             newSpell[i].elementType = capsuleManager.capsules[randomSpellToChoose[i]].elementType;
             nextSpellName[i] = newSpell[i].name;
             textObject[i].text = nextSpellName[i];
-            Debug.Log(newSpell[i].elementType);
             GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].elementType], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
         }

@@ -85,7 +85,7 @@ public class AttackTrainingArea : MonoBehaviour
         positionOnDestroy = transform.position;
         if (Vector3.Distance(positionOnDestroy, playerTarget.position) < rangeHit)
         {
-            hpPlayer.GetDamageLeger(5, positionOnDestroy);
+            hpPlayer.GetLightDamage(5, positionOnDestroy);
             //vfxExplosionObject.GetComponent<VisualEffect>().Play();
             //Debug.Log("Hit at [" + Vector3.Distance(positionOnDestroy, playerTarget.position) + "]");
         }

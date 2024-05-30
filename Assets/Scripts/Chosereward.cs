@@ -39,6 +39,12 @@ public class Chosereward : MonoBehaviour
         }
         if (m_playerTransform == null) { m_playerTransform = GameObject.Find("Player").transform; }
         m_interactionEventScript = m_playerTransform.GetComponent<InteractionEvent>();
+        if (isStart)
+        {
+            isStart = false;
+            DayCyclecontroller.choosingArtefactStart = false;
+            colliderDome.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -90,6 +96,7 @@ public class Chosereward : MonoBehaviour
 
     public void ChoseAnArtefact(InputAction.CallbackContext ctx)
     {
+        return;
         if (ctx.performed && interactionEvent.lastArtefact != null)
         {
             for (int i = 0; i < artefactHolder.Count; i++)
@@ -134,6 +141,15 @@ public class Chosereward : MonoBehaviour
             Debug.Log(" Artefact N°" + rndArtefact);
         }
     }
+
+    public void GiveArtefact()
+    {
+        int rndArtefact = Random.Range(0, artefactToChose.Count);
+
+        m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactToChose[rndArtefact]);
+        m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactToChose[rndArtefact]);
+    }
+
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
     {
 

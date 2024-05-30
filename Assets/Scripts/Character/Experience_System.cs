@@ -79,7 +79,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     public void OnEnemyKilledNew(int quantity)
     {
 #if UNITY_EDITOR
-        if (cancelGainExperience) return;
+        //if (cancelGainExperience) return;
 #endif
         float time = Time.time;
 

@@ -61,7 +61,6 @@ public class ShadowFunction : MonoBehaviour
                 progressTimeShadow = m_TimeOnShadow / m_TimeBeforeDetection;
                 if (vfxDetection.HasInt("Rate")) vfxDetection.SetInt("Rate", (int)(progressTimeShadow * 5));
                 currentSpriteDetection = spritesEyes[(int)spriteAnimation.Evaluate(progressTimeShadow)];
-                Debug.Log(progressTimeShadow);
                 newAnimatorEyes.SetBool("OnShadowEnter", false);
                 newAnimatorEyes.SetBool("OnShadowExit", false);
             }
@@ -164,6 +163,18 @@ public class ShadowFunction : MonoBehaviour
         spriteProgress[1].fillAmount = progress;
         spriteProgress[2].fillAmount = progress;
         spriteProgress[3].fillAmount = progress;
+    }
+
+    public void ResetPlayerShadowStatus()
+    {
+        m_TimeOnShadow = 0;
+        StopDetectionSoundFeedback();
+        outShadowSpawn = true;
+        outShadowSpawnStatic = true;
+        onShadowSpawn = false;
+        onShadowSpawnStatic = false;
+        newAnimatorEyes.SetTrigger("Exit");
+        enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.SHADOW);
     }
 
 }

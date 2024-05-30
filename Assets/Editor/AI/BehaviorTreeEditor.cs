@@ -86,6 +86,7 @@ namespace GuerhoubaTools.Gameplay
                     OnSelectionChange();
                     break;
                 case PlayModeStateChange.ExitingPlayMode:
+                    OnSelectionChange();
                     break;
             }
         }
@@ -103,7 +104,8 @@ namespace GuerhoubaTools.Gameplay
                     BehaviorTreeComponent behaviorTreeComponent = Selection.activeGameObject.GetComponent<BehaviorTreeComponent>();
                     if (behaviorTreeComponent)
                     {
-                        tree = behaviorTreeComponent.tree;
+                        //OnSelectionChange();
+                        tree = behaviorTreeComponent.behaviorTree;
                     }
 
                 }
@@ -134,7 +136,7 @@ namespace GuerhoubaTools.Gameplay
         void OnNodeSelectionChanged(NodeView node)
         {
 
-            inspectorView.UpdateSelection(node);
+            if(inspectorView != null) inspectorView.UpdateSelection(node);
         }
 
         private void OnInspectorUpdate()

@@ -15,7 +15,7 @@ public class CameraFadeFunction : MonoBehaviour
     public bool fadeOutActive;
     public bool fadeOutActivation;
 
-    public teleporterBehavior tpBehavior;
+    public TeleporterBehavior tpBehavior;
     // Start is called before the first frame update
     void Start()
     {

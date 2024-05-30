@@ -71,6 +71,8 @@ public class DayCyclecontroller : MonoBehaviour
     public Chosereward choseReward;
 
     public bool menuMovement = false;
+
+    public bool timeByGeneration = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -91,21 +93,43 @@ public class DayCyclecontroller : MonoBehaviour
             staticTimeOfTheDay = m_timeOfDay;
             UpdateTime();
         }
-        Debug.Log("Test Phase 1");
+        //Debug.Log("Test Phase 1");
         if (choosingArtefactStart) return;
-        Debug.Log("Test Phase 2");
+        //Debug.Log("Test Phase 2");
         if (!GameState.IsPlaying()) return;
-        Debug.Log("Test Phase 3");
-        time += Time.deltaTime;
-        CheckPhase(m_timeOfDay);
-        staticTimeOfTheDay = m_timeOfDay;
-        UpdateTime();
+        //Debug.Log("Test Phase 3");
+
+        if(timeByGeneration)
+        {
+            //UpdateTimeByStep();
+        }
+        else
+        {
+            UpdateTimeBySecond();
+        }
+
     }
 
     private void OnValidate()
     {
         UpdateTime();
 
+    }
+
+    private void UpdateTimeBySecond()
+    {
+        time += Time.deltaTime;
+        CheckPhase(m_timeOfDay);
+        staticTimeOfTheDay = m_timeOfDay;
+        UpdateTime();
+    }
+
+    public void UpdateTimeByStep()
+    {
+        time += 201.6f;
+        CheckPhase(m_timeOfDay);
+        staticTimeOfTheDay = m_timeOfDay;
+        UpdateTime();
     }
     private void UpdateTime()
     {
@@ -180,7 +204,7 @@ public class DayCyclecontroller : MonoBehaviour
         m_sun.gameObject.SetActive(true);
         isNight = false;
         isNightState = isNight;
-        dayStartEvent.Invoke();
+        if(dayStartEvent != null) dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
         m_GSM.UpdateParameter(0, "DayOrNight");
@@ -223,7 +247,7 @@ public class DayCyclecontroller : MonoBehaviour
         if (time > m_TimeProchainePhase)
         {
             currentPhase += 1;
-            if (currentPhase > tempsChaquePhase.Length)
+            if (currentPhase > tempsChaquePhase.Length-1)
             {
                 currentPhase = 0;
             }
@@ -252,13 +276,14 @@ public class DayCyclecontroller : MonoBehaviour
         {
             m_timeOfDay = 0;
         }
-        else if (m_timeOfDay > 5.5f && m_timeOfDay < 6f)
+        else if (m_timeOfDay > 5.5f && m_timeOfDay <= 8f)
         {
-            m_timeOfDay = 6.1f;
+            //StartDay();
+            //m_timeOfDay = 6.1f;
         }
-        else if (m_timeOfDay > 17.9f && m_timeOfDay < 18.49f)
+        else if (m_timeOfDay > 17f && m_timeOfDay < 20f)
         {
-            m_timeOfDay = 18.5f;
+            //m_timeOfDay = 18.5f;
             if (!checkNightSound)
             {
                 checkNightSound = true;

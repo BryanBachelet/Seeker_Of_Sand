@@ -366,7 +366,7 @@ namespace Character
 
         private void GenerateNewBuild()
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 1; i++)
             {
                 int RndCapsule = 0;
                 if (i == 0)
@@ -442,7 +442,7 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.Continious)
                 m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
 
-            Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
+            //Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
             m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_canEndShot = false;
             m_isShooting = true;
@@ -452,7 +452,6 @@ namespace Character
         private bool ShotCanalisation()
         {
             if (!m_activeSpellLoad) return false;
-
 
             UpdateCanalisationBar(m_totalCanalisationDuration);
             if (m_spellTimer >= currentWeaponStats.spellCanalisation + baseCanalisationTime)
@@ -469,8 +468,6 @@ namespace Character
 
                 return false;
             }
-
-            return true;
         }
 
         private void UpdateCanalisationBar(float maxValue)
@@ -514,12 +511,6 @@ namespace Character
             if (m_currentType == SpellSystem.CapsuleType.ATTACK) ShootAttack(m_currentIndexCapsule, ref currentShotNumber, ref m_canEndShot);
 
             if (m_currentType == SpellSystem.CapsuleType.BUFF) ShootBuff(((SpellSystem.CapsuleBuff)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule)));
-
-
-
-            //m_CharacterAnimator.SetBool("Shooting", true);
-
-
 
         }
 

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class teleporterBehavior : MonoBehaviour
+public class TeleporterBehavior : MonoBehaviour
 {
-    public Teleportor lastTeleportor;
+    public Teleporter lastTeleportor;
     public Vector3 lastTpPosition;
     public bool activationTP;
-    public Teleportor nextTeleporter;
+    public Teleporter nextTeleporter;
     public Vector3 nextTpPosition;
-    private int nextTerrainNumber = 0;
+    public int nextTerrainNumber = 0;
 
     public CameraFadeFunction cameraFadeFunction;
     public TerrainGenerator terrainGen;
@@ -21,6 +21,7 @@ public class teleporterBehavior : MonoBehaviour
 
 
     public EventHolder eventHolder;
+    public DayCyclecontroller dayController;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,12 +34,13 @@ public class teleporterBehavior : MonoBehaviour
         
     }
 
-    public void GetTeleportorData(Teleportor tpObject)
+    public void GetTeleportorData(Teleporter tpObject)
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
-        nextTerrainNumber = tpObject.TeleporterNumber;
-       // eventHolder.GetNewAltar(tpObject.altarBehavior);
+        dayController.UpdateTimeByStep();
+        //  nextTerrainNumber = tpObject.TeleporterNumber;
+        // eventHolder.GetNewAltar(tpObject.altarBehavior);
     }
 
     public void ActivationTeleportation()
@@ -48,5 +50,7 @@ public class teleporterBehavior : MonoBehaviour
         apparitionVFX.Play();
         cameraFadeFunction.fadeOutActivation = true;
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
+
+        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
     }
 }

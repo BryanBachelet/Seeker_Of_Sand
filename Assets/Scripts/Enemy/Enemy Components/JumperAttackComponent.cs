@@ -35,6 +35,7 @@ namespace Enemies
         private Transform m_target;
         private NavMeshAgent m_agent;
         private NpcHealthComponent m_npcHealthComponent;
+        private NpcMetaInfos m_npcMeta;
         public Animator m_animator;
 
         public UnityEngine.VFX.VisualEffect vfxRangeAttack;
@@ -58,6 +59,7 @@ namespace Enemies
             m_curveBehavior = new CurveBehavior();
             m_agent = GetComponent<NavMeshAgent>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_npcMeta = GetComponent<NpcMetaInfos>();
             m_capsuleCollider = GetComponent<CapsuleCollider>();
             m_target = m_npcHealthComponent.targetData.target;
         }
@@ -79,18 +81,18 @@ namespace Enemies
             {
                 m_animator.SetBool("ClosefromPlayer", false);
             }
-           if (m_npcHealthComponent.npcState == NpcState.MOVE && distancePlayer < jumpDistance /1.5f)
+           if (m_npcMeta.state == NpcState.MOVE && distancePlayer < jumpDistance /1.5f)
             {
                 if (!IsPlayerHide())
                 {
-                    m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
+                    m_npcMeta.state = NpcState.PREP_ATTACK;
                     PrepareToJump();
 
                     return;
                 }
 
             }
-            if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
+            if (m_npcMeta.state == NpcState.PREP_ATTACK)
             {
                 if(m_tempsPreparation - 0.25f < m_tempsEcoulePreparation && m_SignAttackReset)
                 {
@@ -101,7 +103,7 @@ namespace Enemies
                 if(m_tempsPreparation < m_tempsEcoulePreparation)
                 {
                     StartAttack();
-                    m_npcHealthComponent.npcState = NpcState.ATTACK;
+                    m_npcMeta.state = NpcState.ATTACK;
                 }
                 else
                 {
@@ -109,16 +111,16 @@ namespace Enemies
                    
                 }
             }
-            if (m_npcHealthComponent.npcState == NpcState.ATTACK )
+            if (m_npcMeta.state == NpcState.ATTACK )
             {
                 AttackJumper();
                 return;
             }
 
             float dist = Vector3.Distance(transform.position, dest);
-            if (m_npcHealthComponent.npcState == NpcState.RECUPERATION && dist < 7)
+            if (m_npcMeta.state == NpcState.RECUPERATION && dist < 7)
             {
-                m_npcHealthComponent.npcState = NpcState.MOVE;
+                m_npcMeta.state = NpcState.MOVE;
             }
 
 
@@ -138,7 +140,7 @@ namespace Enemies
             float distancePlayer = Vector3.Distance(transform.position, m_target.position);
             if(distancePlayer < rangeToDamageDuringDash)
             {
-                m_target.GetComponent<HealthPlayerComponent>().GetDamageLourd(damage);
+                m_target.GetComponent<HealthPlayerComponent>().GetHeavyDamage(damage);
 
             }
             if (m_curveBehavior.IsCurveFinish())
@@ -156,7 +158,7 @@ namespace Enemies
             m_direction = (m_target.position - m_basePlayer.position).normalized;
             if (Physics.Raycast(m_basePlayer.position, Vector3.down, out hit, 2.0f, m_layerMask))
             {
-                m_npcHealthComponent.npcState = NpcState.MOVE;
+                m_npcMeta.state = NpcState.MOVE;
                 m_rigidbody.isKinematic = true;
                 m_rigidbody.velocity = Vector3.zero;
                 EndAttack();
@@ -237,7 +239,7 @@ namespace Enemies
 
             m_animator.ResetTrigger("Attacking");
             m_capsuleCollider.isTrigger = false;
-            m_npcHealthComponent.npcState = NpcState.RECUPERATION;
+            m_npcMeta.state = NpcState.RECUPERATION;
             RaycastHit hit = new RaycastHit();
             Vector3 dirTransform = m_direction;
             dirTransform.y = 0;

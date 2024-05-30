@@ -32,6 +32,7 @@ namespace Enemies
         private NpcHealthComponent m_npcHealthComponent;
         private NpcMouvementComponent m_npcMvtComponent;
         private NavMeshAgent m_navMeshAgent;
+        private NpcMetaInfos m_npcMeta;
 
         private Animator animator;
 
@@ -42,6 +43,7 @@ namespace Enemies
         {
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_npcMvtComponent = GetComponent<NpcMouvementComponent>();
+            m_npcMeta = GetComponent<NpcMetaInfos>();
             m_navMeshAgent = GetComponent<NavMeshAgent>();
             m_npcHealthComponent.destroyEvent += OnDeath;
             m_targetTransform = m_npcHealthComponent.targetData.target;
@@ -53,7 +55,7 @@ namespace Enemies
         void Update()
         {
             
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < minAttackRange)
+            if (m_npcMeta.state == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < minAttackRange)
             {
                 Vector3 direction = transform.position - m_targetTransform.position;
                 Vector3 position = m_targetTransform.position + direction.normalized * minAttackRange * 2;
@@ -63,15 +65,15 @@ namespace Enemies
                 return;
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange)
+            if (m_npcMeta.state == NpcState.MOVE && Vector3.Distance(m_targetTransform.position, transform.position) < attackRange)
             {
-                m_npcHealthComponent.npcState = NpcState.PREP_ATTACK;
+                m_npcMeta.state = NpcState.PREP_ATTACK;
                 m_navMeshAgent.isStopped = true;
                 // vfxFeedback.SetActive(true);
                 return;
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.PREP_ATTACK)
+            if (m_npcMeta.state == NpcState.PREP_ATTACK)
             {
                 transform.LookAt(m_targetTransform);
                 if (m_timerOfCharge - 0.25f < timeOfCharge && m_SignAttackReset)
@@ -82,7 +84,7 @@ namespace Enemies
                 }
                 if (m_timerOfCharge > timeOfCharge)
                 {
-                    m_npcHealthComponent.npcState = NpcState.ATTACK;
+                    m_npcMeta.state = NpcState.ATTACK;
                     m_timerOfCharge = 0;
                     Attack();
                     // vfxFeedback.SetActive(false);
@@ -95,12 +97,12 @@ namespace Enemies
                 return;
             }
 
-            if (m_npcHealthComponent.npcState == NpcState.RECUPERATION)
+            if (m_npcMeta.state == NpcState.RECUPERATION)
             {
                 transform.LookAt(m_targetTransform);
                 if (m_timerOfRecuperation > timeofRecuperation)
                 {
-                    m_npcHealthComponent.npcState = NpcState.MOVE;
+                    m_npcMeta.state = NpcState.MOVE;
                     if (Vector3.Distance(m_targetTransform.position, transform.position) < minAttackRange)
                     {
                         Vector3 direction = transform.position - m_targetTransform.position;
@@ -139,8 +141,8 @@ namespace Enemies
      
             AttackTrainingArea attackObjectArea = projectileInstance.GetComponent<AttackTrainingArea>();
             attackObjectArea.playerTarget = m_targetTransform;
-        
-            m_npcHealthComponent.npcState = NpcState.RECUPERATION;
+
+            m_npcMeta.state = NpcState.RECUPERATION;
             animator.ResetTrigger("Attacking");
         }
 
@@ -162,7 +164,7 @@ namespace Enemies
             }
             ProjectileMortar m_projectileMortar = projectileInstance.GetComponent<ProjectileMortar>();
             m_projectileMortar.InitProjectile(data);
-            m_npcHealthComponent.npcState = NpcState.RECUPERATION;
+            m_npcMeta.state = NpcState.RECUPERATION;
             animator.ResetTrigger("Attacking");
         }
         public void OnDeath(Vector3 direction, float power)
