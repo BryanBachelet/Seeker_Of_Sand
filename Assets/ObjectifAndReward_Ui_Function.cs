@@ -31,10 +31,10 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     public Image fill_Progress;
     public Image fill_ProgressDelay;
 
-    static private bool stopDisplay = false;
+    public bool stopDisplay = false;
 
     private static float timeLastUpdate;
-    public float timeDelay = 0;
+    public float timeDelay = 1;
 
     [SerializeField] private Enemies.EnemyManager enemyManager;
     // Start is called before the first frame update
@@ -57,6 +57,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             if (stopDisplay)
             {
                 DisactiveDisplayProgress();
+                Debug.Log("Stop display");
                 stopDisplay = false;
                 eventRoom = false;
                 enemyRoom = false;
@@ -106,6 +107,10 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             txtPro_Objectif.text = text_Objectif[0];
             enemyRoom = true;
             eventRoom = false;
+            currentProgress = 0;
+            delayProgress = 0;
+            fill_Progress.fillAmount = 1;
+            fill_ProgressDelay.fillAmount = 1;
             ActiveDisplayProgress();
         }
         else if (currentRoomManager.roomType == RoomType.Event)
@@ -115,6 +120,10 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             txtPro_Objectif.text = text_Objectif[1];
             eventRoom = true;
             enemyRoom = false;
+            currentProgress = 0;
+            delayProgress = 0;
+            fill_Progress.fillAmount = 1;
+            fill_ProgressDelay.fillAmount = 1;
             ActiveDisplayProgress();
         }
         else if (currentRoomManager.roomType == RoomType.Free)
@@ -139,13 +148,20 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
 
         objectifAnimatorMajor.SetBool("MajorDisplay", false);
         enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.EVENT);
+        objectifAnimator.ResetTrigger("ActiveDisplay");
+        rewardAnimator.ResetTrigger("ActiveDisplay");
+        img_Objectif.sprite = spriteObjectif_tab[2];
+        txtPro_Objectif.text = text_Objectif[2];
+        objectifAnimator.SetTrigger("ActiveDisplay");
+        rewardAnimator.SetTrigger("ActiveDisplay");
 
 
     }
 
-    public static void StopEventDisplay()
+    public void StopEventDisplay()
     {
         stopDisplay = true;
+        Debug.Log("Stop Event");
 
     }
 }

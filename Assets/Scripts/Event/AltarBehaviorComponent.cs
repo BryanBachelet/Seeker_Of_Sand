@@ -276,6 +276,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     // Need to set active
     public void ActiveEvent(InteractionEvent intercationEvent)
     {
+        if (resetNumber >= 1) return;
         if(m_interactionEvent == null) { m_interactionEvent = intercationEvent; }
         if (!m_objectHealthSystem.IsEventActive())
         {
@@ -323,7 +324,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");
         progression = 0;
-        ObjectifAndReward_Ui_Function.StopEventDisplay();
+        //ObjectifAndReward_Ui_Function.StopEventDisplay();
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
         m_interactionEvent.currentInteractibleObjectActive = null;

@@ -50,7 +50,7 @@ public class RoomManager : MonoBehaviour
      
       if(roomType == RoomType.Enemy)  m_enemyManager.OnDeathSimpleEvent += CountEnemy;
         currentCountOfEnemy = 0;
-
+        objAndReward_UI.stopDisplay = false;
         SetupRoomType();
     }
 
@@ -99,7 +99,7 @@ public class RoomManager : MonoBehaviour
         if (isRoomHasBeenValidate) return;
         ActivateTeleporters();
         GiveRoomReward();
-        //ObjectifAndReward_Ui_Function.StopEventDisplay();
+        objAndReward_UI.StopEventDisplay();
         isRoomHasBeenValidate = true;
     }
 
@@ -175,7 +175,7 @@ public class RoomManager : MonoBehaviour
             {
                 ValidateRoom();
                 ObjectifAndReward_Ui_Function.UpdateProgress(1);
-                ObjectifAndReward_Ui_Function.StopEventDisplay();
+                //ObjectifAndReward_Ui_Function.StopEventDisplay();
 
             }
             else
