@@ -96,8 +96,15 @@ public class TerrainGenerator : MonoBehaviour
             RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
             roomManager.RetriveComponent();
             roomManager.roomType = (RoomType)Random.Range(0, 3);
-
-            int indexReward = Random.Range(0, rewardList.Count);
+            int indexReward = 0;
+            if (i > 0)
+            {
+                indexReward = Random.Range(0, rewardList.Count);
+            }
+            else
+            {
+                indexReward = Random.Range(0, rewardList.Count - 1);
+            }
             roomManager.rewardType = rewardList[indexReward];
 
 
@@ -173,6 +180,7 @@ public class TerrainGenerator : MonoBehaviour
 
         selectedTerrain = selectedTerrainNumber;
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
+        currentRoomManager.DeactivateAltar();
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
 
 
@@ -181,6 +189,7 @@ public class TerrainGenerator : MonoBehaviour
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);
         currentRoomManager.ActivateRoom();
+       
         objAndReward.currentRoomManager = currentRoomManager;
         objAndReward.UpdateObjectifAndReward();
       

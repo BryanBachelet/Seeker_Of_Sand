@@ -40,13 +40,13 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(enemyRoom || eventRoom)
+        if (enemyRoom || eventRoom)
         {
             currentProgress = progressStatic;
 
@@ -54,12 +54,20 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             //Debug.Log("current Progress : " + currentProgress + " [Delay progress : " + delayProgress + "|||| Fill : " + (1 - currentProgress));
             fill_Progress.fillAmount = 1 - currentProgress;
             fill_ProgressDelay.fillAmount = 1 - delayProgress;
-            if(stopDisplay)
+            if (stopDisplay)
             {
                 DisactiveDisplayProgress();
                 stopDisplay = false;
                 eventRoom = false;
                 enemyRoom = false;
+                //objectifAnimator.ResetTrigger("ActiveDisplay");
+                //rewardAnimator.ResetTrigger("ActiveDisplay");
+                //img_Objectif.sprite = spriteObjectif_tab[2];
+                //txtPro_Objectif.text = text_Objectif[2];
+                //eventRoom = false;
+                //enemyRoom = false;
+                //objectifAnimator.SetTrigger("ActiveDisplay");
+                //rewardAnimator.SetTrigger("ActiveDisplay");
             }
 
         }
@@ -128,8 +136,11 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
 
     public void DisactiveDisplayProgress()
     {
+
         objectifAnimatorMajor.SetBool("MajorDisplay", false);
         enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.EVENT);
+
+
     }
 
     public static void StopEventDisplay()

@@ -155,7 +155,7 @@ public class RoomManager : MonoBehaviour
        
     }
 
-    private void DeactivateAltar() // Temp function 
+    public void DeactivateAltar() // Temp function 
     {
         AltarBehaviorComponent obj = transform.parent.GetComponentInChildren<AltarBehaviorComponent>();
         if(obj != null)
@@ -175,6 +175,7 @@ public class RoomManager : MonoBehaviour
             {
                 ValidateRoom();
                 ObjectifAndReward_Ui_Function.UpdateProgress(1);
+                ObjectifAndReward_Ui_Function.StopEventDisplay();
 
             }
             else

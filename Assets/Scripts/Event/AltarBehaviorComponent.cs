@@ -281,6 +281,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         {
             m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
             m_enemyManager.ActiveEvent(transform);
+            
             m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
             progression = 0;
 
