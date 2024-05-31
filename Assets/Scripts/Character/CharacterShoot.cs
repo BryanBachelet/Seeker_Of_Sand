@@ -11,12 +11,13 @@ namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
+        private float m_timeBetweenRotation = 0.5f;
         public GlobalSoundManager gsm;
         public LauncherProfil launcherProfil;
         [HideInInspector] public int projectileNumber;
 
         [Header("Shoot Parameters")]
-        public float shootTime;
+        public float baseTimeBetweenSpell;
         public float reloadTime;
         public float baseCanalisationTime = 0.5f;
         public bool autoAimActive;
@@ -59,7 +60,7 @@ namespace Character
         public SpellSystem.Element lastElement;
         [SerializeField] public AimMode m_aimModeState;
         public bool isCasting;
-        [SerializeField] private bool globalCD;
+        [SerializeField] private bool IsRealoadingSpellRotation;
 
 
         [Header("Shoot Feedback")]
@@ -68,7 +69,7 @@ namespace Character
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
 
 
-        private float m_shootTimer;
+        private float m_timerBetweenSpell;
         private float m_reloadTimer;
         private float m_timeBetweenShoot;
 
@@ -143,8 +144,14 @@ namespace Character
         private bool activeDebug;
 
         #endregion
+        public bool hasCanalise = false;
+        public bool hasStartShoot = true;
 
+
+        
         #region Unity Functions
+
+
 
 
         private void Awake()
@@ -176,6 +183,13 @@ namespace Character
             m_currentIndexCapsule = spellEquip[0];
             currentWeaponStats = capsuleStatsAlone[m_currentIndexCapsule];
             m_canShoot = true;
+            m_activeSpellLoad = true;
+            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            m_deltaTimeFrame = Time.deltaTime;
+            m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
+
+            if (m_canalisationType == CanalisationBarType.ByPart)
+                m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
         }
 
         private void Update()
@@ -201,8 +215,8 @@ namespace Character
             }
             UpdateFullControlAimMode();
             UpdateStackingSystem();
-            ReloadShot();
-            ReloadWeapon(0.5f);
+            CountingCooldownBetweenSpell();
+            ReloadWeapon(m_timeBetweenRotation);
         }
 
         #endregion
@@ -242,14 +256,16 @@ namespace Character
         private void UpdateFullControlAimMode()
         {
             if (m_aimModeState != AimMode.FullControl) return;
-
+            
+            ShotCanalisation();
             if (!m_shootInputActive) m_CharacterMouvement.m_SpeedReduce = 1;
-            if (globalCD || !m_shootInputActive) return;
+            if (IsRealoadingSpellRotation || !m_shootInputActive) return;
 
             InitShot();
 
 
-            ShotCanalisation();
+            
+
             if (m_activeSpellLoad) return;
 
             if (!m_isShooting)
@@ -288,7 +304,7 @@ namespace Character
                 ratio = m_spellLaunchTime / m_totalLaunchingDuration;
                 
             }
-            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+           // m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
         #endregion
 
@@ -325,7 +341,7 @@ namespace Character
         public void InitComponentStat(CharacterStat stat) // To verify this system
         {
             reloadTime = launcherStats.reloadTime;
-            shootTime = launcherStats.timeBetweenCapsule;
+            baseTimeBetweenSpell = launcherStats.timeBetweenCapsule;
         }
 
         public void InitCapsule()
@@ -430,28 +446,31 @@ namespace Character
 
         private void InitShot()
         {
-            if (m_isShooting) return;
+            if (m_isShooting && m_activeSpellLoad || hasStartShoot) return;
 
-            m_activeSpellLoad = true;
+            //m_activeSpellLoad = true;
             m_deltaTimeFrame = Time.deltaTime;
-            m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
+            hasStartShoot = true;
+            //m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
 
-            if (m_canalisationType == CanalisationBarType.ByPart)
-                m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
+            //if (m_canalisationType == CanalisationBarType.ByPart)
+            //    m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
 
-            if (m_canalisationType == CanalisationBarType.Continious)
-                m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
+            //if (m_canalisationType == CanalisationBarType.Continious)
+            //    m_totalLaunchingDuration = ((currentWeaponStats.timeBetweenShot) * (m_currentStack[m_currentRotationIndex] + 1));
 
             //Debug.Log(m_currentRotationIndex + "||" + m_spellGlobalCooldown[m_currentRotationIndex]);
-            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            //m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_canEndShot = false;
-            m_isShooting = true;
-            m_spellTimer = 0.0f;
+
+            Debug.Log("Init Shoot is call");
+           // m_isShooting = true;
+          //  m_spellTimer = 0.0f;
         }
 
         private bool ShotCanalisation()
         {
-            if (!m_activeSpellLoad) return false;
+            if (!m_activeSpellLoad || hasCanalise) return false;
 
             UpdateCanalisationBar(m_totalCanalisationDuration);
             if (m_spellTimer >= currentWeaponStats.spellCanalisation + baseCanalisationTime)
@@ -459,6 +478,8 @@ namespace Character
                 m_activeSpellLoad = false;
                 m_isShooting = false;
                 m_spellTimer = m_totalCanalisationDuration;
+                UpdateCanalisationBar(m_totalCanalisationDuration);
+                hasCanalise = true;
                 return true;
 
             }
@@ -480,7 +501,7 @@ namespace Character
         {
             if (!m_shootInputActive)
             {
-                if (!m_canEndShot) EndShoot();
+                EndShoot();
                 return true;
             }
             return false;
@@ -502,7 +523,7 @@ namespace Character
                 return;
             }
 
-            if (m_currentIndexCapsule == -1)
+            if (m_currentIndexCapsule == -1 || m_canEndShot)
             {
                 EndShoot();
                 return;
@@ -671,7 +692,7 @@ namespace Character
 
         private void EndShoot()
         {
-
+            if (!m_canShoot) return;
 
             currentShotNumber = 0;
             m_spellTimer = 0.0f;
@@ -679,7 +700,14 @@ namespace Character
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
             gsm.CanalisationParameterLaunch(1, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
-            if (!m_activeSpellLoad) m_currentIndexCapsule = ChangeProjecileIndex();
+
+            if (!m_activeSpellLoad)
+            {
+                m_currentIndexCapsule = ChangeProjecileIndex();
+                Debug.Log("Next Spell");
+            }
+             
+
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
             //castingVFXAnimator.ResetTrigger("Shot");
@@ -692,8 +720,20 @@ namespace Character
             }
             if (!m_shootInput) m_shootInputActive = false;
             m_canShoot = false;
-            m_isShooting = false;
+            m_isShooting = true;
             m_hasBeenLoad = false;
+
+            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            m_deltaTimeFrame = UnityEngine.Time.deltaTime;
+            m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
+
+            if (m_canalisationType == CanalisationBarType.ByPart)
+                m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
+
+            m_spellTimer = 0.0f;
+            m_activeSpellLoad = true;
+            hasCanalise = false;
+            hasStartShoot = false;
         }
 
         public void ChangeVfxElement(int elementIndex)
@@ -769,6 +809,7 @@ namespace Character
 
 
                     m_currentStack[i] += capsuleStatsAlone[index].stackPerGain;
+                  if(i == m_currentRotationIndex)  m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
                     m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, (int)stats.shootNumber);
                     capsuleStatsAlone[index] = stats;
                     m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
@@ -813,51 +854,45 @@ namespace Character
             }
         }
 
-        private void ReloadShot()
+
+
+        /// <summary>
+        /// This function is counting the timing between each spell
+        /// </summary>
+        private void CountingCooldownBetweenSpell()
         {
             if (m_canShoot || m_isReloading) return;
 
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
-
-
             m_CharacterMouvement.m_SpeedReduce = 1;
 
-            float totalShootTime = shootTime + currentWeaponStats.timeInterval;
+            float totalShootTime = baseTimeBetweenSpell + currentWeaponStats.timeInterval;
 
-            if (m_shootTimer > totalShootTime)
+            if (m_timerBetweenSpell > totalShootTime)
             {
-                for (int i = 0; i < icon_Sprite.Count; i++)
-                {
-                    icon_Sprite[m_currentRotationIndex].color = Color.white;
-                    m_TextSpellGlobalCooldown[i].text = "";
-                }
+                // Update Spell bar
+                ResetReloadEffectSpellBar();
 
-                //m_SpellReadyVFX[m_currentRotationIndex].Play();
                 m_canShoot = true;
-                m_shootTimer = 0;
+                m_timerBetweenSpell = 0;
+                
                 return;
             }
             else
             {
-                m_shootTimer += Time.deltaTime;
-                for (int i = m_currentRotationIndex; i < m_spellGlobalCooldown.Count; i++)
-                {
-                    m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_shootTimer) / totalShootTime;
-
-                    m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_shootTimer).ToString(".#");
-                }
+                m_timerBetweenSpell += Time.deltaTime;
+                // Update Spell bar 
+                UpdatingSpellBarUI(totalShootTime);
             }
         }
 
+        /// <summary>
+        /// This function is counting the timing between a end of rotation and the next rotation
+        /// </summary>
         private void ReloadWeapon(float time)
         {
             if (m_canShoot || !m_isReloading) return;
-
-            if (!m_shootInput) m_shootInputActive = false;
-
-            //avatarTransform.localRotation = Quaternion.identity;
-            //bookTransform.localRotation = Quaternion.identity;
 
 
             if (!m_CharacterMouvement.activeCombatModeConstant)
@@ -865,34 +900,52 @@ namespace Character
 
             m_cameraBehavior.BlockZoom(false);
 
-
             float totalShootTime = time + currentWeaponStats.timeInterval;
             if (m_reloadTimer > totalShootTime)
             {
-                m_isReloading = false;
-                globalCD = false;
                 m_reloadTimer = 0;
+                m_isReloading = false;
+                IsRealoadingSpellRotation= false;
+                
                 ActiveIcon();
                 AddSpellStack();
-                for (int i = 0; i < icon_Sprite.Count; i++)
-                {
-                    icon_Sprite[i].color = Color.white;
-                    m_TextSpellGlobalCooldown[i].text = "";
-                }
+
+                ResetReloadEffectSpellBar();
                 return;
             }
             else
             {
 
                 m_reloadTimer += Time.deltaTime;
-                for (int i = 0; i < m_spellGlobalCooldown.Count; i++)
-                {
-                    m_spellGlobalCooldown[i].fillAmount = (totalShootTime - m_reloadTimer) / totalShootTime;
-                    m_TextSpellGlobalCooldown[i].text = (totalShootTime - m_reloadTimer).ToString(".#");
-                }
-                globalCD = true;
+                IsRealoadingSpellRotation = true;
+           
+                UpdatingSpellBarUI(totalShootTime);
+
+
             }
         }
+
+        #region UI Spell Bar Functions
+        private void UpdatingSpellBarUI(float totalTime)
+        {
+            for (int i = 0; i < m_spellGlobalCooldown.Count; i++)
+            {
+                m_spellGlobalCooldown[i].fillAmount = (totalTime - m_reloadTimer) / totalTime;
+                m_TextSpellGlobalCooldown[i].text = (totalTime - m_reloadTimer).ToString(".#");
+            }
+        }
+
+        private void ResetReloadEffectSpellBar()
+        {
+            for (int i = 0; i < icon_Sprite.Count; i++)
+            {
+                icon_Sprite[i].color = Color.white;
+                m_TextSpellGlobalCooldown[i].text = "";
+            }
+        }
+
+        #endregion
+
 
         public void StartCasting()
         {
