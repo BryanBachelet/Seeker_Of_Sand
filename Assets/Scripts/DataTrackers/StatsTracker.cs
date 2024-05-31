@@ -70,7 +70,7 @@ namespace Tracker
             dataText = endInfo.durationGame.ToString("F0")+',';
             dataText += endInfo.nightValidate.ToString() + ',';
             dataText += endInfo.enemyKill.ToString() + ',';
-            dataText += endInfo.bigestCombo.ToString("F0") + ',';
+            dataText += endInfo.roomCount.ToString("F0") + ',';
             dataText += endInfo.altarSuccessed.ToString() + ',';
             dataText += endInfo.altarRepeated.ToString() + ',';
            

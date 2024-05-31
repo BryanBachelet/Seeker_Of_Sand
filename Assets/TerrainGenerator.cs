@@ -16,7 +16,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> oldTerrain = new List<GameObject>();
     public List<Teleporter> teleporter = new List<Teleporter>();
     public int poolNumber;
-    static public int generation = 1;
+    public int countRoomGeneration = 1;
 
     public bool generateNewTerrain;
 
@@ -85,7 +85,7 @@ public class TerrainGenerator : MonoBehaviour
         previousTerrain = terrainInstantiated;
         terrainInstantiated.Clear();
         int randomNextTerrainNumber = Random.Range(1, 4);
-        int positionNewTerrain = 1500 * generation + terrainInstantiated.Count;
+        int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
 
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
@@ -95,6 +95,7 @@ public class TerrainGenerator : MonoBehaviour
 
             RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
             roomManager.RetriveComponent();
+            roomManager.terrainGenerator = this;
             roomManager.roomType = (RoomType)Random.Range(0, 3);
             int indexReward = 0;
             if (i > 0)
@@ -110,7 +111,7 @@ public class TerrainGenerator : MonoBehaviour
 
         }
         //AssociateNewReward(selectedTerrainNumber);
-        generation++;
+        countRoomGeneration++;
     }
 
     public void AssociateNewReward(int selectedTerrainNumber)
@@ -135,7 +136,7 @@ public class TerrainGenerator : MonoBehaviour
                 tpFeedback.ChangeRewardID(tpFeedback.rewardToUse);
                 tpScript.TeleporterNumber = i;
                 teleporter.Add(tpScript);
-                if (generation > 1)
+                if (countRoomGeneration > 1)
                 {
                     currentRoomManager.AddTeleporter(tpScript);
                 }
@@ -159,7 +160,7 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         //dayController.UpdateTimeByStep();
-        roomGeneration_text.text = "Room " + generation;
+        roomGeneration_text.text = "Room " + countRoomGeneration;
 
     }
 

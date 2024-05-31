@@ -115,6 +115,7 @@ namespace Enemies
         private float m_timeOfGame;
 
         private SerieController m_serieController;
+        private TerrainGenerator m_terrainGenerator;
 
         [SerializeField] private GameObject m_spawningVFX;
 
@@ -188,6 +189,9 @@ namespace Enemies
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
             m_serieController = m_playerTranform.GetComponent<SerieController>();
+
+            m_terrainGenerator = FindAnyObjectByType<TerrainGenerator>();
+
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<PullingSystem>();
             m_pullingSystem.InitializePullingSystem();
@@ -850,7 +854,7 @@ namespace Enemies
             endInfoStats.enemyKill = killCount;
             endInfoStats.altarSuccessed = altarSuccessed;
             endInfoStats.altarRepeated = altarLaunch;
-            endInfoStats.bigestCombo = m_serieController.m_biggestMultiplicator;
+            endInfoStats.roomCount = m_terrainGenerator.countRoomGeneration;
             endInfoStats.nightValidate = m_dayController.m_nightCount;
 
             CheckEndStat(endInfoStats);
@@ -868,6 +872,8 @@ namespace Enemies
 #else
             string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
 #endif
+            if (!Directory.Exists(Application.dataPath + "\\Temp")) return;
+
             EndInfoStats statsSave = Save.SaveManager.ReadEndStats(filePath);
             if (statsSave.HasSuperiorValue(stats))
             {
@@ -888,10 +894,18 @@ namespace Enemies
             }
         }
 
+        public void ResetAllSpawingPhasse()
+        {
+            for (int i = 0; i < m_spawnCauseState.Length; i++)
+            {
+                m_spawnCauseState[i] = false;
+            }
+            m_playerTranform.GetComponent<ShadowFunction>().ResetPlayerShadowStatus();
+        }
+
 
         public void DestroyAllEnemy()
         {
-
             m_playerTranform.GetComponent<ShadowFunction>().ResetPlayerShadowStatus();
             ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
             for (int i = 0; i < m_enemiesArray.Count; i++)
