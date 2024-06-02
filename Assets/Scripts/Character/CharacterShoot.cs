@@ -656,10 +656,13 @@ namespace Character
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
+           
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             m_currentStack[m_currentRotationIndex]--;
             m_uiPlayerInfos.UpdateStackingObjects(m_currentRotationIndex, m_currentStack[m_currentRotationIndex]);
+            float ratio = (float)(m_currentStack[m_currentRotationIndex] / stats.shootNumber);
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio,(m_currentStack[m_currentRotationIndex]));
             if (m_currentStack[m_currentRotationIndex] <= 0)
                 return true;
             else
@@ -704,7 +707,7 @@ namespace Character
             if (!m_activeSpellLoad)
             {
                 m_currentIndexCapsule = ChangeProjecileIndex();
-                Debug.Log("Next Spell");
+
             }
              
 

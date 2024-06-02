@@ -664,6 +664,7 @@ namespace Enemies
         public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
         {
 
+            Debug.Log("Test Dammage");
             Vector3 position = npcHealth.transform.position;
             SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);

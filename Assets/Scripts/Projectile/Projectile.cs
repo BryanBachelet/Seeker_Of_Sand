@@ -54,6 +54,7 @@ public class Projectile : MonoBehaviour
     protected Collider m_collider;
     private Vector3 m_initialScale;
 
+    protected bool isStartToMove = false;
 
     private Vector3 normalHit;
     private Vector3 hitPoint;
@@ -71,6 +72,7 @@ public class Projectile : MonoBehaviour
                 }
                 else
                 {
+                    isStartToMove = true;
                     Move();
 
                 }
@@ -157,8 +159,8 @@ public class Projectile : MonoBehaviour
 
             enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power,-1);
 
-            piercingCount++;
-            if (piercingCount >= m_piercingMax)
+            PiercingUpdate();
+            if (piercingCount >= m_piercingMax) 
             {
 
                 //Destroy(this.gameObject);
@@ -169,7 +171,7 @@ public class Projectile : MonoBehaviour
         else if (other.gameObject.tag == "Cristal")
         {
             other.GetComponent<CristalHealth>().ReceiveHit((int)m_damage);
-            piercingCount++;
+            PiercingUpdate();
             if (piercingCount >= m_piercingMax)
             {
 
@@ -186,7 +188,7 @@ public class Projectile : MonoBehaviour
 
             enemyTouch.currentHP -= m_damage;
 
-            piercingCount++;
+            PiercingUpdate();
             if (piercingCount >= m_piercingMax)
             {
 
@@ -204,7 +206,7 @@ public class Projectile : MonoBehaviour
 
             enemyTouch.currentHP -= m_damage;
 
-            piercingCount++;
+            PiercingUpdate();
             if (piercingCount >= m_piercingMax)
             {
 
@@ -217,6 +219,11 @@ public class Projectile : MonoBehaviour
 
 
 
+    }
+
+    protected virtual void PiercingUpdate()
+    {
+        piercingCount++;
     }
     protected virtual void UpdateTravelTime()
     {
