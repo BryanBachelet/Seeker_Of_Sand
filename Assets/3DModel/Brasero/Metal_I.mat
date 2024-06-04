@@ -23,13 +23,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Wood 1
+  m_Name: Metal_I
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - N_F_ALSL_ON
   - N_F_AL_ON
+  - N_F_CA_ON
   - N_F_CS_ON
   - N_F_ESSAO_ON
   - N_F_ESSGI_ON
@@ -38,7 +39,6 @@ Material:
   - N_F_PAL_ON
   - N_F_RELGI_ON
   - N_F_RL_ON
-  - N_F_R_ON
   - N_F_SS_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
@@ -116,7 +116,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a5a736ccd11e8ad4593ee7de2429bbf5, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskGloss:
@@ -140,7 +140,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 3214797c385a59d42b3d70eacb04a2d0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapOS:
@@ -287,7 +287,7 @@ Material:
     - _HeightPoMAmplitude: 2
     - _HeightTessAmplitude: 2
     - _HeightTessCenter: 0.5
-    - _HighlightColorPower: 1
+    - _HighlightColorPower: 0
     - _InvTilingScale: 1
     - _Ior: 1.5
     - _IridescenceMask: 1
@@ -297,14 +297,14 @@ Material:
     - _LightAffectRimLightColor: 1
     - _LightAffectShadow: 1
     - _LightFalloffAffectShadowT: 0
-    - _LightFalloffSoftness: 0.88
+    - _LightFalloffSoftness: 0.923
     - _LightIntensity: 1
     - _LinkDetailsWithBase: 1
     - _MCIALO: 0
     - _MCapIntensity: 1
     - _MVCOL: 0
     - _MVWriMas: 40
-    - _MaiColPo: 0.15
+    - _MaiColPo: 0.5
     - _MaterialID: 1
     - _MaxFadDistance: 2
     - _Metallic: 0
@@ -314,7 +314,7 @@ Material:
     - _MixMainTexToOutline: 0
     - _N_F_AL: 1
     - _N_F_ALSL: 1
-    - _N_F_CA: 0
+    - _N_F_CA: 1
     - _N_F_CLD: 0
     - _N_F_CO: 0
     - _N_F_COEDGL: 0
@@ -338,7 +338,7 @@ Material:
     - _N_F_O_NM: 0
     - _N_F_PAL: 1
     - _N_F_PT: 0
-    - _N_F_R: 1
+    - _N_F_R: 0
     - _N_F_RL: 1
     - _N_F_SCT: 0
     - _N_F_SL: 0
@@ -351,13 +351,13 @@ Material:
     - _NormalMapSpace: 0
     - _NormalMax: 1
     - _NormalMin: 1
-    - _NormalScale: 1
+    - _NormalScale: 0
     - _NormalThreshold: 1.3
     - _ONormMapInt: 1
     - _Opacity: 1
     - _OpaqueCullMode: 2
     - _OutlineExtrudeMethod: 0
-    - _OutlineWidth: 0
+    - _OutlineWidth: 0.007
     - _OutlineWidthAffectedByViewDistance: 0
     - _OutlineZPostionInCamera: 0
     - _OverallShadowColorPower: 1
@@ -379,29 +379,29 @@ Material:
     - _RefMetallic: 0
     - _ReflectionIntensity: 0
     - _RefractionModel: 0
-    - _RimLigInt: 0.368
+    - _RimLigInt: 0.276
     - _RimLightColorPower: 0.2
     - _RimLightInLight: 1
-    - _RimLightSoftness: 1
-    - _RimLightUnfill: 1.41
+    - _RimLightSoftness: 0.288
+    - _RimLightUnfill: 2.01
     - _SPECIN: 1
     - _SPECMODE: 0
     - _SSRefDeOn: 8
     - _SSRefGBu: 10
     - _SSRefMoVe: 40
     - _STIL: 0
-    - _Saturation: 1
+    - _Saturation: 0.76
     - _SelfLitHighContrast: 1
     - _SelfLitIntensity: 0
     - _SelfLitPower: 50
     - _SelfShadowAffectedByLightShadowStrength: 1
-    - _SelfShadowHardness: 0
+    - _SelfShadowHardness: 1
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 0.53
+    - _SelfShadowRealtimeShadowIntensity: 0.63
     - _SelfShadowShadowTAtViewDirection: 0
     - _SelfShadowThreshold: 0.93
     - _ShadowColorTexturePower: 0
-    - _ShadowHardness: 0
+    - _ShadowHardness: 1
     - _ShadowTColorPower: 1
     - _ShadowTHardness: 1
     - _ShadowTIntensity: 1
@@ -412,7 +412,7 @@ Material:
     - _ShowNormal: 0
     - _SimTrans: 0
     - _SmoothObjectNormal: 0
-    - _Smoothness: 0.5
+    - _Smoothness: 0.19
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
     - _SpecularAAScreenSpaceVariance: 0.1
@@ -476,12 +476,12 @@ Material:
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
-    - _MainColor: {r: 0.16037738, g: 0.08926666, b: 0.0537113, a: 1}
+    - _MainColor: {r: 0.05660379, g: 0.05660379, b: 0.05660379, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
-    - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OverallShadowColor: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
     - _PTCol: {r: 0, g: 0, b: 0, a: 1}
-    - _RimLightColor: {r: 1.4618679, g: 0.7677453, b: 0.503379, a: 1}
+    - _RimLightColor: {r: 1, g: 0.77913517, b: 0.6933962, a: 1}
     - _SSAOColor: {r: 0, g: 0, b: 0, a: 0}
     - _SelfLitColor: {r: 1, g: 1, b: 1, a: 1}
     - _SelfShadowRealTimeShadowColor: {r: 1, g: 1, b: 1, a: 1}
