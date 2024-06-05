@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace GuerhoubaGames.UI
 {
-    public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
     {
 
         public string header;
@@ -18,6 +18,7 @@ namespace GuerhoubaGames.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+
             m_coroutine = DelayCall(0.5f);
 
             StartCoroutine(m_coroutine);
@@ -41,6 +42,12 @@ namespace GuerhoubaGames.UI
             }
 
             TooltipManager.Show(content, header);
+        }
+
+        public void OnPointerMove(PointerEventData eventData)
+        {
+            Debug.Log(eventData.position);
+            TooltipManager.SetTooltipPosition();
         }
     }
 }

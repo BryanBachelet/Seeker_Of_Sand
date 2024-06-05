@@ -261,7 +261,7 @@ namespace Character
                 SetCombatMode(false);
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
-                cameraPlayer.BlockZoom(false);
+              //  cameraPlayer.BlockZoom(false);
                 DisplayNewCurrentState(1);
             }
 
@@ -270,7 +270,7 @@ namespace Character
                 m_CharacterAnim.SetBool("Casting", true);
                 m_BookAnim.SetBool("Casting", true);
                 DisplayNewCurrentState(0);
-                cameraPlayer.BlockZoom(true);
+              //  cameraPlayer.BlockZoom(true);
                 SetCombatMode(true);
             }
 

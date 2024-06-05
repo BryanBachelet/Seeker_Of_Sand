@@ -14,7 +14,11 @@ namespace GuerhoubaGames.UI
         {
             current = this;
         }
-
+     
+        public static void SetTooltipPosition()
+        {
+            current.tooltip.SetPosition();
+        }
         public static void Show(string content , string header ="")
         {
             current.tooltip.SetText(content, header);
