@@ -6,28 +6,19 @@ public class HintInteractionManager : MonoBehaviour
 {
     public GameObject[] autelDataHint;
     public GameObject[] pnjDataHint;
-    public GameObject[] ArtefactDataHint;
-    // Start is called before the first frame update
-    void Start()
+    public GameObject[] artefactDataHint;
+   
+    public void ActivateAutelData(bool statut)
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void activateAutelData(bool statut)
-    {
+        return;
         for(int i = 0; i < autelDataHint.Length; i++)
         {
             autelDataHint[i].SetActive(statut);
         }
     }
 
-    public void activatePnjData(bool statut)
+    public void ActivatePnjData(bool statut)
     {
         for (int i = 0; i < pnjDataHint.Length; i++)
         {
@@ -35,11 +26,11 @@ public class HintInteractionManager : MonoBehaviour
         }
     }
 
-    public void activeArtefactData(bool statut)
+    public void ActiveArtefactData(bool statut)
     {
-        for (int i = 0; i < ArtefactDataHint.Length; i++)
+        for (int i = 0; i < artefactDataHint.Length; i++)
         {
-            ArtefactDataHint[i].SetActive(statut);
+            artefactDataHint[i].SetActive(statut);
         }
     }
 }

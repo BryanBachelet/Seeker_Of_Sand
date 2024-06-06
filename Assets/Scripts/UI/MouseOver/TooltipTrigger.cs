@@ -46,7 +46,6 @@ namespace GuerhoubaGames.UI
 
         public void OnPointerMove(PointerEventData eventData)
         {
-            Debug.Log(eventData.position);
             TooltipManager.SetTooltipPosition();
         }
     }

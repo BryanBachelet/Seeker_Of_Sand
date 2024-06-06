@@ -14,12 +14,12 @@ public class DamageHealthFD : MonoBehaviour
     [SerializeField] private float m_animationDuration = 1;
     [SerializeField] public Camera m_cameraToLook;
 
-    public HealthManager m_healthManager;
+    public HealthManager healthManager;
     private float m_animationTimer;
 
     public void SetupText(HealthManager healthManager)
     {
-        m_healthManager = healthManager;
+        this.healthManager = healthManager;
         m_animation = this.GetComponent<Animator>();
         m_startPosition = transform.position;
     }
@@ -35,7 +35,7 @@ public class DamageHealthFD : MonoBehaviour
         gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
         m_text.text = damage.ToString("F0");
         m_text.color = color;
-        //m_animation.Play("DamageNumberDisplaying");
+      
         StartCoroutine(Animation());
     }
 
@@ -44,7 +44,6 @@ public class DamageHealthFD : MonoBehaviour
         while (m_animationTimer< m_animationDuration)
         {
             gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
-            //m_text.rectTransform.anchoredPosition += Vector2.up * m_speed * Time.deltaTime;
             m_animationTimer += Time.deltaTime;
             yield return Time.deltaTime;
         }
@@ -59,7 +58,7 @@ public class DamageHealthFD : MonoBehaviour
         gameObject.SetActive(false);
         gameObject.transform.position = m_startPosition;
 
-        m_healthManager.FinishDamageEvent(this);
+        healthManager.FinishDamageEvent(this);
     }
 
     #endregion

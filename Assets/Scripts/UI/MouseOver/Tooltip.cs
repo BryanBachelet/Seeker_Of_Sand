@@ -35,13 +35,10 @@ namespace GuerhoubaGames.UI
 
             float pivotX = position.x / Screen.width;
             float pivotY = position.y / Screen.height;
-            //position.x = position.x - Screen.width / 2.0f;
-            //position.y = position.y - Screen.height / 2.0f;
+
             m_rectTransform.pivot = new Vector2(pivotX, pivotY);
             m_rectTransform.anchoredPosition = position;
-          //  transform.localPosition = new Vector3(position.x, position.y, -70);
 
-            Debug.Log("Test pos " + position);
             m_contentSizeFitter.SetLayoutHorizontal();
             m_contentSizeFitter.SetLayoutVertical();
         }

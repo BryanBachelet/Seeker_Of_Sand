@@ -83,14 +83,19 @@ public class InteractionEvent : MonoBehaviour
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
-                m_hintInteractionManager.activateAutelData(true);
+               
+                /// Remove Event UI
+               // m_hintInteractionManager.ActivateAutelData(true);
             }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
                 currentInteractibleObject = col[0].transform.gameObject;
                 m_socleTransform = GameObject.Find("low_Socle").transform;
                 eventDataInfo = currentInteractibleObject.GetComponent<AltarBehaviorComponent>().GetAltarData();
-                m_lastHintAnimator.SetBool("InteractionOn", true);
+
+                // Removing the event animation
+                //m_lastHintAnimator.SetBool("InteractionOn", true); 
+
                 if (eventDataInfo[0] == "0")
                 {
                     img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
@@ -160,7 +165,7 @@ public class InteractionEvent : MonoBehaviour
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
-                m_hintInteractionManager.activatePnjData(true);
+                m_hintInteractionManager.ActivatePnjData(true);
 
             }
             for (int i = 0; i < col.Length; i++)
@@ -206,7 +211,7 @@ public class InteractionEvent : MonoBehaviour
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
-                m_hintInteractionManager.activeArtefactData(true);
+                m_hintInteractionManager.ActiveArtefactData(true);
 
             }
             for (int i = 0; i < col.Length; i++)
@@ -266,9 +271,9 @@ public class InteractionEvent : MonoBehaviour
         txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);
         //ui_HintInteractionObject.SetActive(false);
-        m_hintInteractionManager.activateAutelData(false);
-        m_hintInteractionManager.activatePnjData(false);
-        m_hintInteractionManager.activeArtefactData(false);
+        m_hintInteractionManager.ActivateAutelData(false);
+        m_hintInteractionManager.ActivatePnjData(false);
+        m_hintInteractionManager.ActiveArtefactData(false);
     }
 
     public void CalculateWorldPosition(GameObject objectToDisplayInfo)
