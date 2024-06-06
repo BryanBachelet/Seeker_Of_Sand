@@ -394,6 +394,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2124144288972797695, guid: 67c8a16c5c670d04a99f9b1aa7384d38,
         type: 3}
+      propertyPath: radiusPlayerCollect
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2124144288972797695, guid: 67c8a16c5c670d04a99f9b1aa7384d38,
+        type: 3}
       propertyPath: cristalPart.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -629,8 +634,39 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7461555835284288953}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4666834639375489137, guid: 67c8a16c5c670d04a99f9b1aa7384d38,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2683320796032519927}
   m_SourcePrefab: {fileID: 100100000, guid: 67c8a16c5c670d04a99f9b1aa7384d38, type: 3}
+--- !u!1 &1307768737332460006 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4666834639375489137, guid: 67c8a16c5c670d04a99f9b1aa7384d38,
+    type: 3}
+  m_PrefabInstance: {fileID: 5973406826433683863}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &-2683320796032519927
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307768737332460006}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 20
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &4071215315945515651 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7681470936112352020, guid: 67c8a16c5c670d04a99f9b1aa7384d38,

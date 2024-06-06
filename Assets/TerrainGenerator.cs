@@ -35,12 +35,13 @@ public class TerrainGenerator : MonoBehaviour
     public DayCyclecontroller dayController;
 
     private List<RewardType> rewardList = new List<RewardType>();
+    private List<RoomType> roomTypeList = new List<RoomType>();
 
     public TMPro.TMP_Text roomGeneration_text;
-    // Start is called before the first frame update
+
     void Start()
     {
-        InitValue();
+        InitRoomDataList();
         poolNumber = terrainPool.Count;
         transformReference = lastTerrainPlay;
         previousTerrain = terrainInstantiated;
@@ -53,11 +54,16 @@ public class TerrainGenerator : MonoBehaviour
     }
 
 
-    public void InitValue()
+    public void InitRoomDataList()
     {
         for (int i = 0; i < 4; i++)
         {
             rewardList.Add((RewardType)i);
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            roomTypeList.Add((RoomType)i);
         }
     }
 
@@ -87,6 +93,8 @@ public class TerrainGenerator : MonoBehaviour
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
 
+        if (currentRoomManager.roomType == RoomType.Free)
+            roomTypeList.Remove(currentRoomManager.roomType); 
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
             int randomTerrain = Random.Range(0, poolNumber);
@@ -96,7 +104,11 @@ public class TerrainGenerator : MonoBehaviour
             RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
             roomManager.RetriveComponent();
             roomManager.terrainGenerator = this;
-            roomManager.roomType = (RoomType)Random.Range(0, 3);
+
+            int indexRoomType = 0;
+            indexRoomType = Random.Range(0, roomTypeList.Count);
+            roomManager.roomType = roomTypeList[indexRoomType];
+
             int indexReward = 0;
             if (i > 0)
             {
@@ -107,9 +119,10 @@ public class TerrainGenerator : MonoBehaviour
                 indexReward = Random.Range(0, rewardList.Count - 1);
             }
             roomManager.rewardType = rewardList[indexReward];
-
-
         }
+
+        if (currentRoomManager.roomType == RoomType.Free)
+            roomTypeList.Add(currentRoomManager.roomType);
         //AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
     }

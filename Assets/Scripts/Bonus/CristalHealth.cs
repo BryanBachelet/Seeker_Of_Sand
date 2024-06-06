@@ -16,11 +16,14 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private GameObject[] cristalPart;
     private bool m_activeDeath;
 
+    [SerializeField] private float radiusPlayerCollect = 40;
+    private SphereCollider sphereCollider;
     // Start is called before the first frame update
     void Start()
     {
         if (playerPosition == null) { playerPosition = GameObject.Find("Player").transform; }
         m_currentHealth = m_healthMax;
+        if(!sphereCollider) { sphereCollider = this.GetComponent<SphereCollider>(); sphereCollider.radius = radiusPlayerCollect; }
     }
 
     public void ReceiveHit(int damage)
@@ -72,4 +75,16 @@ public class CristalHealth : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, radiusPlayerCollect);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            ReceiveHit((int)m_currentHealth);
+        }
+    }
 }

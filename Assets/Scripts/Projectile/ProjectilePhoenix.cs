@@ -12,4 +12,12 @@ public class ProjectilePhoenix : Projectile
         base.Duration();
     }
 
+
+    protected override void PiercingUpdate()
+    {
+        if(isStartToMove)
+        {
+            piercingCount++;
+        }
+    }
 }

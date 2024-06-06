@@ -135,6 +135,7 @@ namespace Enemies
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage, element);
             Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             //m_entityAnimator.SetTrigger("TakeDamage");
+            Debug.Log("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
             if (m_healthSystem.health > 0) return;
@@ -206,7 +207,7 @@ namespace Enemies
             {
                 Debug.Log("Setup current max life : " + (m_maxLife + spawnMinute * gainPerMinute));
             }
-            m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
+            m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute); 
             death = false;
             m_npcInfo.state = NpcState.MOVE;
             this.gameObject.layer = 6;

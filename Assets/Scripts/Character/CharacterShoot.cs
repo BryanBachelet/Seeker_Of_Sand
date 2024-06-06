@@ -624,7 +624,7 @@ namespace Character
             Transform transformUsed = transform;
             Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, position, rot);
+            GameObject projectileCreate = GameObject.Instantiate(((SpellSystem.CapsuleAttack)m_characterInventory.GetSpecificSpell(capsuleIndex)).projectile, m_characterAim.projectorVisorObject.transform.position, rot);
 
             projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
@@ -656,10 +656,13 @@ namespace Character
                 projectileCreate.GetComponent<Projectile>().SetProjectile(data);
                 angle = -angle;
             }
+           
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             m_currentStack[m_currentRotationIndex]--;
             m_uiPlayerInfos.UpdateStackingObjects(m_currentRotationIndex, m_currentStack[m_currentRotationIndex]);
+            float ratio = (float)(m_currentStack[m_currentRotationIndex] / stats.shootNumber);
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio,(m_currentStack[m_currentRotationIndex]));
             if (m_currentStack[m_currentRotationIndex] <= 0)
                 return true;
             else
@@ -704,7 +707,7 @@ namespace Character
             if (!m_activeSpellLoad)
             {
                 m_currentIndexCapsule = ChangeProjecileIndex();
-                Debug.Log("Next Spell");
+
             }
              
 
