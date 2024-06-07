@@ -256,7 +256,9 @@ namespace Character
         private void UpdateFullControlAimMode()
         {
             if (m_aimModeState != AimMode.FullControl) return;
-            
+
+            if (!m_CharacterMouvement.combatState) return;
+
             ShotCanalisation();
             if (!m_shootInputActive) m_CharacterMouvement.m_SpeedReduce = 1;
             if (IsRealoadingSpellRotation || !m_shootInputActive) return;
@@ -284,8 +286,11 @@ namespace Character
                 gsm.CanalisationParameterLaunch(0.5f, (float)m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).elementType + 0.5f);
 
                 m_timeBetweenShoot = 0.0f;
-                if (m_canEndShot) EndShoot();
-                Shoot();
+                if (m_canEndShot)
+                {
+                    EndShoot();
+                }
+                    Shoot();
             }
             else
             {
@@ -463,9 +468,25 @@ namespace Character
             //m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_canEndShot = false;
 
-            Debug.Log("Init Shoot is call");
            // m_isShooting = true;
           //  m_spellTimer = 0.0f;
+        }
+
+
+        public void DeactivateCanalisation()
+        {
+            m_spellTimer = 0.0f;
+            m_uiPlayerInfos.DeactiveSpellCanalisation();
+        }
+
+
+        public void ActivateCanalisation()
+        {
+            m_spellTimer = 0.0f;
+            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            UpdateCanalisationBar(m_totalCanalisationDuration);
+            m_activeSpellLoad = true;
+            hasCanalise = false;
         }
 
         private bool ShotCanalisation()
@@ -499,8 +520,9 @@ namespace Character
 
         private bool CancelShoot()
         {
-            if (!m_shootInputActive)
+            if (!m_shootInputActive && hasCanalise)
             {
+
                 EndShoot();
                 return true;
             }
@@ -686,7 +708,6 @@ namespace Character
         }
         private void StartShoot()
         {
-            m_spellTimer = 0;
             m_hasBeenLoad = true;
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_canEndShot = false;
@@ -698,6 +719,7 @@ namespace Character
             if (!m_canShoot) return;
 
             currentShotNumber = 0;
+
             m_spellTimer = 0.0f;
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
