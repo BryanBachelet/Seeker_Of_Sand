@@ -666,7 +666,7 @@ namespace Enemies
 
             Debug.Log("Test Dammage");
             Vector3 position = npcHealth.transform.position;
-            SpawnExp(position, xpCount, npcHealth.indexEnemy);
+            //SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);

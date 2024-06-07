@@ -22,6 +22,8 @@ public class CharacterArtefact : MonoBehaviour
     public List<GameObject> artefactAround_List = new List<GameObject>();
 
     public float rangeRandom = 5;
+
+    public UI_Fragment_Tooltip uiFragmentTooltip;
     private Vector3 positionRandom;
     public void Start()
     {
@@ -62,6 +64,7 @@ public class CharacterArtefact : MonoBehaviour
         artefactsList.Add(artefacts);
         GenerateNewArtefactAround(artefacts);
         SetupArtefact(artefacts);
+        uiFragmentTooltip.AddNewFragment(artefacts);
     }
 
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
