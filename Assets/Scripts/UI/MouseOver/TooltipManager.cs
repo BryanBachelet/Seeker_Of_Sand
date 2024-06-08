@@ -4,6 +4,17 @@ using UnityEngine;
 
 namespace GuerhoubaGames.UI
 {
+    public struct TooltipPositionData
+    {
+        public Vector2 basePosition;
+        public Vector2 offset;
+    }
+
+    public struct TooltipDisplayData
+    {
+       public string content;
+       public string header;
+    }
 
     public class TooltipManager : MonoBehaviour
     {
@@ -15,13 +26,13 @@ namespace GuerhoubaGames.UI
             current = this;
         }
      
-        public static void SetTooltipPosition(Vector2 offSet)
+        public static void SetTooltipPosition(TooltipPositionData positionData)
         {
-            current.tooltip.SetPosition(offSet);
+            current.tooltip.SetPosition(positionData);
         }
-        public static void Show(string content , string header ="")
+        public static void Show(TooltipDisplayData displayData)
         {
-            current.tooltip.SetText(content, header);
+            current.tooltip.SetText(displayData);
             current.tooltip.gameObject.SetActive(true);
         }
 

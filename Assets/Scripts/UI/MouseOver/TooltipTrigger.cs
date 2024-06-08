@@ -8,18 +8,27 @@ namespace GuerhoubaGames.UI
 {
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
     {
-        public Vector2 offSet_Tooltip;
+        public float delay = 0.5f;
+        public Vector2 offset;
         public string header;
         [Multiline] public string content;
 
+        [HideInInspector] public Action OnEnter;
         private float m_timer;
 
         private IEnumerator m_coroutine;
+        private RectTransform m_rectTransform;
+
+        public void Start()
+        {
+            
+            m_rectTransform = GetComponent<RectTransform>();
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-
-            m_coroutine = DelayCall(0.5f);
+           if(OnEnter != null) OnEnter.Invoke();
+            m_coroutine = DelayCall(delay);
 
             StartCoroutine(m_coroutine);
         }
@@ -40,15 +49,37 @@ namespace GuerhoubaGames.UI
                 yield return Time.deltaTime;
 
             }
-
-            TooltipManager.Show(content, header);
+            TooltipDisplayData displayData = CreateDisplayData();
+            TooltipManager.Show(displayData);
         }
+
+
+    
 
         public void OnPointerMove(PointerEventData eventData)
         {
-            TooltipManager.SetTooltipPosition(offSet_Tooltip);
+            TooltipPositionData positionData = CreatePositionData();
+            TooltipManager.SetTooltipPosition(positionData);
         }
 
+        #region Managing Tooltip data function
+        private TooltipDisplayData CreateDisplayData()
+        {
+            TooltipDisplayData displayData = new TooltipDisplayData();
+            displayData.content = content;
+            displayData.header = header;
+            return displayData;
+        }
 
+        private TooltipPositionData CreatePositionData()
+        {
+            TooltipPositionData positionData = new TooltipPositionData();
+            positionData.offset = offset;
+            Vector2 vector = Camera.main.WorldToScreenPoint(m_rectTransform.position);
+            positionData.basePosition = vector;
+            return positionData;
+        }
+
+        #endregion
     }
 }
