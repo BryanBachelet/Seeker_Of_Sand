@@ -92,8 +92,10 @@ namespace Character
             if(m_upgradeManager)
             {
                 m_upgradeManager.OpenSpellChoiceUI();
+
                 GameState.ChangeState();
                 isSpellUpgradeWindowOpen = true;
+                ChangeBaseInterfaceDisplay(false);
             }
            
           //  Debug.Break();
