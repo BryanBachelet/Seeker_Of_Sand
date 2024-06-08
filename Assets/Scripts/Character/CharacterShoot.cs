@@ -747,6 +747,8 @@ namespace Character
             m_canShoot = false;
             m_isShooting = true;
             m_hasBeenLoad = false;
+            float ratio = (float)(m_currentStack[m_currentRotationIndex] / currentWeaponStats.shootNumber);
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
 
             m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_deltaTimeFrame = UnityEngine.Time.deltaTime;
@@ -831,10 +833,8 @@ namespace Character
 
                 if (inputTest && m_stackingClock[i].UpdateTimer())
                 {
-
-
                     m_currentStack[i] += capsuleStatsAlone[index].stackPerGain;
-                  if(i == m_currentRotationIndex)  m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+                    if(i == m_currentRotationIndex)  m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
                     m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, (int)stats.shootNumber);
                     capsuleStatsAlone[index] = stats;
                     m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);

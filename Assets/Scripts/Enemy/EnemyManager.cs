@@ -172,7 +172,7 @@ namespace Enemies
 
         public void Awake()
         {
-            NavMesh.pathfindingIterationsPerFrame = 300;
+            NavMesh.pathfindingIterationsPerFrame = 400;
 #if UNITY_EDITOR
             playerInput = m_playerTranform.GetComponent<PlayerInput>();
             InputAction action = playerInput.actions.FindAction("SpawnEnemy");
@@ -287,7 +287,7 @@ namespace Enemies
         {
             if (ctx.performed)
             {
-                SpawEnemiesGroup();
+                SpawEnemiesGroup(true);
             }
         }
 #endif
@@ -409,9 +409,11 @@ namespace Enemies
             return number;
         }
 
-        private void SpawEnemiesGroup()
+
+
+        private void SpawEnemiesGroup(bool isDebug =  false)
         {
-            if (isStopSpawn) return;
+            if (!isDebug && isStopSpawn) return;
             position = FindPosition();
             posspawn.Add(position);
             InstantiateSpawnFeedback();
