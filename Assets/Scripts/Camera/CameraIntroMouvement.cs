@@ -20,6 +20,7 @@ public class CameraIntroMouvement : MonoBehaviour
     private int m_prevIndex = 0;
     private int m_nextIndex = 1;
 
+    [SerializeField] private bool isSkipCinematics;
     private bool m_isActivate;
     private float m_timerCamera;
     private Render.Camera.CameraBehavior m_cameraScript;
@@ -31,16 +32,31 @@ public class CameraIntroMouvement : MonoBehaviour
     {
 
 
-        m_isActivate = true;
+        if (!isSkipCinematics)
+        {
+            m_isActivate = true;
+        }
+
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
         GameState.ChangeState();
         GlobalSoundManager.PlayOneShot(41, transform.position);
 
+        if (isSkipCinematics)
+        {
+            m_cameraScript.enabled = true;
+            m_isActivate = false;
+          
+            m_fixInterface.SetActive(true);
+            GameState.ChangeState();
+            this.enabled = false;
+        }
+
+
     }
     public void Update()
     {
-        if (m_isActivate)
+        if (m_isActivate )
         {
             UpdateCameraStatus();
         }
@@ -63,7 +79,7 @@ public class CameraIntroMouvement : MonoBehaviour
         ActiveItemAfterStart();
         m_fixInterface.SetActive(true);
         GameState.ChangeState();
-        this.enabled = false; 
+        this.enabled = false;
 
     }
 
@@ -88,7 +104,7 @@ public class CameraIntroMouvement : MonoBehaviour
 
                 return;
             }
-            GlobalSoundManager.PlayOneShot(41,transform.position);
+            GlobalSoundManager.PlayOneShot(41, transform.position);
             m_timerCamera = 0.0f;
         }
 
@@ -104,7 +120,7 @@ public class CameraIntroMouvement : MonoBehaviour
     {
         OpenBlackBorder();
         if (objectToActiveAfterStart.Length == 0) return;
-        for(int i = 0; i < objectToActiveAfterStart.Length; i++)
+        for (int i = 0; i < objectToActiveAfterStart.Length; i++)
         {
             objectToActiveAfterStart[i].SetActive(true);
         }

@@ -168,12 +168,14 @@ public class HealthPlayerComponent : MonoBehaviour
         yield return new WaitForSeconds(time);
         m_isInvulnerableLeger = false;
     }
+
     IEnumerator GetInvulnerableLourd(float time)
     {
         m_isInvulnerableLourd = true;
         yield return new WaitForSeconds(time);
         m_isInvulnerableLourd = false;
     }
+
     public void InitializedHealthData()
     {
 
@@ -221,6 +223,7 @@ public class HealthPlayerComponent : MonoBehaviour
         }
         InitializedHealthData();
     }
+
     private void OnCollisionStay(Collision collision)
     {
         //  Debug.Log("Hit an Object !");
@@ -235,6 +238,7 @@ public class HealthPlayerComponent : MonoBehaviour
         healthBuffer = true;
         lastHealth = health;
     }
+
     private void BufferXpDisplay()
     {
        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (timeLastHit - Time.time - 1) /1 );

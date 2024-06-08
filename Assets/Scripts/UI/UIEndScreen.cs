@@ -89,12 +89,12 @@ public class UIEndScreen : MonoBehaviour
         {
             m_nightCompleted[2].SetActive(true);
         }
-        m_durationGameText.text = tempsEcoule.ToString("F1") + "  Minutes";
+
         m_killCountText.text = Mathf.Lerp(0, stat.enemyKill, Time.time - time).ToString("F0"); 
         m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, Time.time - time).ToString("F0");
         m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, Time.time - time).ToString("F0");
         m_altarSuccessedText.text = Mathf.Lerp(0, stat.altarSuccessed, Time.time - time).ToString("F0");
-        m_biggestComboText.text = Mathf.Lerp(0, stat.bigestCombo, Time.time - time).ToString("F0");
+        m_biggestComboText.text = Mathf.Lerp(0, stat.roomCount, Time.time - time).ToString("F0");
 
 
 

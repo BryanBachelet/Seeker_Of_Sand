@@ -82,12 +82,12 @@ namespace SeekerOfSand
             #region Spell Canalisation
             public void ActiveSpellCanalisationUI(int stack, Image spell)
             {
-                //m_canalisationBar.gameObject.SetActive(true);
+                m_canalisationBar.gameObject.SetActive(true);
 
                 lastSprite = spell.sprite;
                 m_canalisationSpell.sprite = lastSprite;
                 canalisationBarDisplay.SetBool("Canalisation", true);
-                if (stack < 8)
+                if (stack < 8 && stack >0 )
                 {
                     m_canalisationBarSegment.sprite = canalisationBarreSprites[stack - 1];
                 }

@@ -16,7 +16,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> oldTerrain = new List<GameObject>();
     public List<Teleporter> teleporter = new List<Teleporter>();
     public int poolNumber;
-    static public int generation = 1;
+    public int countRoomGeneration = 1;
 
     public bool generateNewTerrain;
 
@@ -35,12 +35,13 @@ public class TerrainGenerator : MonoBehaviour
     public DayCyclecontroller dayController;
 
     private List<RewardType> rewardList = new List<RewardType>();
+    private List<RoomType> roomTypeList = new List<RoomType>();
 
     public TMPro.TMP_Text roomGeneration_text;
-    // Start is called before the first frame update
+
     void Start()
     {
-        InitValue();
+        InitRoomDataList();
         poolNumber = terrainPool.Count;
         transformReference = lastTerrainPlay;
         previousTerrain = terrainInstantiated;
@@ -53,11 +54,16 @@ public class TerrainGenerator : MonoBehaviour
     }
 
 
-    public void InitValue()
+    public void InitRoomDataList()
     {
         for (int i = 0; i < 4; i++)
         {
             rewardList.Add((RewardType)i);
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            roomTypeList.Add((RoomType)i);
         }
     }
 
@@ -85,8 +91,10 @@ public class TerrainGenerator : MonoBehaviour
         previousTerrain = terrainInstantiated;
         terrainInstantiated.Clear();
         int randomNextTerrainNumber = Random.Range(1, 4);
-        int positionNewTerrain = 1500 * generation + terrainInstantiated.Count;
+        int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
 
+        if (currentRoomManager.roomType == RoomType.Free)
+            roomTypeList.Remove(currentRoomManager.roomType); 
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
             int randomTerrain = Random.Range(0, poolNumber);
@@ -95,7 +103,12 @@ public class TerrainGenerator : MonoBehaviour
 
             RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
             roomManager.RetriveComponent();
-            roomManager.roomType = (RoomType)Random.Range(0, 3);
+            roomManager.terrainGenerator = this;
+
+            int indexRoomType = 0;
+            indexRoomType = Random.Range(0, roomTypeList.Count);
+            roomManager.roomType = roomTypeList[indexRoomType];
+
             int indexReward = 0;
             if (i > 0)
             {
@@ -106,11 +119,12 @@ public class TerrainGenerator : MonoBehaviour
                 indexReward = Random.Range(0, rewardList.Count - 1);
             }
             roomManager.rewardType = rewardList[indexReward];
-
-
         }
+
+        if (currentRoomManager.roomType == RoomType.Free)
+            roomTypeList.Add(currentRoomManager.roomType);
         //AssociateNewReward(selectedTerrainNumber);
-        generation++;
+        countRoomGeneration++;
     }
 
     public void AssociateNewReward(int selectedTerrainNumber)
@@ -135,7 +149,7 @@ public class TerrainGenerator : MonoBehaviour
                 tpFeedback.ChangeRewardID(tpFeedback.rewardToUse);
                 tpScript.TeleporterNumber = i;
                 teleporter.Add(tpScript);
-                if (generation > 1)
+                if (countRoomGeneration > 1)
                 {
                     currentRoomManager.AddTeleporter(tpScript);
                 }
@@ -159,7 +173,7 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         //dayController.UpdateTimeByStep();
-        roomGeneration_text.text = "Room " + generation;
+        roomGeneration_text.text = "Room " + countRoomGeneration;
 
     }
 

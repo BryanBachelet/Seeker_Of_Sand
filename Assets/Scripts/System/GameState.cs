@@ -15,7 +15,7 @@ public struct EndInfoStats
     public float durationGame;
     public int nightValidate;
     public int enemyKill;
-    public float bigestCombo;
+    public float roomCount;
     public float altarSuccessed;
     public float altarRepeated;
 
@@ -27,7 +27,7 @@ public struct EndInfoStats
         binary.Write(durationGame);
         binary.Write(nightValidate);
         binary.Write(enemyKill);
-        binary.Write(bigestCombo);
+        binary.Write(roomCount);
         binary.Write(altarSuccessed);
         binary.Write(altarRepeated);
 
@@ -40,7 +40,7 @@ public struct EndInfoStats
         durationGame = binaryReader.ReadSingle();
         nightValidate = binaryReader.ReadInt32();
         enemyKill = binaryReader.ReadInt32();
-        bigestCombo = binaryReader.ReadSingle();
+        roomCount = binaryReader.ReadSingle();
         altarSuccessed = binaryReader.ReadSingle();
         altarRepeated = binaryReader.ReadSingle();
     }
@@ -50,7 +50,7 @@ public struct EndInfoStats
         if (durationGame < statToCompare.durationGame) return true;
         if (nightValidate < statToCompare.nightValidate) return true;
         if (enemyKill < statToCompare.enemyKill) return true;
-        if (bigestCombo < statToCompare.bigestCombo) return true;
+        if (roomCount < statToCompare.roomCount) return true;
         if (altarSuccessed < statToCompare.altarSuccessed) return true;
         if (altarRepeated < statToCompare.altarRepeated) return true;
 
