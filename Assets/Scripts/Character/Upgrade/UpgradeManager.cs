@@ -90,6 +90,7 @@ public class UpgradeManager : MonoBehaviour
         for (int i = 0; i < upgradeGenerate.Length; i++)
         {
             int index = m_upgradeData.RandomUpgradeSpell(spellIndex);
+            index = Mathf.Clamp(index, 0, upgradeList.Length-1);
             UpgradeProfil nxtProfil = upgradeList[index].Clone();
             upgradeGenerate[i] = new UpgradeCapsule(nxtProfil);
             upgradeGenerate[i].capsuleIndex = indexSpellEquip;
@@ -212,6 +213,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
+        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.capsuleStatsAlone.ToArray();
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }

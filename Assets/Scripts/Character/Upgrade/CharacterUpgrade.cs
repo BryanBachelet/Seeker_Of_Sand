@@ -34,7 +34,7 @@ namespace Character
         // Useful Components
         private UpgradeManager m_upgradeManager;
         private CapsuleManager m_capsuleManager;
-        private Character.CharacterShoot m_characterShoot;
+        [HideInInspector] public Character.CharacterShoot m_characterShoot;
         private Character.CharacterSpellBook m_characterInventory;
         private Experience_System experience;
 

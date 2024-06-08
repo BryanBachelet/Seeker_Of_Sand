@@ -1,25 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using System;
 
-public class UIOver : MonoBehaviour
+public class UIOver : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public UpgradeUI upgradeUI_object;
-    [SerializeField] private int m_numeroUpgrade = 0;
+    [SerializeField] private int m_indexUpgrade = 0;
+    public bool isOver;
+    public Action<int> OnEnter;
+
 
     private void Start()
     {
         //upgradeUI_object = transform.parent.transform.parent.GetComponent<UpgradeUI>();
     }
-    private void OnMouseOver()
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Overing : " + this.name);
-        upgradeUI_object.UpdateCursorOver(m_numeroUpgrade);
+
+        if (OnEnter != null) OnEnter.Invoke(m_indexUpgrade);
+        isOver = true;
     }
 
-    private void OnMouseDown()
+    public void OnPointerExit(PointerEventData eventData)
     {
-        
+        isOver = false;
     }
-
 }

@@ -102,6 +102,20 @@ public struct CapsuleStats
     {
         return trajectoryTimer;
     }
+
+    public float[] GetVisibleStat()
+    {
+        float[] statsVisible = new float[6];
+
+        statsVisible[0] = damage;
+        statsVisible[1] = size;
+        statsVisible[2] = speed;
+        statsVisible[3] = projectileNumber;
+        statsVisible[4] = shootNumber;
+        statsVisible[5] = piercingMax;
+
+        return statsVisible;
+    }
 }
 
 
