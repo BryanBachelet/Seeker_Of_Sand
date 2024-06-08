@@ -107,7 +107,7 @@ namespace Render.Camera
 
         private PlayerInput m_playerInputComponent;
         private Character.CharacterShoot m_characterShootComponent;
-        private bool m_isActiveAutomaticDezoom = true;
+        private bool m_isActiveAutomaticDezoom = false;
 
         private Vector2 m_registerMousePositionRotation = Vector3.zero;
 

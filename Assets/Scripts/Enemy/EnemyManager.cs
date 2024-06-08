@@ -172,7 +172,7 @@ namespace Enemies
 
         public void Awake()
         {
-            NavMesh.pathfindingIterationsPerFrame = 300;
+            NavMesh.pathfindingIterationsPerFrame = 400;
 #if UNITY_EDITOR
             playerInput = m_playerTranform.GetComponent<PlayerInput>();
             InputAction action = playerInput.actions.FindAction("SpawnEnemy");
@@ -287,7 +287,7 @@ namespace Enemies
         {
             if (ctx.performed)
             {
-                SpawEnemiesGroup();
+                SpawEnemiesGroup(true);
             }
         }
 #endif
@@ -409,9 +409,11 @@ namespace Enemies
             return number;
         }
 
-        private void SpawEnemiesGroup()
+
+
+        private void SpawEnemiesGroup(bool isDebug =  false)
         {
-            if (isStopSpawn) return;
+            if (!isDebug && isStopSpawn) return;
             position = FindPosition();
             posspawn.Add(position);
             InstantiateSpawnFeedback();
@@ -666,7 +668,7 @@ namespace Enemies
 
             Debug.Log("Test Dammage");
             Vector3 position = npcHealth.transform.position;
-            SpawnExp(position, xpCount, npcHealth.indexEnemy);
+            //SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);

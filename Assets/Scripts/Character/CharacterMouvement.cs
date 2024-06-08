@@ -259,18 +259,20 @@ namespace Character
             if (isActive)
             {
                 SetCombatMode(false);
+                m_characterShoot.DeactivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
-                cameraPlayer.BlockZoom(false);
+              //  cameraPlayer.BlockZoom(false);
                 DisplayNewCurrentState(1);
             }
 
             if (!isActive)
             {
+                m_characterShoot.ActivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", true);
                 m_BookAnim.SetBool("Casting", true);
                 DisplayNewCurrentState(0);
-                cameraPlayer.BlockZoom(true);
+              //  cameraPlayer.BlockZoom(true);
                 SetCombatMode(true);
             }
 

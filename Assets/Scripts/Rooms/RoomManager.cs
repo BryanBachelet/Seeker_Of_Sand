@@ -59,6 +59,7 @@ public class RoomManager : MonoBehaviour
         }
            currentCountOfEnemy = 0;
         objAndReward_UI.stopDisplay = false;
+        ObjectifAndReward_Ui_Function.UpdateProgress(0);
         if (roomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
         else m_enemyManager.isStopSpawn = false;
    
