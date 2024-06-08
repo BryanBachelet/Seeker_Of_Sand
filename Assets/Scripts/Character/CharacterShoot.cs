@@ -114,6 +114,8 @@ namespace Character
         private bool m_activeSpellLoad;
         private bool m_hasBeenLoad;
 
+        public int specifiqueSpellStart = 0;
+        public bool chooseBuild = false;
         public enum CanalisationBarType
         {
             ByPart,
@@ -168,7 +170,14 @@ namespace Character
             state = new ObjectState();
             GameState.AddObject(state);
             m_dropInventory = this.GetComponent<DropInventory>();
-            if (activeRandom) GenerateNewBuild();
+            if(chooseBuild)
+            {
+                GenerateNewBuildSpecificStart(specifiqueSpellStart);
+            }
+            else if (activeRandom && !chooseBuild) 
+            {
+                GenerateNewBuild();
+            }
             InitComponents();
             InitCapsule();
             InitSpriteSpell();
@@ -407,6 +416,10 @@ namespace Character
             }
         }
 
+        private void GenerateNewBuildSpecificStart(int index)
+        {
+            capsuleIndex.Add(index);
+        }
         private void InitStacking()
         {
             m_stackingClock = new ClockTimer[4];

@@ -16,7 +16,7 @@ public class Harpon : Projectile
     {
         Vector3 scale = transform.localScale;
         // transform.rotation *= Quaternion.AngleAxis(90, Vector3.right);
-        transform.localScale = new Vector3(scale.x, scale.y, scale.z);
+        //transform.localScale = new Vector3(scale.x, scale.y, scale.z);
 
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
