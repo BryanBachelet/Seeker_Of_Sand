@@ -147,33 +147,36 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         if(tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)
         {
-            bool isSpawn = false;
-            while (!isSpawn)
-            {
-                tempsEcoulePunk = 0;
-                Vector2 rndPosition = Random.insideUnitCircle;
-                rndPosition.Normalize();
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position + new Vector3(rndPosition.x, 40, rndPosition.y) * 150, Vector3.down, out hit, Mathf.Infinity, groundLayer))
-                {
-                    if (hit.collider.gameObject.layer == 3)
-                    {
-                        GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
-                        skeletonCount++;
-                        Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
-                        punketonHP.Add(lastPunketone);
-                        lastPunketone.target = this.gameObject;
-                        lastPunketone.targetFocus = skeletonFocus;
-                        lastPunketone.altarRefered = this;
-                        isSpawn = true;
-                    }
-                }
-                else
-                {
-                    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-                    //Debug.Log("Did not Hit");
-                }
-            }
+           
+            //bool isSpawn = false;
+            //while (!isSpawn)
+            //{
+            //    tempsEcoulePunk = 0;
+            //    Vector2 rndPosition = Random.insideUnitCircle;
+            //    rndPosition.Normalize();
+            //    RaycastHit hit;
+            //    if (Physics.Raycast(transform.position + new Vector3(rndPosition.x, 40, rndPosition.y) * 150, Vector3.down, out hit, Mathf.Infinity, groundLayer))
+            //    {
+            //        if (hit.collider.gameObject.layer == 3)
+            //        {
+            //            isSpawn = true;
+            //            return;
+            //            GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
+            //            skeletonCount++;
+            //            Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
+            //            punketonHP.Add(lastPunketone);
+            //            lastPunketone.target = this.gameObject;
+            //            lastPunketone.targetFocus = skeletonFocus;
+            //            lastPunketone.altarRefered = this;
+                        
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            //        //Debug.Log("Did not Hit");
+            //    }
+            //}
             
 
 

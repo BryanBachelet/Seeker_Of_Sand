@@ -6,6 +6,12 @@ using UnityEngine.EventSystems;
 
 namespace GuerhoubaGames.UI
 {
+    [System.Serializable]
+    public struct TooltipEventData
+    {
+       public int index;
+    }
+
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
     {
         public float delay = 0.5f;
@@ -14,6 +20,8 @@ namespace GuerhoubaGames.UI
         [Multiline] public string content;
 
         [HideInInspector] public Action OnEnter;
+        [HideInInspector] public Action<TooltipEventData> OnEnterData;
+        public TooltipEventData tooltipEventData;
         private float m_timer;
 
         private IEnumerator m_coroutine;
@@ -28,6 +36,7 @@ namespace GuerhoubaGames.UI
         public void OnPointerEnter(PointerEventData eventData)
         {
            if(OnEnter != null) OnEnter.Invoke();
+           if(OnEnterData != null) OnEnterData.Invoke(tooltipEventData);
             m_coroutine = DelayCall(delay);
 
             StartCoroutine(m_coroutine);
@@ -50,8 +59,17 @@ namespace GuerhoubaGames.UI
 
             }
             TooltipDisplayData displayData = CreateDisplayData();
-            TooltipManager.Show(displayData);
+
+            if (String.IsNullOrEmpty(header) && String.IsNullOrEmpty(content))
+            {
+                yield return null;
+            }else
+            {
+                TooltipManager.Show(displayData);
+            }
+
         }
+            
 
 
     

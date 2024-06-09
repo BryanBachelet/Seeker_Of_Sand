@@ -54,7 +54,7 @@ public struct CapsuleStats
     public int stackPerGain;
 
 
-    public void DebugStat()
+    public string DebugStat()
     {
         string debugString = "Lifetime :" + lifetime.ToString() +"\n";
         debugString += "Speed : " + speed.ToString() + "\n";
@@ -64,6 +64,7 @@ public struct CapsuleStats
         debugString += "Shoot Number : " + shootNumber.ToString() + "\n";
         debugString += "Piercing Max : " + piercingMax.ToString() + "\n";
         Debug.Log(debugString);
+        return debugString;
     }
 
 

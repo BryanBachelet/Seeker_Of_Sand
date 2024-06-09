@@ -7,6 +7,7 @@ public class RewardTypologie : MonoBehaviour
     public RewardType rewardType;
     public GameObject playerRef;
     private Chosereward choseReward;
+    public RewardDistribution rewardDistribution;
     // Start is called before the first frame update
 
     private void Awake()
@@ -28,6 +29,8 @@ public class RewardTypologie : MonoBehaviour
     {
         if(other.tag == "Player")
         {
+            rewardDistribution.RewardValidate();
+
             switch (rewardType)
             {
                 case RewardType.UPGRADE:

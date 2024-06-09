@@ -656,7 +656,7 @@ namespace Enemies
         public void IncreseAlterEnemyCount(NpcHealthComponent npcHealth)
         {
             AltarBehaviorComponent nearestAltar = FindClosestAltar(npcHealth.transform.position);
-            if (nearestAltar != null && Vector3.Distance(npcHealth.transform.position, nearestAltar.transform.position) < nearestAltar.rangeEvent)
+            if (nearestAltar != null )
             {
                 nearestAltar.IncreaseKillCount();
             }

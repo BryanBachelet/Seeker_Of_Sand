@@ -515,7 +515,7 @@ namespace Character
                 m_isShooting = false;
                 m_spellTimer = m_totalCanalisationDuration;
                 UpdateCanalisationBar(m_totalCanalisationDuration);
-                Debug.Log("End Cana");
+
                 hasCanalise = true;
                 return true;
 

@@ -7,17 +7,12 @@ public class RewardDistribution : MonoBehaviour
     public GameObject rewardHolderPrefan;
     public RewardType rewardType;
 
+    private RewardTypologie m_rewardTypologie;
+    [HideInInspector] public bool isRewardSend;
 
-    // Start is called before the first frame update
-    void Start()
+    public void RewardValidate()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        isRewardSend = true;
     }
 
     public void GiveReward(RewardType rewardType)
@@ -28,6 +23,7 @@ public class RewardDistribution : MonoBehaviour
         newXp.ActiveExperienceParticule(this.transform);
         RewardTypologie rewardTypopologie = NewReward.GetComponent<RewardTypologie>();
         rewardTypopologie.rewardType = rewardType;
-
+        rewardTypopologie.rewardDistribution = this;
+        isRewardSend = false;
     }
 }
