@@ -100,7 +100,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             img_Reward.sprite = spriteReward_tab[3];
         }
 
-        if (currentRoomManager.roomType == RoomType.Enemy)
+        if (currentRoomManager.currentRoomType == RoomType.Enemy)
         {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
             img_Objectif.sprite = spriteObjectif_tab[0];
@@ -113,7 +113,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             fill_ProgressDelay.fillAmount = 1;
             ActiveDisplayProgress();
         }
-        else if (currentRoomManager.roomType == RoomType.Event)
+        else if (currentRoomManager.currentRoomType == RoomType.Event)
         {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
             img_Objectif.sprite = spriteObjectif_tab[1];
@@ -126,7 +126,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             fill_ProgressDelay.fillAmount = 1;
             ActiveDisplayProgress();
         }
-        else if (currentRoomManager.roomType == RoomType.Free)
+        else if (currentRoomManager.currentRoomType == RoomType.Free)
         {
             img_Objectif.sprite = spriteObjectif_tab[2];
             txtPro_Objectif.text = text_Objectif[2];
@@ -161,7 +161,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     public void StopEventDisplay()
     {
         stopDisplay = true;
-        Debug.Log("Stop Event");
+
 
     }
 }
