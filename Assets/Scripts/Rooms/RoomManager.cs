@@ -31,6 +31,7 @@ public class RoomManager : MonoBehaviour
 
     private Enemies.EnemyManager m_enemyManager;
     private bool isRoomHasBeenValidate = true;
+    private bool isTeleporterActive = true;
     private Chosereward choserewardRef;
     public TerrainGenerator terrainGenerator;
 
@@ -42,6 +43,7 @@ public class RoomManager : MonoBehaviour
     public void RetriveComponent()
     {
         isRoomHasBeenValidate = false;
+        isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
         if (playerRewardDistribution == null)
         {
@@ -106,10 +108,21 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+
+    public void Update()
+    {
+        if (!isRoomHasBeenValidate) return;
+
+        if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
+        {
+            ActivateTeleporters();
+            isTeleporterActive = true;
+        }
+    }
     public void ValidateRoom()
     {
         if (isRoomHasBeenValidate) return;
-        ActivateTeleporters();
+      
         GiveRoomReward();
         objAndReward_UI.StopEventDisplay();
         m_enemyManager.isStopSpawn = true;
@@ -130,26 +143,7 @@ public class RoomManager : MonoBehaviour
     private void GiveRoomReward()
     {
         playerRewardDistribution.GiveReward(rewardType);
-        //switch (rewardType)
-        //{
-        //    case RewardType.UPGRADE:
-        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint();
-        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowUpgradeWindow();
-        //        break;
-        //    case RewardType.SPELL:
-        //        m_enemyManager.m_playerTranform.GetComponent<Character.CharacterUpgrade>().ShowSpellChoiceInteface();
-        //        break;
-        //    case RewardType.ARTEFACT:
-        //        if(choserewardRef == null) 
-        //            choserewardRef = FindAnyObjectByType<Chosereward>();
-        //        choserewardRef.GiveArtefact();
-        //        break;
-        //    case RewardType.HEAL:
-        //        m_enemyManager.m_playerTranform.GetComponent<HealthPlayerComponent>().RestoreHealQuarter(1);
-        //        break;
-        //    default:
-        //        break;
-        //}
+       
     }
 
 

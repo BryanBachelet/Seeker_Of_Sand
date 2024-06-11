@@ -27,6 +27,7 @@ public class UpgradeManager : MonoBehaviour
     public GameObject upgradeLevelUi;
     public GameObject spellChoiceUI;
     public GameObject upgradeBook;
+    public Animator book_Animator;
     private UpgradeChoosing m_upgradeChoosingComponent;
     private ChooseSpellManager m_chooseSpellManagerComponent;
 
@@ -145,8 +146,10 @@ public class UpgradeManager : MonoBehaviour
     public void OpenSpellChoiceUI()
     {
         if (!spellChoiceUI) return;
+
         spellChoiceUI.SetActive(true);
         upgradeBook.SetActive(true);
+        if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
         m_chooseSpellManagerComponent.ResetRandomSpell();
         GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
     }
@@ -160,10 +163,14 @@ public class UpgradeManager : MonoBehaviour
     public void CloseSpellChoiceUI()
     {
         if (!spellChoiceUI) return;
-        spellChoiceUI.SetActive(false);
-        upgradeBook.SetActive(false);
 
-        GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
+
+        if (book_Animator != null) book_Animator.SetBool("BookOpen", false);
+        float time = Time.time;
+        float timeToClose = book_Animator.GetCurrentAnimatorStateInfo(0).length;
+
+        StartCoroutine(CloseUIWithDelay(timeToClose));
+
     }
 
     #region Upgrade Level UI Functions
@@ -172,7 +179,7 @@ public class UpgradeManager : MonoBehaviour
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(true);
         upgradeBook.SetActive(true);
-
+        if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
         if (m_upgradeLevelingData.upgradeChoose == null)
         {
@@ -199,8 +206,13 @@ public class UpgradeManager : MonoBehaviour
     public void CloseUpgradeUI()
     {
         if (!upgradeLevelUi) return;
-        upgradeLevelUi.SetActive(false);
-        upgradeBook.SetActive(false);
+
+        if (book_Animator != null)
+        {
+            book_Animator.SetBool("BookOpen", false);
+            float timeToClose = book_Animator.GetNextAnimatorStateInfo(0).length;
+            StartCoroutine(CloseUIWithDelay(timeToClose));
+        }
 
         Debug.Log("Close Upgrade interface");
     }
@@ -218,6 +230,14 @@ public class UpgradeManager : MonoBehaviour
 
     }
 
+    public IEnumerator CloseUIWithDelay(float time)
+    {
+        yield return new WaitForSeconds(time);
+        upgradeBook.SetActive(false);
+        spellChoiceUI.SetActive(false);
+        upgradeLevelUi.SetActive(false);
+        GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
+    }
     #endregion
 }
 

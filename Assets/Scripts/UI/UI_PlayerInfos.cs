@@ -83,7 +83,7 @@ namespace SeekerOfSand
             public void ActiveSpellCanalisationUI(int stack, Image spell)
             {
                 m_canalisationBar.gameObject.SetActive(true);
-
+                m_canalisationBar.transform.parent.gameObject.SetActive(true);
                 lastSprite = spell.sprite;
                 m_canalisationSpell.sprite = lastSprite;
                 canalisationBarDisplay.SetBool("Canalisation", true);
@@ -106,6 +106,7 @@ namespace SeekerOfSand
             public void DeactiveSpellCanalisation()
             {
                 //m_canalisationBar.gameObject.SetActive(false);
+                m_canalisationBar.transform.parent.gameObject.SetActive(false);
                 canalisationBarDisplay.SetBool("Canalisation", false);
                 lastColor = new Vector4(0.25f,0.25f,0.25f,1);
             }
