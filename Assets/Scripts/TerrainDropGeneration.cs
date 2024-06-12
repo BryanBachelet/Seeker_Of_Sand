@@ -34,7 +34,7 @@ public class TerrainDropGeneration : MonoBehaviour
     {
         raycastdirection = new Vector3(0, -25, 0);
         int dropToGenerate = dropQuantity + Random.Range(-random, random);
-        int randomCristalType = Random.Range(0, 3);
+        int randomCristalType = Random.Range(0, 4);
 
         if (dropToGenerate > 0)
         {
