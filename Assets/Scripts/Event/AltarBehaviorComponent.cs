@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
+using GuerhoubaGames.UI;
+
 public class AltarBehaviorComponent : MonoBehaviour
 {
     #region Variable
@@ -97,6 +99,8 @@ public class AltarBehaviorComponent : MonoBehaviour
     public int skeletonCount = 0;
 
     public EventHolder eventHolder;
+
+    [HideInInspector] public RoomInfoUI roomInfoUI;
     #endregion Variable
 
     #region Unity Functions
@@ -187,7 +191,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         m_eventProgressionSlider.fillAmount = progression;
-        ObjectifAndReward_Ui_Function.UpdateProgress(progression);
+        roomInfoUI.ActualizeMajorGoalProgress(progression);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI
@@ -276,6 +280,14 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     #region State Altar Functions
 
+    public void ResetAltar()
+    {
+        resetNumber = 0;
+        m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+        m_myAnimator.ResetTrigger("Activation");
+        m_myAnimator.Play("New State");
+    }
+
     // Need to set active
     public void ActiveEvent(InteractionEvent intercationEvent)
     {
@@ -307,9 +319,8 @@ public class AltarBehaviorComponent : MonoBehaviour
             
             GlobalSoundManager.PlayOneShot(13, transform.position);
 
+            roomInfoUI.ActiveMajorGoalInterface();
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
-
-            
 
             m_hasEventActivate = false;
             m_isEventOccuring = true;

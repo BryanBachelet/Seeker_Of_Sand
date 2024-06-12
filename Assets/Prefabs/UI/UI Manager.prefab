@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4346821421306539946}
   - component: {fileID: 2914477687408260579}
   - component: {fileID: 8478372955876290196}
+  - component: {fileID: 8455633817009065430}
   m_Layer: 0
   m_Name: UI Manager
   m_TagString: Untagged
@@ -47,9 +48,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7c12cfcee6421c4cb7e6974e9df00a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_punketoneLifeBar: []
-  m_punketoneLifeBarfill: []
-  m_punketonLifeRemain: []
+  m_punketoneLifeBar:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  m_punketoneLifeBarfill:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  m_punketonLifeRemain:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   m_imageLifeEvents:
   - {fileID: 0}
   - {fileID: 0}
@@ -86,7 +96,14 @@ MonoBehaviour:
   clockUIHolder: {fileID: 0}
   levelTaken: {fileID: 0}
   canalisationBarDisplay: {fileID: 0}
-  canalisationBarreSprites: []
+  canalisationBarreSprites:
+  - {fileID: 534722557, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: 1652845402, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: 1127548752, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: -164477732, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: 225446857, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: -1150098371, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: -12758804, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
 --- !u!114 &2914477687408260579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,3 +150,36 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8ef7ed7c79a16fa448d4608b315ff7ad, type: 3}
   - {fileID: 21300000, guid: 986019dff41b5104097311552b30df09, type: 3}
   currentFragmentNumber: 0
+--- !u!114 &8455633817009065430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4983271985109556603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10403353f35bfc94198a98f7fb3aad58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UiObjectifGO: {fileID: 0}
+  UiRewardGO: {fileID: 0}
+  m_objectifSpriteArray:
+  - {fileID: 21300000, guid: ecaffded17fe1c74ba640ffe3123c463, type: 3}
+  - {fileID: 21300000, guid: 5423ca0dd1d14824089a34aa606f91e3, type: 3}
+  - {fileID: 21300000, guid: d452951a26c756f43863b1f536622dce, type: 3}
+  m_objectifTextArray:
+  - Find teleportor
+  - Active altar
+  - Destroy enemis
+  m_rewardSpriteArray:
+  - {fileID: 21300000, guid: d0836275160effc4d85cd9eedbcdbade, type: 3}
+  - {fileID: 21300000, guid: 32b4e1fcda1003441af0955a064c94b8, type: 3}
+  - {fileID: 21300000, guid: f0fd32109dd2f7541b5628c65529d7ba, type: 3}
+  - {fileID: 21300000, guid: cb9d2d6578b6a7343ac33f3a2b0b978b, type: 3}
+  majorGoalGO: {fileID: 0}
+  m_majorGoalSprite: {fileID: 0}
+  m_majorGoalSpriteDelay: {fileID: 0}
+  timeBeforeDecreaseDelay: 0.5
+  decreaseSpeed: 0.1
+  currentRoomManager: {fileID: 0}

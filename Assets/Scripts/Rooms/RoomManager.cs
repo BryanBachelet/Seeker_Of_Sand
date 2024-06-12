@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GuerhoubaGames.UI;
 
 public enum RoomType
 {
@@ -20,7 +20,11 @@ public enum RewardType
 
 public class RoomManager : MonoBehaviour
 {
-    public RoomType roomType;
+    public RoomType currentRoomType;
+    /// <summary>
+    /// Correspond to start room type
+    /// </summary>
+    [HideInInspector] public RoomType baseRoomType;
     public RewardType rewardType;
 
     public int enemyToKillCount = 0;
@@ -35,9 +39,10 @@ public class RoomManager : MonoBehaviour
     private Chosereward choserewardRef;
     public TerrainGenerator terrainGenerator;
 
+   [HideInInspector] public RoomInfoUI roomInfoUI;
 
     static RewardDistribution playerRewardDistribution;
-    static ObjectifAndReward_Ui_Function objAndReward_UI;
+   // static ObjectifAndReward_Ui_Function objAndReward_UI;
 
 
     public void RetriveComponent()
@@ -48,21 +53,21 @@ public class RoomManager : MonoBehaviour
         if (playerRewardDistribution == null)
         {
             playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
-            objAndReward_UI = playerRewardDistribution.GetComponent<ObjectifAndReward_Ui_Function>();
+           
         }
     }
     public void ActivateRoom()
     {
         m_enemyManager.ResetAllSpawingPhasse();
-        if (roomType == RoomType.Enemy)
+        baseRoomType = currentRoomType;
+        if (currentRoomType == RoomType.Enemy)
         {
             m_enemyManager.OnDeathSimpleEvent += CountEnemy;
             m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
         }
            currentCountOfEnemy = 0;
-        objAndReward_UI.stopDisplay = false;
-        ObjectifAndReward_Ui_Function.UpdateProgress(0);
-        if (roomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
+
+        if (currentRoomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
         else m_enemyManager.isStopSpawn = false;
    
         SetupRoomType();
@@ -89,17 +94,26 @@ public class RoomManager : MonoBehaviour
 
     public void SetupRoomType()
     {
-        switch (roomType)
+        switch (currentRoomType)
         {
             case RoomType.Free:
                 ValidateRoom();
                 DeactivateAltar();
+
                 break;
             case RoomType.Event:
+
+                AltarBehaviorComponent obj = transform.parent.GetComponentInChildren<AltarBehaviorComponent>();
+                if (obj != null)
+                {
+                    obj.ResetAltar();
+                    obj.roomInfoUI = roomInfoUI; ;
+                }
 
                 break;
             case RoomType.Enemy:
                 DeactivateAltar();
+                roomInfoUI.ActiveMajorGoalInterface();
                 int enemyCount = 20 + 20 * terrainGenerator.countRoomGeneration;
                 enemyToKillCount = Random.Range(enemyCount / 2, enemyCount);
                 break;
@@ -124,7 +138,9 @@ public class RoomManager : MonoBehaviour
         if (isRoomHasBeenValidate) return;
       
         GiveRoomReward();
-        objAndReward_UI.StopEventDisplay();
+        currentRoomType = RoomType.Free;
+        roomInfoUI.ActualizeRoomInfoInterface();
+        roomInfoUI.DeactivateMajorGoalInterface();
         m_enemyManager.isStopSpawn = true;
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
@@ -164,19 +180,16 @@ public class RoomManager : MonoBehaviour
         currentCountOfEnemy++;
         float progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
         Debug.Log("Enemy Count" + progress);
-        if (roomType == RoomType.Enemy)
+        if (currentRoomType == RoomType.Enemy)
         {
             if (progress >= 1)
             {
                 ValidateRoom();
-                ObjectifAndReward_Ui_Function.UpdateProgress(1);
-                //ObjectifAndReward_Ui_Function.StopEventDisplay();
 
             }
             else
             {
-                //Debug.Log("Event progress " + progress);
-                ObjectifAndReward_Ui_Function.UpdateProgress(progress);
+                roomInfoUI.ActualizeMajorGoalProgress(progress);
             }
         }
 

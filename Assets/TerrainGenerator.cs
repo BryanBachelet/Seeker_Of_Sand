@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.AI.Navigation;
+using GuerhoubaGames.UI;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class TerrainGenerator : MonoBehaviour
 
     private RoomManager currentRoomManager;
 
-    public ObjectifAndReward_Ui_Function objAndReward;
+    public RoomInfoUI roomInfoUI;
     public DayCyclecontroller dayController;
 
     private List<RewardType> rewardList = new List<RewardType>();
@@ -71,17 +72,17 @@ public class TerrainGenerator : MonoBehaviour
     {
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         currentRoomManager.RetriveComponent();
-        currentRoomManager.roomType = RoomType.Free;
+        currentRoomManager.currentRoomType = RoomType.Free;
         currentRoomManager.rewardType = RewardType.SPELL;
 
         for (int i = 0; i < teleporter.Count; i++)
         {
             currentRoomManager.AddTeleporter(teleporter[i]);
         }
-
+        currentRoomManager.roomInfoUI = roomInfoUI;
+        roomInfoUI.currentRoomManager = currentRoomManager;
         currentRoomManager.ActivateRoom();
-        objAndReward.currentRoomManager = currentRoomManager;
-        objAndReward.UpdateObjectifAndReward();
+        roomInfoUI.ActualizeRoomInfoInterface();
 
     }
     public void GenerateTerrain(int selectedTerrainNumber)
@@ -93,8 +94,8 @@ public class TerrainGenerator : MonoBehaviour
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
 
-        if (currentRoomManager.roomType == RoomType.Free)
-            roomTypeList.Remove(currentRoomManager.roomType); 
+        if (currentRoomManager.currentRoomType == RoomType.Free)
+            roomTypeList.Remove(currentRoomManager.currentRoomType); 
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
             int randomTerrain = Random.Range(0, poolNumber);
@@ -107,7 +108,7 @@ public class TerrainGenerator : MonoBehaviour
 
             int indexRoomType = 0;
             indexRoomType = Random.Range(0, roomTypeList.Count);
-            roomManager.roomType = roomTypeList[indexRoomType];
+            roomManager.currentRoomType = roomTypeList[indexRoomType];
 
             int indexReward = 0;
             if (i > 0)
@@ -121,8 +122,8 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.rewardType = rewardList[indexReward];
         }
 
-        if (currentRoomManager.roomType == RoomType.Free)
-            roomTypeList.Add(currentRoomManager.roomType);
+        if (currentRoomManager.currentRoomType == RoomType.Free)
+            roomTypeList.Add(currentRoomManager.currentRoomType);
         //AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
     }
@@ -202,11 +203,12 @@ public class TerrainGenerator : MonoBehaviour
 
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);
+
+        currentRoomManager.roomInfoUI = roomInfoUI;
+        roomInfoUI.currentRoomManager = currentRoomManager;
         currentRoomManager.ActivateRoom();
-       
-        objAndReward.currentRoomManager = currentRoomManager;
-        objAndReward.UpdateObjectifAndReward();
-      
+        roomInfoUI.ActualizeRoomInfoInterface();
+
 
     }
 

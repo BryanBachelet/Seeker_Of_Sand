@@ -111,6 +111,8 @@ namespace Render.Camera
 
         private Vector2 m_registerMousePositionRotation = Vector3.zero;
 
+        public LayerMask maskGround;
+
         // Debug Value 
         private Vector3 normalDebug;
         private Vector3 hitPoint;
@@ -160,6 +162,8 @@ namespace Render.Camera
 
                 SetCameraRotation();
                 SetCameraPosition();
+                CheckCameraTerrain(); 
+                
                 Apply();
             }
             else
@@ -460,6 +464,28 @@ namespace Render.Camera
         }
 
         #endregion
+
+        private void CheckCameraTerrain()
+        {
+            RaycastHit hit = new RaycastHit();
+
+            Vector3 direction = transform.position - m_targetTransform.position; 
+            if(Physics.Raycast(m_targetTransform.position, direction,out hit,direction.magnitude+5f, maskGround))
+            {
+
+                m_prevAngle = m_currentAngle;
+                m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+
+                m_currentAngle += 1 * 60 *Time.deltaTime;
+
+                m_nextAngle = m_currentAngle;
+                m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+                m_lerpTimer = 0.1f;
+
+                SetCameraRotation();
+                SetCameraPosition();
+            }
+        }
 
         private void SetCameraRotation()
         {

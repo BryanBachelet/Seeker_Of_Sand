@@ -160,7 +160,7 @@ namespace Enemies
             }
 
             //StartCoroutine(Death());
-            StartCoroutine(TeleportToPool());
+          if(gameObject.activeSelf)  StartCoroutine(TeleportToPool());
         }
 
 
