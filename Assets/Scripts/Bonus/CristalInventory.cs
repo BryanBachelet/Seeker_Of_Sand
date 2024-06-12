@@ -5,11 +5,11 @@ using TMPro;
 public class CristalInventory : MonoBehaviour
 {
     public int[] cristalCount = new int[4];
-    public GameObject[] cristalDisplay = new GameObject[4];
+    public GameObject[] cristalDisplay = new GameObject[4]; //0 = Eau, 1 = Feu, 2 = Elec, 3 = Terre
     private Animator[] m_cristalAnimator = new Animator[4];
     private bool[] m_cristalState = new bool[4];
 
-    private TMP_Text[] m_uiTextDisplay = new TMP_Text[4];
+    [HideInInspector] public TMP_Text[] m_uiTextDisplay = new TMP_Text[4];
 
     static private float m_timeDisplaying = 1f;
     public float m_timeDisplayingSetup = 1f;

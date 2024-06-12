@@ -206,6 +206,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""8e8587a7-56e5-4240-a618-24a9161ca5c6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -767,6 +776,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""SpawnEnemy"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""195257ef-7457-4a0e-87a9-a8a0de4fa80e"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1374,6 +1394,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_ZoomInMiniMap = m_Player.FindAction("ZoomInMiniMap", throwIfNotFound: true);
         m_Player_ZoomOutMiniMap = m_Player.FindAction("ZoomOutMiniMap", throwIfNotFound: true);
         m_Player_SpawnEnemy = m_Player.FindAction("SpawnEnemy", throwIfNotFound: true);
+        m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1467,6 +1488,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ZoomInMiniMap;
     private readonly InputAction m_Player_ZoomOutMiniMap;
     private readonly InputAction m_Player_SpawnEnemy;
+    private readonly InputAction m_Player_OpenInventory;
     public struct PlayerActions
     {
         private @GameInput m_Wrapper;
@@ -1491,6 +1513,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         public InputAction @ZoomInMiniMap => m_Wrapper.m_Player_ZoomInMiniMap;
         public InputAction @ZoomOutMiniMap => m_Wrapper.m_Player_ZoomOutMiniMap;
         public InputAction @SpawnEnemy => m_Wrapper.m_Player_SpawnEnemy;
+        public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1560,6 +1583,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @SpawnEnemy.started += instance.OnSpawnEnemy;
             @SpawnEnemy.performed += instance.OnSpawnEnemy;
             @SpawnEnemy.canceled += instance.OnSpawnEnemy;
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1624,6 +1650,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @SpawnEnemy.started -= instance.OnSpawnEnemy;
             @SpawnEnemy.performed -= instance.OnSpawnEnemy;
             @SpawnEnemy.canceled -= instance.OnSpawnEnemy;
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1826,6 +1855,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         void OnZoomInMiniMap(InputAction.CallbackContext context);
         void OnZoomOutMiniMap(InputAction.CallbackContext context);
         void OnSpawnEnemy(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

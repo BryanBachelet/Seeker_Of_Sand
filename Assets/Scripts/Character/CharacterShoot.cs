@@ -67,6 +67,7 @@ namespace Character
         [SerializeField] private float m_shakeDuration = 0.1f;
         public GameObject[] vfxElementSign = new GameObject[4];
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
+        private GameObject lastElementToUse;
 
 
         private float m_timerBetweenSpell;
@@ -532,6 +533,10 @@ namespace Character
         {
             float ratio = m_spellTimer / maxValue;
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            if(lastElementToUse != null)
+            {
+                lastElementToUse.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 2, ratio);
+            }
         }
 
         private bool CancelShoot()
@@ -789,6 +794,7 @@ namespace Character
                 if (i == elementIndex)
                 {
                     vfxElementSign[i].SetActive(true);
+                    lastElementToUse = vfxElementSign[i];
                 }
                 else
                 {
