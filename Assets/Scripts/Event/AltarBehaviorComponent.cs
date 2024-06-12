@@ -322,8 +322,6 @@ public class AltarBehaviorComponent : MonoBehaviour
             roomInfoUI.ActiveMajorGoalInterface();
             m_objectHealthSystem.ChangeState(EventObjectState.Active);
 
-            
-
             m_hasEventActivate = false;
             m_isEventOccuring = true;
         }
