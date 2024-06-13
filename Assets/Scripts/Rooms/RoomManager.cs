@@ -74,6 +74,16 @@ public class RoomManager : MonoBehaviour
     }
 
     // Setup room teleporter 
+    public void SetupTeleporter(int teleporterCount)
+    {
+        m_currentTeleporterCount = teleporterCount;
+        for (int i = 0; i < m_currentTeleporterCount; i++)
+        {
+            teleporterArray[i].gameObject.SetActive(true);
+            teleporterArray[i].enemyManager = m_enemyManager;
+        }
+
+    }
     public void AddTeleporter(Teleporter newInstance)
     {
         newInstance.DesactivationTeleportor();

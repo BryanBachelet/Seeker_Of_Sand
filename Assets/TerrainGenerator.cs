@@ -47,6 +47,7 @@ public class TerrainGenerator : MonoBehaviour
         transformReference = lastTerrainPlay;
         previousTerrain = terrainInstantiated;
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
+        currentRoomManager.RetriveComponent();
         GenerateTerrain(0);
         AssociateNewReward(0);
         SetupFirstRoom();
@@ -75,10 +76,7 @@ public class TerrainGenerator : MonoBehaviour
         currentRoomManager.currentRoomType = RoomType.Free;
         currentRoomManager.rewardType = RewardType.SPELL;
 
-        for (int i = 0; i < teleporter.Count; i++)
-        {
-            currentRoomManager.AddTeleporter(teleporter[i]);
-        }
+    
         currentRoomManager.roomInfoUI = roomInfoUI;
         roomInfoUI.currentRoomManager = currentRoomManager;
         currentRoomManager.ActivateRoom();
@@ -134,31 +132,19 @@ public class TerrainGenerator : MonoBehaviour
         int terrainSelected = selectedTerrainNumber;
         teleporter.Clear();
 
+
+        
         for (int i = 0; i < terrainInstantiated.Count; i++)
         {
-            //Transform transformReference = lastTerrainPlay;
-            RaycastHit hit;
-            // Does the ray intersect any objects excluding the player layer
-            if (Physics.Raycast(transformReference.position + new Vector3(0, 500, 0), transformReference.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundLayer))
-            {
-                Debug.DrawRay(transformReference.position + new Vector3(0, 500, 0), transformReference.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
-                GameObject newTp = Instantiate(teleporterPrefab, hit.point + new Vector3(50 * i, 5, 0), transform.rotation, transformReference);
-                Teleporter tpScript = newTp.GetComponent<Teleporter>();
-                TeleporterFeebackController tpFeedback = tpScript.GetComponentInChildren<TeleporterFeebackController>();
-                RoomManager roomManager = terrainInstantiated[i].GetComponentInChildren<RoomManager>();
-                tpFeedback.rewardToUse = (int)roomManager.rewardType;
-                tpFeedback.ChangeRewardID(tpFeedback.rewardToUse);
-                tpScript.TeleporterNumber = i;
-                teleporter.Add(tpScript);
-                if (countRoomGeneration > 1)
-                {
-                    currentRoomManager.AddTeleporter(tpScript);
-                }
-
-
-            }
-
+            
+            currentRoomManager.teleporterArray[i].TeleporterNumber = i;
+            RoomManager roomManager = terrainInstantiated[i].GetComponentInChildren<RoomManager>();
+            TeleporterFeebackController tpFeedback =  currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
+            tpFeedback.rewardToUse = (int)roomManager.rewardType;
+            tpFeedback.ChangeRewardID(tpFeedback.rewardToUse);
         }
+
+        currentRoomManager.SetupTeleporter(terrainInstantiated.Count);
 
 
     }
@@ -197,8 +183,6 @@ public class TerrainGenerator : MonoBehaviour
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
         currentRoomManager.DeactivateAltar();
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
-
-
 
 
         GenerateTerrain(selectedTerrainNumber);
