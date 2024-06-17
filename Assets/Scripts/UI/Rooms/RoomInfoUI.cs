@@ -12,12 +12,12 @@ namespace GuerhoubaGames.UI
         public GameObject UiObjectifGO;
         public GameObject UiRewardGO;
 
-        [Tooltip("The array need to follow objectif enum order. Free = 0, Event= 1, Enemy =2")]
+        [Tooltip("The array need to follow objectif enum order.  Event = 0, Enemy= 1, Free =2, Merchant = 3")]
         [SerializeField] private Sprite[] m_objectifSpriteArray;
-        [Tooltip("The array need to follow objectif enum order. Free = 0, Event= 1, Enemy =2")]
+        [Tooltip("The array need to follow objectif enum order. Event = 0, Enemy= 1, Free =2, Merchant = 3")]
         [SerializeField] private string[] m_objectifTextArray;
 
-        [Tooltip("The array need to follow Reward enum order. Upgrade= 0, Spell= 1, Artefact=2, Heal =3")]
+        [Tooltip("The array need to follow Reward enum order. Upgrade= 0, Spell= 1, Artefact=2, Heal =3,Nothing = 4")]
         [SerializeField] private Sprite[] m_rewardSpriteArray;
 
         private Animator m_objectifAnimator;
@@ -80,9 +80,10 @@ namespace GuerhoubaGames.UI
             // Reward inteface update
             m_rewardIcon.sprite = m_rewardSpriteArray[(int)currentRoomManager.rewardType];
 
+            int indexRoomType = Mathf.Clamp((int)currentRoomManager.currentRoomType, 0, m_objectifSpriteArray.Length-1);
             // Goal interface update
-            m_objectifIcon.sprite = m_objectifSpriteArray[(int)currentRoomManager.currentRoomType];
-            m_objectifText.text = m_objectifTextArray[(int)currentRoomManager.currentRoomType];
+            m_objectifIcon.sprite = m_objectifSpriteArray[indexRoomType];
+            m_objectifText.text = m_objectifTextArray[indexRoomType];
 
             m_objectifAnimator.SetTrigger("ActiveDisplay");
             m_rewardAnimator.SetTrigger("ActiveDisplay");

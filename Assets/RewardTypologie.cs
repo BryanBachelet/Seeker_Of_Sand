@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
 public class RewardTypologie : MonoBehaviour
 {
@@ -14,16 +15,7 @@ public class RewardTypologie : MonoBehaviour
     {
         playerRef = this.GetComponent<ExperienceMouvement>().m_playerPosition.gameObject;
     }
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnTriggerEnter(Collider other)
     {

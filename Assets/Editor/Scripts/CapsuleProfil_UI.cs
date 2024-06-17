@@ -9,6 +9,7 @@ public class CapsuleProfil_UI : Editor
 {
 
     SerializedProperty lifetimeProperty;
+    SerializedProperty elementTypeProperty;
     SerializedProperty travelTimeProperty;
     SerializedProperty useTravelTimeProperty;
     SerializedProperty speedProperty;
@@ -35,6 +36,7 @@ public class CapsuleProfil_UI : Editor
     {
         rangeProperty = serializedObject.FindProperty("stats.range");
         lifetimeProperty = serializedObject.FindProperty("stats.lifetime");
+        elementTypeProperty = serializedObject.FindProperty("stats.elementType");
         travelTimeProperty = serializedObject.FindProperty("stats.travelTime");
         useTravelTimeProperty = serializedObject.FindProperty("stats.useTravelTime");
         speedProperty = serializedObject.FindProperty("stats.speed");
@@ -65,6 +67,7 @@ public class CapsuleProfil_UI : Editor
     
         CapsuleProfil m_capsuleProfile = (CapsuleProfil)target;
         m_capsuleProfile.stats.lifetime = EditorGUILayout.FloatField(lifetimeProperty.displayName, lifetimeProperty.floatValue);
+        EditorGUILayout.PropertyField(elementTypeProperty);
        // useTravelTimeProperty.boolValue = EditorGUILayout.Toggle(useTravelTimeProperty.displayName, useTravelTimeProperty.boolValue);
         EditorGUILayout.PropertyField(useTravelTimeProperty);
         if (m_capsuleProfile.stats.useTravelTime)
