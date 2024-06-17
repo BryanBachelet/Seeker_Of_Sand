@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.Resources;
+using GuerhoubaGames.GameEnum;
 
 public class MarchandUiView : MonoBehaviour
 {
@@ -15,10 +16,29 @@ public class MarchandUiView : MonoBehaviour
 
     private MerchandItemData merchandItemData;
 
+    public MerchandUIOver[] merchandButtonElementArray;
     public TMP_Text negatifFeedbackText;
     public Image[] spellSpriteArray;
     public Image[] cristalSpriteArray;
     public TMP_Text[] cristalPriceTextArray;
+    [Header("Descriptions Elements")]
+    public TMP_Text nameDescriptionText;
+    public TMP_Text descriptionElementText;
+    public Image imageDescription;
+
+    public void Start()
+    {
+        InitEventComponent();
+    }
+    
+
+    public void InitEventComponent()
+    {
+        for (int i = 0; i < merchandButtonElementArray.Length; i++)
+        {
+            merchandButtonElementArray[i].OnEnter += ActualizeDescriptionInterface;
+        }
+    }
 
     public void ActiveMarchandUI(MerchandItemData itemData)
     {
@@ -69,7 +89,6 @@ public class MarchandUiView : MonoBehaviour
 
     public void ActualizeSpellInterface(int index)
     {
-
         ItemData itemData = merchandItemData.itemSpellData[index];
         if (itemData.hasBeenBuy)
         {
@@ -83,6 +102,31 @@ public class MarchandUiView : MonoBehaviour
             cristalPriceTextArray[index].text = itemData.price.ToString();
         }
         cristalSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
+    }
+
+    public void ActualizeDescriptionInterface(int index,CharacterObjectType type)
+    {
+        string name, description;
+        name = "";
+        description = "";
+        Sprite image = null;
+        switch (type)
+        {
+            case CharacterObjectType.SPELL:
+                if (merchandItemData.itemSpellData[index].hasBeenBuy) return;
+                description = merchandItemData.spellData[index].description;
+                name = merchandItemData.spellData[index].name;
+                image = merchandItemData.spellData[index].sprite;
+                break;
+            case CharacterObjectType.FRAGMENT:
+                break;
+            default:
+                break;
+        }
+
+        nameDescriptionText.text = name;
+        descriptionElementText.text = description;
+        imageDescription.sprite = image;
     }
 
 
