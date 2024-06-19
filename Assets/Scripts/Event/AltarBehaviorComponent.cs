@@ -209,7 +209,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_questMarker = GetComponent<QuestMarker>();
-        m_enemyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
+        m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
     }
 
 

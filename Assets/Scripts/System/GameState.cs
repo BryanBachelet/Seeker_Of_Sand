@@ -60,7 +60,15 @@ public struct EndInfoStats
 
 public class GameState : MonoBehaviour
 {
-    private static Enemies.EnemyManager m_enemyManager;
+    // Static Element
+    public static Enemies.EnemyManager m_enemyManager;
+    public static GameObject m_uiManager;
+    public static GameObject s_playerGo;
+
+
+    public TerrainGenerator terrainGenerator;
+    public GameObject uiManagerGO;
+    public GameObject playerGo;
     public GameObject fixeElementHolder;
     private static List<ObjectState> listObject = new List<ObjectState>(0);
 
@@ -84,11 +92,19 @@ public class GameState : MonoBehaviour
     private Scene scene;
     private bool m_activeSceneEvent = false;
 
+    public void Awake()
+    {
+        m_enemyManager = GetComponent<Enemies.EnemyManager>();
+        m_uiManager = uiManagerGO;
+        s_playerGo = playerGo;
+    }
+
     public void Start()
     {
         scene = (SceneManager.GetSceneByBuildIndex(5));
         m_isDeath = false;
-        m_enemyManager = GetComponent<Enemies.EnemyManager>();
+        terrainGenerator.LaunchRoomGenerator();
+        m_uiManager.GetComponent<UIDispatcher>().ActiveUIElement();
         endMenu = endmenu_Attribution;
         GameObject gm = GameObject.Find("GameManager");
         if (gm != null)
@@ -98,7 +114,7 @@ public class GameState : MonoBehaviour
             profileName = m_gmComponent.profileName;
             if (m_enemyManager)
             {
-                Character.CharacterShoot charaShoot = m_enemyManager.m_playerTranform.GetComponent<Character.CharacterShoot>();
+                Character.CharacterShoot charaShoot = playerGo.GetComponent<Character.CharacterShoot>();
                 charaShoot.m_aimModeState = m_gmComponent.m_aimModeChoose;
                 charaShoot.UpdateFeedbackAimLayout();
             }

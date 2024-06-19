@@ -1,14 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
-public enum ElementAffiliation
-{
-    Electricity,
-    Eau,
-    Terre,
-    Feu,
-}
 public enum ConditionsTrigger
 {
     OnHit,
@@ -37,7 +31,7 @@ public class ArtefactsInfos : ScriptableObject
     [Range(0, 100)]
     public float spawnRate = 5;
     public float radius = 30;
-    public ElementAffiliation elementAffiliation;
+    public GameElement gameElement;
     public ConditionsTrigger conditionsTrigger;
     public EntitiesTrigger entitiesTrigger;
     public EntitiesTargetSystem entitiesTargetSystem;

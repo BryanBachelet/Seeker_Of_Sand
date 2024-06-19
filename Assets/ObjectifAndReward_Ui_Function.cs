@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using GuerhoubaGames.GameEnum;
+
 public class ObjectifAndReward_Ui_Function : MonoBehaviour
 {
     public Animator objectifAnimator;

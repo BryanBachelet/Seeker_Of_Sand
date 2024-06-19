@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using SeekerOfSand.UI;
 using GuerhoubaTools.Gameplay;
+using GuerhoubaGames.GameEnum;
 
 namespace Character
 {
@@ -57,7 +58,7 @@ namespace Character
 
 
         [Header("Shoot Infos")]
-        public SpellSystem.Element lastElement;
+        public GameElement lastElement;
         [SerializeField] public AimMode m_aimModeState;
         public bool isCasting;
         [SerializeField] private bool IsRealoadingSpellRotation;
@@ -789,7 +790,7 @@ namespace Character
 
         public void ChangeVfxElement(int elementIndex)
         {
-            for (int i = 0; i < ((int)SpellSystem.Element.EARTH) + 1; i++)
+            for (int i = 0; i < ((int)GameElement.EARTH) + 1; i++)
             {
                 if (i == elementIndex)
                 {

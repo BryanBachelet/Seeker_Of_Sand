@@ -1,3 +1,4 @@
+using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,19 +50,19 @@ public class HealthManager : MonoBehaviour
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
         if(colorElementType < 0)
         {
-            if (characterShoot.lastElement == SpellSystem.Element.AIR)
+            if (characterShoot.lastElement == GameElement.AIR)
             {
                 currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
             }
-            else if (characterShoot.lastElement == SpellSystem.Element.FIRE)
+            else if (characterShoot.lastElement == GameElement.FIRE)
             {
                 currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
             }
-            else if (characterShoot.lastElement == SpellSystem.Element.WATER)
+            else if (characterShoot.lastElement == GameElement.WATER)
             {
                 currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
             }
-            else if (characterShoot.lastElement == SpellSystem.Element.EARTH)
+            else if (characterShoot.lastElement == GameElement.EARTH)
             {
                 currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
             }

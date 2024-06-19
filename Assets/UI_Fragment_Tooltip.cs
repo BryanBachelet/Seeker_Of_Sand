@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using UnityEngine.UI;
+using GuerhoubaGames.GameEnum;
 public class UI_Fragment_Tooltip : MonoBehaviour
 {
     public List<GameObject> fragment_List = new List<GameObject>();
@@ -41,19 +42,19 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         tooltipTrigger[currentFragmentNumber].content = artefactInfo.description;
 
 
-        if(artefactInfo.elementAffiliation == ElementAffiliation.Electricity)
+        if(artefactInfo.gameElement == GameElement.AIR)
         {
             imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[0];
         }
-        else if (artefactInfo.elementAffiliation == ElementAffiliation.Eau)
+        else if (artefactInfo.gameElement == GameElement.WATER)
         {
             imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[1];
         }
-        else if (artefactInfo.elementAffiliation == ElementAffiliation.Terre)
+        else if (artefactInfo.gameElement == GameElement.EARTH)
         {
             imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[2];
         }
-        else if (artefactInfo.elementAffiliation == ElementAffiliation.Feu)
+        else if (artefactInfo.gameElement == GameElement.FIRE)
         {
             imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[3];
         }

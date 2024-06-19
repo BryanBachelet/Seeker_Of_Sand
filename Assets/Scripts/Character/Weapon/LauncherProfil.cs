@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEditor;
+using GuerhoubaGames.GameEnum;
 
 [Serializable]
 public struct LauncherStats
@@ -31,6 +32,7 @@ public enum FormTypeSpell
 public struct CapsuleStats
 {
     public float lifetime;
+    public GameElement elementType;
     public float travelTime;
     [SerializeField] public bool useTravelTime;
     public float speed;
@@ -52,7 +54,7 @@ public struct CapsuleStats
     public string description;
     public float stackDuration;
     public int stackPerGain;
-
+    
 
     public string DebugStat()
     {

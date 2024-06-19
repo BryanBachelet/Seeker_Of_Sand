@@ -2,21 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
+using GuerhoubaGames.GameEnum;
 
-public enum RoomType
-{
-    Free = 0,
-    Event = 1,
-    Enemy = 2
-}
-
-public enum RewardType
-{
-    UPGRADE = 0,
-    SPELL = 1,
-    ARTEFACT = 2,
-    HEAL = 3,
-}
 
 public class RoomManager : MonoBehaviour
 {
@@ -41,6 +28,8 @@ public class RoomManager : MonoBehaviour
 
    [HideInInspector] public RoomInfoUI roomInfoUI;
 
+    public MarchandBehavior marchandBehavior;
+
     static RewardDistribution playerRewardDistribution;
    // static ObjectifAndReward_Ui_Function objAndReward_UI;
 
@@ -59,6 +48,16 @@ public class RoomManager : MonoBehaviour
     public void ActivateRoom()
     {
         m_enemyManager.ResetAllSpawingPhasse();
+
+        // Temp
+        marchandBehavior.gameObject.SetActive(true);
+        marchandBehavior.InitComponents();
+
+        if (currentRoomType == RoomType.Merchant)
+        {
+            marchandBehavior.gameObject.SetActive(true);
+            marchandBehavior.InitComponents();
+        }
         baseRoomType = currentRoomType;
         if (currentRoomType == RoomType.Enemy)
         {
@@ -69,11 +68,22 @@ public class RoomManager : MonoBehaviour
 
         if (currentRoomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
         else m_enemyManager.isStopSpawn = false;
-   
+        
         SetupRoomType();
+       
     }
 
     // Setup room teleporter 
+    public void SetupTeleporter(int teleporterCount)
+    {
+        m_currentTeleporterCount = teleporterCount;
+        for (int i = 0; i < m_currentTeleporterCount; i++)
+        {
+            teleporterArray[i].gameObject.SetActive(true);
+            teleporterArray[i].enemyManager = m_enemyManager;
+        }
+
+    }
     public void AddTeleporter(Teleporter newInstance)
     {
         newInstance.DesactivationTeleportor();
@@ -100,6 +110,10 @@ public class RoomManager : MonoBehaviour
                 ValidateRoom();
                 DeactivateAltar();
 
+                break;
+            case RoomType.Merchant:
+                ValidateRoom();
+                DeactivateAltar();
                 break;
             case RoomType.Event:
 
