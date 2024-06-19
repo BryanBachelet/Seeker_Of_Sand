@@ -18,9 +18,16 @@ public class MarchandUiView : MonoBehaviour
 
     public MerchandUIOver[] merchandButtonElementArray;
     public TMP_Text negatifFeedbackText;
+
+    [Header("Fragments Elements")]
+    public Image[] fragmentSpriteArray;
+    public Image[] cristalFragmentSpriteArray;
+    public TMP_Text[] fragmentPriceTextArray;
+ 
+    [Header("Spells Elements")]
     public Image[] spellSpriteArray;
-    public Image[] cristalSpriteArray;
-    public TMP_Text[] cristalPriceTextArray;
+    public Image[] cristalSpellSpriteArray;
+    public TMP_Text[] spellPriceTextArray;
     [Header("Descriptions Elements")]
     public TMP_Text nameDescriptionText;
     public TMP_Text descriptionElementText;
@@ -66,6 +73,11 @@ public class MarchandUiView : MonoBehaviour
 
             ActualizeSpellInterface(i);
         }
+
+        for (int i = 0; i < merchandItemData.fragmentData.Length; i++)
+        {
+            ActualizeFragmentInteface(i);
+        }
     }
 
     public void InteractBuySpell(int index)
@@ -83,9 +95,26 @@ public class MarchandUiView : MonoBehaviour
             default:
                 break;
         }
-
-    
     }
+
+
+    public void InteractBuyFragment(int index)
+    {
+        MarchandBehavior.BuyResult resultAction = marchandBehavior.AcquiereNewFragment(index);
+
+        switch (resultAction)
+        {
+            case MarchandBehavior.BuyResult.BUY:
+                ActualizeFragmentInteface(index);
+                break;
+            case MarchandBehavior.BuyResult.NOT_ENOUGH_MONEY:
+                negatifFeedbackText.text = "Not enough cristal!";
+                break;
+            default:
+                break;
+        }
+    }
+
 
     public void ActualizeSpellInterface(int index)
     {
@@ -93,15 +122,32 @@ public class MarchandUiView : MonoBehaviour
         if (itemData.hasBeenBuy)
         {
             spellSpriteArray[index].sprite = null;
-            cristalPriceTextArray[index].text = "Sold";
+            spellPriceTextArray[index].text = "Sold";
             spellSpriteArray[index].color = new Color(1, 1, 1, 0);
         }
         else
         {
             spellSpriteArray[index].sprite = merchandItemData.spellData[index].sprite;
-            cristalPriceTextArray[index].text = itemData.price.ToString();
+            spellPriceTextArray[index].text = itemData.price.ToString();
         }
-        cristalSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
+        cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
+    }
+
+    public void ActualizeFragmentInteface(int index)
+    {
+        ItemData itemData = merchandItemData.itemFragmentData[index];
+        if (itemData.hasBeenBuy)
+        {
+            fragmentSpriteArray[index].sprite = null;
+            fragmentPriceTextArray[index].text = "Sold";
+            fragmentSpriteArray[index].color = new Color(1, 1, 1, 0);
+        }
+        else
+        {
+            fragmentSpriteArray[index].sprite = GameResources.instance.fragmentIconArray[(int)itemData.element];
+            fragmentPriceTextArray[index].text = itemData.price.ToString();
+        }
+        cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
 
     public void ActualizeDescriptionInterface(int index,CharacterObjectType type)
@@ -119,6 +165,10 @@ public class MarchandUiView : MonoBehaviour
                 image = merchandItemData.spellData[index].sprite;
                 break;
             case CharacterObjectType.FRAGMENT:
+                if (merchandItemData.itemFragmentData[index].hasBeenBuy) return;
+                description = merchandItemData.fragmentData[index].description;
+                name = merchandItemData.fragmentData[index].name;
+                image = GameResources.instance.fragmentIconArray[(int)merchandItemData.itemFragmentData[index].element]; ;
                 break;
             default:
                 break;

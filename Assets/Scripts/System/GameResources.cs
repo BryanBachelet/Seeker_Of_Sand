@@ -10,6 +10,8 @@ namespace GuerhoubaGames.Resources
         
         [Tooltip("This array need to be align withe enum GameElement")]
         public Sprite[] cristalIconArray;
+        [Tooltip("This array need to be align withe enum GameElement")]
+        public Sprite[] fragmentIconArray;
 
         public void Awake()
         {

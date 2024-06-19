@@ -63,7 +63,7 @@ public class Chosereward : MonoBehaviour
         //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
         m_lastPiedestal = Instantiate(piedestalReward, transform.position + new Vector3(position.x, -8, position.z), Quaternion.identity, transform);
         artefactPiedestalAnimator.Add(m_lastPiedestal.GetComponent<Animator>());
-        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[type].elementAffiliation], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
+        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[type].gameElement], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
         ExperienceMouvement m_ExperienceMouvement = newArtefact.GetComponent<ExperienceMouvement>();
         artefactMouvement.Add(m_ExperienceMouvement);
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
@@ -71,7 +71,7 @@ public class Chosereward : MonoBehaviour
         m_artefactHolder.m_artefactsInfos = artefactToChose[type];
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
         vfxArtefact.Add(vfx);
-       if(IsDebugActive) Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
+       if(IsDebugActive) Debug.Log("Artefact (" + index + ") is type (" + m_artefactHolder.m_artefactsInfos.gameElement.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
     }
 
     public void GetArtefactAttribution()
@@ -127,7 +127,7 @@ public class Chosereward : MonoBehaviour
         int rndArtefact = Random.Range(0, artefactToChose.Count);
         Vector3 position = positionAltar.position;
         //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
-        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[rndArtefact].elementAffiliation], position, transform.rotation, positionAltar);
+        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[rndArtefact].gameElement], position, transform.rotation, positionAltar);
         ExperienceMouvement m_ExperienceMouvement = newArtefact.GetComponent<ExperienceMouvement>();
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();
@@ -137,7 +137,7 @@ public class Chosereward : MonoBehaviour
         //StartCoroutine(ChosedArtefact(i, 30));
         if (IsDebugActive)
         {
-            Debug.Log("Artefact (" + ") is type (" + m_artefactHolder.m_artefactsInfos.elementAffiliation.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
+            Debug.Log("Artefact (" + ") is type (" + m_artefactHolder.m_artefactsInfos.gameElement.ToString() + ") and is named " + m_artefactHolder.m_artefactsInfos.nameArtefact);
             Debug.Log(" Artefact N°" + rndArtefact);
         }
     }

@@ -16,7 +16,8 @@ public struct MerchandItemData
 {
     public ItemData[] itemSpellData;
     public SpellSystem.Capsule[] spellData;
-    public ItemData[] fragmentData;
+    public ItemData[] itemFragmentData;
+    public ArtefactsInfos[] fragmentData;
 }
 
 public class MarchandBehavior : InteractionInterface
@@ -32,6 +33,7 @@ public class MarchandBehavior : InteractionInterface
     private UI_Inventory m_uiInventory;
     private UIDispatcher m_uiDispatcher;
     private CapsuleManager m_capsuleManager;
+    private FragmentManager m_fragmentManager;
     private GameObject m_playerGo;
     private CristalInventory m_cristalInventory;
 
@@ -52,7 +54,9 @@ public class MarchandBehavior : InteractionInterface
 
         m_uiInventory = m_uiDispatcher.uiInventory;
         m_capsuleManager = GameState.m_enemyManager.GetComponent<CapsuleManager>();
+        m_fragmentManager = GameState.m_enemyManager.GetComponent<FragmentManager>();
         SetSpellItem();
+        SetFragmentItem();
     }
 
     #region Interaction Functions
@@ -92,6 +96,23 @@ public class MarchandBehavior : InteractionInterface
         merchandItemData.itemSpellData = spellItemData;
     }
 
+    public void SetFragmentItem()
+    {
+        merchandItemData.fragmentData = new ArtefactsInfos[2];
+        for (int i = 0; i < 2; i++)
+        {
+           int index = m_fragmentManager.GetRandomIndexFragment();
+            merchandItemData.fragmentData[i] = m_fragmentManager.GetArtefacts(index);
+            fragmentItemData[i].index = index;
+            fragmentItemData[i].price = 25;
+            fragmentItemData[i].type = CharacterObjectType.FRAGMENT;
+            fragmentItemData[i].element = merchandItemData.fragmentData[i].gameElement;
+            fragmentItemData[i].hasBeenBuy = false;
+        }
+
+        merchandItemData.itemFragmentData = fragmentItemData;
+    }
+
     public BuyResult AcquiereNewSpell(int index)
     {
         // Check the price and pay price
@@ -109,6 +130,20 @@ public class MarchandBehavior : InteractionInterface
         // Update Interface from inventory and Store
         m_uiInventory.ActualizeInventory();
 
+        return BuyResult.BUY;
+    }
+
+    public BuyResult AcquiereNewFragment(int index)
+    {
+        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[index].price, merchandItemData.itemFragmentData[index].element);
+
+        if (!canPay || merchandItemData.itemFragmentData[index].hasBeenBuy) return BuyResult.NOT_ENOUGH_MONEY;
+        m_cristalInventory.RemoveCristalCount((int)merchandItemData.itemFragmentData[index].element, -merchandItemData.itemFragmentData[index].price);
+       
+        merchandItemData.itemFragmentData[index].hasBeenBuy = true;
+        m_fragmentManager.GiveArtefact(merchandItemData.itemFragmentData[index].index, GameState.s_playerGo);
+
+        m_uiInventory.ActualizeInventory();
         return BuyResult.BUY;
     }
 }
