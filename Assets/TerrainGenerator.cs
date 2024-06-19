@@ -112,7 +112,7 @@ public class TerrainGenerator : MonoBehaviour
 
             int indexRoomType = 0;
             indexRoomType = Random.Range(0, roomTypeList.Count);
-            indexRoomType = 3; // Temp
+            //indexRoomType = 3; // Temp
             roomManager.currentRoomType = roomTypeList[indexRoomType];
 
             if (indexRoomType == 3)
