@@ -1169,7 +1169,7 @@ namespace Character
             else
             {
                 vfxUiSign[currentVfxToActive].SendEvent("OnPlay");
-                vfxUiSign[capsuleStatsAlone.Count].SendEvent("OnStop");
+                vfxUiSign[capsuleStatsAlone.Count-1].SendEvent("OnStop");
             }
 
         }
