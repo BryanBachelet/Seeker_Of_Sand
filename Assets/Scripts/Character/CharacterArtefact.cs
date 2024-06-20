@@ -78,6 +78,7 @@ public class CharacterArtefact : MonoBehaviour
     public void RemoveArtefact(int index)
     {
         artefactsList.RemoveAt(index);
+        uiFragmentTooltip.RemoveFragment(index);
     }
 
 

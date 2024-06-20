@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.UI;
 
 public struct ItemData
 {
@@ -145,5 +146,23 @@ public class MarchandBehavior : InteractionInterface
 
         m_uiInventory.ActualizeInventory();
         return BuyResult.BUY;
+    }
+
+
+    public void AcquiereRandomNewSpell( DragData dragData)
+    {
+        int spellIndex = Random.Range(0, m_capsuleManager.capsules.Length);
+        Character.CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
+        characterShoot.RemoveSpell(dragData.indexObj);
+        characterShoot.AddSpell(spellIndex);
+        m_uiInventory.ActualizeInventory();
+    }
+
+    public void AcquiereRandomNewFragment(DragData dragData)
+    {
+        int index = m_fragmentManager.GetRandomIndexFragment(); 
+        m_fragmentManager.RemoveFragment(dragData.indexObj, GameState.s_playerGo);
+        m_fragmentManager.GiveArtefact(index, GameState.s_playerGo);
+        m_uiInventory.ActualizeInventory();
     }
 }

@@ -1134,6 +1134,27 @@ namespace Character
             }
         }
 
+        public void RemoveSpell(int index)
+        {
+            int spellIndex = spellEquip[index];
+            capsuleIndex.RemoveAt(spellIndex);
+            capsuleStatsAlone.RemoveAt(spellIndex);
+            m_characterInventory.RemoveSpell(spellIndex);
+            m_stackingClock[index].DeactivateClock();
+
+
+            for (int i = index; i < 2; i++)
+            {
+                if (spellIndex < spellEquip[i + 1])
+                    spellEquip[i + 1] = spellEquip[i + 1] - 1;
+
+                spellEquip[i] = spellEquip[i + 1];
+            }
+
+            maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
+            RefreshActiveIcon(m_characterInventory.GetAllSpells());
+        }
+
         public bool IsSpellAlreadyUse(int indexSpell)
         {
             for (int i = 0; i < spellEquip.Length; i++)
