@@ -7,7 +7,7 @@ using TMPro;
 using SeekerOfSand.UI;
 using GuerhoubaTools.Gameplay;
 using GuerhoubaGames.GameEnum;
-
+using UnityEngine.VFX;
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
@@ -67,6 +67,8 @@ namespace Character
         [Header("Shoot Feedback")]
         [SerializeField] private float m_shakeDuration = 0.1f;
         public GameObject[] vfxElementSign = new GameObject[4];
+        public VisualEffect[] vfxUiSign = new VisualEffect[4];
+        private VisualEffect lastVfx;
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
         private GameObject lastElementToUse;
 
@@ -392,7 +394,7 @@ namespace Character
                     spellEquip[i] = i;
             }
             m_currentIndexCapsule = spellEquip[0];
-
+            ChangeVfxOnUi(m_currentIndexCapsule);
             maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
 
         }
@@ -753,10 +755,11 @@ namespace Character
             if (!m_activeSpellLoad)
             {
                 m_currentIndexCapsule = ChangeProjecileIndex();
+                ChangeVfxOnUi(m_currentIndexCapsule);
 
             }
 
-           
+            lastVfx = vfxUiSign[m_currentIndexCapsule];
 
             currentManaValue -= 2;
             m_CharacterAnimator.ResetTrigger("Shot" + m_currentIndexCapsule);
@@ -796,10 +799,12 @@ namespace Character
                 {
                     vfxElementSign[i].SetActive(true);
                     lastElementToUse = vfxElementSign[i];
+
                 }
                 else
                 {
                     vfxElementSign[i].SetActive(false);
+                    vfxUiSign[i].SendEvent("OnStop");
                 }
             }
         }
@@ -1154,6 +1159,20 @@ namespace Character
         #endregion
 
 
+        public void ChangeVfxOnUi(int currentVfxToActive)
+        {
+            if(currentVfxToActive > 0)
+            {
+                vfxUiSign[currentVfxToActive].SendEvent("OnPlay");
+                vfxUiSign[currentVfxToActive - 1].SendEvent("OnStop");
+            }
+            else
+            {
+                vfxUiSign[currentVfxToActive].SendEvent("OnPlay");
+                vfxUiSign[capsuleStatsAlone.Count].SendEvent("OnStop");
+            }
+
+        }
     }
 
 
