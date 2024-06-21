@@ -50,8 +50,8 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.ResetAllSpawingPhasse();
 
         // Temp
-        marchandBehavior.gameObject.SetActive(true);
-        marchandBehavior.InitComponents();
+        //marchandBehavior.gameObject.SetActive(true);
+        //marchandBehavior.InitComponents();
 
         if (currentRoomType == RoomType.Merchant)
         {
