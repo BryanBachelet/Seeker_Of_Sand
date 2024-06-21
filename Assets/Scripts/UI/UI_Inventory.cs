@@ -53,6 +53,7 @@ public class UI_Inventory : MonoBehaviour
         isOpen = true;
         inventoryContainer.SetActive(isOpen);
         ActualizeInventory();
+        m_characterShoot.hasShootBlock = true;
     }
 
     public void DeactivateInventoryInterface()
@@ -61,6 +62,7 @@ public class UI_Inventory : MonoBehaviour
 
         isOpen = false;
         inventoryContainer.SetActive(isOpen);
+        m_characterShoot.hasShootBlock = false;
     }
 
 

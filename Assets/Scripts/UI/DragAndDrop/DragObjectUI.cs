@@ -23,7 +23,7 @@ namespace GuerhoubaGames.UI
 
         public void OnDrop(PointerEventData eventData)
         {
-            Debug.Log("On Drop  " + gameObject.name);
+            DragManager.instance.ChangeSpellPosition(index);
         }
 
         public void OnEndDrag(PointerEventData eventData)

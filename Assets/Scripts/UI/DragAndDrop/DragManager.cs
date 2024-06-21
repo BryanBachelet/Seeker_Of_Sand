@@ -39,11 +39,16 @@ namespace GuerhoubaGames.UI
 
         public void ActiveDragDrop(CharacterObjectType type, int index, Vector2 mousePosition)
         {
-            isDragging = true;
+           
             switch (type)
             {
                 case CharacterObjectType.SPELL:
                     Character.CharacterShoot characterShoot = m_playerGO.GetComponent<Character.CharacterShoot>();
+                    int spellindex = characterShoot.spellEquip[index];
+                    if(spellindex == -1)
+                    {
+                        return;
+                    }
                     imageToDrag.sprite = characterShoot.GetSpellSprite()[index];
                     break;
                 case CharacterObjectType.FRAGMENT:
@@ -52,7 +57,7 @@ namespace GuerhoubaGames.UI
                 default:
                     break;
             }
-
+            isDragging = true;
             dragData.currentType = type;
             dragData.indexObj = index;
             imageToDrag.gameObject.SetActive(true);
@@ -68,7 +73,16 @@ namespace GuerhoubaGames.UI
 
         public void UpdateImage(Vector2 delta)
         {
-            m_imageRectTransform.anchoredPosition += delta;
+            if (!isDragging) return;
+                m_imageRectTransform.anchoredPosition += delta;
+        }
+
+        public void ChangeSpellPosition(int index)
+        {
+            if (!isDragging || dragData.currentType == CharacterObjectType.FRAGMENT) return;
+
+            Character.CharacterShoot characterShoot =  m_playerGO.GetComponent<Character.CharacterShoot>();
+            characterShoot.ExchangeSpell(index,dragData.indexObj);
         }
 
 
