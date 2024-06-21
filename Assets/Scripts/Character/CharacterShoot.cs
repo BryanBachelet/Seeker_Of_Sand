@@ -7,7 +7,7 @@ using TMPro;
 using SeekerOfSand.UI;
 using GuerhoubaTools.Gameplay;
 using GuerhoubaGames.GameEnum;
-
+using UnityEngine.VFX;
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
@@ -152,7 +152,7 @@ namespace Character
         public bool hasStartShoot = true;
         public bool hasShootBlock = false;
 
-
+        public VisualEffect[] vfxUISign = new VisualEffect[4];
 
         #region Unity Functions
 
@@ -393,7 +393,7 @@ namespace Character
                     spellEquip[i] = i;
             }
             m_currentIndexCapsule = spellEquip[0];
-
+            ChangeVfxOnUI(m_currentIndexCapsule);
             maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
 
         }
@@ -754,7 +754,7 @@ namespace Character
             if (!m_activeSpellLoad)
             {
                 m_currentIndexCapsule = ChangeProjecileIndex();
-
+                ChangeVfxOnUI(m_currentIndexCapsule);
             }
 
 
@@ -1102,6 +1102,7 @@ namespace Character
             }
         }
 
+
         public void UpdateFeedbackAimLayout()
         {
             m_textCurrentLayout.text = "Current layout : \n" + m_aimModeState.ToString();
@@ -1198,6 +1199,19 @@ namespace Character
 
         #endregion
 
+        public void ChangeVfxOnUI(int currentVfxToActive)
+        {
+            if(currentVfxToActive > 0)
+            {
+                vfxUISign[currentVfxToActive].SendEvent("OnPlay");
+                vfxUISign[currentVfxToActive - 1].SendEvent("OnStop");
+            }
+            else
+            {
+                vfxUISign[currentVfxToActive].SendEvent("OnPlay");
+                vfxUISign[capsuleStatsAlone.Count-1].SendEvent("OnStop");
+            }
+        }
 
     }
 
