@@ -23,7 +23,7 @@ public class MarchandUiView : MonoBehaviour
     public Image[] fragmentSpriteArray;
     public Image[] cristalFragmentSpriteArray;
     public TMP_Text[] fragmentPriceTextArray;
- 
+
     [Header("Spells Elements")]
     public Image[] spellSpriteArray;
     public Image[] cristalSpellSpriteArray;
@@ -37,7 +37,7 @@ public class MarchandUiView : MonoBehaviour
     {
         InitEventComponent();
     }
-    
+
 
     public void InitEventComponent()
     {
@@ -82,7 +82,7 @@ public class MarchandUiView : MonoBehaviour
 
     public void InteractBuySpell(int index)
     {
-       MarchandBehavior.BuyResult resultAction = marchandBehavior.AcquiereNewSpell(index);
+        MarchandBehavior.BuyResult resultAction = marchandBehavior.AcquiereNewSpell(index);
 
         switch (resultAction)
         {
@@ -150,7 +150,7 @@ public class MarchandUiView : MonoBehaviour
         cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
 
-    public void ActualizeDescriptionInterface(int index,CharacterObjectType type)
+    public void ActualizeDescriptionInterface(int index, CharacterObjectType type)
     {
         string name, description;
         name = "";
@@ -180,4 +180,18 @@ public class MarchandUiView : MonoBehaviour
     }
 
 
+    public void DropElementMysteryBag(DragData dragData)
+    {
+        switch (dragData.currentType)
+        {
+            case CharacterObjectType.SPELL:
+                marchandBehavior.AcquiereRandomNewSpell(dragData);
+                break;
+            case CharacterObjectType.FRAGMENT:
+                marchandBehavior.AcquiereRandomNewFragment(dragData);
+                break;
+            default:
+                break;
+        }
+    }
 }

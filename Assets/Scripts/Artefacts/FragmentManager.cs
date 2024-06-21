@@ -7,7 +7,7 @@ public class FragmentManager : MonoBehaviour
     [SerializeField] private ArtefactsInfos[] m_listAllArtefact = new ArtefactsInfos[0];
     [SerializeField] List<ArtefactHolder> artefactHolder = new List<ArtefactHolder>();
     [Tooltip("The artefact prefab array need to match element enum")]
-    [SerializeField] public GameObject[] artefactPrefab = new GameObject[4]; 
+    [SerializeField] public GameObject[] artefactPrefab = new GameObject[4];
 
     public ArtefactsInfos GetArtefacts(int index) { return m_listAllArtefact[index]; }
 
@@ -15,7 +15,7 @@ public class FragmentManager : MonoBehaviour
     private void GenerateNewArtefact(int index) // Not Finish
     {
         GameObject newArtefact = Instantiate(artefactPrefab[(int)m_listAllArtefact[index].gameElement],
-            transform.position , 
+            transform.position,
             transform.rotation,
             transform.Find("ArtefactContainer")
             );
@@ -37,5 +37,10 @@ public class FragmentManager : MonoBehaviour
 
         target.GetComponent<CharacterArtefact>().AddArtefact(m_listAllArtefact[index]);
         target.GetComponent<DropInventory>().AddNewArtefact(m_listAllArtefact[index]);
+    }
+    public void RemoveFragment(int index,GameObject target)
+    {
+        target.GetComponent<CharacterArtefact>().RemoveArtefact(index);
+
     }
 }
