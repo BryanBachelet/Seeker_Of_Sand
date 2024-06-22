@@ -105,6 +105,7 @@ public class TerrainGenerator : MonoBehaviour
 
             int indexRoomType = 0;
             indexRoomType = Random.Range(0, roomTypeList.Count);
+            indexRoomType = 3;
             GameObject newTerrain;
             if (indexRoomType == 3)
             {

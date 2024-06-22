@@ -1144,7 +1144,7 @@ namespace Character
             capsuleStatsAlone.RemoveAt(spellIndex);
             m_characterInventory.RemoveSpell(spellIndex);
             m_stackingClock[index].DeactivateClock();
-
+        
 
             for (int i = index; i < 2; i++)
             {
@@ -1155,6 +1155,7 @@ namespace Character
             }
 
             maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
+            spellEquip[maxSpellIndex] = -1;
             RefreshActiveIcon(m_characterInventory.GetAllSpells());
         }
 

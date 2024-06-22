@@ -71,10 +71,10 @@ namespace GuerhoubaGames.UI
         }
 
 
-        public void UpdateImage(Vector2 delta)
+        public void UpdateImage(Vector2 position)
         {
             if (!isDragging) return;
-                m_imageRectTransform.anchoredPosition += delta;
+                m_imageRectTransform.anchoredPosition = position - new Vector2(Screen.width / 2, Screen.height / 2);
         }
 
         public void ChangeSpellPosition(int index)
