@@ -19,6 +19,9 @@ public class MarchandUiView : MonoBehaviour
     public MerchandUIOver[] merchandButtonElementArray;
     public TMP_Text negatifFeedbackText;
 
+    public Color noEnoughMoneyColor = Color.red;
+    public Color canBuyColor = Color.white;
+
     [Header("Fragments Elements")]
     public Image[] fragmentSpriteArray;
     public Image[] cristalFragmentSpriteArray;
@@ -95,6 +98,7 @@ public class MarchandUiView : MonoBehaviour
             default:
                 break;
         }
+        ActualizeShop();
     }
 
 
@@ -113,8 +117,24 @@ public class MarchandUiView : MonoBehaviour
             default:
                 break;
         }
+        ActualizeShop();
     }
 
+    public void ActualizeShop()
+    {
+        for (int i = 0; i < merchandItemData.itemSpellData.Length; i++)
+        {
+            ItemData itemData = merchandItemData.itemSpellData[i];
+            if(itemData.isBuyable) spellPriceTextArray[i].color = canBuyColor;
+            else spellPriceTextArray[i].color = noEnoughMoneyColor;
+        }
+        for (int i = 0; i < merchandItemData.itemFragmentData.Length; i++)
+        {
+            ItemData itemData = merchandItemData.itemFragmentData[i];
+            if (itemData.isBuyable) fragmentPriceTextArray[i].color = canBuyColor;
+            else fragmentPriceTextArray[i].color = noEnoughMoneyColor;
+        }
+    }
 
     public void ActualizeSpellInterface(int index)
     {
@@ -129,6 +149,7 @@ public class MarchandUiView : MonoBehaviour
         {
             spellSpriteArray[index].sprite = merchandItemData.spellData[index].sprite;
             spellPriceTextArray[index].text = itemData.price.ToString();
+          
         }
         cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
@@ -146,6 +167,8 @@ public class MarchandUiView : MonoBehaviour
         {
             fragmentSpriteArray[index].sprite = GameResources.instance.fragmentIconArray[(int)itemData.element];
             fragmentPriceTextArray[index].text = itemData.price.ToString();
+           if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
+           else fragmentSpriteArray[index].color = noEnoughMoneyColor;
         }
         cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
