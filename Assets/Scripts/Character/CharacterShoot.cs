@@ -1069,7 +1069,7 @@ namespace Character
                 }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
-            
+
         }
 
 
@@ -1173,9 +1173,11 @@ namespace Character
             RefreshActiveIcon(m_characterInventory.GetAllSpells());
         }
 
-
         public void ExchangeSpell(int indexSpell1, int indexSpell2)
         {
+
+            if (spellEquip[indexSpell1] == -1 || spellEquip[indexSpell2] == -1) return;
+
             int tempIndex = spellEquip[indexSpell1];
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
