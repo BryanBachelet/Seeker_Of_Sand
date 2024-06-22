@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,51 +27,52 @@ public class RoomManager : MonoBehaviour
     private Chosereward choserewardRef;
     public TerrainGenerator terrainGenerator;
 
-   [HideInInspector] public RoomInfoUI roomInfoUI;
-
-    public MarchandBehavior marchandBehavior;
+    [HideInInspector] public RoomInfoUI roomInfoUI;
 
     static RewardDistribution playerRewardDistribution;
-   // static ObjectifAndReward_Ui_Function objAndReward_UI;
 
+
+    public Action<RoomType, RewardType> onActivateRoom;
+    public Action<RoomType, RewardType> onDeactivateRoom;
+    public Action<RoomType, RewardType> onCreateRoom;
 
     public void RetriveComponent()
     {
+        if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
         isRoomHasBeenValidate = false;
         isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
         if (playerRewardDistribution == null)
         {
             playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
-           
+
         }
     }
     public void ActivateRoom()
     {
         m_enemyManager.ResetAllSpawingPhasse();
+        if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
 
-        // Temp
-        //marchandBehavior.gameObject.SetActive(true);
-        //marchandBehavior.InitComponents();
 
-        if (currentRoomType == RoomType.Merchant)
-        {
-            marchandBehavior.gameObject.SetActive(true);
-            marchandBehavior.InitComponents();
-        }
         baseRoomType = currentRoomType;
         if (currentRoomType == RoomType.Enemy)
         {
             m_enemyManager.OnDeathSimpleEvent += CountEnemy;
             m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
         }
-           currentCountOfEnemy = 0;
+        currentCountOfEnemy = 0;
 
         if (currentRoomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
         else m_enemyManager.isStopSpawn = false;
-        
+
         SetupRoomType();
-       
+
+    }
+
+    public void DeactivateRoom()
+    {
+        if (onDeactivateRoom != null) onDeactivateRoom.Invoke(currentRoomType, rewardType);
+        DeactivateAltar();
     }
 
     // Setup room teleporter 
@@ -129,7 +131,7 @@ public class RoomManager : MonoBehaviour
                 DeactivateAltar();
                 roomInfoUI.ActiveMajorGoalInterface();
                 int enemyCount = 20 + 20 * terrainGenerator.countRoomGeneration;
-                enemyToKillCount = Random.Range(enemyCount / 2, enemyCount);
+                enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
                 break;
             default:
                 break;
@@ -150,7 +152,7 @@ public class RoomManager : MonoBehaviour
     public void ValidateRoom()
     {
         if (isRoomHasBeenValidate) return;
-      
+
         GiveRoomReward();
         currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
@@ -173,7 +175,7 @@ public class RoomManager : MonoBehaviour
     private void GiveRoomReward()
     {
         playerRewardDistribution.GiveReward(rewardType);
-       
+
     }
 
 

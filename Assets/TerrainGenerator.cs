@@ -102,17 +102,26 @@ public class TerrainGenerator : MonoBehaviour
             roomTypeList.Remove(currentRoomManager.currentRoomType);
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
-            int randomTerrain = Random.Range(0, poolNumber);
-            GameObject newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+
+            int indexRoomType = 0;
+            indexRoomType = Random.Range(0, roomTypeList.Count);
+            GameObject newTerrain;
+            if (indexRoomType == 3)
+            {
+
+                newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+            }
+            else
+            {
+                int randomTerrain = Random.Range(0, poolNumber);
+                newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+            }
+
             terrainInstantiated.Add(newTerrain);
 
             RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
             roomManager.RetriveComponent();
             roomManager.terrainGenerator = this;
-
-            int indexRoomType = 0;
-            indexRoomType = Random.Range(0, roomTypeList.Count);
-            //indexRoomType = 3; // Temp
             roomManager.currentRoomType = roomTypeList[indexRoomType];
 
             if (indexRoomType == 3)
@@ -146,8 +155,6 @@ public class TerrainGenerator : MonoBehaviour
         Debug.Log("NextTerrainSelected : " + lastTerrainSelected);
         int terrainSelected = selectedTerrainNumber;
         teleporter.Clear();
-
-
 
         for (int i = 0; i < terrainInstantiated.Count; i++)
         {
@@ -194,9 +201,11 @@ public class TerrainGenerator : MonoBehaviour
             oldTerrain[i].SetActive(false);
         }
 
+
+
         selectedTerrain = selectedTerrainNumber;
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
-        currentRoomManager.DeactivateAltar();
+        currentRoomManager.DeactivateRoom();
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
 
 

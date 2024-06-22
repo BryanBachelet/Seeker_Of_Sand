@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PopupFunction : MonoBehaviour
+public class PopupFunction : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 {
     static public ChooseSpellManager spellManager;
     public ChooseSpellManager spellManagerPublic;
@@ -17,21 +18,15 @@ public class PopupFunction : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnMouseOver()
+    public void OnPointerEnter(PointerEventData eventData)
     {
         overring = true;
         spellManager.SpellOverrring(popupIndex, this);
     }
 
-    private void OnMouseExit()
+    public void OnPointerExit(PointerEventData eventData)
     {
-        overring = false;
-        spellManager.SpellOverringExit();
+        //overring = false;
+        //spellManager.SpellOverringExit();
     }
 }

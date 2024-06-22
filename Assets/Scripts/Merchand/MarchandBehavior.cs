@@ -11,6 +11,7 @@ public struct ItemData
     public int price;
     public int index;
     public bool hasBeenBuy;
+    public bool isBuyable;
 }
 
 public struct MerchandItemData
@@ -28,6 +29,10 @@ public class MarchandBehavior : InteractionInterface
         BUY = 0 ,
         NOT_ENOUGH_MONEY = 1
     }
+
+    [Header("Marchand Variables")]
+    public int spellPrice = 50;
+    public int fragmentPrice = 25;
 
 
     private MarchandUiView m_merchandView;
@@ -88,10 +93,11 @@ public class MarchandBehavior : InteractionInterface
             int spellIndex = Random.Range(0, m_capsuleManager.capsules.Length);
             merchandItemData.spellData[i] = m_capsuleManager.capsules[spellIndex];
             spellItemData[i].index = spellIndex;
-            spellItemData[i].price = 50;
+            spellItemData[i].price = spellPrice;
             spellItemData[i].type = CharacterObjectType.SPELL;
             spellItemData[i].element = m_capsuleManager.attackInfo[spellIndex].element;
             spellItemData[i].hasBeenBuy = false;
+            spellItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(spellItemData[i].price, spellItemData[i].element);
         }
 
         merchandItemData.itemSpellData = spellItemData;
@@ -105,10 +111,11 @@ public class MarchandBehavior : InteractionInterface
            int index = m_fragmentManager.GetRandomIndexFragment();
             merchandItemData.fragmentData[i] = m_fragmentManager.GetArtefacts(index);
             fragmentItemData[i].index = index;
-            fragmentItemData[i].price = 25;
+            fragmentItemData[i].price = fragmentPrice;
             fragmentItemData[i].type = CharacterObjectType.FRAGMENT;
             fragmentItemData[i].element = merchandItemData.fragmentData[i].gameElement;
             fragmentItemData[i].hasBeenBuy = false;
+            fragmentItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(fragmentItemData[i].price, fragmentItemData[i].element);
         }
 
         merchandItemData.itemFragmentData = fragmentItemData;
@@ -128,6 +135,7 @@ public class MarchandBehavior : InteractionInterface
         Character.CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
         int spellIndex = merchandItemData.itemSpellData[index].index;
         characterShoot.AddSpell(spellIndex);
+        CheckPlayerBuyCapacity();
         // Update Interface from inventory and Store
         m_uiInventory.ActualizeInventory();
 
@@ -143,9 +151,19 @@ public class MarchandBehavior : InteractionInterface
        
         merchandItemData.itemFragmentData[index].hasBeenBuy = true;
         m_fragmentManager.GiveArtefact(merchandItemData.itemFragmentData[index].index, GameState.s_playerGo);
+        CheckPlayerBuyCapacity();
 
         m_uiInventory.ActualizeInventory();
         return BuyResult.BUY;
+    }
+
+    private void CheckPlayerBuyCapacity()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            merchandItemData.itemSpellData[i].isBuyable = m_cristalInventory.HasEnoughCristal(merchandItemData.itemSpellData[i].price, merchandItemData.itemSpellData[i].element);
+            merchandItemData.itemFragmentData[i].isBuyable = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[i].price, merchandItemData.itemFragmentData[i].element);
+        }
     }
 
 
