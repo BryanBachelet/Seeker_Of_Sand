@@ -156,8 +156,6 @@ public class TerrainGenerator : MonoBehaviour
         int terrainSelected = selectedTerrainNumber;
         teleporter.Clear();
 
-
-
         for (int i = 0; i < terrainInstantiated.Count; i++)
         {
 
