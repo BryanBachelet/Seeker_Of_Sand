@@ -33,6 +33,6 @@ namespace GuerhoubaGames.GameEnum
         SPELL = 1,
         ARTEFACT = 2,
         HEAL = 3,
-        NOTHING = 4,
+        MERCHANT = 4,
     }
 }
