@@ -53,6 +53,7 @@ public class MarchandUiView : MonoBehaviour
     public void ActiveMarchandUI(MerchandItemData itemData)
     {
         if (isOpen) return;
+        GlobalSoundManager.PlayOneShot(40, transform.position);
         isOpen = true;
         shopContainer.SetActive(isOpen);
         merchandItemData = itemData;
@@ -62,6 +63,7 @@ public class MarchandUiView : MonoBehaviour
     public void DeactiveMarchandUI()
     {
         if (!isOpen) return;
+        GlobalSoundManager.PlayOneShot(41, transform.position);
         isOpen = false;
         shopContainer.SetActive(isOpen);
     }
@@ -91,9 +93,11 @@ public class MarchandUiView : MonoBehaviour
         {
             case MarchandBehavior.BuyResult.BUY:
                 ActualizeSpellInterface(index);
+                GlobalSoundManager.PlayOneShot(43, transform.position);
                 break;
             case MarchandBehavior.BuyResult.NOT_ENOUGH_MONEY:
                 negatifFeedbackText.text = "Not enough cristal!";
+                GlobalSoundManager.PlayOneShot(42, transform.position);
                 break;
             default:
                 break;
@@ -110,9 +114,11 @@ public class MarchandUiView : MonoBehaviour
         {
             case MarchandBehavior.BuyResult.BUY:
                 ActualizeFragmentInteface(index);
+                GlobalSoundManager.PlayOneShot(44, transform.position);
                 break;
             case MarchandBehavior.BuyResult.NOT_ENOUGH_MONEY:
                 negatifFeedbackText.text = "Not enough cristal!";
+                GlobalSoundManager.PlayOneShot(42, transform.position);
                 break;
             default:
                 break;
@@ -149,7 +155,10 @@ public class MarchandUiView : MonoBehaviour
         {
             spellSpriteArray[index].sprite = merchandItemData.spellData[index].sprite;
             spellPriceTextArray[index].text = itemData.price.ToString();
-          
+            spellSpriteArray[index].color = new Color(1, 1, 1, 1);
+            if (itemData.isBuyable) fragmentSpriteArray[index].color = canBuyColor;
+            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
+
         }
         cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
@@ -169,6 +178,7 @@ public class MarchandUiView : MonoBehaviour
             fragmentPriceTextArray[index].text = itemData.price.ToString();
            if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
+            spellSpriteArray[index].color = new Color(1, 1, 1, 1);
         }
         cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }

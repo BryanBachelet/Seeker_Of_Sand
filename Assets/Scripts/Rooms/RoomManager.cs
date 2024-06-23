@@ -47,6 +47,14 @@ public class RoomManager : MonoBehaviour
             playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
 
         }
+
+
+
+        RoomInterface[] interfacesArray = transform.parent.GetComponentsInChildren<RoomInterface>();
+        for (int i = 0; i < interfacesArray.Length; i++)
+        {
+            interfacesArray[i].SetupRoomOptions();
+        }
     }
     public void ActivateRoom()
     {

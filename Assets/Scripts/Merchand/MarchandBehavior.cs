@@ -77,7 +77,7 @@ public class MarchandBehavior : InteractionInterface
 
     public override void OnInteractionStart(GameObject player)
     {
-        m_merchandView.ActiveMarchandUI(merchandItemData);
+            m_merchandView.ActiveMarchandUI(merchandItemData);
         m_uiDispatcher.fixeGameplayUI.SetActive(false);
         m_uiInventory.ActivateInventoryInterface();
         GameState.ChangeState();

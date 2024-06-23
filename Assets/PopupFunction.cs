@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PopupFunction : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
+public class PopupFunction : MonoBehaviour, IPointerEnterHandler
 {
     static public ChooseSpellManager spellManager;
     public ChooseSpellManager spellManagerPublic;
@@ -24,9 +24,4 @@ public class PopupFunction : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
         spellManager.SpellOverrring(popupIndex, this);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        //overring = false;
-        //spellManager.SpellOverringExit();
-    }
 }
