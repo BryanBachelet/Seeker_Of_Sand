@@ -22,6 +22,9 @@ public class GlobalSoundManager : MonoBehaviour
     public EventInstance globalMusicInstance;
 
 
+    public EventReference marchandMusic;
+    public EventInstance marchandMusicInstance;
+
     public EventReference canalisationReference;
     public EventInstance canalisationInstance;
 
@@ -75,6 +78,15 @@ public class GlobalSoundManager : MonoBehaviour
         globalMusicInstance.start();
     }
 
+    public IEnumerator StopAmbiant(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        globalinstance = RuntimeManager.CreateInstance(Globalsound);
+        globalinstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
+        globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    }
+
     public void OnDisable()
     {
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -98,4 +110,8 @@ public class GlobalSoundManager : MonoBehaviour
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
+    static public void SwitchAmbiantToMarchand()
+    {
+
+    }
 }
