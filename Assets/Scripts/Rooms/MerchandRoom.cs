@@ -19,6 +19,7 @@ public class MerchandRoom : MonoBehaviour
         if (roomtype == RoomType.Merchant)
         {
             marchandBehavior.gameObject.SetActive(true);
+            GlobalSoundManager.SwitchAmbiantToMarchand(true);
             marchandBehavior.InitComponents();
         }
 
@@ -27,6 +28,7 @@ public class MerchandRoom : MonoBehaviour
     public void DeactivateMarchandRoom(RoomType roomType,RewardType rewardType)
     {
         marchandBehavior.gameObject.SetActive(false);
+        GlobalSoundManager.SwitchAmbiantToMarchand(false);
     }
 
 }

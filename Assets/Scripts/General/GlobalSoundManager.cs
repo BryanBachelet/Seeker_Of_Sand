@@ -31,9 +31,12 @@ public class GlobalSoundManager : MonoBehaviour
     public bool changing = false;
 
     public float delayMusic = 0;
+
+    private static GlobalSoundManager thisGSM;
     // Start is called before the first frame update
     void Awake()
     {
+        thisGSM = this.gameObject.GetComponent<GlobalSoundManager>();
         everyEvent = everyEvent_Attribution;
         OneS_Sound = OneS_Sound_Attribution;
         StartCoroutine(StartAmbiant(delayMusic));
@@ -72,19 +75,16 @@ public class GlobalSoundManager : MonoBehaviour
     public IEnumerator StartAmbiant(float delay)
     {
         yield return new WaitForSeconds(delay);
-        globalinstance = RuntimeManager.CreateInstance(Globalsound);
-        globalinstance.start();
+        globalinstance = RuntimeManager.CreateInstance(Globalsound); 
+        //globalinstance.start();
+        globalinstance.setVolume(1);
         globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        globalMusicInstance.start();
-    }
-
-    public IEnumerator StopAmbiant(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        globalinstance = RuntimeManager.CreateInstance(Globalsound);
-        globalinstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        //globalMusicInstance.start();
+        globalMusicInstance.setVolume(1);
+        marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
+        //marchandMusicInstance.start();
+        marchandMusicInstance.setVolume(0);
+        StartAmbiantNoDelay();
     }
 
     public void OnDisable()
@@ -110,8 +110,50 @@ public class GlobalSoundManager : MonoBehaviour
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
-    static public void SwitchAmbiantToMarchand()
+    static public void SwitchAmbiantToMarchand(bool activeMarchand)
     {
+        if(activeMarchand)
+        {
+            thisGSM.ActiveMarchand();
+        }
+        else
+        {
+            thisGSM.DisactiveMarchand();
+        }
+    }
 
+    private void ActiveMarchand()
+    {
+        StopAmbiantNoDelay();
+    }
+    private void DisactiveMarchand()
+    {
+        StartAmbiantNoDelay();
+    }
+
+    public void StartAmbiantNoDelay()
+    {
+        //globalinstance = RuntimeManager.CreateInstance(Globalsound);
+        globalinstance.start();
+        globalinstance.setVolume(1);
+        //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
+        globalMusicInstance.start();
+        globalMusicInstance.setVolume(1);
+        //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
+        marchandMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        marchandMusicInstance.setVolume(0);
+    }
+
+    public void StopAmbiantNoDelay()
+    {
+        //globalinstance = RuntimeManager.CreateInstance(Globalsound);
+        globalinstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        globalinstance.setVolume(0);
+        //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
+        globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        globalMusicInstance.setVolume(0);
+        //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
+        marchandMusicInstance.start();
+        marchandMusicInstance.setVolume(1);
     }
 }
