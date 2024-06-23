@@ -244,7 +244,7 @@ namespace Enemies
                 SpawnCooldown();
             }
 
-            ActiveSpawnPhase(m_dayController.isNight, EnemySpawnCause.NIGHT);
+         
 
             if (m_uiManagerGameObject && lastAltarActivated != null)
             {

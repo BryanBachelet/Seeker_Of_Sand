@@ -18,7 +18,7 @@ namespace GuerhoubaGames.UI
 
         public void OnDrag(PointerEventData eventData)
         {
-            DragManager.instance.UpdateImage(eventData.delta);
+            DragManager.instance.UpdateImage(eventData.position);
         }
 
         public void OnDrop(PointerEventData eventData)

@@ -113,7 +113,7 @@ public class TerrainGenerator : MonoBehaviour
             }
             else
             {
-                int randomTerrain = Random.Range(0, poolNumber);
+                int randomTerrain = Random.Range(1, poolNumber);
                 newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
             }
 
@@ -196,8 +196,13 @@ public class TerrainGenerator : MonoBehaviour
 
         for (int i = 0; i < oldTerrain.Count; i++)
         {
-            oldTerrain[i].GetComponent<NavMeshSurface>().RemoveData();
-            oldTerrain[i].GetComponent<NavMeshSurface>().enabled = false;
+            NavMeshSurface navSurf = oldTerrain[i].GetComponent<NavMeshSurface>();
+           if (navSurf != null)
+            {
+                navSurf.RemoveData();
+                navSurf.enabled = false;
+            }
+
             oldTerrain[i].SetActive(false);
         }
 

@@ -1069,7 +1069,7 @@ namespace Character
                 }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
-            
+
         }
 
 
@@ -1144,7 +1144,7 @@ namespace Character
             capsuleStatsAlone.RemoveAt(spellIndex);
             m_characterInventory.RemoveSpell(spellIndex);
             m_stackingClock[index].DeactivateClock();
-
+        
 
             for (int i = index; i < 2; i++)
             {
@@ -1155,6 +1155,7 @@ namespace Character
             }
 
             maxSpellIndex = Mathf.Clamp(capsuleIndex.Count, 0, 4);
+            spellEquip[maxSpellIndex] = -1;
             RefreshActiveIcon(m_characterInventory.GetAllSpells());
         }
 
@@ -1173,9 +1174,11 @@ namespace Character
             RefreshActiveIcon(m_characterInventory.GetAllSpells());
         }
 
-
         public void ExchangeSpell(int indexSpell1, int indexSpell2)
         {
+
+            if (spellEquip[indexSpell1] == -1 || spellEquip[indexSpell2] == -1) return;
+
             int tempIndex = spellEquip[indexSpell1];
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
