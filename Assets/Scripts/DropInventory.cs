@@ -5,6 +5,7 @@ using UnityEngine;
 public class DropInventory : MonoBehaviour
 {
     public HintDropAcquisition hintDropAcquisitionObject;
+    public HintDropAcquisition hintDropAcquisitionObjectUiOver;
     public HintDropAcquisition.DropInfo lastDropInfo;
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.dropDescription = CapsuleManager.instance.attackInfo[capsuleID].description;
         lastDropInfo.dropName = CapsuleManager.instance.attackInfo[capsuleID].name;
         hintDropAcquisitionObject.AddMajorDrop(lastDropInfo);
+        hintDropAcquisitionObjectUiOver.AddMajorDrop(lastDropInfo);
     }
 
     public void AddNewArtefact(ArtefactsInfos artefact)
@@ -34,6 +36,7 @@ public class DropInventory : MonoBehaviour
         lastDropInfo.dropDescription = artefact.description;
         lastDropInfo.dropName = artefact.nameArtefact;
         hintDropAcquisitionObject.AddMajorDrop(lastDropInfo);
+        hintDropAcquisitionObjectUiOver.AddMajorDrop(lastDropInfo);
     }
 
     public void AddNewUpgrade(Upgrade upgradeData, Sprite spriteSpell)

@@ -79,7 +79,7 @@ public class ShadowFunction : MonoBehaviour
                     outShadowSpawnStatic = false;
                     newAnimatorEyes.SetBool("OnShadowEnter", true);
                     newAnimatorEyes.SetTrigger("Enter");
-                    enemyManager.ActiveSpawnPhase(true,Enemies.EnemySpawnCause.SHADOW);
+                    //enemyManager.ActiveSpawnPhase(true,Enemies.EnemySpawnCause.SHADOW);
                 }
 
             }

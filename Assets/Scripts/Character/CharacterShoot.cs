@@ -1116,7 +1116,7 @@ namespace Character
             int prevIndex = m_characterInventory.GetSpellCount();
             capsuleIndex.Add(index);
             m_characterInventory.AddSpell(m_capsuleManager.capsules[index]);
-
+            m_dropInventory.AddNewItem(index);
             // Update New Capsule
             if (m_characterInventory.GetSpecificSpell(prevIndex).type == SpellSystem.CapsuleType.ATTACK)
             {

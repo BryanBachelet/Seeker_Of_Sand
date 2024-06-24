@@ -52,6 +52,7 @@ public class PullingSystem : MonoBehaviour
             GameObject instance = GameObject.Instantiate(enemyTypeInfo.prefabToSpawn, m_spawnPosition, Quaternion.identity, gameObjectHolder.transform);
             instance.SetActive(false);
             instance.GetComponent<NpcMetaInfos>().SetPauseState();
+            instance.GetComponent<NavMeshAgent>().enabled = false;
             enemyTypeInfo.instanceArray.Add(instance);
         }
 
@@ -89,6 +90,7 @@ public class PullingSystem : MonoBehaviour
         instance.GetComponent<NpcMetaInfos>().state = NpcState.MOVE;
         instance.GetComponent<NpcMetaInfos>().SetPauseState();
         instance.GetComponent<NavMeshAgent>().updatePosition = false;
+        instance.GetComponent<NavMeshAgent>().enabled = false;
         instance.SetActive(false);
         m_enemyInfoArray[(int)type].instanceArray.Add(instance);
 

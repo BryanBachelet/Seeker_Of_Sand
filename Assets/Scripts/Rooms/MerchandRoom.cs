@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 
-public class MerchandRoom : MonoBehaviour
+public class MerchandRoom : MonoBehaviour, RoomInterface
 {
     public RoomManager roomManager;
     public MarchandBehavior marchandBehavior;
-    void Awake()
+
+    public void SetupRoomOptions()
     {
         roomManager.onActivateRoom += ActivateMarchandRoom;
         roomManager.onDeactivateRoom += DeactivateMarchandRoom;
@@ -31,4 +32,5 @@ public class MerchandRoom : MonoBehaviour
         GlobalSoundManager.SwitchAmbiantToMarchand(false);
     }
 
+  
 }

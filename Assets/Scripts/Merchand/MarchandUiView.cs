@@ -155,7 +155,10 @@ public class MarchandUiView : MonoBehaviour
         {
             spellSpriteArray[index].sprite = merchandItemData.spellData[index].sprite;
             spellPriceTextArray[index].text = itemData.price.ToString();
-          
+            spellSpriteArray[index].color = new Color(1, 1, 1, 1);
+            if (itemData.isBuyable) fragmentSpriteArray[index].color = canBuyColor;
+            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
+
         }
         cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
@@ -175,6 +178,7 @@ public class MarchandUiView : MonoBehaviour
             fragmentPriceTextArray[index].text = itemData.price.ToString();
            if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
+            spellSpriteArray[index].color = new Color(1, 1, 1, 1);
         }
         cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
     }
