@@ -35,4 +35,22 @@ namespace GuerhoubaGames.GameEnum
         HEAL = 3,
         MERCHANT = 4,
     }
+
+    public enum AttackType
+    {
+        CLOSE =0,
+        RANGE =1,
+    }
+
+    public enum AttackPhase
+    {
+        PREP = 0,
+        CONTACT = 1,
+        RECOVERY = 2,
+        NONE = 3,
+    }
+
+
+
+
 }

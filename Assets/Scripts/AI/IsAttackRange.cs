@@ -21,7 +21,7 @@ namespace GuerhoubaGames.AI
 
         protected override State OnUpdate()
         {
-            if (agent.attackComponent.rangeAttack >  Vector3.Distance(agent.transform.position,blackboard.moveToObject.transform.position))
+            if (agent.attackComponent.GetAttackRange() >  Vector3.Distance(agent.transform.position,blackboard.moveToObject.transform.position))
             {
                 child.Evaluate();
                 return State.RUNNING;

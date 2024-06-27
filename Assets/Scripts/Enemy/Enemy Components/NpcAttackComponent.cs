@@ -2,39 +2,29 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
 namespace Enemies
 {
     public class NpcAttackComponent : MonoBehaviour
     {
-        public enum AttackState
-        {
-            PREP = 0,
-            CONTACT = 1,
-            RECOVER = 2,
-            NONE = 3,
-        }
+        [Header("Attack Objects")]
+        public Transform baseTransform;
+        public AttackEnemiesObject[] attackEnemiesObjectsArr = new AttackEnemiesObject[0];
+        public Collider[] colliderAttackArray = new Collider[0];
+        public GameObject[] projectileAttackArrray  = new GameObject[0];
+        public GameObject[] deacalAttackArrray  = new GameObject[0];
 
-        [Header("Attack Parameter")]
-        public int attackDamage = 1;
-        public float rangeAttack = 1;
-        public float prepTime = 1;
-        public float attackTime = 1;
-        public float recoverTime = 1;
-        public bool isStunLockable = false;
-        public bool isStopMovingAtPrep = false;
 
+        private AttackNPCData currentAttackData;
+        private int currentAttackIndex;
         private float m_timer;
         private NpcMetaInfos m_npcMetaInfos;
         private NPCEnemiAnimation m_NPCEnemiAnimation;
 
-        [Header("Attack Objects")]
-        public GameObject colliderObject;
-        public GameObject decalsObject;
-        public Transform baseTransform;
-
+      
         [Header("Attack Infos")]
-        public AttackState currentAttackState;
+        public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
 
         // Event for each attack step
@@ -48,7 +38,7 @@ namespace Enemies
         {
             m_npcMetaInfos = GetComponent<NpcMetaInfos>();
             m_NPCEnemiAnimation = GetComponent<NPCEnemiAnimation>();
-            currentAttackState = AttackState.NONE;
+            currentAttackState = AttackPhase.NONE;
             if (m_NPCEnemiAnimation)
             {
                 OnPrepAttack += m_NPCEnemiAnimation.CallCloseAnimation;
@@ -71,20 +61,20 @@ namespace Enemies
 
         public void CancelAttack()
         {
-            if (!isStunLockable) return;
+            if (!currentAttackData.isStunLockingAttack) return;
 
             OnFinishAttack?.Invoke(false);
-            currentAttackState = AttackState.NONE;
+            currentAttackState = AttackPhase.NONE;
         }
 
         #region  Active Phase Functions
         public void ActivePrepationAttack()
         {
             OnPrepAttack?.Invoke();
-            currentAttackState = AttackState.PREP;
-            decalsObject.SetActive(true);
-            if (isStopMovingAtPrep) m_npcMetaInfos.state = NpcState.ATTACK;
-             m_timer = 0.0f;
+            currentAttackState = AttackPhase.PREP;
+            deacalAttackArrray[currentAttackIndex].SetActive(true);
+            if (currentAttackData.isStopMovingAtPrep) m_npcMetaInfos.state = NpcState.ATTACK;
+            m_timer = 0.0f;
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
         }
@@ -92,17 +82,17 @@ namespace Enemies
         public void ActiveAttackContact()
         {
             OnContactAttack?.Invoke();
-            currentAttackState = AttackState.CONTACT;
-            colliderObject.SetActive(true);
+            currentAttackState = AttackPhase.CONTACT;
+            colliderAttackArray[currentAttackIndex].gameObject.SetActive(true);
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking the target");
-            
+
         }
 
         public void ActiveRecoverPhase()
         {
             OnRecoverAttack?.Invoke();
-            currentAttackState = AttackState.RECOVER;
+            currentAttackState = AttackPhase.RECOVERY;
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is recoving from the attack launch");
         }
@@ -112,20 +102,20 @@ namespace Enemies
         #region  Finish Phase Functions
         public void FinishPreparationAttack()
         {
-            decalsObject.SetActive(false);
+            deacalAttackArrray[currentAttackIndex].SetActive(false);
             ActiveAttackContact();
         }
 
         public void FinishContactAttack()
         {
-            colliderObject.SetActive(false);
+            colliderAttackArray[currentAttackIndex].gameObject.SetActive(false);
             ActiveRecoverPhase();
         }
 
         public void FinishRecoverAttack()
         {
             OnFinishAttack?.Invoke(true);
-            currentAttackState = AttackState.NONE;
+            currentAttackState = AttackPhase.NONE;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
         }
         #endregion
@@ -133,9 +123,9 @@ namespace Enemies
         #region Update Phase Functions
         public void UpdatePrepAttack()
         {
-            if (currentAttackState != AttackState.PREP) return;
+            if (currentAttackState != AttackPhase.PREP) return;
 
-            if (m_timer > prepTime)
+            if (m_timer > currentAttackData.prepationTime)
             {
                 FinishPreparationAttack();
             }
@@ -147,9 +137,9 @@ namespace Enemies
 
         public void UpdateContactAttack()
         {
-            if (currentAttackState != AttackState.CONTACT) return;
+            if (currentAttackState != AttackPhase.CONTACT) return;
 
-            if (m_timer > attackTime)
+            if (m_timer > currentAttackData.contactTime)
             {
                 FinishContactAttack();
             }
@@ -161,9 +151,9 @@ namespace Enemies
 
         public void UpdateRecoverAttack()
         {
-            if (currentAttackState != AttackState.RECOVER) return;
+            if (currentAttackState != AttackPhase.RECOVERY) return;
 
-            if (m_timer > recoverTime)
+            if (m_timer > currentAttackData.recoverTime)
             {
                 FinishRecoverAttack();
             }
@@ -172,6 +162,12 @@ namespace Enemies
                 m_timer += Time.deltaTime;
             }
         }
+        #endregion
+
+        #region Attack Data Function
+
+        public float GetAttackRange() { return currentAttackData.attackRange; }
+
         #endregion
 
     }
