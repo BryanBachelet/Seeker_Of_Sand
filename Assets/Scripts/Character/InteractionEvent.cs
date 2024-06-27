@@ -195,18 +195,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
-            if (currentInteractibleObject != null)
-            {
-                AltarBehaviorComponent altarBehaviorComponent = currentInteractibleObject.GetComponent<AltarBehaviorComponent>();
-                if (altarBehaviorComponent)
-                {
-                    currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(this);
-                    currentInteractibleObjectActive = currentInteractibleObject;
-                    m_socleTransform = null;
-                    StartCoroutine(CloseUIWithDelay(2));
-                }
-
-            }
+            
             if (currentInteractionInterface != null)
             {
                 currentInteractionInterface.CallInteraction(this.gameObject);

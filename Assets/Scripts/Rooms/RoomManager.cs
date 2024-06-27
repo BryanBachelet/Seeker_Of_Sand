@@ -162,7 +162,7 @@ public class RoomManager : MonoBehaviour
         if (isRoomHasBeenValidate) return;
 
         GiveRoomReward();
-        currentRoomType = RoomType.Free;
+        if((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
         roomInfoUI.DeactivateMajorGoalInterface();
         m_enemyManager.isStopSpawn = true;

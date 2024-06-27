@@ -103,7 +103,7 @@ public class GameState : MonoBehaviour
     {
         scene = (SceneManager.GetSceneByBuildIndex(5));
         m_isDeath = false;
-        terrainGenerator.LaunchRoomGenerator();
+        if(terrainGenerator)terrainGenerator.LaunchRoomGenerator();
         m_uiManager.GetComponent<UIDispatcher>().ActiveUIElement();
         endMenu = endmenu_Attribution;
         GameObject gm = GameObject.Find("GameManager");

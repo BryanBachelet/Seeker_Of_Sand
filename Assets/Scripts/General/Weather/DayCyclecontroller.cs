@@ -181,7 +181,7 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_moon.transform.rotation.eulerAngles.x > 180)
             {
                 StartDay();
-                if (m_nightCount == 3)
+                if (m_nightCount == 9)
                 {
                     GameState.ChangeState();
                     m_EndUI.SetActive(true);

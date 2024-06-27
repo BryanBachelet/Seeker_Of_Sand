@@ -106,7 +106,7 @@ public class TerrainGenerator : MonoBehaviour
             int indexRoomType = 0;
             indexRoomType = Random.Range(0, roomTypeList.Count);
             GameObject newTerrain;
-            if (indexRoomType == 3)
+            if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
 
                 newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
@@ -124,7 +124,7 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.terrainGenerator = this;
             roomManager.currentRoomType = roomTypeList[indexRoomType];
 
-            if (indexRoomType == 3)
+            if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
                 roomManager.rewardType = RewardType.MERCHANT;
             }
@@ -145,7 +145,7 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         if (currentRoomManager.currentRoomType == RoomType.Free)
-            roomTypeList.Add(currentRoomManager.currentRoomType);
+            roomTypeList.Insert((int)currentRoomManager.currentRoomType, currentRoomManager.currentRoomType);
         //AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
     }

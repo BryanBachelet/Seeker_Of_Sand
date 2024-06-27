@@ -10,7 +10,7 @@ public class MerchandRoom : MonoBehaviour, RoomInterface
 
     public void SetupRoomOptions()
     {
-        roomManager.onActivateRoom += ActivateMarchandRoom;
+         roomManager.onActivateRoom += ActivateMarchandRoom;
         roomManager.onDeactivateRoom += DeactivateMarchandRoom;
     }
 

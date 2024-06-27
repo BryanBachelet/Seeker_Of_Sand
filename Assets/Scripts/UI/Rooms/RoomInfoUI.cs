@@ -63,7 +63,7 @@ namespace GuerhoubaGames.UI
             m_rewardIcon = UiRewardGO.GetComponentsInChildren<Image>()[1];
 
             // Init Major Goal Interface
-            m_majorGoalAnimator = majorGoalGO.GetComponent<Animator>();
+            m_majorGoalAnimator = majorGoalGO.GetComponent<Animator>(); 
         }
 
         public void Update()

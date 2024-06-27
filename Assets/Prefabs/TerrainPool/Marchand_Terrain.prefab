@@ -3446,6 +3446,63 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4775176188918236271, guid: 521ec26f159ab7542a35906a1f9c1aa3, type: 3}
+--- !u!1 &7631592003660381676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 76000359921579411}
+  - component: {fileID: 1786033755267155668}
+  m_Layer: 0
+  m_Name: DropGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &76000359921579411
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7631592003660381676}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 613, y: 66.9, z: 549.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5049047153283008188}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1786033755267155668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7631592003660381676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d65e948dd6a37b44a7e3d2ad92fa462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  dropQuantity: 4
+  random: 2
+  rangeFromCenter: 125
+  m_DropAreaPosition: {x: 0, y: 0, z: 0}
+  cristalDropObject:
+  - {fileID: 2525742179268374040, guid: 07eb8ba4e2cb7544da9640df78113f7f, type: 3}
+  - {fileID: 1059528601979336950, guid: 0f5fb060cf12868408b6afb88336b466, type: 3}
+  - {fileID: 6895654206261971907, guid: a6b59b3ac69ec7544bf056ebeded7866, type: 3}
+  - {fileID: 1307768737332460006, guid: 2a09d2a9f6221e446ba82b370f36d22e, type: 3}
+  generateCristal: 1
 --- !u!1 &7660725279511454335
 GameObject:
   m_ObjectHideFlags: 0
@@ -3732,6 +3789,7 @@ Transform:
   - {fileID: 4395494728175814630}
   - {fileID: 9213292663179485713}
   - {fileID: 1642764987104579819}
+  - {fileID: 76000359921579411}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!218 &7571241987286153819

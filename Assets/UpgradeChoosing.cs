@@ -12,6 +12,7 @@ public class UpgradeChoosing : MonoBehaviour
     [Header("UI Object")]
     public Image[] spellInBar = new Image[4];
     public Image spellUpgradeFocus;
+    public Image[] spellChoseUpgrade = new Image[3];
     public TMPro.TMP_Text upgradePointText;
     public TMPro.TMP_Text[] upgradeSelectable = new TMPro.TMP_Text[3];
 
@@ -74,7 +75,8 @@ public class UpgradeChoosing : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).gain.nameUpgrade;
-            if (gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
+            spellChoseUpgrade[i].sprite = spellUpgradeFocus.sprite;
+            //if (gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
         }
     }
 
@@ -91,7 +93,7 @@ public class UpgradeChoosing : MonoBehaviour
         {
             if (i != index)
             {
-                if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
+               // if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
             }
         }
 
