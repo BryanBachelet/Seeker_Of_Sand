@@ -42,7 +42,7 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638549168373819218
+  lastModified: 638554353156505210
   FileSizes:
   - Name: Desktop
     Value: 21640608
@@ -446,6 +446,26 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 250
   Length: 1300
+--- !u!114 &-5956148605370474177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Enemis.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Enemis.bank
+  Name: Enemis
+  StudioPath: bank:/Enemis
+  lastModified: 638554353154717051
+  FileSizes:
+  - Name: Desktop
+    Value: 105024
+  Exists: 1
 --- !u!114 &-5954450021547151307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -527,6 +547,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 9034
+--- !u!114 &-4958903344907511319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Enemy/Misp/Destroy_Misp
+  m_EditorClassIdentifier: 
+  Path: event:/Enemy/Misp/Destroy_Misp
+  Guid:
+    Data1: -836161891
+    Data2: 1083128423
+    Data3: 238602371
+    Data4: -1193931478
+  Banks:
+  - {fileID: -5956148605370474177}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4591858361006086789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,10 +616,10 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638549168373869032
+  lastModified: 638554353156555085
   FileSizes:
   - Name: Desktop
-    Value: 4286
+    Value: 4526
   Exists: 1
 --- !u!114 &-4289898622486494815
 MonoBehaviour:
@@ -628,6 +675,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 250
   Length: 2977
+--- !u!114 &-3970825289588175180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Enemy/Misp/Movement_Masse_Misp
+  m_EditorClassIdentifier: 
+  Path: event:/Enemy/Misp/Movement_Masse_Misp
+  Guid:
+    Data1: 352452625
+    Data2: 1148515552
+    Data3: 75670403
+    Data4: 593148946
+  Banks:
+  - {fileID: -5956148605370474177}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 4488731233974696770}
+  MinDistance: 1
+  MaxDistance: 800
+  Length: 64977
 --- !u!114 &-3960057652071052370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -941,6 +1016,7 @@ MonoBehaviour:
   - {fileID: -4488664334871958410}
   - {fileID: -8677712679824705693}
   - {fileID: 5568247724004765068}
+  - {fileID: -5956148605370474177}
   EditorEvents:
   - {fileID: 3678440317235289224}
   - {fileID: -8635909272977938358}
@@ -1008,13 +1084,43 @@ MonoBehaviour:
   - {fileID: 8288994744021035700}
   - {fileID: 2143706486958459292}
   - {fileID: 4197275787247279056}
+  - {fileID: -3970825289588175180}
+  - {fileID: 54460696042507707}
+  - {fileID: -4958903344907511319}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8677712679824705693}
   StringsBanks:
   - {fileID: -4488664334871958410}
-  cacheTime: 638549168374661261
+  cacheTime: 638554353156784458
   cacheVersion: 131609
+--- !u!114 &54460696042507707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Enemy/Misp/Spawn_Misp
+  m_EditorClassIdentifier: 
+  Path: event:/Enemy/Misp/Spawn_Misp
+  Guid:
+    Data1: -855839600
+    Data2: 1277594111
+    Data3: 1199369122
+    Data4: 1961499862
+  Banks:
+  - {fileID: -5956148605370474177}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &649305040045780963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1522,6 +1628,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1463
+--- !u!114 &4488731233974696770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Movement_Masse_Misp/Masse_Misp
+  m_EditorClassIdentifier: 
+  Name: Masse_Misp
+  StudioPath: 
+  Min: 0
+  Max: 5
+  Default: 0
+  ID:
+    data1: 2144748717
+    data2: 2017523582
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &4543103364893556413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1701,7 +1831,7 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Sfx.bank
   Name: Sfx
   StudioPath: bank:/Sfx
-  lastModified: 638549168374661261
+  lastModified: 638554353156784458
   FileSizes:
   - Name: Desktop
     Value: 311968
