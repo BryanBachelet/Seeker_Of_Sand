@@ -10,13 +10,14 @@ namespace Character
         [SerializeField] private int m_rotationSize = 4;
             private List<SpellSystem.Capsule> m_bookOfSpell = new List<SpellSystem.Capsule>();
         [SerializeField] public SpellSystem.Capsule[] m_spellsRotationArray = new SpellSystem.Capsule[4];
-
+        UI_Inventory ui_inventory;
 
         //  Need to create copy from the spell place
 
         public void Start()
         {
             m_spellsRotationArray = new SpellSystem.Capsule[m_rotationSize];
+            ui_inventory = GameState.m_uiManager.GetComponent<UIDispatcher>().uiInventory;
 
         }
 
@@ -69,6 +70,12 @@ namespace Character
             return m_bookOfSpell.ToArray();
         }
         public int GetSpellCount() { return m_bookOfSpell.Count; }
+
+        public void ActualizeUI()
+        {
+            ui_inventory.ActualizeInventory();
+        }
+
         #endregion
 
 

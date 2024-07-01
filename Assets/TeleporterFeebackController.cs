@@ -32,7 +32,7 @@ public class TeleporterFeebackController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        if(socleMesh)
+        if (socleMesh)
         {
             socleSpawn_mat = socleMesh.materials[0];
             dissonance_mat = socleMesh.materials[1];
@@ -41,10 +41,20 @@ public class TeleporterFeebackController : MonoBehaviour
 
     }
 
+
+    public void OnEnable()
+    {
+        if (socleMesh)
+        {
+            socleSpawn_mat = socleMesh.materials[0];
+            dissonance_mat = socleMesh.materials[1];
+            planeSymbole_mat = planeSymboleEffect.materials[0];
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        if(activeChange)
+        if (activeChange)
         {
             activeChange = false;
             zoneAutourVFX.enabled = true;
@@ -58,15 +68,22 @@ public class TeleporterFeebackController : MonoBehaviour
             //else
             //{
             //    ChangeRewardID(rewardToUse);
-                ChangeColorID(4);
+            ChangeColorID(4);
             //}
 
         }
-        
+
     }
 
     public void ChangeRewardID(int ID)
     {
+
+        if (socleMesh && socleSpawn_mat == null)
+        {
+            socleSpawn_mat = socleMesh.materials[0];
+            dissonance_mat = socleMesh.materials[1];
+            planeSymbole_mat = planeSymboleEffect.materials[0];
+        }
         socleSpawn_mat.SetTexture("_MaskSelfLit", textureReward[ID]);
         planeSymbole_mat.SetTexture("_Symbole", textureReward[ID]);
     }

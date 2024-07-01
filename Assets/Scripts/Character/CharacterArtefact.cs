@@ -70,7 +70,7 @@ public class CharacterArtefact : MonoBehaviour
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
     {
 
-        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefacts.elementAffiliation], transform.position, transform.rotation);
+        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefacts.gameElement], transform.position, transform.rotation);
         newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
         artefactAround_List.Add(newArtefactAround);
 
@@ -78,6 +78,7 @@ public class CharacterArtefact : MonoBehaviour
     public void RemoveArtefact(int index)
     {
         artefactsList.RemoveAt(index);
+        uiFragmentTooltip.RemoveFragment(index);
     }
 
 

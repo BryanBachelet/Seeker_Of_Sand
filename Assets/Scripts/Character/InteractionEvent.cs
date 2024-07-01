@@ -45,6 +45,7 @@ public class InteractionEvent : MonoBehaviour
     public HintInteractionManager m_hintInteractionManager;
 
     [SerializeField] private Camera mainCamera;
+    private InteractionInterface currentInteractionInterface;
 
     public GameObject currentInteractibleObjectActive = null;
     // Start is called before the first frame update
@@ -60,38 +61,84 @@ public class InteractionEvent : MonoBehaviour
     {
         if (Time.time > lastInteractionCheck + intervalCheckInteraction)
         {
-            if (currentInteractibleObjectActive == null) { NearPossibleInteraction(); }
+            Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, InteractibleObject);
+            FindInteractiveElementAround(col);
+            if (currentInteractibleObjectActive == null) { NearPossibleInteraction(col); }
             NearTrader();
             NearArtefact();
             lastInteractionCheck = Time.time;
         }
-        if(currentInteractibleObject != null)
+        if (currentInteractibleObject != null)
         {
             CalculateWorldPosition(currentInteractibleObject);
         }
-        else if(lastArtefact != null)
+        else if (lastArtefact != null)
         {
             CalculateWorldPosition(lastArtefact.gameObject);
         }
     }
 
-    public void NearPossibleInteraction()
+    public void FindInteractiveElementAround(Collider[] col)
     {
-        Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, InteractibleObject);
+        if (col.Length == 0)
+        {
+            currentInteractionInterface = null;
+            return;
+        }
+
+        GameObject interactiveObject = FindClosestElement(col);
+
+        InteractionInterface interactionInterface = interactiveObject.GetComponent<InteractionInterface>();
+        if (interactionInterface == null)
+        {
+            Debug.LogWarning("This object " + interactiveObject.name + " don't have an InteractionInterface component");
+            currentInteractionInterface = null;
+
+            return;
+        }
+
+        currentInteractionInterface = interactionInterface;
+    }
+
+    private GameObject FindClosestElement(Collider[] col)
+    {
+        if (col.Length == 1) return col[0].gameObject;
+
+        int colliderIndex = 0;
+        float distance = 1000;
+        for (int i = 0; i < col.Length; i++)
+        {
+            float tempDistance = Vector3.Distance(transform.position, col[i].transform.position);
+            if (tempDistance < distance)
+            {
+                distance = tempDistance;
+                colliderIndex = i;
+            }
+        }
+
+        return col[colliderIndex].gameObject;
+    }
+
+    public void NearPossibleInteraction(Collider[] col)
+    {
+
         if (col.Length > 0)
         {
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
-               
+
                 /// Remove Event UI
-               // m_hintInteractionManager.ActivateAutelData(true);
+                // m_hintInteractionManager.ActivateAutelData(true);
             }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
                 currentInteractibleObject = col[0].transform.gameObject;
+                AltarBehaviorComponent altarBehaviorComponent = currentInteractibleObject.GetComponent<AltarBehaviorComponent>();
+                if (!altarBehaviorComponent) return;
+
                 m_socleTransform = GameObject.Find("low_Socle").transform;
-                eventDataInfo = currentInteractibleObject.GetComponent<AltarBehaviorComponent>().GetAltarData();
+                eventDataInfo = altarBehaviorComponent.GetAltarData();
 
                 // Removing the event animation
                 //m_lastHintAnimator.SetBool("InteractionOn", true); 
@@ -144,14 +191,15 @@ public class InteractionEvent : MonoBehaviour
         }
     }
 
-    public void ActionInteraction()
+    public void ActionInteraction(InputAction.CallbackContext ctx)
     {
-        if (currentInteractibleObject != null)
-        { 
-            currentInteractibleObject.GetComponent<AltarBehaviorComponent>().ActiveEvent(this);
-            currentInteractibleObjectActive = currentInteractibleObject;
-            m_socleTransform = null;
-            StartCoroutine(CloseUIWithDelay(2));
+        if (ctx.performed)
+        {
+            
+            if (currentInteractionInterface != null)
+            {
+                currentInteractionInterface.CallInteraction(this.gameObject);
+            }
         }
 
     }
@@ -266,7 +314,7 @@ public class InteractionEvent : MonoBehaviour
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
-        if(m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
+        if (m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
 
         txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);

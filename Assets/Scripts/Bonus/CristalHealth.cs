@@ -11,7 +11,7 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private GameObject m_cristalLootPrefab;
     private bool[] state = new bool[3];
     [Range(0, 3)]
-    [SerializeField] public int m_cristalType = 0; //0 --> Water | 1 --> Fire | 2 --> Aer | 3 --> Ground
+    [SerializeField] public int m_cristalType = 0; //0 --> Water | 1 --> Aer | 2 --> Fire | 3 --> Ground
     [SerializeField] private UnityEngine.VFX.VisualEffect m_hitPrefab;
     [SerializeField] private GameObject[] cristalPart;
     private bool m_activeDeath;

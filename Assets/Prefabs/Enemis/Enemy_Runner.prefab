@@ -126,7 +126,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3294013781257085869}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 18
@@ -209,10 +209,10 @@ MonoBehaviour:
     type: 3}
   timeBeforeDestruction: 2
   hasDeathAnimation: 0
-  npcState: 0
   xpToDrop: 5
   targetData:
     target: {fileID: 0}
+    baseTarget: {fileID: 0}
     isMoving: 0
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
@@ -280,6 +280,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   death_vfx: {fileID: 1991147687903976700, guid: 10301bafbe023a440a688f4c3dcb9cc6,
     type: 3}
+  m_npcInfo: {fileID: 0}
   IsDebugActive: 0
 --- !u!114 &-3186308383320918057
 MonoBehaviour:
@@ -293,8 +294,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50837e8005842504697e4bb3f4d69c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
+  minTargetDistance: 1
   speed: 60
   speedThreshold: 10
+  isSlow: 0
+  baseTransform: {fileID: 0}
   isAffectedBySlope: 1
   maxVariation: 1.5
   minVariation: 0.5
@@ -310,6 +315,7 @@ MonoBehaviour:
   enemiesManager: {fileID: 0}
   targetData:
     target: {fileID: 0}
+    baseTarget: {fileID: 0}
     isMoving: 0
   isDebugActive: 0
 --- !u!114 &-9025062962692320421
@@ -356,6 +362,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  state: 0
+  attackComponent: {fileID: 0}
+  moveComponent: {fileID: 0}
+  manager: {fileID: 0}
+  behaviorTreeComponent: {fileID: 0}
 --- !u!1 &4852806396939262081
 GameObject:
   m_ObjectHideFlags: 0

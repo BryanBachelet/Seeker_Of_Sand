@@ -1,29 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
 public class RewardTypologie : MonoBehaviour
 {
     public RewardType rewardType;
-    public GameObject playerRef;
     private Chosereward choseReward;
     public RewardDistribution rewardDistribution;
     // Start is called before the first frame update
 
-    private void Awake()
-    {
-        playerRef = this.GetComponent<ExperienceMouvement>().m_playerPosition.gameObject;
-    }
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnTriggerEnter(Collider other)
     {

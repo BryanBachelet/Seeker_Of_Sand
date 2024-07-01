@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 2445052622862283131}
   - component: {fileID: 6024348727504353242}
   - component: {fileID: 311304900199878640}
+  - component: {fileID: 5462555762353407496}
   m_Layer: 0
   m_Name: Enemy Manager
   m_TagString: Untagged
@@ -54,6 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerTranform: {fileID: 0}
+  m_basePlayerTransform: {fileID: 0}
   m_cameraTransform: {fileID: 0}
   m_enemyGO:
   - {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0, type: 3}
@@ -65,6 +67,7 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   m_spawnTime: 0.5
   m_maxUnittotal: 200
+  m_groupEnemySize: 5
   m_MaxUnitControl:
     serializedVersion: 2
     m_Curve:
@@ -192,366 +195,6 @@ MonoBehaviour:
   m_offsetToSpawnCenter: 20
   m_minimumSpeedToRepositing: 30
   m_enemyHolder: {fileID: 0}
-  m_bodylessEventTargetRate: 0.677
-  m_fullBodyEventTargetRate: 0.32
-  m_shamanEventTargetRate: 0.193
-  m_runnerEventTargetRate: 0.028
-  m_tankEventTargetRate: 0.114
-  bodyLessMouvementPool:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 31
-      inSlope: 0.016738756
-      outSlope: 0
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 31
-      inSlope: -0
-      outSlope: 5.4444447
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10
-      value: 80
-      inSlope: 5.4444447
-      outSlope: 7
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 20
-      value: 150
-      inSlope: 7
-      outSlope: 6.6
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 30
-      value: 216
-      inSlope: 6.6
-      outSlope: -4.5
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 40
-      value: 171
-      inSlope: -4.5
-      outSlope: 3
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 50
-      value: 201
-      inSlope: 3
-      outSlope: -5.1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 60
-      value: 150
-      inSlope: -5.1
-      outSlope: 0.016784001
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  bodufullMouvementPool:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 3
-      inSlope: 0.016738756
-      outSlope: 0.7
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10
-      value: 10
-      inSlope: 0.7
-      outSlope: 0.5
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 20
-      value: 15
-      inSlope: 0.5
-      outSlope: 1.5
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 30
-      value: 30
-      inSlope: 1.5
-      outSlope: 7
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 40
-      value: 100
-      inSlope: 7
-      outSlope: 4
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 50
-      value: 140
-      inSlope: 4
-      outSlope: 1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 60
-      value: 150
-      inSlope: 1
-      outSlope: 0.016784001
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  chamanMouvementPool:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 2
-      inSlope: 0.016738756
-      outSlope: 0.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10
-      value: 4
-      inSlope: 0.2
-      outSlope: 0.1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 20
-      value: 5
-      inSlope: 0.1
-      outSlope: 1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 30
-      value: 15
-      inSlope: 1
-      outSlope: 0.5
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 40
-      value: 20
-      inSlope: 0.5
-      outSlope: 1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 50
-      value: 30
-      inSlope: 1
-      outSlope: -1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 60
-      value: 20
-      inSlope: -1
-      outSlope: 0.016784001
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  runnerMouvementPool:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.016738756
-      outSlope: 0.1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10
-      value: 1
-      inSlope: 0.1
-      outSlope: 0.1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 20
-      value: 2
-      inSlope: 0.1
-      outSlope: 0.3
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 30
-      value: 5
-      inSlope: 0.3
-      outSlope: 0.3
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 40
-      value: 8
-      inSlope: 0.3
-      outSlope: 0.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 50
-      value: 10
-      inSlope: 0.2
-      outSlope: 1
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 60
-      value: 20
-      inSlope: 1
-      outSlope: 0.016784001
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  tankMouvementPool:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.016738756
-      outSlope: 0
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10
-      value: 0
-      inSlope: -0
-      outSlope: 0.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 20
-      value: 2
-      inSlope: 0.2
-      outSlope: 0.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 30
-      value: 4
-      inSlope: 0.2
-      outSlope: 0.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 40
-      value: 6
-      inSlope: 0.2
-      outSlope: 0.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 50
-      value: 8
-      inSlope: 0.2
-      outSlope: 1.2
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 60
-      value: 20
-      inSlope: 1.2
-      outSlope: 0.016784001
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  ennemyCount: 0000000000000000000000000000000000000000
   enemyTypeStats:
   - type: 0
     instanceCount: 0
@@ -922,26 +565,8 @@ MonoBehaviour:
   m_spawnRateExpBonus: 0.01
   m_enemiesArray: []
   m_enemiesFocusAltar: []
-  m_imageLifeEvents:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_imageLifeEventsObj:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_textProgressEvent:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_sliderProgressEvent:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_targetTranform: {fileID: 0}
   m_targetTransformLists: []
-  m_tempsEntrePause: 120
-  m_tempsPause: 30
   spawningPhase: 1
   gsm: {fileID: 0}
   m_spawningVFX: {fileID: 7236001423745814053, guid: eaf90b2f092024847961aba5950d8173,
@@ -955,26 +580,20 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d452951a26c756f43863b1f536622dce, type: 3}
   - {fileID: 21300000, guid: baffa94570d7c3e47a788658b7c13d84, type: 3}
   m_instructionAnimator: {fileID: 0}
-  spawningConstant: 0
+  activeTestPhase: 0
+  activeSpawnConstantDebug: 0
+  activeSpecialSquad: 0
+  playerInput: {fileID: 0}
+  specialSquadSelect: 
   detectionAnimator: {fileID: 0}
   m_enemyIcon: {fileID: 0}
   m_tmpTextEnemyRemain: {fileID: 0}
   colorSignUI:
   - {r: 1, g: 0.5803922, b: 0.5803922, a: 1}
   - {r: 0.2830189, g: 0.24163404, b: 0.24163404, a: 1}
-  punketoneLifeBar:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  punketonLifeBarAnimator:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  punketoneLifeBarfill:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  m_uiManagerGameObject: {fileID: 0}
   remainEnemy: 0
+  isStopSpawn: 0
 --- !u!114 &1224385589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -996,7 +615,9 @@ MonoBehaviour:
   m_characterUpgradeComponent: {fileID: 0}
   m_dropInventory: {fileID: 0}
   upgradeLevelUi: {fileID: 0}
+  spellChoiceUI: {fileID: 0}
   upgradeBook: {fileID: 0}
+  book_Animator: {fileID: 0}
 --- !u!114 &262313276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,81 +636,97 @@ MonoBehaviour:
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   - name: 
     description: 
     type: 0
     elementType: 0
     sprite: {fileID: 0}
+    materialToUse: {fileID: 0}
   attackInfo:
   - name: Zeritrailette
     description: fires a burst of electric shot
@@ -1099,6 +736,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: fb259090b3acd4d4780060e3e811cb29, type: 2}
     sprite: {fileID: 21300000, guid: c3dfff8f60831ea46a43238fc222b830, type: 3}
     element: 1
+    materialToUse: {fileID: 0}
   - name: Zeritrailette
     description: 'fires a burst of water shot '
     projectile: {fileID: 529003561376632028, guid: 4d402005595543c4ca2990c33fe98986,
@@ -1107,6 +745,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: b6611f44546d6ac4ea17438096d1d6c9, type: 2}
     sprite: {fileID: 21300000, guid: ae449a795b65ea44dbc8a18973348d09, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: Zeritrailette
     description: 'fires a burst of fire shot '
     projectile: {fileID: 529003561376632028, guid: e94cebfb27261ed4ca19032a45b7262d,
@@ -1115,6 +754,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: e992e67b2e31c2940896ae3cb4a17e08, type: 2}
     sprite: {fileID: 21300000, guid: e0ae8c975bd05444bad41c752f9fc5c1, type: 3}
     element: 2
+    materialToUse: {fileID: 0}
   - name: Zeritrailette
     description: 'fires a burst of earth shot '
     projectile: {fileID: 529003561376632028, guid: eb224746ec8caea489ac2bee2d910105,
@@ -1123,6 +763,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 11046f9fdcd94e4479f4bde2fabf22f7, type: 2}
     sprite: {fileID: 21300000, guid: 8a0d3597c425f9c4e9eb7b52c4efb0eb, type: 3}
     element: 3
+    materialToUse: {fileID: 0}
   - name: Shotgun
     description: shotshot a piercing fierball
     projectile: {fileID: 529003561376632028, guid: 46d8ff37a26e80545be37c63a1594133,
@@ -1131,6 +772,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: a6212585ac02118449476ac4c1f279a8, type: 2}
     sprite: {fileID: 21300000, guid: 4397122e35dc46d4f9936b3efff65866, type: 3}
     element: 2
+    materialToUse: {fileID: 0}
   - name: Shotgun
     description: shotshot a piercing earthball
     projectile: {fileID: 529003561376632028, guid: bf48456508bfc444aa2dbbfb11371fee,
@@ -1139,6 +781,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: dc922bbef8fffb14198862edb3ba0c0b, type: 2}
     sprite: {fileID: 21300000, guid: 9b03a99012b45f04691d1ee08bf12792, type: 3}
     element: 3
+    materialToUse: {fileID: 0}
   - name: Shotgun
     description: shotshot a piercing electric ball
     projectile: {fileID: 529003561376632028, guid: b7a9cb27fc1d58e4999bb33c951b145f,
@@ -1147,6 +790,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 251fd21d3627bd043ad8d5776ca6f747, type: 2}
     sprite: {fileID: 21300000, guid: 531ba88a232ff774d85c828bd81e8858, type: 3}
     element: 1
+    materialToUse: {fileID: 0}
   - name: Shotgun
     description: shotshot a piercing water ball
     projectile: {fileID: 529003561376632028, guid: 4e6c17878a03a4149ac2f6577fd450bd,
@@ -1155,6 +799,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: c4da0b9f41febb44fb9c86caa60ec70b, type: 2}
     sprite: {fileID: 21300000, guid: fe82b6b27cb16f745a92a7c50426e4bc, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: WaterSaw
     description: 'Summons a rotating water saw that move after a delay '
     projectile: {fileID: 1815569696630512008, guid: 0247554d5f9a13f46bdb3d6723ebe7b3,
@@ -1163,6 +808,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 469318e19a7d9d948926cec287c969d8, type: 2}
     sprite: {fileID: 21300000, guid: 3ed9739dfd1d68a429c5a6586a915b9a, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: WaterSaw
     description: 'Summons a rotating Electric saw that move after a delay '
     projectile: {fileID: 1815569696630512008, guid: 2af74434a4147d445b987079b3eb901f,
@@ -1171,6 +817,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: ab4042a2debccfe42bfbafab114a1561, type: 2}
     sprite: {fileID: 21300000, guid: 05c444aa95c8c83489cdc9e6e85dd090, type: 3}
     element: 2
+    materialToUse: {fileID: 0}
   - name: WaterSaw
     description: 'Summons a rotating Fire saw that move after a delay '
     projectile: {fileID: 1815569696630512008, guid: 23534396344030b46b88e57a3a7005f6,
@@ -1179,6 +826,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 5fab971dacb47ef41a7742cef2305fec, type: 2}
     sprite: {fileID: 21300000, guid: 6de4a5419a8ed6b4096eb59390b2744f, type: 3}
     element: 1
+    materialToUse: {fileID: 0}
   - name: WaterSaw
     description: 'Summons a rotating Fire saw that move after a delay '
     projectile: {fileID: 1815569696630512008, guid: d46294ac4db7b1c4aa7c46ad6f266bc6,
@@ -1187,6 +835,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: db6667f6dbec0f147a50a9878182f2e6, type: 2}
     sprite: {fileID: 21300000, guid: e642285af50a1984eb0e42e519cc6434, type: 3}
     element: 3
+    materialToUse: {fileID: 0}
   - name: Harpon
     description: throw a high speed electric spear that impale the first enemi hit
     projectile: {fileID: 7035111290779714718, guid: 9c2d4119e16d0064da822157b166f023,
@@ -1195,6 +844,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 8eb3aa400b186364d903a4996b942b88, type: 2}
     sprite: {fileID: 21300000, guid: 7c4b878b880e5884fab7fe7fd55cafef, type: 3}
     element: 1
+    materialToUse: {fileID: 0}
   - name: Harpon
     description: throw a high speed sismis spear that impale the first enemi hit
     projectile: {fileID: 7035111290779714718, guid: 2367503395938b64bb31879279483aba,
@@ -1203,6 +853,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 494f7af593287034aa2826d275cd4db9, type: 2}
     sprite: {fileID: 21300000, guid: 532e6c1550372124984400f3e9db83d1, type: 3}
     element: 3
+    materialToUse: {fileID: 0}
   - name: Harpon
     description: throw a high speed water spear that impale the first enemi hit
     projectile: {fileID: 7035111290779714718, guid: 442348a3559db8047a4d6363a476204b,
@@ -1211,6 +862,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 33c326c8b4104594c94945929db325e0, type: 2}
     sprite: {fileID: 21300000, guid: a7ae177ae85d4144494e6f24e95ab33f, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: Harpon
     description: throw a high speed fire spear that impale the first enemi hit
     projectile: {fileID: 7035111290779714718, guid: 67b2c2ee0e393db4ab09c6a50585c67e,
@@ -1219,6 +871,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 065fbc2fb6e871244b15f1556bb57602, type: 2}
     sprite: {fileID: 21300000, guid: e1df0291089f6bc488b404bd902ec817, type: 3}
     element: 2
+    materialToUse: {fileID: 0}
   - name: Test Curved
     description: Launch a curved projectil
     projectile: {fileID: 1834853944460758612, guid: e4a0655fa9ce9f6489d50230d2c98258,
@@ -1227,6 +880,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: d9e409a55ed250044a1219988b6841b7, type: 2}
     sprite: {fileID: 21300000, guid: e5c5bafdfb333bb46baf4243c27192e2, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: MineProxy
     description: 'launches a fire catalyst that explodes on contact with a nearby
       enemy '
@@ -1236,6 +890,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 1a893981abd33834e8867b5f0d741fba, type: 2}
     sprite: {fileID: 21300000, guid: e5c5bafdfb333bb46baf4243c27192e2, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: bombe sentex
     description: launch an electric ball that stick and explode after a short time
     projectile: {fileID: 8516650264320600679, guid: 33cc7bbbd5daa714aba9a963c22f51a0,
@@ -1244,6 +899,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 787a88a10819bef42a38175726343126, type: 2}
     sprite: {fileID: 21300000, guid: 54e61c6be40a6e54e916867967bf79a4, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: Pluie de fleche
     description: 'Summon a catalyst that throw a water shots rain '
     projectile: {fileID: 6333615331467375570, guid: 5c8f9c3aaecab7c46a27ee43f28e42ae,
@@ -1252,6 +908,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 2219ec8c5eb11c44d873e65c9866d1cb, type: 2}
     sprite: {fileID: 21300000, guid: c01e2015e21d27c43bda5ba96141c2ff, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   - name: RockThrow
     description: Summon an heavy ball that is gravity sensible and apply damage scaling
       on his speed
@@ -1261,6 +918,7 @@ MonoBehaviour:
     stats: {fileID: 11400000, guid: 0f37784471302fb4e9ad64defdeda5fc, type: 2}
     sprite: {fileID: 21300000, guid: 2220aea81a6408a4c8fb5426e44e289c, type: 3}
     element: 0
+    materialToUse: {fileID: 0}
   buffInfos: []
 --- !u!114 &6895622059654923546
 MonoBehaviour:
@@ -1308,6 +966,12 @@ MonoBehaviour:
   - {fileID: 0}
   m_cameraReference: {fileID: 0}
   m_serieController: {fileID: 0}
+  characterShoot: {fileID: 0}
+  elementDamageColor:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &1224385598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1320,6 +984,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea62e041be61074e9828e4543629e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainGenerator: {fileID: 0}
+  uiManagerGO: {fileID: 0}
+  playerGo: {fileID: 0}
   fixeElementHolder: {fileID: 0}
   endmenu_Attribution: {fileID: 0}
   m_timeBetweenDeath: 0.8
@@ -1408,3 +1075,21 @@ MonoBehaviour:
     instanceArray: []
   activeDebug: 0
   isFullyInitialized: 0
+  gameObjectHolder: {fileID: 0}
+--- !u!114 &5462555762353407496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef2c54e47d715b4da113f9a311f243c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cristalIconArray:
+  - {fileID: 21300000, guid: b77ee6531882ea748907cb50bbf4e8ad, type: 3}
+  - {fileID: 21300000, guid: b16a6532eb6d95d45b2b064e1c2f965a, type: 3}
+  - {fileID: 21300000, guid: a085d0ca2eb1206409c464d83ebafb7c, type: 3}
+  - {fileID: 21300000, guid: 3915b1c7ab65033498ae21dc442a4f3b, type: 3}

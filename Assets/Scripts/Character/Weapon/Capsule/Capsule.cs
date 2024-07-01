@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GuerhoubaGames.GameEnum;
 
 namespace SpellSystem
 {
@@ -15,7 +16,7 @@ namespace SpellSystem
         public GameObject vfx;
         public CapsuleProfil stats;
         public Sprite sprite;
-        public Element element;
+        public GameElement element;
         public Material materialToUse;
     }
 
@@ -41,13 +42,7 @@ namespace SpellSystem
        BUFF
     }
 
-    public enum Element
-    {
-        WATER,
-        AIR,
-        FIRE,
-        EARTH
-    }
+   
     [Serializable]
     public class Capsule 
     {
@@ -55,7 +50,7 @@ namespace SpellSystem
         [TextArea]
         public string description;
         public CapsuleType type;
-        public Element elementType;
+        public GameElement elementType;
         public Sprite sprite;
         public Material materialToUse;
     }
@@ -79,7 +74,7 @@ namespace SpellSystem
         public GameObject projectile;
         public GameObject vfx;
         public CapsuleProfil profil;
-        public Element element;
+        public GameElement element;
         public Material material;
     }
     [Serializable]

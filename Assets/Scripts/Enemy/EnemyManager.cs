@@ -244,7 +244,7 @@ namespace Enemies
                 SpawnCooldown();
             }
 
-            ActiveSpawnPhase(m_dayController.isNight, EnemySpawnCause.NIGHT);
+         
 
             if (m_uiManagerGameObject && lastAltarActivated != null)
             {
@@ -515,6 +515,7 @@ namespace Enemies
             enemyObjectPull.transform.position = positionSpawn;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             enemyObjectPull.GetComponent<NavMeshAgent>().Warp(positionSpawn);
+            enemyObjectPull.GetComponent<NavMeshAgent>().enabled =true;
 
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
             npcInfo.manager = this;

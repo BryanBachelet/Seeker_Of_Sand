@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using GuerhoubaGames.GameEnum;
+
 public class CristalInventory : MonoBehaviour
 {
     public int[] cristalCount = new int[4];
-    public GameObject[] cristalDisplay = new GameObject[4]; //0 = Eau, 1 = Feu, 2 = Elec, 3 = Terre
+    public GameObject[] cristalDisplay = new GameObject[4]; //0 = Eau, 1 = Elec, 2 = Fire, 3 = Terre
     private Animator[] m_cristalAnimator = new Animator[4];
     private bool[] m_cristalState = new bool[4];
 
@@ -19,12 +21,6 @@ public class CristalInventory : MonoBehaviour
     {
         m_timeDisplaying = m_timeDisplayingSetup;
         SetupText();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void SetupText()
@@ -47,6 +43,13 @@ public class CristalInventory : MonoBehaviour
     {
         cristalCount[cristalType] += cristalNumberAdd;
     }
+
+    public bool HasEnoughCristal(int value,GameElement element)
+    {
+        int indexCristal = (int)element;
+        return cristalCount[indexCristal] >= value;
+    }
+
 
     IEnumerator DisplayUIFeedback(int cristalType)
     {

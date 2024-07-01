@@ -54,6 +54,7 @@ public class Merchant_Function : MonoBehaviour
     public GameObject inventoryUI = null;
 
     #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,11 +64,11 @@ public class Merchant_Function : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(activeMerchant)
-        {
-            ActiveMerchnt();
+        //if(activeMerchant)
+        //{
+        //    ActiveMerchnt();
 
-        }
+        //}
         
     }
 
@@ -104,6 +105,7 @@ public class Merchant_Function : MonoBehaviour
 
     public void OpenInventory()
     {
+        return;
         if (!inventoryUI.activeSelf)
         {
             UpdateInventory();

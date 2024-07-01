@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
-public class AltarBehaviorComponent : MonoBehaviour
+using GuerhoubaGames.UI;
+
+public class AltarBehaviorComponent : InteractionInterface
 {
     #region Variable
     [Header("Event Parameters")]
@@ -97,6 +99,10 @@ public class AltarBehaviorComponent : MonoBehaviour
     public int skeletonCount = 0;
 
     public EventHolder eventHolder;
+
+    [HideInInspector] public RoomInfoUI roomInfoUI;
+
+    public bool hasBeenActivate = false;
     #endregion Variable
 
     #region Unity Functions
@@ -108,6 +114,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         m_questMarker.icon = spriteEventCompass[eventElementType];
         ownNumber = altarCount;
         altarCount++;
+
 
         m_playerTransform = m_enemyManager.m_playerTranform;
 
@@ -127,12 +134,12 @@ public class AltarBehaviorComponent : MonoBehaviour
         InitVisualElements();
 
         StartCoroutine(LastStart());
-        if(eventHolder == null)
+        if (eventHolder == null)
         {
             eventHolder = EventHolder.GetInstance();
             eventHolder.GetNewAltar(this);
         }
-      
+
     }
 
     void Update()
@@ -142,12 +149,12 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         if (m_enemiesCountConditionToWin <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
         {
-           SucceedEvent();
+            SucceedEvent();
             return;
         }
-        if(tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)
+        if (tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)
         {
-           
+
             //bool isSpawn = false;
             //while (!isSpawn)
             //{
@@ -168,7 +175,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             //            lastPunketone.target = this.gameObject;
             //            lastPunketone.targetFocus = skeletonFocus;
             //            lastPunketone.altarRefered = this;
-                        
+
             //        }
             //    }
             //    else
@@ -177,7 +184,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             //        //Debug.Log("Did not Hit");
             //    }
             //}
-            
+
 
 
         }
@@ -187,7 +194,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         m_eventProgressionSlider.fillAmount = progression;
-        ObjectifAndReward_Ui_Function.UpdateProgress(progression);
+        roomInfoUI.ActualizeMajorGoalProgress(progression);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI
@@ -205,7 +212,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_questMarker = GetComponent<QuestMarker>();
-        m_enemyManager = GameObject.Find("Enemy Manager").GetComponent<Enemies.EnemyManager>();
+        m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
     }
 
 
@@ -268,7 +275,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     }
     #endregion
 
- 
+
     public void IncreaseKillCount()
     {
         m_CurrentKillCount++;
@@ -276,48 +283,54 @@ public class AltarBehaviorComponent : MonoBehaviour
 
     #region State Altar Functions
 
-    // Need to set active
-    public void ActiveEvent(InteractionEvent intercationEvent)
+    public void ResetAltar()
     {
-        if (resetNumber >= 1) return;
-        if(m_interactionEvent == null) { m_interactionEvent = intercationEvent; }
-        if (!m_objectHealthSystem.IsEventActive())
+        resetNumber = 0;
+        m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+        m_myAnimator.ResetTrigger("Activation");
+        m_myAnimator.Play("New State");
+    }
+
+    // Need to set active
+    public void ActiveEvent()
+    {
+        if (hasBeenActivate) return;
+
+        hasBeenActivate = true;
+
+        m_interactionEvent = GameState.s_playerGo.GetComponent<InteractionEvent>();
+
+
+        m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
+        m_enemyManager.ActiveEvent(transform);
+
+        m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
+        progression = 0;
+
+        m_myAnimator.SetBool("ActiveEvent", true);
+
+        if (resetNumber == 0)
         {
-            m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
-            m_enemyManager.ActiveEvent(transform);
-            
-            m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
-            progression = 0;
-
-            m_myAnimator.SetBool("ActiveEvent", true);
-
-            if (resetNumber == 0)
-            {
-                m_myAnimator.SetTrigger("Activation");
-            }
-            if (resetNumber >= 0)
-            {
-                lastItemInstantiate = Instantiate(eventHolder.DangerAddition[resetNumber], transform.position, transform.rotation);
-                lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
-            }
-            
-
-            SetMeshesEventIntensity(0.33f * (resetNumber + 1));
-            m_visualEffectActivation.Play();
-            
-            GlobalSoundManager.PlayOneShot(13, transform.position);
-
-            m_objectHealthSystem.ChangeState(EventObjectState.Active);
-
-            
-
-            m_hasEventActivate = false;
-            m_isEventOccuring = true;
+            m_myAnimator.SetTrigger("Activation");
         }
-        else
+        if (resetNumber >= 0)
         {
-           // Debug.Log("Cet objet [" + this.name + "] ne peut pas �tre activ�");
+            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[resetNumber], transform.position, transform.rotation);
+            lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
         }
+
+
+        SetMeshesEventIntensity(0.33f * (resetNumber + 1));
+        m_visualEffectActivation.Play();
+
+        GlobalSoundManager.PlayOneShot(13, transform.position);
+
+        roomInfoUI.ActiveMajorGoalInterface();
+        m_objectHealthSystem.ChangeState(EventObjectState.Active);
+
+        m_hasEventActivate = false;
+        m_isEventOccuring = true;
+
     }
 
 
@@ -346,7 +359,7 @@ public class AltarBehaviorComponent : MonoBehaviour
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
-       transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
+        transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
 
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
@@ -359,7 +372,7 @@ public class AltarBehaviorComponent : MonoBehaviour
     }
 
     public void ResetAltarEvent()
-    {    
+    {
         resetNumber++;
         GenerateNextReward(resetNumber);
 
@@ -373,11 +386,11 @@ public class AltarBehaviorComponent : MonoBehaviour
             GameObject obj = punketonHP[0].gameObject;
             punketonHP.RemoveAt(0);
             Destroy(obj);
-           
+
         }
         skeletonCount = 0;
         float maxHealth = 100;
-        
+
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);
         m_objectHealthSystem.ResetCurrentHealth();
 
@@ -398,7 +411,7 @@ public class AltarBehaviorComponent : MonoBehaviour
             if (nextRewardTypologie == 2)
             {
                 //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-               if(rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
+                if (rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
 
             }
 
@@ -436,7 +449,7 @@ public class AltarBehaviorComponent : MonoBehaviour
               dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augment� sous condition sp�cifique
               dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associ� au gain"; 
           }*/
-        dataToSend[4] = ""+ progression;
+        dataToSend[4] = "" + progression;
 
         return dataToSend;
     }
@@ -497,6 +510,17 @@ public class AltarBehaviorComponent : MonoBehaviour
     #endregion
 
 
+    public override void OnInteractionStart(GameObject player)
+    {
+        ActiveEvent();
+
+    }
+
+    public override void OnInteractionEnd(GameObject player)
+    {
+
+    }
+
     #region Debug Functions
     public void OnDrawGizmos()
     {
@@ -508,5 +532,7 @@ public class AltarBehaviorComponent : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, radiusEventActivePlayer);
     }
     #endregion
+
+
 
 }
