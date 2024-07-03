@@ -234,7 +234,7 @@ public class Projectile : MonoBehaviour
         Vector3 axis = Vector3.Cross(transform.right, hitNormal);
         Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
         float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transform.right);
-        if ( Mathf.Abs(angle) > maxSlopeAngle) 
+        if (Mathf.Abs(angle) > maxSlopeAngle)
             return;
         transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
     }

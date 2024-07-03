@@ -7,8 +7,8 @@ namespace GuerhoubaGames.AI
 {
     public class IsAttackRange : DecoratorNode
     {
-        
 
+        public int indexAttack;
         protected override void OnStart()
         {
            
@@ -16,15 +16,15 @@ namespace GuerhoubaGames.AI
 
         protected override void OnStop()
         {
-          
+            child.StopNode();
         }
 
         protected override State OnUpdate()
         {
-            if (agent.attackComponent.GetAttackRange() >  Vector3.Distance(agent.transform.position,blackboard.moveToObject.transform.position))
+            if (agent.attackComponent.GetAttackRange(indexAttack) >  Vector3.Distance(agent.transform.position,blackboard.moveToObject.transform.position))
             {
-                child.Evaluate();
-                return State.RUNNING;
+
+                return child.Evaluate();
             }
             else
             {

@@ -20,6 +20,19 @@ namespace Enemies
         public bool isStopMovingAtPrep;
         public bool isHeavyAttack;
         public AttackType typeAttack;
+        [Tooltip("Only useful for the projectile type of attack")]
+        public RangeAttackType rangeTypeAttack;
+        
+        
+
+        [Header("Area Parameters")]
+        public float radius;
+        public AreaType shapeType;
+
+        [Header("Projectile Parameters")]
+        public float rangeProjectile;
+        public float durationProjectile;
+
 
         [HideInInspector] public int indexCollider;
         [HideInInspector] public int indexProjectileGO;

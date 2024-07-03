@@ -7,11 +7,13 @@ namespace GuerhoubaGames.AI
 {
     public class Attack : ActionNode
     {
+        public int indexAttack = 0;
         private short isSucces = 0; //  If equal 0 is Running, equal 1 is Succes , equal -1 is Fail
 
         protected override void OnStart()
         {
-            agent.attackComponent.ActivePrepationAttack();
+            agent.state = Enemies.NpcState.ATTACK;
+            agent.attackComponent.ActivePrepationAttack(indexAttack);
             agent.attackComponent.OnFinishAttack += IsFinish;
             isSucces = 0;
         }

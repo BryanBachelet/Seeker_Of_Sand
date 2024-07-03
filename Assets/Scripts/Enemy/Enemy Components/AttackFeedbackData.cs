@@ -5,8 +5,18 @@ using GuerhoubaGames.GameEnum;
 
 namespace Enemies
 {
+    [System.Serializable]
     public struct AttackFeedbackData 
     {
+        public enum FeedbackPosition
+        {
+            Target,
+            Self,
+        }
+
+        public FeedbackType feedbackType;
+        public FeedbackPosition areaSpawnType;
+        public bool isSpawn;
         public GameObject Vfx;
         public FMODUnity.EventReference sfx;
         public int attackIndex;

@@ -8,10 +8,13 @@ public class CloseAttackComponent : MonoBehaviour
     public int damage = 1;
     public bool isHeavyAttack = false;
     private List<GameObject> targetTouch = new List<GameObject>();
+    private Collider colliderAttack;
+    public bool ActiveDebug = false;
 
     public void OnEnable()
     {
         targetTouch.Clear();
+        colliderAttack = GetComponent<Collider>();
     }
 
     public void OnTriggerEnter(Collider other)
@@ -27,5 +30,11 @@ public class CloseAttackComponent : MonoBehaviour
         }
     }
 
-   
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+       if(ActiveDebug) Gizmos.DrawCube( colliderAttack.bounds.center, colliderAttack.bounds.size);
+    }
+
+
 }
