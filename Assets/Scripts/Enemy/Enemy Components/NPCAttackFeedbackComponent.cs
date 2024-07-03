@@ -31,17 +31,20 @@ namespace Enemies
                 if (currFeedbackData.attackIndex != attackInfoData.attackIndex || currFeedbackData.attackPhase != attackInfoData.phase) continue;
 
                 if (currFeedbackData.feedbackType == FeedbackType.VISUAL) SpawnVisualFeedback(currFeedbackData,attackInfoData);
-                if (currFeedbackData.feedbackType == FeedbackType.SOUND) SpawnSoundFeedback();
+                if (currFeedbackData.feedbackType == FeedbackType.SOUND) SpawnSoundFeedback(currFeedbackData,attackInfoData);
 
 
             }
         }
 
 
-        private void SpawnSoundFeedback()
-
+        private void SpawnSoundFeedback(AttackFeedbackData attackFeedbackData, AttackInfoData attackInfoData)
         {
-            throw new System.NotImplementedException();
+            Vector3 spawnPositon = transform.position;
+            if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.Target)
+                spawnPositon = attackInfoData.positionAttack;
+
+            GlobalSoundManager.PlayOneShot(attackFeedbackData.sfxIndex, spawnPositon);
         }
 
         private void SpawnVisualFeedback(AttackFeedbackData attackFeedbackData,AttackInfoData attackInfoData)
