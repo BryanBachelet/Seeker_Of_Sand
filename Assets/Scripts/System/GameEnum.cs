@@ -35,4 +35,45 @@ namespace GuerhoubaGames.GameEnum
         HEAL = 3,
         MERCHANT = 4,
     }
+
+    public enum AreaType
+    {
+        CIRCLE = 0,
+        RECT =1,
+        TRIANGLE =2,
+        CUSTOM =3,
+    }
+
+
+
+    public enum FeedbackType
+    {
+        VISUAL = 0,
+        SOUND = 1,
+    }
+
+    public enum AttackType
+    {
+        COLLIDER_OBJ =0,
+        PROJECTILE_OBJ =1,
+    }
+
+    public enum RangeAttackType
+    {
+        PROJECTILE =0,
+        AREA = 1,
+    }
+
+
+    public enum AttackPhase
+    {
+        PREP = 0,
+        CONTACT = 1,
+        RECOVERY = 2,
+        NONE = 3,
+    }
+
+
+
+
 }

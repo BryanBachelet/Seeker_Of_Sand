@@ -7,21 +7,58 @@ namespace GuerhoubaGames.AI
     /// <summary>
     ///  Selector class allow the AI to choose between possible depending if they condition are valid or not
     /// </summary>
-    //[CreateAssetMenu(fileName = "Selector", menuName = "BehaviorTree/Selector", order = 3)]
-    //public class Selector : Node
-    //{
-    //    public override void Evaluate()
-    //    {
-    //        foreach (Node child in children)
-    //        {
-    //            if (child.IsValid())
-    //            {
-    //                child.Evaluate();
-    //                break;
-    //            }
-    //        }
-    //    }
+    [CreateAssetMenu(fileName = "Selector", menuName = "BehaviorTree/Selector", order = 3)]
+    public class Selector : CompositeNode
+    {
+        Node childChoose;
+        protected override void OnStart()
+        {
 
-    //}
+        }
+
+        protected override void OnStop()
+        {
+            
+        }
+
+        protected override State OnUpdate()
+        {
+            foreach (Node child in children)
+            {
+
+                State nodeState = child.Evaluate();
+
+                switch (nodeState)
+                {
+                    case State.RUNNING:
+                        ManageChild(child);
+                        return State.RUNNING;
+                        break;
+                    case State.FAILURE:
+
+                        break;
+                    case State.SUCCESS:
+                        ManageChild(child);
+                        return State.SUCCESS;
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            return State.FAILURE;
+
+        }
+
+        public void ManageChild(Node child)
+        {
+            if (childChoose != child)
+            {
+                if(childChoose)childChoose.StopNode();
+                childChoose = child;
+            }
+        }
+    }
 }
 

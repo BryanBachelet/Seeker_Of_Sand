@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 6024348727504353242}
   - component: {fileID: 311304900199878640}
   - component: {fileID: 5462555762353407496}
+  - component: {fileID: 6382111088385740858}
   m_Layer: 0
   m_Name: Enemy Manager
   m_TagString: Untagged
@@ -57,12 +58,6 @@ MonoBehaviour:
   m_playerTranform: {fileID: 0}
   m_basePlayerTransform: {fileID: 0}
   m_cameraTransform: {fileID: 0}
-  m_enemyGO:
-  - {fileID: 3294013781257085869, guid: a72e1c05fdf901e4ea2c871d642bc3b0, type: 3}
-  - {fileID: 648676025334429534, guid: 247cd6718939ecf4f8ad73c4d3f6e9c0, type: 3}
-  - {fileID: 8015939394089206961, guid: 58592b75e6eae734f9287ef4988aedca, type: 3}
-  - {fileID: 3294013781257085869, guid: a616891c6a60a634c87400266a69054f, type: 3}
-  - {fileID: 3294013781257085869, guid: 30c7509a0110d124dba2334d6fcd11f6, type: 3}
   m_offsetSpawnPos: {x: 0, y: 0, z: 11.81}
   position: {x: 0, y: 0, z: 0}
   m_spawnTime: 0.5
@@ -1093,3 +1088,25 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b16a6532eb6d95d45b2b064e1c2f965a, type: 3}
   - {fileID: 21300000, guid: a085d0ca2eb1206409c464d83ebafb7c, type: 3}
   - {fileID: 21300000, guid: 3915b1c7ab65033498ae21dc442a4f3b, type: 3}
+  fragmentIconArray: []
+--- !u!114 &6382111088385740858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32667d2349ad92f4da2105a0da3d7dda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  propsGroundLayerMask:
+    serializedVersion: 2
+    m_Bits: 264
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048

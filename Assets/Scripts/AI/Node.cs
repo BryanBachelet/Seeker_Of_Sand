@@ -55,6 +55,12 @@ namespace GuerhoubaGames.AI
             }
             return state;
         }
+        
+        public void StopNode()
+        {
+            OnStop();
+            started = false;
+        }
 
         protected abstract void OnStart();
         protected abstract void OnStop();

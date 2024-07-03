@@ -9,6 +9,7 @@ namespace GuerhoubaGames.AI
         protected override void OnStart()
         {
             agent.state = Enemies.NpcState.MOVE;
+            agent.moveComponent.isGoingAway = false;
             agent.moveComponent.minTargetDistance = stopDistance;
         }
 
@@ -19,6 +20,7 @@ namespace GuerhoubaGames.AI
 
         protected override State OnUpdate()
         {
+           
             if (agent.moveComponent.IsInRange())
             {
                 return State.SUCCESS;

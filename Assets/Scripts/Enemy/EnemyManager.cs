@@ -50,7 +50,6 @@ namespace Enemies
         [SerializeField] public Transform m_basePlayerTransform;
         [SerializeField] private Transform m_cameraTransform;
 
-        [SerializeField] private GameObject[] m_enemyGO = new GameObject[2];
         [SerializeField] private Vector3 m_offsetSpawnPos;
         [SerializeField] private Vector3 position;
         [SerializeField] private float m_spawnTime = 3.0f;

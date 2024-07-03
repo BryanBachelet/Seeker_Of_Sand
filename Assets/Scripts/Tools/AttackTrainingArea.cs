@@ -41,21 +41,14 @@ public class AttackTrainingArea : MonoBehaviour
         debugCollider = activeDebugCollider;
         if (playerTarget != null)
         {
-            m_Vfx.SetFloat("Size", rangeHit * 3.33f);
             hpPlayer = playerTarget.GetComponent<HealthPlayerComponent>();
             destroyScript.m_DestroyAfterTime = lifeTimeVFX;
+            m_Vfx.SetFloat("Size", rangeHit * 3.33f);
             m_Vfx.SetFloat("TempsRealese", lifeTimeVFX);
             m_Vfx.SendEvent("ActiveArea");
-        }
-        RaycastHit hit = new RaycastHit();
 
-        if (Physics.Raycast(transform.position + Vector3.up * 3, -Vector3.up, out hit, 10, m_groundLayerMask))
-        {
-            float angle = Vector3.SignedAngle(Vector3.up, hit.normal, Vector3.forward);
-
-            transform.rotation = Quaternion.Euler(angle, transform.eulerAngles.y, transform.eulerAngles.z);
-            transform.position = hit.point;
         }
+ 
     }
 
     // Update is called once per frame
@@ -79,7 +72,7 @@ public class AttackTrainingArea : MonoBehaviour
     private void OnDestroy()
     {
         GameObject vfxExplosionObject = Instantiate(vfxExplosion, transform.position, transform.rotation);
-        vfxExplosionObject.transform.localScale = scaleAttack * rangeHit;
+       // vfxExplosionObject.transform.localScale = scaleAttack * rangeHit;
         if (playerTarget == null) return;
 
         positionOnDestroy = transform.position;
