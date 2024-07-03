@@ -18,7 +18,7 @@ public class Sound_Masse_Behavior : MonoBehaviour
 
     public LayerMask enemiLayer;
     public int rangeDetection;
-    private Collider[] nearEnemi;
+    public Collider[] nearEnemi;
     public int nearEnemiCount = 0;
 
     public float cooldownDetection = 1;
@@ -57,7 +57,7 @@ public class Sound_Masse_Behavior : MonoBehaviour
             if (item.GetComponent<Enemies.NpcMetaInfos>())
             {
                 Enemies.NpcMetaInfos metaObserved = item.GetComponent<Enemies.NpcMetaInfos>();
-                if((int)metaObserved.type == typeEnemyObserved)
+                if((int)metaObserved.type == typeEnemyObserved || typeEnemyObserved == -1)
                 {
                     Debug.Log("EnemiAdd");
                     tempEnemiCount++;
@@ -79,7 +79,7 @@ public class Sound_Masse_Behavior : MonoBehaviour
                 {
                     if(nearEnemiCount > 0 && nearEnemiCount < seuil[i+1])
                     {
-                        currentSeuil = i - 1;
+                        currentSeuil = i;
                     }
                 }
                 else
@@ -88,14 +88,14 @@ public class Sound_Masse_Behavior : MonoBehaviour
                     {
                         if (nearEnemiCount > seuil[i] && nearEnemiCount < seuil[i + 1])
                         {
-                            currentSeuil = i - 1;
+                            currentSeuil = i ;
                         }
                     }
                     else
                     {
                         if (nearEnemiCount >= seuil[i])
                         {
-                            currentSeuil = i - 1;
+                            currentSeuil = i ;
                         }
                     }
                 }

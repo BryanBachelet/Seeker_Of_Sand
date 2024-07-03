@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="MixerGroup" id="{903e0e9d-f33a-494c-bd97-1ff2786d6e1c}">
+		<property name="name">
+			<value>Enemi</value>
+		</property>
+		<relationship name="masters">
+			<destination>{1e946772-fa9c-4ebe-b793-c0a3e0b08f31}</destination>
+			<destination>{65ab20a4-935c-4fd6-bfbf-02c472e8169b}</destination>
+		</relationship>
+		<relationship name="effectChain">
+			<destination>{ce77f5ad-5b06-4508-8156-81a92d251aa7}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{dbf8cc01-a591-4473-ae4c-2d722d88d2ca}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{01c4e95a-f29c-4f25-8e52-d1c03adde702}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{ce77f5ad-5b06-4508-8156-81a92d251aa7}">
+		<relationship name="effects">
+			<destination>{87aaca9e-20b7-40e1-a6b9-73a3a450b2bd}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{dbf8cc01-a591-4473-ae4c-2d722d88d2ca}" />
+	<object class="MixerBusFader" id="{87aaca9e-20b7-40e1-a6b9-73a3a450b2bd}" />
+</objects>

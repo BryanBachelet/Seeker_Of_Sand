@@ -18,7 +18,7 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text m_durationGameText;
     [SerializeField] private Image m_nightCompletionFill;
     [SerializeField] private GameObject[] m_nightCompleted;
-
+    [SerializeField] private GameObject fixeElement;
     private bool m_finishDisplayStat = false;
     private bool m_isUpdatingStat = false;
 
@@ -45,6 +45,7 @@ public class UIEndScreen : MonoBehaviour
 
     public void ActiveUIEndScreen(EndInfoStats stats)
     {
+        fixeElement.SetActive(false);
         m_parentEndMenu.SetActive(true);
         stat = stats;
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);

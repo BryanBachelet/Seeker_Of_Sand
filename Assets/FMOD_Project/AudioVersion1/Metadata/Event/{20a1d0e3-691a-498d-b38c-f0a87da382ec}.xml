@@ -8,7 +8,7 @@
 			<value>2</value>
 		</property>
 		<relationship name="folder">
-			<destination>{307f1fd3-305f-4832-a878-970639141215}</destination>
+			<destination>{269a5612-4a78-45bc-9061-561943b64bff}</destination>
 		</relationship>
 		<relationship name="mixer">
 			<destination>{d8194477-55e1-4f88-a09b-637c8f2117b1}</destination>
@@ -33,6 +33,7 @@
 			<destination>{c8d5030e-30ac-4910-9174-d629be46288e}</destination>
 		</relationship>
 		<relationship name="banks">
+			<destination>{ba2ea8f1-5b9e-42d1-95d6-5919cd48f6fb}</destination>
 			<destination>{2565353e-f7b8-424d-b1dd-6c523ffab09f}</destination>
 		</relationship>
 	</object>
@@ -54,12 +55,15 @@
 			<destination>{44969577-334e-4871-a555-f961d1b0b0b5}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{01c4e95a-f29c-4f25-8e52-d1c03adde702}</destination>
+			<destination>{903e0e9d-f33a-494c-bd97-1ff2786d6e1c}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{76db0350-f9a7-456c-9021-9387289152d2}">
 		<property name="maxVoices">
 			<value>6</value>
+		</property>
+		<property name="voiceStealing">
+			<value>4</value>
 		</property>
 		<property name="maximumDistance">
 			<value>700</value>
@@ -79,7 +83,7 @@
 			<destination>{0e40c889-af67-42e3-b0f5-9ff2bcdd1e1c}</destination>
 		</relationship>
 		<relationship name="modules">
-			<destination>{55fbfb79-8217-43ec-a3fd-0315d52b5f9f}</destination>
+			<destination>{3e8440e4-d250-48f9-8a10-0e7c50e7a20c}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{d1479ea9-bc83-4891-b4a7-541bc39fb3ed}</destination>
@@ -88,7 +92,7 @@
 	<object class="Timeline" id="{c8d5030e-30ac-4910-9174-d629be46288e}">
 		<relationship name="modules">
 			<destination>{fbc75f62-f6bb-4b9f-b40e-4de3f6ad5ae9}</destination>
-			<destination>{55fbfb79-8217-43ec-a3fd-0315d52b5f9f}</destination>
+			<destination>{3e8440e4-d250-48f9-8a10-0e7c50e7a20c}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{30b07db2-e634-4a0b-b4da-50f1497c7ff8}">
@@ -124,7 +128,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{9799e595-3cf3-429d-8847-c4fb36982616}">
 		<property name="volume">
-			<value>-14</value>
+			<value>-80</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -144,12 +148,19 @@
 			<destination>{21ae9258-acba-455d-8ed9-60d7cac31300}</destination>
 		</relationship>
 	</object>
-	<object class="SingleSound" id="{55fbfb79-8217-43ec-a3fd-0315d52b5f9f}">
+	<object class="SingleSound" id="{3e8440e4-d250-48f9-8a10-0e7c50e7a20c}">
 		<property name="length">
-			<value>6.2000000000000002</value>
+			<value>1.4634240362811792</value>
 		</property>
+		<property name="startOffset">
+			<value>4.5</value>
+		</property>
+		<relationship name="modulators">
+			<destination>{6b0483cb-6c79-46c8-b3d5-ba9511ce4b84}</destination>
+			<destination>{87ac123d-4b90-4671-86ee-b1915556fe7e}</destination>
+		</relationship>
 		<relationship name="audioFile">
-			<destination>{e2329ed3-d773-4a4d-8529-4c93bd22935e}</destination>
+			<destination>{da7b9bb4-d218-4e4a-b3c1-5206a8f00725}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{d1479ea9-bc83-4891-b4a7-541bc39fb3ed}">
@@ -201,6 +212,22 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{ba7ac5bc-fc79-40f2-bbf2-1ec7f1bd856f}" />
+	<object class="RandomizerModulator" id="{6b0483cb-6c79-46c8-b3d5-ba9511ce4b84}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>19.5</value>
+		</property>
+	</object>
+	<object class="RandomizerModulator" id="{87ac123d-4b90-4671-86ee-b1915556fe7e}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>startOffset</value>
+		</property>
+		<property name="amount">
+			<value>12.5</value>
+		</property>
+	</object>
 	<object class="Automator" id="{21ae9258-acba-455d-8ed9-60d7cac31300}">
 		<property name="nameOfPropertyBeingAutomated">
 			<value>volume</value>
@@ -314,7 +341,7 @@
 			<value>6</value>
 		</property>
 		<property name="value">
-			<value>-80</value>
+			<value>0</value>
 		</property>
 	</object>
 </objects>

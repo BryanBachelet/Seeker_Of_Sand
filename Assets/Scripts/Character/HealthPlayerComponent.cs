@@ -39,7 +39,7 @@ public class HealthPlayerComponent : MonoBehaviour
     public Volume volume;
     private Vignette vignette;
 
-    private bool feedbackHit = false;
+    public bool feedbackHit = false;
     private float timeLastHit;
     public AnimationCurve evolutionVignetteOverTime;
     public float tempsEffetHit = 0.25f;
@@ -82,7 +82,7 @@ public class HealthPlayerComponent : MonoBehaviour
         {
             if (Time.time - timeLastHit < tempsEffetHit)
             {
-                vignette.intensity.value = ((0.35f + (0.05f * m_CurrentQuarter)) * evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit));
+                vignette.intensity.value = /*((0.35f + (0.05f * m_CurrentQuarter)) * */evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit);
             }
             else
             {
