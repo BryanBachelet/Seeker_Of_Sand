@@ -5,6 +5,7 @@ using UnityEngine;
 public class DestroyAfterBasic : MonoBehaviour
 {
     private ObjectState state;
+    [HideInInspector] public bool isNotDestroying;
     [SerializeField] public float m_DestroyAfterTime = 3;
     // Start is called before the first frame update
     void Start()
@@ -14,6 +15,11 @@ public class DestroyAfterBasic : MonoBehaviour
         StartCoroutine(DestroyAfter(m_DestroyAfterTime));
     }
 
+
+    public void LaunchTimer( )
+    {
+        StartCoroutine(DestroyAfter(m_DestroyAfterTime));
+    }
     public IEnumerator DestroyAfter(float time)
     {
         float duration = 0;
@@ -26,7 +32,12 @@ public class DestroyAfterBasic : MonoBehaviour
                 duration += Time.deltaTime;
             }
         }
-        
-        Destroy(this.gameObject);
+
+        if (!isNotDestroying)
+            Destroy(this.gameObject);
+        else
+            gameObject.SetActive(false);
     }
+
+
 }

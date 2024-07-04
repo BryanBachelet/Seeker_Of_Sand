@@ -197,7 +197,7 @@ namespace Enemies
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
             attackInfoData.attackNPCData = currentAttackData;
-            attackInfoData.duration = currentAttackData.contactTime;
+            attackInfoData.duration = currentAttackData.recoverTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.phase = AttackPhase.RECOVERY;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);

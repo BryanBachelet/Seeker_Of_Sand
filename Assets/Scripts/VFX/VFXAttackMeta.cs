@@ -10,6 +10,7 @@ namespace GuerhoubaGames.VFX
     {
         public float attackRange;
         public float duration;
+        public bool isDestroying ;
     }
 
 

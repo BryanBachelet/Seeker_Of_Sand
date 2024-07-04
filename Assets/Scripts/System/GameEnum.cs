@@ -58,7 +58,7 @@ namespace GuerhoubaGames.GameEnum
         PROJECTILE_OBJ =1,
     }
 
-    public enum RangeAttackType
+    public enum RangeAttackType 
     {
         PROJECTILE =0,
         AREA = 1,

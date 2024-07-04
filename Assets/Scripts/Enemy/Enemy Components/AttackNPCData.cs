@@ -24,7 +24,6 @@ namespace Enemies
         public RangeAttackType rangeTypeAttack;
         
         
-
         [Header("Area Parameters")]
         public float radius;
         public AreaType shapeType;

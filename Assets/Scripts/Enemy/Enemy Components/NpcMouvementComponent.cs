@@ -185,7 +185,7 @@ namespace Enemies
 
         public bool IsInRange()
         {
-            float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
+                float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
 
             return distance  < minTargetDistance;
         }
@@ -223,7 +223,7 @@ namespace Enemies
             } 
             else
             {
-                baseTransform.rotation *= Quaternion.Euler(0, 360 * Time.deltaTime, 0);
+                baseTransform.rotation *= Quaternion.Euler(0, Mathf.Sign(angle)* 360 * Time.deltaTime, 0);
             }
            
         }

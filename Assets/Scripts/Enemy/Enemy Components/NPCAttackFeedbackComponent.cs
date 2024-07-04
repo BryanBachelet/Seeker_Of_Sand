@@ -73,6 +73,7 @@ namespace Enemies
             GuerhoubaGames.VFX.VfxAttackData vfxData = new GuerhoubaGames.VFX.VfxAttackData();
             vfxData.attackRange = attackInfoData.attackNPCData.radius;
             vfxData.duration = attackInfoData.duration;
+            vfxData.isDestroying = attackFeedbackData.isSpawn;
             vfxMeta.InitVFXObject(vfxData);
 
 
