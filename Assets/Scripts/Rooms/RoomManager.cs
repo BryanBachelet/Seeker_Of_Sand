@@ -203,7 +203,7 @@ public class RoomManager : MonoBehaviour
     {
         currentCountOfEnemy++;
         float progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
-        Debug.Log("Enemy Count" + progress);
+        //Debug.Log("Enemy Count" + progress);
         if (currentRoomType == RoomType.Enemy)
         {
             if (progress >= 1)

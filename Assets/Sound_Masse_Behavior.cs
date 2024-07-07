@@ -59,13 +59,13 @@ public class Sound_Masse_Behavior : MonoBehaviour
                 Enemies.NpcMetaInfos metaObserved = item.GetComponent<Enemies.NpcMetaInfos>();
                 if((int)metaObserved.type == typeEnemyObserved || typeEnemyObserved == -1)
                 {
-                    Debug.Log("EnemiAdd");
+                    //Debug.Log("EnemiAdd");
                     tempEnemiCount++;
                     positionMoyenne += metaObserved.transform.position;
                 }
                 else
                 {
-                    Debug.Log("EnemiNotAdd");
+                    //Debug.Log("EnemiNotAdd");
                 }
             }
              
@@ -110,6 +110,6 @@ public class Sound_Masse_Behavior : MonoBehaviour
         }
         masseSoundInstance.setParameterByName(variableFMOD, currentSeuil);
         masseSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-        Debug.Log("Send Seuil Masse : [" + currentSeuil + "]");
+        //Debug.Log("Send Seuil Masse : [" + currentSeuil + "]");
     }
 }

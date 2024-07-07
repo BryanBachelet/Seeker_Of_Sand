@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using FMOD.Studio;
+using FMODUnity;
 namespace Enemies
 {
 
@@ -60,6 +62,10 @@ namespace Enemies
 
         public bool IsDebugActive = false;
 
+        public bool isMassed = true;
+        public EventReference moveSoundAssociated;
+        public EventInstance moveSoundInstance;
+        public int indexDestroySound;
         void Awake()
         {
             InitComponent();
@@ -70,6 +76,14 @@ namespace Enemies
             m_npcInfo = GetComponent<NpcMetaInfos>();
             m_entityAnimator = GetComponentInChildren<Animator>();
             _propBlock = new MaterialPropertyBlock();
+            if(!isMassed)
+            {
+                moveSoundInstance = RuntimeManager.CreateInstance(moveSoundAssociated);
+                moveSoundInstance.start();
+                moveSoundInstance.setVolume(0);
+                Debug.Log("PAUSE le son !!");
+                //moveSoundInstance.setVolume(0);
+            }
             for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
             {
                 m_materialList.Add(m_SkinMeshRenderer.materials[i]);
@@ -103,6 +117,11 @@ namespace Enemies
                     m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
                 }
             }
+            if(!isMassed)
+            {
+                moveSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+            }
+
         }
 
         public void SetTarget(Transform targetTransform,Transform baseTranform)
@@ -149,6 +168,12 @@ namespace Enemies
 
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
             m_npcInfo.state = NpcState.DEATH;
+
+            if(!isMassed)
+            {
+                //moveSoundInstance.setVolume(0);
+            }
+
             this.gameObject.layer = 16;
             destroyEvent.Invoke(direction, power);
 
@@ -168,7 +193,12 @@ namespace Enemies
         {
             m_enemyManager.DeathEnemy();
             death = true;
-            GlobalSoundManager.PlayOneShot(36, transform.position);
+            if (!isMassed)
+            {
+                moveSoundInstance.setVolume(0);
+                Debug.Log("Pause le son 2 le son !!");
+            }
+            GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction / 2);
             Instantiate(death_vfx, transform.position, transform.rotation);
@@ -210,6 +240,13 @@ namespace Enemies
             m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute); 
             death = false;
             m_npcInfo.state = NpcState.MOVE;
+            if (!isMassed)
+            {
+                moveSoundInstance.setVolume(1);
+                moveSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+                Debug.Log("Je joue le son !!");
+            }
+
             this.gameObject.layer = 6;
         }
     }
