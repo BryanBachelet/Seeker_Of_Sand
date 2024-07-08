@@ -19,11 +19,18 @@ namespace Enemies
         public bool isStunLockingAttack;
         public bool isStopMovingAtPrep;
         public bool isHeavyAttack;
+        public bool isFollowTarget;
+        public AttackLaunchMoment launchMoment;
+        public NPCMoveAttackObject attackMovement;
+        [Tooltip("When we use UPDATE_CONTACT state for launching attack ")]
+        public float updateTimeAttackLaunch;
+
         public AttackType typeAttack;
         [Tooltip("Only useful for the projectile type of attack")]
         public RangeAttackType rangeTypeAttack;
         
         
+
 
         [Header("Area Parameters")]
         public float radius;

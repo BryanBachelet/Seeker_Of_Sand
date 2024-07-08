@@ -9,7 +9,7 @@ namespace Enemies
     {
         public bool selected = false;
         private const float slowSpeed = .7f;
-        private const int facingAngle = 10;
+        private const int facingAngle = 4;
         private const int minAngleToFace = 10;
         public float minTargetDistance = 1;
         [Header("Movement Parameters")]
@@ -185,7 +185,7 @@ namespace Enemies
 
         public bool IsInRange()
         {
-            float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
+                float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
 
             return distance  < minTargetDistance;
         }
@@ -223,12 +223,20 @@ namespace Enemies
             } 
             else
             {
-                baseTransform.rotation *= Quaternion.Euler(0, 360 * Time.deltaTime, 0);
+                baseTransform.rotation *= Quaternion.Euler(0, Mathf.Sign(angle)* 360 * Time.deltaTime, 0);
             }
-           
+
         }
 
-     
+        public void DirectRotateToTarget()
+        {
+
+            transform.LookAt(targetData.target, Vector3.up);
+
+        }
+
+
+
 
         public void SetupPause()
         {

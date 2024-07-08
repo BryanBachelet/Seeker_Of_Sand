@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.AI;
 
@@ -125,6 +126,21 @@ namespace Enemies
             prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
 
+            if (currentAttackData.attackMovement)
+            {
+
+                NPCMoveAttData nPCMoveAttData = new NPCMoveAttData();
+                nPCMoveAttData.npcGo = this.gameObject;
+                nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
+                nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
+
+                currentAttackData.attackMovement.StartMvt(nPCMoveAttData);
+
+                if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
+                    currentAttackData.attackMovement.EndMovement += LaunchAttack;
+            }
+            m_mouvementComponent.DirectRotateToTarget();
+
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
         }
@@ -143,6 +159,129 @@ namespace Enemies
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.phase = AttackPhase.CONTACT;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
+
+            if (currentAttackData.launchMoment == AttackLaunchMoment.START_CONTACT)
+            {
+                LaunchAttack();
+            }
+
+            m_timer = 0.0f;
+            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
+
+        }
+
+        public void ActiveRecoverPhase()
+        {
+            OnRecoverAttack?.Invoke();
+            currentAttackState = AttackPhase.RECOVERY;
+
+            AttackInfoData attackInfoData = new AttackInfoData();
+            attackInfoData.attackIndex = currentAttackIndex;
+            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.duration = currentAttackData.recoverTime;
+            attackInfoData.positionAttack = prepTargetPosition;
+            attackInfoData.phase = AttackPhase.RECOVERY;
+            m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
+            m_timer = 0.0f;
+            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is recoving from the attack launch");
+        }
+
+        #endregion
+
+        #region  Finish Phase Functions
+        public void FinishPreparationAttack()
+        {
+            m_timer = 0.0f;
+          deacalAttackArrray[currentAttackIndex].SetActive(false);
+            ActiveAttackContact();
+        }
+
+        public void FinishContactAttack()
+        {
+            m_timer = 0.0f;
+            if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
+            ActiveRecoverPhase();
+        }
+
+        public void FinishRecoverAttack()
+        {
+            OnFinishAttack?.Invoke(true);
+            currentAttackState = AttackPhase.NONE;
+            m_timer = 0.0f;
+            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
+        }
+        #endregion
+
+        #region Update Phase Functions
+        public void UpdatePrepAttack()
+        {
+            if (currentAttackState != AttackPhase.PREP) return;
+
+            if(currentAttackData.isFollowTarget) 
+                m_mouvementComponent.DirectRotateToTarget();
+
+            if (m_timer > currentAttackData.prepationTime)
+            {
+                FinishPreparationAttack();
+            }
+            else
+            {
+                m_timer += Time.deltaTime;
+            }
+        }
+
+        public void UpdateContactAttack()
+        {
+            if (currentAttackState != AttackPhase.CONTACT) return;
+
+            if (currentAttackData.attackMovement)
+            {
+                currentAttackData.attackMovement.UpdateMvt();
+            }
+
+            if (m_timer > currentAttackData.contactTime)
+            {
+                FinishContactAttack();
+          
+            }
+            else
+            {
+
+                if (m_timer > currentAttackData.updateTimeAttackLaunch)
+                {
+                    if (currentAttackData.launchMoment == AttackLaunchMoment.UPDATE_CONTACT)
+                    {
+                        LaunchAttack();
+                    }
+                }
+
+                m_timer += Time.deltaTime;
+            }
+
+            
+        }
+
+        public void UpdateRecoverAttack()
+        {
+            if (currentAttackState != AttackPhase.RECOVERY) return;
+
+            if (m_timer > currentAttackData.recoverTime)
+            {
+                FinishRecoverAttack();
+            }
+            else
+            {
+                m_timer += Time.deltaTime;
+            }
+        }
+        #endregion
+
+        #region Attack Data Function
+
+        public float GetAttackRange(int index) { return attackEnemiesObjectsArr[index].data.attackRange; }
+
+        public void LaunchAttack()
+        {
 
             if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ)
             {
@@ -184,103 +323,9 @@ namespace Enemies
 
                 }
             }
-            m_timer = 0.0f;
-            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
-
         }
 
-        public void ActiveRecoverPhase()
-        {
-            OnRecoverAttack?.Invoke();
-            currentAttackState = AttackPhase.RECOVERY;
 
-            AttackInfoData attackInfoData = new AttackInfoData();
-            attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
-            attackInfoData.duration = currentAttackData.contactTime;
-            attackInfoData.positionAttack = prepTargetPosition;
-            attackInfoData.phase = AttackPhase.RECOVERY;
-            m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
-
-            m_timer = 0.0f;
-            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is recoving from the attack launch");
-        }
-
-        #endregion
-
-        #region  Finish Phase Functions
-        public void FinishPreparationAttack()
-        {
-            m_timer = 0.0f;
-            deacalAttackArrray[currentAttackIndex].SetActive(false);
-            ActiveAttackContact();
-        }
-
-        public void FinishContactAttack()
-        {
-            m_timer = 0.0f;
-            if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
-            ActiveRecoverPhase();
-        }
-
-        public void FinishRecoverAttack()
-        {
-            OnFinishAttack?.Invoke(true);
-            currentAttackState = AttackPhase.NONE;
-            m_timer = 0.0f;
-            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
-        }
-        #endregion
-
-        #region Update Phase Functions
-        public void UpdatePrepAttack()
-        {
-            if (currentAttackState != AttackPhase.PREP) return;
-
-            m_mouvementComponent.RotateToTarget(currentAttackData.prepationTime);
-
-            if (m_timer > currentAttackData.prepationTime)
-            {
-                FinishPreparationAttack();
-            }
-            else
-            {
-                m_timer += Time.deltaTime;
-            }
-        }
-
-        public void UpdateContactAttack()
-        {
-            if (currentAttackState != AttackPhase.CONTACT) return;
-
-            if (m_timer > currentAttackData.contactTime)
-            {
-                FinishContactAttack();
-            }
-            else
-            {
-                m_timer += Time.deltaTime;
-            }
-        }
-
-        public void UpdateRecoverAttack()
-        {
-            if (currentAttackState != AttackPhase.RECOVERY) return;
-
-            if (m_timer > currentAttackData.recoverTime)
-            {
-                FinishRecoverAttack();
-            }
-            else
-            {
-                m_timer += Time.deltaTime;
-            }
-        }
-        #endregion
-
-        #region Attack Data Function
-
-        public float GetAttackRange(int index) { return attackEnemiesObjectsArr[index].data.attackRange; }
 
         #endregion
 

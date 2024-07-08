@@ -14,6 +14,7 @@ namespace GuerhoubaGames.AI
         public bool isOneShotAttack;
         public AreaType type;
         [HideInInspector] public Transform target;
+        public bool ActiveDebug = false;
 
         void Start()
         {
@@ -27,6 +28,8 @@ namespace GuerhoubaGames.AI
         {
             if (type != AreaType.CIRCLE) return;
 
+            // Set Size 
+
             if (Vector3.Distance(transform.position, target.position) < sizeArea)
             {
                 HealthPlayerComponent hpPlayer = target.GetComponent<HealthPlayerComponent>();
@@ -34,5 +37,14 @@ namespace GuerhoubaGames.AI
             }
         }
 
+
+        public void OnDrawGizmos()
+        {
+            if (ActiveDebug)
+            {
+                if (type == AreaType.CIRCLE) Gizmos.DrawWireSphere(transform.position, sizeArea);
+
+            }
+        }
     }
 }

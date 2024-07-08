@@ -50,6 +50,23 @@ namespace GuerhoubaTools.Gameplay
         public float GetTimer() { return m_timer; }
 
 
+
+
     }
+
+    public static class Tools
+    {
+        public static bool IsBelongToLayer(int layerIndex,GameObject obj)
+        { 
+            return layerIndex == obj.layer;
+        }
+
+        public static bool IsBelongToLayerMask(LayerMask mask, GameObject obj)
+        {
+            return (mask.value & (1 << obj.layer)) > 0;
+        }
+    }
+
+
 
 }
