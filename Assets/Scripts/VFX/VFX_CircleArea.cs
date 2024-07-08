@@ -14,17 +14,13 @@ namespace GuerhoubaGames.VFX
         private VfxAttackData data;
 
 
-        // Start is called before the first frame update
-        void Start()
-        {
-           
-            InitComponent(); 
-        }
 
-        public void OnEnable()
+        public void Awake()
         {
-            InitComponent();
+            vfxMetaComponent = GetComponent<VFXAttackMeta>();
+            vfxMetaComponent.OnStart += InitComponent;
         }
+        
 
         public void InitComponent()
         {
@@ -38,7 +34,7 @@ namespace GuerhoubaGames.VFX
             visualEffect = GetComponent<VisualEffect>();
             data = vfxMetaComponent.vfxData;
 
-            visualEffect.SetFloat("Size", data.attackRange);
+            visualEffect.SetFloat("Size", data.attackRange*2);
             visualEffect.SetFloat("TempsRealese", data.duration);
             visualEffect.SendEvent("ActiveArea");
 
