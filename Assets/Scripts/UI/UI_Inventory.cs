@@ -25,10 +25,19 @@ public class UI_Inventory : MonoBehaviour
     #region Objects variables
 
     public List<Image> fragmentHold = new List<Image>();
+    public List<Image> fragmentTypeBackground = new List<Image>();
+    public List<Image> fragmentRarityTier = new List<Image>();
+    public List<TMP_Text> fragmentName = new List<TMP_Text>();
+    public List<Image> fragmentElement = new List<Image>();
+    public List<Image> bandeauFragmentName = new List<Image>();
     public List<ArtefactsInfos> fragmentInfo = new List<ArtefactsInfos>();
     public List<TooltipTrigger> tooltipFragment = new List<TooltipTrigger>();
     public List<Image> spellNotUsedHold = new List<Image>();
     public List<CapsuleProfil> spellNotUsedProfil = new List<CapsuleProfil>();
+
+    public Sprite[] backgroundElement = new Sprite[4];
+    public Sprite[] rarityCadre = new Sprite[3];
+    public Sprite[] iconElement = new Sprite[4];
     #endregion
 
     #region Spell variables
@@ -75,10 +84,8 @@ public class UI_Inventory : MonoBehaviour
         List<GameObject> tempFragment = m_fragmentToolTip.fragment_List;
         for (int i = 0; i < m_fragmentToolTip.currentFragmentNumber; i++)
         {
-            fragmentHold[i].sprite = m_fragmentToolTip.imageFragmentTooltip[i].sprite;
-            tooltipFragment[i].name = m_fragmentToolTip.tooltipTrigger[i].name;
-            tooltipFragment[i].content = m_fragmentToolTip.tooltipTrigger[i].content;
-            fragmentHold[i].gameObject.SetActive(true);
+            SetupFragmentImage(m_fragmentToolTip, i);
+
         }
 
         Sprite[] spellSprite = m_characterShoot.GetSpellSprite();
@@ -106,6 +113,43 @@ public class UI_Inventory : MonoBehaviour
         }
 
 
+    }
+
+    public void SetupFragmentImage(UI_Fragment_Tooltip fragmentInfo, int index)
+    {
+        fragmentHold[index].sprite = m_fragmentToolTip.imageFragmentTooltip[index].sprite;
+        tooltipFragment[index].name = m_fragmentToolTip.tooltipTrigger[index].name;
+        tooltipFragment[index].content = m_fragmentToolTip.tooltipTrigger[index].content;
+        if(fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
+        {
+            fragmentTypeBackground[index].sprite = backgroundElement[0];
+            fragmentElement[index].sprite = iconElement[0];
+        }
+        else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
+        {
+            fragmentTypeBackground[index].sprite = backgroundElement[1];
+            fragmentElement[index].sprite = iconElement[1];
+        }
+        else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
+        {
+            fragmentTypeBackground[index].sprite = backgroundElement[2];
+            fragmentElement[index].sprite = iconElement[2];
+        }
+        else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
+        {
+            fragmentTypeBackground[index].sprite = backgroundElement[3];
+            fragmentElement[index].sprite = iconElement[3];
+        }
+        fragmentRarityTier[index].sprite = rarityCadre[0];
+        fragmentName[index].text = fragmentInfo.fragmentInfo[index].nameArtefact;
+        fragmentHold[index].gameObject.SetActive(true);
+        fragmentTypeBackground[index].gameObject.SetActive(true);
+        fragmentRarityTier[index].gameObject.SetActive(true);
+        fragmentName[index].gameObject.SetActive(true);
+        fragmentElement[index].gameObject.SetActive(true);
+        bandeauFragmentName[index].gameObject.SetActive(true);
+        //if(fragmentInfo.)
+        //fragmentTypeBackground[index].sprite
     }
 
 

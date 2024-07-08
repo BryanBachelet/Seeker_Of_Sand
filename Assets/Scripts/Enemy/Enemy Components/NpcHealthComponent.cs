@@ -107,14 +107,14 @@ namespace Enemies
                 float emissiveValue = progressDeath;
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
-                    m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+                    //m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
                 }
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
                     //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
                     //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
                     //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
-                    m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
+                    //m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
                 }
             }
             if(!isMassed)
@@ -208,14 +208,14 @@ namespace Enemies
             float emissiveValue = progressDeath;
             for (int i = 0; i < materialCutout.Length; i++)
             {
-                m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+                //m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
             }
             for (int i = 0; i < materialCutout.Length; i++)
             {
                 //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
                 //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
                 //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
-                m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
+                //m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
             }
             m_npcInfo.TeleportToPool();
 
