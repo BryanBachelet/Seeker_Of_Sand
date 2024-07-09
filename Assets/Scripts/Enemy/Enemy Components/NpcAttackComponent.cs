@@ -17,6 +17,8 @@ namespace Enemies
         public GameObject[] projectileAttackArrray = new GameObject[0];
         public GameObject[] deacalAttackArrray = new GameObject[0];
 
+        private bool[] isAttackOnCooldown = new bool[0];
+        private float[] timerAttackCooldown = new float[0];
 
         private AttackNPCData currentAttackData;
         private int currentAttackIndex;
@@ -27,11 +29,14 @@ namespace Enemies
         private NPCAttackFeedbackComponent m_NPCAttackFeedbackComponent;
 
 
+        private bool isMvtAttackInit = false;
         private Vector3 prepTargetPosition;
 
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
+
+
 
         // Event for each attack step
         public Action OnPrepAttack;
@@ -66,6 +71,7 @@ namespace Enemies
             UpdatePrepAttack();
             UpdateContactAttack();
             UpdateRecoverAttack();
+            UpdateCooldown();
         }
 
         #endregion
@@ -90,6 +96,9 @@ namespace Enemies
                 }
 
             }
+
+            timerAttackCooldown = new float[attackEnemiesObjectsArr.Length];
+            isAttackOnCooldown = new bool[attackEnemiesObjectsArr.Length];
 
         }
 
@@ -123,22 +132,11 @@ namespace Enemies
             attackInfoData.duration = currentAttackData.prepationTime;
             attackInfoData.positionAttack = m_mouvementComponent.targetData.baseTarget.position;
             attackInfoData.phase = AttackPhase.PREP;
-            prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
+            
+            prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
+            isMvtAttackInit = false;
 
-            if (currentAttackData.attackMovement)
-            {
-
-                NPCMoveAttData nPCMoveAttData = new NPCMoveAttData();
-                nPCMoveAttData.npcGo = this.gameObject;
-                nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
-                nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
-
-                currentAttackData.attackMovement.StartMvt(nPCMoveAttData);
-
-                if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
-                    currentAttackData.attackMovement.EndMovement += LaunchAttack;
-            }
             m_mouvementComponent.DirectRotateToTarget();
 
 
@@ -160,6 +158,7 @@ namespace Enemies
             attackInfoData.phase = AttackPhase.CONTACT;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
 
+           
             if (currentAttackData.launchMoment == AttackLaunchMoment.START_CONTACT)
             {
                 LaunchAttack();
@@ -205,6 +204,7 @@ namespace Enemies
 
         public void FinishRecoverAttack()
         {
+            isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
             m_timer = 0.0f;
@@ -217,8 +217,27 @@ namespace Enemies
         {
             if (currentAttackState != AttackPhase.PREP) return;
 
-            if(currentAttackData.isFollowTarget) 
+            if (currentAttackData.isFollowTarget || m_timer < currentAttackData.rotationTime)
+            {
                 m_mouvementComponent.DirectRotateToTarget();
+            }
+            else
+            {
+                if (currentAttackData.attackMovement && !isMvtAttackInit)
+                {
+                    isMvtAttackInit = true;
+
+                       NPCMoveAttData nPCMoveAttData = new NPCMoveAttData();
+                    nPCMoveAttData.npcGo = this.gameObject;
+                    nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
+                    nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
+
+                    currentAttackData.attackMovement.StartMvt(nPCMoveAttData);
+
+                    if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
+                        currentAttackData.attackMovement.EndMovement += LaunchAttack;
+                }
+            }
 
             if (m_timer > currentAttackData.prepationTime)
             {
@@ -276,6 +295,25 @@ namespace Enemies
         }
         #endregion
 
+        public void UpdateCooldown()
+        {
+            for (int i = 0; i < timerAttackCooldown.Length; i++)
+            {
+                if (!isAttackOnCooldown[i]) continue;
+
+                if(timerAttackCooldown[i]> attackEnemiesObjectsArr[i].data.coooldownAttack)
+                {
+                    isAttackOnCooldown[i] = false;
+                    timerAttackCooldown[i] = 0;
+                    Debug.Log("Attack" + attackEnemiesObjectsArr[i].data.nameAttack + "cooldown is finish");
+                }
+                else
+                {
+                    timerAttackCooldown[i] += Time.deltaTime;
+                }
+            }
+        }
+
         #region Attack Data Function
 
         public float GetAttackRange(int index) { return attackEnemiesObjectsArr[index].data.attackRange; }
@@ -325,7 +363,11 @@ namespace Enemies
             }
         }
 
-
+        public bool IsAttackOnCooldown(int index)
+        {
+          return  isAttackOnCooldown[index];
+        }
+        
 
         #endregion
 

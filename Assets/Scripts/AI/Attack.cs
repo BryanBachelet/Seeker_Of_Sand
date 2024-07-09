@@ -12,10 +12,17 @@ namespace GuerhoubaGames.AI
 
         protected override void OnStart()
         {
-            agent.state = Enemies.NpcState.ATTACK;
-            agent.attackComponent.ActivePrepationAttack(indexAttack);
-            agent.attackComponent.OnFinishAttack += IsFinish;
-            isSucces = 0;
+            if (agent.attackComponent.currentAttackState != GameEnum.AttackPhase.NONE)
+            {
+                isSucces = -1;
+            }
+            else
+            {
+                agent.state = Enemies.NpcState.ATTACK;
+                agent.attackComponent.ActivePrepationAttack(indexAttack);
+                agent.attackComponent.OnFinishAttack += IsFinish;
+                isSucces = 0;
+            }
         }
 
         protected override void OnStop()

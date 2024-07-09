@@ -14,6 +14,9 @@ namespace Enemies
         public float prepationTime;
         public float recoverTime;
         public float contactTime;
+        public float coooldownAttack;
+        [Tooltip("Periods during the ai is going to rotate to follow the player")]
+        public float rotationTime;
         public int damage;
         public float attackRange;
         public bool isStunLockingAttack;
