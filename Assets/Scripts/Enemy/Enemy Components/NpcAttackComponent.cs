@@ -15,7 +15,6 @@ namespace Enemies
         public AttackEnemiesObject[] attackEnemiesObjectsArr = new AttackEnemiesObject[0];
         public Collider[] colliderAttackArray = new Collider[0];
         public GameObject[] projectileAttackArrray = new GameObject[0];
-        public GameObject[] deacalAttackArrray = new GameObject[0];
 
         private bool[] isAttackOnCooldown = new bool[0];
         private float[] timerAttackCooldown = new float[0];
@@ -117,7 +116,7 @@ namespace Enemies
             currentAttackState = AttackPhase.PREP;
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;
-            deacalAttackArrray[currentAttackIndex].SetActive(true);
+
             if (currentAttackData.isStopMovingAtPrep)
             {
                 m_mouvementComponent.StopMouvement();
@@ -191,7 +190,6 @@ namespace Enemies
         public void FinishPreparationAttack()
         {
             m_timer = 0.0f;
-          deacalAttackArrray[currentAttackIndex].SetActive(false);
             ActiveAttackContact();
         }
 

@@ -174,7 +174,7 @@ public class MarchandUiView : MonoBehaviour
         }
         else
         {
-            fragmentSpriteArray[index].sprite = GameResources.instance.fragmentIconArray[(int)itemData.element];
+            fragmentSpriteArray[index].sprite = merchandItemData.fragmentData[index].icon;
             fragmentPriceTextArray[index].text = itemData.price.ToString();
            if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
@@ -201,7 +201,7 @@ public class MarchandUiView : MonoBehaviour
                 if (merchandItemData.itemFragmentData[index].hasBeenBuy) return;
                 description = merchandItemData.fragmentData[index].description;
                 name = merchandItemData.fragmentData[index].name;
-                image = GameResources.instance.fragmentIconArray[(int)merchandItemData.itemFragmentData[index].element]; ;
+                image = merchandItemData.fragmentData[index].icon; ;
                 break;
             default:
                 break;
