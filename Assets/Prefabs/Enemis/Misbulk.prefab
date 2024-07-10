@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1222497940916763937}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.558, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -52,7 +52,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 40
+  m_Radius: 50
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8638655258256065769
 MonoBehaviour:
@@ -117,6 +117,7 @@ Transform:
   - {fileID: 7764577784084738709}
   - {fileID: 2604711458449064387}
   - {fileID: 316994233671652646}
+  - {fileID: 8945953373865485832}
   - {fileID: 7659236445204619509}
   - {fileID: 8877033762739855464}
   m_Father: {fileID: 0}
@@ -436,13 +437,12 @@ MonoBehaviour:
   attackEnemiesObjectsArr:
   - {fileID: 11400000, guid: 3d93f5f07c77c01469827586cd772860, type: 2}
   - {fileID: 11400000, guid: 957eaf63b0b670f4090796053fa5f1bf, type: 2}
+  - {fileID: 11400000, guid: e09aac278f982a045ac613e8a3db1a7c, type: 2}
   colliderAttackArray:
   - {fileID: 5104976177377251887}
+  - {fileID: 4859472291981760264}
   projectileAttackArrray:
   - {fileID: 793578448744671341, guid: 67977c3456c66c048941ac4edefa2f33, type: 3}
-  deacalAttackArrray:
-  - {fileID: 6076304484621789231}
-  - {fileID: 6076304484621789231}
   currentAttackState: 0
   isActiveDebug: 1
 --- !u!114 &4841692019479195601
@@ -501,6 +501,20 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 0
     attackPhase: 0
+  - feedbackType: 0
+    areaSpawnType: 1
+    isSpawn: 1
+    Vfx: {fileID: 4628487204184700574, guid: c0e19b232dbe7c3448b6d0507b192b42, type: 3}
+    sfx:
+      Guid:
+        Data1: 0
+        Data2: 0
+        Data3: 0
+        Data4: 0
+      Path: 
+    sfxIndex: 0
+    attackIndex: 2
+    attackPhase: 0
 --- !u!114 &5056973524547089000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,6 +529,76 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   behaviorTree: {fileID: 11400000, guid: c5a2ddf53cd88934e8ffb58fb3fa64ee, type: 2}
   isActivate: 0
+--- !u!1 &5049940483994822181
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8945953373865485832}
+  - component: {fileID: 4859472291981760264}
+  - component: {fileID: 4633518120211262409}
+  m_Layer: 18
+  m_Name: AutoCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8945953373865485832
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5049940483994822181}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3294013781257085864}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &4859472291981760264
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5049940483994822181}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 20
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4633518120211262409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5049940483994822181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e1f5f48dc1ecd2449f65cad25be6108, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basePosition: {fileID: 3294013781257085864}
+  damage: 1
+  isHeavyAttack: 0
+  ActiveDebug: 0
 --- !u!1 &6076304484621789231
 GameObject:
   m_ObjectHideFlags: 0

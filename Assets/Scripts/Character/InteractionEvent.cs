@@ -48,6 +48,8 @@ public class InteractionEvent : MonoBehaviour
     private InteractionInterface currentInteractionInterface;
 
     public GameObject currentInteractibleObjectActive = null;
+
+    public GameObject hintInputInteraction;
     // Start is called before the first frame update
     void Start()
     {
@@ -124,6 +126,10 @@ public class InteractionEvent : MonoBehaviour
 
         if (col.Length > 0)
         {
+            if (!hintInputInteraction.activeSelf)
+            {
+                hintInputInteraction.SetActive(true);
+            }
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
@@ -185,6 +191,10 @@ public class InteractionEvent : MonoBehaviour
         }
         else if (col.Length == 0 && currentInteractibleObject != null)
         {
+            if (hintInputInteraction.activeSelf)
+            {
+                hintInputInteraction.SetActive(false) ;
+            }
             currentInteractibleObject = null;
             m_socleTransform = null;
             StartCoroutine(CloseUIWithDelay(2));
@@ -210,6 +220,10 @@ public class InteractionEvent : MonoBehaviour
         colliderProche = col;
         if (col.Length > 0)
         {
+            if (!hintInputInteraction.activeSelf)
+            {
+                hintInputInteraction.SetActive(true);
+            }
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
@@ -240,6 +254,10 @@ public class InteractionEvent : MonoBehaviour
         }
         else if (col.Length == 0 && lastTrader != null)
         {
+            if (hintInputInteraction.activeSelf)
+            {
+                hintInputInteraction.SetActive(false);
+            }
 
             lastTrader.SetBool("StandUp", false);
             m_lastHintAnimator.SetBool("InteractionOn", false);
