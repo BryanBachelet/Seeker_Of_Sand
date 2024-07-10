@@ -62,13 +62,11 @@ namespace Enemies
                 if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.Target)
                     spawnPositon = attackInfoData.positionAttack;
 
-                vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.identity);
+                vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0,transform.eulerAngles.y,0),transform);
                
 
             }
 
-
-           // vfx.GetComponent<VisualEffect>().Play();
             GuerhoubaGames.VFX.VFXAttackMeta vfxMeta  = vfx.GetComponent<GuerhoubaGames.VFX.VFXAttackMeta>();
             GuerhoubaGames.VFX.VfxAttackData vfxData = new GuerhoubaGames.VFX.VfxAttackData();
             vfxData.attackRange = attackInfoData.attackNPCData.radius;

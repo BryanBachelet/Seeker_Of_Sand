@@ -116,7 +116,7 @@ namespace Enemies
             currentAttackState = AttackPhase.PREP;
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;
-
+            m_mouvementComponent.DirectRotateToTarget();
             if (currentAttackData.isStopMovingAtPrep)
             {
                 m_mouvementComponent.StopMouvement();
@@ -136,7 +136,7 @@ namespace Enemies
             prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
             isMvtAttackInit = false;
 
-            m_mouvementComponent.DirectRotateToTarget();
+          
 
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");

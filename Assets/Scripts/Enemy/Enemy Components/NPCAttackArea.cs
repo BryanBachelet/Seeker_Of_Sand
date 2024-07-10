@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 
-namespace GuerhoubaGames.AI
+namespace Enemies
 {
     public class NPCAttackArea : MonoBehaviour
     {

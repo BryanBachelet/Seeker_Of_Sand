@@ -61,13 +61,13 @@ namespace Enemies
                     int indexMeter = 0;
 
                    
-                    while (!hasFoundNavMesh && indexMeter<100)
+                    while (!hasFoundNavMesh && indexMeter< 300)
                     {
                         Vector3 originPoint = hit.point - (dashDirection * indexMeter * .5f);
                         hasFoundNavMesh = NavMesh.SamplePosition(originPoint, out navHit, data.npcGo.transform.localScale.y, NavMesh.AllAreas);
                         indexMeter++;
                     }
-                    if (indexMeter >= 100)
+                    if (indexMeter >= 300)
                         Debug.LogError("Infinite Loop ");
                     destination = navHit.position;
                 }
@@ -78,13 +78,13 @@ namespace Enemies
                 bool hasFoundNavMesh = false;
                 int indexMeter = 0;
                 originPoint1 = data.npcGo.transform.position + dashDirection.normalized * distance;
-                while (!hasFoundNavMesh && indexMeter < 100)
+                while (!hasFoundNavMesh && indexMeter < 300)
                 {
                      originPoint = data.npcGo.transform.position + dashDirection.normalized * distance + (-dashDirection.normalized * indexMeter * .5f);
                     hasFoundNavMesh = NavMesh.SamplePosition(originPoint, out navHit, data.npcGo.transform.localScale.y , NavMesh.AllAreas);
                     indexMeter++;
                 }
-                if (indexMeter >= 100)
+                if (indexMeter >= 300)
                     Debug.LogError("Infinite Loop ");
                 destination = navHit.position;
             }
