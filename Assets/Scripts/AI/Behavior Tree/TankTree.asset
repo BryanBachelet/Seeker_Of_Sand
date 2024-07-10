@@ -15,7 +15,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: b5c16656df796cb40a522045755c4526
-  position: {x: -337, y: 413}
+  position: {x: 231.96277, y: 413}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -39,7 +39,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 1c4553295a82356429381b276bd70f3f
-  position: {x: 300, y: 562}
+  position: {x: -180.26657, y: 561.99994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -47,6 +47,28 @@ MonoBehaviour:
   description: 
   child: {fileID: 7470855074625042399}
   indexAttack: 1
+--- !u!114 &-5427890122404291748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 691056a065759a54c86d442dcec985f7, type: 3}
+  m_Name: Attack
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: c1383d0d1ed939845beb95bd6bd84db9
+  position: {x: -677, y: 847}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  indexAttack: 2
 --- !u!114 &-4796897111970064948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,7 +84,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 06c8f744ff2ccff47b47cc8bdd3d7bbb
-  position: {x: 228, y: 413}
+  position: {x: -252.26656, y: 413}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -86,7 +108,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: b420c6b10196e4545a7a40a2195595d3
-  position: {x: -187, y: 552}
+  position: {x: 381.96265, y: 551.99994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -94,6 +116,28 @@ MonoBehaviour:
   description: 
   child: {fileID: 3498327051066446576}
   indexAttack: 0
+--- !u!114 &-1971904558226170220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ba776453018cea4db2df169b9f1fdbd, type: 3}
+  m_Name: MoveTo
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: e53a91b61ab2043428d14a517af80d21
+  position: {x: -950, y: 566}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  stopDistance: 10
 --- !u!114 &-1935838604544073282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +153,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 8730d0da953ac0349acde39076be6333
-  position: {x: -425, y: 552}
+  position: {x: 143.96265, y: 551.99994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -131,7 +175,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 111d62d93c397b94db1d672b26da73dd
-  position: {x: -160, y: 778}
+  position: {x: 408.96265, y: 847}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -166,9 +210,38 @@ MonoBehaviour:
   - {fileID: -6308691616509030527}
   - {fileID: -2438409763837619894}
   - {fileID: 7771827725148916149}
+  - {fileID: 8680640780438754716}
+  - {fileID: -1971904558226170220}
+  - {fileID: 7315050957975345966}
+  - {fileID: 65164790506773487}
+  - {fileID: -5427890122404291748}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+--- !u!114 &65164790506773487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4024657c2a1ce034b90e79afb8c91e0d, type: 3}
+  m_Name: IsAttackRange
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 13a1c8ef9a331ad40be4a2a47f877575
+  position: {x: -677, y: 702}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  child: {fileID: -5427890122404291748}
+  indexAttack: 2
+  onlyOneTest: 1
 --- !u!114 &1444487633937244188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +257,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 052be234671b61f44be261d24a041753
-  position: {x: 0, y: 7}
+  position: {x: -16.000015, y: -39.499115}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -206,7 +279,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: fbb58c3ea6ee48b4bb2dafb8c2abb42d
-  position: {x: 100, y: 566}
+  position: {x: -380.2666, y: 565.99994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -228,7 +301,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 8d19057f0b571e641ba7fa517a4d30b8
-  position: {x: -160, y: 655}
+  position: {x: 408.96265, y: 702}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -252,13 +325,36 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 4baa9a42da515a840be8764189f8d293
-  position: {x: 327, y: 847}
+  position: {x: -153.26672, y: 847}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
   indexAttack: 1
+--- !u!114 &7315050957975345966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f11d61436ef9ae418db7dd1fcc6e7f7, type: 3}
+  m_Name: HasAttackCooldownEnd
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 993a5b4054024254aa74b0a673a12cd1
+  position: {x: -703, y: 566}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  child: {fileID: 65164790506773487}
+  indexAttack: 2
 --- !u!114 &7470855074625042399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +370,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: f519d3c06e0b476459f14a793a37f220
-  position: {x: 327, y: 701.5}
+  position: {x: -153.26672, y: 702}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -282,7 +378,7 @@ MonoBehaviour:
   description: 
   child: {fileID: 7274446724050690473}
   indexAttack: 1
-  onlyOneTest: 0
+  onlyOneTest: 1
 --- !u!114 &7771827725148916149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,15 +394,40 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: fd2b14064a918224dbd937b5f513a817
-  position: {x: -16, y: 275}
+  position: {x: -16.000002, y: 259.00397}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
   children:
-  - {fileID: -8784389972299402450}
+  - {fileID: 8680640780438754716}
   - {fileID: -4796897111970064948}
+  - {fileID: -8784389972299402450}
+--- !u!114 &8680640780438754716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7db9ee69f758ec47b1b299b37a5654a, type: 3}
+  m_Name: SequenceNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: cf2ab19e48c52104b956efc88e9d1326
+  position: {x: -800, y: 413}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  children:
+  - {fileID: -1971904558226170220}
+  - {fileID: 7315050957975345966}
 --- !u!114 &8712815359533959271
 MonoBehaviour:
   m_ObjectHideFlags: 0
