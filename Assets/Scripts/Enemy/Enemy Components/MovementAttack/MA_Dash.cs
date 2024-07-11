@@ -28,8 +28,8 @@ namespace Enemies
         private Vector3 destination;
 
         private float timerMovement;
-        public Vector3 originPoint1;
-        public Vector3 originPoint;
+        private Vector3 originPoint1;
+        private Vector3 originPoint;
 
         public override void StartMvt(NPCMoveAttData moveData)
         {

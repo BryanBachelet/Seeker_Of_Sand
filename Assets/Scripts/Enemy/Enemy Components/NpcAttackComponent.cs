@@ -129,11 +129,18 @@ namespace Enemies
             attackInfoData.attackIndex = currentAttackIndex;
             attackInfoData.attackNPCData = currentAttackData;
             attackInfoData.duration = currentAttackData.prepationTime;
-            attackInfoData.positionAttack = m_mouvementComponent.targetData.baseTarget.position;
+           
+            attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.PREP;
-            m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
             
-            prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
+            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target) 
+                prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
+            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Self) 
+                prepTargetPosition = transform.position;
+
+            attackInfoData.positionAttack = prepTargetPosition;
+            m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
+
             isMvtAttackInit = false;
 
           
@@ -154,6 +161,7 @@ namespace Enemies
             attackInfoData.attackNPCData = currentAttackData;
             attackInfoData.duration = currentAttackData.contactTime;
             attackInfoData.positionAttack = prepTargetPosition;
+            attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.CONTACT;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
 
@@ -178,6 +186,7 @@ namespace Enemies
             attackInfoData.attackNPCData = currentAttackData;
             attackInfoData.duration = currentAttackData.recoverTime;
             attackInfoData.positionAttack = prepTargetPosition;
+            attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.RECOVERY;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
             m_timer = 0.0f;
@@ -322,7 +331,7 @@ namespace Enemies
             if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ)
             {
                 colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(true);
-                CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackIndex].gameObject.GetComponent<CloseAttackComponent>();
+                CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
                 closeAttackComponent.damage = currentAttackData.damage;
                 closeAttackComponent.isHeavyAttack = currentAttackData.isHeavyAttack;
             }
@@ -334,7 +343,11 @@ namespace Enemies
                 if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE) spawnPosition = baseTransform.position + baseTransform.forward * 1;
                 if (currentAttackData.rangeTypeAttack == RangeAttackType.AREA) { spawnPosition = prepTargetPosition; }
 
-                GameObject instance = Instantiate(projectile, spawnPosition, Quaternion.identity);
+
+                Quaternion rotObj = Quaternion.Euler(0.0f, transform.eulerAngles.y, 0);
+                if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target) rotObj = Quaternion.identity;
+
+                GameObject instance = Instantiate(projectile, spawnPosition, rotObj);
 
                 if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE)
                 {
@@ -351,11 +364,13 @@ namespace Enemies
 
                 if (currentAttackData.rangeTypeAttack == RangeAttackType.AREA)
                 {
-                    NPCAttackArea attackObjectArea = instance.GetComponent<NPCAttackArea>();
-                    attackObjectArea.target = m_mouvementComponent.targetData.baseTarget;
-                    attackObjectArea.sizeArea = currentAttackData.radius;
-                    attackObjectArea.type = currentAttackData.shapeType;
-                    attackObjectArea.damage = currentAttackData.damage;
+                    NpcAttackMeta attackObjectArea = instance.GetComponent<NpcAttackMeta>();
+                    AttackObjMetaData attackObjMetaData = new AttackObjMetaData();
+                    attackObjMetaData.target = m_mouvementComponent.targetData.baseTarget;
+                    attackObjMetaData.size = currentAttackData.radius;
+                    attackObjMetaData.typeArea = currentAttackData.shapeType;
+                    attackObjMetaData.damage = currentAttackData.damage;
+                    attackObjectArea.InitAttackObject(attackObjMetaData);
 
                 }
             }

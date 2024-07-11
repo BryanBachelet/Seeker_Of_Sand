@@ -25,8 +25,8 @@ namespace Enemies
         }
         public TypeArea typeArea;
 
-        private NPCAttackArea m_attackAreaInfo;
-        private VFXAttackMeta m_attackMeta;
+        private NpcAttackMeta m_attackMetaInfo;
+        private VFXAttackMeta m_vfxAttackMeta;
         public List<AreaDataObject> areasData;
 
         public float totalTimer = 0.0f;
@@ -39,12 +39,13 @@ namespace Enemies
 
             if (typeArea == TypeArea.ATTACK)
             {
-                m_attackAreaInfo = GetComponent<NPCAttackArea>();
+                m_attackMetaInfo = GetComponent<NpcAttackMeta>();
+                m_attackMetaInfo.OnStart += ValidateStart;
             }
             else
             {
-                m_attackMeta = GetComponent<VFXAttackMeta>();
-                m_attackMeta.OnStart += ValidateStart;
+                m_vfxAttackMeta = GetComponent<VFXAttackMeta>();
+                m_vfxAttackMeta.OnStart += ValidateStart;
 
             }
 
@@ -56,11 +57,14 @@ namespace Enemies
             m_canStart = true;
             if (typeArea == TypeArea.ATTACK)
             {
+                DestroyAfterBasic destroyAfterBasic = GetComponent<DestroyAfterBasic>();
+                destroyAfterBasic.m_DestroyAfterTime = 3f;
+               
             }
             else
             {
                 DestroyAfterBasic destroyAfterBasic = GetComponent<DestroyAfterBasic>();
-                destroyAfterBasic.m_DestroyAfterTime = m_attackMeta.vfxData.duration;
+                destroyAfterBasic.m_DestroyAfterTime = m_vfxAttackMeta.vfxData.duration;
             }
 
             
@@ -116,6 +120,11 @@ namespace Enemies
 
         private void SetupAttack(AreaDataObject areaData, int index)
         {
+            NpcAttackMeta npcAttackMeta = areaData.area.GetComponent<NpcAttackMeta>();
+
+            AttackObjMetaData attackObjMetaData = m_attackMetaInfo.attackObjMetaData;
+
+            npcAttackMeta.InitAttackObject(attackObjMetaData);
 
         }
         #endregion

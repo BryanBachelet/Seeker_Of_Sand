@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7659236445204619509
 Transform:
   m_ObjectHideFlags: 0
@@ -377,7 +377,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -436,13 +436,13 @@ MonoBehaviour:
   baseTransform: {fileID: 8877033762739855464}
   attackEnemiesObjectsArr:
   - {fileID: 11400000, guid: 3d93f5f07c77c01469827586cd772860, type: 2}
-  - {fileID: 11400000, guid: 957eaf63b0b670f4090796053fa5f1bf, type: 2}
+  - {fileID: 11400000, guid: be121e3211b7f7d46be56beeebdd7c5d, type: 2}
   - {fileID: 11400000, guid: e09aac278f982a045ac613e8a3db1a7c, type: 2}
   colliderAttackArray:
   - {fileID: 5104976177377251887}
   - {fileID: 4859472291981760264}
   projectileAttackArrray:
-  - {fileID: 793578448744671341, guid: 67977c3456c66c048941ac4edefa2f33, type: 3}
+  - {fileID: 3808057417710552666, guid: 58cb8534ab5cc22469e1fccef28cad49, type: 3}
   currentAttackState: 0
   isActiveDebug: 1
 --- !u!114 &4841692019479195601
@@ -490,7 +490,7 @@ MonoBehaviour:
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 1
-    Vfx: {fileID: 4628487204184700574, guid: c0e19b232dbe7c3448b6d0507b192b42, type: 3}
+    Vfx: {fileID: 4628487204184700574, guid: 49a87c108fb73504f97a7fa1f565d025, type: 3}
     sfx:
       Guid:
         Data1: 0
@@ -504,7 +504,7 @@ MonoBehaviour:
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 1
-    Vfx: {fileID: 4628487204184700574, guid: c0e19b232dbe7c3448b6d0507b192b42, type: 3}
+    Vfx: {fileID: 4628487204184700574, guid: 49a87c108fb73504f97a7fa1f565d025, type: 3}
     sfx:
       Guid:
         Data1: 0
@@ -514,6 +514,20 @@ MonoBehaviour:
       Path: 
     sfxIndex: 0
     attackIndex: 2
+    attackPhase: 0
+  - feedbackType: 0
+    areaSpawnType: 1
+    isSpawn: 1
+    Vfx: {fileID: 4709791515623686792, guid: f33212d598361844ead5f2b8b87bde68, type: 3}
+    sfx:
+      Guid:
+        Data1: 0
+        Data2: 0
+        Data3: 0
+        Data4: 0
+      Path: 
+    sfxIndex: 0
+    attackIndex: 1
     attackPhase: 0
 --- !u!114 &5056973524547089000
 MonoBehaviour:

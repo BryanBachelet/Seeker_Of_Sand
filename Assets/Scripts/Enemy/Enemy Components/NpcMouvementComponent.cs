@@ -178,7 +178,7 @@ namespace Enemies
 
         public void StopMouvement()
         {
-             m_navMeshAgent.isStopped = true;
+                   m_navMeshAgent.isStopped = true;
                     m_navMeshAgent.velocity = Vector3.zero;
                     m_rigidbody.velocity = Vector3.zero;
         }

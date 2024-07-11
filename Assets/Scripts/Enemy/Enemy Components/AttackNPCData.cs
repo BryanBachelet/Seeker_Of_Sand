@@ -9,6 +9,13 @@ namespace Enemies
     [System.Serializable]
     public struct AttackNPCData
     {
+
+        public enum AttackPosition
+        {
+            Target,
+            Self,
+        }
+
         public string nameAttack;
         [Header("Attack parameters")]
         public float prepationTime;
@@ -31,13 +38,13 @@ namespace Enemies
         public AttackType typeAttack;
         [Tooltip("Only useful for the projectile type of attack")]
         public RangeAttackType rangeTypeAttack;
-        
-        
 
+        public AttackPosition postionToSpawnType;
 
         [Header("Area Parameters")]
         public float radius;
         public AreaType shapeType;
+       
 
         [Header("Projectile Parameters")]
         public float rangeProjectile;

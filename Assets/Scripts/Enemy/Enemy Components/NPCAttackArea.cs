@@ -9,16 +9,22 @@ namespace Enemies
     {
         private ObjectState gameState;
 
-        [HideInInspector] public int damage;
-        public float sizeArea;
-        public bool isOneShotAttack;
-        public AreaType type;
-        [HideInInspector] public Transform target;
-        public bool ActiveDebug = false;
 
-        void Start()
+        public bool ActiveDebug = false;
+        private NpcAttackMeta m_npcAttackMeta;
+        private AttackObjMetaData attackObj;
+
+
+        public void Awake()
         {
-            if (isOneShotAttack)
+            m_npcAttackMeta = GetComponent<NpcAttackMeta>();
+            attackObj = m_npcAttackMeta.attackObjMetaData;
+            m_npcAttackMeta.OnStart += InitAttack;
+        }
+
+        void InitAttack()
+        { 
+            if (attackObj.isOneShoot)
             {
                 ApplyDamageCircle();
             }
@@ -26,14 +32,12 @@ namespace Enemies
 
         public void ApplyDamageCircle()
         {
-            if (type != AreaType.CIRCLE) return;
+            if (attackObj.typeArea != AreaType.CIRCLE) return;
 
-            // Set Size 
-
-            if (Vector3.Distance(transform.position, target.position) < sizeArea)
+            if (Vector3.Distance(transform.position, attackObj.target.position) < attackObj.size)
             {
-                HealthPlayerComponent hpPlayer = target.GetComponent<HealthPlayerComponent>();
-                hpPlayer.GetLightDamage(damage, transform.position);
+                HealthPlayerComponent hpPlayer = attackObj.target.GetComponent<HealthPlayerComponent>();
+                hpPlayer.GetLightDamage(attackObj.damage, transform.position);
             }
         }
 
@@ -42,7 +46,7 @@ namespace Enemies
         {
             if (ActiveDebug)
             {
-                if (type == AreaType.CIRCLE) Gizmos.DrawWireSphere(transform.position, sizeArea);
+                if (attackObj.typeArea == AreaType.CIRCLE) Gizmos.DrawWireSphere(transform.position, attackObj.size);
 
             }
         }
