@@ -172,6 +172,7 @@ namespace Character
         {
             state = new ObjectState();
             GameState.AddObject(state);
+
             m_dropInventory = this.GetComponent<DropInventory>();
             if (chooseBuild)
             {
@@ -199,6 +200,8 @@ namespace Character
             m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             m_deltaTimeFrame = Time.deltaTime;
             m_totalCanalisationDuration = currentWeaponStats.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
+
+            m_aimModeState = AimMode.FullControl;
 
             if (m_canalisationType == CanalisationBarType.ByPart)
                 m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
@@ -731,8 +734,6 @@ namespace Character
         }
         private void StartShoot()
         {
-
-
             m_hasBeenLoad = true;
             m_currentType = m_characterInventory.GetSpecificSpell(m_currentIndexCapsule).type;
             m_canEndShot = false;
@@ -795,7 +796,7 @@ namespace Character
             {
                 if (i == elementIndex)
                 {
-                    vfxElementSign[i].SetActive(true);
+                   vfxElementSign[i].SetActive(true);
                     lastElementToUse = vfxElementSign[i];
                 }
                 else
@@ -1096,7 +1097,7 @@ namespace Character
 
                 if (indexAim == 3) indexAim = 0;
 
-                m_aimModeState = (AimMode)indexAim;
+                m_aimModeState = AimMode.FullControl;
                 Debug.Log("Change Aim mode : " + m_aimModeState.ToString());
                 UpdateFeedbackAimLayout();
             }

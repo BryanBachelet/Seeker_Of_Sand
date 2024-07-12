@@ -18,12 +18,13 @@ namespace Enemies
         public void Awake()
         {
             m_npcAttackMeta = GetComponent<NpcAttackMeta>();
-            attackObj = m_npcAttackMeta.attackObjMetaData;
+           
             m_npcAttackMeta.OnStart += InitAttack;
         }
 
         void InitAttack()
-        { 
+        {
+            attackObj = m_npcAttackMeta.attackObjMetaData;
             if (attackObj.isOneShoot)
             {
                 ApplyDamageCircle();
@@ -37,7 +38,11 @@ namespace Enemies
             if (Vector3.Distance(transform.position, attackObj.target.position) < attackObj.size)
             {
                 HealthPlayerComponent hpPlayer = attackObj.target.GetComponent<HealthPlayerComponent>();
-                hpPlayer.GetLightDamage(attackObj.damage, transform.position);
+                AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                attackDamageInfo.attackName = attackObj.nameAttack;
+                attackDamageInfo.position = transform.position;
+                attackDamageInfo.damage = attackObj.damage;
+                hpPlayer.GetLightDamage(attackDamageInfo);
             }
         }
 

@@ -215,6 +215,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RecapDamage"",
+                    ""type"": ""Button"",
+                    ""id"": ""48a0ed5e-56a6-4c88-9be8-4b0e9dc9ec2d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -798,6 +807,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44afc3ff-2ae7-4b71-a7ba-1f37b67176ff"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RecapDamage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1406,6 +1426,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_ZoomOutMiniMap = m_Player.FindAction("ZoomOutMiniMap", throwIfNotFound: true);
         m_Player_SpawnEnemy = m_Player.FindAction("SpawnEnemy", throwIfNotFound: true);
         m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
+        m_Player_RecapDamage = m_Player.FindAction("RecapDamage", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1500,6 +1521,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ZoomOutMiniMap;
     private readonly InputAction m_Player_SpawnEnemy;
     private readonly InputAction m_Player_OpenInventory;
+    private readonly InputAction m_Player_RecapDamage;
     public struct PlayerActions
     {
         private @GameInput m_Wrapper;
@@ -1525,6 +1547,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         public InputAction @ZoomOutMiniMap => m_Wrapper.m_Player_ZoomOutMiniMap;
         public InputAction @SpawnEnemy => m_Wrapper.m_Player_SpawnEnemy;
         public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
+        public InputAction @RecapDamage => m_Wrapper.m_Player_RecapDamage;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1597,6 +1620,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @OpenInventory.started += instance.OnOpenInventory;
             @OpenInventory.performed += instance.OnOpenInventory;
             @OpenInventory.canceled += instance.OnOpenInventory;
+            @RecapDamage.started += instance.OnRecapDamage;
+            @RecapDamage.performed += instance.OnRecapDamage;
+            @RecapDamage.canceled += instance.OnRecapDamage;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1664,6 +1690,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @OpenInventory.started -= instance.OnOpenInventory;
             @OpenInventory.performed -= instance.OnOpenInventory;
             @OpenInventory.canceled -= instance.OnOpenInventory;
+            @RecapDamage.started -= instance.OnRecapDamage;
+            @RecapDamage.performed -= instance.OnRecapDamage;
+            @RecapDamage.canceled -= instance.OnRecapDamage;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1867,6 +1896,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         void OnZoomOutMiniMap(InputAction.CallbackContext context);
         void OnSpawnEnemy(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
+        void OnRecapDamage(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

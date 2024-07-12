@@ -334,6 +334,7 @@ namespace Enemies
                 CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
                 closeAttackComponent.damage = currentAttackData.damage;
                 closeAttackComponent.isHeavyAttack = currentAttackData.isHeavyAttack;
+                closeAttackComponent.attackName = currentAttackData.nameAttack;
             }
             else
             {
@@ -357,6 +358,7 @@ namespace Enemies
                     npcAttackProjectile.direction = transform.forward;
                     npcAttackProjectile.duration = currentAttackData.durationProjectile;
                     npcAttackProjectile.range = currentAttackData.rangeProjectile;
+                    npcAttackProjectile.attackName = currentAttackData.nameAttack;
 
 
                 }
@@ -370,6 +372,8 @@ namespace Enemies
                     attackObjMetaData.size = currentAttackData.radius;
                     attackObjMetaData.typeArea = currentAttackData.shapeType;
                     attackObjMetaData.damage = currentAttackData.damage;
+                    attackObjMetaData.nameAttack = currentAttackData.nameAttack;
+                    attackObjMetaData.isOneShoot = true;
                     attackObjectArea.InitAttackObject(attackObjMetaData);
 
                 }

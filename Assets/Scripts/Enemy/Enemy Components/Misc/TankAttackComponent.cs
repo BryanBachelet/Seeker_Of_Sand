@@ -94,7 +94,11 @@ namespace Enemies
             {
                 if (m_targetTransform.tag == "Player")
                 {
-                    m_targetTransform.GetComponent<HealthPlayerComponent>().GetLightDamage(damage, transform.position);
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "Tank Attack";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = (int)damage;
+                    m_targetTransform.GetComponent<HealthPlayerComponent>().GetLightDamage(attackDamageInfo);
                    
                 }
                 if (m_targetTransform.tag == "Altar")

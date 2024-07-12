@@ -37,7 +37,7 @@ public class SerieController : MonoBehaviour
 
     public void RefreshSeries(bool refresh)
     {
-
+        return; 
         m_lastTimeEnemyHit = Time.time;
         if (!refresh)
         {

@@ -12,6 +12,7 @@ namespace Enemies
         public AreaType typeArea;
         public Transform target;
         public bool isOneShoot;
+        public string nameAttack;
     }
 
 
