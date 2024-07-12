@@ -18,32 +18,33 @@ public class SerieController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(m_SerieActive)
+        if (m_SerieActive)
         {
-            if(Time.time - m_lastTimeEnemyHit > m_timeMaintienSeries)
+            if (Time.time - m_lastTimeEnemyHit > m_timeMaintienSeries)
             {
                 m_SerieActive = false;
                 m_currentCount = 0;
             }
         }
-      if(m_serieTimeDisplay)  m_serieTimeDisplay.fillAmount = 1 - (Time.time - m_lastTimeEnemyHit) / m_timeMaintienSeries;
+        if (m_serieTimeDisplay) m_serieTimeDisplay.fillAmount = 1 - (Time.time - m_lastTimeEnemyHit) / m_timeMaintienSeries;
     }
 
     public void RefreshSeries(bool refresh)
     {
-        return; 
+
         m_lastTimeEnemyHit = Time.time;
         if (!refresh)
         {
             m_currentCount += 1;
             if (m_biggestMultiplicator < m_currentCount) m_biggestMultiplicator = m_currentCount;
-            m_serieKillCount.text = "" + m_currentCount;
+            if (m_serieKillCount)
+                m_serieKillCount.text = "" + m_currentCount;
             m_SerieActive = true;
         }
     }
@@ -51,7 +52,7 @@ public class SerieController : MonoBehaviour
     public float GetXpMultiplicator()
     {
         float multiplicatorValue = m_multiplicatorCurve.Evaluate(m_currentCount);
-      
+
         m_multiplicatorDisplay.text = "x" + multiplicatorValue;
         return multiplicatorValue;
     }
