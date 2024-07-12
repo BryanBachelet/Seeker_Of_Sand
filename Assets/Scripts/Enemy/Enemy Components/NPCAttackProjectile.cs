@@ -9,9 +9,10 @@ namespace Enemies
     public class NPCAttackProjectile : MonoBehaviour
     {
         public float maxSlopeAngle = 60;
-        public float damage = 0;
+        public int damage = 0;
         public float range = 0;
         public float duration = 0;
+        public string attackName;
         [HideInInspector] public Vector3 direction;
 
         private float m_speedProjectile;
@@ -76,7 +77,12 @@ namespace Enemies
                 {
                     m_hasDamagePlayer = true;
                     HealthPlayerComponent healthPlayer = other.GetComponent<HealthPlayerComponent>();
-                    healthPlayer.GetLightDamage(damage, transform.position);
+
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "attackName";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = damage;
+                    healthPlayer.GetLightDamage(attackDamageInfo);
                 }
             }
         }
@@ -88,7 +94,11 @@ namespace Enemies
                 {
                     m_hasDamagePlayer = true;
                     HealthPlayerComponent healthPlayer = other.GetComponent<HealthPlayerComponent>();
-                    healthPlayer.GetLightDamage(damage, transform.position);
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "attackName";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = damage;
+                    healthPlayer.GetLightDamage(attackDamageInfo);
                 }
             }
         }

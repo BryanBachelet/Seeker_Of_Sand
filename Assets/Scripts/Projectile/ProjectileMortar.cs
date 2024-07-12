@@ -25,6 +25,7 @@ public class ProjectileMortar : MonoBehaviour
     private float m_gravityForce;
     private Vector3 m_prevPosition;
     private float m_lifeTimer;
+    private int damage = 5;
 
     public void InitProjectile(ProjectileCurveData data)
     {
@@ -90,7 +91,11 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(m_projectileData.damage,transform.position);
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "Mortar";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = damage;
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(attackDamageInfo);
 
                 }
                 if (m_projectileData.target.tag == "Altar")
@@ -115,7 +120,11 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(m_projectileData.damage,transform.position);
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "Mortar";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = damage;
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(attackDamageInfo);
                     
                 }
             }

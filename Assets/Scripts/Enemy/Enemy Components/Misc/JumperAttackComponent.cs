@@ -140,7 +140,11 @@ namespace Enemies
             float distancePlayer = Vector3.Distance(transform.position, m_target.position);
             if(distancePlayer < rangeToDamageDuringDash)
             {
-                m_target.GetComponent<HealthPlayerComponent>().GetHeavyDamage(damage);
+                AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                attackDamageInfo.attackName = "Jumper attack";
+                attackDamageInfo.position = transform.position;
+                attackDamageInfo.damage = (int)damage;
+                m_target.GetComponent<HealthPlayerComponent>().GetHeavyDamage(attackDamageInfo);
 
             }
             if (m_curveBehavior.IsCurveFinish())
