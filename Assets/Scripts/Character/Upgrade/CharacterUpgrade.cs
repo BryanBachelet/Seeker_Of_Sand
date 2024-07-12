@@ -43,6 +43,7 @@ namespace Character
         [SerializeField] private bool isDebugActive = false;
 
         private ObjectState state;
+        private SeekerOfSand.UI.UI_PlayerInfos m_UiPlayerInfo;
 
         #region Input Functions
         public void UpgradeWindowInput(InputAction.CallbackContext ctx)
@@ -82,6 +83,7 @@ namespace Character
             m_characterShoot = GetComponent<Character.CharacterShoot>();
             m_characterInventory = GetComponent<Character.CharacterSpellBook>();
             experience = GetComponent<Experience_System>();
+            if (!m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
             // m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
             upgradePointTextDisplay.text = upgradePoint.ToString();
         }
@@ -161,13 +163,22 @@ namespace Character
                 m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].DebugStat();
             }
             m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex] = upgradeChoose.Apply(m_characterShoot.capsuleStatsAlone.ToArray()[upgradeChoose.capsuleIndex]);
+            if (m_UiPlayerInfo)
+            {
+                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.capsuleIndex, m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].level);
+                Debug.Log("TESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSST");
+            }
             avatarUpgradeList.Add(upgradeChoose);
             if (isDebugActive)
             {
                 m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].DebugStat();
             }
             if (upgradePoint == 0 && isUpgradeWindowOpen)
+            {
+
                 CloseUpgradeWindow();
+            }
+
         }
 
         #endregion

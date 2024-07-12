@@ -54,6 +54,7 @@ public struct CapsuleStats
     public string description;
     public float stackDuration;
     public int stackPerGain;
+    public int level;
     
 
     public string DebugStat()
@@ -65,6 +66,7 @@ public struct CapsuleStats
         debugString += "Projectile Number : " + projectileNumber.ToString() + "\n"; 
         debugString += "Shoot Number : " + shootNumber.ToString() + "\n";
         debugString += "Piercing Max : " + piercingMax.ToString() + "\n";
+        debugString += "Level : " + level.ToString() + "\n";
         Debug.Log(debugString);
         return debugString;
     }
@@ -108,7 +110,7 @@ public struct CapsuleStats
 
     public float[] GetVisibleStat()
     {
-        float[] statsVisible = new float[6];
+        float[] statsVisible = new float[7];
 
         statsVisible[0] = damage;
         statsVisible[1] = size;
@@ -116,7 +118,7 @@ public struct CapsuleStats
         statsVisible[3] = projectileNumber;
         statsVisible[4] = shootNumber;
         statsVisible[5] = piercingMax;
-
+        statsVisible[6] = level;
         return statsVisible;
     }
 }

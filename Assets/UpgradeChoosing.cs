@@ -24,7 +24,7 @@ public class UpgradeChoosing : MonoBehaviour
     [SerializeField] private Material[] m_materialBandeauDissolve = new Material[3];
     public GameObject[] decorationHolder = new GameObject[3];
     public float timeSolve;
-
+    private SeekerOfSand.UI.UI_PlayerInfos m_UiPlayerInfo;
 
     // Stats Order 
     // - Damage
@@ -54,6 +54,7 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void Start()
     {
+        if(m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
         for (int i = 0; i < uiUpgradeButton.Length; i++)
         {
               uiUpgradeButton[i].OnEnter += SetModifySpellStat;
@@ -89,6 +90,8 @@ public class UpgradeChoosing : MonoBehaviour
     {
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
         m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
+        //Debug.Log("Spell index [" + m_upgradeLevelingData.indexSpellFocus + "]");
+        //m_UiPlayerInfo.UpdateLevelSpell(m_upgradeLevelingData.indexSpellFocus, 1);
         for (int i = 0; i < upgradeSelectable.Length; i++)
         {
             if (i != index)
@@ -149,7 +152,7 @@ public class UpgradeChoosing : MonoBehaviour
         float[] baseSpellStats = baseStats.GetVisibleStat();
         float[] spellStatUpgrade = stats.GetVisibleStat();
 
-        for (int i = 0; i < spellStatUpgrade.Length; i++)
+        for (int i = 0; i < spellStatUpgrade.Length -1; i++)
         {
             if (spellStatUpgrade[i] != 0)
             {
