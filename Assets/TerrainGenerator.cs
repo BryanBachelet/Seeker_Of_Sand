@@ -24,6 +24,8 @@ public class TerrainGenerator : MonoBehaviour
 
     public int selectedTerrain = 0;
 
+    public bool hasMerchantAppear;
+
     public GameObject player;
     private TeleporterBehavior playerTeleportorBehavior;
     Transform transformReference;
@@ -42,6 +44,17 @@ public class TerrainGenerator : MonoBehaviour
     public TMPro.TMP_Text roomGeneration_text;
 
 
+
+    public void Start()
+    {
+        dayController.dayStartEvent += ResetRoomAtNewDay;
+    }
+
+    public void ResetRoomAtNewDay()
+    {
+        if (!roomTypeList.Contains(RoomType.Merchant))
+            roomTypeList.Insert((int)RoomType.Merchant, RoomType.Merchant);
+    }
 
     public void LaunchRoomGenerator()
     {
@@ -100,7 +113,7 @@ public class TerrainGenerator : MonoBehaviour
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
 
-   
+
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
 
@@ -109,8 +122,8 @@ public class TerrainGenerator : MonoBehaviour
             GameObject newTerrain;
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
-
                 newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+
             }
             else
             {
@@ -128,13 +141,14 @@ public class TerrainGenerator : MonoBehaviour
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
                 roomManager.rewardType = RewardType.MERCHANT;
+                roomTypeList.Remove(roomTypeList[indexRoomType]);
             }
             else
             {
                 int indexReward = 0;
                 if (i > 0)
                 {
-                    indexReward = Random.Range(0, rewardList.Count-1);
+                    indexReward = Random.Range(0, rewardList.Count - 1);
                 }
                 else
                 {
@@ -198,7 +212,7 @@ public class TerrainGenerator : MonoBehaviour
         for (int i = 0; i < oldTerrain.Count; i++)
         {
             NavMeshSurface navSurf = oldTerrain[i].GetComponent<NavMeshSurface>();
-           if (navSurf != null)
+            if (navSurf != null)
             {
                 navSurf.RemoveData();
                 navSurf.enabled = false;

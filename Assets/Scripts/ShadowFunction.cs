@@ -107,7 +107,7 @@ public class ShadowFunction : MonoBehaviour
                     onShadowSpawn = false;
                     onShadowSpawnStatic = false;
                     newAnimatorEyes.SetTrigger("Exit");
-                    enemyManager.ActiveSpawnPhase(false,Enemies.EnemySpawnCause.SHADOW);
+                  //  enemyManager.ActiveSpawnPhase(false,Enemies.EnemySpawnCause.SHADOW);
                 }
 
             }
@@ -174,7 +174,7 @@ public class ShadowFunction : MonoBehaviour
         onShadowSpawn = false;
         onShadowSpawnStatic = false;
         newAnimatorEyes.SetTrigger("Exit");
-        enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.SHADOW);
+      //  enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.SHADOW);
     }
 
 }

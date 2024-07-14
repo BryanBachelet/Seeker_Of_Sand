@@ -81,8 +81,8 @@ public class RoomManager : MonoBehaviour
         }
         currentCountOfEnemy = 0;
 
-        if (currentRoomType == RoomType.Free) m_enemyManager.isStopSpawn = true;
-        else m_enemyManager.isStopSpawn = false;
+        if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
+        else m_enemyManager.isStopSpawn = true;
 
         SetupRoomType();
 

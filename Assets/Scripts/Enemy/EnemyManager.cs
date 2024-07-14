@@ -36,7 +36,6 @@ namespace Enemies
 
     public enum EnemySpawnCause
     {
-        SHADOW,
         EVENT,
         NIGHT,
         DEBUG,
@@ -910,7 +909,7 @@ namespace Enemies
         public void DestroyAllEnemy()
         {
            
-            ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
+           // ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
                 NpcMetaInfos npcHealth = m_enemiesArray[i];
