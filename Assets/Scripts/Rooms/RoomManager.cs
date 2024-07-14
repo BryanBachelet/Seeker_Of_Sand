@@ -32,6 +32,10 @@ public class RoomManager : MonoBehaviour
     static RewardDistribution playerRewardDistribution;
 
 
+    public bool isActiveStartRotation;
+    public float spawnAngle;
+    public GameObject teleporterSpawn;
+
     public Action<RoomType, RewardType> onActivateRoom;
     public Action<RoomType, RewardType> onDeactivateRoom;
     public Action<RoomType, RewardType> onCreateRoom;
@@ -60,7 +64,14 @@ public class RoomManager : MonoBehaviour
     {
         m_enemyManager.ResetAllSpawingPhasse();
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
+       
 
+        if(isActiveStartRotation)
+        {
+            Camera.main.GetComponent<Render.Camera.CameraBehavior>().SetupCamaraAnglge(spawnAngle);
+        }
+
+        
 
         baseRoomType = currentRoomType;
         if (currentRoomType == RoomType.Enemy)
@@ -219,5 +230,7 @@ public class RoomManager : MonoBehaviour
 
 
     }
+
+
 
 }

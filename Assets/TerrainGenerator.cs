@@ -73,6 +73,8 @@ public class TerrainGenerator : MonoBehaviour
         {
             roomTypeList.Add((RoomType)i);
         }
+
+        roomTypeList.Remove(RoomType.Free);
     }
 
     public void SetupFirstRoom()
@@ -98,8 +100,7 @@ public class TerrainGenerator : MonoBehaviour
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
 
-        if (currentRoomManager.currentRoomType == RoomType.Free)
-            roomTypeList.Remove(currentRoomManager.currentRoomType);
+   
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
 
@@ -133,11 +134,11 @@ public class TerrainGenerator : MonoBehaviour
                 int indexReward = 0;
                 if (i > 0)
                 {
-                    indexReward = Random.Range(0, rewardList.Count-2);
+                    indexReward = Random.Range(0, rewardList.Count-1);
                 }
                 else
                 {
-                    indexReward = Random.Range(0, rewardList.Count - 3);
+                    indexReward = Random.Range(0, rewardList.Count - 2);
                 }
 
                 roomManager.rewardType = rewardList[indexReward];

@@ -149,7 +149,7 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
-               
+
         }
 
         private void Start()
@@ -163,7 +163,7 @@ namespace Character
             m_speedData.currentSpeed = 0;
 
             m_speedData.direction = Vector3.zero;
-            if(state == null)
+            if (state == null)
             {
                 InitComponent();
             }
@@ -176,7 +176,7 @@ namespace Character
 
         public void MoveInput(InputAction.CallbackContext ctx)
         {
-     
+
             if (ctx.started)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
@@ -193,7 +193,7 @@ namespace Character
                 m_directionInputActive = false;
 
             }
-         
+
         }
 
 
@@ -211,12 +211,23 @@ namespace Character
             {
                 if (!IsGamepad())
                 {
-                    m_isSlideInputActive = true;
-                    SlideActivation(true);
-                    m_CharacterAnim.SetBool("Running", true);
-                    m_BookAnim.SetBool("Running", true);
-                    m_CharacterAnim.SetBool("Casting", false);
-                    m_BookAnim.SetBool("Running", false);
+                    if (!m_isSlideInputActive)
+                    {
+                        m_isSlideInputActive = true;
+                        SlideActivation(true);
+                        m_CharacterAnim.SetBool("Running", true);
+                        m_BookAnim.SetBool("Running", true);
+                        m_CharacterAnim.SetBool("Casting", false);
+                        m_BookAnim.SetBool("Running", false);
+                    }else
+                    {
+                        m_isSlideInputActive = false;
+                        SlideActivation(false);
+                        m_CharacterAnim.SetBool("Running", false);
+                        m_BookAnim.SetBool("Running", false);
+                        m_CharacterAnim.SetBool("Casting", true);
+                        m_BookAnim.SetBool("Running", true);
+                    }
                 }
                 else
                 {
@@ -237,12 +248,12 @@ namespace Character
             {
                 if (!IsGamepad())
                 {
-                    m_isSlideInputActive = false;
-                    SlideActivation(false);
-                    m_CharacterAnim.SetBool("Running", false);
-                    m_BookAnim.SetBool("Running", false);
-                    m_CharacterAnim.SetBool("Casting", true);
-                    m_BookAnim.SetBool("Running", true);
+                    //m_isSlideInputActive = false;
+                    //SlideActivation(false);
+                    //m_CharacterAnim.SetBool("Running", false);
+                    //m_BookAnim.SetBool("Running", false);
+                    //m_CharacterAnim.SetBool("Casting", true);
+                    //m_BookAnim.SetBool("Running", true);
                     //if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
                 }
             }
@@ -253,7 +264,18 @@ namespace Character
             }
         }
 
-        private void SlideActivation(bool isActive)
+        public void CancelSlide()
+        {
+            m_isSlideInputActive = false;
+            SlideActivation(false);
+            m_CharacterAnim.SetBool("Running", false);
+            m_BookAnim.SetBool("Running", false);
+            m_CharacterAnim.SetBool("Casting", true);
+            m_BookAnim.SetBool("Running", true);
+
+        }
+
+        public void SlideActivation(bool isActive)
         {
             if (!activeCombatModeConstant) return;
             if (isActive)
@@ -262,7 +284,7 @@ namespace Character
                 m_characterShoot.DeactivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
-              //  cameraPlayer.BlockZoom(false);
+                //  cameraPlayer.BlockZoom(false);
                 DisplayNewCurrentState(1);
             }
 
@@ -272,7 +294,7 @@ namespace Character
                 m_CharacterAnim.SetBool("Casting", true);
                 m_BookAnim.SetBool("Casting", true);
                 DisplayNewCurrentState(0);
-              //  cameraPlayer.BlockZoom(true);
+                //  cameraPlayer.BlockZoom(true);
                 SetCombatMode(true);
             }
 
@@ -334,7 +356,7 @@ namespace Character
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", false);
                     m_BookAnim.SetBool("Running", false);
-                    if( m_slidingEffectVfx.HasFloat("Rate"))  m_slidingEffectVfx.SetFloat("Rate", 15);
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
                     break;
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", false);
@@ -373,7 +395,7 @@ namespace Character
                     UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Classic:
-                    if(m_isSlideInputActive)
+                    if (m_isSlideInputActive)
                     {
                         m_CharacterAnim.SetBool("Running", true);
                         m_BookAnim.SetBool("Running", true);
@@ -393,7 +415,7 @@ namespace Character
                     m_BookAnim.SetBool("Sliding", true);
                     UpdateParameter(1, "MouvementState");
                     //m_slidingEffect.SetActive(true);
-                   if(m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
 
                     break;
                 case MouvementState.Glide:
@@ -616,7 +638,7 @@ namespace Character
 
             RaycastHit hit = new RaycastHit();
             float targetDistance = m_rigidbody.velocity.magnitude;
-           
+
             Ray ray = new Ray(transform.position, m_velMovement.normalized);
             if (Physics.Raycast(ray, out hit, 20, obstacleLayerMask))
             {
@@ -810,7 +832,7 @@ namespace Character
 
             if (combatState && m_characterShoot.m_aimModeState != AimMode.Automatic)
             {
-               
+
                 m_characterAim.FeedbackHeadRotation();
                 Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
                 m_avatarTransform.rotation = rotationFromHead;

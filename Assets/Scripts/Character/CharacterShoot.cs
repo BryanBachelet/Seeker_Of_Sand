@@ -455,6 +455,7 @@ namespace Character
                 m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
                 m_hasCancel = false;
+                m_CharacterMouvement.combatState = true;
             }
             if (ctx.canceled && state.isPlaying)
             {
@@ -497,6 +498,7 @@ namespace Character
         {
             m_spellTimer = 0.0f;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
+            isCasting = false;
         }
 
 
@@ -1013,6 +1015,7 @@ namespace Character
                 m_CharacterAnimator.SetBool("sliding", false);
                 m_BookAnimator.SetBool("sliding", false);
             }
+            m_CharacterMouvement.CancelSlide();
             isCasting = true;
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);

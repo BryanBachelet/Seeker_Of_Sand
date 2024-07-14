@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Enemies
 {
-    [CreateAssetMenu(fileName = "MoveAttackObject", menuName = "Enemmis/Move/MoveAttackObjet", order = 5)]
+
     public class NPCMoveAttackObject : ScriptableObject
     {
         public NPCMoveAttData data;

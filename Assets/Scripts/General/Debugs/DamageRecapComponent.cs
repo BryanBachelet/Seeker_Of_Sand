@@ -30,7 +30,7 @@ namespace GuerhoubaGames.DebugTool
     
         public void AddDamageToText(AttackDamageInfo attackDamageInfo)
         {
-            m_damageString.Add("- " + attackDamageInfo.attackName + ":" + attackDamageInfo.damage.ToString());
+            m_damageString.Add("- " + attackDamageInfo.attackName + " : " + attackDamageInfo.damage.ToString());
             UpdateUI();
         }
 
