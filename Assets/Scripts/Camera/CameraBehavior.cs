@@ -8,7 +8,7 @@ namespace Render.Camera
 {
 
     public enum CameraMode
-    {   
+    {
         THIRD_VIEW = 0,
         HIGH_VIEW = 1,
     }
@@ -119,6 +119,8 @@ namespace Render.Camera
         private Vector3 directionDebug;
         private Ray collsionRayDebug;
 
+        private bool setupAutoCam;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -162,8 +164,8 @@ namespace Render.Camera
 
                 SetCameraRotation();
                 SetCameraPosition();
-                CheckCameraTerrain(); 
-                
+                CheckCameraTerrain();
+
                 Apply();
             }
             else
@@ -207,7 +209,7 @@ namespace Render.Camera
 
             if (ctx.canceled)
             {
-                if(IsGamepad()) m_zoomInputGamepad = 0.0f;
+                if (IsGamepad()) m_zoomInputGamepad = 0.0f;
                 //m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
             }
         }
@@ -223,7 +225,7 @@ namespace Render.Camera
             m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
             if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
 
-            if (m_currentLerpValue> 0.6f) cameraMode = CameraMode.THIRD_VIEW;
+            if (m_currentLerpValue > 0.6f) cameraMode = CameraMode.THIRD_VIEW;
             else cameraMode = CameraMode.HIGH_VIEW;
         }
 
@@ -235,21 +237,21 @@ namespace Render.Camera
                 UpdateZoomValue(m_gamepadZoomSensibility);
             }
 
-          
+
 
             m_prevSlopeAngle = m_slopeAngle;
             float angle = playerMove.GetSlope();
             if (angle > m_thresholdAngle)
             {
                 m_nextSlopeAngle = angle;
-           }
+            }
 
             m_slopeAngle = Mathf.Lerp(m_prevSlopeAngle, m_nextSlopeAngle, 0.2f);
             Vector3 slopeAngle = new Vector3(0, 0.0f, 0);
 
-   
-            if (m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle/2, 0.0f, 0);
-            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue)  + slopeAngle;
+
+            if (m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle / 2, 0.0f, 0);
+            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle;
             m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
             m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
             m_distanceToTarget = CheckGroundCamera(m_cameraDirection);
@@ -267,7 +269,7 @@ namespace Render.Camera
             float targetDistance = m_distanceToTarget;
             Ray ray = new Ray(m_targetTransform.position, direction.normalized);
             collsionRayDebug = ray;
-            if (Physics.Raycast(ray,out hit, targetDistance, obstacleLayerMask))
+            if (Physics.Raycast(ray, out hit, targetDistance, obstacleLayerMask))
             {
                 float distance = Vector3.Distance(m_targetTransform.position, hit.point) - 0.3f;
                 return distance;
@@ -340,18 +342,18 @@ namespace Render.Camera
         }
 
         #region Camera Rotation Functions
-      
+
 
         public void RotationAimInput(InputAction.CallbackContext ctx)
         {
-            if ( m_mouseInputActivate && this.enabled)
+            if (m_mouseInputActivate && this.enabled)
             {
-           
+
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
 
-                if(!IsGamepad()) m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<float>();
-               else m_mouseDeltaValue = value * m_gamepadSensibility * ctx.ReadValue<float>();
+                if (!IsGamepad()) m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<float>();
+                else m_mouseDeltaValue = value * m_gamepadSensibility * ctx.ReadValue<float>();
 
                 if (Mathf.Abs(m_mouseDeltaValue) < m_mousDeltaThreshold) m_mouseDeltaValue = 0;
                 //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
@@ -390,7 +392,7 @@ namespace Render.Camera
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 Mouse.current.WarpCursorPosition(m_registerMousePositionRotation);
-              }
+            }
 
         }
 
@@ -463,20 +465,26 @@ namespace Render.Camera
             else m_lerpTimer = 0.0f;
         }
 
+        public void SetupCamaraAnglge(float angle)
+        {
+            setupAutoCam = true;
+            transform.rotation = Quaternion.Euler(0, angle, 0);
+        }
+
         #endregion
 
         private void CheckCameraTerrain()
         {
             RaycastHit hit = new RaycastHit();
 
-            Vector3 direction = transform.position - m_targetTransform.position; 
-            if(Physics.Raycast(m_targetTransform.position, direction,out hit,direction.magnitude+5f, maskGround))
+            Vector3 direction = transform.position - m_targetTransform.position;
+            if (Physics.Raycast(m_targetTransform.position, direction, out hit, direction.magnitude + 5f, maskGround))
             {
 
                 m_prevAngle = m_currentAngle;
                 m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
 
-                m_currentAngle += 1 * 60 *Time.deltaTime;
+                m_currentAngle += 1 * 60 * Time.deltaTime;
 
                 m_nextAngle = m_currentAngle;
                 m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
@@ -509,6 +517,12 @@ namespace Render.Camera
         void Apply()
         {
             transform.position = m_finalPosition;
+
+            if (setupAutoCam)
+            {
+                setupAutoCam = false;
+                return;
+            }
             transform.rotation = Quaternion.Euler(m_finalRotation);
         }
 

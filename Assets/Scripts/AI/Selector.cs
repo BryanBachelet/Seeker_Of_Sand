@@ -7,7 +7,7 @@ namespace GuerhoubaGames.AI
     /// <summary>
     ///  Selector class allow the AI to choose between possible depending if they condition are valid or not
     /// </summary>
-    [CreateAssetMenu(fileName = "Selector", menuName = "BehaviorTree/Selector", order = 3)]
+
     public class Selector : CompositeNode
     {
         Node childChoose;

@@ -77,7 +77,8 @@ public class PullingSystem : MonoBehaviour
         GameObject instance = null;
         instance = m_enemyInfoArray[(int)type].instanceArray[0];
         m_enemyInfoArray[(int)type].instanceArray.RemoveAt(0);
-        instance.GetComponent<NpcHealthComponent>().RemovePauseState();
+        NpcHealthComponent healthComponent = instance.GetComponent<NpcHealthComponent>();
+        healthComponent.RemovePauseState();
         instance.SetActive(true);
 
         if (activeDebug) Debug.Log(type.ToString() + " is pull out");
