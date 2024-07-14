@@ -144,6 +144,7 @@ public class dummy : MonoBehaviour
         Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
         //m_entityAnimator.SetTrigger("TakeDamage");
         GlobalSoundManager.PlayOneShot(12, transform.position);
+
     }
     public void OnDestroy()
     {

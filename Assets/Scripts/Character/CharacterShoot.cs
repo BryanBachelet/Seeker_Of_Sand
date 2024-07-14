@@ -12,6 +12,7 @@ namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
+
         private float m_timeBetweenRotation = 0.5f;
         public GlobalSoundManager gsm;
         public LauncherProfil launcherProfil;

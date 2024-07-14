@@ -48,6 +48,7 @@ public class HealthManager : MonoBehaviour
 
        if(m_serieController) m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
+        Tool_DamageMeter.AddDamage(damage);
         if(colorElementType < 0)
         {
             if (characterShoot.lastElement == GameElement.AIR)
