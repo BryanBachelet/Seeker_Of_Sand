@@ -19,6 +19,7 @@ namespace Enemies
         public bool isSpawn;
         public GameObject Vfx;
         public FMODUnity.EventReference sfx;
+        public int sfxIndex;
         public int attackIndex;
         public AttackPhase attackPhase;
     }

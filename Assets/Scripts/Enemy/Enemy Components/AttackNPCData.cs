@@ -9,25 +9,42 @@ namespace Enemies
     [System.Serializable]
     public struct AttackNPCData
     {
+
+        public enum AttackPosition
+        {
+            Target,
+            Self,
+        }
+
         public string nameAttack;
         [Header("Attack parameters")]
         public float prepationTime;
         public float recoverTime;
         public float contactTime;
+        public float coooldownAttack;
+        [Tooltip("Periods during the ai is going to rotate to follow the player")]
+        public float rotationTime;
         public int damage;
         public float attackRange;
         public bool isStunLockingAttack;
         public bool isStopMovingAtPrep;
         public bool isHeavyAttack;
+        public bool isFollowTarget;
+        public AttackLaunchMoment launchMoment;
+        public NPCMoveAttackObject attackMovement;
+        [Tooltip("When we use UPDATE_CONTACT state for launching attack ")]
+        public float updateTimeAttackLaunch;
+
         public AttackType typeAttack;
         [Tooltip("Only useful for the projectile type of attack")]
         public RangeAttackType rangeTypeAttack;
-        
-        
+
+        public AttackPosition postionToSpawnType;
 
         [Header("Area Parameters")]
         public float radius;
         public AreaType shapeType;
+       
 
         [Header("Projectile Parameters")]
         public float rangeProjectile;

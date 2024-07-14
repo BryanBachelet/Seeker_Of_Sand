@@ -23,6 +23,8 @@ public class AttackTrainingArea : MonoBehaviour
 
     public float delayTimeStart = 0;
     private float tempsEcoleDelay;
+    public int damage = 5;
+
     // Start is called before the first frame update
 
     private void OnEnable()
@@ -78,7 +80,11 @@ public class AttackTrainingArea : MonoBehaviour
         positionOnDestroy = transform.position;
         if (Vector3.Distance(positionOnDestroy, playerTarget.position) < rangeHit)
         {
-            hpPlayer.GetLightDamage(5, positionOnDestroy);
+            AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+            attackDamageInfo.attackName = "Mortar";
+            attackDamageInfo.position = positionOnDestroy;
+            attackDamageInfo.damage = damage;
+            hpPlayer.GetLightDamage(attackDamageInfo);
             //vfxExplosionObject.GetComponent<VisualEffect>().Play();
             //Debug.Log("Hit at [" + Vector3.Distance(positionOnDestroy, playerTarget.position) + "]");
         }

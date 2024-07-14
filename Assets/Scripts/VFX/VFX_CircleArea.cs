@@ -13,22 +13,37 @@ namespace GuerhoubaGames.VFX
         private VisualEffect visualEffect;
         private VfxAttackData data;
 
-        // Start is called before the first frame update
-        void Start()
+
+
+        public void Awake()
         {
-            state = new ObjectState();
-            GameState.AddObject(state);
+            vfxMetaComponent = GetComponent<VFXAttackMeta>();
+            vfxMetaComponent.OnStart += InitComponent;
+        }
+        
+
+        public void InitComponent()
+        {
+            if (state == null)
+            {
+                state = new ObjectState();
+                GameState.AddObject(state);
+            }
 
             vfxMetaComponent = GetComponent<VFXAttackMeta>();
             visualEffect = GetComponent<VisualEffect>();
             data = vfxMetaComponent.vfxData;
 
-            visualEffect.SetFloat("Size", data.attackRange);
+            visualEffect.SetFloat("Size", data.attackRange*2);
             visualEffect.SetFloat("TempsRealese", data.duration);
             visualEffect.SendEvent("ActiveArea");
 
-            DestroyAfterBasic destroyAfterBasic =   gameObject.AddComponent<DestroyAfterBasic>();
+
+            DestroyAfterBasic destroyAfterBasic = gameObject.GetComponent<DestroyAfterBasic>();
+            if(destroyAfterBasic ==null) destroyAfterBasic = gameObject.AddComponent<DestroyAfterBasic>();
             destroyAfterBasic.m_DestroyAfterTime = data.duration;
+            destroyAfterBasic.isNotDestroying = !data.isDestroying;
+            destroyAfterBasic.LaunchTimer();
 
             RaycastHit hit = new RaycastHit();
 
@@ -39,9 +54,7 @@ namespace GuerhoubaGames.VFX
                 transform.rotation = Quaternion.Euler(angle, transform.eulerAngles.y, transform.eulerAngles.z);
                 transform.position = hit.point;
             }
-
         }
-
 
     }
 

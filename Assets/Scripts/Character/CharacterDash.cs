@@ -149,7 +149,7 @@ namespace Character
                     m_dashCooldownTimer += Time.deltaTime;
                 }
                 float dashFillFeedback = m_dashCooldownTimer / m_dashCooldownDuration;
-               if(m_dashUI == null) m_dashUI.fillAmount = dashFillFeedback;
+               if(m_dashUI != null) m_dashUI.fillAmount = dashFillFeedback;
                 m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);
             }
         }

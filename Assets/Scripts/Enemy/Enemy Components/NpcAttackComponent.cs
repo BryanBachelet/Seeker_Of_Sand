@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.AI;
 
@@ -14,8 +15,9 @@ namespace Enemies
         public AttackEnemiesObject[] attackEnemiesObjectsArr = new AttackEnemiesObject[0];
         public Collider[] colliderAttackArray = new Collider[0];
         public GameObject[] projectileAttackArrray = new GameObject[0];
-        public GameObject[] deacalAttackArrray = new GameObject[0];
 
+        private bool[] isAttackOnCooldown = new bool[0];
+        private float[] timerAttackCooldown = new float[0];
 
         private AttackNPCData currentAttackData;
         private int currentAttackIndex;
@@ -26,11 +28,14 @@ namespace Enemies
         private NPCAttackFeedbackComponent m_NPCAttackFeedbackComponent;
 
 
+        private bool isMvtAttackInit = false;
         private Vector3 prepTargetPosition;
 
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
+
+
 
         // Event for each attack step
         public Action OnPrepAttack;
@@ -65,6 +70,7 @@ namespace Enemies
             UpdatePrepAttack();
             UpdateContactAttack();
             UpdateRecoverAttack();
+            UpdateCooldown();
         }
 
         #endregion
@@ -90,6 +96,9 @@ namespace Enemies
 
             }
 
+            timerAttackCooldown = new float[attackEnemiesObjectsArr.Length];
+            isAttackOnCooldown = new bool[attackEnemiesObjectsArr.Length];
+
         }
 
         public void CancelAttack()
@@ -107,7 +116,7 @@ namespace Enemies
             currentAttackState = AttackPhase.PREP;
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;
-            deacalAttackArrray[currentAttackIndex].SetActive(true);
+            m_mouvementComponent.DirectRotateToTarget();
             if (currentAttackData.isStopMovingAtPrep)
             {
                 m_mouvementComponent.StopMouvement();
@@ -120,10 +129,21 @@ namespace Enemies
             attackInfoData.attackIndex = currentAttackIndex;
             attackInfoData.attackNPCData = currentAttackData;
             attackInfoData.duration = currentAttackData.prepationTime;
-            attackInfoData.positionAttack = m_mouvementComponent.targetData.baseTarget.position;
+           
+            attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.PREP;
-            prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
+            
+            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target) 
+                prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
+            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Self) 
+                prepTargetPosition = transform.position;
+
+            attackInfoData.positionAttack = prepTargetPosition;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
+
+            isMvtAttackInit = false;
+
+          
 
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
@@ -141,49 +161,16 @@ namespace Enemies
             attackInfoData.attackNPCData = currentAttackData;
             attackInfoData.duration = currentAttackData.contactTime;
             attackInfoData.positionAttack = prepTargetPosition;
+            attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.CONTACT;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
 
-            if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ)
+           
+            if (currentAttackData.launchMoment == AttackLaunchMoment.START_CONTACT)
             {
-                colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(true);
-                CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackIndex].gameObject.GetComponent<CloseAttackComponent>();
-                closeAttackComponent.damage = currentAttackData.damage;
-                closeAttackComponent.isHeavyAttack = currentAttackData.isHeavyAttack;
+                LaunchAttack();
             }
-            else
-            {
-                GameObject projectile = projectileAttackArrray[currentAttackData.indexProjectileGO];
-                Vector3 spawnPosition = Vector3.zero;
 
-                if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE) spawnPosition = baseTransform.position + baseTransform.forward * 1;
-                if (currentAttackData.rangeTypeAttack == RangeAttackType.AREA) { spawnPosition = prepTargetPosition; }
-
-                GameObject instance = Instantiate(projectile, spawnPosition, Quaternion.identity);
-
-                if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE)
-                {
-                    instance.transform.rotation = baseTransform.rotation;
-                    NPCAttackProjectile npcAttackProjectile = instance.GetComponent<NPCAttackProjectile>();
-                    npcAttackProjectile.damage = currentAttackData.damage;
-                    npcAttackProjectile.direction = transform.forward;
-                    npcAttackProjectile.duration = currentAttackData.durationProjectile;
-                    npcAttackProjectile.range = currentAttackData.rangeProjectile;
-
-
-                }
-
-
-                if (currentAttackData.rangeTypeAttack == RangeAttackType.AREA)
-                {
-                    NPCAttackArea attackObjectArea = instance.GetComponent<NPCAttackArea>();
-                    attackObjectArea.target = m_mouvementComponent.targetData.baseTarget;
-                    attackObjectArea.sizeArea = currentAttackData.radius;
-                    attackObjectArea.type = currentAttackData.shapeType;
-                    attackObjectArea.damage = currentAttackData.damage;
-
-                }
-            }
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
 
@@ -197,11 +184,11 @@ namespace Enemies
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
             attackInfoData.attackNPCData = currentAttackData;
-            attackInfoData.duration = currentAttackData.contactTime;
+            attackInfoData.duration = currentAttackData.recoverTime;
             attackInfoData.positionAttack = prepTargetPosition;
+            attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.RECOVERY;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
-
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is recoving from the attack launch");
         }
@@ -212,7 +199,6 @@ namespace Enemies
         public void FinishPreparationAttack()
         {
             m_timer = 0.0f;
-            deacalAttackArrray[currentAttackIndex].SetActive(false);
             ActiveAttackContact();
         }
 
@@ -225,6 +211,7 @@ namespace Enemies
 
         public void FinishRecoverAttack()
         {
+            isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
             m_timer = 0.0f;
@@ -237,7 +224,27 @@ namespace Enemies
         {
             if (currentAttackState != AttackPhase.PREP) return;
 
-            m_mouvementComponent.RotateToTarget(currentAttackData.prepationTime);
+            if (currentAttackData.isFollowTarget || m_timer < currentAttackData.rotationTime)
+            {
+                m_mouvementComponent.DirectRotateToTarget();
+            }
+            else
+            {
+                if (currentAttackData.attackMovement && !isMvtAttackInit)
+                {
+                    isMvtAttackInit = true;
+
+                       NPCMoveAttData nPCMoveAttData = new NPCMoveAttData();
+                    nPCMoveAttData.npcGo = this.gameObject;
+                    nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
+                    nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
+
+                    currentAttackData.attackMovement.StartMvt(nPCMoveAttData);
+
+                    if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
+                        currentAttackData.attackMovement.EndMovement += LaunchAttack;
+                }
+            }
 
             if (m_timer > currentAttackData.prepationTime)
             {
@@ -253,14 +260,31 @@ namespace Enemies
         {
             if (currentAttackState != AttackPhase.CONTACT) return;
 
+            if (currentAttackData.attackMovement)
+            {
+                currentAttackData.attackMovement.UpdateMvt();
+            }
+
             if (m_timer > currentAttackData.contactTime)
             {
                 FinishContactAttack();
+          
             }
             else
             {
+
+                if (m_timer > currentAttackData.updateTimeAttackLaunch)
+                {
+                    if (currentAttackData.launchMoment == AttackLaunchMoment.UPDATE_CONTACT)
+                    {
+                        LaunchAttack();
+                    }
+                }
+
                 m_timer += Time.deltaTime;
             }
+
+            
         }
 
         public void UpdateRecoverAttack()
@@ -278,9 +302,89 @@ namespace Enemies
         }
         #endregion
 
+        public void UpdateCooldown()
+        {
+            for (int i = 0; i < timerAttackCooldown.Length; i++)
+            {
+                if (!isAttackOnCooldown[i]) continue;
+
+                if(timerAttackCooldown[i]> attackEnemiesObjectsArr[i].data.coooldownAttack)
+                {
+                    isAttackOnCooldown[i] = false;
+                    timerAttackCooldown[i] = 0;
+                    Debug.Log("Attack" + attackEnemiesObjectsArr[i].data.nameAttack + "cooldown is finish");
+                }
+                else
+                {
+                    timerAttackCooldown[i] += Time.deltaTime;
+                }
+            }
+        }
+
         #region Attack Data Function
 
         public float GetAttackRange(int index) { return attackEnemiesObjectsArr[index].data.attackRange; }
+
+        public void LaunchAttack()
+        {
+
+            if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ)
+            {
+                colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(true);
+                CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
+                closeAttackComponent.damage = currentAttackData.damage;
+                closeAttackComponent.isHeavyAttack = currentAttackData.isHeavyAttack;
+                closeAttackComponent.attackName = currentAttackData.nameAttack;
+            }
+            else
+            {
+                GameObject projectile = projectileAttackArrray[currentAttackData.indexProjectileGO];
+                Vector3 spawnPosition = Vector3.zero;
+
+                if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE) spawnPosition = baseTransform.position + baseTransform.forward * 1;
+                if (currentAttackData.rangeTypeAttack == RangeAttackType.AREA) { spawnPosition = prepTargetPosition; }
+
+
+                Quaternion rotObj = Quaternion.Euler(0.0f, transform.eulerAngles.y, 0);
+                if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target) rotObj = Quaternion.identity;
+
+                GameObject instance = Instantiate(projectile, spawnPosition, rotObj);
+
+                if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE)
+                {
+                    instance.transform.rotation = baseTransform.rotation;
+                    NPCAttackProjectile npcAttackProjectile = instance.GetComponent<NPCAttackProjectile>();
+                    npcAttackProjectile.damage = currentAttackData.damage;
+                    npcAttackProjectile.direction = transform.forward;
+                    npcAttackProjectile.duration = currentAttackData.durationProjectile;
+                    npcAttackProjectile.range = currentAttackData.rangeProjectile;
+                    npcAttackProjectile.attackName = currentAttackData.nameAttack;
+
+
+                }
+
+
+                if (currentAttackData.rangeTypeAttack == RangeAttackType.AREA)
+                {
+                    NpcAttackMeta attackObjectArea = instance.GetComponent<NpcAttackMeta>();
+                    AttackObjMetaData attackObjMetaData = new AttackObjMetaData();
+                    attackObjMetaData.target = m_mouvementComponent.targetData.baseTarget;
+                    attackObjMetaData.size = currentAttackData.radius;
+                    attackObjMetaData.typeArea = currentAttackData.shapeType;
+                    attackObjMetaData.damage = currentAttackData.damage;
+                    attackObjMetaData.nameAttack = currentAttackData.nameAttack;
+                    attackObjMetaData.isOneShoot = true;
+                    attackObjectArea.InitAttackObject(attackObjMetaData);
+
+                }
+            }
+        }
+
+        public bool IsAttackOnCooldown(int index)
+        {
+          return  isAttackOnCooldown[index];
+        }
+        
 
         #endregion
 

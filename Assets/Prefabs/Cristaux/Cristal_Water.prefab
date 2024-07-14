@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2018042506740723798}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.73523605, y: -0.33266187, z: 0.16588081, w: 0.5667872}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.01, y: 0.009999997, z: 0.009999997}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 556988985175059872}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &2035284918179685064
 VisualEffect:
@@ -46,6 +46,7 @@ VisualEffect:
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
+  m_AllowInstancing: 1
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
@@ -136,6 +137,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4666834639375489137}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 351.7, y: -17.2, z: -326.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -145,7 +147,6 @@ Transform:
   - {fileID: 6994137440213824647}
   - {fileID: 8397150831897695666}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2124144288972797696
 BoxCollider:
@@ -155,9 +156,17 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4666834639375489137}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Size: {x: 8.25, y: 19.68, z: 5.73}
   m_Center: {x: 0, y: 8.77, z: 0}
 --- !u!114 &2124144288972797695
@@ -174,11 +183,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_healthMax: 3
   m_currentHealth: 3
-  m_cristalToDropPerHealth: 1
   m_cristalLootPrefab: {fileID: 919944488758646629}
   m_cristalType: 0
   m_hitPrefab: {fileID: 0}
   cristalPart: []
+  radiusPlayerCollect: 10
 --- !u!54 &7572047099195295145
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -186,10 +195,21 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4666834639375489137}
-  serializedVersion: 2
+  serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
@@ -220,13 +240,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4754526214303878067}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.1, y: 9.39, z: 0.96}
   m_LocalScale: {x: 100, y: 100, z: 100.00002}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7681470936112352020}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &1771608931354051677
 Light:
@@ -417,6 +437,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 7681470936112352020}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: d5a7265a4401fb3409ae354e81592c13,
@@ -500,6 +521,13 @@ PrefabInstance:
       value: Crystal
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5a7265a4401fb3409ae354e81592c13,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8737999039223091587}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5a7265a4401fb3409ae354e81592c13, type: 3}
 --- !u!4 &556988985175059872 stripped
 Transform:
@@ -512,6 +540,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 7681470936112352020}
     m_Modifications:
     - target: {fileID: 1278518001253408458, guid: 80ee6329cdee4ec428ef3475b5d4af72,
@@ -590,6 +619,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80ee6329cdee4ec428ef3475b5d4af72, type: 3}
 --- !u!1 &919944488758646629 stripped
 GameObject:

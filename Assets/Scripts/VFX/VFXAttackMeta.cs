@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 
 namespace GuerhoubaGames.VFX
 {
@@ -10,15 +10,20 @@ namespace GuerhoubaGames.VFX
     {
         public float attackRange;
         public float duration;
+        public bool isDestroying ;
+        public Transform parent;
+        public Transform target;
     }
 
 
     public class VFXAttackMeta : MonoBehaviour
     {
         [HideInInspector] public VfxAttackData vfxData;
+        public System.Action OnStart;
         public void InitVFXObject(VfxAttackData vfxAttackData)
         {
             vfxData = vfxAttackData;
+            if (OnStart != null) OnStart.Invoke();
         }
     }
 

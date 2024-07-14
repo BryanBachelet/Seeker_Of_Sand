@@ -10,6 +10,7 @@ public class CloseAttackComponent : MonoBehaviour
     private List<GameObject> targetTouch = new List<GameObject>();
     private Collider colliderAttack;
     public bool ActiveDebug = false;
+    public string attackName;
 
     public void OnEnable()
     {
@@ -24,8 +25,13 @@ public class CloseAttackComponent : MonoBehaviour
        
         if(!targetTouch.Contains(other.gameObject))
         {
-            if(!isHeavyAttack) healthPlayerComponent.GetLightDamage(damage, basePosition.position);
-            if(isHeavyAttack) healthPlayerComponent.GetHeavyDamage(damage);
+
+            AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+            attackDamageInfo.attackName = attackName;
+            attackDamageInfo.position = basePosition.position;
+            attackDamageInfo.damage = damage;
+            if (!isHeavyAttack) healthPlayerComponent.GetLightDamage(attackDamageInfo);
+            if(isHeavyAttack) healthPlayerComponent.GetHeavyDamage(attackDamageInfo);
             targetTouch.Add(other.gameObject);
         }
     }

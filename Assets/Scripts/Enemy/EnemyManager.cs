@@ -753,7 +753,7 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            detectionAnimator.SetBool("ShadowDetection", spawningPhase);
+           if(detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
             if (spawning)
             {
                 gsm.globalMusicInstance.setParameterByName("Repos", 0);
@@ -903,13 +903,13 @@ namespace Enemies
             {
                 m_spawnCauseState[i] = false;
             }
-            m_playerTranform.GetComponent<ShadowFunction>().ResetPlayerShadowStatus();
+  
         }
 
 
         public void DestroyAllEnemy()
         {
-            m_playerTranform.GetComponent<ShadowFunction>().ResetPlayerShadowStatus();
+           
             ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {

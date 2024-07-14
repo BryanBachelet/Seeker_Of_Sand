@@ -6,6 +6,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
+
+public  struct AttackDamageInfo
+{
+    public string attackName;
+    public int damage;
+    public Vector3 position;
+}
+
 public class HealthPlayerComponent : MonoBehaviour
 {
     [SerializeField] private bool activeDeath = false;
@@ -46,8 +54,12 @@ public class HealthPlayerComponent : MonoBehaviour
     private bool healthBuffer;
     private float lastHealth;
 
+
+    public System.Action<AttackDamageInfo> OnDamage;
+
     public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
     public event OnContact OnContactEvent = delegate { };
+
 
     public GameState gameStateObject;
     // Start is called before the first frame update
@@ -94,7 +106,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     }
 
-    public void GetLightDamage(float damage, Vector3 position)
+    public void GetLightDamage(AttackDamageInfo attackDamageInfo)
     {
         if (m_isInvulnerableLourd) return;
         if (m_isInvulnerableLeger) return;
@@ -105,21 +117,22 @@ public class HealthPlayerComponent : MonoBehaviour
             ActiveBufferHealth(Time.time, m_CurrentHealth);
             feedbackHit = true;
             vignette.intensity.value = 0.35f;
-            if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
+            if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;
                 m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
             }
             else
             {
-                m_CurrentHealth -= damage;
+                m_CurrentHealth -= attackDamageInfo.damage;
             }
 
+            if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
 
             m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
             BufferXpDisplay();
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-            m_characterMouvement.SetKnockback(position);
+            m_characterMouvement.SetKnockback(attackDamageInfo.position);
 
             if(m_CurrentHealth <= 0)
             {
@@ -130,7 +143,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     }
 
-    public void GetHeavyDamage(float damage)
+    public void GetHeavyDamage(AttackDamageInfo attackDamageInfo)
     {
         if (m_isInvulnerableLourd) return;
         else
@@ -140,16 +153,16 @@ public class HealthPlayerComponent : MonoBehaviour
             ActiveBufferHealth(Time.time, m_CurrentHealth);
             feedbackHit = true;
             vignette.intensity.value = 0.35f;
-            if (m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
+            if (m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
                 m_CurrentQuarter -= 1;
                 m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
             }
             else
             {
-                m_CurrentHealth -= damage;
+                m_CurrentHealth -= attackDamageInfo.damage;
             }
-
+            if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
             m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
             BufferXpDisplay();
