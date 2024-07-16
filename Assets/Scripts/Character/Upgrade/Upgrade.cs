@@ -11,10 +11,6 @@ public enum UpgradeType
     CAPSULE
 }
 
-
-
-
-
 [Serializable]
 public class Upgrade
 {

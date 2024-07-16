@@ -43,8 +43,6 @@ public struct CapsuleStats
     public float shootAngle;
     public TrajectoryType trajectory;
     public FormTypeSpell formType;
-    public float angleTrajectory;
-    public float trajectoryTimer;
     public float shootNumber;
     public float timeInterval;
     public float size;
@@ -54,6 +52,9 @@ public struct CapsuleStats
     public string description;
     public float stackDuration;
     public int stackPerGain;
+    [Header("Curve Trajectory")]
+    public float angleTrajectory;
+    public float trajectoryTimer;
     
 
     public string DebugStat()
