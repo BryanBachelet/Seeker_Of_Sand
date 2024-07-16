@@ -20,6 +20,7 @@ namespace SeekerOfSand
             public GameObject stackingUIHolder;
             public GameObject clockUIHolder;
             private TMP_Text[] m_stackingText;
+            private int[] levelSpell = new int[4];
             private Image[] m_stackingImageClock;
 
             public TMP_Text levelTaken;
@@ -55,6 +56,10 @@ namespace SeekerOfSand
                 m_stackingText[index].text = value.ToString();
             }
 
+            public void UpdateLevelSpell(int index, int value)
+            {
+                m_stackingText[index].text = value.ToString();
+            }
             public void UpdateStackingObjects(int[] value)
             {
                 for (int i = 0; i < value.Length; i++)

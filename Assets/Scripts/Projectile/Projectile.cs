@@ -58,6 +58,8 @@ public class Projectile : MonoBehaviour
 
     private Vector3 normalHit;
     private Vector3 hitPoint;
+
+
     void Update()
     {
         if (!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }

@@ -12,6 +12,7 @@ namespace Character
 {
     public class CharacterShoot : MonoBehaviour, CharacterComponent
     {
+
         private float m_timeBetweenRotation = 0.5f;
         public GlobalSoundManager gsm;
         public LauncherProfil launcherProfil;
@@ -710,7 +711,7 @@ namespace Character
 
             StartCoroutine(m_cameraShake.ShakeEffect(m_shakeDuration));
             m_currentStack[m_currentRotationIndex]--;
-            m_uiPlayerInfos.UpdateStackingObjects(m_currentRotationIndex, m_currentStack[m_currentRotationIndex]);
+            //m_uiPlayerInfos.UpdateStackingObjects(m_currentRotationIndex, m_currentStack[m_currentRotationIndex]);
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / stats.shootNumber);
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
             if (m_currentStack[m_currentRotationIndex] <= 0)
@@ -867,7 +868,7 @@ namespace Character
                     if (i == m_currentRotationIndex) m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
                     m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, (int)stats.shootNumber);
                     capsuleStatsAlone[index] = stats;
-                    m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
+                    //m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
                     if (m_currentStack[i] == (int)stats.shootNumber) m_stackingClock[i].DeactivateClock();
                 }
                 ////else
@@ -889,7 +890,7 @@ namespace Character
                 value[i] = m_currentStack[i];
                 capsuleStatsAlone[index] = stats;
             }
-            m_uiPlayerInfos.UpdateStackingObjects(value);
+            //m_uiPlayerInfos.UpdateStackingObjects(value);
         }
         #endregion
 
@@ -1193,7 +1194,7 @@ namespace Character
             int tempStack = m_currentStack[indexSpell1];
             m_currentStack[indexSpell1] = m_currentStack[indexSpell2];
             m_currentStack[indexSpell2] = tempStack;
-            m_uiPlayerInfos.UpdateStackingObjects(m_currentStack);
+            //m_uiPlayerInfos.UpdateStackingObjects(m_currentStack);
 
             RefreshActiveIcon(m_characterInventory.GetAllSpells());
             m_characterInventory.ActualizeUI();

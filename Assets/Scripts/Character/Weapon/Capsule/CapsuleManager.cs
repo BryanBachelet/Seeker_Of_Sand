@@ -5,10 +5,9 @@ using UnityEngine;
 public class CapsuleManager : MonoBehaviour
 {
     public SpellSystem.Capsule[] capsules;
-
     public SpellSystem.CapsuleAttackInfo[] attackInfo;
     public SpellSystem.CapsuleBuffInfo[] buffInfos;
-
+    public SpellSystem.SpellProfil[] spellProfils;
 
     public static CapsuleManager instance;
     public static int capsuleCount;
@@ -82,6 +81,23 @@ public class CapsuleManager : MonoBehaviour
                 indexBuffInfo++;
             }
         }
+    }
+
+    public void OnValidate()
+    {
+        List<SpellSystem.SpellProfil> spellProfilsList = new List<SpellSystem.SpellProfil>(spellProfils.Length);
+
+        for (int i = 0; i < spellProfils.Length; i++)
+        {
+            if (spellProfils[i].id >= spellProfilsList.Count)
+            {
+                spellProfilsList.Add(spellProfils[i]);
+                continue;
+            }
+            spellProfilsList.Insert(spellProfils[i].id, spellProfils[i]);
+        }
+
+        spellProfils = spellProfilsList.ToArray();
     }
 
 }

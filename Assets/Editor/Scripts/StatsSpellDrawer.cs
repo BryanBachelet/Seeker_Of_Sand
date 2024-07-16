@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-
+using SpellSystem;
 
 [CustomPropertyDrawer(typeof(StatData))]
 public class StatsSpellDrawer : PropertyDrawer

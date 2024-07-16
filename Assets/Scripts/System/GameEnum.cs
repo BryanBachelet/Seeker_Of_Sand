@@ -28,7 +28,6 @@ namespace GuerhoubaGames.GameEnum
 
     public enum RewardType
     {
-
         UPGRADE = 0,
         SPELL = 1,
         ARTEFACT = 2,
@@ -43,8 +42,6 @@ namespace GuerhoubaGames.GameEnum
         TRIANGLE = 2,
         CUSTOM = 3,
     }
-
-
 
     public enum FeedbackType
     {
@@ -80,7 +77,63 @@ namespace GuerhoubaGames.GameEnum
         NONE = 3,
     }
 
+    public enum StatType
+    {
+        Damage = 1001,
+        Projectile = 1002,
+        ShootAngle = 1003,
+        ShootNumber = 1004,
+        Piercing = 1005,
+        Bounce = 1006,
+        GainPerStack =1007,
+        AngleTrajectory =1008,
 
 
+        Speed = 2001,
+        Range = 2002,
+        CompleteShotTime = 2003,
+        StackDuration = 2004,
+        SpellCanalisation = 2005,
+        TrajectoryTimer =2006,
+        Size = 2007,
+        SizeMuplitiplicator = 2008,
+        TravelTime = 2009,
+        LifeTime = 2010,
+        HitTick = 2011,
+
+    }
+
+    public enum ValueType
+    {
+        BOOL = 0,
+        INT = 1000,
+        FLOAT = 2000,
+        STRING = 3000,
+    }
+
+
+    // Tag Spell
+    public enum BuffType
+    {
+        NONE,
+        DAMAGE_SPELL,
+        BUFF_SPELL,
+    }
+
+    public enum SpellObjectType
+    {
+        NONE,
+        AURA = 0,
+        PROJECTILE = 1,
+        AREA = 2,
+        INVOCATION = 3,
+    }
+
+    public enum SpellProjectileTrajectory
+    {
+        NONE,
+        LINE = 0,
+        CURVE = 1,
+    }
 
 }
