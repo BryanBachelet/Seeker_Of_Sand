@@ -451,6 +451,7 @@ namespace SpellSystem
             bool testResult = tagData.upgradeSensitivityType == UpgradeSensitivity.HighScale;
             ManageStat(StatType.ScaleRate, testResult);
             if (testResult) return;
+
             testResult = tagData.upgradeSensitivityType == UpgradeSensitivity.LowScale;
             ManageStat(StatType.ScaleRate, testResult);
         }
