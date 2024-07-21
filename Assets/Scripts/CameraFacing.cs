@@ -5,11 +5,12 @@ using UnityEngine;
 public class CameraFacing : MonoBehaviour
 {
     public Camera mainCamera;
-    
+    //public GameObject player;
+    //public Vector3 lookVector;
     // Start is called before the first frame update
     void Start()
     {
-
+        if(mainCamera == null) { mainCamera = Camera.main; }
     }
 
     // Update is called once per frame
@@ -17,7 +18,7 @@ public class CameraFacing : MonoBehaviour
     {
         if(mainCamera)
         {
-            transform.forward = mainCamera.transform.forward;
+            //transform.forward = mainCamera.transform.forward;
             transform.LookAt(mainCamera.transform.position, Vector3.up);
         }
         else

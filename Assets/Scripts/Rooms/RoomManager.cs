@@ -35,6 +35,7 @@ public class RoomManager : MonoBehaviour
     public bool isActiveStartRotation;
     public float spawnAngle;
     public GameObject teleporterSpawn;
+    public Transform rewardPosition;
 
     public Action<RoomType, RewardType> onActivateRoom;
     public Action<RoomType, RewardType> onDeactivateRoom;
@@ -193,7 +194,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType);
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition);
 
     }
 
