@@ -76,11 +76,11 @@ public class UpgradeUIDecal : MonoBehaviour
 
     }
 
-    public void SpellFocusDisplay(SpellSystem.Capsule infoSpell)
+    public void SpellFocusDisplay(SpellSystem.SpellProfil infoSpell)
     {
         m_textDescription[0].text = infoSpell.name;
         m_textDescription[1].text = infoSpell.description;
-        m_iconSpellSelected.sprite = infoSpell.sprite;
+        m_iconSpellSelected.sprite = infoSpell.spell_Icon;
     }
     public void ChangeStateDisplay(bool newState)
     {

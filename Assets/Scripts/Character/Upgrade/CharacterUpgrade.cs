@@ -17,7 +17,7 @@ namespace Character
     public class CharacterUpgrade : MonoBehaviour
     {
         [Header("Upgrades Base Infos")]
-        public List<Upgrade> avatarUpgradeList;
+        public List<UpgradeObject> avatarUpgradeList;
         public static int upgradePoint = 0;
         [SerializeField] private int presetUpgradePoint = 0;
 
@@ -32,7 +32,7 @@ namespace Character
         //   private UpgradeUIDecal m_UpgradeUiDecal;
 
         // Useful Components
-        private UpgradeManager m_upgradeManager;
+       [HideInInspector] public UpgradeManager upgradeManager;
         private CapsuleManager m_capsuleManager;
         [HideInInspector] public Character.CharacterShoot m_characterShoot;
         private Character.CharacterSpellBook m_characterInventory;
@@ -78,8 +78,8 @@ namespace Character
 
         public void InitComponents()
         {
-            m_upgradeManager = FindObjectOfType<UpgradeManager>();
-            m_capsuleManager = m_upgradeManager.GetComponent<CapsuleManager>();
+            upgradeManager = FindObjectOfType<UpgradeManager>();
+            m_capsuleManager = upgradeManager.GetComponent<CapsuleManager>();
             m_characterShoot = GetComponent<Character.CharacterShoot>();
             m_characterInventory = GetComponent<Character.CharacterSpellBook>();
             experience = GetComponent<Experience_System>();
@@ -91,19 +91,18 @@ namespace Character
 
         public void ShowSpellChoiceInteface()
         {
-            if(m_upgradeManager)
+            if(upgradeManager)
             {
-                m_upgradeManager.OpenSpellChoiceUI();
+                upgradeManager.OpenSpellChoiceUI();
 
                 GameState.ChangeState();
                 isSpellUpgradeWindowOpen = true;
                 ChangeBaseInterfaceDisplay(false);
             }
            
-          //  Debug.Break();
         }
 
-        public void ApplySpellChoise(SpellSystem.Capsule capsule)
+        public void ApplySpellChoise(SpellSystem.SpellProfil capsule)
         {
             m_characterShoot.AddSpell(m_capsuleManager.GetCapsuleIndex(capsule));
             CloseSpellChoiceInterface();
@@ -111,7 +110,7 @@ namespace Character
 
         public void CloseSpellChoiceInterface()
         {
-            m_upgradeManager.CloseSpellChoiceUI();
+            upgradeManager.CloseSpellChoiceUI();
             GameState.ChangeState();
             isSpellUpgradeWindowOpen = false;
             ChangeBaseInterfaceDisplay(true);
@@ -127,12 +126,12 @@ namespace Character
             ChangeBaseInterfaceDisplay(false);
 
             UpgradeLevelingData data = new UpgradeLevelingData();
-            data.spellState = m_characterShoot.capsuleStatsAlone.ToArray();
+            data.spellState = m_characterShoot.spellProfils.ToArray();
             data.spellCount = m_characterShoot.maxSpellIndex;
             data.iconSpell = m_characterShoot.GetSpellSprite();
-            data.capsuleIndex = m_characterShoot.capsuleIndex.ToArray();
+            data.capsuleIndex = m_characterShoot.spellIndex.ToArray();
             data.upgradePoint = upgradePoint;
-            m_upgradeManager.OpenUpgradeUI(data);
+            upgradeManager.OpenUpgradeUI(data);
 
 
             GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
@@ -144,34 +143,35 @@ namespace Character
         {
             isUpgradeWindowOpen = false;
             ChangeBaseInterfaceDisplay(true);
-            m_upgradeManager.CloseUpgradeUI();
+            upgradeManager.CloseUpgradeUI();
 
             GameState.ChangeState();
         }
 
-        public void ApplyUpgrade(Upgrade upgradeChoose)
+        public void ApplyUpgrade(UpgradeObject upgradeChoose)
         {
             upgradePoint--;
            // m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
             upgradePointTextDisplay.text = upgradePoint.ToString();
             experience.m_LevelTaken++;
             experience.m_UiPlayerInfo.AddLevelTaken();
-            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.gain.nameUpgrade,isDebugActive);
+            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name,isDebugActive);
             if (isDebugActive)
             {
                
-                m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].DebugStat();
+                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].DebugStat();
             }
-            m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex] = upgradeChoose.Apply(m_characterShoot.capsuleStatsAlone.ToArray()[upgradeChoose.capsuleIndex]);
+
+            //TODO : Change Apply from upgrade
+            upgradeChoose.Apply(m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink]);
             if (m_UiPlayerInfo)
             {
-                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.capsuleIndex, m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].level);
-                Debug.Log("TESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSST");
+                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level);
             }
             avatarUpgradeList.Add(upgradeChoose);
             if (isDebugActive)
             {
-                m_characterShoot.capsuleStatsAlone[upgradeChoose.capsuleIndex].DebugStat();
+                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].DebugStat();
             }
             if (upgradePoint == 0 && isUpgradeWindowOpen)
             {
@@ -180,6 +180,8 @@ namespace Character
             }
 
         }
+
+  
 
         #endregion
 

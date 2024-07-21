@@ -191,6 +191,7 @@ namespace Character
             {
                 m_inputDirection = Vector2.zero;
                 m_directionInputActive = false;
+                CancelSlide();
 
             }
 

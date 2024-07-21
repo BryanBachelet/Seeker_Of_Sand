@@ -5,10 +5,9 @@ using UnityEngine;
 public class CapsuleManager : MonoBehaviour
 {
     public SpellSystem.Capsule[] capsules;
-
     public SpellSystem.CapsuleAttackInfo[] attackInfo;
     public SpellSystem.CapsuleBuffInfo[] buffInfos;
-
+    public SpellSystem.SpellProfil[] spellProfils;
 
     public static CapsuleManager instance;
     public static int capsuleCount;
@@ -40,12 +39,12 @@ public class CapsuleManager : MonoBehaviour
         m_capsulePool.Remove(index);
     }
 
-    public int GetCapsuleIndex(SpellSystem.Capsule capsule)
+    public int GetCapsuleIndex(SpellSystem.SpellProfil spellProfile)
     {
         int index = -1;
-        for (int i = 0; i < capsules.Length; i++)
+        for (int i = 0; i < spellProfils.Length; i++)
         {
-            if(capsule ==capsules[i])
+            if(spellProfile == spellProfils[i])
             {
                 return i;
             }
@@ -57,31 +56,58 @@ public class CapsuleManager : MonoBehaviour
     {
         instance = this; // Singleton Variable
 
-        for (int i = 0; i < capsules.Length; i++)
+        for (int i = 0; i < spellProfils.Length; i++)
         {
             m_capsulePool.Add(i);
         }
 
         CreateInfo();
 
-        capsuleCount = capsules.Length;
+        capsuleCount = spellProfils.Length;
     }
 
     public void CreateInfo()
     {
-        for (int i = 0; i < capsules.Length; i++)
+
+        // TODO : Suppress code -->
+            //for (int i = 0; i < capsules.Length; i++)
+            //{
+            //    if(capsules[i].type == SpellSystem.CapsuleType.ATTACK)
+            //    {
+            //        capsules[i] = new SpellSystem.CapsuleAttack(attackInfo[indexAttackInfo]);
+            //        indexAttackInfo++;
+            //    }
+            //    if (capsules[i].type == SpellSystem.CapsuleType.BUFF)
+            //    {
+            //        capsules[i] = new SpellSystem.CapsuleBuff(buffInfos[indexBuffInfo]);
+            //        indexBuffInfo++;
+            //    }
+            //}
+
+        // Clone scriptable to avoid permanent modification
+        for (int i = 0; i < spellProfils.Length; i++)
         {
-            if(capsules[i].type == SpellSystem.CapsuleType.ATTACK)
-            {
-                capsules[i] = new SpellSystem.CapsuleAttack(attackInfo[indexAttackInfo]);
-                indexAttackInfo++;
-            }
-            if (capsules[i].type == SpellSystem.CapsuleType.BUFF)
-            {
-                capsules[i] = new SpellSystem.CapsuleBuff(buffInfos[indexBuffInfo]);
-                indexBuffInfo++;
-            }
+            spellProfils[i] = spellProfils[i].Clone();
         }
+
+
+    }
+
+    public void OnValidate()
+    {
+        List<SpellSystem.SpellProfil> spellProfilsList = new List<SpellSystem.SpellProfil>(spellProfils.Length);
+
+        for (int i = 0; i < spellProfils.Length; i++)
+        {
+            if (spellProfils[i].id >= spellProfilsList.Count)
+            {
+                spellProfilsList.Add(spellProfils[i]);
+                continue;
+            }
+            spellProfilsList.Insert(spellProfils[i].id, spellProfils[i]);
+        }
+
+        spellProfils = spellProfilsList.ToArray();
     }
 
 }
