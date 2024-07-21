@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
-
+using GuerhoubaGames.GameEnum;
 namespace Character
 {
 
@@ -127,7 +127,7 @@ namespace Character
 
             CheckAimPointDistance();
             v3Ref.Normalize();
-            m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetPod());
+            m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetSpellProfil());
             m_aimDirection = (m_aimFinalPoint - transform.position).normalized;
             m_aimPointToPlayerDistance = (m_aimFinalPoint - transform.position).magnitude;
             projectorVisorObject.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
@@ -156,9 +156,9 @@ namespace Character
         /// <summary>
         ///   Check if any obstacle on the aim trajectory and adapt the aim final point
         /// </summary>
-        private Vector3 VerifyAimTrajectory(CapsuleStats stats)
+        private Vector3 VerifyAimTrajectory(SpellSystem.SpellProfil spellProfil)
         {
-            if (stats.trajectory == TrajectoryType.CURVE)
+            if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
             {
                 m_aimPoint = CheckCurveTrajectory();
                 SnapAimFinalPoint();
@@ -194,8 +194,9 @@ namespace Character
 
         private Vector3 CheckCurveTrajectory()
         {
-            float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(45 * Mathf.Deg2Rad); // Angle
-            float gravity = m_characterShoot.GetPod().GetGravitySpeed(0, m_aimPointToPlayerDistance);
+            SpellSystem.SpellProfil spellProfil = m_characterShoot.GetSpellProfil();
+            float speed = GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad); // Angle
+            float gravity = GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil);
             float height = ((speed * speed) / (2 * gravity));
 
             Vector3 dir = m_aimDirection.normalized;
@@ -350,9 +351,9 @@ namespace Character
         }
 
 
-        private void FeedbackCurveTrajectory(CapsuleStats stats)
+        private void FeedbackCurveTrajectory(SpellSystem.SpellProfil spellProfil)
         {
-            float ratio = ((stats.GetTravelTime()) / (m_numberOfPointForCurveTrajectory + 1));
+            float ratio = ((spellProfil.GetFloatStat(StatType.TravelTime)) / (m_numberOfPointForCurveTrajectory + 1));
 
             Vector3 position = transform.position;
 
@@ -366,8 +367,8 @@ namespace Character
             for (int i = 1; i < m_numberOfPointForCurveTrajectory + 1; i++)
             {
                 Vector3 newPos = Vector3.zero;
-                newPos = dir.normalized * stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Cos(m_characterShoot.GetPod().angleTrajectory * Mathf.Deg2Rad) * ratio; // Angle
-                newPos += normalDirection * (-stats.GetGravitySpeed(0, m_aimPointToPlayerDistance) * ratio * i + stats.GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(m_characterShoot.GetPod().angleTrajectory * Mathf.Deg2Rad)) * ratio;
+                newPos = dir.normalized *GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad) * ratio; // Angle
+                newPos += normalDirection * (-GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil) * ratio * i + GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory)* Mathf.Deg2Rad)) * ratio;
                 m_lineRenderer.SetPosition(i, position + newPos);
                 position += newPos;
             }
@@ -426,35 +427,63 @@ namespace Character
             return m_hasCloseTarget;
         }
 
+
+        public float GetSpeed(float rangeGive,SpellSystem.SpellProfil spellProfil)
+        {
+            float speed = (rangeGive / (spellProfil.GetFloatStat(StatType.TravelTime) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory))* Mathf.Deg2Rad));
+            return speed;
+        }
+
+        public float GetVerticalSpeed(float rangeGive, SpellSystem.SpellProfil spellProfil)
+        {
+            return GetSpeed(rangeGive, spellProfil) * Mathf.Sign(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad);
+        }
+
+        public float GetGravitySpeed(float height, float rangeGive, SpellSystem.SpellProfil spellProfil)
+        {
+            float speed = GetSpeed(rangeGive, spellProfil);
+            float angle = spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad;
+            float gravity = 2 * (speed * Mathf.Sin(angle) * spellProfil.GetFloatStat(StatType.TravelTime) + height);
+            gravity = gravity / (spellProfil.GetFloatStat(StatType.TravelTime)) * (spellProfil.GetFloatStat(StatType.TravelTime));
+            return gravity;
+        }
+
+
+
         private void OnDrawGizmos()
         {
-            if (Application.isPlaying)
+
+            if (Application.isPlaying  )
             {
-                float speed = m_characterShoot.GetPod().GetSpeed(m_aimPointToPlayerDistance) * Mathf.Sin(m_characterShoot.GetPod().angleTrajectory * Mathf.Deg2Rad); // TODO 
-                float gravity = m_characterShoot.GetPod().GetGravitySpeed(0, m_aimPointToPlayerDistance);
-                float height = ((speed * speed) / (2 * gravity));
-                Vector3 dir = m_aimDirection.normalized;
-                Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
-                Vector3 normalDirection = Quaternion.AngleAxis(-90, dirRight) * dir;
-                float angleTest = Vector3.SignedAngle(normalDirection, Vector3.up, dir);
-                if (angleTest != 0)
+                SpellSystem.SpellProfil spellProfil = m_characterShoot.GetSpellProfil();
+                if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
                 {
-                    normalDirection = Quaternion.AngleAxis(angleTest, dir) * normalDirection;
+                    float speed = GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad); // TODO 
+                    float gravity =GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil);
+                    float height = ((speed * speed) / (2 * gravity));
+                    Vector3 dir = m_aimDirection.normalized;
+                    Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
+                    Vector3 normalDirection = Quaternion.AngleAxis(-90, dirRight) * dir;
+                    float angleTest = Vector3.SignedAngle(normalDirection, Vector3.up, dir);
+                    if (angleTest != 0)
+                    {
+                        normalDirection = Quaternion.AngleAxis(angleTest, dir) * normalDirection;
+                    }
+
+
+                    Vector3 newPos = transform.position + dir.normalized * m_aimPointToPlayerDistance * 0.5f;
+                    Vector3 heightestPoint = newPos + normalDirection.normalized * height;
+
+                    Ray aimTrajectoryRay = new Ray(transform.position, (heightestPoint - transform.position).normalized);
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(transform.position, m_aimFinalPoint);
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawRay(aimTrajectoryRay.origin, aimTrajectoryRay.direction * (heightestPoint - transform.position).magnitude);
+                    Gizmos.DrawLine(heightestPoint, m_aimPoint);
+
+                    Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssistDistance);
+                    Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
                 }
-
-
-                Vector3 newPos = transform.position + dir.normalized * m_aimPointToPlayerDistance * 0.5f;
-                Vector3 heightestPoint = newPos + normalDirection.normalized * height;
-
-                Ray aimTrajectoryRay = new Ray(transform.position, (heightestPoint - transform.position).normalized);
-                Gizmos.color = Color.blue;
-                Gizmos.DrawLine(transform.position, m_aimFinalPoint);
-                Gizmos.color = Color.red;
-                Gizmos.DrawRay(aimTrajectoryRay.origin, aimTrajectoryRay.direction * (heightestPoint - transform.position).magnitude);
-                Gizmos.DrawLine(heightestPoint, m_aimPoint);
-
-                Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssistDistance);
-                Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
             }
         }
 

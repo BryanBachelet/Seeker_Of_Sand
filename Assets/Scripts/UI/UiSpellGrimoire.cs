@@ -165,7 +165,7 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         spellDescriptionObj.SetActive(true);
         m_iconSpellSelected.sprite = m_currentSpritsSpell[m_offset + index];
-        SpellSystem.Capsule info = m_characterInventory.GetSpecificSpell(index);
+        SpellSystem.SpellProfil info = m_characterInventory.GetSpecificSpell(index);
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
         m_uiDecalUpdaterDisplay.SpellFocusDisplay(info);
@@ -174,8 +174,8 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         spellDescriptionObj.SetActive(true);
         int index = m_characterShoot.GetIndexFromSpellBar(indexSpellSlot);
-        SpellSystem.Capsule info = m_characterInventory.GetSpecificSpell(index);
-        m_iconSpellSelected.sprite = info.sprite;
+        SpellSystem.SpellProfil info = m_characterInventory.GetSpecificSpell(index);
+        m_iconSpellSelected.sprite = info.spell_Icon;
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
     }

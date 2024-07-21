@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GuerhoubaGames.GameEnum;
 public struct ProjectileData
 {
     public Vector3 direction;
@@ -16,6 +16,7 @@ public struct ProjectileData
     public int salveNumber;
     public float sizeFactor;
     public float size;
+    public SpellSystem.SpellProfil spellProfil;
     public Character.CharacterShoot characterShoot;
 }
 
@@ -45,6 +46,8 @@ public class Projectile : MonoBehaviour
     protected int m_salveNumber;
     protected float m_size;
     protected float m_sizeMultiplicateurFactor;
+
+    protected SpellSystem.SpellProfil spellProfil;
     protected Character.CharacterShoot m_characterShoot;
 
     private float spawnTime;
@@ -86,19 +89,28 @@ public class Projectile : MonoBehaviour
 
     public virtual void SetProjectile(ProjectileData data)
     {
+        m_piercingMax = 0;
         m_direction = data.direction;
-        m_speed = data.speed;
-        m_lifeTime = data.life;
-        m_damage = data.damage;
+        spellProfil = data.spellProfil;
+        m_speed = spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime);
+        m_lifeTime = spellProfil.GetFloatStat(StatType.LifeTime);
+        m_damage = spellProfil.GetIntStat(StatType.Damage);
         m_destination = data.destination;
-        m_piercingMax = data.piercingMax;
-        m_shootNumber = data.shootNumber;
-        m_salveNumber = data.salveNumber;
-        m_size = data.size;
-        m_travelTime = data.travelTime;
-        m_sizeMultiplicateurFactor = data.sizeFactor;
+
+        if (spellProfil.tagData.spellParticualarity == SpellParticualarity.Piercing)
+            m_piercingMax = spellProfil.GetIntStat(StatType.Piercing);
+           
+        m_shootNumber = spellProfil.GetIntStat(StatType.ShootNumber);
+        m_salveNumber = spellProfil.GetIntStat(StatType.Projectile);
+        m_size =1;
+        
+        if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+            m_travelTime = spellProfil.GetFloatStat(StatType.TravelTime) ;
+        
+        m_sizeMultiplicateurFactor = 1;
         m_characterShoot = data.characterShoot;
         m_initialScale = transform.localScale;
+     
         m_collider = this.GetComponent<Collider>();
     }
     protected virtual void Move()

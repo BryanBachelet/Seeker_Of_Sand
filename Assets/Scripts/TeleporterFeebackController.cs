@@ -15,6 +15,7 @@ public class TeleporterFeebackController : MonoBehaviour
     public Color[] colorSymboleDecal = new Color[4];
     public Texture[] textureReward = new Texture[4];
 
+
     [Range(0, 6)]
     public int rewardToUse = 0;
     public MeshRenderer socleMesh;

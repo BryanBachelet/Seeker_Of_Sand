@@ -30,7 +30,7 @@ public class ChooseSkillManualy : MonoBehaviour
     {
         currentSkill = (int)m_slider.value;
         m_txtNumberSkill.text = "" + currentSkill;
-        characterShootScript.capsuleIndex[m_skillNumber] = currentSkill;
+        characterShootScript.spellIndex[m_skillNumber] = currentSkill;
         characterShootScript.InitCapsule();
     }
 

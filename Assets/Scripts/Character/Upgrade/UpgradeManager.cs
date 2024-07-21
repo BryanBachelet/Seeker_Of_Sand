@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using Character;
+using GuerhoubaGames.GameEnum;
+using System.Text.RegularExpressions;
+using System;
 
 public struct UpgradeLevelingData
 {
@@ -11,15 +14,24 @@ public struct UpgradeLevelingData
     public int upgradePoint;
     public int indexSpellFocus;
     public int[] capsuleIndex;
-    public CapsuleStats[] spellState;
+    public SpellSystem.SpellProfil[] spellState;
     public Sprite[] iconSpell;
-    public Upgrade[] upgradeChoose;
+    public UpgradeObject[] upgradeChoose;
 }
 
 public class UpgradeManager : MonoBehaviour
 {
     private const int upgradeGenerateCount = 3;
-    public UpgradeProfil[] upgradeList;
+    public UpgradeObject[] upgradeList;
+
+    private List<UpgradeObject> m_sortUpgradeList;
+    private int[] m_indexTagUpgradeArray;
+    private List<UpgradeObject[]> spellUpgradeArrayList = new List<UpgradeObject[]>();
+    public int[] indexUpgrade;
+    public UpgradeData.UpgradeSort upgradeSort;
+
+
+
     public CharacterUpgrade m_characterUpgradeComponent;
     [HideInInspector] public DropInventory m_dropInventory;
     [Header("UI Upgrade")]
@@ -33,16 +45,26 @@ public class UpgradeManager : MonoBehaviour
 
     private bool isUpgradeUILevel;
 
-    private UpgradeLevelingData m_upgradeLevelingData ;
+    private UpgradeLevelingData m_upgradeLevelingData;
 
     private UpgradeData.UpgradeTable m_upgradeData = new UpgradeData.UpgradeTable();
 
     public void Start()
     {
 
+        upgradeSort = new UpgradeData.UpgradeSort();
+        UpgradeData.UpgradeDataSort upgradeDataSort = upgradeSort.SortUpgrade(upgradeList);
+        m_sortUpgradeList = new List<UpgradeObject>(upgradeDataSort.upgradeArray);
+        m_indexTagUpgradeArray = upgradeDataSort.indexArray;
         string path = Application.dataPath + "\\Resources\\UpgradeTable.csv";
         LoadUpgradeTable(path);
         if (!upgradeLevelUi) return;
+
+        for (int i = 0; i < upgradeList.Length; i++)
+        {
+            upgradeList[i] = upgradeList[i].Clone();
+        }
+
         m_upgradeChoosingComponent = upgradeLevelUi.GetComponent<UpgradeChoosing>();
         m_upgradeChoosingComponent.m_upgradeManager = this;
         m_chooseSpellManagerComponent = spellChoiceUI.GetComponent<ChooseSpellManager>();
@@ -50,53 +72,89 @@ public class UpgradeManager : MonoBehaviour
         m_dropInventory = m_characterUpgradeComponent.GetComponent<DropInventory>();
     }
 
-    public Upgrade[] RandomUpgrade(int count)
+    public UpgradeObject[] RandomUpgrade(int count)
     {
         int[] index = GetRandomIndex(count, upgradeList.Length);
-        Upgrade[] upgrades = new Upgrade[count];
+        UpgradeObject[] upgrades = new UpgradeObject[count];
         for (int i = 0; i < count; i++)
         {
-            UpgradeProfil nxtProfil = upgradeList[index[i]];
-            switch (upgradeList[index[i]].type)
-            {
-                case UpgradeType.CHARACTER:
-                    upgrades[i] = new UpgradeCharacter(nxtProfil);
-                    break;
-                case UpgradeType.LAUNCHER:
-                    upgrades[i] = new UpgradeLauncher(nxtProfil);
-                    break;
-                case UpgradeType.CAPSULE:
-                    upgrades[i] = new UpgradeCapsule(nxtProfil);
-                    break;
-                default:
-                    break;
-            }
-
+            upgrades[i] = upgradeList[index[i]];
         }
         return upgrades;
     }
 
-    public Upgrade GetRandomUpgradeToSpell(int indexSpell)
+    public UpgradeObject GetRandomUpgradeToSpell(int indexSpell)
     {
         int index = m_upgradeData.RandomUpgradeSpell(indexSpell);
 
-        UpgradeProfil nxtProfil = upgradeList[index].Clone();
-        Upgrade upgrade = new UpgradeCapsule(nxtProfil);
-        return upgrade;
+        UpgradeObject nxtProfil = upgradeList[index].Clone();
+        return nxtProfil;
     }
 
-    public Upgrade[] GetRandomUpgradesToSpecificSpell(int spellIndex,int indexSpellEquip)
+    public UpgradeObject[] GetRandomUpgradesToSpecificSpell(int spellIndex, int indexSpellEquip)
     {
-        Upgrade[] upgradeGenerate = new Upgrade[upgradeGenerateCount];
+        UpgradeObject[] upgradeGenerate = new UpgradeObject[upgradeGenerateCount];
         for (int i = 0; i < upgradeGenerate.Length; i++)
         {
-            int index = m_upgradeData.RandomUpgradeSpell(spellIndex);
-            index = Mathf.Clamp(index, 0, upgradeList.Length-1);
-            UpgradeProfil nxtProfil = upgradeList[index].Clone();
-            upgradeGenerate[i] = new UpgradeCapsule(nxtProfil);
-            upgradeGenerate[i].capsuleIndex = indexSpellEquip;
+            UpgradeObject nxtProfil = ChooseUpgrade(indexSpellEquip);
+            upgradeGenerate[i] = nxtProfil;
+            upgradeGenerate[i].indexSpellLink = indexSpellEquip;
         }
         return upgradeGenerate;
+    }
+
+    public void UpdateCharacterUpgradePool()
+    {
+        SpellSystem.SpellProfil[] spellProfils = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
+        spellUpgradeArrayList.Clear();
+        List<UpgradeObject> listAray = new List<UpgradeObject>();
+
+        for (int i = 0; i < spellProfils.Length; i++)
+        {
+            listAray.Clear();
+            int[] validTagValue = spellProfils[i].tagData.GetValidTag();
+
+            int countTagValue = 0;
+            for (int j = 0; j < validTagValue.Length; j++)
+            {
+                string spellTagString = Regex.Replace(((SpellTagOrder)j).ToString(), @"[\d-]", string.Empty);
+                Type enumType = Type.GetType("GuerhoubaGames.GameEnum." + spellTagString.ToString());
+                int myEnumMemberCount = enumType.GetEnumNames().Length -1;
+                if (validTagValue[j] <= 0)
+                {
+                    countTagValue += myEnumMemberCount;
+                    continue;
+                }
+                else
+                {
+                    int listOffset = m_indexTagUpgradeArray[countTagValue];
+                    int elementCount = m_indexTagUpgradeArray[countTagValue + validTagValue[j]];
+
+                    for (int h = 0; h < validTagValue[j]; h++)
+                    {
+                        listOffset += m_indexTagUpgradeArray[myEnumMemberCount + h];
+                    }
+
+                    listAray.AddRange(m_sortUpgradeList.GetRange(listOffset, elementCount));
+
+
+                    countTagValue += myEnumMemberCount;
+                }
+
+
+
+
+            }
+
+            spellUpgradeArrayList.Add(listAray.ToArray());
+        }
+    }
+
+    private UpgradeObject ChooseUpgrade(int spellIndex)
+    {
+        UpgradeObject[] upgradeObject = spellUpgradeArrayList[spellIndex];
+        int indexUpgrade = UnityEngine.Random.Range(0, upgradeObject.Length);
+        return upgradeObject[indexUpgrade];
     }
 
     public int[] GetRandomIndex(int elementRange, int length)
@@ -154,7 +212,7 @@ public class UpgradeManager : MonoBehaviour
         GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
     }
 
-    public void SendSpell(SpellSystem.Capsule capsule)
+    public void SendSpell(SpellSystem.SpellProfil capsule)
     {
         m_characterUpgradeComponent.ApplySpellChoise(capsule);
         GuerhoubaTools.LogSystem.LogMsg("Spell Choose is" + capsule.name);
@@ -183,7 +241,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
         if (m_upgradeLevelingData.upgradeChoose == null)
         {
-            int indexSpellEquip = Random.Range(0, m_upgradeLevelingData.spellCount);
+            int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
             int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
             m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
             m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
@@ -193,7 +251,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.spellState = upgradeLevelingData.spellState;
         m_upgradeLevelingData.iconSpell = upgradeLevelingData.iconSpell;
         m_upgradeLevelingData.upgradePoint = upgradeLevelingData.upgradePoint;
-    
+
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
         Debug.Log("Open Upgrade interface");
     }
@@ -217,15 +275,15 @@ public class UpgradeManager : MonoBehaviour
         Debug.Log("Close Upgrade interface");
     }
 
-    public void SendUpgrade(Upgrade upgradeChoose)
+    public void SendUpgrade(UpgradeObject upgradeChoose)
     {
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
-        int indexSpellEquip = Random.Range(0, m_upgradeLevelingData.spellCount);
+        int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
         int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
-        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.capsuleStatsAlone.ToArray();
+        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }
@@ -239,12 +297,20 @@ public class UpgradeManager : MonoBehaviour
         GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
     }
     #endregion
+
+
+
 }
+
+
+
 
 
 namespace UpgradeData
 {
     using System;
+    using System.Text.RegularExpressions;
+
     public class UpgradeTable
     {
         public int spellNumber;
@@ -286,6 +352,95 @@ namespace UpgradeData
 
             int indexUpgrade = UnityEngine.Random.Range(0, ugradeAdd);
             return array[indexUpgrade];
+        }
+    }
+
+    public struct UpgradeDataSort
+    {
+        public int[] indexArray;
+        public UpgradeObject[] upgradeArray;
+    }
+
+
+    public class UpgradeSort
+    {
+        public UpgradeDataSort SortUpgrade(UpgradeObject[] arrayUpgrade)
+        {
+            UpgradeObject[] tempArray = new UpgradeObject[arrayUpgrade.Length];
+            List<UpgradeObject> upgradeList = new List<UpgradeObject>();
+            int myEnumMemberCount = Enum.GetNames(typeof(SpellTagOrder)).Length;
+            List<int> indexList = new List<int>();
+
+            UpgradeDataSort upgradeDataSort = new UpgradeDataSort();
+            for (int i = 0; i < myEnumMemberCount; i++)
+            {
+                upgradeDataSort = SortByEnum(arrayUpgrade, (SpellTagOrder)i);
+                upgradeDataSort.indexArray[0] = upgradeList.Count;
+                upgradeList.AddRange(upgradeDataSort.upgradeArray);
+                indexList.AddRange(upgradeDataSort.indexArray);
+            }
+
+
+            UpgradeDataSort upgradeDataSortFinal = new UpgradeDataSort();
+            upgradeDataSortFinal.upgradeArray = upgradeList.ToArray();
+            upgradeDataSortFinal.indexArray = indexList.ToArray();
+            return upgradeDataSortFinal;
+        }
+
+        public UpgradeDataSort SortByEnum(UpgradeObject[] arrayUpgrade, SpellTagOrder spellTagOrder)
+        {
+            string spellTagString = Regex.Replace(spellTagOrder.ToString(), @"[\d-]", string.Empty);
+
+            Type enumType = Type.GetType("GuerhoubaGames.GameEnum." + spellTagString.ToString());
+            int myEnumMemberCount = enumType.GetEnumNames().Length;
+            string[] enumValue = enumType.GetEnumNames();
+
+            int[] indexEnum = new int[myEnumMemberCount];
+            List<UpgradeObject> tempArray = new List<UpgradeObject>();
+            for (int i = 1; i < myEnumMemberCount; i++)
+            {
+                indexEnum[i] = 0;
+                for (int j = 0; j < arrayUpgrade.Length; j++)
+                {
+                    if (enumValue[i] == arrayUpgrade[j].tagData.GetValueTag(spellTagOrder))
+                    {
+                        indexEnum[i]++;
+                        tempArray.Add(arrayUpgrade[j]);
+                    }
+                }
+            }
+
+            UpgradeDataSort upgradeDataSort = new UpgradeDataSort();
+            upgradeDataSort.upgradeArray = tempArray.ToArray();
+            upgradeDataSort.indexArray = indexEnum;
+            return upgradeDataSort;
+        }
+
+        public UpgradeDataSort SortByEnum<T>(UpgradeObject[] arrayUpgrade) where T : Enum
+        {
+            int myEnumMemberCount = Enum.GetNames(typeof(T)).Length;
+            string[] enumValue = Enum.GetNames(typeof(T));
+
+            int[] indexEnum = new int[myEnumMemberCount];
+            List<UpgradeObject> tempArray = new List<UpgradeObject>();
+            for (int i = 1; i < myEnumMemberCount; i++)
+            {
+                indexEnum[i] = 0;
+                for (int j = 0; j < arrayUpgrade.Length; j++)
+                {
+                    if (enumValue[i] == arrayUpgrade[j].tagData.element.ToString())
+                    {
+                        indexEnum[i]++;
+                        indexEnum[0]++;
+                        tempArray.Add(arrayUpgrade[j]);
+                    }
+                }
+            }
+
+            UpgradeDataSort upgradeDataSort = new UpgradeDataSort();
+            upgradeDataSort.upgradeArray = tempArray.ToArray();
+            upgradeDataSort.indexArray = indexEnum;
+            return upgradeDataSort;
         }
     }
 }

@@ -8,9 +8,6 @@ public class RewardTypologie : MonoBehaviour
     public RewardType rewardType;
     private Chosereward choseReward;
     public RewardDistribution rewardDistribution;
-    // Start is called before the first frame update
-
-
 
     private void OnTriggerEnter(Collider other)
     {

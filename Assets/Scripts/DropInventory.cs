@@ -39,12 +39,12 @@ public class DropInventory : MonoBehaviour
         hintDropAcquisitionObjectUiOver.AddMajorDrop(lastDropInfo);
     }
 
-    public void AddNewUpgrade(Upgrade upgradeData, Sprite spriteSpell)
+    public void AddNewUpgrade(UpgradeObject upgradeData, Sprite spriteSpell)
     {
         lastDropInfo.m_dropType = "[Upgrade]";
         lastDropInfo.m_dropImage = spriteSpell;
-        lastDropInfo.dropDescription = upgradeData.gain.description;
-        lastDropInfo.dropName = upgradeData.gain.nameUpgrade;
+        lastDropInfo.dropDescription = upgradeData.description;
+        lastDropInfo.dropName = upgradeData.name;
         hintDropAcquisitionObject.AddNewMinorDrop(lastDropInfo);
     }
 }

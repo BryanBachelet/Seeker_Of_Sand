@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using GuerhoubaGames.GameEnum;
 
 
 public class UpgradeChoosing : MonoBehaviour
@@ -75,13 +76,13 @@ public class UpgradeChoosing : MonoBehaviour
         spellUpgradeFocus.sprite = m_upgradeLevelingData.iconSpell[m_upgradeLevelingData.indexSpellFocus];
         for (int i = 0; i < 3; i++)
         {
-            upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).gain.nameUpgrade;
+            upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).name;
             spellChoseUpgrade[i].sprite = spellUpgradeFocus.sprite;
             //if (gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
         }
     }
 
-    public void UpdateUpgradesAvailable(Upgrade[] upgradeGenerate)
+    public void UpdateUpgradesAvailable(UpgradeObject[] upgradeGenerate)
     {
         m_upgradeLevelingData.upgradeChoose = upgradeGenerate;
     }
@@ -133,35 +134,40 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void SetBaseSpellStat(int index)
     {
-        int indexSpell = m_upgradeLevelingData.upgradeChoose[index].capsuleIndex;
-        CapsuleStats stats = m_upgradeLevelingData.spellState[indexSpell];
-        upgradeTextStatBase[0].text = "Damage : " + stats.damage;
-        upgradeTextStatBase[1].text = "Size : " + stats.size;
-        upgradeTextStatBase[2].text = "Speed : " + stats.speed;
-        upgradeTextStatBase[3].text = "Projectile : " + stats.projectileNumber;
-        upgradeTextStatBase[4].text = "Salve : " + stats.shootNumber;
-        upgradeTextStatBase[5].text = "Piercing : " + stats.piercingMax;
+        int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
+        SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
+        if(spellProfil.tagData.spellNatureType == SpellNature.PROJECTILE )
+        {
+            upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);        
+            upgradeTextStatBase[1].text = "Speed : " + (spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime));
+            upgradeTextStatBase[2].text = "Projectile : " + spellProfil.GetIntStat(StatType.Projectile);
+            upgradeTextStatBase[3].text = "Salve : " + spellProfil.GetIntStat(StatType.ShootNumber);
+            upgradeTextStatBase[4].text = "";
+            upgradeTextStatBase[5].text = "";
+        }
     }
+      
     public void SetModifySpellStat(int index)
     {
-        int indexSpell = m_upgradeLevelingData.upgradeChoose[index].capsuleIndex;
+        int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
 
-        CapsuleStats baseStats = m_upgradeLevelingData.spellState[indexSpell];
-        CapsuleStats stats = m_upgradeLevelingData.upgradeChoose[index].gain.capsulsStats;
+        SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
+        UpgradeObject stats = m_upgradeLevelingData.upgradeChoose[index];
 
-        float[] baseSpellStats = baseStats.GetVisibleStat();
-        float[] spellStatUpgrade = stats.GetVisibleStat();
+        //TODO : Rework
+        //float[] baseSpellStats = stats.GetVisibleStat();
+        //float[] spellStatUpgrade = stats.GetVisibleStat();
 
-        for (int i = 0; i < spellStatUpgrade.Length -1; i++)
-        {
-            if (spellStatUpgrade[i] != 0)
-            {
-                upgradeTextStatModify[i].text = "-->" + (baseSpellStats[i] + spellStatUpgrade[i]);
-            }else
-            {
-                upgradeTextStatModify[i].text = "";
-            }
-        }
+        //for (int i = 0; i < spellStatUpgrade.Length -1; i++)
+        //{
+        //    if (spellStatUpgrade[i] != 0)
+        //    {
+        //        upgradeTextStatModify[i].text = "-->" + (baseSpellStats[i] + spellStatUpgrade[i]);
+        //    }else
+        //    {
+        //        upgradeTextStatModify[i].text = "";
+        //    }
+        //}
     }
 
 

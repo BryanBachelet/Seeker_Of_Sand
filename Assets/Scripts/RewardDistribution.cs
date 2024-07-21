@@ -5,6 +5,7 @@ using GuerhoubaGames.GameEnum;
 
 public class RewardDistribution : MonoBehaviour
 {
+
     public GameObject rewardHolderPrefan;
     public RewardType rewardType;
 

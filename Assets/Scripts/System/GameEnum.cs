@@ -10,13 +10,7 @@ namespace GuerhoubaGames.GameEnum
         FRAGMENT = 1,
     }
 
-    public enum GameElement
-    {
-        WATER = 0,
-        AIR = 1,
-        FIRE = 2,
-        EARTH = 3
-    }
+
 
     public enum RoomType
     {
@@ -81,15 +75,21 @@ namespace GuerhoubaGames.GameEnum
     {
         Damage = 1001,
         Projectile = 1002,
-        ShootAngle = 1003,
+        
         ShootNumber = 1004,
         Piercing = 1005,
         Bounce = 1006,
         GainPerStack =1007,
         AngleTrajectory =1008,
+        HitNumber =1009,
+        DamageAdditionel= 1010,
+        SizeExplosion= 1011,
+        BounceNumber= 1012,
+        MaxSummon =1013,
+        SummonSimultanely = 1014,
 
-
-        Speed = 2001,
+        
+        LifeTime = 2001,
         Range = 2002,
         CompleteShotTime = 2003,
         StackDuration = 2004,
@@ -98,10 +98,21 @@ namespace GuerhoubaGames.GameEnum
         Size = 2007,
         SizeMuplitiplicator = 2008,
         TravelTime = 2009,
-        LifeTime = 2010,
-        HitTick = 2011,
-
+        HitFrequency =2010,
+        SpeedReduce = 2011,
+        ScaleRate = 2012,
+        TimeDelay = 2013,
+        DistanceDash =2014,
+        Invunerability =2016,
+        MouvementTravelTime =2017,
+        Proximity =2018,
+        SpeedFollow =2019,
+        SpeedReturn=2020,
+        TimeBetweenShot =2021,
+        ShootAngle = 2022,
     }
+
+    
 
     public enum ValueType
     {
@@ -113,27 +124,108 @@ namespace GuerhoubaGames.GameEnum
 
 
     // Tag Spell
-    public enum BuffType
+    // For each tag the value None need to be in higher case : NONE
+    // and need to be add index zero 
+
+    public enum SpellTagOrder
     {
-        NONE,
-        DAMAGE_SPELL,
-        BUFF_SPELL,
+        GameElement = 0,
+        BuffType = 1,
+        SpellNature = 2,
+        SpellNature1 = 3,
+        SpellProjectileTrajectory = 4,
+        CanalisationType = 5,
+        SpellMovementBehavior = 6,
+        DamageTrigger = 7,
+        SpellParticualarity = 8,
+        MouvementBehavior = 9,
+        UpgradeSensitivity = 10,
     }
 
-    public enum SpellObjectType
+    public enum GameElement
     {
-        NONE,
-        AURA = 0,
-        PROJECTILE = 1,
-        AREA = 2,
-        INVOCATION = 3,
+        NONE = 0,
+        WATER = 1,
+        AIR = 2,
+        FIRE = 3,
+        EARTH = 4,
+    }
+
+    public enum BuffType
+    {
+        NONE =0,
+        DAMAGE_SPELL =1,
+        BUFF_SPELL =2,
+    }
+
+    public enum SpellNature
+    {
+        NONE = 0,
+        AURA = 1,
+        PROJECTILE = 2,
+        AREA = 3,
+        SUMMON = 4,
+        DOT = 5,
+       
     }
 
     public enum SpellProjectileTrajectory
     {
-        NONE,
-        LINE = 0,
-        CURVE = 1,
+        NONE = 0,
+        LINE = 1,
+        CURVE = 2,
+        SPECIAL =3,
+        
     }
+
+    public enum CanalisationType
+    {
+        NONE =0,
+        LIGHT_CANALISATION = 1,
+        HEAVY_CANALISATION = 2,
+    }
+
+
+    public enum SpellMovementBehavior
+    {
+        NONE=0,
+        FollowPlayer=1,
+        OnSelf=2,
+        Fix = 3,
+        Return=4,
+    }
+
+    public enum DamageTrigger
+    {
+        NONE = 0,
+        OnHit = 1,
+    }
+
+    public enum UpgradeSensitivity
+    {
+        NONE = 0,
+        HighScale =1 ,
+        LowScale =2,
+    }
+
+    public enum SpellParticualarity
+    {
+        NONE = 0,
+        Delayed = 1,
+        Explosion = 2,
+        Piercing = 3,
+        Bouncing = 4,
+        Physics = 5,
+    }
+
+    public enum MouvementBehavior
+    {
+        NONE =0,
+        Dash =1,
+        Slide =2,
+        Jump =3,
+        InAir =4,
+    }
+
 
 }

@@ -11,7 +11,7 @@ public class ChooseSpellManager : MonoBehaviour
     public GameObject[] vfxChooseSpell = new GameObject[4];
     public int[] randomSpellToChoose = new int[3];
     public CapsuleManager capsuleManager;
-    public Capsule[] newSpell = new Capsule[3];
+    public SpellSystem.SpellProfil[] newSpell = new SpellSystem.SpellProfil[3];
     public Image[] vfxSpell = new Image[3];
     public GameObject[] spellHolder = new GameObject[3];
     public TMPro.TMP_Text[] textObject = new TMPro.TMP_Text[3];
@@ -147,18 +147,18 @@ public class ChooseSpellManager : MonoBehaviour
         {
             // ---------------------
             randomSpellToChoose[i] = CapsuleManager.GetRandomCapsuleIndex();
-            newSpell[i] = capsuleManager.capsules[randomSpellToChoose[i]];
+            newSpell[i] = capsuleManager.spellProfils[randomSpellToChoose[i]];
             // --------------------
             StartCoroutine(SpellFadeIn(i, Time.time));
-            vfxSpell[i].sprite = newSpell[i].sprite;
-            vfxSpell[i].material = newSpell[i].materialToUse;
+            vfxSpell[i].sprite = newSpell[i].spell_Icon;
+            vfxSpell[i].material = newSpell[i].matToUse;
             vfxHolder[i].SetActive(true);
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;
-            newSpell[i].elementType = capsuleManager.capsules[randomSpellToChoose[i]].elementType;
+            newSpell[i].tagData.element = capsuleManager.capsules[randomSpellToChoose[i]].elementType;
             nextSpellName[i] = newSpell[i].name;
             textObject[i].text = nextSpellName[i];
-            GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].elementType], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
+            GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].tagData.element], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
         }
         ResetUIAnimation();
@@ -191,7 +191,7 @@ public class ChooseSpellManager : MonoBehaviour
         lastSpell = popup;
         name.text = newSpell[spellIndex].name;
         description.text = newSpell[spellIndex].description;
-        iconSpell.sprite = newSpell[spellIndex].sprite;
+        iconSpell.sprite = newSpell[spellIndex].spell_Icon;
         //description.text = popup.des
     }
 

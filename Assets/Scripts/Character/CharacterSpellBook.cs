@@ -8,21 +8,21 @@ namespace Character
     public class CharacterSpellBook : MonoBehaviour
     {
         [SerializeField] private int m_rotationSize = 4;
-            private List<SpellSystem.Capsule> m_bookOfSpell = new List<SpellSystem.Capsule>();
-        [SerializeField] public SpellSystem.Capsule[] m_spellsRotationArray = new SpellSystem.Capsule[4];
+        private List<SpellSystem.SpellProfil> m_bookOfSpell = new List<SpellSystem.SpellProfil>();
+        [SerializeField] public SpellSystem.SpellProfil[] m_spellsRotationArray = new SpellSystem.SpellProfil[4];
         UI_Inventory ui_inventory;
 
         //  Need to create copy from the spell place
 
         public void Start()
         {
-            m_spellsRotationArray = new SpellSystem.Capsule[m_rotationSize];
+            m_spellsRotationArray = new SpellSystem.SpellProfil[m_rotationSize];
             ui_inventory = GameState.m_uiManager.GetComponent<UIDispatcher>().uiInventory;
 
         }
 
         #region Spell Rotation Function
-        public SpellSystem.Capsule[] GetSpellsRotations()
+        public SpellSystem.SpellProfil[] GetSpellsRotations()
         {
             return m_spellsRotationArray;
         }
@@ -32,7 +32,7 @@ namespace Character
             m_spellsRotationArray[indexRotation] = m_bookOfSpell[spellIndex];
         }
 
-        public SpellSystem.Capsule GetSpellOfRotation(int spellIndex)
+        public SpellSystem.SpellProfil GetSpellOfRotation(int spellIndex)
         {
             return m_spellsRotationArray[spellIndex];
         }
@@ -41,31 +41,31 @@ namespace Character
 
         #region Spell Inventory Functions
 
-        public SpellSystem.Capsule GetSpecificSpell(int index)
+        public SpellSystem.SpellProfil GetSpecificSpell(int index)
         {
             return m_bookOfSpell[index];
         }
 
-        public void AddSpell(SpellSystem.Capsule spell)
+        public void AddSpell(SpellSystem.SpellProfil spell)
         {
             m_bookOfSpell.Add(spell);
-            
+
         }
 
-        public int GetSpellIndex(SpellSystem.Capsule spell) { return m_bookOfSpell.IndexOf(spell); }
+        public int GetSpellIndex(SpellSystem.SpellProfil spell) { return m_bookOfSpell.IndexOf(spell); }
 
         public void RemoveSpell(int index)
         {
             m_bookOfSpell.RemoveAt(index);
         }
 
-        public SpellSystem.Capsule GetRandomSpellSimple()
+        public SpellSystem.SpellProfil GetRandomSpellSimple()
         {
             int indexSpell = Random.Range(0, m_bookOfSpell.Count);
             return m_bookOfSpell[indexSpell];
         }
 
-        public SpellSystem.Capsule[] GetAllSpells()
+        public SpellSystem.SpellProfil[] GetAllSpells()
         {
             return m_bookOfSpell.ToArray();
         }

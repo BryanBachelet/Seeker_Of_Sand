@@ -84,30 +84,6 @@ public struct CapsuleStats
         private set { }
     }
 
-    public float GetSpeed(float rangeGive)
-    {
-        float speed = (rangeGive / ((GetTravelTime()) * Mathf.Cos(angleTrajectory * Mathf.Deg2Rad)));
-        return speed;
-    }
-
-    public float GetVerticalSpeed(float rangeGive)
-    {
-        return GetSpeed(rangeGive) * Mathf.Sign(angleTrajectory * Mathf.Deg2Rad);
-    }
-
-    public float GetGravitySpeed(float height, float rangeGive)
-    {
-        float speed = GetSpeed(rangeGive);
-        float angle = angleTrajectory * Mathf.Deg2Rad;
-        float gravity = 2 * (speed * Mathf.Sin(angle) * (GetTravelTime()) + height);
-        gravity = gravity / ((GetTravelTime()) * (GetTravelTime()));
-        return gravity;
-    }
-
-    public float GetTravelTime()
-    {
-        return trajectoryTimer;
-    }
 
     public float[] GetVisibleStat()
     {
