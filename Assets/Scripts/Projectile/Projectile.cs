@@ -110,7 +110,8 @@ public class Projectile : MonoBehaviour
         m_sizeMultiplicateurFactor = 1;
         m_characterShoot = data.characterShoot;
         m_initialScale = transform.localScale;
-     
+
+        m_characterShoot = data.characterShoot;
         m_collider = this.GetComponent<Collider>();
     }
     protected virtual void Move()

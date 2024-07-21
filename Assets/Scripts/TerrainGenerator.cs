@@ -53,7 +53,16 @@ public class TerrainGenerator : MonoBehaviour
     public void ResetRoomAtNewDay()
     {
         if (!roomTypeList.Contains(RoomType.Merchant))
-            roomTypeList.Insert((int)RoomType.Merchant, RoomType.Merchant);
+        {
+            if ((int)RoomType.Merchant < roomTypeList.Count)
+            {
+                roomTypeList.Insert((int)RoomType.Merchant, RoomType.Merchant);
+            }
+            else
+            {
+                roomTypeList.Add(RoomType.Merchant);
+            }
+        }
     }
 
     public void LaunchRoomGenerator()

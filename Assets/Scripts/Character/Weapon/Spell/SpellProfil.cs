@@ -166,7 +166,7 @@ namespace SpellSystem
 
 
             spellProfil.statTypes = new StatType[spellProfil.statDatas.Count];
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < spellProfil.statTypes.Length; i++)
             {
                 spellProfil.statTypes[i] = spellProfil.statDatas[i].stat;
             }
