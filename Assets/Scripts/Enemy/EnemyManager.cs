@@ -587,7 +587,7 @@ namespace Enemies
 
         private bool CanEnemySpawn(int enemyType)
         {
-            float value = enemyTypeStats[enemyType].animationCurve.Evaluate(m_experienceSystemComponent.m_LevelTaken);
+            float value = enemyTypeStats[enemyType].animationCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
             int maxInstance = Mathf.RoundToInt(value);
             bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
             return canSpawn;
@@ -856,7 +856,7 @@ namespace Enemies
             endInfoStats.enemyKill = killCount;
             endInfoStats.altarSuccessed = altarSuccessed;
             endInfoStats.altarRepeated = altarLaunch;
-            endInfoStats.roomCount = m_terrainGenerator.countRoomGeneration;
+            endInfoStats.roomCount = TerrainGenerator.roomGeneration_Static;
             endInfoStats.nightValidate = m_dayController.m_nightCount;
 
             CheckEndStat(endInfoStats);

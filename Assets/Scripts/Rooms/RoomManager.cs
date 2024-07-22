@@ -41,6 +41,7 @@ public class RoomManager : MonoBehaviour
     public Action<RoomType, RewardType> onDeactivateRoom;
     public Action<RoomType, RewardType> onCreateRoom;
 
+    public AnimationCurve enemyCountCurve;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -150,7 +151,7 @@ public class RoomManager : MonoBehaviour
             case RoomType.Enemy:
                 DeactivateAltar();
                 roomInfoUI.ActiveMajorGoalInterface();
-                int enemyCount = 20 + 20 * terrainGenerator.countRoomGeneration;
+                int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                 enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
                 break;
             default:

@@ -1174,6 +1174,75 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2002384771319165473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1192364146648517502}
+  - component: {fileID: 8019284809162944185}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1192364146648517502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002384771319165473}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.039824586, y: 0.70598334, z: 0.03982449, w: 0.7059856}
+  m_LocalPosition: {x: -516.21375, y: 107.18489, z: -88.79346}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1889700324670048182}
+  m_Father: {fileID: 2057950476960786888}
+  m_LocalEulerAnglesHint: {x: -6.457, y: 90, z: 0}
+--- !u!114 &8019284809162944185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002384771319165473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.2735849, g: 0.19203556, b: 0.068396226, a: 1}
+    meanFreePath: 3.6
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
+    textureTiling: {x: 1, y: 1, z: 1}
+    positiveFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    negativeFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    m_EditorUniformFade: 5.95
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1017.32385, y: 449.44238, z: 55.121338}
+    invertFade: 0
+    distanceFadeStart: 4.95
+    distanceFadeEnd: 396.5
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 1
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &2638618830736830366
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,6 +1349,74 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -1778858760375326788, guid: 27d9c38840de4fa47badc908143535ff, type: 3}
+--- !u!1 &2676142938642900564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5115025557516246314}
+  - component: {fileID: 7338732554879428809}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &5115025557516246314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676142938642900564}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.01009821, y: 0.29395387, z: 0.006577671, w: 0.9557437}
+  m_LocalPosition: {x: -61.422855, y: 141.99606, z: -21.02937}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4714493208927885012}
+  m_LocalEulerAnglesHint: {x: -1.328, y: 34.188, z: 0.38}
+--- !u!114 &7338732554879428809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676142938642900564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.9716981, g: 0.842392, b: 0.6453542, a: 1}
+    meanFreePath: 250.94
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: -0.1, y: 0, z: 0}
+    textureTiling: {x: -6, y: 1.16, z: 7.4}
+    positiveFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    negativeFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    m_EditorUniformFade: 111.8
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1300.405, y: 365.28546, z: 514.67993}
+    invertFade: 0
+    distanceFadeStart: 150000
+    distanceFadeEnd: 150000
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 0
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &2733589786962822783
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,6 +1678,143 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4626385951473124793}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3687503494673430404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1889700324670048182}
+  - component: {fileID: 3547592040643394782}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1889700324670048182
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687503494673430404}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.01009821, y: 0.29395387, z: 0.006577671, w: 0.9557437}
+  m_LocalPosition: {x: -61.422855, y: 141.99606, z: -21.02937}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1192364146648517502}
+  m_LocalEulerAnglesHint: {x: -1.328, y: 34.188, z: 0.38}
+--- !u!114 &3547592040643394782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687503494673430404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.9716981, g: 0.842392, b: 0.6453542, a: 1}
+    meanFreePath: 250.94
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: -0.1, y: 0, z: 0}
+    textureTiling: {x: -6, y: 1.16, z: 7.4}
+    positiveFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    negativeFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    m_EditorUniformFade: 111.8
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1300.405, y: 365.28546, z: 514.67993}
+    invertFade: 0
+    distanceFadeStart: 150000
+    distanceFadeEnd: 150000
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 0
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
+--- !u!1 &3789183355811848790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4714493208927885012}
+  - component: {fileID: 5601425313198438166}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4714493208927885012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3789183355811848790}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.056320462, y: -0, z: -0, w: 0.9984128}
+  m_LocalPosition: {x: 1.9803925, y: 107.18489, z: -606.9888}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5115025557516246314}
+  m_Father: {fileID: 2057950476960786888}
+  m_LocalEulerAnglesHint: {x: -6.457, y: 0, z: 0}
+--- !u!114 &5601425313198438166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3789183355811848790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.2735849, g: 0.19203556, b: 0.068396226, a: 1}
+    meanFreePath: 3.6
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
+    textureTiling: {x: 1, y: 1, z: 1}
+    positiveFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    negativeFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    m_EditorUniformFade: 5.95
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1017.32385, y: 449.44238, z: 55.121338}
+    invertFade: 0
+    distanceFadeStart: 4.95
+    distanceFadeEnd: 396.5
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 1
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &3990449135171674261
 GameObject:
   m_ObjectHideFlags: 0
@@ -2485,6 +2759,143 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -1778858760375326788, guid: 27d9c38840de4fa47badc908143535ff, type: 3}
+--- !u!1 &6271479461716955117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7486747138014521933}
+  - component: {fileID: 1527975878617510875}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &7486747138014521933
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6271479461716955117}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.01009821, y: 0.29395387, z: 0.006577671, w: 0.9557437}
+  m_LocalPosition: {x: -61.422855, y: 141.99606, z: -21.02937}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7910885939451879459}
+  m_LocalEulerAnglesHint: {x: -1.328, y: 34.188, z: 0.38}
+--- !u!114 &1527975878617510875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6271479461716955117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.9716981, g: 0.842392, b: 0.6453542, a: 1}
+    meanFreePath: 250.94
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: -0.1, y: 0, z: 0}
+    textureTiling: {x: -6, y: 1.16, z: 7.4}
+    positiveFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    negativeFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    m_EditorUniformFade: 111.8
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1300.405, y: 365.28546, z: 514.67993}
+    invertFade: 0
+    distanceFadeStart: 150000
+    distanceFadeEnd: 150000
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 0
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
+--- !u!1 &6337700929962097050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7910885939451879459}
+  - component: {fileID: 5828083314774388746}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7910885939451879459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6337700929962097050}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.00000015972182, y: 0.9984128, z: 0.056320462, w: 0.0000030249355}
+  m_LocalPosition: {x: 1.9803925, y: 107.18489, z: 429.3999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7486747138014521933}
+  m_Father: {fileID: 2057950476960786888}
+  m_LocalEulerAnglesHint: {x: -6.457, y: 180, z: 0}
+--- !u!114 &5828083314774388746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6337700929962097050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.2735849, g: 0.19203556, b: 0.068396226, a: 1}
+    meanFreePath: 3.6
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
+    textureTiling: {x: 1, y: 1, z: 1}
+    positiveFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    negativeFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    m_EditorUniformFade: 5.95
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1017.32385, y: 449.44238, z: 55.121338}
+    invertFade: 0
+    distanceFadeStart: 4.95
+    distanceFadeEnd: 396.5
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 1
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &6359072595676760530
 GameObject:
   m_ObjectHideFlags: 0
@@ -3821,6 +4232,7 @@ Transform:
   - {fileID: 9213292663179485713}
   - {fileID: 1642764987104579819}
   - {fileID: 76000359921579411}
+  - {fileID: 2057950476960786888}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!218 &7571241987286153819
@@ -3926,6 +4338,41 @@ MonoBehaviour:
   patchBoundsMultiplier: {x: 1, y: 1, z: 1}
   reenabled: 1
   importSplatMaps: []
+--- !u!1 &8168888046840599687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057950476960786888}
+  m_Layer: 0
+  m_Name: FogBorder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2057950476960786888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8168888046840599687}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 492, y: 140, z: 567}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4714493208927885012}
+  - {fileID: 6918264527037810823}
+  - {fileID: 7910885939451879459}
+  - {fileID: 1192364146648517502}
+  m_Father: {fileID: 5049047153283008188}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8311608408367107778
 GameObject:
   m_ObjectHideFlags: 0
@@ -4701,6 +5148,75 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8984894631756920097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6918264527037810823}
+  - component: {fileID: 3935217388762914514}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6918264527037810823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8984894631756920097}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.039824642, y: -0.70598334, z: -0.03982453, w: 0.70598555}
+  m_LocalPosition: {x: 520.1745, y: 107.18489, z: -88.795654}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5953607637881811925}
+  m_Father: {fileID: 2057950476960786888}
+  m_LocalEulerAnglesHint: {x: -6.457, y: -90, z: 0}
+--- !u!114 &3935217388762914514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8984894631756920097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.2735849, g: 0.19203556, b: 0.068396226, a: 1}
+    meanFreePath: 3.6
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
+    textureTiling: {x: 1, y: 1, z: 1}
+    positiveFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    negativeFade: {x: 0.0058486783, y: 0.0132386265, z: 0.10794368}
+    m_EditorUniformFade: 5.95
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1017.32385, y: 449.44238, z: 55.121338}
+    invertFade: 0
+    distanceFadeStart: 4.95
+    distanceFadeEnd: 396.5
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 1
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &9021363745002529146
 GameObject:
   m_ObjectHideFlags: 0
@@ -4807,6 +5323,74 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -1778858760375326788, guid: 27d9c38840de4fa47badc908143535ff, type: 3}
+--- !u!1 &9166591832644795301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5953607637881811925}
+  - component: {fileID: 3328611991676160904}
+  m_Layer: 0
+  m_Name: Local Volumetric Fog (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &5953607637881811925
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166591832644795301}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.01009821, y: 0.29395387, z: 0.006577671, w: 0.9557437}
+  m_LocalPosition: {x: -61.422855, y: 141.99606, z: -21.02937}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6918264527037810823}
+  m_LocalEulerAnglesHint: {x: -1.328, y: 34.188, z: 0.38}
+--- !u!114 &3328611991676160904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166591832644795301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 0.9716981, g: 0.842392, b: 0.6453542, a: 1}
+    meanFreePath: 250.94
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: -0.1, y: 0, z: 0}
+    textureTiling: {x: -6, y: 1.16, z: 7.4}
+    positiveFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    negativeFade: {x: 0.062372092, y: 0.4113742, z: 0.20405424}
+    m_EditorUniformFade: 111.8
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 1300.405, y: 365.28546, z: 514.67993}
+    invertFade: 0
+    distanceFadeStart: 150000
+    distanceFadeEnd: 150000
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 0
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &9205592451366224073
 GameObject:
   m_ObjectHideFlags: 0

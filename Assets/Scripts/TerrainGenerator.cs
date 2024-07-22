@@ -19,6 +19,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<Teleporter> teleporter = new List<Teleporter>();
     public int poolNumber;
     public int countRoomGeneration = 1;
+    public static int roomGeneration_Static = 1;
 
     public bool generateNewTerrain;
 
@@ -120,7 +121,7 @@ public class TerrainGenerator : MonoBehaviour
         previousTerrain = terrainInstantiated;
         terrainInstantiated.Clear();
         int randomNextTerrainNumber = Random.Range(1, 4);
-        int positionNewTerrain = 1500 * countRoomGeneration + terrainInstantiated.Count;
+        int positionNewTerrain = 1500 * TerrainGenerator.roomGeneration_Static + terrainInstantiated.Count;
 
 
         for (int i = 0; i < randomNextTerrainNumber; i++)
@@ -172,6 +173,7 @@ public class TerrainGenerator : MonoBehaviour
             roomTypeList.Insert((int)currentRoomManager.currentRoomType, currentRoomManager.currentRoomType);
         //AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
+        roomGeneration_Static = countRoomGeneration;
     }
 
     public void AssociateNewReward(int selectedTerrainNumber)
@@ -206,7 +208,7 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         //dayController.UpdateTimeByStep();
-        roomGeneration_text.text = "Room " + countRoomGeneration;
+        roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
 
     }
 

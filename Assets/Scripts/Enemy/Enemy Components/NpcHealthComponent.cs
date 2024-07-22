@@ -66,6 +66,7 @@ namespace Enemies
         public EventReference moveSoundAssociated;
         public EventInstance moveSoundInstance;
         public int indexDestroySound;
+        public AnimationCurve maxHealthEvolution;
         void Awake()
         {
             InitComponent();
@@ -237,7 +238,8 @@ namespace Enemies
             {
                 Debug.Log("Setup current max life : " + (m_maxLife + spawnMinute * gainPerMinute));
             }
-            m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute); 
+            m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
+            m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             death = false;
             m_npcInfo.state = NpcState.MOVE;
             if (!isMassed)
