@@ -13,7 +13,7 @@ public class Tool_DamageMeter : MonoBehaviour
     private float time;
     private float lastTimeCheck;
     // Start is called before the first frame update
-    void Start()
+    void Start()r
     {
         dps = 0;
         dpsCumule = 0;

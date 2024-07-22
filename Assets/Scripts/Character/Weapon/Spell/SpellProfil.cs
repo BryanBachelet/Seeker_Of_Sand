@@ -466,7 +466,6 @@ namespace SpellSystem
             ManageStat(StatType.ShootNumber, testResult);
             ManageStat(StatType.ShootAngle, testResult);
             ManageStat(StatType.TimeBetweenShot, testResult);
-            ManageStat(StatType.CompleteShotTime, testResult);
 
 
             bool testResult2 = tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE;

@@ -659,12 +659,11 @@ namespace Character
             Transform transformUsed = transform;
             Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject projectileCreate = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.projectorVisorObject.transform.position, rot);
+            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.projectorVisorObject.transform.position, rot);
 
-            projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
-            ProjectileData data = FillProjectileData(spellProfil, 0, 0, transformUsed);
-            projectileCreate.GetComponent<Projectile>().SetProjectile(data);
+            SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+            areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
 
             return true;
         }
@@ -805,6 +804,19 @@ namespace Character
 
             return data;
         }
+
+        private SpellSystem.AreaData FillAreaData(SpellSystem.SpellProfil spell, Vector3 spawnPosition)
+        {
+            SpellSystem.AreaData areaData = new SpellSystem.AreaData();
+
+            areaData.characterShoot = this;
+            areaData.spellProfil = spell;
+            areaData.destination = spawnPosition;
+            areaData.direction = transform.forward;
+
+            return areaData;
+        }
+
 
         private float GetShootAngle(SpellSystem.SpellProfil spellProfil)
         {
