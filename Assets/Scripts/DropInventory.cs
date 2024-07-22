@@ -22,9 +22,9 @@ public class DropInventory : MonoBehaviour
     public void AddNewItem(int capsuleID)
     {
         lastDropInfo.m_dropType = "[Spell]";
-        lastDropInfo.m_dropImage = CapsuleManager.instance.attackInfo[capsuleID].sprite;
-        lastDropInfo.dropDescription = CapsuleManager.instance.attackInfo[capsuleID].description;
-        lastDropInfo.dropName = CapsuleManager.instance.attackInfo[capsuleID].name;
+        lastDropInfo.m_dropImage = CapsuleManager.instance.spellProfils[capsuleID].spell_Icon;
+        lastDropInfo.dropDescription = CapsuleManager.instance.spellProfils[capsuleID].description;
+        lastDropInfo.dropName = CapsuleManager.instance.spellProfils[capsuleID].name;
         hintDropAcquisitionObject.AddMajorDrop(lastDropInfo);
         hintDropAcquisitionObjectUiOver.AddMajorDrop(lastDropInfo);
     }

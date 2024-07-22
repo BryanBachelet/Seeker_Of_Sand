@@ -289,7 +289,7 @@ namespace Character
                 DisplayNewCurrentState(1);
             }
 
-            if (!isActive)
+            if (!isActive && combatState ==false)
             {
                 m_characterShoot.ActivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", true);

@@ -353,7 +353,7 @@ namespace Character
 
         private void FeedbackCurveTrajectory(SpellSystem.SpellProfil spellProfil)
         {
-            float ratio = ((spellProfil.GetFloatStat(StatType.TravelTime)) / (m_numberOfPointForCurveTrajectory + 1));
+            float ratio = ((spellProfil.GetFloatStat(StatType.TrajectoryTimer)) / (m_numberOfPointForCurveTrajectory + 1));
 
             Vector3 position = transform.position;
 
@@ -430,7 +430,7 @@ namespace Character
 
         public float GetSpeed(float rangeGive,SpellSystem.SpellProfil spellProfil)
         {
-            float speed = (rangeGive / (spellProfil.GetFloatStat(StatType.TravelTime) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory))* Mathf.Deg2Rad));
+            float speed = (rangeGive / (spellProfil.GetFloatStat(StatType.TrajectoryTimer) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory))* Mathf.Deg2Rad));
             return speed;
         }
 
@@ -443,8 +443,8 @@ namespace Character
         {
             float speed = GetSpeed(rangeGive, spellProfil);
             float angle = spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad;
-            float gravity = 2 * (speed * Mathf.Sin(angle) * spellProfil.GetFloatStat(StatType.TravelTime) + height);
-            gravity = gravity / (spellProfil.GetFloatStat(StatType.TravelTime)) * (spellProfil.GetFloatStat(StatType.TravelTime));
+            float gravity = 2 * (speed * Mathf.Sin(angle) * spellProfil.GetFloatStat(StatType.TrajectoryTimer) + height);
+            gravity = gravity / (spellProfil.GetFloatStat(StatType.TrajectoryTimer)) * (spellProfil.GetFloatStat(StatType.TrajectoryTimer));
             return gravity;
         }
 

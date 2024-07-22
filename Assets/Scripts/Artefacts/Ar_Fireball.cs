@@ -15,8 +15,12 @@ namespace Artefact
         public LayerMask enemyMask;
         public GameObject fireBallGO;
         private Character.CharacterShoot m_characterShoot;
+
+
+        private bool m_hasBeenInit = false;
         public void Start()
         {
+            m_hasBeenInit = true;
             m_artefactData = GetComponent<ArtefactData>();
             m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             radiusEffect = m_artefactData.radius;
@@ -93,7 +97,7 @@ namespace Artefact
             data.speed = speed;
             data.piercingMax = piercing;
             data.characterShoot = m_characterShoot;
-            instance.GetComponent<ProjectileShotgun>().SetProjectile(data);
+            instance.GetComponent<ProjectileShotgun>().SetDirectProjectile(data);
         }
     }
 }

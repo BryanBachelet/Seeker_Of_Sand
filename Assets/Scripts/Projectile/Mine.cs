@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GuerhoubaGames.GameEnum;
 public class Mine : ProjectileExplosif
 {
 
@@ -32,6 +32,28 @@ public class Mine : ProjectileExplosif
         if (Physics.Raycast(m_destination + Vector3.up * 50.0f, -Vector3.up, out hit, Mathf.Infinity, m_layer))
         {
             m_destination = hit.point;
+        }
+    }
+
+    public override void SetProjectile(ProjectileData data)
+    {
+        base.SetProjectile(data);
+
+        if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+        {
+            m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer);
+            m_angleTrajectory = spellProfil.GetIntStat(StatType.AngleTrajectory);
+        }
+
+        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Delayed))
+        {
+            m_timeBeforeExplosion = spellProfil.GetFloatStat(StatType.TimeDelay);
+        }
+
+        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+        {
+            m_explosionSize = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion);
+            m_damage = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.DamageAdditionel);
         }
     }
 

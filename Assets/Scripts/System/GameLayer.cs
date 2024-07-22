@@ -10,6 +10,7 @@ public class GameLayer : MonoBehaviour
     public LayerMask groundLayerMask;
     public LayerMask propsGroundLayerMask;
     public LayerMask playerLayerMask;
+    public LayerMask enemisLayerMask;
 
 
     void Awake()
