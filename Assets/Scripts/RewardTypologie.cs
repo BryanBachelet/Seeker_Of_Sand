@@ -11,6 +11,8 @@ public class RewardTypologie : MonoBehaviour
     public Texture[] text_Reward;
     public Material mat;
     public MeshRenderer meshDisplayReward;
+
+    public Animator rewardAnimator;
     // Start is called before the first frame update
 
     private void Start()
