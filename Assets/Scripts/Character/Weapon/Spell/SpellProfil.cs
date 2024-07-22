@@ -17,6 +17,8 @@ public struct TagData
     public SpellMovementBehavior spellMovementBehavior;
     public DamageTrigger damageTriggerType;
     public SpellParticualarity spellParticualarity;
+    public SpellParticualarity spellParticualarity1;
+    public SpellParticualarity spellParticualarity2;
     public MouvementBehavior mouvementBehaviorType;
     public UpgradeSensitivity upgradeSensitivityType;
 
@@ -118,6 +120,16 @@ public struct TagData
             indexTagValue[i] = tagIndex;
         }
         return indexTagValue;
+    }
+
+    public bool EqualsSpellParticularity(SpellParticualarity value)
+    {
+        return (value == spellParticualarity) || (value == spellParticualarity1) ||  (value == spellParticualarity2);
+    }
+
+    public bool EqualsSpellNature(SpellNature value)
+    {
+        return (value == spellNatureType) || (value == spellNatureType1);
     }
 
 }
@@ -372,6 +384,7 @@ namespace SpellSystem
 
             ManageStat(StatType.StackDuration, true);
             ManageStat(StatType.GainPerStack, true);
+            ManageStat(StatType.Range, true);
 
         }
 
@@ -430,17 +443,17 @@ namespace SpellSystem
 
         private void SetupSpellParaticularity()
         {
-            bool testResult = tagData.spellParticualarity == SpellParticualarity.Explosion;
+            bool testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Explosion);
             ManageStat(StatType.SizeExplosion, testResult);
             ManageStat(StatType.DamageAdditionel, testResult);
 
-            testResult = tagData.spellParticualarity == SpellParticualarity.Delayed;
+            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Delayed);
             ManageStat(StatType.TimeDelay, testResult);
 
-            testResult = tagData.spellParticualarity == SpellParticualarity.Piercing;
+            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Piercing);
             ManageStat(StatType.Piercing, testResult);
 
-            testResult = tagData.spellParticualarity == SpellParticualarity.Bouncing;
+            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Bouncing);
             ManageStat(StatType.BounceNumber, testResult);
 
 
@@ -459,9 +472,8 @@ namespace SpellSystem
         private void SetupSpellNatureStats(SpellNature type, SpellNature type2)
         {
             bool testResult;
-            testResult = ( type == SpellNature.PROJECTILE || type2 == SpellNature.PROJECTILE);
+            testResult = tagData.EqualsSpellNature(SpellNature.PROJECTILE);
             ManageStat(StatType.LifeTime, testResult);
-            ManageStat(StatType.Range, testResult);
             ManageStat(StatType.Projectile, testResult);
             ManageStat(StatType.ShootNumber, testResult);
             ManageStat(StatType.ShootAngle, testResult);
@@ -472,19 +484,16 @@ namespace SpellSystem
             ManageStat(StatType.AngleTrajectory, testResult2 && testResult);
             ManageStat(StatType.TrajectoryTimer, testResult2 && testResult);
 
-            testResult = (type == SpellNature.AREA || type2 == SpellNature.AREA);
+            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA);
             ManageStat(StatType.Size, testResult);
             ManageStat(StatType.SizeMuplitiplicator, testResult);
 
-            testResult = (type == SpellNature.AURA || type2 == SpellNature.AURA);
-            ManageStat(StatType.Size, testResult);
-            ManageStat(StatType.SizeMuplitiplicator, testResult);
-
-            testResult = (type == SpellNature.SUMMON || type2 == SpellNature.SUMMON);
+ 
+            testResult = tagData.EqualsSpellNature(SpellNature.SUMMON);
             ManageStat(StatType.MaxSummon, testResult);
             ManageStat(StatType.SummonSimultanely, testResult);
 
-            testResult = (type == SpellNature.DOT || type2 == SpellNature.DOT);
+            testResult = tagData.EqualsSpellNature(SpellNature.DOT);
             ManageStat(StatType.HitFrequency, testResult);
             ManageStat(StatType.HitNumber, testResult);
 

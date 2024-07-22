@@ -138,8 +138,10 @@ namespace GuerhoubaGames.GameEnum
         SpellMovementBehavior = 6,
         DamageTrigger = 7,
         SpellParticualarity = 8,
-        MouvementBehavior = 9,
-        UpgradeSensitivity = 10,
+        SpellParticualarity1 = 9,
+        SpellParticualarity2 = 10,
+        MouvementBehavior = 11,
+        UpgradeSensitivity = 12,
     }
 
     public enum GameElement

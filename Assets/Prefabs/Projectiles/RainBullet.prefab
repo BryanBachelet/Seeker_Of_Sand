@@ -95,7 +95,9 @@ GameObject:
   - component: {fileID: 591689137504653621}
   - component: {fileID: 5484623518530732624}
   - component: {fileID: 5984570168554001361}
-  - component: {fileID: 7761022091389629778}
+  - component: {fileID: 180466124074539530}
+  - component: {fileID: 2128609606482203326}
+  - component: {fileID: 8092470702815903472}
   m_Layer: 15
   m_Name: RainBullet
   m_TagString: Untagged
@@ -192,7 +194,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10
   m_Center: {x: 0, y: -4.72, z: 0}
---- !u!114 &7761022091389629778
+--- !u!114 &180466124074539530
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -201,22 +203,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 6333615331467375570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71ad4b26c9a2785478e254427e09e7c9, type: 3}
+  m_Script: {fileID: 11500000, guid: 86f4f4dd529826641bd8b22565615a87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 0
-  m_lifeTime: 5
-  m_layer:
-    serializedVersion: 2
-    m_Bits: 8
-  m_power: 25
-  m_damage: 1
-  m_indexSFX: 24
-  m_piercingMax: 0
-  m_deltaTimeMove: 0.5
-  m_timeDamageTick: 0.5
-  m_radiusArea: 10
-  m_Spherecollider: {fileID: 0}
+--- !u!114 &2128609606482203326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6333615331467375570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c39af5cc0538a7428709952daf1764b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8092470702815903472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6333615331467375570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 790aad17fcd99e54aa95ab36d87e7608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isExplotion: 0
+  indexSFX: 24
 --- !u!1001 &7670501633248258616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -283,7 +298,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 940531165083237798, guid: dad1418f8b74a914296b73c434c09c0c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2933485002814094222}
   m_SourcePrefab: {fileID: 100100000, guid: dad1418f8b74a914296b73c434c09c0c, type: 3}
 --- !u!4 &6556784680189062803 stripped
 Transform:
@@ -291,6 +310,32 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7670501633248258616}
   m_PrefabAsset: {fileID: 0}
+--- !u!2083052967 &7294548220942557735 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 1101244926671046687, guid: dad1418f8b74a914296b73c434c09c0c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7670501633248258616}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7457512952877848478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 940531165083237798, guid: dad1418f8b74a914296b73c434c09c0c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7670501633248258616}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2933485002814094222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7457512952877848478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 252fbaaf8710d2f4d811067d30e23670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  areaMeta: {fileID: 0}
+  vfx: {fileID: 7294548220942557735}
 --- !u!1001 &8924719011142439092
 PrefabInstance:
   m_ObjectHideFlags: 0

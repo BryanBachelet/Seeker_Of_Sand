@@ -12,7 +12,7 @@ namespace SpellSystem
         private AreaMeta m_areaData;
         public float timeBeforeHit = 0.5f;
         private float m_timerBeforeHit;
-        private int  m_sizeArea = 0;
+        private float  m_sizeArea = 0;
         private int m_damage = 0;
         private GameElement m_element;
         public bool isExplotion;
@@ -26,7 +26,7 @@ namespace SpellSystem
         public void InitAreaData()
         {
             SpellProfil profil = m_areaData.areaData.spellProfil;
-            m_sizeArea = profil.GetIntStat(StatType.Size);
+            m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
             

@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
 public class ProjectileExplosif : Projectile
 {
     [SerializeField] protected float m_timeBeforeExplosion = 1.0f;
     [SerializeField] protected float m_explosionSize;
-    [SerializeField] private float m_angleTrajectory = 45.0f;
+    [SerializeField] protected float m_angleTrajectory = 45.0f;
     [SerializeField] protected LayerMask m_explosionMask;
     [SerializeField] private Material m_explosionMatToUse;
 
@@ -42,6 +43,30 @@ public class ProjectileExplosif : Projectile
         GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position);
         InitTrajectory();
     }
+
+    public override void SetProjectile(ProjectileData data)
+    {
+        base.SetProjectile(data);
+
+        if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+        {
+            m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer);
+            m_angleTrajectory = spellProfil.GetIntStat(StatType.AngleTrajectory);
+        }
+
+        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Delayed))
+        {
+            m_timeBeforeExplosion = spellProfil.GetFloatStat(StatType.TimeDelay);
+        }
+
+        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+        {
+            m_explosionSize = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion);
+            m_damage = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.DamageAdditionel);
+        }
+    }
+
+
 
     protected virtual void InitTrajectory()
     {

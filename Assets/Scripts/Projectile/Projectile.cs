@@ -107,7 +107,7 @@ public class Projectile : MonoBehaviour
         m_size =1;
         
         if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
-            m_travelTime = spellProfil.GetFloatStat(StatType.TravelTime) ;
+            m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer    ) ;
         
         m_sizeMultiplicateurFactor = 1;
         m_characterShoot = data.characterShoot;
@@ -116,6 +116,18 @@ public class Projectile : MonoBehaviour
         m_characterShoot = data.characterShoot;
         m_collider = this.GetComponent<Collider>();
     }
+
+    public virtual void SetDirectProjectile(ProjectileData data)
+    {
+        m_piercingMax = 0;
+        m_direction = data.direction;
+        m_lifeTime = data.life;
+        m_damage = data.damage;
+        m_characterShoot = data.characterShoot;
+        m_speed = data.speed;
+
+    }
+
     protected virtual void Move()
     {
         //Debug.Log("Test");
@@ -170,6 +182,11 @@ public class Projectile : MonoBehaviour
         if (other.gameObject.tag == "Enemy")
         {
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
+
+            if(m_characterShoot ==null)
+            {
+                Debug.Log("Tesst bug");
+            }
 
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
