@@ -73,7 +73,7 @@ namespace Character
 
         private float m_timerBetweenSpell;
         private float m_reloadTimer;
-        private float m_timeBetweenShoot;
+        private float m_timerBetweenShoot;
 
         private bool m_canShoot;
         private bool m_canEndShot;
@@ -251,15 +251,15 @@ namespace Character
                 Shoot();
             if (m_isShooting)
             {
-                if (m_timeBetweenShoot > currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
+                if (m_timerBetweenShoot > currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
                 {
                     Shoot();
                     m_CharacterMouvement.m_lastTimeShot = Time.time;
-                    m_timeBetweenShoot = 0.0f;
+                    m_timerBetweenShoot = 0.0f;
                 }
                 else
                 {
-                    m_timeBetweenShoot += Time.deltaTime;
+                    m_timerBetweenShoot += Time.deltaTime;
                 }
             }
         }
@@ -286,7 +286,11 @@ namespace Character
             {
                 m_isShooting = true;
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime = m_totalLaunchingDuration;
+                if (currentSpellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+                {
+                    m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
 
+                }
                 Shoot();
                 return;
             }
@@ -295,13 +299,13 @@ namespace Character
             if (currentSpellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
             {
 
-                if (m_timeBetweenShoot >= currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
+                if (m_timerBetweenShoot >= currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
                 {
 
                     if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
                     gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
 
-                    m_timeBetweenShoot = 0.0f;
+                    m_timerBetweenShoot = 0.0f;
                     if (m_canEndShot)
                     {
                         EndShoot();
@@ -311,7 +315,7 @@ namespace Character
                 else
                 {
 
-                    m_timeBetweenShoot += Time.deltaTime;
+                    m_timerBetweenShoot += Time.deltaTime;
                     if (m_canalisationType == CanalisationBarType.Continious) m_spellLaunchTime += Time.deltaTime;
 
                 }
@@ -652,7 +656,6 @@ namespace Character
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(index);
             if (stats.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
             {
-                m_timeBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
                 endShoot = ShootAttackProjectile(index, ref currentShootCount);
                 return;
             }
@@ -735,11 +738,7 @@ namespace Character
             m_currentType = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.type;
             m_canEndShot = false;
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(m_currentIndexCapsule);
-            if (stats.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
-            {
-                m_timeBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
-
-            }
+       
             if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 
