@@ -17,13 +17,13 @@ public class RewardDistribution : MonoBehaviour
         isRewardSend = true;
     }
 
-    public void GiveReward(RewardType rewardType)
+    public void GiveReward(RewardType rewardType, Transform positionReward)
     {
-        GameObject NewReward = Instantiate(rewardHolderPrefan, this.transform.position + new Vector3(0,100,0), this.transform.rotation);
-        ExperienceMouvement newXp  = NewReward.GetComponent<ExperienceMouvement>();
-        newXp.m_playerPosition = this.transform;
-        newXp.ActiveExperienceParticule(this.transform);
-        RewardTypologie rewardTypopologie = NewReward.GetComponent<RewardTypologie>();
+        GameObject NewReward = Instantiate(rewardHolderPrefan, positionReward.position, this.transform.rotation);
+        ExperienceMouvement newXp  = NewReward.GetComponentInChildren<ExperienceMouvement>();
+        //newXp.m_playerPosition = this.transform;
+        //newXp.ActiveExperienceParticule(this.transform);
+        RewardTypologie rewardTypopologie = NewReward.GetComponentInChildren<RewardTypologie>();
         rewardTypopologie.rewardType = rewardType;
         rewardTypopologie.rewardDistribution = this;
         isRewardSend = false;

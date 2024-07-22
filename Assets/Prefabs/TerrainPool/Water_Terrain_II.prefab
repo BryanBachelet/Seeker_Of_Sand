@@ -199,6 +199,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3556202043921432656}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2282270291607683085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7691224232991310301}
+  m_Layer: 3
+  m_Name: RewardPiedestal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7691224232991310301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2282270291607683085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0053401757, y: -0.27429703, z: 0.01871803, w: 0.961448}
+  m_LocalPosition: {x: 43, y: -85.5, z: 22.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3888306675840533502}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3638352670411910343
 GameObject:
   m_ObjectHideFlags: 0
@@ -2613,7 +2644,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3170462208451839874, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7691224232991310301}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bbfa7aa8b428ab44b9bdf397a4f40c96, type: 3}
 --- !u!114 &1927954064567017965 stripped
@@ -4035,6 +4070,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Room_Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
+        type: 3}
+      propertyPath: rewardPosition
+      value: 
+      objectReference: {fileID: 7691224232991310301}
     - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
         type: 3}
       propertyPath: teleporterArray.Array.data[0]
