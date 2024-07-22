@@ -327,7 +327,7 @@ public class InteractionEvent : MonoBehaviour
     public void NewArtefact(ArtefactHolder artefact)
     {
         lastArtefact = artefact;
-        m_lastArtefactAnimator = artefact.transform.parent.GetComponentInChildren<Animator>();
+        m_lastArtefactAnimator = artefact.GetComponent<Animator>();
     }
     public IEnumerator CloseUIWithDelay(float time)
     {

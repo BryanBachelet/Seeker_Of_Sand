@@ -13,10 +13,16 @@ public class RewardTypologie : MonoBehaviour
     public MeshRenderer meshDisplayReward;
 
     public Animator rewardAnimator;
+    [SerializeField] private GameObject rootBoneHolder;
+    private ExperienceMouvement[] m_bones = new ExperienceMouvement[100];
+    private ExperienceMouvement xpMovement;
+
+    public GameObject[] goDestroy;
     // Start is called before the first frame update
 
     private void Start()
     {
+        xpMovement = this.GetComponent<ExperienceMouvement>();
         mat = meshDisplayReward.material;
         switch (rewardType)
         {
@@ -35,6 +41,10 @@ public class RewardTypologie : MonoBehaviour
                 break;
             default:
                 break;
+        }
+        for(int i = 0; i < rootBoneHolder.transform.childCount; i++)
+        {
+            m_bones[i] = rootBoneHolder.transform.GetChild(i).GetComponent<ExperienceMouvement>();
         }
     }
 
@@ -64,8 +74,26 @@ public class RewardTypologie : MonoBehaviour
                 default:
                     break;
             }
+            DestroyAssociateObject();
 
-            Destroy(this.gameObject);
         }
+    }
+
+    public void ActivationDistribution()
+    {
+        rewardAnimator.enabled = false;
+        for (int i = 0; i < m_bones.Length; i++)
+        {
+            m_bones[i].ActiveExperienceParticule(xpMovement.m_playerPosition);
+        }
+    }
+
+    private void DestroyAssociateObject()
+    {
+        for(int i = 0; i < goDestroy.Length; i++)
+        {
+            Destroy(goDestroy[i]);
+        }
+        Destroy(this.gameObject);
     }
 }

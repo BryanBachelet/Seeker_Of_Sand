@@ -66,6 +66,11 @@ public class Experience_System : MonoBehaviour, CharacterComponent
             for (int i = 0; i < experienceTouched.Length; i++)
             {
                 ExperienceMouvement xpMvtScript = experienceTouched[i].GetComponent<ExperienceMouvement>();
+                if(xpMvtScript.GetComponent<RewardTypologie>())
+                {
+                    RewardTypologie rewardTypo = xpMvtScript.GetComponent<RewardTypologie>();
+                    rewardTypo.ActivationDistribution();
+                }
                 xpMvtScript.ActiveExperienceParticule(this.transform);
                 m_worldExp.Remove(xpMvtScript);
             }

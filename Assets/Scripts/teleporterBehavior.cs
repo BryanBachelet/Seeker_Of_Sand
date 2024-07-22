@@ -38,7 +38,7 @@ public class TeleporterBehavior : MonoBehaviour
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
-        dayController.UpdateTimeByStep();
+        //dayController.UpdateTimeByStep();
         //  nextTerrainNumber = tpObject.TeleporterNumber;
         // eventHolder.GetNewAltar(tpObject.altarBehavior);
     }
@@ -49,6 +49,7 @@ public class TeleporterBehavior : MonoBehaviour
         this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
         apparitionVFX.Play();
         cameraFadeFunction.fadeOutActivation = true;
+        dayController.UpdateTimeByStep();
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
 
         nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
