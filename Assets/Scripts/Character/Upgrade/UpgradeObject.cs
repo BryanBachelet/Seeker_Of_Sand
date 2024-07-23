@@ -92,12 +92,15 @@ public class UpgradeObject : ScriptableObject
 
         if (spellProfil.tagData.element == tagData.element) return true;
         if (spellProfil.tagData.type == tagData.type) return true;
-        if (spellProfil.tagData.spellNatureType == tagData.spellNatureType) return true;
+        if (spellProfil.tagData.EqualsSpellNature( tagData.spellNatureType)) return true;
+        if (spellProfil.tagData.EqualsSpellNature( tagData.spellNatureType1)) return true;
         if (spellProfil.tagData.spellProjectileTrajectory == tagData.spellProjectileTrajectory) return true;
         if (spellProfil.tagData.canalisationType == tagData.canalisationType) return true;
         if (spellProfil.tagData.spellMovementBehavior == tagData.spellMovementBehavior) return true;
         if (spellProfil.tagData.damageTriggerType == tagData.damageTriggerType) return true;
-        if (spellProfil.tagData.spellParticualarity == tagData.spellParticualarity) return true;
+        if (spellProfil.tagData.EqualsSpellParticularity( tagData.spellParticualarity)) return true;
+        if (spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity1)) return true;
+        if (spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity2)) return true;
         if (spellProfil.tagData.mouvementBehaviorType == tagData.mouvementBehaviorType) return true;
 
 

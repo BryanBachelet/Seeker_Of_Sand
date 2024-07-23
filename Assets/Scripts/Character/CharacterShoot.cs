@@ -382,9 +382,6 @@ namespace Character
 
                 m_characterSpellBook.AddSpell(m_capsuleManager.spellProfils[spellIndex[i]].Clone());
                 // CapsuleManager.RemoveSpecificSpellFromSpellPool(spellIndex[i]);
-
-
-
             }
 
             //  Set to Spell Equip
@@ -521,25 +518,38 @@ namespace Character
         {
             if (!m_activeSpellLoad || hasCanalise) return false;
 
-            UpdateCanalisationBar(m_totalCanalisationDuration);
-            //  if (!m_canShoot) return false;
-            if (m_spellTimer >= currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
-            {
-                m_activeSpellLoad = false;
-                m_isShooting = false;
-                m_spellTimer = m_totalCanalisationDuration;
-                UpdateCanalisationBar(m_totalCanalisationDuration);
 
-                hasCanalise = true;
-                return true;
+            UpdateCanalisationBar(m_totalCanalisationDuration);
+            bool highCanalisationTest = currentSpellProfil.tagData.canalisationType == CanalisationType.HEAVY_CANALISATION && m_shootInputActive;
+            if (highCanalisationTest || currentSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION)
+            {
+
+
+                if (m_spellTimer >= currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
+                {
+                    m_activeSpellLoad = false;
+                    m_isShooting = false;
+                    m_spellTimer = m_totalCanalisationDuration;
+                    UpdateCanalisationBar(m_totalCanalisationDuration);
+
+                    hasCanalise = true;
+                    return true;
+
+                }
+                else
+                {
+                    m_spellTimer += Time.deltaTime;
+
+                    return false;
+                }
 
             }
             else
             {
-                m_spellTimer += Time.deltaTime;
-
+                m_spellTimer = 0.0f;
                 return false;
             }
+           
         }
 
         private void UpdateCanalisationBar(float maxValue)
@@ -654,13 +664,14 @@ namespace Character
         {
 
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(index);
-            if (stats.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+            // The first spell nature indicate the spell launching interpretation
+            if (stats.tagData.spellNatureType  == SpellNature.PROJECTILE)
             {
                 endShoot = ShootAttackProjectile(index, ref currentShootCount);
                 return;
             }
 
-            if (stats.tagData.EqualsSpellNature(SpellNature.AREA))
+            if (stats.tagData.spellNatureType == SpellNature.AREA)
                 endShoot = ShootAttackArea(index);
         }
 
@@ -702,14 +713,32 @@ namespace Character
             {
                 Transform transformUsed = transform;
 
+
                 Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 2, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
+                if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
+                {
+                     position = m_characterAim.projectorVisorObject.transform.position  + Mathf.Clamp(i,0,1) * ( Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward *10 );
+                     rot = m_characterAim.GetTransformHead().rotation; ;
+                }
 
                 GameObject projectileCreate = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
-                ProjectileData data = FillProjectileData(spellProfil, 0, angle, transformUsed);
-                projectileCreate.GetComponent<Projectile>().SetProjectile(data);
+                if (projectileCreate.GetComponent<Projectile>())
+                {
+                    ProjectileData data = FillProjectileData(spellProfil, 0, angle, transformUsed);
+                    projectileCreate.GetComponent<Projectile>().SetProjectile(data);
+                }
+
+                if(spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
+                {
+                    SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+                    projectileCreate.GetComponent<SpellSystem.AreaMeta>().areaData = data;
+
+                }
+
+
                 angle = -angle;
             }
 
@@ -738,7 +767,7 @@ namespace Character
             m_currentType = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.type;
             m_canEndShot = false;
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(m_currentIndexCapsule);
-       
+
             if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 

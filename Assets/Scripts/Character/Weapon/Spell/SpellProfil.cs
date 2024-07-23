@@ -362,7 +362,35 @@ namespace SpellSystem
         //TODO : Debug function
         public string DebugStat()
         {
-            return "";
+            string debugStatString = "";
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if(IsStatBool(statTypes[i]))
+                {
+                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_bool.ToString() + " \n";
+                    continue;
+                }
+
+                if (IsStatInt(statTypes[i]))
+                {
+                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_int.ToString() + " \n";
+                    continue;
+                }
+
+                if (IsStatFloat(statTypes[i]))
+                {
+                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_float.ToString() + " \n";
+                    continue;
+                }
+
+                if (IsStatString(statTypes[i]))
+                {
+                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_string + " \n";
+                    continue;
+                }
+            }
+
+            return debugStatString;
         }
 
 

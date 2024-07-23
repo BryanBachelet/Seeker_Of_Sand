@@ -158,7 +158,9 @@ public class ChooseSpellManager : MonoBehaviour
             newSpell[i].tagData.element = capsuleManager.spellProfils[randomSpellToChoose[i]].tagData.element;
             nextSpellName[i] = newSpell[i].name;
             textObject[i].text = nextSpellName[i];
-            GameObject lastVFx = Instantiate(vfxChooseSpell[(int)newSpell[i].tagData.element], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
+            int indexVFX = (int)newSpell[i].tagData.element - 1;
+            indexVFX = Mathf.Clamp(indexVFX, 0, 100);
+            GameObject lastVFx = Instantiate(vfxChooseSpell[indexVFX], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
         }
         ResetUIAnimation();
