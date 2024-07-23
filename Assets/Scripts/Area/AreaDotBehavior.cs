@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.VFX;
 using Enemies;
 
 namespace SpellSystem
@@ -20,9 +21,19 @@ namespace SpellSystem
         private float m_sizeArea = 1.0f;
         private int m_damage = 0;
         private GameElement m_element;
-        public bool isExplotion;
+
+
+        private float m_currentAreaLifetime;
+        
         [Header("Feedback Paramets")]
         public int indexSFX;
+        public float damageDelay;
+        public VFX_Spawner m_vfxSpwaner;
+
+
+        private float hitDelayTimer;
+        private bool canHit;
+        
 
         #region Unity Functions
         // Start is called before the first frame update
@@ -48,13 +59,13 @@ namespace SpellSystem
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
 
-            if (profil.tagData.spellNatureType == SpellNature.DOT)
+            if (profil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
                 m_hitMaxCount = m_DotMeta.dotData.currentHitCount;
             }
 
-            if (isExplotion)
+            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
@@ -63,6 +74,19 @@ namespace SpellSystem
 
         public void UpdateArea()
         {
+
+            if(hitDelayTimer>damageDelay)
+            {
+                canHit = true;
+            }
+            else
+            {
+                m_currentAreaLifetime += Time.deltaTime;
+                hitDelayTimer += Time.deltaTime;
+                if (m_vfxSpwaner) m_vfxSpwaner.UpdateTimeValue();
+            }
+
+            if (!canHit) return;
             if(m_hitCount == m_hitMaxCount)
             {
                 Destroy(this.gameObject);
@@ -77,11 +101,13 @@ namespace SpellSystem
             else
             {
                 m_hitFrequencyTimer += Time.deltaTime;
+                m_currentAreaLifetime += Time.deltaTime;
+                if (m_vfxSpwaner) m_vfxSpwaner.UpdateTimeValue();
             }
 
             
         }
-
+         
         public void ApplyAreaDamage()
         {
             Collider[] collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask);
@@ -93,5 +119,8 @@ namespace SpellSystem
                 npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
             }
         }
+
+        public float GetCurrentLifeTime() { return m_currentAreaLifetime; }
+            
     }
 }

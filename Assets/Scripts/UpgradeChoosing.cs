@@ -55,10 +55,10 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void Start()
     {
-        if(m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
+        if (m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
         for (int i = 0; i < uiUpgradeButton.Length; i++)
         {
-              uiUpgradeButton[i].OnEnter += SetModifySpellStat;
+            uiUpgradeButton[i].OnEnter += SetModifySpellStat;
         }
     }
 
@@ -97,7 +97,7 @@ public class UpgradeChoosing : MonoBehaviour
         {
             if (i != index)
             {
-               // if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
+                // if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
             }
         }
 
@@ -136,9 +136,9 @@ public class UpgradeChoosing : MonoBehaviour
     {
         int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
-        if(spellProfil.tagData.spellNatureType == SpellNature.PROJECTILE )
+        if (spellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
         {
-            upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);        
+            upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);
             upgradeTextStatBase[1].text = "Speed : " + (spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime));
             upgradeTextStatBase[2].text = "Projectile : " + spellProfil.GetIntStat(StatType.Projectile);
             upgradeTextStatBase[3].text = "Salve : " + spellProfil.GetIntStat(StatType.ShootNumber);
@@ -146,7 +146,7 @@ public class UpgradeChoosing : MonoBehaviour
             upgradeTextStatBase[5].text = "";
         }
     }
-      
+
     public void SetModifySpellStat(int index)
     {
         int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
@@ -173,6 +173,6 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void Update()
     {
-       
+
     }
 }

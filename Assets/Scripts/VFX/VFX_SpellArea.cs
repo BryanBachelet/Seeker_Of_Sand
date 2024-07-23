@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
-public class VFX_SpellArea : MonoBehaviour
+
+namespace GuerhoubaGames.VFX
 {
-    public SpellSystem.AreaMeta areaMeta;
-    public VisualEffect vfx;
 
-    // Start is called before the first frame update
-    void Start()
+    public class VFX_SpellArea : MonoBehaviour
     {
-        areaMeta = GetComponentInParent<SpellSystem.AreaMeta>();
-        vfx.SetFloat("Size", areaMeta.areaData.spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.Size));
-    }
+        public SpellSystem.AreaMeta areaMeta;
+        public VisualEffect vfx;
 
-  
+        // Start is called before the first frame update
+        void Start()
+        {
+            areaMeta = GetComponentInParent<SpellSystem.AreaMeta>();
+            vfx.SetFloat("Size", areaMeta.areaData.spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.Size));
+        }
+
+
+    }
 }

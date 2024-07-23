@@ -123,22 +123,24 @@ public class UpgradeManager : MonoBehaviour
                 if (validTagValue[j] <= 0)
                 {
                     countTagValue += myEnumMemberCount;
+                    countTagValue++;
                     continue;
                 }
                 else
                 {
-                    int listOffset = m_indexTagUpgradeArray[countTagValue];
+                    int listOffset = m_indexTagUpgradeArray[countTagValue ];
                     int elementCount = m_indexTagUpgradeArray[countTagValue + validTagValue[j]];
 
-                    for (int h = 0; h < validTagValue[j]; h++)
+                    for (int h = 1; h < validTagValue[j]; h++)
                     {
-                        listOffset += m_indexTagUpgradeArray[myEnumMemberCount + h];
+                        listOffset += m_indexTagUpgradeArray[countTagValue + h];
                     }
 
                     listAray.AddRange(m_sortUpgradeList.GetRange(listOffset, elementCount));
 
 
                     countTagValue += myEnumMemberCount;
+                    countTagValue++;
                 }
 
 
@@ -366,7 +368,7 @@ namespace UpgradeData
     {
         public UpgradeDataSort SortUpgrade(UpgradeObject[] arrayUpgrade)
         {
-            UpgradeObject[] tempArray = new UpgradeObject[arrayUpgrade.Length];
+             UpgradeObject[] tempArray = new UpgradeObject[arrayUpgrade.Length];
             List<UpgradeObject> upgradeList = new List<UpgradeObject>();
             int myEnumMemberCount = Enum.GetNames(typeof(SpellTagOrder)).Length;
             List<int> indexList = new List<int>();
