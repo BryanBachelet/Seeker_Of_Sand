@@ -280,12 +280,13 @@ public class UpgradeManager : MonoBehaviour
     public void SendUpgrade(UpgradeObject upgradeChoose)
     {
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
+        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
         int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
         int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
-        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
+        
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }

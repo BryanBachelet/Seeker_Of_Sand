@@ -166,6 +166,8 @@ namespace Character
             upgradeChoose.Apply(m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink]);
             if (m_UiPlayerInfo)
             {
+                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level++;
+                
                 m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level);
             }
             avatarUpgradeList.Add(upgradeChoose);
