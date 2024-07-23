@@ -51,6 +51,7 @@ public class HealthManager : MonoBehaviour
         Tool_DamageMeter.AddDamage(damage);
         if(colorElementType < 0)
         {
+
             if (characterShoot.lastElement == GameElement.AIR)
             {
                 currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
@@ -66,6 +67,10 @@ public class HealthManager : MonoBehaviour
             else if (characterShoot.lastElement == GameElement.EARTH)
             {
                 currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
+            }
+            else
+            {
+                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
             }
         }
 

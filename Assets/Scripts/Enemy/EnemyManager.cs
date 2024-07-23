@@ -31,6 +31,7 @@ namespace Enemies
     {
         public EnemyType type;
         public int instanceCount;
+       [HideInInspector] public int instanceSpawnPerRoom;
         public AnimationCurve animationCurve;
     }
 
@@ -69,9 +70,18 @@ namespace Enemies
         private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private Transform m_enemyHolder;
 
+        public void ResetSpawnStat()
+        {
+            for (int i = 0; i < enemyTypeStats.Length; i++)
+            {
+                enemyTypeStats[i].instanceSpawnPerRoom = 0;
+            }
+        }
+
         #region EnemyParameter
 
         [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[5];
+
 
         [Header("Enemy Bonus")]
         [SerializeField] private GameObject m_expBonus;
@@ -510,6 +520,7 @@ namespace Enemies
 
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);
             enemyTypeStats[enemyIndexChoose].instanceCount += 1;
+            enemyTypeStats[enemyIndexChoose].instanceSpawnPerRoom += 1;
             enemyObjectPull.transform.position = positionSpawn;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             enemyObjectPull.GetComponent<NavMeshAgent>().Warp(positionSpawn);
@@ -563,6 +574,7 @@ namespace Enemies
 
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyType);
             enemyTypeStats[enemyType].instanceCount += 1;
+            enemyTypeStats[enemyType].instanceSpawnPerRoom += 1;
             enemyObjectPull.transform.position = position;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             enemyObjectPull.GetComponent<NavMeshAgent>().Warp(position);
@@ -589,8 +601,15 @@ namespace Enemies
         {
             float value = enemyTypeStats[enemyType].animationCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
             int maxInstance = Mathf.RoundToInt(value);
-            bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
-            return canSpawn;
+            if (enemyType < 2)
+            {
+                bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
+                return canSpawn;
+            }else
+            {
+                bool canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                return canSpawn;
+            }
         }
 
 

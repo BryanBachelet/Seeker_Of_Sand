@@ -422,7 +422,7 @@ namespace Character
                     RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
                 //spellIndex.Add(RndCapsule);
-                spellIndex.Add(0);
+                spellIndex.Add(RndCapsule);
             }
         }
 
@@ -796,8 +796,8 @@ namespace Character
             //castingVFXAnimator.ResetTrigger("Shot");
             m_currentType = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.type;
 
+            lastElement = currentSpellProfil.tagData.element;
             currentSpellProfil = spellProfils[m_currentIndexCapsule];
-            lastElement = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element;
             ChangeVfxElement(((int)lastElement));
 
             if (!m_shootInput) m_shootInputActive = false;
