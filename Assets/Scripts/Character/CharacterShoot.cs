@@ -671,7 +671,7 @@ namespace Character
                 return;
             }
 
-            if (stats.tagData.spellNatureType == SpellNature.AREA)
+            if (stats.tagData.spellNatureType == SpellNature.DOT)
                 endShoot = ShootAttackArea(index);
         }
 
