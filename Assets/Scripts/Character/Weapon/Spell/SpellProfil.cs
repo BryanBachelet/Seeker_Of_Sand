@@ -365,7 +365,6 @@ namespace SpellSystem
 
 
 
-        //TODO : Debug function
         public string DebugStat()
         {
             string debugStatString = "";

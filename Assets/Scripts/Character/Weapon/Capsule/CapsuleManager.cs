@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class CapsuleManager : MonoBehaviour
 {
-    public SpellSystem.Capsule[] capsules;
-    public SpellSystem.CapsuleAttackInfo[] attackInfo;
-    public SpellSystem.CapsuleBuffInfo[] buffInfos;
     public SpellSystem.SpellProfil[] spellProfils;
 
     public static CapsuleManager instance;
@@ -69,20 +66,6 @@ public class CapsuleManager : MonoBehaviour
     public void CreateInfo()
     {
 
-        // TODO : Suppress code -->
-            //for (int i = 0; i < capsules.Length; i++)
-            //{
-            //    if(capsules[i].type == SpellSystem.CapsuleType.ATTACK)
-            //    {
-            //        capsules[i] = new SpellSystem.CapsuleAttack(attackInfo[indexAttackInfo]);
-            //        indexAttackInfo++;
-            //    }
-            //    if (capsules[i].type == SpellSystem.CapsuleType.BUFF)
-            //    {
-            //        capsules[i] = new SpellSystem.CapsuleBuff(buffInfos[indexBuffInfo]);
-            //        indexBuffInfo++;
-            //    }
-            //}
 
         // Clone scriptable to avoid permanent modification
         for (int i = 0; i < spellProfils.Length; i++)

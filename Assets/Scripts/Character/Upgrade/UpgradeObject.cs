@@ -16,6 +16,7 @@ public class UpgradeObject : ScriptableObject
     public string description;
     public Sprite spell_Icon;
     public int indexSpellLink;
+    public bool IsMultiTagUpgrade;
 
     public TagData tagData;
     [Space]
@@ -88,7 +89,6 @@ public class UpgradeObject : ScriptableObject
 
     public bool IsValidUpgrade(SpellSystem.SpellProfil spellProfil)
     {
-        bool test = false;
 
         if (spellProfil.tagData.element == tagData.element) return true;
         if (spellProfil.tagData.type == tagData.type) return true;
@@ -105,6 +105,41 @@ public class UpgradeObject : ScriptableObject
 
 
         return false;
+    }
+
+    public bool IsAllTagMatching(SpellSystem.SpellProfil spellProfil)
+    {
+        if ((int)tagData.element!=0 &&  spellProfil.tagData.element != tagData.element) return false;
+        if ((int) tagData.type != 0 && spellProfil.tagData.type != tagData.type) return false;
+        if ((int)tagData.spellNatureType != 0 && !spellProfil.tagData.EqualsSpellNature(tagData.spellNatureType)) return false;
+        if ((int)tagData.spellNatureType1 != 0 && !spellProfil.tagData.EqualsSpellNature(tagData.spellNatureType1)) return false;
+        if ((int)tagData.spellProjectileTrajectory != 0 && spellProfil.tagData.spellProjectileTrajectory != tagData.spellProjectileTrajectory) return false;
+        if ((int)tagData.canalisationType != 0 && spellProfil.tagData.canalisationType != tagData.canalisationType) return false;
+        if ((int)tagData.spellMovementBehavior != 0 && spellProfil.tagData.spellMovementBehavior != tagData.spellMovementBehavior) return false;
+        if ((int)tagData.damageTriggerType != 0 && spellProfil.tagData.damageTriggerType != tagData.damageTriggerType) return false;
+        if ((int)tagData.spellParticualarity != 0 && !spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity)) return false;
+        if ((int)tagData.spellParticualarity1 != 0 && !spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity1)) return false;
+        if ((int)tagData.spellParticualarity2 != 0 && !(spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity2))) return false;
+        if ((int)tagData.mouvementBehaviorType != 0 && spellProfil.tagData.mouvementBehaviorType != tagData.mouvementBehaviorType) return false;
+
+        return true;
+    }
+
+    public bool IsAllTagCorresponding(int[] spellValidTag)
+    {
+        int[] upgradeValidTag = tagData.GetValidTag();
+
+        for (int i = 0; i < upgradeValidTag.Length; i++)
+        {
+            if (upgradeValidTag[i] == 0) continue;
+
+            if(upgradeValidTag[i] != spellValidTag[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

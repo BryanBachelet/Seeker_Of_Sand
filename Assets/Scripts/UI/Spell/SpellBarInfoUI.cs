@@ -30,7 +30,7 @@ public class SpellBarInfoUI : MonoBehaviour
             return;
         }
         int capsuleIndex = m_characterShoot.spellIndex[eventData.index];
-        string headerText = m_characterShoot.m_capsuleManager.capsules[capsuleIndex].name;
+        string headerText = m_characterShoot.m_capsuleManager.spellProfils[capsuleIndex].name;
         string contextText = m_characterShoot.m_capsuleManager.spellProfils[capsuleIndex].description + "\n"+ m_characterShoot.spellProfils[eventData.index].DebugStat();
 
         m_spellTooltipArray[eventData.index].content = contextText;

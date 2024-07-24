@@ -153,7 +153,7 @@ public class MarchandUiView : MonoBehaviour
         }
         else
         {
-            spellSpriteArray[index].sprite = merchandItemData.spellData[index].sprite;
+            spellSpriteArray[index].sprite = merchandItemData.spellData[index].spell_Icon;
             spellPriceTextArray[index].text = itemData.price.ToString();
             spellSpriteArray[index].color = new Color(1, 1, 1, 1);
             if (itemData.isBuyable) fragmentSpriteArray[index].color = canBuyColor;
@@ -195,7 +195,7 @@ public class MarchandUiView : MonoBehaviour
                 if (merchandItemData.itemSpellData[index].hasBeenBuy) return;
                 description = merchandItemData.spellData[index].description;
                 name = merchandItemData.spellData[index].name;
-                image = merchandItemData.spellData[index].sprite;
+                image = merchandItemData.spellData[index].spell_Icon;
                 break;
             case CharacterObjectType.FRAGMENT:
                 if (merchandItemData.itemFragmentData[index].hasBeenBuy) return;

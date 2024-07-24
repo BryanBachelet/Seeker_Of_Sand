@@ -17,7 +17,7 @@ public struct ItemData
 public struct MerchandItemData
 {
     public ItemData[] itemSpellData;
-    public SpellSystem.Capsule[] spellData;
+    public SpellSystem.SpellProfil[] spellData;
     public ItemData[] itemFragmentData;
     public ArtefactsInfos[] fragmentData;
 }
@@ -87,15 +87,15 @@ public class MarchandBehavior : InteractionInterface
 
     public void SetSpellItem()
     {
-        merchandItemData.spellData = new SpellSystem.Capsule[2];
+        merchandItemData.spellData = new SpellSystem.SpellProfil[2];
         for (int i = 0; i < 2; i++)
         {
-            int spellIndex = Random.Range(0, m_capsuleManager.capsules.Length);
-            merchandItemData.spellData[i] = m_capsuleManager.capsules[spellIndex];
+            int spellIndex = Random.Range(0, m_capsuleManager.spellProfils.Length);
+            merchandItemData.spellData[i] = m_capsuleManager.spellProfils[spellIndex];
             spellItemData[i].index = spellIndex;
             spellItemData[i].price = spellPrice;
             spellItemData[i].type = CharacterObjectType.SPELL;
-            spellItemData[i].element = m_capsuleManager.attackInfo[spellIndex].element;
+            spellItemData[i].element = m_capsuleManager.spellProfils[spellIndex].tagData.element;
             spellItemData[i].hasBeenBuy = false;
             spellItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(spellItemData[i].price, spellItemData[i].element);
         }
@@ -169,7 +169,7 @@ public class MarchandBehavior : InteractionInterface
 
     public void AcquiereRandomNewSpell( DragData dragData)
     {
-        int spellIndex = Random.Range(0, m_capsuleManager.capsules.Length);
+        int spellIndex = Random.Range(0, m_capsuleManager.spellProfils.Length);
         Character.CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
         characterShoot.RemoveSpell(dragData.indexObj);
         characterShoot.AddSpell(spellIndex);
