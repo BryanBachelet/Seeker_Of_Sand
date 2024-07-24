@@ -92,10 +92,16 @@ public struct TagData
                 return (int)spellMovementBehavior;
                 break;
             case SpellTagOrder.DamageTrigger:
-                return (int)spellProjectileTrajectory;
+                return (int)damageTriggerType;
                 break;
             case SpellTagOrder.SpellParticualarity:
                 return (int)spellParticualarity;
+                break;
+            case SpellTagOrder.SpellParticualarity1:
+                return (int)spellParticualarity1;
+                break;
+            case SpellTagOrder.SpellParticualarity2:
+                return (int)spellParticualarity2;
                 break;
             case SpellTagOrder.MouvementBehavior:
                 return (int)mouvementBehaviorType;
