@@ -71,7 +71,7 @@ public class MarchandBehavior : InteractionInterface
         m_merchandView.DeactiveMarchandUI();
         m_uiInventory.DeactivateInventoryInterface();
         m_uiDispatcher.fixeGameplayUI.SetActive(true);
-        m_uiDispatcher.bandenoir.SetActive(false);
+        m_uiDispatcher.bandenoir.SetActive(true);
         GameState.ChangeState();
 
     }
@@ -80,7 +80,7 @@ public class MarchandBehavior : InteractionInterface
     {
             m_merchandView.ActiveMarchandUI(merchandItemData);
         m_uiDispatcher.fixeGameplayUI.SetActive(false);
-        m_uiDispatcher.bandenoir.SetActive(true);
+        m_uiDispatcher.bandenoir.SetActive(false);
         m_uiInventory.ActivateInventoryInterface();
         GameState.ChangeState();
     }
