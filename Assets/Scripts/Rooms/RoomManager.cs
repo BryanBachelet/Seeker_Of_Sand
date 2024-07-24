@@ -65,6 +65,7 @@ public class RoomManager : MonoBehaviour
     public void ActivateRoom()
     {
         m_enemyManager.ResetAllSpawingPhasse();
+        m_enemyManager.ResetSpawnStat();
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
        
 

@@ -422,7 +422,7 @@ namespace Character
                     RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
                 //spellIndex.Add(RndCapsule);
-                spellIndex.Add(0);
+                spellIndex.Add(RndCapsule);
             }
         }
 
@@ -714,7 +714,7 @@ namespace Character
                 Transform transformUsed = transform;
 
 
-                Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 2, 0);
+                Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
@@ -796,8 +796,8 @@ namespace Character
             //castingVFXAnimator.ResetTrigger("Shot");
             m_currentType = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.type;
 
+            lastElement = currentSpellProfil.tagData.element;
             currentSpellProfil = spellProfils[m_currentIndexCapsule];
-            lastElement = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element;
             ChangeVfxElement(((int)lastElement));
 
             if (!m_shootInput) m_shootInputActive = false;
