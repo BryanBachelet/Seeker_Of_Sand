@@ -9,7 +9,7 @@ public class SceneSwaper : MonoBehaviour
 
     public bool playerEnter = false;
     private bool awaitForStart = true;
-    private float tempsStartGame = 4;
+    private float tempsStartGame = 2;
 
     public List<AsyncOperation> sceneToLoadAtStart = new List<AsyncOperation>();
 
