@@ -116,7 +116,7 @@ namespace SpellSystem
             {
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
-                npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+             if(npcHealthComponent)   npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
             }
         }
 

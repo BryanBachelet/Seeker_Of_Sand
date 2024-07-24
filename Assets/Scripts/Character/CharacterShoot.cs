@@ -33,7 +33,7 @@ namespace Character
         private int m_currentRotationIndex = 0;
 
         [Header("Shoot Component Setup")]
-        public CapsuleManager m_capsuleManager;
+        public SpellManager m_spellManger;
         [SerializeField] private Transform m_OuterCircleHolder;
         [SerializeField] private Transform avatarTransform;
         [SerializeField] private Transform bookTransform;
@@ -70,6 +70,8 @@ namespace Character
         [SerializeField] public List<UnityEngine.VFX.VisualEffect> m_SpellReadyVFX = new List<UnityEngine.VFX.VisualEffect>();
         private GameObject lastElementToUse;
 
+
+        public bool isDirectSpellLaunchActivate = true;
 
         private float m_timerBetweenSpell;
         private float m_reloadTimer;
@@ -286,18 +288,24 @@ namespace Character
             {
                 m_isShooting = true;
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime = m_totalLaunchingDuration;
+                
+
                 if (currentSpellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
                 {
-                    m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+                    if(!isDirectSpellLaunchActivate) m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+
+                    if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+
 
                 }
-                Shoot();
+                if (!isDirectSpellLaunchActivate)  Shoot();
                 return;
             }
 
 
-            if (currentSpellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+            if (currentSpellProfil.tagData.spellNatureType == SpellNature.PROJECTILE)
             {
+               
 
                 if (m_timerBetweenShoot >= currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
                 {
@@ -329,6 +337,8 @@ namespace Character
                     ratio = m_spellLaunchTime / m_totalLaunchingDuration;
 
                 }
+
+                m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
             }
             else
             {
@@ -380,8 +390,8 @@ namespace Character
             {
                 if (spellIndex[i] == -1) continue;
 
-                m_characterSpellBook.AddSpell(m_capsuleManager.spellProfils[spellIndex[i]].Clone());
-                // CapsuleManager.RemoveSpecificSpellFromSpellPool(spellIndex[i]);
+                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndex[i]].Clone());
+                SpellManager.RemoveSpecificSpellFromSpellPool(spellIndex[i]);
             }
 
             //  Set to Spell Equip
@@ -421,7 +431,6 @@ namespace Character
                 {
                     RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
-                //spellIndex.Add(RndCapsule);
                 spellIndex.Add(RndCapsule);
             }
         }
@@ -747,7 +756,10 @@ namespace Character
             m_currentStack[m_currentRotationIndex]--;
             //m_uiPlayerInfos.UpdateStackingObjects(m_currentRotationIndex, m_currentStack[m_currentRotationIndex]);
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / spellProfil.GetIntStat(StatType.ShootNumber));
-            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            if (m_canalisationType == CanalisationBarType.ByPart)
+            {
+                m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            }
             if (m_currentStack[m_currentRotationIndex] <= 0)
                 return true;
             else
@@ -1164,13 +1176,13 @@ namespace Character
         {
             int prevIndex = m_characterSpellBook.GetSpellCount();
             spellIndex.Add(index);
-            m_characterSpellBook.AddSpell(m_capsuleManager.spellProfils[index].Clone());
+            m_characterSpellBook.AddSpell(m_spellManger.spellProfils[index].Clone());
             m_dropInventory.AddNewItem(index);
 
 
             if (spellIndex.Count <= spellEquip.Length)
             {
-                spellProfils.Add(m_capsuleManager.spellProfils[index]);
+                spellProfils.Add(m_spellManger.spellProfils[index]);
                 spellEquip[spellIndex.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();

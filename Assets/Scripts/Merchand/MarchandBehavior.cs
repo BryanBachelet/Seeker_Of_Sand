@@ -38,7 +38,7 @@ public class MarchandBehavior : InteractionInterface
     private MarchandUiView m_merchandView;
     private UI_Inventory m_uiInventory;
     private UIDispatcher m_uiDispatcher;
-    private CapsuleManager m_capsuleManager;
+    private SpellManager m_capsuleManager;
     private FragmentManager m_fragmentManager;
     private GameObject m_playerGo;
     private CristalInventory m_cristalInventory;
@@ -59,7 +59,7 @@ public class MarchandBehavior : InteractionInterface
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
 
         m_uiInventory = m_uiDispatcher.uiInventory;
-        m_capsuleManager = GameState.m_enemyManager.GetComponent<CapsuleManager>();
+        m_capsuleManager = GameState.m_enemyManager.GetComponent<SpellManager>();
         m_fragmentManager = GameState.m_enemyManager.GetComponent<FragmentManager>();
         SetSpellItem();
         SetFragmentItem();
