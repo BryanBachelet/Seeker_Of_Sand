@@ -92,13 +92,13 @@ public class UpgradeObject : ScriptableObject
 
         if (spellProfil.tagData.element == tagData.element) return true;
         if (spellProfil.tagData.type == tagData.type) return true;
-        if (spellProfil.tagData.EqualsSpellNature( tagData.spellNatureType)) return true;
-        if (spellProfil.tagData.EqualsSpellNature( tagData.spellNatureType1)) return true;
+        if (spellProfil.tagData.EqualsSpellNature(tagData.spellNatureType)) return true;
+        if (spellProfil.tagData.EqualsSpellNature(tagData.spellNatureType1)) return true;
         if (spellProfil.tagData.spellProjectileTrajectory == tagData.spellProjectileTrajectory) return true;
         if (spellProfil.tagData.canalisationType == tagData.canalisationType) return true;
         if (spellProfil.tagData.spellMovementBehavior == tagData.spellMovementBehavior) return true;
         if (spellProfil.tagData.damageTriggerType == tagData.damageTriggerType) return true;
-        if (spellProfil.tagData.EqualsSpellParticularity( tagData.spellParticualarity)) return true;
+        if (spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity)) return true;
         if (spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity1)) return true;
         if (spellProfil.tagData.EqualsSpellParticularity(tagData.spellParticualarity2)) return true;
         if (spellProfil.tagData.mouvementBehaviorType == tagData.mouvementBehaviorType) return true;
@@ -109,8 +109,8 @@ public class UpgradeObject : ScriptableObject
 
     public bool IsAllTagMatching(SpellSystem.SpellProfil spellProfil)
     {
-        if ((int)tagData.element!=0 &&  spellProfil.tagData.element != tagData.element) return false;
-        if ((int) tagData.type != 0 && spellProfil.tagData.type != tagData.type) return false;
+        if ((int)tagData.element != 0 && spellProfil.tagData.element != tagData.element) return false;
+        if ((int)tagData.type != 0 && spellProfil.tagData.type != tagData.type) return false;
         if ((int)tagData.spellNatureType != 0 && !spellProfil.tagData.EqualsSpellNature(tagData.spellNatureType)) return false;
         if ((int)tagData.spellNatureType1 != 0 && !spellProfil.tagData.EqualsSpellNature(tagData.spellNatureType1)) return false;
         if ((int)tagData.spellProjectileTrajectory != 0 && spellProfil.tagData.spellProjectileTrajectory != tagData.spellProjectileTrajectory) return false;
@@ -133,13 +133,50 @@ public class UpgradeObject : ScriptableObject
         {
             if (upgradeValidTag[i] == 0) continue;
 
-            if(upgradeValidTag[i] != spellValidTag[i])
+            if (upgradeValidTag[i] != spellValidTag[i])
             {
                 return false;
             }
         }
 
         return true;
+    }
+
+    public bool HasThisStat(StatType statType)
+    {
+        for (int i = 0; i < statTypes.Length; i++)
+        {
+            if (statTypes[i] == statType) return true;
+        }
+        return false;
+    }
+
+    public string PrewiewApplyValue(StatData statData)
+    {
+        for (int i = 0; i < statDatas.Count; i++)
+        {
+            if (statData.stat == statDatas[i].stat)
+            {
+
+                if (IsStatBool(statTypes[i]))
+                {
+                    return ( statDatas[i].val_bool).ToString();
+                }
+
+                if (IsStatInt(statTypes[i]))
+                {
+                    return (statData.val_int + statDatas[i].val_int).ToString();
+                }
+
+
+                if (IsStatFloat(statTypes[i]))
+                {
+                    return (statData.val_float + statDatas[i].val_float).ToString();
+                }
+            }
+        }
+
+        return "";
     }
 
 }
