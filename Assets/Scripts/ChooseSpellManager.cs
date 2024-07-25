@@ -10,7 +10,7 @@ public class ChooseSpellManager : MonoBehaviour
     private const double minAnimTime = 0.20;
     public GameObject[] vfxChooseSpell = new GameObject[4];
     public int[] randomSpellToChoose = new int[3];
-    public CapsuleManager capsuleManager;
+    public SpellManager spellManager;
     public SpellSystem.SpellProfil[] newSpell = new SpellSystem.SpellProfil[3];
     public Image[] vfxSpell = new Image[3];
     public GameObject[] spellHolder = new GameObject[3];
@@ -146,8 +146,9 @@ public class ChooseSpellManager : MonoBehaviour
         for (int i = 0; i < randomSpellToChoose.Length; i++)
         {
             // ---------------------
-            randomSpellToChoose[i] = CapsuleManager.GetRandomCapsuleIndex();
-            newSpell[i] = capsuleManager.spellProfils[randomSpellToChoose[i]];
+            randomSpellToChoose[i] = SpellManager.GetRandomCapsuleIndex();
+            newSpell[i] = spellManager.spellProfils[randomSpellToChoose[i]];
+            SpellManager.RemoveSpecificSpellFromSpellPool(randomSpellToChoose[i]);
             // --------------------
             StartCoroutine(SpellFadeIn(i, Time.time));
             vfxSpell[i].sprite = newSpell[i].spell_Icon;
@@ -155,7 +156,7 @@ public class ChooseSpellManager : MonoBehaviour
             vfxHolder[i].SetActive(true);
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;
-            newSpell[i].tagData.element = capsuleManager.spellProfils[randomSpellToChoose[i]].tagData.element;
+            newSpell[i].tagData.element = spellManager.spellProfils[randomSpellToChoose[i]].tagData.element;
             nextSpellName[i] = newSpell[i].name;
             textObject[i].text = nextSpellName[i];
             int indexVFX = (int)newSpell[i].tagData.element - 1;
@@ -178,9 +179,15 @@ public class ChooseSpellManager : MonoBehaviour
                 StartCoroutine(SpellFadeOut(i, Time.time));
             }
         }
+
+        for (int i = 0; i < randomSpellToChoose.Length; i++)
+        {
+            if(indexChoice != i )
+            {
+                SpellManager.AddSpecificSpellFromSpellPool(randomSpellToChoose[i]);
+            }
+        }
         m_indexSpellChoose = indexChoice;
-        int capsuleIndex = randomSpellToChoose[indexChoice];
-        CapsuleManager.RemoveSpecificSpellFromSpellPool(capsuleIndex);
 
     }
 

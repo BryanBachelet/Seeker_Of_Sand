@@ -155,10 +155,11 @@ namespace SpellSystem
         public float val_float;
         public string val_string;
         public bool val_bool;
-
+        public bool isVisible;
     }
 
     [CreateAssetMenu(fileName = "Spell Profil", menuName = "Spell/Spell Profil")]
+    [CanEditMultipleObjects]
     public class SpellProfil : ScriptableObject
     {
         public string name;
@@ -192,6 +193,10 @@ namespace SpellSystem
             return spellProfil;
         }
 
+        private bool IsStatBool(StatType statsType)
+        {
+            return (int)statsType - ((0 * 1000)) < 1000;
+        }
         private bool IsStatInt(StatType statsType)
         {
             return (int)statsType - ((1 * 1000)) < 1000;
@@ -199,10 +204,6 @@ namespace SpellSystem
         private bool IsStatFloat(StatType statsType)
         {
             return (int)statsType - ((2 * 1000)) < 1000;
-        }
-        private bool IsStatBool(StatType statsType)
-        {
-            return (int)statsType - ((0 * 1000)) < 1000;
         }
         private bool IsStatString(StatType statsType)
         {
@@ -268,7 +269,7 @@ namespace SpellSystem
         }
         public string GetStringStat(StatType statsType)
         {
-            if (!IsStatFloat(statsType))
+            if (!IsStatString(statsType))
             {
                 Debug.LogError("This stats isn't an string");
                 return "";
@@ -364,8 +365,25 @@ namespace SpellSystem
         }
 
 
+        public string GetStatValueToString(StatType statsType)
+        {
 
-        //TODO : Debug function
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    if (IsStatBool(statsType)) return statDatas[i].val_bool.ToString();
+                    if (IsStatInt(statsType)) return statDatas[i].val_int.ToString();
+                    if (IsStatFloat(statsType)) return statDatas[i].val_float.ToString();
+                    if (IsStatString(statsType)) return statDatas[i].val_string.ToString();
+                }
+
+
+            }
+
+            return "";
+        }
+
         public string DebugStat()
         {
             string debugStatString = "";
@@ -422,7 +440,7 @@ namespace SpellSystem
 
         }
 
-        private void ManageStat(StatType statToCheck, bool isAdd)
+        private void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
         {
             for (int i = 0; i < statDatas.Count; i++)
             {
@@ -437,11 +455,14 @@ namespace SpellSystem
                 }
             }
 
-            if (isAdd)
+            if (isAdd )
             {
                 StatData statData = new StatData();
                 statData.stat = statToCheck;
+                statData.isVisible = isVisible;
                 statDatas.Add(statData);
+
+
             }
 
             return;
@@ -455,6 +476,9 @@ namespace SpellSystem
 
             testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Return;
             ManageStat(StatType.SpeedReturn, testResult);
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Fix;
+            ManageStat(StatType.OffsetDistance, testResult);
         }
 
         private void SetupMovementType()
@@ -473,22 +497,24 @@ namespace SpellSystem
 
             testResult = tagData.canalisationType == CanalisationType.HEAVY_CANALISATION;
             ManageStat(StatType.SpellCanalisation, true);
+            ManageStat(StatType.SpeedReduce, testResult);
+
         }
 
         private void SetupSpellParaticularity()
         {
             bool testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Explosion);
-            ManageStat(StatType.SizeExplosion, testResult);
-            ManageStat(StatType.DamageAdditionel, testResult);
+            ManageStat(StatType.SizeExplosion, testResult, true);
+            ManageStat(StatType.DamageAdditionel, testResult, true);
 
             testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Delayed);
-            ManageStat(StatType.TimeDelay, testResult);
+            ManageStat(StatType.TimeDelay, testResult, true);
 
             testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Piercing);
-            ManageStat(StatType.Piercing, testResult);
+            ManageStat(StatType.Piercing, testResult, true);
 
             testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Bouncing);
-            ManageStat(StatType.BounceNumber, testResult);
+            ManageStat(StatType.BounceNumber, testResult, true);
 
 
         }
@@ -508,8 +534,8 @@ namespace SpellSystem
             bool testResult;
             testResult = tagData.EqualsSpellNature(SpellNature.PROJECTILE);
             ManageStat(StatType.LifeTime, testResult);
-            ManageStat(StatType.Projectile, testResult);
-            ManageStat(StatType.ShootNumber, testResult);
+            ManageStat(StatType.Projectile, testResult,true);
+            ManageStat(StatType.ShootNumber, testResult, true);
             ManageStat(StatType.ShootAngle, testResult);
             ManageStat(StatType.TimeBetweenShot, testResult);
 
@@ -519,19 +545,20 @@ namespace SpellSystem
             ManageStat(StatType.TrajectoryTimer, testResult2 && testResult);
 
             testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA);
-            ManageStat(StatType.Size, testResult);
+            ManageStat(StatType.Size, testResult, true);
             ManageStat(StatType.SizeMuplitiplicator, testResult);
 
  
             testResult = tagData.EqualsSpellNature(SpellNature.SUMMON);
-            ManageStat(StatType.MaxSummon, testResult);
-            ManageStat(StatType.SummonSimultanely, testResult);
+            ManageStat(StatType.MaxSummon, testResult, true);
+            ManageStat(StatType.SummonSimultanely, testResult, true);
 
             testResult = tagData.EqualsSpellNature(SpellNature.DOT);
             ManageStat(StatType.HitFrequency, testResult);
-            ManageStat(StatType.HitNumber, testResult);
+            ManageStat(StatType.HitNumber, testResult, true);
 
         }
+
 
 #endif
         #endregion

@@ -33,7 +33,12 @@ namespace SpellSystem
 
         private float hitDelayTimer;
         private bool canHit;
-        
+
+        [Header("Debug Paraemters")]
+        public bool isDebugActive;
+        public Color color;
+        [Range(0, 1)] public float transparency = 0.5f;
+
 
         #region Unity Functions
         // Start is called before the first frame update
@@ -116,11 +121,20 @@ namespace SpellSystem
             {
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
-                npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+             if(npcHealthComponent)   npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
             }
         }
 
         public float GetCurrentLifeTime() { return m_currentAreaLifetime; }
-            
+
+
+        public void OnDrawGizmos()
+        {
+            if (!isDebugActive) return;
+
+            Gizmos.color = new Color(color.r, color.g, color.b, transparency);
+            Gizmos.DrawSphere(transform.position, m_sizeArea);
+        }
+
     }
 }
