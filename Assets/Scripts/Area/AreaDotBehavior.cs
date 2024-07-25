@@ -11,7 +11,7 @@ namespace SpellSystem
     public class AreaDotBehavior : MonoBehaviour
     {
         private ObjectState state;
-        private AreaMeta m_areaData;
+        private AreaMeta m_areaMeta;
         private DOTMeta m_DotMeta;
 
         private float m_hitFrequencyTime = 0.0f;
@@ -24,7 +24,7 @@ namespace SpellSystem
 
 
         private float m_currentAreaLifetime;
-        
+
         [Header("Feedback Paramets")]
         public int indexSFX;
         public float damageDelay;
@@ -38,13 +38,13 @@ namespace SpellSystem
         public bool isDebugActive;
         public Color color;
         [Range(0, 1)] public float transparency = 0.5f;
-
+        private SpellProfil profil;
 
         #region Unity Functions
         // Start is called before the first frame update
         void Start()
         {
-            m_areaData = GetComponent<AreaMeta>();
+            m_areaMeta = GetComponent<AreaMeta>();
             m_DotMeta = GetComponent<DOTMeta>();
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
             InitComponent();
@@ -56,10 +56,10 @@ namespace SpellSystem
             UpdateArea();
         }
         #endregion
-       
+
         public void InitComponent()
         {
-            SpellProfil profil = m_areaData.areaData.spellProfil;
+            profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
@@ -80,7 +80,8 @@ namespace SpellSystem
         public void UpdateArea()
         {
 
-            if(hitDelayTimer>damageDelay)
+            AreaMouvement();
+            if (hitDelayTimer >= damageDelay)
             {
                 canHit = true;
             }
@@ -92,12 +93,12 @@ namespace SpellSystem
             }
 
             if (!canHit) return;
-            if(m_hitCount == m_hitMaxCount)
+            if (m_hitCount == m_hitMaxCount)
             {
                 Destroy(this.gameObject);
             }
 
-            if(m_hitFrequencyTimer>m_hitFrequencyTime)
+            if (m_hitFrequencyTimer > m_hitFrequencyTime)
             {
                 ApplyAreaDamage();
                 m_hitCount++;
@@ -110,9 +111,17 @@ namespace SpellSystem
                 if (m_vfxSpwaner) m_vfxSpwaner.UpdateTimeValue();
             }
 
-            
+          
         }
-         
+
+        public void AreaMouvement()
+        {
+            if(profil.tagData.spellMovementBehavior == SpellMovementBehavior.OnSelf)
+            {
+                transform.position = m_areaMeta.areaData.characterShoot.transform.position +  new Vector3(0,10,0); 
+            }
+        }
+
         public void ApplyAreaDamage()
         {
             Collider[] collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask);
@@ -121,7 +130,7 @@ namespace SpellSystem
             {
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
-             if(npcHealthComponent)   npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                if (npcHealthComponent) npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
             }
         }
 
