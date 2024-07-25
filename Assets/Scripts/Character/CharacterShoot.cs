@@ -295,8 +295,7 @@ namespace Character
                     if(!isDirectSpellLaunchActivate) m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
 
                     if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
-
-
+                  
                 }
                 if (!isDirectSpellLaunchActivate)  Shoot();
                 return;
@@ -529,7 +528,19 @@ namespace Character
 
 
             UpdateCanalisationBar(m_totalCanalisationDuration);
+
+
             bool highCanalisationTest = currentSpellProfil.tagData.canalisationType == CanalisationType.HEAVY_CANALISATION && m_shootInputActive;
+            
+            if(highCanalisationTest)
+            {
+                m_CharacterMouvement.m_SpeedReduce = currentSpellProfil.GetFloatStat(StatType.SpeedReduce);
+            }
+            else
+            {
+                m_CharacterMouvement.m_SpeedReduce = 1;
+            }
+            
             if (highCanalisationTest || currentSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION)
             {
 
@@ -727,7 +738,7 @@ namespace Character
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
-                     position = m_characterAim.projectorVisorObject.transform.position  + Mathf.Clamp(i,0,1) * ( Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward *10 );
+                     position = m_characterAim.projectorVisorObject.transform.position  + Mathf.Clamp(i,0,1) * ( Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
                      rot = m_characterAim.GetTransformHead().rotation; ;
                 }
 

@@ -137,15 +137,23 @@ public class UpgradeChoosing : MonoBehaviour
     {
         int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
-        if (spellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+        //if (spellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+        //{
+        //    upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);
+        //    upgradeTextStatBase[1].text = "Speed : " + (spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime));
+        //    upgradeTextStatBase[2].text = "Projectile : " + spellProfil.GetIntStat(StatType.Projectile);
+        //    upgradeTextStatBase[3].text = "Salve : " + spellProfil.GetIntStat(StatType.ShootNumber);
+        //    upgradeTextStatBase[4].text = "";
+        //    upgradeTextStatBase[5].text = "";
+        //}
+
+        string textStatUpgrade = "";
+        for (int i = 0; i < spellProfil.statDatas.Count; i++)
         {
-            upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);
-            upgradeTextStatBase[1].text = "Speed : " + (spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime));
-            upgradeTextStatBase[2].text = "Projectile : " + spellProfil.GetIntStat(StatType.Projectile);
-            upgradeTextStatBase[3].text = "Salve : " + spellProfil.GetIntStat(StatType.ShootNumber);
-            upgradeTextStatBase[4].text = "";
-            upgradeTextStatBase[5].text = "";
+            SpellSystem.StatData statData = spellProfil.statDatas[i];
+            if(statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
         }
+        upgradeTextStatBase[0].text = textStatUpgrade;
     }
 
     public void SetModifySpellStat(int index)

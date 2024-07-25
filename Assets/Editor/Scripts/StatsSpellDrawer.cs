@@ -13,8 +13,11 @@ public class StatsSpellDrawer : PropertyDrawer
         position.width *= 0.5f;
         position.height = 18.0f;
         EditorGUI.PropertyField(position, property.FindPropertyRelative("stat"), GUIContent.none);
+        
         position.width -= 10;
         position.x += position.width + 20;
+        position.width *= 2f;
+        position.width *= 0.4f;
 
         string[] arrayName = { "val_bool", "val_int", "val_float", "val_string" };
 
@@ -27,16 +30,12 @@ public class StatsSpellDrawer : PropertyDrawer
             }
         }
 
-        //if (property.FindPropertyRelative("stat").intValue - (int)ValueType.BOOL < 1000)
-        //    EditorGUI.PropertyField(position, property.FindPropertyRelative("val_bool"), GUIContent.none);
-        //else if ( property.FindPropertyRelative("stat").intValue - (int)ValueType.INT < 1000)
-        //    EditorGUI.PropertyField(position, property.FindPropertyRelative("val_int"), GUIContent.none);
-        //else if (property.FindPropertyRelative("stat").intValue - (int)ValueType.FLOAT < 1000 )
-        //    EditorGUI.PropertyField(position, property.FindPropertyRelative("val_float"), GUIContent.none);
-        //else if (property.FindPropertyRelative("stat").intValue - (int)ValueType.STRING < 1000)
-        //    EditorGUI.PropertyField(position, property.FindPropertyRelative("val_string"), GUIContent.none);
-
-
+        position.x += position.width + 30;
+        GUIContent label2 = new GUIContent();
+        label2.text = "V";
+        EditorGUI.PrefixLabel(position, label2);
+        position.x += 10;
+        EditorGUI.PropertyField(position, property.FindPropertyRelative("isVisible"), GUIContent.none);
         position.width += 10;
         EditorGUI.EndProperty();
        
