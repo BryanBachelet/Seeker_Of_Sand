@@ -106,6 +106,7 @@ namespace Character
             Train,
             Knockback,
             Dash,
+            SpecialSpell,
         }
 
         [Header("Knockback Parameters")]
@@ -202,13 +203,10 @@ namespace Character
 
         }
 
-
         private bool IsGamepad()
         {
             return m_playerInput.currentControlScheme == "Gamepad";
         }
-
-
 
         public void SlideInput(InputAction.CallbackContext ctx)
         {

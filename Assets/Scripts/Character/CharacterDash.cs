@@ -57,9 +57,11 @@ namespace Character
             }
         }
 
+        
+
         private void StartDash() // Function call at the start of the dash
         {
-            if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_isActiveCooldown || m_isDashValid) return;
+            if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell || m_isActiveCooldown || m_isDashValid) return;
             Instantiate(vfxDash, transform.position, transform.rotation);
             characterModel[0].SetActive(false);
             characterModel[1].SetActive(false);

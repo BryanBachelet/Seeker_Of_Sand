@@ -123,7 +123,6 @@ public class TerrainGenerator : MonoBehaviour
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * TerrainGenerator.roomGeneration_Static + terrainInstantiated.Count;
 
-
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
 
@@ -167,6 +166,7 @@ public class TerrainGenerator : MonoBehaviour
 
                 roomManager.rewardType = rewardList[indexReward];
             }
+            newTerrain.SetActive(false);
         }
 
         if (currentRoomManager.currentRoomType == RoomType.Free)
@@ -203,6 +203,7 @@ public class TerrainGenerator : MonoBehaviour
         lastTerrainSelected = selectedTerrain;
         teleportorAssociated = terrainInstantiated[selectedTerrain].transform.GetComponentInChildren<Teleporter>();
         transformReference = terrainInstantiated[selectedTerrain].transform;
+        terrainInstantiated[selectedTerrain].SetActive(true);
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.fadeInActivation = true;
