@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
-
+using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
 {
@@ -164,7 +164,6 @@ public class RoomManager : MonoBehaviour
                 break;
         }
     }
-
 
     public void Update()
     {
