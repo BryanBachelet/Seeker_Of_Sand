@@ -27,6 +27,7 @@ namespace Character
         public float runSpeed = 7.0f;
         public float combatSpeed = 26.0f;
         public bool combatState;
+        public float ratioSmoothMouvement = 10.0f;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
         [SerializeField] private LayerMask m_objstacleLayer;
@@ -40,6 +41,10 @@ namespace Character
         [SerializeField] public float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
+        private Vector3 m_prevInputDirection;
+        private float m_rotationTime;
+        private Quaternion m_startRotation;
+
 
         private bool m_onProjection;
 
@@ -735,15 +740,15 @@ namespace Character
             currentDirection = direction;
 
 
+            m_velMovement += direction.normalized * (m_velMovement.magnitude / ratioSmoothMouvement + m_accelerationSpeed * Time.deltaTime);
             if (!m_isSlowdown)
             {
-                m_velMovement += direction.normalized * m_accelerationSpeed * Time.deltaTime;
+               
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
             }
             else
             {
 
-                m_velMovement += direction.normalized * m_accelerationSpeed * Time.deltaTime;
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
             m_speedData.currentSpeed = m_velMovement.magnitude;
@@ -822,12 +827,24 @@ namespace Character
 
             if (!combatState || m_characterShoot.m_aimModeState == AimMode.Automatic)
             {
-                Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
+                Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+                if (m_prevInputDirection != inputDirection)
+                {
+                    m_startRotation = transform.rotation;
+                    m_prevInputDirection = inputDirection;
+                    m_rotationTime = 0.0f;
+                }else
+                {
+                    m_rotationTime += .1f;
+                }
 
                 Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
                 float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
-                transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
+
+                Quaternion endRot = Quaternion.AngleAxis(angleDir, Vector3.up);
+
+                transform.rotation = Quaternion.Slerp(m_startRotation, endRot, m_rotationTime);
                 m_avatarTransform.localRotation = Quaternion.identity;
             }
 

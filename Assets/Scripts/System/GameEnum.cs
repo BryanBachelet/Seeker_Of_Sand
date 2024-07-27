@@ -87,7 +87,9 @@ namespace GuerhoubaGames.GameEnum
         BounceNumber= 1012,
         MaxSummon =1013,
         SummonSimultanely = 1014,
-
+        SpellCount =1015,
+       
+        
         
         LifeTime = 2001,
         Range = 2002,
@@ -111,6 +113,7 @@ namespace GuerhoubaGames.GameEnum
         TimeBetweenShot =2021,
         ShootAngle = 2022,
         OffsetDistance = 2023,
+        SpellFrequency = 2024,
     }
 
     
