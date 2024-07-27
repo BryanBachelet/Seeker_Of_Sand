@@ -110,6 +110,7 @@ namespace GuerhoubaGames.GameEnum
         SpeedReturn=2020,
         TimeBetweenShot =2021,
         ShootAngle = 2022,
+        OffsetDistance = 2023,
     }
 
     

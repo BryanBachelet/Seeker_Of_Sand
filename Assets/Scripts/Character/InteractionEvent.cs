@@ -49,6 +49,7 @@ public class InteractionEvent : MonoBehaviour
 
     public GameObject currentInteractibleObjectActive = null;
 
+    public Animator bandeDiscussion;
     public GameObject hintInputInteraction;
     // Start is called before the first frame update
     void Start()
@@ -129,13 +130,14 @@ public class InteractionEvent : MonoBehaviour
             if (!hintInputInteraction.activeSelf)
             {
                 hintInputInteraction.SetActive(true);
+                //bandeDiscussion.SetBool("NearNPC", true);
             }
             if (ui_HintInteractionObject != null)
             {
                 //ui_HintInteractionObject.SetActive(true);
 
                 /// Remove Event UI
-                // m_hintInteractionManager.ActivateAutelData(true);
+                m_hintInteractionManager.ActivateAutelData(true);
             }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
@@ -147,7 +149,7 @@ public class InteractionEvent : MonoBehaviour
                 eventDataInfo = altarBehaviorComponent.GetAltarData();
 
                 // Removing the event animation
-                //m_lastHintAnimator.SetBool("InteractionOn", true); 
+                m_lastHintAnimator.SetBool("InteractionOn", true); 
 
                 if (eventDataInfo[0] == "0")
                 {
@@ -160,7 +162,7 @@ public class InteractionEvent : MonoBehaviour
                 else if (eventDataInfo[0] == "2")
                 {
 
-                    img_ImageReward.sprite = CapsuleManager.instance.capsules[int.Parse(eventDataInfo[3])].sprite;
+                    img_ImageReward.sprite = SpellManager.instance.spellProfils[int.Parse(eventDataInfo[3])].spell_Icon;
                     //Trouver methode pour récupérer le sprite du sort obtenu
                 }
                 else if (eventDataInfo[0] == "3")
@@ -195,6 +197,7 @@ public class InteractionEvent : MonoBehaviour
             {
                 hintInputInteraction.SetActive(false) ;
             }
+            //bandeDiscussion.SetBool("NearNPC", false);
             currentInteractibleObject = null;
             m_socleTransform = null;
             StartCoroutine(CloseUIWithDelay(2));
@@ -220,6 +223,8 @@ public class InteractionEvent : MonoBehaviour
         colliderProche = col;
         if (col.Length > 0)
         {
+            bandeDiscussion.SetBool("NearNPC", true);
+            /*
             if (!hintInputInteraction.activeSelf)
             {
                 hintInputInteraction.SetActive(true);
@@ -251,9 +256,12 @@ public class InteractionEvent : MonoBehaviour
                 }
 
             }
+            */
         }
-        else if (col.Length == 0 && lastTrader != null)
+        else if (col.Length == 0)
         {
+            bandeDiscussion.SetBool("NearNPC", false);
+            /*
             if (hintInputInteraction.activeSelf)
             {
                 hintInputInteraction.SetActive(false);
@@ -265,6 +273,7 @@ public class InteractionEvent : MonoBehaviour
             txt_ObjectifDescriptionPnj.text = "";
             lastTrader = null;
             StartCoroutine(CloseUIWithDelay(2));
+            */
         }
     }
 
@@ -322,6 +331,7 @@ public class InteractionEvent : MonoBehaviour
         lastTrader = trader;
         GlobalSoundManager.PlayOneShot(39, transform.position);
         lastTrader.SetBool("StandUp", true);
+
     }
 
     public void NewArtefact(ArtefactHolder artefact)

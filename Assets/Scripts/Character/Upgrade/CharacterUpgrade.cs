@@ -33,7 +33,7 @@ namespace Character
 
         // Useful Components
        [HideInInspector] public UpgradeManager upgradeManager;
-        private CapsuleManager m_capsuleManager;
+        private SpellManager m_spellManager;
         [HideInInspector] public Character.CharacterShoot m_characterShoot;
         private Character.CharacterSpellBook m_characterInventory;
         private Experience_System experience;
@@ -79,7 +79,7 @@ namespace Character
         public void InitComponents()
         {
             upgradeManager = FindObjectOfType<UpgradeManager>();
-            m_capsuleManager = upgradeManager.GetComponent<CapsuleManager>();
+            m_spellManager = upgradeManager.GetComponent<SpellManager>();
             m_characterShoot = GetComponent<Character.CharacterShoot>();
             m_characterInventory = GetComponent<Character.CharacterSpellBook>();
             experience = GetComponent<Experience_System>();
@@ -104,7 +104,7 @@ namespace Character
 
         public void ApplySpellChoise(SpellSystem.SpellProfil capsule)
         {
-            m_characterShoot.AddSpell(m_capsuleManager.GetCapsuleIndex(capsule));
+            m_characterShoot.AddSpell(m_spellManager.GetCapsuleIndex(capsule));
             CloseSpellChoiceInterface();
         }
 
@@ -166,6 +166,8 @@ namespace Character
             upgradeChoose.Apply(m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink]);
             if (m_UiPlayerInfo)
             {
+                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level++;
+                
                 m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level);
             }
             avatarUpgradeList.Add(upgradeChoose);

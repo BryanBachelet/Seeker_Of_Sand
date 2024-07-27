@@ -43,6 +43,8 @@ namespace Enemies
         public Action OnRecoverAttack;
         public Action<bool> OnFinishAttack;
 
+        public bool variantePrecision = false;
+        public float rangeVariante = 1;
         #region MonoBehavior Functions
         public void Start()
         {
@@ -132,9 +134,17 @@ namespace Enemies
            
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.PREP;
-            
-            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target) 
-                prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position;
+
+            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target)
+            {
+                Vector3 rndPosition = Vector3.zero;
+                if (variantePrecision) 
+                { 
+                    rndPosition = new Vector3(UnityEngine.Random.Range(-rangeVariante, rangeVariante), 0, UnityEngine.Random.Range(-rangeVariante, rangeVariante)); 
+                }
+                prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position + rndPosition;
+            }
+
             if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Self) 
                 prepTargetPosition = transform.position;
 

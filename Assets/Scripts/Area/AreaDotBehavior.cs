@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.VFX;
 using Enemies;
 
 namespace SpellSystem
@@ -10,7 +11,7 @@ namespace SpellSystem
     public class AreaDotBehavior : MonoBehaviour
     {
         private ObjectState state;
-        private AreaMeta m_areaData;
+        private AreaMeta m_areaMeta;
         private DOTMeta m_DotMeta;
 
         private float m_hitFrequencyTime = 0.0f;
@@ -20,15 +21,30 @@ namespace SpellSystem
         private float m_sizeArea = 1.0f;
         private int m_damage = 0;
         private GameElement m_element;
-        public bool isExplotion;
+
+
+        private float m_currentAreaLifetime;
+
         [Header("Feedback Paramets")]
         public int indexSFX;
+        public float damageDelay;
+        public VFX_Spawner m_vfxSpwaner;
+
+
+        private float hitDelayTimer;
+        private bool canHit;
+
+        [Header("Debug Paraemters")]
+        public bool isDebugActive;
+        public Color color;
+        [Range(0, 1)] public float transparency = 0.5f;
+        private SpellProfil profil;
 
         #region Unity Functions
         // Start is called before the first frame update
         void Start()
         {
-            m_areaData = GetComponent<AreaMeta>();
+            m_areaMeta = GetComponent<AreaMeta>();
             m_DotMeta = GetComponent<DOTMeta>();
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
             InitComponent();
@@ -40,21 +56,21 @@ namespace SpellSystem
             UpdateArea();
         }
         #endregion
-       
+
         public void InitComponent()
         {
-            SpellProfil profil = m_areaData.areaData.spellProfil;
+            profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
 
-            if (profil.tagData.spellNatureType == SpellNature.DOT)
+            if (profil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
                 m_hitMaxCount = m_DotMeta.dotData.currentHitCount;
             }
 
-            if (isExplotion)
+            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
@@ -63,12 +79,26 @@ namespace SpellSystem
 
         public void UpdateArea()
         {
-            if(m_hitCount == m_hitMaxCount)
+
+            AreaMouvement();
+            if (hitDelayTimer >= damageDelay)
+            {
+                canHit = true;
+            }
+            else
+            {
+                m_currentAreaLifetime += Time.deltaTime;
+                hitDelayTimer += Time.deltaTime;
+                if (m_vfxSpwaner) m_vfxSpwaner.UpdateTimeValue();
+            }
+
+            if (!canHit) return;
+            if (m_hitCount == m_hitMaxCount)
             {
                 Destroy(this.gameObject);
             }
 
-            if(m_hitFrequencyTimer>m_hitFrequencyTime)
+            if (m_hitFrequencyTimer > m_hitFrequencyTime)
             {
                 ApplyAreaDamage();
                 m_hitCount++;
@@ -77,9 +107,19 @@ namespace SpellSystem
             else
             {
                 m_hitFrequencyTimer += Time.deltaTime;
+                m_currentAreaLifetime += Time.deltaTime;
+                if (m_vfxSpwaner) m_vfxSpwaner.UpdateTimeValue();
             }
 
-            
+          
+        }
+
+        public void AreaMouvement()
+        {
+            if(profil.tagData.spellMovementBehavior == SpellMovementBehavior.OnSelf)
+            {
+                transform.position = m_areaMeta.areaData.characterShoot.transform.position +  new Vector3(0,10,0); 
+            }
         }
 
         public void ApplyAreaDamage()
@@ -90,8 +130,20 @@ namespace SpellSystem
             {
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
-                npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                if (npcHealthComponent) npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
             }
         }
+
+        public float GetCurrentLifeTime() { return m_currentAreaLifetime; }
+
+
+        public void OnDrawGizmos()
+        {
+            if (!isDebugActive) return;
+
+            Gizmos.color = new Color(color.r, color.g, color.b, transparency);
+            Gizmos.DrawSphere(transform.position, m_sizeArea);
+        }
+
     }
 }

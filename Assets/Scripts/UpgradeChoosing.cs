@@ -55,10 +55,10 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void Start()
     {
-        if(m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
+         m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
         for (int i = 0; i < uiUpgradeButton.Length; i++)
         {
-              uiUpgradeButton[i].OnEnter += SetModifySpellStat;
+            uiUpgradeButton[i].OnEnter += SetModifySpellStat;
         }
     }
 
@@ -91,13 +91,14 @@ public class UpgradeChoosing : MonoBehaviour
     {
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
         m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
-        //Debug.Log("Spell index [" + m_upgradeLevelingData.indexSpellFocus + "]");
-        //m_UiPlayerInfo.UpdateLevelSpell(m_upgradeLevelingData.indexSpellFocus, 1);
+
+     
+        
         for (int i = 0; i < upgradeSelectable.Length; i++)
         {
             if (i != index)
             {
-               // if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
+                // if (gameObject.activeSelf) StartCoroutine(SpellFadeOut(i, Time.time));
             }
         }
 
@@ -136,17 +137,25 @@ public class UpgradeChoosing : MonoBehaviour
     {
         int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
-        if(spellProfil.tagData.spellNatureType == SpellNature.PROJECTILE )
+        //if (spellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+        //{
+        //    upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);
+        //    upgradeTextStatBase[1].text = "Speed : " + (spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime));
+        //    upgradeTextStatBase[2].text = "Projectile : " + spellProfil.GetIntStat(StatType.Projectile);
+        //    upgradeTextStatBase[3].text = "Salve : " + spellProfil.GetIntStat(StatType.ShootNumber);
+        //    upgradeTextStatBase[4].text = "";
+        //    upgradeTextStatBase[5].text = "";
+        //}
+
+        string textStatUpgrade = "";
+        for (int i = 0; i < spellProfil.statDatas.Count; i++)
         {
-            upgradeTextStatBase[0].text = "Damage : " + spellProfil.GetIntStat(StatType.Damage);        
-            upgradeTextStatBase[1].text = "Speed : " + (spellProfil.GetFloatStat(StatType.Range) / spellProfil.GetFloatStat(StatType.LifeTime));
-            upgradeTextStatBase[2].text = "Projectile : " + spellProfil.GetIntStat(StatType.Projectile);
-            upgradeTextStatBase[3].text = "Salve : " + spellProfil.GetIntStat(StatType.ShootNumber);
-            upgradeTextStatBase[4].text = "";
-            upgradeTextStatBase[5].text = "";
+            SpellSystem.StatData statData = spellProfil.statDatas[i];
+            if(statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
         }
+        upgradeTextStatBase[0].text = textStatUpgrade;
     }
-      
+
     public void SetModifySpellStat(int index)
     {
         int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
@@ -154,25 +163,26 @@ public class UpgradeChoosing : MonoBehaviour
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
         UpgradeObject stats = m_upgradeLevelingData.upgradeChoose[index];
 
-        //TODO : Rework
-        //float[] baseSpellStats = stats.GetVisibleStat();
-        //float[] spellStatUpgrade = stats.GetVisibleStat();
 
-        //for (int i = 0; i < spellStatUpgrade.Length -1; i++)
-        //{
-        //    if (spellStatUpgrade[i] != 0)
-        //    {
-        //        upgradeTextStatModify[i].text = "-->" + (baseSpellStats[i] + spellStatUpgrade[i]);
-        //    }else
-        //    {
-        //        upgradeTextStatModify[i].text = "";
-        //    }
-        //}
+        string textStatUpgrade = "";
+        for (int i = 0; i < spellProfil.statDatas.Count; i++)
+        {
+
+            SpellSystem.StatData statDataSpell = spellProfil.statDatas[i];
+            if (statDataSpell.isVisible)
+            {
+                if (stats.HasThisStat(statDataSpell.stat)) textStatUpgrade += "-->" + stats.PrewiewApplyValue(statDataSpell) + "\n";
+                else textStatUpgrade += "\n";
+            }
+        }
+        upgradeTextStatModify[0].text = textStatUpgrade;
+
+       
     }
 
 
     public void Update()
     {
-       
+
     }
 }

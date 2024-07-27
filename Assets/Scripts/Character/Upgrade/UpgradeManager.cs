@@ -109,8 +109,10 @@ public class UpgradeManager : MonoBehaviour
         spellUpgradeArrayList.Clear();
         List<UpgradeObject> listAray = new List<UpgradeObject>();
 
+
         for (int i = 0; i < spellProfils.Length; i++)
         {
+
             listAray.Clear();
             int[] validTagValue = spellProfils[i].tagData.GetValidTag();
 
@@ -119,10 +121,11 @@ public class UpgradeManager : MonoBehaviour
             {
                 string spellTagString = Regex.Replace(((SpellTagOrder)j).ToString(), @"[\d-]", string.Empty);
                 Type enumType = Type.GetType("GuerhoubaGames.GameEnum." + spellTagString.ToString());
-                int myEnumMemberCount = enumType.GetEnumNames().Length -1;
+                int myEnumMemberCount = enumType.GetEnumNames().Length - 1;
                 if (validTagValue[j] <= 0)
                 {
                     countTagValue += myEnumMemberCount;
+                    countTagValue++;
                     continue;
                 }
                 else
@@ -130,15 +133,16 @@ public class UpgradeManager : MonoBehaviour
                     int listOffset = m_indexTagUpgradeArray[countTagValue];
                     int elementCount = m_indexTagUpgradeArray[countTagValue + validTagValue[j]];
 
-                    for (int h = 0; h < validTagValue[j]; h++)
+                    for (int h = 1; h < validTagValue[j]; h++)
                     {
-                        listOffset += m_indexTagUpgradeArray[myEnumMemberCount + h];
+                        listOffset += m_indexTagUpgradeArray[countTagValue + h];
                     }
 
-                    listAray.AddRange(m_sortUpgradeList.GetRange(listOffset, elementCount));
 
+                    AddUpgradeToList(ref listAray, m_sortUpgradeList.GetRange(listOffset, elementCount).ToArray(), spellProfils[i]);
 
                     countTagValue += myEnumMemberCount;
+                    countTagValue++;
                 }
 
 
@@ -147,6 +151,24 @@ public class UpgradeManager : MonoBehaviour
             }
 
             spellUpgradeArrayList.Add(listAray.ToArray());
+        }
+    }
+
+
+    private void AddUpgradeToList(ref List<UpgradeObject> listAray, UpgradeObject[] listToAdd, SpellSystem.SpellProfil spellProfil)
+    {
+        for (int i = 0; i < listToAdd.Length; i++)
+        {
+
+            if (listToAdd[i].IsMultiTagUpgrade && !listToAdd[i].IsAllTagMatching( spellProfil))
+            {
+                continue;
+            }
+
+            if (!listAray.Contains(listToAdd[i]))
+            {
+                listAray.Add(listToAdd[i]);
+            }
         }
     }
 
@@ -278,12 +300,13 @@ public class UpgradeManager : MonoBehaviour
     public void SendUpgrade(UpgradeObject upgradeChoose)
     {
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
+        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
         int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
         int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
-        m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
+
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }

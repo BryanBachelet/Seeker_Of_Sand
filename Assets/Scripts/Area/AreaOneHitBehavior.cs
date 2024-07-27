@@ -15,7 +15,11 @@ namespace SpellSystem
         private float  m_sizeArea = 0;
         private int m_damage = 0;
         private GameElement m_element;
-        public bool isExplotion;
+
+        [Header("Debug Paraemters")]
+        public bool isDebugActive;
+        public Color color;
+        [Range(0, 1)] public float transparency = 0.5f;
         
         void Start()
         {
@@ -30,7 +34,7 @@ namespace SpellSystem
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
             
-            if(isExplotion)
+            if(profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
@@ -60,7 +64,14 @@ namespace SpellSystem
                 Vector3 direction = collider[i].transform.position - transform.position;
                 npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
             }
+        }
 
+        public void OnDrawGizmos()
+        {
+            if (!isDebugActive) return;
+
+            Gizmos.color = new Color(color.r, color.g, color.b,transparency);
+            Gizmos.DrawSphere(transform.position, m_sizeArea);
         }
 
     }
