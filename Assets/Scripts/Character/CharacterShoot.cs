@@ -702,7 +702,7 @@ namespace Character
             SpellSystem.SpellProfil spellProfil = GetCurrentWeaponStat(capsuleIndex);
 
             Transform transformUsed = transform;
-            Vector3 position = transformUsed.position + new Vector3(0, 5, 0);
+            Vector3 position = transformUsed.position + new Vector3(0, 3, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.projectorVisorObject.transform.position, rot);
 

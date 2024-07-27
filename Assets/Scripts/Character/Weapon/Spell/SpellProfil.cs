@@ -424,7 +424,7 @@ namespace SpellSystem
         {
 
             bool testResult = tagData.type == BuffType.DAMAGE_SPELL;
-            ManageStat(StatType.Damage, testResult);
+            ManageStat(StatType.Damage, testResult,true);
 
 
             SetupSpellNatureStats(tagData.spellNatureType, tagData.spellNatureType1);

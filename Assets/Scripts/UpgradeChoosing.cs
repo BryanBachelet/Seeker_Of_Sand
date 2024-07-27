@@ -163,20 +163,21 @@ public class UpgradeChoosing : MonoBehaviour
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
         UpgradeObject stats = m_upgradeLevelingData.upgradeChoose[index];
 
-        //TODO : Rework
-        //float[] baseSpellStats = stats.GetVisibleStat();
-        //float[] spellStatUpgrade = stats.GetVisibleStat();
 
-        //for (int i = 0; i < spellStatUpgrade.Length -1; i++)
-        //{
-        //    if (spellStatUpgrade[i] != 0)
-        //    {
-        //        upgradeTextStatModify[i].text = "-->" + (baseSpellStats[i] + spellStatUpgrade[i]);
-        //    }else
-        //    {
-        //        upgradeTextStatModify[i].text = "";
-        //    }
-        //}
+        string textStatUpgrade = "";
+        for (int i = 0; i < spellProfil.statDatas.Count; i++)
+        {
+
+            SpellSystem.StatData statDataSpell = spellProfil.statDatas[i];
+            if (statDataSpell.isVisible)
+            {
+                if (stats.HasThisStat(statDataSpell.stat)) textStatUpgrade += "-->" + stats.PrewiewApplyValue(statDataSpell) + "\n";
+                else textStatUpgrade += "\n";
+            }
+        }
+        upgradeTextStatModify[0].text = textStatUpgrade;
+
+       
     }
 
 
