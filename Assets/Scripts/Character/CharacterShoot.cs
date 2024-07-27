@@ -290,59 +290,30 @@ namespace Character
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime = m_totalLaunchingDuration;
                 
 
-                if (currentSpellProfil.tagData.EqualsSpellNature(SpellNature.PROJECTILE))
+                if (currentSpellProfil.tagData.spellNatureType == SpellNature.PROJECTILE)
                 {
                     if(!isDirectSpellLaunchActivate) m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
 
                     if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
                   
                 }
+
+                if (currentSpellProfil.tagData.spellNatureType == SpellNature.AREA)
+                {
+                    if (!isDirectSpellLaunchActivate) m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.SpellFrequency);
+
+                    if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+
+                }
                 if (!isDirectSpellLaunchActivate)  Shoot();
                 return;
             }
 
 
-            if (currentSpellProfil.tagData.spellNatureType == SpellNature.PROJECTILE)
-            {
-               
+            if (currentSpellProfil.tagData.spellNatureType == SpellNature.PROJECTILE ) UpdateMultipleShoot(StatType.TimeBetweenShot);
+            if (currentSpellProfil.tagData.spellNatureType == SpellNature.AREA) UpdateMultipleShoot(StatType.SpellFrequency);
 
-                if (m_timerBetweenShoot >= currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
-                {
-
-                    if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
-                    gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
-
-                    m_timerBetweenShoot = 0.0f;
-                    if (m_canEndShot)
-                    {
-                        EndShoot();
-                    }
-                    Shoot();
-                }
-                else
-                {
-
-                    m_timerBetweenShoot += Time.deltaTime;
-                    if (m_canalisationType == CanalisationBarType.Continious) m_spellLaunchTime += Time.deltaTime;
-
-                }
-                float ratio = 0;
-                if (m_canalisationType == CanalisationBarType.Continious)
-                {
-                    ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
-                }
-                if (m_canalisationType == CanalisationBarType.ByPart)
-                {
-                    ratio = m_spellLaunchTime / m_totalLaunchingDuration;
-
-                }
-
-                m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
-            }
-            else
-            {
-                Shoot();
-            }
+            if (currentSpellProfil.tagData.spellNatureType == SpellNature.DOT) Shoot();
 
             // m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
@@ -504,14 +475,12 @@ namespace Character
             //  m_spellTimer = 0.0f;
         }
 
-
         public void DeactivateCanalisation()
         {
             m_spellTimer = 0.0f;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
             isCasting = false;
         }
-
 
         public void ActivateCanalisation()
         {
@@ -620,7 +589,6 @@ namespace Character
 
         }
 
-
         public int GetCapsuleIndex(int offset)
         {
             offset = Mathf.Clamp(offset, -spellEquip.Length - 1, spellEquip.Length - 1);
@@ -636,6 +604,7 @@ namespace Character
 
             return m_currentIndexCapsule;
         }
+
         public int GetCurrentCapsuleIndex()
         {
             return m_currentIndexCapsule;
@@ -691,18 +660,21 @@ namespace Character
                 return;
             }
 
-            if (stats.tagData.spellNatureType == SpellNature.DOT)
+            if (stats.tagData.spellNatureType == SpellNature.AREA)
                 endShoot = ShootAttackArea(index);
+
+
+            if (stats.tagData.spellNatureType == SpellNature.DOT)
+                endShoot = ShootAttackDot(index);
         }
 
         private SpellSystem.SpellProfil GetCurrentWeaponStat(int index) { return spellProfils[m_currentIndexCapsule]; }
 
-        public bool ShootAttackArea(int capsuleIndex)
+        public bool ShootAttackDot(int capsuleIndex)
         {
             SpellSystem.SpellProfil spellProfil = GetCurrentWeaponStat(capsuleIndex);
 
             Transform transformUsed = transform;
-            Vector3 position = transformUsed.position + new Vector3(0, 3, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.projectorVisorObject.transform.position, rot);
 
@@ -777,13 +749,32 @@ namespace Character
                 return false;
         }
 
+        private bool ShootAttackArea(int capsuleIndex)
+        {
+            SpellSystem.SpellProfil spellProfil = GetCurrentWeaponStat(capsuleIndex);
 
+            Transform transformUsed = transform;
+            Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
+            Quaternion rot = m_characterAim.GetTransformHead().rotation;
+            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
+
+            SpellSystem.AreaData data = FillAreaData(spellProfil, position);
+            areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
+
+            m_currentStack[m_currentRotationIndex]--;
+
+            if (m_currentStack[m_currentRotationIndex] <= 0)
+                return true;
+            else
+                return false;
+        }
 
         public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent)
         {
 
             onHit(position, tag, agent);
         }
+
         private void StartShoot()
         {
             m_hasBeenLoad = true;
@@ -861,6 +852,7 @@ namespace Character
                 }
             }
         }
+
         private ProjectileData FillProjectileData(SpellSystem.SpellProfil spellProfil, float index, float angle, Transform transformUsed)
         {
             ProjectileData data = new ProjectileData();
@@ -904,7 +896,6 @@ namespace Character
             return areaData;
         }
 
-
         private float GetShootAngle(SpellSystem.SpellProfil spellProfil)
         {
             return spellProfil.GetFloatStat(StatType.ShootAngle) / spellProfil.GetIntStat(StatType.Projectile);
@@ -918,6 +909,42 @@ namespace Character
         private int GetStartIndexProjectile(SpellSystem.SpellProfil spellProfil)
         {
             return spellProfil.GetIntStat(StatType.Projectile) % 2 == 1 ? 0 : 1;
+        }
+
+        public void UpdateMultipleShoot(StatType statType)
+        {
+            if (m_timerBetweenShoot >= currentSpellProfil.GetFloatStat(statType))
+            {
+
+                if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
+                gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
+
+                m_timerBetweenShoot = 0.0f;
+                if (m_canEndShot)
+                {
+                    EndShoot();
+                }
+                Shoot();
+            }
+            else
+            {
+
+                m_timerBetweenShoot += Time.deltaTime;
+                if (m_canalisationType == CanalisationBarType.Continious) m_spellLaunchTime += Time.deltaTime;
+
+            }
+            float ratio = 0;
+            if (m_canalisationType == CanalisationBarType.Continious)
+            {
+                ratio = (m_totalLaunchingDuration - m_spellLaunchTime) / m_totalLaunchingDuration;
+            }
+            if (m_canalisationType == CanalisationBarType.ByPart)
+            {
+                ratio = m_spellLaunchTime / m_totalLaunchingDuration;
+
+            }
+
+            m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
         }
 
         #endregion

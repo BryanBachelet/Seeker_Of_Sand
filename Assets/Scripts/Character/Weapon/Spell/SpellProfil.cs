@@ -159,7 +159,6 @@ namespace SpellSystem
     }
 
     [CreateAssetMenu(fileName = "Spell Profil", menuName = "Spell/Spell Profil")]
-    [CanEditMultipleObjects]
     public class SpellProfil : ScriptableObject
     {
         public string name;
@@ -543,6 +542,10 @@ namespace SpellSystem
             bool testResult2 = tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE;
             ManageStat(StatType.AngleTrajectory, testResult2 && testResult);
             ManageStat(StatType.TrajectoryTimer, testResult2 && testResult);
+
+            testResult = tagData.spellNatureType == SpellNature.AREA;
+            ManageStat(StatType.SpellCount, testResult, true);
+            ManageStat(StatType.SpellFrequency, testResult);
 
             testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA);
             ManageStat(StatType.Size, testResult, true);

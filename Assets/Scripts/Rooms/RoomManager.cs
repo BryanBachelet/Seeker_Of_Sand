@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
-
+using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
 {
@@ -42,6 +42,11 @@ public class RoomManager : MonoBehaviour
     public Action<RoomType, RewardType> onCreateRoom;
 
     public AnimationCurve enemyCountCurve;
+
+    public float timeReset = 0.2f;
+
+    public float timerReset = 0.0f;
+
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -160,7 +165,6 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-
     public void Update()
     {
         if (!isRoomHasBeenValidate) return;
@@ -170,6 +174,8 @@ public class RoomManager : MonoBehaviour
             ActivateTeleporters();
             isTeleporterActive = true;
         }
+
+       
     }
     public void ValidateRoom()
     {
@@ -182,6 +188,9 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.isStopSpawn = true;
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
+
+     
+
     }
 
     #region Room Validation Functions

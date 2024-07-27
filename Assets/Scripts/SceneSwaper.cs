@@ -56,7 +56,7 @@ public class SceneSwaper : MonoBehaviour
         {
 
             textGameStart.color = new Color(0, 0, 0, 1);
-            tempsStartGame = 4;
+            tempsStartGame = 1;
             playerEnter = true;
         }
     }
