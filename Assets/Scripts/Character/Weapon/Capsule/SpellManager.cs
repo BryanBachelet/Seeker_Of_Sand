@@ -1,20 +1,22 @@
+using SpellSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellManager : MonoBehaviour
 {
+    public bool updateList;
     public SpellSystem.SpellProfil[] spellProfils;
 
     public static SpellManager instance;
     public static int capsuleCount;
 
-    public static List<int> m_capsulePool =  new List<int>();
+    public static List<int> m_capsulePool = new List<int>();
 
     private int indexAttackInfo;
     private int indexBuffInfo;
-    
-    public static int GetRandomCapsuleIndex(bool activeRemove =false)
+
+    public static int GetRandomCapsuleIndex(bool activeRemove = false)
     {
         int index = -1;
 
@@ -26,7 +28,7 @@ public class SpellManager : MonoBehaviour
 
         int listIndex = Random.Range(0, m_capsulePool.Count);
         index = m_capsulePool[listIndex];
-      if(activeRemove)  m_capsulePool.RemoveAt(listIndex);
+        if (activeRemove) m_capsulePool.RemoveAt(listIndex);
 
         return index;
     }
@@ -47,7 +49,7 @@ public class SpellManager : MonoBehaviour
         int index = -1;
         for (int i = 0; i < spellProfils.Length; i++)
         {
-            if(spellProfile == spellProfils[i])
+            if (spellProfile == spellProfils[i])
             {
                 return i;
             }
@@ -84,8 +86,9 @@ public class SpellManager : MonoBehaviour
 
     public void OnValidate()
     {
+        if (!updateList) return;
         List<SpellSystem.SpellProfil> spellProfilsList = new List<SpellSystem.SpellProfil>(spellProfils.Length);
-
+        SpellComparer spellComparer = new SpellComparer();
         for (int i = 0; i < spellProfils.Length; i++)
         {
             if (spellProfils[i].id >= spellProfilsList.Count)
@@ -96,7 +99,21 @@ public class SpellManager : MonoBehaviour
             spellProfilsList.Insert(spellProfils[i].id, spellProfils[i]);
         }
 
+        spellProfilsList.Sort(spellComparer);
         spellProfils = spellProfilsList.ToArray();
     }
 
+
+}
+
+public class SpellComparer : IComparer<SpellSystem.SpellProfil>
+{
+    public int Compare(SpellProfil x, SpellProfil y)
+    {
+        if (x.id == y.id) return 0;
+        if (x.id < y.id) return -1;
+        
+        return 1;
+
+    }
 }

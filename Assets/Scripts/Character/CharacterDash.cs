@@ -34,6 +34,12 @@ namespace Character
 
         public Material m_dashDecalFeedback;
         public UnityEngine.Rendering.HighDefinition.DecalProjector m_dashHolderDecal;
+
+        private bool m_isDashFinish;
+        private bool m_isSpellDash;
+        private float m_spellDashDistance;
+        private float m_spellDashDuration;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -57,8 +63,6 @@ namespace Character
             }
         }
 
-        
-
         private void StartDash() // Function call at the start of the dash
         {
             if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell || m_isActiveCooldown || m_isDashValid) return;
@@ -67,7 +71,7 @@ namespace Character
             characterModel[1].SetActive(false);
             //characterModel[2].SetActive(true);
             characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
-            m_isDashValid = CalculateDashEndPoint();
+            m_isDashValid = CalculateDashEndPoint(m_dashDistance);
             if (!m_isDashValid) return;
             GlobalSoundManager.PlayOneShot(28, transform.position);
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.Dash);
@@ -76,14 +80,26 @@ namespace Character
 
         }
 
-        private bool CalculateDashEndPoint() // Function that test where the player should arrive
+        private bool CalculateDashEndPoint(float dashDistance, bool isDetermineByMouse = false) // Function that test where the player should arrive
         {
-            Vector3 m_direction = m_characterMouvement.GetDirection();
+            Vector3 m_direction = Vector3.zero;
+            if (!isDetermineByMouse)
+            {
+
+                m_direction = m_characterMouvement.GetDirection();
+            }
+            else
+            {
+                m_direction = m_characterAim.GetAimDirection();
+               m_direction = m_characterMouvement.OrientateWithSlopeDirection(m_direction);
+            }
+
+           
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
             // Check if obstacle in the front of the player 
-            if (Physics.Raycast(transform.position, m_direction.normalized, out hit, m_dashDistance, m_obstacleLayerMask))
+            if (Physics.Raycast(transform.position, m_direction.normalized, out hit, dashDistance, m_obstacleLayerMask))
             {
                 frontPoint = hit.point;
                 m_endPoint = hit.point + hit.normal * 4.5f; ;
@@ -91,9 +107,9 @@ namespace Character
             }
             else
             {
-                frontPoint += m_direction.normalized * m_dashDistance;
+                frontPoint += m_direction.normalized * dashDistance;
                 // Check if a ground exist to dash on it
-                if (Physics.Raycast(frontPoint, Vector3.down, out hit, m_dashDistance, m_obstacleLayerMask))
+                if (Physics.Raycast(frontPoint, Vector3.down, out hit, dashDistance, m_obstacleLayerMask))
                 {
                     m_endPoint = hit.point + hit.normal * 4.5f;
 
@@ -110,8 +126,8 @@ namespace Character
         {
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.None);
             m_isDashValid = false;
-            if (m_characterMouvement.m_slidingEffectVfx.HasFloat("Rate"))  m_characterMouvement.m_slidingEffectVfx.SetFloat("Rate", 0);
-            m_isActiveCooldown = true;
+            if (m_characterMouvement.m_slidingEffectVfx.HasFloat("Rate")) m_characterMouvement.m_slidingEffectVfx.SetFloat("Rate", 0);
+            if (!m_isSpellDash) m_isActiveCooldown = true;
             m_dashCooldownTimer = 0.0f;
             characterModel[0].SetActive(true);
             characterModel[1].SetActive(true);
@@ -119,17 +135,23 @@ namespace Character
             characterModel[2].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
 
-        private void DashMouvement()
+        private void DashMouvement(float dashDuration)
         {
             if (!m_isDashValid) return;
 
-            if (m_dashTimer > m_dashDuration)
+            if (m_dashTimer > dashDuration)
             {
                 EndDash();
+
+                if (m_isSpellDash)
+                {
+                    m_isSpellDash = false;
+                    m_isDashFinish = true;
+                }
             }
             else
             {
-                transform.position = Vector3.Lerp(m_startPoint, m_endPoint, m_dashTimer / m_dashDuration);
+                transform.position = Vector3.Lerp(m_startPoint, m_endPoint, m_dashTimer / dashDuration);
                 m_dashTimer += Time.deltaTime;
 
             }
@@ -137,7 +159,15 @@ namespace Character
 
         public void Update()
         {
-            DashMouvement();
+            if (!m_isSpellDash)
+            {
+                DashMouvement(m_dashDuration);
+            }
+            else
+            {
+                DashMouvement(m_spellDashDuration);
+            }
+
 
             if (m_isActiveCooldown)
             {
@@ -151,9 +181,27 @@ namespace Character
                     m_dashCooldownTimer += Time.deltaTime;
                 }
                 float dashFillFeedback = m_dashCooldownTimer / m_dashCooldownDuration;
-               if(m_dashUI != null) m_dashUI.fillAmount = dashFillFeedback;
+                if (m_dashUI != null) m_dashUI.fillAmount = dashFillFeedback;
                 m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);
             }
+        }
+
+        public void SpellDash(float duration, float distance)
+        {
+
+            Instantiate(vfxDash, transform.position, transform.rotation);
+            characterModel[0].SetActive(false);
+            characterModel[1].SetActive(false);
+            //characterModel[2].SetActive(true);
+            characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
+            m_isDashValid = CalculateDashEndPoint(distance, true);
+            if (!m_isDashValid) return;
+            m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.SpecialSpell);
+            m_spellDashDistance = distance;
+            m_spellDashDuration = duration;
+            m_isSpellDash = true;
+            m_dashTimer = 0.0F;
+            m_isDashFinish = false;
         }
 
     }

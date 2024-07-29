@@ -95,6 +95,7 @@ namespace Character
         [SerializeField] private float m_TimeAutoWalk = 2;
 
         private CharacterSpellBook m_characterSpellBook;
+        private CharacterDash m_characterDash;
 
         public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
         public event OnHit onHit = delegate { };
@@ -272,6 +273,9 @@ namespace Character
 
             if (!m_CharacterMouvement.combatState || hasShootBlock) return;
 
+            if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell) return;
+    
+
             ShotCanalisation();
             if (!m_shootInputActive) m_CharacterMouvement.m_SpeedReduce = 1;
             if (IsRealoadingSpellRotation || !m_shootInputActive) return;
@@ -286,7 +290,12 @@ namespace Character
 
             if (!m_isShooting)
             {
-                m_isShooting = true;
+
+               if( currentSpellProfil.tagData.mouvementBehaviorType ==  MouvementBehavior.Dash)
+                {
+                    m_characterDash.SpellDash(currentSpellProfil.GetFloatStat(StatType.MouvementTravelTime), currentSpellProfil.GetFloatStat(StatType.DistanceDash));
+                }
+                    m_isShooting = true;
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime = m_totalLaunchingDuration;
                 
 
@@ -302,7 +311,7 @@ namespace Character
                 {
                     if (!isDirectSpellLaunchActivate) m_timerBetweenShoot = currentSpellProfil.GetFloatStat(StatType.SpellFrequency);
 
-                    if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+                    if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentSpellProfil.GetFloatStat(StatType.SpellFrequency);
 
                 }
                 if (!isDirectSpellLaunchActivate)  Shoot();
@@ -324,6 +333,7 @@ namespace Character
         {
             m_characterAim = GetComponent<CharacterAim>();
             m_CharacterMouvement = GetComponent<CharacterMouvement>();
+            m_characterDash = GetComponent<CharacterDash>();
             pauseScript = GetComponent<PauseMenu>();
             m_rigidbody = GetComponent<Rigidbody>();
             m_buffManager = GetComponent<Buff.BuffsManager>();
