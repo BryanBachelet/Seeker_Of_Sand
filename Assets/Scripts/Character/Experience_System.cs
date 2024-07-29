@@ -61,7 +61,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     void Update()
     {
         Collider[] experienceTouched = Physics.OverlapSphere(transform.position, m_RadiusPickupXp, m_ExperienceLayer);
-        if (experienceTouched.Length > 0)
+        if (experienceTouched.Length > 0 && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
             for (int i = 0; i < experienceTouched.Length; i++)
             {

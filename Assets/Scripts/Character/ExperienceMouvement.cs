@@ -19,7 +19,7 @@ public class ExperienceMouvement : MonoBehaviour
     private bool m_isFollowPlayer = false;
     private bool m_isGrounded = false;
     private bool m_isDropping = false;
-    private float m_durationOfCuve = 1f;
+    public float m_durationOfCuve = 1f;
 
     private float m_timeSpawned = 0;
     private float m_tempsEcoule;

@@ -67,6 +67,8 @@ namespace Enemies
         public EventInstance moveSoundInstance;
         public int indexDestroySound;
         public AnimationCurve maxHealthEvolution;
+
+        public GameObject dissonancePrefabObject;
         void Awake()
         {
             InitComponent();
@@ -200,6 +202,9 @@ namespace Enemies
                 Debug.Log("Pause le son 2 le son !!");
             }
             GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
+            GameObject dissonanceInstance = Instantiate(dissonancePrefabObject, transform.position, transform.rotation);
+            ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
+            ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction / 2);
             Instantiate(death_vfx, transform.position, transform.rotation);

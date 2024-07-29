@@ -809,7 +809,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8394b85b329b04943ad5aefc533a9bf3, type: 2}
+  - {fileID: 2100000, guid: 79472e7934dfcbb419f7879e1e512fd6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4083,6 +4083,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6846487013225012650, guid: 50436a93b632eb043ac7cf8c2fffd60b,
         type: 3}
+      propertyPath: vfxMesh
+      value: 
+      objectReference: {fileID: 1188361826493709873}
+    - target: {fileID: 6846487013225012650, guid: 50436a93b632eb043ac7cf8c2fffd60b,
+        type: 3}
       propertyPath: rewardAnimator
       value: 
       objectReference: {fileID: 1884443376304641078}
@@ -4096,6 +4101,11 @@ PrefabInstance:
       propertyPath: goDestroy.Array.size
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 6846487013225012650, guid: 50436a93b632eb043ac7cf8c2fffd60b,
+        type: 3}
+      propertyPath: materialRewardChange
+      value: 
+      objectReference: {fileID: 2100000, guid: 8394b85b329b04943ad5aefc533a9bf3, type: 2}
     - target: {fileID: 6846487013225012650, guid: 50436a93b632eb043ac7cf8c2fffd60b,
         type: 3}
       propertyPath: goDestroy.Array.data[0]
@@ -4164,7 +4174,7 @@ PrefabInstance:
     - target: {fileID: 7690304006470811829, guid: 50436a93b632eb043ac7cf8c2fffd60b,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8026299283818731282, guid: 50436a93b632eb043ac7cf8c2fffd60b,
         type: 3}
@@ -4194,14 +4204,14 @@ PrefabInstance:
     - target: {fileID: 8397339587645249454, guid: 50436a93b632eb043ac7cf8c2fffd60b,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2616434183341146665, guid: 50436a93b632eb043ac7cf8c2fffd60b,
         type: 3}
-      insertIndex: 1
+      insertIndex: 0
       addedObject: {fileID: 8934370474295620580}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50436a93b632eb043ac7cf8c2fffd60b, type: 3}
@@ -7156,6 +7166,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &38709133265329312 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7546476394268817275, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7231,6 +7242,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &86719331983107541 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1655095636156510706, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7312,6 +7324,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &99577473040268428 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1634181439909619881, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7405,6 +7418,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &286167317554681503 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1455975338034528956, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7492,6 +7506,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &329226870090910377 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1395452242078932622, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7579,6 +7594,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &409738759653404417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7898278794451813594, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7672,6 +7688,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &481093587056979445 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7971034468237133358, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7747,6 +7764,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &597083788459302503 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -2271299624153745988, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7840,6 +7858,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &1166569674013816170 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8647898080311680689, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7921,6 +7940,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1253661943247327058 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8743205866254787721, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -7996,6 +8016,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1295245287365777320 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -447440528880223117, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8071,6 +8092,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &1321517188062471875 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -403910625255895784, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8152,6 +8174,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &1450113859541491349 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -275797841387719346, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8245,6 +8268,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1591423662656822577 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -133380725170030870, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8320,6 +8344,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &1619963078011947827 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -123639693887528728, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8401,6 +8426,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1697262313458415943 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9204828329793557148, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8476,6 +8502,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1714902757536887690 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -154530561501103, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8551,6 +8578,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1789838594512282690 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1088405204658499687, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8626,6 +8654,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &1881463449835515304 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8227989135190066803, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8701,6 +8730,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &1913180784274176319 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8268334335209722596, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8794,6 +8824,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &2052695465827175111 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -842351067269455588, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8869,6 +8900,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &2145445220522699729 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8499940131225206794, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -8944,6 +8976,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &2147221210352131286 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -720703637765114099, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9019,6 +9052,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2186422866455550910 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -692356359998705563, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9100,6 +9134,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &2241089910540117980 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -636679999119684601, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9175,6 +9210,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2246322137060531062 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -639661121489178451, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9268,6 +9304,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2356692473280146237 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -3997126238343298842, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9349,6 +9386,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &2632785086971153473 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5528860797864257434, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9430,6 +9468,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &2745509695264701361 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3591058810070888342, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9505,6 +9544,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2824854495597671911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5692580432589561404, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9586,6 +9626,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2849683174054368760 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5746564759562468899, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9667,6 +9708,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2944951112278526834 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4544856725192941399, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9754,6 +9796,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &2983697790855767270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4513797764038537411, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9835,6 +9878,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &3026207266805034172 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4481993169050138777, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9910,6 +9954,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &3035156422571473576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4768457835955261811, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -9997,6 +10042,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &3149368376139650280 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4357460967371325645, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10078,6 +10124,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &3295498975468467251 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4213104979795075096, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10153,6 +10200,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &3295694963867615397 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4211054115246363778, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10252,6 +10300,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &3697909450148413235 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6584931713010586856, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10327,6 +10376,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &3708307061727827857 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6576786166598122570, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10408,6 +10458,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &3958491335349117776 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2387858425428670325, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10483,6 +10534,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4055958430778768408 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5799041170437117891, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10558,6 +10610,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4078183669019941378 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3410522355545460263, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10633,6 +10686,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4110594297510553397 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -3370875943910880018, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10720,6 +10774,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4195557838682136312 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5911643204227544355, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10813,6 +10868,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4247499332297244419 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3260083109787495208, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10888,6 +10944,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4301017871727643212 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6017853067712160151, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -10963,6 +11020,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4355519751562316564 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6071441289906577615, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11044,6 +11102,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4427459708145363464 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6143616507316224467, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11119,6 +11178,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4531066428467890727 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6256178713291022844, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11206,6 +11266,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4658137015659978216 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6298570622753147341, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11281,6 +11342,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4659219432944732841 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6297401243437358734, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11356,6 +11418,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &4676731561458284291 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6281137057653809960, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11431,6 +11494,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4698969088760950967 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6267344984908260500, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11530,6 +11594,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4817192631896258794 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6131115837226314959, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11611,6 +11676,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4878549983679347634 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3136733847105130601, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11704,6 +11770,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &4974910731516186852 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3258797982922423103, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11827,6 +11894,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &5323384093183904260 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2437441548290728415, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11914,6 +11982,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &5547668467041985800 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2652262425553325779, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -11989,6 +12058,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &5635142985839356531 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2740424138864296360, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12064,6 +12134,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &5693065062118921321 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2824365059061170098, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12139,6 +12210,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &5700818615764624132 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2823367601571301599, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12220,6 +12292,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &5752806176222802475 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6348405107973269008, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12301,6 +12374,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &5790955680377703040 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4066299724773531995, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12376,6 +12450,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &5815614427143272657 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4073166174179185418, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12463,6 +12538,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &5905486397446320724 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5059938099897509489, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12550,6 +12626,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &6074052894297355438 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4865959761774747787, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12625,6 +12702,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &6082996226984155324 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4874907613827288217, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12724,6 +12802,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &6274146016427196692 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4674240519616337201, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12805,6 +12884,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &6303225579646331955 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4560584878020429800, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12886,6 +12966,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &6353282566402514337 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5757683515599735174, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -12961,6 +13042,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &6446382000837237319 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5672886494336601700, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13048,6 +13130,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &6685932493881872501 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5405786706667979858, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13147,6 +13230,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &6863254167117824755 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3966774899452913960, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13222,6 +13306,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &6954870631106123983 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 628063520746124052, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13297,6 +13382,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &7008315082527984769 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 680453540296222554, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13372,6 +13458,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &7070422347121066381 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 733191898523904598, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13453,6 +13540,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &7099980224589631184 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8449931672884730613, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13528,6 +13616,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &7145642588570582568 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8423541514118736397, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13609,6 +13698,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &7222559946952471399 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 867028196732983484, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13770,6 +13860,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &7380533616032618399 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1035565904376675396, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13845,6 +13936,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &7391852702394959566 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8167595330274595563, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13920,6 +14012,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &7444890915807887184 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8114803338679790453, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -13995,6 +14088,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &7484708582236859460 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8075803776933492833, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14088,6 +14182,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &7869368232917806260 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8861288312747620497, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14175,6 +14270,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8063399995814659963 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8658999180968072032, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14250,6 +14346,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8115682679892349449 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1770846946392717778, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14325,6 +14422,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &8115838759850316235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1770686332019751440, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14412,6 +14510,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8428946761682198095 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2074576026300298644, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14487,6 +14586,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8581308494414306985 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2244220950869439858, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14562,6 +14662,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &8613232775322336075 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2286601690469781648, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14643,6 +14744,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8685589011494620219 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1205439386871195616, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14718,6 +14820,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8694476601706248421 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8026819801169931458, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14793,6 +14896,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &8751992583843206595 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1244875237607570968, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14874,6 +14978,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &8782352227755317099 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1284321242826144944, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -14949,6 +15054,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &8824434944506430997 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7906828528928346674, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -15036,6 +15142,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &9067194190201902115 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1578186897588289528, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -15111,6 +15218,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!1 &9071146082497424923 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7651384039265548864, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -15186,6 +15294,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &9084254285585212755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1594903911204179592, guid: e15b1072efe29f14d8a86ae978ae0142,
@@ -15267,6 +15376,7 @@ MonoBehaviour:
   quantity: 0
   cristalType: 0
   m_destruction: 0
+  m_durationOfCuve: 1
 --- !u!4 &9155480937030451316 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1674548426019908527, guid: e15b1072efe29f14d8a86ae978ae0142,

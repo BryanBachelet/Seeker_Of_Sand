@@ -18,11 +18,23 @@ public class RewardTypologie : MonoBehaviour
     private ExperienceMouvement xpMovement;
 
     public GameObject[] goDestroy;
+    public MeshRenderer vfxMesh;
+    private Material vfxReward;
+
+    public Material materialRewardChange;
     // Start is called before the first frame update
 
+    public void Update()
+    {
+        if(TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
+        {
+            vfxMesh.material = materialRewardChange;
+        }
+    }
     private void Start()
     {
         xpMovement = this.GetComponent<ExperienceMouvement>();
+        vfxReward = vfxMesh.material;
         mat = meshDisplayReward.material;
         switch (rewardType)
         {
@@ -50,7 +62,7 @@ public class RewardTypologie : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player")
+        if(other.tag == "Player" && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
             rewardDistribution.RewardValidate();
 

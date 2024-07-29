@@ -99,7 +99,14 @@ public class PullingSystem : MonoBehaviour
         if (activeDebug) Debug.Log(type.ToString() + " is reset");
     }
 
-    public int GetAllEnemyCount()
+    public void ResetEnemyNavMesh(GameObject instance, EnemyType type)
+    {
+        instance.GetComponent<NpcMetaInfos>().state = NpcState.MOVE;
+        instance.GetComponent<NpcMetaInfos>().SetPauseState();
+        instance.GetComponent<NavMeshAgent>().updatePosition = false;
+        instance.GetComponent<NavMeshAgent>().enabled = false;
+    }
+        public int GetAllEnemyCount()
     {
         int maxPop = 0;
         for (int i = 0; i < m_enemyInfoArray.Count; i++)
