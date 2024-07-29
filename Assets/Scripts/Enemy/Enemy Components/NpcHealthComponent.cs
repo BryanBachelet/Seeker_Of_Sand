@@ -241,6 +241,7 @@ namespace Enemies
             m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             death = false;
+            if (hasDeathAnimation) m_entityAnimator.ResetTrigger("Death");
             m_npcInfo.state = NpcState.MOVE;
             if (!isMassed)
             {
