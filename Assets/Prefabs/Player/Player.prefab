@@ -5341,6 +5341,7 @@ GameObject:
   - component: {fileID: 6427973256731412273}
   - component: {fileID: 6567554259978687270}
   - component: {fileID: 7572387518113370639}
+  - component: {fileID: 6695158059545031928}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -5496,6 +5497,7 @@ MonoBehaviour:
   runSpeed: 60
   combatSpeed: 30
   combatState: 0
+  ratioSmoothMouvement: 10
   initialSpeed: 10
   m_groundLayerMask:
     serializedVersion: 2
@@ -6092,7 +6094,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gsm: {fileID: 0}
-  launcherProfil: {fileID: 11400000, guid: f034fd120e5bbc449b7b41ba84a30217, type: 2}
   projectileNumber: 5
   baseTimeBetweenSpell: 0
   reloadTime: 1
@@ -6101,18 +6102,12 @@ MonoBehaviour:
   activeRandom: 1
   spellEquip: 
   maxSpellIndex: 0
-  capsuleIndex: 
-  m_capsuleManager: {fileID: 0}
+  spellIndex: 
+  m_spellManger: {fileID: 0}
   m_OuterCircleHolder: {fileID: 561152201}
   avatarTransform: {fileID: 6632142262200979151}
   bookTransform: {fileID: 399534501218191723}
-  launcherStats:
-    slotCapsule: 0
-    timeBetweenCapsule: 0
-    reloadTime: 0
-    rangeAdd: 0
-    degatAdd: 0
-  capsuleStatsAlone: []
+  spellProfils: []
   m_cameraShake: {fileID: 0}
   m_cameraBehavior: {fileID: 0}
   m_CharacterMouvement: {fileID: 0}
@@ -6127,6 +6122,7 @@ MonoBehaviour:
   - {fileID: 6096077348070129589}
   - {fileID: 2396684176717125231}
   m_SpellReadyVFX: []
+  isDirectSpellLaunchActivate: 1
   m_textCurrentLayout: {fileID: 0}
   m_lastTimeShot: 0
   m_TimeAutoWalk: 89000000
@@ -6427,6 +6423,7 @@ MonoBehaviour:
     hasBeenTaken: 0
   upgradePointTextDisplay: {fileID: 0}
   baseGameInterfaceUI: {fileID: 0}
+  upgradeManager: {fileID: 0}
   m_characterShoot: {fileID: 0}
   isDebugActive: 0
 --- !u!114 &1983534973
@@ -6492,6 +6489,7 @@ MonoBehaviour:
   m_hintInteractionManager: {fileID: 0}
   mainCamera: {fileID: 0}
   currentInteractibleObjectActive: {fileID: 0}
+  bandeDiscussion: {fileID: 0}
   hintInputInteraction: {fileID: 0}
 --- !u!114 &1983534984
 MonoBehaviour:
@@ -6784,30 +6782,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_rotationSize: 4
   m_spellsRotationArray:
-  - name: 
-    description: 
-    type: 0
-    elementType: 0
-    sprite: {fileID: 0}
-    materialToUse: {fileID: 0}
-  - name: 
-    description: 
-    type: 0
-    elementType: 0
-    sprite: {fileID: 0}
-    materialToUse: {fileID: 0}
-  - name: 
-    description: 
-    type: 0
-    elementType: 0
-    sprite: {fileID: 0}
-    materialToUse: {fileID: 0}
-  - name: 
-    description: 
-    type: 0
-    elementType: 0
-    sprite: {fileID: 0}
-    materialToUse: {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &8160340498062522489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6976,6 +6954,18 @@ MonoBehaviour:
   disparitionVFX: {fileID: 3702050839109649407}
   eventHolder: {fileID: 0}
   dayController: {fileID: 0}
+--- !u!114 &6695158059545031928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a02c9e7599a61249852865ef325dfc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7080172677212411336
 GameObject:
   m_ObjectHideFlags: 0

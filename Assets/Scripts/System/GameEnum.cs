@@ -88,6 +88,7 @@ namespace GuerhoubaGames.GameEnum
         MaxSummon =1013,
         SummonSimultanely = 1014,
         SpellCount =1015,
+        AreaTargetSimulately = 1016,
        
         
         
@@ -114,6 +115,7 @@ namespace GuerhoubaGames.GameEnum
         ShootAngle = 2022,
         OffsetDistance = 2023,
         SpellFrequency = 2024,
+        LifeTimeSummon = 2025,
     }
 
     

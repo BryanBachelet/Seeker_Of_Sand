@@ -13,6 +13,7 @@ namespace SpellSystem
         private ObjectState state;
         private AreaMeta m_areaMeta;
         private DOTMeta m_DotMeta;
+        private SummonsMeta m_summonMeta;
 
         private float m_hitFrequencyTime = 0.0f;
         private float m_hitFrequencyTimer = 0.0f;
@@ -22,7 +23,7 @@ namespace SpellSystem
         private int m_damage = 0;
         private GameElement m_element;
 
-
+        public bool isLimitTarget;
         private float m_currentAreaLifetime;
 
         [Header("Feedback Paramets")]
@@ -46,6 +47,8 @@ namespace SpellSystem
         {
             m_areaMeta = GetComponent<AreaMeta>();
             m_DotMeta = GetComponent<DOTMeta>();
+            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+                m_summonMeta = GetComponent<SummonsMeta>();
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
             InitComponent();
         }
@@ -74,6 +77,12 @@ namespace SpellSystem
             {
                 m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
+            }
+
+            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            {
+                m_hitMaxCount = (int)(profil.GetFloatStat(StatType.LifeTimeSummon) / m_hitFrequencyTime);
+                m_summonMeta.OnSpecialSkill += ApplyAreaDamage;
             }
         }
 
@@ -111,14 +120,14 @@ namespace SpellSystem
                 if (m_vfxSpwaner) m_vfxSpwaner.UpdateTimeValue();
             }
 
-          
+
         }
 
         public void AreaMouvement()
         {
-            if(profil.tagData.spellMovementBehavior == SpellMovementBehavior.OnSelf)
+            if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.OnSelf)
             {
-                transform.position = m_areaMeta.areaData.characterShoot.transform.position +  new Vector3(0,10,0); 
+                transform.position = m_areaMeta.areaData.characterShoot.transform.position + new Vector3(0, 10, 0);
             }
         }
 
@@ -126,16 +135,45 @@ namespace SpellSystem
         {
             Collider[] collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask);
 
-            for (int i = 0; i < collider.Length; i++)
+            if (collider.Length == 0) return;
+
+            if (!isLimitTarget)
             {
-                NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
-                Vector3 direction = collider[i].transform.position - transform.position;
-                if (npcHealthComponent) npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                for (int i = 0; i < collider.Length && isLimitTarget && i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
+                {
+                    NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
+                    Vector3 direction = collider[i].transform.position - transform.position;
+                    if (npcHealthComponent)
+                    {
+                        npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                        m_DotMeta.OnDamage.Invoke(npcHealthComponent.transform.position);
+                    }
+                }
+            }
+            else
+
+            {
+                List<Collider> colliderDraw = new List<Collider>(collider);
+
+              
+                for (int i = 0;  i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
+                {
+                    int index = Random.RandomRange(0, colliderDraw.Count);
+                    NpcHealthComponent npcHealthComponent = colliderDraw[index].GetComponent<NpcHealthComponent>();
+                    Vector3 direction = colliderDraw[index].transform.position - transform.position;
+                    if (npcHealthComponent)
+                    {
+                        npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                        m_DotMeta.OnDamage.Invoke(npcHealthComponent.transform.position);
+                    }
+
+                    colliderDraw.RemoveAt(index);
+                    if (colliderDraw.Count == 0) break;
+                }
             }
         }
 
         public float GetCurrentLifeTime() { return m_currentAreaLifetime; }
-
 
         public void OnDrawGizmos()
         {
