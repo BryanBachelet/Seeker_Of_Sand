@@ -28,6 +28,11 @@ public class TeleporterBehavior : MonoBehaviour
         if (cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
     }
 
+    private void OnEnable()
+    {
+        if (cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
+    }
+
     // Update is called once per frame
     void Update()
     {
