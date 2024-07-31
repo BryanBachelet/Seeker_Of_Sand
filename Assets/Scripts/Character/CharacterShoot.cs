@@ -378,6 +378,11 @@ namespace Character
                 SpellManager.RemoveSpecificSpellFromSpellPool(spellIndex[i]);
             }
 
+            SpellManager.RemoveSpecificSpellFromSpellPool(0);
+            SpellManager.RemoveSpecificSpellFromSpellPool(1);
+            SpellManager.RemoveSpecificSpellFromSpellPool(2);
+            SpellManager.RemoveSpecificSpellFromSpellPool(3);
+
             //  Set to Spell Equip
             spellEquip = new int[4];
             for (int i = 0; i < spellEquip.Length; i++)

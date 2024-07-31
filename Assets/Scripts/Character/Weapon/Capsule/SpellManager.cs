@@ -13,6 +13,7 @@ public class SpellManager : MonoBehaviour
 
     public static List<int> m_capsulePool = new List<int>();
 
+    public bool isDebugActive;
     private int indexAttackInfo;
     private int indexBuffInfo;
 
@@ -41,7 +42,13 @@ public class SpellManager : MonoBehaviour
     }
     public static void RemoveSpecificSpellFromSpellPool(int index)
     {
-        m_capsulePool.Remove(index);
+        if (m_capsulePool.Contains(index))
+        {
+            if (instance.isDebugActive)
+                Debug.Log(instance.spellProfils[index].name);
+
+            m_capsulePool.Remove(index);
+        }
     }
 
     public int GetCapsuleIndex(SpellSystem.SpellProfil spellProfile)
@@ -112,7 +119,7 @@ public class SpellComparer : IComparer<SpellSystem.SpellProfil>
     {
         if (x.id == y.id) return 0;
         if (x.id < y.id) return -1;
-        
+
         return 1;
 
     }
