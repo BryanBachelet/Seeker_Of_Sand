@@ -116,6 +116,7 @@ namespace GuerhoubaGames.GameEnum
         OffsetDistance = 2023,
         SpellFrequency = 2024,
         LifeTimeSummon = 2025,
+        AttackReload =2026,
     }
 
     

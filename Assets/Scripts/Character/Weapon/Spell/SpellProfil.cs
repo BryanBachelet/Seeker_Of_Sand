@@ -565,6 +565,9 @@ namespace SpellSystem
             testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.DOT);
             ManageStat(StatType.AreaTargetSimulately, testResult,true);
 
+            testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);
+            ManageStat(StatType.AttackReload, testResult, true);
+
         }
 
 
