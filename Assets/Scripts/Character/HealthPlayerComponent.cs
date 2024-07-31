@@ -221,7 +221,21 @@ public class HealthPlayerComponent : MonoBehaviour
         InitializedHealthData();
     }
 
-    public void RestoreHealQuarter(int quantity)
+    public void RestoreQuarter()
+    {
+       int indexQuarter =  (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
+        m_CurrentHealth = (indexQuarter + 1) * m_QuarterHealthQuantity;
+        if (m_CurrentHealth > m_MaxHealthQuantity)
+        {
+            ActiveBufferHealth(Time.time, m_CurrentHealth);
+            m_CurrentHealth = m_MaxHealthQuantity;
+            m_CurrentQuarter = indexQuarter;
+        }
+
+        InitializedHealthData();
+    }
+
+    public void RestoreHealQuarter()
     {
         m_CurrentHealth += m_QuarterHealthQuantity;
         if(m_CurrentHealth > m_MaxHealthQuantity)

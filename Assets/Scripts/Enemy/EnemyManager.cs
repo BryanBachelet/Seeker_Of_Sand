@@ -934,14 +934,15 @@ namespace Enemies
                 NpcMetaInfos npcHealth = m_enemiesArray[i];
 
                 EnemyType type = npcHealth.GetComponent<NpcMetaInfos>().type;
+                NpcHealthComponent healthComponent = npcHealth.GetComponent<NpcHealthComponent>();
                 if (m_enemiesFocusAltar.Contains(npcHealth))
                     m_enemiesFocusAltar.Remove(npcHealth);
 
                 enemyTypeStats[(int)type].instanceCount -= 1;
-             
-                m_pullingSystem.ResetEnemy(npcHealth.gameObject, type);
+                healthComponent.GetDestroy(Vector3.zero, 0);
+                m_pullingSystem.ResetEnemyNavMesh(npcHealth.gameObject, type);
             }
-            m_enemiesArray.Clear();
+            //m_enemiesArray.Clear();
         }
     }
 

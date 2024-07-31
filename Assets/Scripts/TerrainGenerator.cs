@@ -35,6 +35,7 @@ public class TerrainGenerator : MonoBehaviour
     private int lastTerrainSelected = 0;
 
     private RoomManager currentRoomManager;
+    public static RoomManager staticRoomManager;
 
     public RoomInfoUI roomInfoUI;
     public DayCyclecontroller dayController;
@@ -73,6 +74,7 @@ public class TerrainGenerator : MonoBehaviour
         transformReference = lastTerrainPlay;
         previousTerrain = terrainInstantiated;
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
+        staticRoomManager = currentRoomManager;
         currentRoomManager.RetriveComponent();
         GenerateTerrain(0);
         AssociateNewReward(0);
@@ -103,6 +105,7 @@ public class TerrainGenerator : MonoBehaviour
     public void SetupFirstRoom()
     {
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
+        staticRoomManager = currentRoomManager;
         currentRoomManager.RetriveComponent();
         currentRoomManager.currentRoomType = RoomType.Free;
         currentRoomManager.rewardType = RewardType.SPELL;
@@ -239,7 +242,7 @@ public class TerrainGenerator : MonoBehaviour
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
         currentRoomManager.DeactivateRoom();
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
-
+        staticRoomManager = currentRoomManager;
 
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);

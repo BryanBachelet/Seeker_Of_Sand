@@ -47,7 +47,7 @@ public class CristalInventory : MonoBehaviour
     public bool HasEnoughCristal(int value,GameElement element)
     {
         int indexCristal = (int)element;
-        return cristalCount[indexCristal] >= value;
+        return cristalCount[indexCristal - 1] >= value;
     }
 
 
