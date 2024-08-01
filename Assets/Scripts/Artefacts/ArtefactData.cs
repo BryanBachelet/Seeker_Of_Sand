@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
 namespace Artefact
 {
@@ -10,5 +11,6 @@ namespace Artefact
         [HideInInspector] public GameObject characterGo;
         [HideInInspector] public EntitiesTargetSystem entitiesTargetSystem;
         [HideInInspector] public float radius;
+        [HideInInspector] public CharacterObjectType objectType = CharacterObjectType.FRAGMENT;
     }
 }

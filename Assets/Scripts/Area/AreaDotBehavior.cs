@@ -145,7 +145,8 @@ namespace SpellSystem
                     Vector3 direction = collider[i].transform.position - transform.position;
                     if (npcHealthComponent)
                     {
-                        npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                        DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
+                        npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
                         m_DotMeta.OnDamage.Invoke(npcHealthComponent.transform.position);
                     }
                 }
@@ -163,7 +164,8 @@ namespace SpellSystem
                     Vector3 direction = colliderDraw[index].transform.position - transform.position;
                     if (npcHealthComponent)
                     {
-                        npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+                        DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
+                        npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
                         m_DotMeta.OnDamage.Invoke(npcHealthComponent.transform.position);
                     }
 

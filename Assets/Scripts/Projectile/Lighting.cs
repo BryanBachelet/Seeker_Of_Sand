@@ -58,8 +58,8 @@ public class Lighting : ProjectileExplosif
                         Destroy(this.gameObject);
                         return;
                     }
-
-                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power,-1);
+                    DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power,-1);
                 }
             }
             m_baseTime = m_timerBeforeExplosion;

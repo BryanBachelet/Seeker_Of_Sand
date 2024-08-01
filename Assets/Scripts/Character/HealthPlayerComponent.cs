@@ -224,15 +224,16 @@ public class HealthPlayerComponent : MonoBehaviour
     public void RestoreQuarter()
     {
        int indexQuarter =  (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
-        m_CurrentHealth = (indexQuarter + 1) * m_QuarterHealthQuantity;
-        if (m_CurrentHealth > m_MaxHealthQuantity)
-        {
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
-            m_CurrentHealth = m_MaxHealthQuantity;
-            m_CurrentQuarter = indexQuarter;
-        }
+        m_CurrentHealth = Mathf.Clamp( (indexQuarter + 1) * m_QuarterHealthQuantity,0,m_MaxHealthQuantity);
+        m_CurrentQuarter = Mathf.Clamp((indexQuarter +1),0,4);
+        UpdateUILifebar();
+    }
 
-        InitializedHealthData();
+    public void UpdateUILifebar()
+    {
+        ActiveBufferHealth(Time.time, m_CurrentHealth);
+        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
     }
 
     public void RestoreHealQuarter()

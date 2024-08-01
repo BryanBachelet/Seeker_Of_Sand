@@ -10,6 +10,15 @@ public class ObjectState
     public bool isPlaying = true;
 }
 
+[System.Serializable]
+public struct TestStruct
+{
+    public int intTest;
+    public float floatTest;
+    public string stringTest;
+}
+
+
 public struct EndInfoStats
 {
     public float durationGame;

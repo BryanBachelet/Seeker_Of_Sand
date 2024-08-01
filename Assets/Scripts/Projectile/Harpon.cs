@@ -45,7 +45,8 @@ public class Harpon : Projectile
         {
             if (m_enemyImpale != null && m_firstHit && m_enemyImpale.m_npcInfo.state != Enemies.NpcState.DEATH)
             {
-                m_enemyImpale.ReceiveDamage(m_damage * m_impalementDamageRatio, m_enemyImpale.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
+                DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
+                m_enemyImpale.ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpale.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
                 m_enemyImpale.m_npcInfo.state = Enemies.NpcState.PAUSE;
             }
             Destroy(this.gameObject);
@@ -89,7 +90,8 @@ public class Harpon : Projectile
                 if (!m_firstHit && m_currentDistance < m_minRangeToImpale)
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
-                    enemyTouch.ReceiveDamage(m_damage * m_impalementDamageRatio, enemyTouch.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
+                    DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
 
                     if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
@@ -100,7 +102,8 @@ public class Harpon : Projectile
                 if (m_firstHit || m_currentDistance > m_minRangeToImpale)
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
-                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
+                    DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
                 }
             }
             if (other.tag == "Cristal")

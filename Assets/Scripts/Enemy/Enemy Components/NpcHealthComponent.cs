@@ -149,12 +149,12 @@ namespace Enemies
             m_enemyManager = enemyManager;
         }
 
-        public void ReceiveDamage(float damage, Vector3 direction, float power, int element)
+        public void ReceiveDamage(string nameDamage,DamageStatData damageStat, Vector3 direction, float power, int element)
         {
-            m_healthSystem.ChangeCurrentHealth(-damage);
-
+            m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
+            GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage, element);
+            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage, element);
             Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             //m_entityAnimator.SetTrigger("TakeDamage");
             Debug.Log("TakeDamage");

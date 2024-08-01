@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 namespace Save
@@ -16,6 +16,20 @@ namespace Save
 
     public class SaveManager
     {
+
+        public static void TestStructSave(string filePath, TestStruct data)
+        {
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            FileStream fs = File.Create(filePath);
+            BinaryFormatter writer = new BinaryFormatter();
+            writer.Serialize(fs ,data);
+            fs.Close();
+        }
+
         public static void WriteEndStats(string filePath, EndInfoStats data )
         {
             if (File.Exists(filePath))

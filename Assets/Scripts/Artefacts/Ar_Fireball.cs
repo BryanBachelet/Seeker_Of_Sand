@@ -5,7 +5,7 @@ namespace Artefact
 {
     public class Ar_Fireball : MonoBehaviour
     {
-        public float m_damage;
+        public int m_damage;
         public float lifeTimeProjectile;
         public float speed;
         public int piercing;
@@ -97,6 +97,7 @@ namespace Artefact
             data.speed = speed;
             data.piercingMax = piercing;
             data.characterShoot = m_characterShoot;
+            data.objectType = GuerhoubaGames.GameEnum.CharacterObjectType.FRAGMENT;
             instance.GetComponent<ProjectileShotgun>().SetDirectProjectile(data);
         }
     }

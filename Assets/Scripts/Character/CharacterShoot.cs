@@ -963,7 +963,7 @@ namespace Character
             //}
 
             data.destination = m_characterAim.GetAimFinalPoint();
-
+            data.objectType = CharacterObjectType.SPELL;
             return data;
         }
 
@@ -983,7 +983,7 @@ namespace Character
             areaData.spellProfil = spell;
             areaData.destination = spawnPosition;
             areaData.direction = transform.forward;
-
+            areaData.objectType = CharacterObjectType.SPELL;
             return areaData;
         }
 
