@@ -106,6 +106,8 @@ public class GameState : MonoBehaviour
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
         m_uiManager = uiManagerGO;
         s_playerGo = playerGo;
+        listObject.Clear();
+        m_isPlaying = true;
     }
 
     public void Start()

@@ -28,10 +28,7 @@ public class CameraIntroMouvement : MonoBehaviour
     [SerializeField] private Animator m_BlackOpening;
 
     public GameObject[] objectToActiveAfterStart;
-    public void Awake()
-    {
-        
-    }
+
     public void Start()
     {
 
