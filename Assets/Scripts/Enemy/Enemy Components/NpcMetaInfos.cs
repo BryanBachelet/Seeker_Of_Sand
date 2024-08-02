@@ -48,6 +48,8 @@ namespace Enemies
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
             }
 
+
+            m_objectGameState = new ObjectState();
             GameState.AddObject(m_objectGameState);
         }
 
