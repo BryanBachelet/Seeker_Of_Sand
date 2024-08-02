@@ -468,7 +468,15 @@ namespace Render.Camera
         public void SetupCamaraAnglge(float angle)
         {
             setupAutoCam = true;
-            transform.rotation = Quaternion.Euler(0, angle, 0);
+            m_prevAngle = angle;
+            m_nextAngle = angle;
+            m_currentAngle = angle;
+            m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+            m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, angle, transform.rotation.eulerAngles.z);
+            SetCameraPosition();
+            transform.position = m_finalPosition;
+            setupAutoCam = false;
         }
 
         #endregion

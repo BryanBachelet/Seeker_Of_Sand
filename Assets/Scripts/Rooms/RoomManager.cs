@@ -60,7 +60,7 @@ public class RoomManager : MonoBehaviour
         playerGO = GameObject.Find("Player");
         if (playerRewardDistribution == null)
         {
-           
+
             playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
         }
@@ -78,7 +78,7 @@ public class RoomManager : MonoBehaviour
 
         m_enemyManager.ResetAllSpawingPhasse();
         m_enemyManager.ResetSpawnStat();
-        if(!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
+        if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
 
@@ -88,7 +88,7 @@ public class RoomManager : MonoBehaviour
             Camera.main.GetComponent<Render.Camera.CameraBehavior>().SetupCamaraAnglge(spawnAngle);
         }
 
-        
+
 
         baseRoomType = currentRoomType;
         if (currentRoomType == RoomType.Enemy)
@@ -184,14 +184,14 @@ public class RoomManager : MonoBehaviour
             isTeleporterActive = true;
         }
 
-       
+
     }
     public void ValidateRoom()
     {
         if (isRoomHasBeenValidate) return;
 
         //GiveRoomReward();
-        if((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
+        if ((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
         roomInfoUI.DeactivateMajorGoalInterface();
         m_enemyManager.isStopSpawn = true;
@@ -253,6 +253,15 @@ public class RoomManager : MonoBehaviour
 
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (isActiveStartRotation)
+        {
+            Vector3 position = Quaternion.Euler(0, spawnAngle, 0) * Vector3.forward * -24 + teleporterSpawn.transform.position + Vector3.up *10;
+            Gizmos.DrawCube(position, new Vector3(7, 7, 7));
 
+            Gizmos.DrawRay(position, (teleporterSpawn.transform.position-position).normalized *100);
+        }
+    }
 
 }

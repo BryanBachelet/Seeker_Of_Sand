@@ -17,7 +17,7 @@ public class RoomStarter : MonoBehaviour
     {
         if (validateRotation)
         {
-           if(roomManager) roomManager.spawnAngle = transform.rotation.eulerAngles.y;
+          // if(roomManager) roomManager.spawnAngle = transform.rotation.eulerAngles.y;
         }
     }
 }
