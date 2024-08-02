@@ -11,7 +11,7 @@ public class RewardTypologie : MonoBehaviour
     public Texture[] text_Reward;
     public Material mat;
     public MeshRenderer meshDisplayReward;
-
+    public HealthReward healthReward;
     public Animator rewardAnimator;
     [SerializeField] private GameObject rootBoneHolder;
     private ExperienceMouvement[] m_bones = new ExperienceMouvement[100];
@@ -81,7 +81,10 @@ public class RewardTypologie : MonoBehaviour
                     choseReward.GiveArtefact();
                     break;
                 case RewardType.HEAL:
-                    other.GetComponent<HealthPlayerComponent>().RestoreHealQuarter();
+                   if(healthReward == HealthReward.QUARTER)
+                        other.GetComponent<HealthPlayerComponent>().RestoreHealQuarter();
+                   else
+                        other.GetComponent<HealthPlayerComponent>().RestoreFullLife();
                     break;
                 default:
                     break;

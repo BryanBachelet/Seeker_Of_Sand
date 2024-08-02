@@ -17,7 +17,7 @@ public class RewardDistribution : MonoBehaviour
         isRewardSend = true;
     }
 
-    public void GiveReward(RewardType rewardType, Transform positionReward)
+    public void GiveReward(RewardType rewardType, Transform positionReward,HealthReward healthReward)
     {
         GameObject NewReward = Instantiate(rewardHolderPrefan, positionReward.position, this.transform.rotation);
         ExperienceMouvement newXp  = NewReward.GetComponentInChildren<ExperienceMouvement>();
@@ -25,6 +25,7 @@ public class RewardDistribution : MonoBehaviour
         //newXp.ActiveExperienceParticule(this.transform);
         RewardTypologie rewardTypopologie = NewReward.GetComponentInChildren<RewardTypologie>();
         rewardTypopologie.rewardType = rewardType;
+        rewardTypopologie.healthReward = healthReward;
         rewardTypopologie.rewardDistribution = this;
         isRewardSend = false;
     }

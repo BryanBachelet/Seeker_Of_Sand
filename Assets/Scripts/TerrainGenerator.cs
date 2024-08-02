@@ -126,6 +126,27 @@ public class TerrainGenerator : MonoBehaviour
         int randomNextTerrainNumber = Random.Range(1, 4);
         int positionNewTerrain = 1500 * TerrainGenerator.roomGeneration_Static + terrainInstantiated.Count;
 
+        if (dayController.IsNextRoomIsDay())
+        {
+            GameObject newTerrain;
+            int randomTerrain = Random.Range(1, poolNumber);
+            newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * 0), transform.rotation);
+
+            terrainInstantiated.Add(newTerrain);
+
+            RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
+            roomManager.RetriveComponent();
+            roomManager.terrainGenerator = this;
+            roomManager.currentRoomType = RoomType.Free;
+            roomManager.rewardType = RewardType.HEAL;
+            roomManager.healthReward = HealthReward.FULL;
+            roomManager.healthReward = HealthReward.FULL;
+            roomManager.isTimingPassing = false;
+
+            newTerrain.SetActive(false);
+            return;
+        }
+
         for (int i = 0; i < randomNextTerrainNumber; i++)
         {
 
@@ -149,10 +170,12 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.RetriveComponent();
             roomManager.terrainGenerator = this;
             roomManager.currentRoomType = roomTypeList[indexRoomType];
+            roomManager.healthReward = HealthReward.QUARTER;
 
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
                 roomManager.rewardType = RewardType.MERCHANT;
+                roomManager.isTimingPassing = false;
                 roomTypeList.Remove(roomTypeList[indexRoomType]);
             }
             else
@@ -168,6 +191,7 @@ public class TerrainGenerator : MonoBehaviour
                 }
 
                 roomManager.rewardType = rewardList[indexReward];
+                roomManager.isTimingPassing = true;
             }
             newTerrain.SetActive(false);
         }
@@ -208,9 +232,11 @@ public class TerrainGenerator : MonoBehaviour
         transformReference = terrainInstantiated[selectedTerrain].transform;
         terrainInstantiated[selectedTerrain].SetActive(true);
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
+        RoomManager roomManager = terrainInstantiated[selectedTerrain].GetComponentInChildren<RoomManager>();
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.fadeInActivation = true;
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
+        cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
 

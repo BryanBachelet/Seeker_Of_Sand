@@ -19,7 +19,7 @@ public class TeleporterBehavior : MonoBehaviour
     public VisualEffect apparitionVFX;
     public VisualEffect disparitionVFX;
 
-
+    [HideInInspector] public bool isTimePassing;
     public EventHolder eventHolder;
     public DayCyclecontroller dayController;
     // Start is called before the first frame update
@@ -54,7 +54,7 @@ public class TeleporterBehavior : MonoBehaviour
         this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
         apparitionVFX.Play();
         cameraFadeFunction.fadeOutActivation = true;
-        dayController.UpdateTimeByStep();
+        if(isTimePassing) dayController.UpdateTimeByStep();
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
 
         nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();

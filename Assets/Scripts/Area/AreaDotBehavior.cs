@@ -139,7 +139,7 @@ namespace SpellSystem
 
             if (!isLimitTarget)
             {
-                for (int i = 0; i < collider.Length && isLimitTarget && i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
+                for (int i = 0; i < collider.Length ; i++)
                 {
                     NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                     Vector3 direction = collider[i].transform.position - transform.position;

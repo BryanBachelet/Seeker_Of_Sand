@@ -14,7 +14,8 @@ public class RoomManager : MonoBehaviour
     /// </summary>
     [HideInInspector] public RoomType baseRoomType;
     public RewardType rewardType;
-
+    public HealthReward healthReward;
+    public bool isTimingPassing;
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
 
@@ -214,7 +215,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition);
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward);
 
     }
 

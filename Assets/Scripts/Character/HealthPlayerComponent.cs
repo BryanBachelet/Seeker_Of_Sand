@@ -236,6 +236,14 @@ public class HealthPlayerComponent : MonoBehaviour
         m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
     }
 
+    public void RestoreFullLife()
+    {
+
+        m_CurrentHealth = m_MaxHealthQuantity;
+        m_CurrentQuarter = 4;
+        UpdateUILifebar();
+    }
+
     public void RestoreHealQuarter()
     {
         m_CurrentHealth += m_QuarterHealthQuantity;

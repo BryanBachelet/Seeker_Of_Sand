@@ -27,7 +27,16 @@ public class GameStats : MonoBehaviour
         instance = this;
     }
     
-
+    public int GetDamage(string name)
+    {
+        if(m_damageStat.ContainsKey(name))
+        {
+            return m_damageStat[name].damage;
+        }else
+        {
+            return 0;
+        }
+    }    
     public void AddDamageSource(string nameDamageSource, DamageStatData damageToAdd)
     {
         if (m_damageStat.ContainsKey(nameDamageSource))

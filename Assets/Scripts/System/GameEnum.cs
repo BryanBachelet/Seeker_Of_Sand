@@ -29,6 +29,13 @@ namespace GuerhoubaGames.GameEnum
         MERCHANT = 4,
     }
 
+
+    public enum HealthReward
+    {
+        QUARTER =0,
+        FULL = 1,
+    }
+
     public enum AreaType
     {
         CIRCLE = 0,
