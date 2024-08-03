@@ -10,7 +10,7 @@ public struct ProjectileData
     public float speed;
     public float life;
     public float travelTime;
-    public float damage;
+    public int damage;
     public Vector3 destination;
     public GameObject area_Feedback;
     public int piercingMax;
@@ -20,6 +20,7 @@ public struct ProjectileData
     public float size;
     public SpellSystem.SpellProfil spellProfil;
     public Character.CharacterShoot characterShoot;
+    public CharacterObjectType objectType;
 }
 
 
@@ -34,7 +35,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float m_lifeTime;
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
-    [SerializeField] protected float m_damage = 1;
+    [SerializeField] protected int m_damage = 1;
     [SerializeField] public int m_indexSFX;
 
     protected Vector3 m_destination;
@@ -57,6 +58,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float m_deltaTimeMove;
     private bool willDestroy = false;
     protected Collider m_collider;
+    protected CharacterObjectType objectType;
     private Vector3 m_initialScale;
 
     protected bool isStartToMove = false;
@@ -115,6 +117,7 @@ public class Projectile : MonoBehaviour
 
         m_characterShoot = data.characterShoot;
         m_collider = this.GetComponent<Collider>();
+        objectType = data.objectType;
     }
 
     public virtual void SetDirectProjectile(ProjectileData data)
@@ -191,7 +194,8 @@ public class Projectile : MonoBehaviour
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
-            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power,-1);
+            DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
+            enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, other.transform.position - transform.position, m_power,-1);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax) 

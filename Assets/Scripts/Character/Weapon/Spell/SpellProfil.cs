@@ -12,6 +12,7 @@ public struct TagData
     public BuffType type;
     public SpellNature spellNatureType;
     public SpellNature spellNatureType1;
+    public SpellNature spellNatureType2;
     public SpellProjectileTrajectory spellProjectileTrajectory;
     public CanalisationType canalisationType;
     public SpellMovementBehavior spellMovementBehavior;
@@ -135,7 +136,7 @@ public struct TagData
 
     public bool EqualsSpellNature(SpellNature value)
     {
-        return (value == spellNatureType) || (value == spellNatureType1);
+        return (value == spellNatureType) || (value == spellNatureType1) || (value == spellNatureType2);
     }
 
 }
@@ -555,10 +556,17 @@ namespace SpellSystem
             testResult = tagData.EqualsSpellNature(SpellNature.SUMMON);
             ManageStat(StatType.MaxSummon, testResult, true);
             ManageStat(StatType.SummonSimultanely, testResult, true);
+            ManageStat(StatType.LifeTimeSummon, testResult, true);
 
             testResult = tagData.EqualsSpellNature(SpellNature.DOT);
             ManageStat(StatType.HitFrequency, testResult);
             ManageStat(StatType.HitNumber, testResult, true);
+
+            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.DOT);
+            ManageStat(StatType.AreaTargetSimulately, testResult,true);
+
+            testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);
+            ManageStat(StatType.AttackReload, testResult, true);
 
         }
 

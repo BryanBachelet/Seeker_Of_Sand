@@ -174,6 +174,11 @@ public class DayCyclecontroller : MonoBehaviour
         RotationAdjustByHour(m_timeOfDay);
         ShadowMultiplierAdjustByHour(m_timeOfDay);
     }
+
+    public bool IsNextRoomIsDay()
+    {
+        return m_timeOfDay == 0 || m_timeOfDay == 24;
+    }
     private void CheckingNightDayTransition()
     {
         if (isNight)

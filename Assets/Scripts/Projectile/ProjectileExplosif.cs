@@ -216,6 +216,7 @@ public class ProjectileExplosif : Projectile
             Enemies.NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<Enemies.NpcHealthComponent>();
             Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
             GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
+             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
             for (int i = 0; i < enemies.Length; i++)
             {
                 Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
@@ -227,11 +228,16 @@ public class ProjectileExplosif : Projectile
                     return;
                 }
                 if (enemyTouch != stickyEnemy)
-                    enemyTouch.ReceiveDamage(m_damage, enemyTouch.transform.position - transform.position, m_power, -1);
+                {
+                    
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, -1);
+                }
             }
+               
 
             m_characterShoot.ActiveOnHit(stickyEnemy.transform.position, EntitiesTrigger.Enemies, stickyEnemy.gameObject);
-            stickyEnemy.ReceiveDamage(m_damage, stickyEnemy.transform.position - transform.position, m_power, -1);
+           
+            stickyEnemy.ReceiveDamage(spellProfil.name, damageStatData, stickyEnemy.transform.position - transform.position, m_power, -1);
             m_stickTransform = null;
         }
         vfxBase.gameObject.SetActive(false);

@@ -47,6 +47,20 @@ namespace Enemies
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
             }
+
+            GameState.AddObject(m_objectGameState);
+        }
+
+        public void Update()
+        {
+            if(!m_objectGameState.isPlaying && state != NpcState.PAUSE)
+            {
+                SetPauseState();
+            }
+            if (m_objectGameState.isPlaying && state == NpcState.PAUSE)
+            {
+                RemovePauseState(); 
+            }
         }
 
         public void RestartEnemy()

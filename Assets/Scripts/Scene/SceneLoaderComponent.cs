@@ -22,7 +22,7 @@ namespace GuerhoubaTools
         public void LoadHubScene()
         {
             m_asyncOperationsList.Add(new AsyncOperation());
-            m_asyncOperationsList[0] = SceneManager.LoadSceneAsync(hubSceneIndex, LoadSceneMode.Additive);
+            m_asyncOperationsList[0] = SceneManager.LoadSceneAsync(gameSceneIndex, LoadSceneMode.Additive);
             m_asyncOperationsList[0].completed += LoadSceneRender;
 
         }
@@ -39,9 +39,9 @@ namespace GuerhoubaTools
         {
             m_asyncOperationsList.Clear();
             m_asyncOperationsList.Add(SceneManager.UnloadSceneAsync(tutorielSceneIndex));
-            m_asyncOperationsList.Add(SceneManager.LoadSceneAsync(sceneRenderIndex, LoadSceneMode.Additive));
-            m_asyncOperationsList[1].allowSceneActivation = false;
-            m_asyncOperationsList[1].completed += LoadGameScene;
+            //m_asyncOperationsList.Add(SceneManager.LoadSceneAsync(sceneRenderIndex, LoadSceneMode.Additive));
+            //m_asyncOperationsList[1].allowSceneActivation = false;
+            //m_asyncOperationsList[1].completed += LoadGameScene;
 
         }
 

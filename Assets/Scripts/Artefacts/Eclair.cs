@@ -6,7 +6,7 @@ namespace Artefact
 {
     public class Eclair : MonoBehaviour
     {
-        public float m_damage;
+        public int m_damage;
         private ArtefactData m_artefactData;
         [Header("Around Parameter")]
         private float radiusEffect;
@@ -79,7 +79,8 @@ namespace Artefact
 
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
-            if(targetHealthComponent) targetHealthComponent.ReceiveDamage(m_damage, Vector3.up, 1, 0);
+            DamageStatData damageStatData = new DamageStatData(m_damage, m_artefactData.objectType);
+            if(targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.name, damageStatData, Vector3.up, 1, 0);
         }
     }
 }

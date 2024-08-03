@@ -67,6 +67,8 @@ namespace Enemies
         public EventInstance moveSoundInstance;
         public int indexDestroySound;
         public AnimationCurve maxHealthEvolution;
+
+        public GameObject dissonancePrefabObject;
         void Awake()
         {
             InitComponent();
@@ -147,12 +149,12 @@ namespace Enemies
             m_enemyManager = enemyManager;
         }
 
-        public void ReceiveDamage(float damage, Vector3 direction, float power, int element)
+        public void ReceiveDamage(string nameDamage,DamageStatData damageStat, Vector3 direction, float power, int element)
         {
-            m_healthSystem.ChangeCurrentHealth(-damage);
-
+            m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
+            GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage, element);
+            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage, element);
             Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             //m_entityAnimator.SetTrigger("TakeDamage");
             Debug.Log("TakeDamage");
@@ -169,8 +171,9 @@ namespace Enemies
 
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
             m_npcInfo.state = NpcState.DEATH;
+            
 
-            if(!isMassed)
+            if (!isMassed)
             {
                 //moveSoundInstance.setVolume(0);
             }
@@ -200,24 +203,12 @@ namespace Enemies
                 Debug.Log("Pause le son 2 le son !!");
             }
             GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
+            GameObject dissonanceInstance = Instantiate(dissonancePrefabObject, transform.position, transform.rotation);
+            ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
+            ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction / 2);
             Instantiate(death_vfx, transform.position, transform.rotation);
-            yield return new WaitForSeconds(timeBeforeDestruction / 2);
-            float progressDeath = 0;
-            float cutoutValue = progressDeath;
-            float emissiveValue = progressDeath;
-            for (int i = 0; i < materialCutout.Length; i++)
-            {
-                //m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
-            }
-            for (int i = 0; i < materialCutout.Length; i++)
-            {
-                //m_SkinMeshRenderer.GetPropertyBlock(_propBlock, 0);
-                //_propBlock.SetColor("_EmissiveColor", Color.white * emissiveProgress.Evaluate(emissiveValue));
-                //m_SkinMeshRenderer.SetPropertyBlock(_propBlock, 0);
-                //m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
-            }
             m_npcInfo.TeleportToPool();
 
         }
@@ -241,6 +232,7 @@ namespace Enemies
             m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             death = false;
+            if (hasDeathAnimation) m_entityAnimator.ResetTrigger("Death");
             m_npcInfo.state = NpcState.MOVE;
             if (!isMassed)
             {

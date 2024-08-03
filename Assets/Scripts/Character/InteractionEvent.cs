@@ -281,7 +281,7 @@ public class InteractionEvent : MonoBehaviour
     {
         Collider[] col = Physics.OverlapSphere(transform.position, rangeArtefact, artefactLayer);
         colliderProche = col;
-        if (col.Length > 0)
+        if (col.Length > 0 && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
             if (ui_HintInteractionObject != null)
             {

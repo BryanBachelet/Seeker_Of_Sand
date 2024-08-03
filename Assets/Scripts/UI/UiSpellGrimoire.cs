@@ -79,8 +79,8 @@ public class UiSpellGrimoire : MonoBehaviour
         spellEquipObj = GameObject.FindWithTag("SpellBar");
         FindUIElement();
         SetupSpellButtonFunction();
-        m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
-        bookDisplayRoot.SetActive(false);
+        if (m_uiDecalUpdaterDisplay) m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
+        if (bookDisplayRoot) bookDisplayRoot.SetActive(false);
 
     }
 
@@ -107,11 +107,11 @@ public class UiSpellGrimoire : MonoBehaviour
     // This function is here to find all the UI Element to use
     private void FindUIElement()
     {
-        m_spellsOwnImage = spellGalerieObj.GetComponentsInChildren<Image>();
-        m_playerSpellEquip = spellEquipObj.GetComponentsInChildren<Image>();
-        m_imageComponentDragAndDrop = imageDragAndDrop.GetComponent<Image>();
-        m_iconSpellSelected = spellDescriptionObj.GetComponentInChildren<Image>();
-        m_textDescription = spellDescriptionObj.GetComponentsInChildren<TMP_Text>();
+        if(spellGalerieObj) m_spellsOwnImage = spellGalerieObj.GetComponentsInChildren<Image>();
+        if (spellEquipObj) m_playerSpellEquip = spellEquipObj.GetComponentsInChildren<Image>();
+        if (imageDragAndDrop) m_imageComponentDragAndDrop = imageDragAndDrop.GetComponent<Image>();
+        if (spellDescriptionObj) m_iconSpellSelected = spellDescriptionObj.GetComponentInChildren<Image>();
+        if (spellDescriptionObj) m_textDescription = spellDescriptionObj.GetComponentsInChildren<TMP_Text>();
     }
 
     // Function to open the spell book ui

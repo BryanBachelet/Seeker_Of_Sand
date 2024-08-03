@@ -19,6 +19,12 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private Image m_nightCompletionFill;
     [SerializeField] private GameObject[] m_nightCompleted;
     [SerializeField] private GameObject fixeElement;
+    [SerializeField] private GameObject[] m_spellDetail = new GameObject[4];
+    [SerializeField] private TMP_Text[] m_spellDetailUpgrades = new TMP_Text[4];
+    [SerializeField] private TMP_Text[] m_spellDetailTier = new TMP_Text[4];
+    [SerializeField] private TMP_Text[] m_spellDetailDamages = new TMP_Text[4];
+    [SerializeField] private TMP_Text[] m_spellDetailName = new TMP_Text[4];
+    [SerializeField] private Image[] m_spellDetailImage = new Image[4];
     private bool m_finishDisplayStat = false;
     private bool m_isUpdatingStat = false;
 
@@ -26,6 +32,8 @@ public class UIEndScreen : MonoBehaviour
     private float lastXpBuffered = 0;
 
     public float timeToDisplay;
+
+    public Character.CharacterShoot characterShoot;
     public void Update()
     {
         if(m_isUpdatingStat)
@@ -50,6 +58,7 @@ public class UIEndScreen : MonoBehaviour
         stat = stats;
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);
         StartDisplayStat();
+        SpellLink(characterShoot.spellProfils);
 
     }
 
@@ -99,6 +108,42 @@ public class UIEndScreen : MonoBehaviour
 
 
 
+
+    }
+
+    private void SpellLink(List<SpellSystem.SpellProfil> spellProfils)
+    {
+        int[] ennemyKilledbySpell = new int[spellProfils.Count];
+        int[] upgradeAddedBySpell = new int[spellProfils.Count];
+        int spellCount = 0;
+        if (spellProfils.Count < 4)
+        {
+           spellCount = spellProfils.Count;
+        }
+        else
+        {
+           spellCount = 4;
+        }
+        for(int i = 0; i < 4; i++)
+        {
+            if(i < spellCount)
+            {
+                m_spellDetail[i].SetActive(true);
+                m_spellDetailImage[i].sprite = spellProfils[i].spell_Icon;
+                m_spellDetailUpgrades[i].text = "" + spellProfils[i].level;
+                m_spellDetailName[i].text = "" + spellProfils[i].name;
+
+
+                m_spellDetailDamages[i].text = "" + GameStats.instance.GetDamage(spellProfils[i].name).ToString();
+                int tier = Mathf.FloorToInt(spellProfils[i].level / 4);
+                m_spellDetailTier[i].text = "" + tier;
+            }
+            else
+            {
+                m_spellDetail[i].SetActive(false);
+            }
+
+        }
 
     }
 }

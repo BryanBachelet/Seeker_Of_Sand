@@ -106,6 +106,7 @@ namespace Character
             Train,
             Knockback,
             Dash,
+            SpecialSpell,
         }
 
         [Header("Knockback Parameters")]
@@ -202,13 +203,10 @@ namespace Character
 
         }
 
-
         private bool IsGamepad()
         {
             return m_playerInput.currentControlScheme == "Gamepad";
         }
-
-
 
         public void SlideInput(InputAction.CallbackContext ctx)
         {
@@ -469,10 +467,15 @@ namespace Character
             Vector3 forward = Quaternion.AngleAxis(angle, m_groundNormal.normalized) * forwardDirection;
             return forward;
         }
+        public Vector3 OrientateWithSlopeDirection(Vector3 dir)
+        {
+            Vector3 direction = Quaternion.AngleAxis(m_slope, Vector3.right) * dir;
+            return direction;
+        }
 
         private void CheckPlayerMouvement()
         {
-            if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash) return;
+            if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash || mouvementState == MouvementState.SpecialSpell) return;
 
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
@@ -583,7 +586,7 @@ namespace Character
         /// </summary>
         private void ApplyVelocity()
         {
-            if (mouvementState == MouvementState.Dash)
+            if (mouvementState == MouvementState.Dash || mouvementState == MouvementState.SpecialSpell)
             {
                 m_rigidbody.velocity = Vector3.zero;
                 //m_velMovement = Vector3.zero;

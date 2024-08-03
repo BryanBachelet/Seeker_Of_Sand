@@ -10,6 +10,15 @@ public class ObjectState
     public bool isPlaying = true;
 }
 
+[System.Serializable]
+public struct TestStruct
+{
+    public int intTest;
+    public float floatTest;
+    public string stringTest;
+}
+
+
 public struct EndInfoStats
 {
     public float durationGame;
@@ -97,6 +106,8 @@ public class GameState : MonoBehaviour
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
         m_uiManager = uiManagerGO;
         s_playerGo = playerGo;
+        listObject.Clear();
+        m_isPlaying = true;
     }
 
     public void Start()

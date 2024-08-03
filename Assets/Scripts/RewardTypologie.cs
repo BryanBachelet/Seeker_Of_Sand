@@ -11,18 +11,30 @@ public class RewardTypologie : MonoBehaviour
     public Texture[] text_Reward;
     public Material mat;
     public MeshRenderer meshDisplayReward;
-
+    public HealthReward healthReward;
     public Animator rewardAnimator;
     [SerializeField] private GameObject rootBoneHolder;
     private ExperienceMouvement[] m_bones = new ExperienceMouvement[100];
     private ExperienceMouvement xpMovement;
 
     public GameObject[] goDestroy;
+    public MeshRenderer vfxMesh;
+    private Material vfxReward;
+
+    public Material materialRewardChange;
     // Start is called before the first frame update
 
+    public void Update()
+    {
+        if(TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
+        {
+            vfxMesh.material = materialRewardChange;
+        }
+    }
     private void Start()
     {
         xpMovement = this.GetComponent<ExperienceMouvement>();
+        vfxReward = vfxMesh.material;
         mat = meshDisplayReward.material;
         switch (rewardType)
         {
@@ -50,7 +62,7 @@ public class RewardTypologie : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player")
+        if(other.tag == "Player" && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
             rewardDistribution.RewardValidate();
 
@@ -69,7 +81,10 @@ public class RewardTypologie : MonoBehaviour
                     choseReward.GiveArtefact();
                     break;
                 case RewardType.HEAL:
-                    other.GetComponent<HealthPlayerComponent>().RestoreHealQuarter(1);
+                   if(healthReward == HealthReward.QUARTER)
+                        other.GetComponent<HealthPlayerComponent>().RestoreHealQuarter();
+                   else
+                        other.GetComponent<HealthPlayerComponent>().RestoreFullLife();
                     break;
                 default:
                     break;
