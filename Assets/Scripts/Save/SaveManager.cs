@@ -59,5 +59,23 @@ namespace Save
         }
 
 
+        public static void WriteGameData(string filePath, string[] lines)
+        {
+            StreamWriter outputFile = new StreamWriter(filePath);
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                outputFile.WriteLine(lines[i]);
+            }
+
+            outputFile.Close();
+        }
+
+        public static string[] ReadGameData(string filePath)
+        {
+            StreamReader streamReader = new StreamReader(filePath);
+           return streamReader.ReadToEnd().Split('\n');
+        }
+
     }
 }

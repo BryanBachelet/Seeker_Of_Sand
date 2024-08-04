@@ -23,6 +23,8 @@ namespace GuerhoubaTools
         {
             if (isFirstTime)
                 CreateLogFile();
+            else
+                writer = new StreamWriter(path,true);
 
             int index = filePath.LastIndexOf('\\');
             filePath = filePath.Substring(index + 1);
@@ -30,13 +32,12 @@ namespace GuerhoubaTools
             string hourMinute = DateTime.Now.ToString("HH:mm::ss");
             writer.WriteLine(hourMinute + " (" +filePath + ":" + line + ")-->" + memberName +": "+msg);
             if (showInConsole) Debug.Log("(" + filePath + ":" + line + ")-- > " + memberName + ": " + msg);
+             writer.Close();
         }
 
         public static void Close()
         {
-            LogMsg("Close Log", true);
-            writer.Flush();
-            writer.Close();
+            LogMsg("Close Log");
             writer = null;
             isFirstTime = true;
             

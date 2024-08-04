@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        FieldNameProfile.onEndEdit.AddListener(GetName);
+        if(FieldNameProfile) FieldNameProfile.onEndEdit.AddListener(GetName);
     }
 
     public void ChangeAimMode(int aimModeIndex)

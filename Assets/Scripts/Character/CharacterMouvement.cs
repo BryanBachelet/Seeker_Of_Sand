@@ -907,11 +907,6 @@ namespace Character
             //m_uiStateAnimator.ResetTrigger("ChangeDisplay");
         }
 
-#if UNITY_EDITOR
-        public void OnDestroy()
-        {
-            GuerhoubaTools.LogSystem.Close();
-        }
-#endif
+
     }
 }
