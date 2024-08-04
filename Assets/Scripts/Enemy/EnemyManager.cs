@@ -868,6 +868,8 @@ namespace Enemies
 
         public EndInfoStats FillEndStat()
         {
+
+
             EndInfoStats endInfoStats = new EndInfoStats();
 
             endInfoStats.durationGame = m_timeOfGame;

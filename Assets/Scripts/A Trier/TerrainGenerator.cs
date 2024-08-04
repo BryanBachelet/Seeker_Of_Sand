@@ -79,6 +79,7 @@ public class TerrainGenerator : MonoBehaviour
         GenerateTerrain(0);
         AssociateNewReward(0);
         SetupFirstRoom();
+        GuerhoubaGames.SaveData.GameData.UpdateRunCount();
         playerTeleportorBehavior = player.GetComponent<TeleporterBehavior>();
         if (cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
     }
@@ -128,6 +129,8 @@ public class TerrainGenerator : MonoBehaviour
 
         GuerhoubaTools.LogSystem.LogMsg("The next hour is " + dayController.GetNextHour().ToString());
 
+
+        
         if (dayController.IsNextRoomIsDay())
         {
             GameObject newTerrain;
