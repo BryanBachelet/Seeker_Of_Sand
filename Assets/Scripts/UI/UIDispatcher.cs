@@ -9,8 +9,9 @@ public class UIDispatcher : MonoBehaviour
     public UI_Inventory uiInventory;
     public GuerhoubaGames.UI.DamageRecapUI damageRecap; 
     public GuerhoubaGames.UI.DragManager dragManager;
-
-    public GameObject bandenoir;
+    public GuerhoubaGames.UI.CristalUI cristalUI;
+  
+        public GameObject bandenoir;
     public void ActiveUIElement()
     {
         uiInventory.InitComponent();

@@ -7,41 +7,31 @@ using GuerhoubaGames.GameEnum;
 public class CristalInventory : MonoBehaviour
 {
     public int[] cristalCount = new int[4];
-    public GameObject[] cristalDisplay = new GameObject[4]; //0 = Eau, 1 = Elec, 2 = Fire, 3 = Terre
-    private Animator[] m_cristalAnimator = new Animator[4];
-    private bool[] m_cristalState = new bool[4];
 
-    [HideInInspector] public TMP_Text[] m_uiTextDisplay = new TMP_Text[4];
-
-    static private float m_timeDisplaying = 1f;
-    public float m_timeDisplayingSetup = 1f;
+    private GuerhoubaGames.UI.CristalUI m_cristalUI;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_timeDisplaying = m_timeDisplayingSetup;
-        SetupText();
-    }
 
-    public void SetupText()
-    {
-        for(int i = 0; i < cristalDisplay.Length; i++)
+        if (GameState.m_uiManager)
         {
-            m_uiTextDisplay[i] = cristalDisplay[i].GetComponentInChildren<TMP_Text>();
-            m_cristalAnimator[i] = cristalDisplay[i].GetComponent<Animator>();
+            UIDispatcher m_uiDispatcher = GameState.m_uiManager.GetComponent<UIDispatcher>();
+            if (m_uiDispatcher == null) return;
+            m_cristalUI = m_uiDispatcher.cristalUI;
         }
     }
 
     public void AddCristalCount(int cristalType, int cristalNumberAdd)
     {
-        cristalCount[cristalType] += cristalNumberAdd;
-        m_uiTextDisplay[cristalType].text = "" + cristalCount[cristalType];
-        StartCoroutine(DisplayUIFeedback(cristalType));
+        cristalCount[cristalType-1] += cristalNumberAdd;
+        m_cristalUI.UpdateUICristal(cristalCount[cristalType - 1], cristalType);
     }
     
     public void RemoveCristalCount(int cristalType, int cristalNumberAdd)
     {
-        cristalCount[cristalType] += cristalNumberAdd;
+        cristalCount[cristalType-1] += cristalNumberAdd;
+        m_cristalUI.UpdateUICristal(cristalCount[cristalType-1], cristalType);
     }
 
     public bool HasEnoughCristal(int value,GameElement element)
@@ -50,13 +40,4 @@ public class CristalInventory : MonoBehaviour
         return cristalCount[indexCristal - 1] >= value;
     }
 
-
-    IEnumerator DisplayUIFeedback(int cristalType)
-    {
-        m_cristalState[cristalType] = true;
-        m_cristalAnimator[cristalType].SetBool("Open", true);
-        yield return new WaitForSeconds(m_timeDisplaying);
-        m_cristalState[cristalType] = false;
-        m_cristalAnimator[cristalType].SetBool("Open", false);
-    }
 }

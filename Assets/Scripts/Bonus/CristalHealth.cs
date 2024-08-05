@@ -30,7 +30,7 @@ public class CristalHealth : MonoBehaviour
     {
         m_hitPrefab.Play();
         m_currentHealth -= damage;
-        if (m_currentHealth < m_healthMax * 0.66f || state[0] == false)
+        if (m_currentHealth < m_healthMax * 0.66f && state[0] == false)
         {
             cristalPart[0].SetActive(false);
             state[0] = true;
@@ -39,7 +39,7 @@ public class CristalHealth : MonoBehaviour
                 expMouvementScript.ActiveExperienceParticule(playerPosition);
                 expMouvementScript.cristalType = m_cristalType;
         }
-        if (m_currentHealth < m_healthMax * 0.33f || state[1] == false)
+        if (m_currentHealth < m_healthMax * 0.33f && state[1] == false)
         {
             //cristalPart[0].SetActive(false);
             cristalPart[1].SetActive(false);
@@ -52,7 +52,7 @@ public class CristalHealth : MonoBehaviour
                 expMouvementScript.cristalType = m_cristalType;
             }
         }
-        if (m_currentHealth <= 0 || state[2] == false)
+        if (m_currentHealth <= 0 && state[2] == false)
         {
             state[2] = true;
             StartCoroutine(DestroyAfterDelay(3));
