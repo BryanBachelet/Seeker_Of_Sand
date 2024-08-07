@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaTools;
 
 public class CharacterArtefact : MonoBehaviour
 {
@@ -62,6 +63,8 @@ public class CharacterArtefact : MonoBehaviour
     public void AddArtefact(ArtefactsInfos artefacts)
     {
         artefactsList.Add(artefacts);
+
+        LogSystem.LogMsg("Artefact add  is " + artefacts.name);
         GenerateNewArtefactAround(artefacts);
         SetupArtefact(artefacts);
         uiFragmentTooltip.AddNewFragment(artefacts);

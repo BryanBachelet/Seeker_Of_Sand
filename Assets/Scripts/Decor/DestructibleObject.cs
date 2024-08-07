@@ -27,15 +27,16 @@ public class DestructibleObject : MonoBehaviour
     void ActiveDestruction()
     {
         if (hasSpawn) return;
-        GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation);
+        GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation,transform.parent);
         Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
-
+      
         for (int i = 0; i < rigidBodies.Length; i++)
         {
             rigidBodies[i].velocity = rigidbody.velocity;
             rigidBodies[i].rotation = rigidbody.rotation;
         }
 
+     
         Destroy(gameObject);
         hasSpawn = true;
     }
@@ -53,7 +54,7 @@ public class DestructibleObject : MonoBehaviour
     public void SetupDestruction(float power,Vector3 direction)
     {
         if (hasSpawn) return;
-        GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation);
+        GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation, transform.parent);
         Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
 
         for (int i = 0; i < rigidBodies.Length; i++)

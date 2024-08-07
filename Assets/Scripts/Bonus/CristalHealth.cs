@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
 
 public class CristalHealth : MonoBehaviour
 {
@@ -10,8 +11,7 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private float m_currentHealth;
     [SerializeField] private GameObject m_cristalLootPrefab;
     private bool[] state = new bool[3];
-    [Range(0, 3)]
-    [SerializeField] public int m_cristalType = 0; //0 --> Water | 1 --> Aer | 2 --> Fire | 3 --> Ground
+    [SerializeField] public  GameElement cristalElement; //0 --> Water | 1 --> Aer | 2 --> Fire | 3 --> Ground
     [SerializeField] private UnityEngine.VFX.VisualEffect m_hitPrefab;
     [SerializeField] private GameObject[] cristalPart;
     private bool m_activeDeath;
@@ -37,7 +37,7 @@ public class CristalHealth : MonoBehaviour
                 GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
                 ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
                 expMouvementScript.ActiveExperienceParticule(playerPosition);
-                expMouvementScript.cristalType = m_cristalType;
+                expMouvementScript.cristalType = (int)cristalElement;
         }
         if (m_currentHealth < m_healthMax * 0.33f && state[1] == false)
         {
@@ -49,7 +49,7 @@ public class CristalHealth : MonoBehaviour
                 GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
                 ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
                 expMouvementScript.ActiveExperienceParticule(playerPosition);
-                expMouvementScript.cristalType = m_cristalType;
+                expMouvementScript.cristalType = (int)cristalElement;
             }
         }
         if (m_currentHealth <= 0 && state[2] == false)
@@ -61,7 +61,7 @@ public class CristalHealth : MonoBehaviour
                 GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
                 ExperienceMouvement expMouvementScript = cristalInstantiate.GetComponent<ExperienceMouvement>();
                 expMouvementScript.ActiveExperienceParticule(playerPosition);
-                expMouvementScript.cristalType = m_cristalType;
+                expMouvementScript.cristalType = (int)cristalElement;
             }
         }
     }

@@ -74,7 +74,9 @@ namespace Save
         public static string[] ReadGameData(string filePath)
         {
             StreamReader streamReader = new StreamReader(filePath);
-           return streamReader.ReadToEnd().Split('\n');
+            string[] lines = streamReader.ReadToEnd().Split('\n');
+            streamReader.Close();
+            return lines;
         }
 
     }

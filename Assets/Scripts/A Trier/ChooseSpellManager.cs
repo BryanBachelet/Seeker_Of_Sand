@@ -191,7 +191,7 @@ public class ChooseSpellManager : MonoBehaviour
 
     }
 
-    public void SpellOverrring(int spellIndex, PopupFunction popup)
+    public void SpellOverring(int spellIndex, PopupFunction popup)
     {
         if (lastSpell == popup) return;
         if (!overable) return;

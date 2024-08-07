@@ -124,7 +124,9 @@ public class UIEndScreen : MonoBehaviour
         {
            spellCount = 4;
         }
-        for(int i = 0; i < 4; i++)
+
+        GameStats.instance.ShowDamageLog();
+        for (int i = 0; i < 4; i++)
         {
             if(i < spellCount)
             {

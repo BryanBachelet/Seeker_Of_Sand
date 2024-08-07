@@ -72,31 +72,35 @@ namespace GuerhoubaGames.SaveData
         static private DateTime m_endSessionTime;
         static private TimeSpan m_timeSpanSession;
 
-        static private PlayerData m_playerData;
+        static public PlayerData m_playerData;
 
         private const string m_playerDataFileName = "/PlayerData_";
         private const string m_playerDataFileExtention = ".sost";
 
+        private static bool isAlreadyExisting;
         private static bool m_isDebugActive;
 
         public void Start()
         {
+
+            if (isAlreadyExisting) return;
             m_startSessionTime = DateTime.Now;
             RetriveGameData();
             m_isDebugActive = isDebugActive;
+            isAlreadyExisting = true;
         }
 
         private static string GetFilePath()
         {
 #if UNITY_EDITOR
-            string filePath = Application.dataPath + "/Temp" + m_playerDataFileName + GameState.profileName + m_playerDataFileExtention;
+            string filePath = Application.dataPath + "/Temp" + m_playerDataFileName + GameManager.instance.profileName + m_playerDataFileExtention;
             if (!Directory.Exists(Application.dataPath + "\\Temp"))
             {
                 Debug.LogError("The folder temp need to be create");
                 return "" ;
             }
 #else
-            string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
+            string filePath = Application.dataPath + m_playerDataFileName + GameManager.instance.profileName + m_playerDataFileExtention;
 #endif
 
             return filePath;
@@ -105,14 +109,14 @@ namespace GuerhoubaGames.SaveData
         public void RetriveGameData()
         {
 #if UNITY_EDITOR
-            string filePath = Application.dataPath + "/Temp" + m_playerDataFileName + GameState.profileName + m_playerDataFileExtention;
+            string filePath = Application.dataPath + "/Temp" + m_playerDataFileName + GameManager.instance.profileName + m_playerDataFileExtention;
             if (!Directory.Exists(Application.dataPath + "/Temp"))
             {
                 Debug.LogError("The folder temp need to be create");
                 return;
             }
 #else
-            string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
+            string filePath = Application.dataPath + m_playerDataFileName + GameManager.instance.profileName +m_playerDataFileExtention;
 #endif
 
 

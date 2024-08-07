@@ -45,7 +45,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public TMPro.TMP_Text roomGeneration_text;
 
-
+    private bool isHealthBossRoom;
 
     public void Start()
     {
@@ -131,7 +131,7 @@ public class TerrainGenerator : MonoBehaviour
 
 
         
-        if (dayController.IsNextRoomIsDay())
+        if (dayController.IsNextRoomIsDay() && !isHealthBossRoom)
         {
             GameObject newTerrain;
             int randomTerrain = Random.Range(1, poolNumber);
@@ -148,7 +148,7 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.isTimingPassing = false;
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
-
+            isHealthBossRoom = true;
 
             newTerrain.SetActive(false);
             return;
@@ -160,6 +160,7 @@ public class TerrainGenerator : MonoBehaviour
             int indexRoomType = 0;
             indexRoomType = Random.Range(0, roomTypeList.Count);
             GameObject newTerrain;
+            isHealthBossRoom = false;
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
                 newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);

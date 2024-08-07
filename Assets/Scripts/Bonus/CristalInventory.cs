@@ -25,7 +25,7 @@ public class CristalInventory : MonoBehaviour
     public void AddCristalCount(int cristalType, int cristalNumberAdd)
     {
         cristalCount[cristalType-1] += cristalNumberAdd;
-        m_cristalUI.UpdateUICristal(cristalCount[cristalType - 1], cristalType);
+        m_cristalUI.UpdateUICristal(cristalCount[cristalType - 1], cristalType-1);
     }
     
     public void RemoveCristalCount(int cristalType, int cristalNumberAdd)

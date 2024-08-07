@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
-
+using GuerhoubaTools;
 
 [Serializable]
 public struct CameraStep
@@ -37,7 +37,9 @@ public class CameraIntroMouvement : MonoBehaviour
         {
             m_isActivate = true;
         }
-
+        LogSystem.CreateLogFile();
+        LogSystem.LogMsg("\n --------------------------------------- ");
+        LogSystem.LogMsg(" New game");
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
         GameState.ChangeState();

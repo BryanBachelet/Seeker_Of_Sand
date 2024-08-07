@@ -10,12 +10,21 @@ public class GameManager : MonoBehaviour
     public TMP_InputField FieldNameProfile;
     public Character.AimMode m_aimModeChoose;
 
+    public static GameManager instance;
+
     [SerializeField] public static int aimModeNumber;
     [SerializeField] private Sprite[] m_layoutSelectedFeedback = new Sprite[2];
     private Image m_lastButtonSelected;
     // Start is called before the first  frame update
-    void Start()
+    void Awake()
     {
+        if(instance!=null)
+        {
+            this.gameObject.SetActive(false);
+            this.enabled = false;
+            Destroy(this.gameObject);
+        }
+        instance = this;
         DontDestroyOnLoad(this.gameObject);
         if(FieldNameProfile) FieldNameProfile.onEndEdit.AddListener(GetName);
     }
