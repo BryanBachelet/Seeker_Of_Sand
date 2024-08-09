@@ -62,7 +62,6 @@ public class ChooseSpellManager : MonoBehaviour
     {
         m_animator = this.GetComponent<Animator>();
         if(descriptionHolder !=  null) { descriptionHolderAnimator = descriptionHolder.GetComponent<Animator>(); }
-        
 
 
     }

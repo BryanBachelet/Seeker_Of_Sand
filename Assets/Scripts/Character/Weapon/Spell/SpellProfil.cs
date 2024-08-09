@@ -389,7 +389,9 @@ namespace SpellSystem
             string debugStatString = "";
             for (int i = 0; i < statTypes.Length; i++)
             {
-                if(IsStatBool(statTypes[i]))
+
+                if (!statDatas[i].isVisible) continue;
+                if (IsStatBool(statTypes[i]))
                 {
                     debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_bool.ToString() + " \n";
                     continue;
