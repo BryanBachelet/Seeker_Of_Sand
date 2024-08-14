@@ -27,7 +27,9 @@ public class DestructibleObject : MonoBehaviour
     void ActiveDestruction()
     {
         if (hasSpawn) return;
+        Vector3 parentScale = transform.localScale;
         GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation,transform.parent);
+        instance.transform.localScale = parentScale;
         Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
       
         for (int i = 0; i < rigidBodies.Length; i++)
