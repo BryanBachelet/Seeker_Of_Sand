@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using SeekerOfSand.UI;
 using UnityEngine.InputSystem;
-
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Enemies
 {
@@ -31,7 +31,7 @@ namespace Enemies
     {
         public EnemyType type;
         public int instanceCount;
-       [HideInInspector] public int instanceSpawnPerRoom;
+        [HideInInspector] public int instanceSpawnPerRoom;
         public AnimationCurve animationCurve;
     }
 
@@ -204,8 +204,6 @@ namespace Enemies
             m_pullingSystem = GetComponent<PullingSystem>();
             m_pullingSystem.InitializePullingSystem();
             if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
-
-
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -252,7 +250,7 @@ namespace Enemies
                 SpawnCooldown();
             }
 
-         
+
 
             if (m_uiManagerGameObject && lastAltarActivated != null)
             {
@@ -419,7 +417,7 @@ namespace Enemies
 
 
 
-        private void SpawEnemiesGroup(bool isDebug =  false)
+        private void SpawEnemiesGroup(bool isDebug = false)
         {
             if (!isDebug && isStopSpawn) return;
             position = FindPosition();
@@ -524,7 +522,7 @@ namespace Enemies
             enemyObjectPull.transform.position = positionSpawn;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             enemyObjectPull.GetComponent<NavMeshAgent>().Warp(positionSpawn);
-            enemyObjectPull.GetComponent<NavMeshAgent>().enabled =true;
+            enemyObjectPull.GetComponent<NavMeshAgent>().enabled = true;
 
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
             npcInfo.manager = this;
@@ -605,7 +603,8 @@ namespace Enemies
             {
                 bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
                 return canSpawn;
-            }else
+            }
+            else
             {
                 bool canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
                 return canSpawn;
@@ -674,7 +673,7 @@ namespace Enemies
         public void IncreseAlterEnemyCount(NpcHealthComponent npcHealth)
         {
             AltarBehaviorComponent nearestAltar = FindClosestAltar(npcHealth.transform.position);
-            if (nearestAltar != null )
+            if (nearestAltar != null)
             {
                 nearestAltar.IncreaseKillCount();
             }
@@ -771,7 +770,7 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-           if(detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
+            if (detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
             if (spawning)
             {
                 gsm.globalMusicInstance.setParameterByName("Repos", 0);
@@ -869,6 +868,8 @@ namespace Enemies
 
         public EndInfoStats FillEndStat()
         {
+
+
             EndInfoStats endInfoStats = new EndInfoStats();
 
             endInfoStats.durationGame = m_timeOfGame;
@@ -900,6 +901,30 @@ namespace Enemies
             {
                 Save.SaveManager.WriteEndStats(filePath, stats);
             }
+
+        }
+
+        public void TestSaveFunction() //--- Temp 
+        {
+#if UNITY_EDITOR
+            string filePath = Application.dataPath + "\\Temp" + fileStatsName + GameState.profileName + ".sost";
+#else
+            string filePath = Application.dataPath + fileStatsName + GameState.profileName + ".txt";
+#endif
+            if (!Directory.Exists(Application.dataPath + "\\Temp")) return;
+
+            TestStruct testStruct = new TestStruct();
+            testStruct.floatTest = .05f;
+            testStruct.stringTest = "Phrase test";
+            Save.SaveManager.TestStructSave(filePath, testStruct);
+
+            TestStruct data;
+            using (var file = File.OpenRead(filePath))
+            {
+                var reader = new BinaryFormatter();
+                data = (TestStruct)reader.Deserialize(file); // Reads the entire list.
+            }
+
         }
 
 
@@ -921,14 +946,14 @@ namespace Enemies
             {
                 m_spawnCauseState[i] = false;
             }
-  
+
         }
 
 
         public void DestroyAllEnemy()
         {
-           
-           // ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
+
+            // ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
                 NpcMetaInfos npcHealth = m_enemiesArray[i];

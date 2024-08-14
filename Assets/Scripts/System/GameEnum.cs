@@ -29,6 +29,13 @@ namespace GuerhoubaGames.GameEnum
         MERCHANT = 4,
     }
 
+
+    public enum HealthReward
+    {
+        QUARTER =0,
+        FULL = 1,
+    }
+
     public enum AreaType
     {
         CIRCLE = 0,
@@ -88,6 +95,7 @@ namespace GuerhoubaGames.GameEnum
         MaxSummon =1013,
         SummonSimultanely = 1014,
         SpellCount =1015,
+        AreaTargetSimulately = 1016,
        
         
         
@@ -114,6 +122,8 @@ namespace GuerhoubaGames.GameEnum
         ShootAngle = 2022,
         OffsetDistance = 2023,
         SpellFrequency = 2024,
+        LifeTimeSummon = 2025,
+        AttackReload =2026,
     }
 
     

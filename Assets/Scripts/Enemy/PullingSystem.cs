@@ -93,6 +93,7 @@ public class PullingSystem : MonoBehaviour
         instance.GetComponent<NavMeshAgent>().updatePosition = false;
         instance.GetComponent<NavMeshAgent>().enabled = false;
         instance.SetActive(false);
+        instance.transform.position = m_spawnPosition;
         m_enemyInfoArray[(int)type].instanceArray.Add(instance);
 
 

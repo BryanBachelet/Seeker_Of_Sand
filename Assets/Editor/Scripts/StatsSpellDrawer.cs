@@ -30,7 +30,7 @@ public class StatsSpellDrawer : PropertyDrawer
             }
         }
 
-        position.x += position.width + 30;
+        position.x += position.width + 10;
         GUIContent label2 = new GUIContent();
         label2.text = "V";
         EditorGUI.PrefixLabel(position, label2);

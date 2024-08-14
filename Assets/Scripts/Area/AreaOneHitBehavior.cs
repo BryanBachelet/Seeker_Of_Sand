@@ -10,7 +10,7 @@ namespace SpellSystem
 {
     public class AreaOneHitBehavior : MonoBehaviour
     {
-        private AreaMeta m_areaData;
+        private AreaMeta m_areaMeta;
         public AreaType areaType = AreaType.CIRCLE;
         [Header("Box Area Parameters")]
         public Vector3 baseSize;
@@ -27,16 +27,16 @@ namespace SpellSystem
         public bool isDebugActive;
         public Color color;
         [Range(0, 1)] public float transparency = 0.5f;
-
+        private SpellProfil profil;
         void Start()
         {
-            m_areaData = GetComponent<AreaMeta>();
+            m_areaMeta = GetComponent<AreaMeta>();
             InitAreaData();
         }
 
         public void InitAreaData()
         {
-            SpellProfil profil = m_areaData.areaData.spellProfil;
+             profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
@@ -84,7 +84,9 @@ namespace SpellSystem
             {
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
-                npcHealthComponent.ReceiveDamage(m_damage, direction, 10, (int)m_element);
+
+                DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
+                npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
             }
         }
 

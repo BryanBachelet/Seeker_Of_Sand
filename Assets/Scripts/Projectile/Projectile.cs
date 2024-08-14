@@ -10,7 +10,7 @@ public struct ProjectileData
     public float speed;
     public float life;
     public float travelTime;
-    public float damage;
+    public int damage;
     public Vector3 destination;
     public GameObject area_Feedback;
     public int piercingMax;
@@ -20,6 +20,7 @@ public struct ProjectileData
     public float size;
     public SpellSystem.SpellProfil spellProfil;
     public Character.CharacterShoot characterShoot;
+    public CharacterObjectType objectType;
 }
 
 
@@ -34,7 +35,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float m_lifeTime;
     [SerializeField] protected LayerMask m_layer;
     [SerializeField] protected float m_power;
-    [SerializeField] protected float m_damage = 1;
+    [SerializeField] protected int m_damage = 1;
     [SerializeField] public int m_indexSFX;
 
     protected Vector3 m_destination;
@@ -57,6 +58,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float m_deltaTimeMove;
     private bool willDestroy = false;
     protected Collider m_collider;
+    protected CharacterObjectType objectType;
     private Vector3 m_initialScale;
 
     protected bool isStartToMove = false;
@@ -75,7 +77,7 @@ public class Projectile : MonoBehaviour
             {
                 if (willDestroy)
                 {
-                  if(m_collider)  m_collider.enabled = false;
+                    if (m_collider) m_collider.enabled = false;
                 }
                 else
                 {
@@ -101,20 +103,21 @@ public class Projectile : MonoBehaviour
 
         if (spellProfil.tagData.spellParticualarity == SpellParticualarity.Piercing)
             m_piercingMax = spellProfil.GetIntStat(StatType.Piercing);
-           
+
         m_shootNumber = spellProfil.GetIntStat(StatType.ShootNumber);
         m_salveNumber = spellProfil.GetIntStat(StatType.Projectile);
-        m_size =1;
-        
+        m_size = 1;
+
         if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
-            m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer    ) ;
-        
+            m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer);
+
         m_sizeMultiplicateurFactor = 1;
         m_characterShoot = data.characterShoot;
         m_initialScale = transform.localScale;
 
         m_characterShoot = data.characterShoot;
         m_collider = this.GetComponent<Collider>();
+        objectType = data.objectType;
     }
 
     public virtual void SetDirectProjectile(ProjectileData data)
@@ -163,7 +166,7 @@ public class Projectile : MonoBehaviour
         {
             transform.localScale = Vector3.Lerp(m_initialScale, Vector3.zero, m_lifeTimer - m_lifeTime);
         }
-       
+
         m_lifeTimer += Time.deltaTime;
 
     }
@@ -179,22 +182,25 @@ public class Projectile : MonoBehaviour
     }
     public virtual void CollisionEvent(Collider other)
     {
+
+        if (other.gameObject.tag == "DecorDes")
+        {
+            other.GetComponent<DestructibleObject>().SetupDestruction(m_power, other.transform.position - transform.position);
+            return;
+        }
         if (other.gameObject.tag == "Enemy")
         {
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
-            if(m_characterShoot ==null)
-            {
-                Debug.Log("Tesst bug");
-            }
 
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
-            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power,-1);
+            DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
+            enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, other.transform.position - transform.position, m_power, -1);
 
             PiercingUpdate();
-            if (piercingCount >= m_piercingMax) 
+            if (piercingCount >= m_piercingMax)
             {
 
                 //Destroy(this.gameObject);

@@ -10,6 +10,15 @@ public class ObjectState
     public bool isPlaying = true;
 }
 
+[System.Serializable]
+public struct TestStruct
+{
+    public int intTest;
+    public float floatTest;
+    public string stringTest;
+}
+
+
 public struct EndInfoStats
 {
     public float durationGame;
@@ -66,6 +75,8 @@ public class GameState : MonoBehaviour
     public static GameObject s_playerGo;
 
 
+    public static GameState instance;
+
     public TerrainGenerator terrainGenerator;
     public GameObject uiManagerGO;
     public GameObject playerGo;
@@ -97,15 +108,18 @@ public class GameState : MonoBehaviour
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
         m_uiManager = uiManagerGO;
         s_playerGo = playerGo;
+        listObject.Clear();
+        m_isPlaying = true;
+        instance = this;
+        GetGameManager();
+
+
     }
 
-    public void Start()
+
+    public void GetGameManager()
     {
-        scene = (SceneManager.GetSceneByBuildIndex(5));
-        m_isDeath = false;
-        if(terrainGenerator)terrainGenerator.LaunchRoomGenerator();
-        m_uiManager.GetComponent<UIDispatcher>().ActiveUIElement();
-        endMenu = endmenu_Attribution;
+        if (m_gmComponent) return;
         GameObject gm = GameObject.Find("GameManager");
         if (gm != null)
         {
@@ -118,13 +132,20 @@ public class GameState : MonoBehaviour
                 charaShoot.m_aimModeState = m_gmComponent.m_aimModeChoose;
                 charaShoot.UpdateFeedbackAimLayout();
             }
-          
+
 
         }
-        else
-        {
-            // if (m_activeDebug) Debug.LogError("Couldn't found Game manager object ");
-        }
+    }
+
+
+    public void Start()
+    {
+        scene = (SceneManager.GetSceneByBuildIndex(5));
+        m_isDeath = false;
+        if(terrainGenerator)terrainGenerator.LaunchRoomGenerator();
+        m_uiManager.GetComponent<UIDispatcher>().ActiveUIElement();
+        endMenu = endmenu_Attribution;
+       
     }
 
     public static void DeathActivation()

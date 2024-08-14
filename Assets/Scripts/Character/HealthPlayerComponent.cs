@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
 
-public  struct AttackDamageInfo
+public struct AttackDamageInfo
 {
     public string attackName;
     public int damage;
@@ -75,6 +75,7 @@ public class HealthPlayerComponent : MonoBehaviour
     {
         if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
         {
+            GuerhoubaGames.SaveData.GameData.UpdateFarestRoom(TerrainGenerator.roomGeneration_Static);
             GameState.LaunchEndMenu();
             gameStateObject.HideGlobalUI();
 
@@ -83,7 +84,7 @@ public class HealthPlayerComponent : MonoBehaviour
         }
         if (updateHealthValues)
         {
-        //    GetDamageLeger(damageSend);
+            //    GetDamageLeger(damageSend);
 
         }
         if (healthBuffer)
@@ -134,7 +135,7 @@ public class HealthPlayerComponent : MonoBehaviour
             m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
             m_characterMouvement.SetKnockback(attackDamageInfo.position);
 
-            if(m_CurrentHealth <= 0)
+            if (m_CurrentHealth <= 0)
             {
                 activeDeath = true;
             }
@@ -221,10 +222,33 @@ public class HealthPlayerComponent : MonoBehaviour
         InitializedHealthData();
     }
 
-    public void RestoreHealQuarter(int quantity)
+    public void RestoreQuarter()
+    {
+        int indexQuarter = (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
+        m_CurrentHealth = Mathf.Clamp((indexQuarter + 1) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
+        m_CurrentQuarter = Mathf.Clamp((indexQuarter + 1), 0, 4);
+        UpdateUILifebar();
+    }
+
+    public void UpdateUILifebar()
+    {
+        ActiveBufferHealth(Time.time, m_CurrentHealth);
+        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
+        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+    }
+
+    public void RestoreFullLife()
+    {
+
+        m_CurrentHealth = m_MaxHealthQuantity;
+        m_CurrentQuarter = 4;
+        UpdateUILifebar();
+    }
+
+    public void RestoreHealQuarter()
     {
         m_CurrentHealth += m_QuarterHealthQuantity;
-        if(m_CurrentHealth > m_MaxHealthQuantity)
+        if (m_CurrentHealth > m_MaxHealthQuantity)
         {
             ActiveBufferHealth(Time.time, m_CurrentHealth);
             m_CurrentHealth = m_MaxHealthQuantity;
@@ -240,9 +264,9 @@ public class HealthPlayerComponent : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         //  Debug.Log("Hit an Object !");
-        if (collision.transform.tag != "Enemy" || !GameState.IsPlaying()  ) return;
-       // Debug.Log("Object was an Enemy !");
-     //   GetLightDamage(2,collision.transform.position);
+        if (collision.transform.tag != "Enemy" || !GameState.IsPlaying()) return;
+        // Debug.Log("Object was an Enemy !");
+        //   GetLightDamage(2,collision.transform.position);
     }
 
     private void ActiveBufferHealth(float time, float health)
@@ -254,17 +278,17 @@ public class HealthPlayerComponent : MonoBehaviour
 
     private void BufferXpDisplay()
     {
-       m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (timeLastHit - Time.time - 1) /1 );
+        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (timeLastHit - Time.time - 1) / 1);
 
     }
 
     public void OnCollisionEnter(Collision collision)
     {
-           // Debug.Log("Coll");
-        if(collision.collider.tag == "Enemy")
+        // Debug.Log("Coll");
+        if (collision.collider.tag == "Enemy")
         {
             //Debug.Log("Coll valid");
-            OnContactEvent(collision.transform.position,EntitiesTrigger.Enemies,collision.gameObject);
+            OnContactEvent(collision.transform.position, EntitiesTrigger.Enemies, collision.gameObject);
         }
     }
 

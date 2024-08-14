@@ -124,7 +124,9 @@ public class UIEndScreen : MonoBehaviour
         {
            spellCount = 4;
         }
-        for(int i = 0; i < 4; i++)
+
+        GameStats.instance.ShowDamageLog();
+        for (int i = 0; i < 4; i++)
         {
             if(i < spellCount)
             {
@@ -132,6 +134,9 @@ public class UIEndScreen : MonoBehaviour
                 m_spellDetailImage[i].sprite = spellProfils[i].spell_Icon;
                 m_spellDetailUpgrades[i].text = "" + spellProfils[i].level;
                 m_spellDetailName[i].text = "" + spellProfils[i].name;
+
+
+                m_spellDetailDamages[i].text = "" + GameStats.instance.GetDamage(spellProfils[i].name).ToString();
                 int tier = Mathf.FloorToInt(spellProfils[i].level / 4);
                 m_spellDetailTier[i].text = "" + tier;
             }

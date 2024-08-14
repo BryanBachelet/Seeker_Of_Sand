@@ -162,7 +162,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         else if (collision.gameObject.tag == "HealDrop")
         {
             Destroy(collision.gameObject);
-            m_healthPlayer.RestoreHealQuarter(0);
+            m_healthPlayer.RestoreHealQuarter();
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);
         }
 

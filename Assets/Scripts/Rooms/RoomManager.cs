@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
@@ -14,7 +15,8 @@ public class RoomManager : MonoBehaviour
     /// </summary>
     [HideInInspector] public RoomType baseRoomType;
     public RewardType rewardType;
-
+    public HealthReward healthReward;
+    public bool isTimingPassing;
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
 
@@ -47,16 +49,26 @@ public class RoomManager : MonoBehaviour
 
     public float timerReset = 0.0f;
 
+    private GameObject playerGO;
+
     private bool rewardGenerated = false;
+
+
+     private DateTime m_startRoomChallengeTime; 
+     private DateTime m_EndRoomChallengeTime; 
+    private TimeSpan timeSpan;
+
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
         isRoomHasBeenValidate = false;
         isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
+        playerGO = GameObject.Find("Player");
         if (playerRewardDistribution == null)
         {
-            playerRewardDistribution = GameObject.Find("Player").GetComponent<RewardDistribution>();
+
+            playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
         }
 
@@ -73,7 +85,7 @@ public class RoomManager : MonoBehaviour
 
         m_enemyManager.ResetAllSpawingPhasse();
         m_enemyManager.ResetSpawnStat();
-        if(!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
+        if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
 
@@ -83,8 +95,8 @@ public class RoomManager : MonoBehaviour
             Camera.main.GetComponent<Render.Camera.CameraBehavior>().SetupCamaraAnglge(spawnAngle);
         }
 
-        
 
+        m_startRoomChallengeTime = DateTime.Now;
         baseRoomType = currentRoomType;
         if (currentRoomType == RoomType.Enemy)
         {
@@ -179,21 +191,24 @@ public class RoomManager : MonoBehaviour
             isTeleporterActive = true;
         }
 
-       
+
     }
     public void ValidateRoom()
     {
         if (isRoomHasBeenValidate) return;
 
         //GiveRoomReward();
-        if((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
+        if ((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
         roomInfoUI.DeactivateMajorGoalInterface();
         m_enemyManager.isStopSpawn = true;
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
+        playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+        m_EndRoomChallengeTime = DateTime.Now;
 
-     
+        timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
+        LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 
     }
 
@@ -209,7 +224,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition);
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward);
 
     }
 
@@ -247,6 +262,15 @@ public class RoomManager : MonoBehaviour
 
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (isActiveStartRotation)
+        {
+            Vector3 position = Quaternion.Euler(0, spawnAngle, 0) * Vector3.forward * -24 + teleporterSpawn.transform.position + Vector3.up *10;
+            Gizmos.DrawCube(position, new Vector3(7, 7, 7));
 
+            Gizmos.DrawRay(position, (teleporterSpawn.transform.position-position).normalized *100);
+        }
+    }
 
 }
