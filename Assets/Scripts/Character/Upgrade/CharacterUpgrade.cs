@@ -155,7 +155,7 @@ namespace Character
             upgradePointTextDisplay.text = upgradePoint.ToString();
             experience.m_LevelTaken++;
             experience.m_UiPlayerInfo.AddLevelTaken();
-            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name,isDebugActive);
+            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].name, isDebugActive);
             if (isDebugActive)
             {
                

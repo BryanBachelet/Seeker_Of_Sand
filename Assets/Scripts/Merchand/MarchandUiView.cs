@@ -160,7 +160,7 @@ public class MarchandUiView : MonoBehaviour
             else fragmentSpriteArray[index].color = noEnoughMoneyColor;
 
         }
-        cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
+        cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[((int)itemData.element)-1];
     }
 
     public void ActualizeFragmentInteface(int index)

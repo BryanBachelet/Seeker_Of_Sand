@@ -7,10 +7,11 @@ public class DestructibleObject : MonoBehaviour
     public GameObject ObjDestroyedVersion;
     public bool test = false;
     private Rigidbody rigidbody;
+    private bool hasSpawn = false;
     // Start is called before the first frame update
     void Start()
     {
-        
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     public void Update()
@@ -18,27 +19,53 @@ public class DestructibleObject : MonoBehaviour
         if (test == true)
         {
             test = false;
-            Activedestruction();
+            ActiveDestruction();
         }
     }
 
 
-    void Activedestruction()
+    void ActiveDestruction()
     {
+        if (hasSpawn) return;
+        Vector3 parentScale = transform.localScale;
+        GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation,transform.parent);
+        instance.transform.localScale = parentScale;
+        Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
+      
+        for (int i = 0; i < rigidBodies.Length; i++)
+        {
+            rigidBodies[i].velocity = rigidbody.velocity;
+            rigidBodies[i].rotation = rigidbody.rotation;
+        }
 
-        GameObject instance =  Instantiate(ObjDestroyedVersion, transform.position, transform.rotation);
-        Rigidbody rigidBody = instance.GetComponent<Rigidbody>();
-        rigidBody.velocity = rigidbody.velocity;
-        rigidBody.rotation = rigidbody.rotation;
+     
         Destroy(gameObject);
+        hasSpawn = true;
     }
 
     public void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.tag == "Player")
+        if (collision.transform.tag == "Player")
         {
-            Activedestruction();
+            ActiveDestruction();
         }
+
+    }
+
+
+    public void SetupDestruction(float power,Vector3 direction)
+    {
+        if (hasSpawn) return;
+        GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation, transform.parent);
+        Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
+
+        for (int i = 0; i < rigidBodies.Length; i++)
+        {
+            rigidBodies[i].AddForce( direction.normalized *power,ForceMode.Impulse);
+        }
+
+        Destroy(gameObject);
+        hasSpawn = true;
     }
 
 }

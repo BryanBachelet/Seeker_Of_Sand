@@ -13,9 +13,11 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _DISABLE_DECALS
   - _DOUBLESIDED_ON
   - _ENABLE_FOG_ON_TRANSPARENT
   - _SURFACE_TYPE_TRANSPARENT
+  - _TESSELLATION_PHONG
   m_InvalidKeywords:
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
@@ -154,13 +156,13 @@ Material:
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
-    - _AlphaDstBlend: 10
+    - _AlphaDstBlend: 1
     - _AlphaRemapMax: 1
     - _AlphaRemapMin: 0
     - _AlphaSrcBlend: 1
-    - _Amplitude: 0.5
+    - _Amplitude: 0.46
     - _Anisotropy: 0
-    - _BlendMode: 0
+    - _BlendMode: 1
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
     - _Crest_Falloff: 0
@@ -170,6 +172,7 @@ Material:
     - _CullModeForward: 0
     - _Cutoff: 0.5
     - _DepthOffsetEnable: 0
+    - _Depth_Force: 0
     - _Depth_Strengh: 0.01
     - _Depth_Strengh_1: 0
     - _DetailAlbedoScale: 1
@@ -183,7 +186,7 @@ Material:
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
-    - _DstBlend: 10
+    - _DstBlend: 1
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -194,11 +197,11 @@ Material:
     - _EnergyConservingSpecularColor: 1
     - _ExcludeFromTUAndAA: 0
     - _Extra_Disersion: 0
-    - _Foam_Bands: 0.84
+    - _Foam_Bands: 2.06
     - _Foam_Edge: 10
-    - _Foam_Falloff: 2.76
-    - _Foam_Removal: 0.37
-    - _Foam_Width: 0.07
+    - _Foam_Falloff: 11.97
+    - _Foam_Removal: 0.41
+    - _Foam_Width: 12.9
     - _Frequency: 0.02
     - _Frequency_2: 0.2
     - _HeightAmplitude: 0.02
@@ -233,13 +236,13 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 1
     - _RefractionModel: 0
-    - _Refraction_Strengh: 0.76
+    - _Refraction_Strengh: 19.13
     - _RenderQueueType: 4
     - _RequireSplitLighting: 0
     - _Ripple_Speed: 0.12
     - _Ripple_Strenght: 0.02
     - _Ripple_Tiling: 0.05
-    - _Smoothness: 1.24
+    - _Smoothness: 2.45
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
     - _SpecularAAScreenSpaceVariance: 0.1
@@ -260,14 +263,14 @@ Material:
     - _StencilWriteMaskGBuffer: 15
     - _StencilWriteMaskMV: 41
     - _SubsurfaceMask: 1
-    - _SupportDecals: 1
+    - _SupportDecals: 0
     - _SurfaceType: 1
     - _TessellationBackFaceCullEpsilon: -0.25
     - _TessellationFactorMaxDistance: 50
     - _TessellationFactorMinDistance: 20
     - _TessellationFactorTriangleSize: 100
     - _TessellationMaxDisplacement: 1
-    - _TessellationMode: 0
+    - _TessellationMode: 1
     - _TessellationShapeFactor: 0.75
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
@@ -284,10 +287,11 @@ Material:
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
+    - _Unknow: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
-    - _Water_Edge: 1
-    - _Water_Opacity: 0.06
+    - _Water_Edge: 0.51
+    - _Water_Opacity: 0.15
     - _ZTestDepthEqualForOpaque: 4
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
@@ -296,8 +300,8 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color_I: {r: 1, g: 1, b: 1, a: 0}
-    - _Color_II: {r: 0.2264151, g: 0.09976336, b: 0.024563907, a: 0}
+    - _Color_I: {r: 0.16647384, g: 0.3747478, b: 0.8207547, a: 0}
+    - _Color_II: {r: 0.22745098, g: 0.06939722, b: 0.02352941, a: 0}
     - _Color_I_1: {r: 1, g: 1, b: 1, a: 0}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _Direction: {r: 1, g: -0.11, b: 0, a: 0}
@@ -306,7 +310,7 @@ Material:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
-    - _Foam_Color: {r: 2.297397, g: 2.297397, b: 2.297397, a: 0}
+    - _Foam_Color: {r: 6.8831816, g: 6.8831816, b: 6.8831816, a: 0}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

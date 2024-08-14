@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaTools;
 
 [System.Serializable]
 public struct DamageStatData
@@ -48,6 +49,17 @@ public class GameStats : MonoBehaviour
         else
         {
             m_damageStat.Add(nameDamageSource, damageToAdd);
+        }
+    }
+
+    public void ShowDamageLog()
+    {
+
+        List<string> arryList =  new List<string>( m_damageStat.Keys);
+        for (int i = 0; i < m_damageStat.Count; i++)
+        {
+            string key = arryList[i];
+            LogSystem.LogMsg(key + " has done " + m_damageStat[key].damage + " damage");
         }
     }
 }

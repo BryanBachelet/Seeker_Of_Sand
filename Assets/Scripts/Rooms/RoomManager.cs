@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
@@ -51,6 +52,12 @@ public class RoomManager : MonoBehaviour
     private GameObject playerGO;
 
     private bool rewardGenerated = false;
+
+
+     private DateTime m_startRoomChallengeTime; 
+     private DateTime m_EndRoomChallengeTime; 
+    private TimeSpan timeSpan;
+
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -89,7 +96,7 @@ public class RoomManager : MonoBehaviour
         }
 
 
-
+        m_startRoomChallengeTime = DateTime.Now;
         baseRoomType = currentRoomType;
         if (currentRoomType == RoomType.Enemy)
         {
@@ -198,8 +205,10 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
         playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+        m_EndRoomChallengeTime = DateTime.Now;
 
-
+        timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
+        LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 
     }
 

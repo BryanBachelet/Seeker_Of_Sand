@@ -234,10 +234,10 @@ public class UpgradeManager : MonoBehaviour
         GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
     }
 
-    public void SendSpell(SpellSystem.SpellProfil capsule)
+    public void SendSpell(SpellSystem.SpellProfil spellProfil)
     {
-        m_characterUpgradeComponent.ApplySpellChoise(capsule);
-        GuerhoubaTools.LogSystem.LogMsg("Spell Choose is" + capsule.name);
+        m_characterUpgradeComponent.ApplySpellChoise(spellProfil);
+        GuerhoubaTools.LogSystem.LogMsg("Spell Choose is" + spellProfil.name);
     }
 
     public void CloseSpellChoiceUI()
@@ -299,6 +299,8 @@ public class UpgradeManager : MonoBehaviour
 
     public void SendUpgrade(UpgradeObject upgradeChoose)
     {
+
+   
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
         m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
         int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
