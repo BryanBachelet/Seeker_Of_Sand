@@ -30,6 +30,7 @@ public class TeleporterFeebackController : MonoBehaviour
     public bool activeChange = false;
 
     public bool random = false;
+    private int idReward;
     // Start is called before the first frame update
     void Awake()
     {
@@ -69,7 +70,7 @@ public class TeleporterFeebackController : MonoBehaviour
             //else
             //{
             //    ChangeRewardID(rewardToUse);
-            ChangeColorID(4);
+            ChangeColorID(idReward);
             //}
 
         }
@@ -87,6 +88,7 @@ public class TeleporterFeebackController : MonoBehaviour
         }
         socleSpawn_mat.SetTexture("_MaskSelfLit", textureReward[ID]);
         planeSymbole_mat.SetTexture("_Symbole", textureReward[ID]);
+        idReward = ID;
     }
 
     public void ChangeColorID(int ID)

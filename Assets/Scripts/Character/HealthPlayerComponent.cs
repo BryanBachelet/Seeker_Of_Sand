@@ -52,6 +52,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     public Volume volume;
     private Vignette vignette;
+    private ColorAdjustments colorAdjustments;
 
     public bool feedbackHit = false;
     private float timeLastHit;
@@ -68,12 +69,17 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
     public GameState gameStateObject;
+    private Camera m_cameraUsed;
+    [SerializeField] private AnimationCurve m_fieldOfViewEdit;
+    [SerializeField] private AnimationCurve m_ColorAdjustementSaturation;
     // Start is called before the first frame update
     void Start()
     {
         InitializedHealthData();
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
+        volume.profile.TryGet(out colorAdjustments);
     }
 
     // Update is called once per frame
@@ -111,8 +117,10 @@ public class HealthPlayerComponent : MonoBehaviour
         }
         if (slowDownActive)
         {
-
-            float newTimeScale = m_currentAnimationCurveToUse.Evaluate(tempsEcouleSlowEffect / m_DurationSlowdownEffect);
+            float progress = tempsEcouleSlowEffect / m_DurationSlowdownEffect;
+            float newTimeScale = m_currentAnimationCurveToUse.Evaluate(progress);
+            m_cameraUsed.fieldOfView = m_fieldOfViewEdit.Evaluate(progress);
+            colorAdjustments.saturation.value = m_ColorAdjustementSaturation.Evaluate(progress);
             Time.timeScale = newTimeScale;
             tempsEcouleSlowEffect += (Time.deltaTime * (1 + (1 - newTimeScale)));
             if(tempsEcouleSlowEffect >= m_DurationSlowdownEffect)
@@ -120,6 +128,8 @@ public class HealthPlayerComponent : MonoBehaviour
                 newTimeScale = 1;
                 tempsEcouleSlowEffect = 0;
                 Time.timeScale = 1;
+                m_cameraUsed.fieldOfView = 65;
+                colorAdjustments.saturation.value = 3.8f;
                 slowDownActive = false;
             }
             FMODUnity.RuntimeManager.StudioSystem.setParameterByName("SlowDownEffect", newTimeScale);
@@ -141,7 +151,7 @@ public class HealthPlayerComponent : MonoBehaviour
             vignette.intensity.value = 0.35f;
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
-                ActiveSlowEffect(2, m_CurrentQuarter);
+                ActiveSlowEffect(1.5f, m_CurrentQuarter);
                 m_CurrentQuarter -= 1;
                 m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
 
@@ -179,7 +189,7 @@ public class HealthPlayerComponent : MonoBehaviour
             vignette.intensity.value = 0.35f;
             if (m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
-                ActiveSlowEffect(2, m_CurrentQuarter);
+                ActiveSlowEffect(1.5f, m_CurrentQuarter);
                 m_CurrentQuarter -= 1;
                 m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
             }
@@ -321,6 +331,7 @@ public class HealthPlayerComponent : MonoBehaviour
         slowDownActive = true;
         m_DurationSlowdownEffect = time;
         tempsEcouleSlowEffect = 0;
+        GlobalSoundManager.PlayOneShot(50, transform.position);
         if (quarter > 1)
         {
             m_currentAnimationCurveToUse = m_SlowdownEffectCurve;
