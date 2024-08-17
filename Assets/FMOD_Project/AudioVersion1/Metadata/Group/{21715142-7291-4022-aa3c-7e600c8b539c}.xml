@@ -4,6 +4,9 @@
 		<property name="name">
 			<value>Musique</value>
 		</property>
+		<relationship name="automators">
+			<destination>{c0d0c483-0e2b-465f-bb02-585e9ebd511c}</destination>
+		</relationship>
 		<relationship name="masters">
 			<destination>{1e946772-fa9c-4ebe-b793-c0a3e0b08f31}</destination>
 			<destination>{ac7f18e5-457a-4d98-adeb-c758dbbf5036}</destination>
@@ -18,11 +21,47 @@
 			<destination>{01c4e95a-f29c-4f25-8e52-d1c03adde702}</destination>
 		</relationship>
 	</object>
+	<object class="Automator" id="{c0d0c483-0e2b-465f-bb02-585e9ebd511c}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>pitch</value>
+		</property>
+		<relationship name="automationCurves">
+			<destination>{b7bc4beb-853c-4bff-9be1-1c5a2fd7c664}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusEffectChain" id="{557fff65-3fe4-4527-85aa-16747f91256a}">
 		<relationship name="effects">
 			<destination>{47292962-f6bc-4b3e-a85b-e930d45b6758}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{fad3da6b-f83a-47fc-a9c1-549df80da9f7}" />
+	<object class="AutomationCurve" id="{b7bc4beb-853c-4bff-9be1-1c5a2fd7c664}">
+		<relationship name="parameter">
+			<destination>{7ab754ec-6c58-419a-94dd-ea2411223da4}</destination>
+		</relationship>
+		<relationship name="automationPoints">
+			<destination>{554329b4-f66b-488d-bf79-26ee63e6e398}</destination>
+			<destination>{87b70cf2-89db-4b92-9724-4ca6259cc411}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusFader" id="{47292962-f6bc-4b3e-a85b-e930d45b6758}" />
+	<object class="AutomationPoint" id="{554329b4-f66b-488d-bf79-26ee63e6e398}">
+		<property name="position">
+			<value>0.0014124293785310734</value>
+		</property>
+		<property name="value">
+			<value>-8</value>
+		</property>
+		<property name="curveShape">
+			<value>1</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{87b70cf2-89db-4b92-9724-4ca6259cc411}">
+		<property name="position">
+			<value>0.99858757062146897</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+	</object>
 </objects>
