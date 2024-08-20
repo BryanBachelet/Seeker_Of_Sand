@@ -140,6 +140,7 @@ namespace Character
         private ClockTimer[] m_stackingClock;
         private int[] m_currentStack = new int[4];
         private Image[] m_clockImage;
+        private TMPro.TMP_Text[] m_textStack = new TMP_Text[4];
 
         #region Mana Variable
         [Header("Mana Parameters")]
@@ -348,6 +349,7 @@ namespace Character
             m_CharacterAnimator = avatarTransform.GetComponent<Animator>();
             m_BookAnimator = bookTransform.GetComponent<Animator>();
             m_clockImage = m_uiPlayerInfos.ReturnClock();
+            m_textStack = m_uiPlayerInfos.ReturnStack();
         }
 
         private void InitSpriteSpell()
@@ -435,7 +437,7 @@ namespace Character
             {
                 m_stackingClock[i] = new ClockTimer();
                 m_stackingClock[i].ActiaveClock();
-                m_stackingClock[i].SetTimerDuration(spellProfils[i].GetFloatStat(StatType.StackDuration), m_clockImage[i]);
+                m_stackingClock[i].SetTimerDuration(spellProfils[i].GetFloatStat(StatType.StackDuration), m_clockImage[i], m_textStack[i]);
 
             }
         }
@@ -1315,7 +1317,7 @@ namespace Character
                 spellEquip[spellIndex.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();
-                m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex]);
+                m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex], m_textStack[maxSpellIndex]);
                 maxSpellIndex = Mathf.Clamp(spellIndex.Count, 0, 4);
                 RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
                 m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
@@ -1370,8 +1372,8 @@ namespace Character
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
 
-            m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell1]);
-            m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell2]);
+            m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell1],m_textStack[indexSpell1]);
+            m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
 
             int tempStack = m_currentStack[indexSpell1];
             m_currentStack[indexSpell1] = m_currentStack[indexSpell2];

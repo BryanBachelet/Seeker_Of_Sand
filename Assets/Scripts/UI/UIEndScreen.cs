@@ -33,22 +33,29 @@ public class UIEndScreen : MonoBehaviour
 
     public float timeToDisplay;
 
+
+    [Range(1, 10)] public float tempsDisplay = 3;
+
     public Character.CharacterShoot characterShoot;
+
+    private int[] spellDamaged = new int[4];
+    int spellCount = 0;
     public void Update()
     {
-        if(m_isUpdatingStat)
+        if (m_isUpdatingStat)
         {
             if (m_finishDisplayStat)
             {
-                
+
                 m_isUpdatingStat = false;
             }
             else
             {
                 BufferXpDisplay(lastXpBuffered);
+                Debug.Log(lastXpBuffered + " value Time");
             }
         }
-        
+
     }
 
     public void ActiveUIEndScreen(EndInfoStats stats)
@@ -57,7 +64,7 @@ public class UIEndScreen : MonoBehaviour
         m_parentEndMenu.SetActive(true);
         stat = stats;
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);
-        StartDisplayStat();
+        //StartDisplayStat();
         SpellLink(characterShoot.spellProfils);
 
     }
@@ -78,10 +85,12 @@ public class UIEndScreen : MonoBehaviour
         return gameDurationText;
     }
 
-    private void StartDisplayStat()
+    public void StartDisplayStat()
     {
         lastXpBuffered = Time.time;
+        m_finishDisplayStat = false;
         m_isUpdatingStat = true;
+
     }
     private void BufferXpDisplay(float time)
     {
@@ -91,20 +100,28 @@ public class UIEndScreen : MonoBehaviour
         {
             m_nightCompleted[0].SetActive(true);
         }
-        if(tempsEcoule > 18.5f)
+        if (tempsEcoule > 18.5f)
         {
             m_nightCompleted[1].SetActive(true);
         }
-        if(tempsEcoule > 28)
+        if (tempsEcoule > 28)
         {
             m_nightCompleted[2].SetActive(true);
         }
 
-        m_killCountText.text = Mathf.Lerp(0, stat.enemyKill, Time.time - time).ToString("F0"); 
-        m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, Time.time - time).ToString("F0");
-        m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, Time.time - time).ToString("F0");
-        m_altarSuccessedText.text = Mathf.Lerp(0, stat.altarSuccessed, Time.time - time).ToString("F0");
-        m_biggestComboText.text = Mathf.Lerp(0, stat.roomCount, Time.time - time).ToString("F0");
+        float progress = (Time.time - time) / tempsDisplay;
+        m_killCountText.text = Mathf.Lerp(0, stat.enemyKill, progress).ToString("F0");
+        m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, progress).ToString("F0");
+        m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, progress).ToString("F0");
+        m_altarSuccessedText.text = Mathf.Lerp(0, stat.altarSuccessed, progress).ToString("F0");
+        m_biggestComboText.text = Mathf.Lerp(0, stat.roomCount, progress).ToString("F0");
+        for (int i = 0; i < spellCount; i++)
+        {
+
+            m_spellDetailDamages[i].text = "" + Mathf.Lerp(0, spellDamaged[i], progress).ToString("F0");
+
+        }
+        Debug.Log(progress + " : Progress display");
 
 
 
@@ -115,20 +132,20 @@ public class UIEndScreen : MonoBehaviour
     {
         int[] ennemyKilledbySpell = new int[spellProfils.Count];
         int[] upgradeAddedBySpell = new int[spellProfils.Count];
-        int spellCount = 0;
+        spellCount = 0;
         if (spellProfils.Count < 4)
         {
-           spellCount = spellProfils.Count;
+            spellCount = spellProfils.Count;
         }
         else
         {
-           spellCount = 4;
+            spellCount = 4;
         }
 
         GameStats.instance.ShowDamageLog();
         for (int i = 0; i < 4; i++)
         {
-            if(i < spellCount)
+            if (i < spellCount)
             {
                 m_spellDetail[i].SetActive(true);
                 m_spellDetailImage[i].sprite = spellProfils[i].spell_Icon;
@@ -136,7 +153,7 @@ public class UIEndScreen : MonoBehaviour
                 m_spellDetailName[i].text = "" + spellProfils[i].name;
 
 
-                m_spellDetailDamages[i].text = "" + GameStats.instance.GetDamage(spellProfils[i].name).ToString();
+                spellDamaged[i] = GameStats.instance.GetDamage(spellProfils[i].name);
                 int tier = Mathf.FloorToInt(spellProfils[i].level / 4);
                 m_spellDetailTier[i].text = "" + tier;
             }

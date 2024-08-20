@@ -11,11 +11,15 @@ namespace GuerhoubaTools.Gameplay
         private float m_duration = 0.0f;
         private bool isActivate = false;
         private Image clockAssociated;
+        private TMPro.TMP_Text textStackAssociated;
+        private int stack;
 
-        public void SetTimerDuration(float duration, Image clockImage)
+        public void SetTimerDuration(float duration, Image clockImage, TMPro.TMP_Text textStack)
         {
             m_duration = duration;
             clockAssociated = clockImage;
+            textStackAssociated = textStack;
+            stack = 0;
         }
 
         public bool UpdateTimer()
@@ -26,10 +30,12 @@ namespace GuerhoubaTools.Gameplay
             if (m_timer>m_duration)
             {
                 m_timer = 0.0f;
+                stack += 1;
                 return true;
             }else
             {
                 m_timer += Time.deltaTime;
+                textStackAssociated.text = "" + stack;
                 return false;
             }
 
