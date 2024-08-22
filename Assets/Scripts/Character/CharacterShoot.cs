@@ -605,7 +605,11 @@ namespace Character
                 return;
             }
 
-            if (m_currentType == GuerhoubaGames.GameEnum.BuffType.DAMAGE_SPELL) ShootAttack(m_currentIndexCapsule, ref currentShotNumber, ref m_canEndShot);
+            if (m_currentType == GuerhoubaGames.GameEnum.BuffType.DAMAGE_SPELL)
+            {
+                ShootAttack(m_currentIndexCapsule, ref currentShotNumber, ref m_canEndShot);
+                m_stackingClock[m_currentRotationIndex].RemoveStack();
+            }
 
 
         }
@@ -722,11 +726,17 @@ namespace Character
         private bool ShootAttackProjectile(int capsuleIndex, ref int currentShotCount)
         {
             if (m_currentStack[m_currentRotationIndex] <= 0)
+            {
+
+                m_stackingClock[m_currentRotationIndex].RemoveAllStack();
                 return true;
+            }
+
 
             SpellSystem.SpellProfil spellProfil = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(spellProfil);
             int mod = GetStartIndexProjectile(spellProfil);
+            
             for (int i = 0; i < spellProfil.GetIntStat(StatType.Projectile); i++)
             {
                 Transform transformUsed = transform;
@@ -1050,6 +1060,7 @@ namespace Character
                 bool inputTest = !m_shootInputActive || i != m_currentRotationIndex;
                 int index = spellEquip[i];
                 SpellSystem.SpellProfil spellProfil = spellProfils[index];
+                m_stackingClock[i].UpdateStackByCurrent(m_currentStack[i]);
                 int maxStack = GetMaxStack(spellProfil);
 
 

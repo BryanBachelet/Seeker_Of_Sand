@@ -41,6 +41,18 @@ namespace GuerhoubaTools.Gameplay
 
         }
 
+        public void RemoveAllStack()
+        {
+            //stack = 0;
+        }
+        public void RemoveStack()
+        {
+            //stack -= 1;
+        }
+        public void UpdateStackByCurrent(int stackCurrent)
+        {
+            stack = stackCurrent + 1;
+        }
         public void ActiaveClock()
         {
             isActivate = true;

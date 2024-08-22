@@ -149,7 +149,7 @@ public class TerrainGenerator : MonoBehaviour
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             isHealthBossRoom = true;
-
+            roomManager.m_CRT.Update();
             newTerrain.SetActive(false);
             return;
         }
@@ -204,6 +204,8 @@ public class TerrainGenerator : MonoBehaviour
 
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
+            RenderTexture custom_TRT = roomManager.previewCamera.targetTexture;
+            roomManager.m_CRT.Update();
             newTerrain.SetActive(false);
         }
 
@@ -227,7 +229,7 @@ public class TerrainGenerator : MonoBehaviour
             RoomManager roomManager = terrainInstantiated[i].GetComponentInChildren<RoomManager>();
             TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
             tpFeedback.rewardToUse = (int)roomManager.rewardType;
-            tpFeedback.ChangeRewardID(tpFeedback.rewardToUse);
+            tpFeedback.ChangeRewardID(tpFeedback.rewardToUse, roomManager.m_materialPreviewTRT);
         }
 
         currentRoomManager.SetupTeleporter(terrainInstantiated.Count);

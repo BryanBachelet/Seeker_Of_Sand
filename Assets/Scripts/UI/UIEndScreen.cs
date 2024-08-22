@@ -25,6 +25,11 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text[] m_spellDetailDamages = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailName = new TMP_Text[4];
     [SerializeField] private Image[] m_spellDetailImage = new Image[4];
+
+    [SerializeField] private TMP_Text[] m_fragmentDetailDamages = new TMP_Text[2];
+    [SerializeField] private TMP_Text[] m_fragmentDetailName = new TMP_Text[2];
+    [SerializeField] private Image[] m_fragmentDetailImage = new Image[2];
+
     private bool m_finishDisplayStat = false;
     private bool m_isUpdatingStat = false;
 
@@ -80,7 +85,7 @@ public class UIEndScreen : MonoBehaviour
         }
         int minutes = duration / 60;
         int seconds = duration % 60;
-        gameDurationText += minutes.ToString() + " min: " + seconds.ToString() + " ";
+        gameDurationText += minutes.ToString() + ":" + seconds.ToString() + " ";
 
         return gameDurationText;
     }
@@ -165,4 +170,5 @@ public class UIEndScreen : MonoBehaviour
         }
 
     }
+
 }

@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 8092470702815903472}
   m_Layer: 15
   m_Name: RainBullet
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -230,8 +230,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790aad17fcd99e54aa95ab36d87e7608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isExplotion: 0
+  isLimitTarget: 0
   indexSFX: 24
+  damageDelay: 0
+  m_vfxSpwaner: {fileID: 0}
+  isDebugActive: 0
+  color: {r: 0, g: 0, b: 0, a: 0}
+  transparency: 0.5
 --- !u!1001 &7670501633248258616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -244,6 +249,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Pluie_De_Balle_Fix Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 940531165083237798, guid: dad1418f8b74a914296b73c434c09c0c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 940531165083237798, guid: dad1418f8b74a914296b73c434c09c0c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3498584929606075563, guid: dad1418f8b74a914296b73c434c09c0c,
         type: 3}
