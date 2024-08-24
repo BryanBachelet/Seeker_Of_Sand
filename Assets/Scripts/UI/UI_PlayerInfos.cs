@@ -19,9 +19,10 @@ namespace SeekerOfSand
             [Header("Spell Stacking Object")]
             public GameObject stackingUIHolder;
             public GameObject clockUIHolder;
-            private TMP_Text[] m_stackingText;
+            public TMP_Text[] m_stackingText;
+            public TMP_Text[] m_levelText;
             private int[] levelSpell = new int[4];
-            private Image[] m_stackingImageClock;
+            public Image[] m_stackingImageClock;
 
             public TMP_Text levelTaken;
             private int m_level;
@@ -39,17 +40,17 @@ namespace SeekerOfSand
             {
                 m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
                 canalisationBarDisplay = m_canalisationBar.transform.parent.GetComponent<Animator>();
-                InitStackingObjects();
+                //InitStackingObjects();
                 m_level = 0;
             }
 
             #region Spell Stacking
 
-            public void InitStackingObjects()
-            {
-                m_stackingText = stackingUIHolder.GetComponentsInChildren<TMP_Text>();
-                m_stackingImageClock = clockUIHolder.GetComponentsInChildren<Image>();
-            }
+            //public void InitStackingObjects()
+            //{
+            //    //m_stackingText = stackingUIHolder.GetComponentsInChildren<TMP_Text>();
+            //    //m_stackingImageClock = clockUIHolder.GetComponentsInChildren<Image>();
+            //}
 
             public void UpdateStackingObjects(int index, int value)
             {
@@ -58,7 +59,7 @@ namespace SeekerOfSand
 
             public void UpdateLevelSpell(int index, int value)
             {
-                m_stackingText[index].text = value.ToString();
+                m_levelText[index].text = value.ToString();
             }
             public void UpdateStackingObjects(int[] value)
             {
@@ -129,8 +130,13 @@ namespace SeekerOfSand
             }
             public Image[] ReturnClock()
             {
-                InitStackingObjects();
+                //InitStackingObjects();
                 return m_stackingImageClock;
+            }
+
+            public TMP_Text[] ReturnStack()
+            {
+                return m_stackingText;
             }
 
             public Color GetRandomColorByPixel(Sprite sprite)

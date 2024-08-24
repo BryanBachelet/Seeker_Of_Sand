@@ -393,25 +393,25 @@ namespace SpellSystem
                 if (!statDatas[i].isVisible) continue;
                 if (IsStatBool(statTypes[i]))
                 {
-                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_bool.ToString() + " \n";
+                    debugStatString +=  "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_bool.ToString() + " </b> \n";
                     continue;
                 }
 
                 if (IsStatInt(statTypes[i]))
                 {
-                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_int.ToString() + " \n";
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_int.ToString() + " </b> \n";
                     continue;
                 }
 
                 if (IsStatFloat(statTypes[i]))
                 {
-                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_float.ToString() + " \n";
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_float.ToString() + " </b> \n";
                     continue;
                 }
 
                 if (IsStatString(statTypes[i]))
                 {
-                    debugStatString += statTypes[i].ToString() + " : " + statDatas[i].val_string + " \n";
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_string + " </b> \n";
                     continue;
                 }
             }

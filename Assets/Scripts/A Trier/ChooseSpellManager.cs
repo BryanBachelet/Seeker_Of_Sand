@@ -212,6 +212,7 @@ public class ChooseSpellManager : MonoBehaviour
     public IEnumerator SpellFadeOut(int spellNumber, float time)
     {
         decorationHolder[spellNumber].SetActive(false);
+        
         while (time + timeSolve - Time.time > 0)
         {
             m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (time + timeSolve - Time.time) / timeSolve - 0.5f);

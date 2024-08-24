@@ -27,7 +27,9 @@ public class DestructibleObject : MonoBehaviour
     void ActiveDestruction()
     {
         if (hasSpawn) return;
+        Vector3 parentScale = transform.localScale;
         GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation,transform.parent);
+        instance.transform.localScale = parentScale;
         Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
       
         for (int i = 0; i < rigidBodies.Length; i++)
@@ -59,7 +61,8 @@ public class DestructibleObject : MonoBehaviour
 
         for (int i = 0; i < rigidBodies.Length; i++)
         {
-            rigidBodies[i].AddForce( direction.normalized *power,ForceMode.Impulse);
+            rigidBodies[i].AddForce( direction.normalized * power * 1000,ForceMode.Impulse);
+            Debug.Log(power + "--> Is power of impulse. Direction is [" + direction + "]");
         }
 
         Destroy(gameObject);
