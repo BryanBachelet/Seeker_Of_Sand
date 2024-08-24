@@ -154,7 +154,6 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-
     private void AddUpgradeToList(ref List<UpgradeObject> listAray, UpgradeObject[] listToAdd, SpellSystem.SpellProfil spellProfil)
     {
         for (int i = 0; i < listToAdd.Length; i++)
@@ -171,6 +170,8 @@ public class UpgradeManager : MonoBehaviour
             }
         }
     }
+    
+
 
     private UpgradeObject ChooseUpgrade(int spellIndex)
     {
