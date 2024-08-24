@@ -7,7 +7,7 @@ public class TeleporterFeebackController : MonoBehaviour
 {
     [Range(0, 4)]
     public int elementToUse = 0; //0 --> Feu. 1 --> Elec. 2-->Eau. 3-->Terre. 4 --> Neutre
-
+    public MeshRenderer previewMeshPlane;
     public Gradient[] colorZoneAutour = new Gradient[4];
     [ColorUsage(true, true)]
     public Color[] colorSelfLite = new Color[4];
@@ -77,7 +77,7 @@ public class TeleporterFeebackController : MonoBehaviour
 
     }
 
-    public void ChangeRewardID(int ID)
+    public void ChangeRewardID(int ID, Material mat)
     {
 
         if (socleMesh && socleSpawn_mat == null)
@@ -89,6 +89,8 @@ public class TeleporterFeebackController : MonoBehaviour
         socleSpawn_mat.SetTexture("_MaskSelfLit", textureReward[ID]);
         planeSymbole_mat.SetTexture("_Symbole", textureReward[ID]);
         idReward = ID;
+        previewMeshPlane.material = mat;
+
     }
 
     public void ChangeColorID(int ID)

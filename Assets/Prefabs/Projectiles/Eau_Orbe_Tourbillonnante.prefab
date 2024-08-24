@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 6670382947011034853}
   - component: {fileID: 2982286525257287267}
   - component: {fileID: 8000744212758699050}
-  m_Layer: 0
+  - component: {fileID: 2413083962813113794}
+  m_Layer: 15
   m_Name: Eau_Orbe_Tourbillonnante
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,3 +150,25 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &2413083962813113794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943712460548226353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aaf6f636ca53b948a0fa1a3b73a051f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_speed: 80
+  m_lifeTime: 10
+  m_layer:
+    serializedVersion: 2
+    m_Bits: 8
+  m_power: 100
+  m_damage: 10
+  m_indexSFX: 25
+  m_piercingMax: 0
+  m_deltaTimeMove: 1

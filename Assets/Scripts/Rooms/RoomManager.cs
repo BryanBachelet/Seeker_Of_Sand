@@ -9,6 +9,9 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
 {
+    [HideInInspector] public Camera previewCamera;
+    public CustomRenderTexture m_CRT;
+    public Material m_materialPreviewTRT;
     public RoomType currentRoomType;
     /// <summary>
     /// Correspond to start room type
@@ -62,6 +65,7 @@ public class RoomManager : MonoBehaviour
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
         isRoomHasBeenValidate = false;
+        previewCamera = transform.parent.GetComponentInChildren<Camera>();
         isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
         playerGO = GameObject.Find("Player");

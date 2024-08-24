@@ -964,7 +964,8 @@ namespace Enemies
                     m_enemiesFocusAltar.Remove(npcHealth);
 
                 enemyTypeStats[(int)type].instanceCount -= 1;
-                healthComponent.GetDestroy(Vector3.zero, 0);
+                if(healthComponent != null) { healthComponent.GetDestroy(Vector3.zero, 0); }
+
                 m_pullingSystem.ResetEnemyNavMesh(npcHealth.gameObject, type);
             }
             //m_enemiesArray.Clear();

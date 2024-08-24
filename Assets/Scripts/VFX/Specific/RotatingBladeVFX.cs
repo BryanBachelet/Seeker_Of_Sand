@@ -18,8 +18,8 @@ namespace GuerhoubaGames.VFX
             int hitNumber = spellProfil.GetIntStat(GameEnum.StatType.HitNumber);
             float hitFrequency = spellProfil.GetFloatStat(GameEnum.StatType.HitFrequency);
             visualEffect.SetFloat("Lifetime", hitNumber * hitFrequency);
-            visualEffect.SetFloat("HitParSeconde", 1 / hitFrequency);
-            visualEffect.SetInt("SwordNumber", hitNumber);
+            visualEffect.SetFloat("HitParSeconde", hitFrequency);
+            visualEffect.SetInt("SwordNumber", (int)(hitNumber * hitFrequency));
 
         }
 
