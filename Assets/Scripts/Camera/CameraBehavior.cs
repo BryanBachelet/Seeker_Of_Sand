@@ -434,7 +434,7 @@ namespace Render.Camera
             }
             else
             {
-
+                m_mouseDeltaValue = 0;
             }
 
 
@@ -543,7 +543,6 @@ namespace Render.Camera
         private void FreeRotation(float sign)
         {
             if (m_isOrientedCamera) return;
-
 
             if (sign == 0) return;
             sign = Mathf.Sign(sign);
