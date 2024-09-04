@@ -23,27 +23,28 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Bricks_Ground 1
+  m_Name: SOT_Rocks_Enemy
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - N_F_ALSL_ON
   - N_F_AL_ON
-  - N_F_CS_ON
   - N_F_ESSAO_ON
+  - N_F_ESSGI_ON
   - N_F_ESSR_ON
-  - N_F_NLASOBF_ON
+  - N_F_ESSS_ON
+  - N_F_NM_ON
   - N_F_PAL_ON
   - N_F_RELGI_ON
   - N_F_RL_ON
+  - N_F_SON_ON
   - N_F_SS_ON
-  - N_F_USETLB_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2225
   stringTagMap: {}
@@ -115,7 +116,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 2fe17b135e47c7744b8495cad3552a53, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskGloss:
@@ -131,7 +132,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskSelfLit:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: df57bd1c1e493a84ebf9619fc48a7f38, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTransparency:
@@ -139,7 +140,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 3214797c385a59d42b3d70eacb04a2d0, type: 3}
+        m_Texture: {fileID: 2800000, guid: bab0d962bd6ad1a4fa08a455577fd43c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapOS:
@@ -263,7 +264,7 @@ Material:
     - _EnableGeometricSpecularAA: 0
     - _EnableTextureTransparent: 0
     - _EnergyConservingSpecularColor: 1
-    - _EnvironmentalLightingIntensity: 27.8
+    - _EnvironmentalLightingIntensity: 1.63
     - _FarDistanceMaxWidth: 10
     - _GBuWriMas: 14
     - _GIFlatShade: 0
@@ -296,7 +297,7 @@ Material:
     - _LightAffectRimLightColor: 1
     - _LightAffectShadow: 1
     - _LightFalloffAffectShadowT: 0
-    - _LightFalloffSoftness: 0.896
+    - _LightFalloffSoftness: 0.929
     - _LightIntensity: 1
     - _LinkDetailsWithBase: 1
     - _MCIALO: 0
@@ -317,12 +318,12 @@ Material:
     - _N_F_CLD: 0
     - _N_F_CO: 0
     - _N_F_COEDGL: 0
-    - _N_F_CS: 1
+    - _N_F_CS: 0
     - _N_F_DCS: 0
     - _N_F_ESSAO: 1
-    - _N_F_ESSGI: 0
+    - _N_F_ESSGI: 1
     - _N_F_ESSR: 1
-    - _N_F_ESSS: 0
+    - _N_F_ESSS: 1
     - _N_F_FR: 0
     - _N_F_GLO: 0
     - _N_F_GLOT: 0
@@ -331,8 +332,8 @@ Material:
     - _N_F_MC: 0
     - _N_F_MSSOLTFO: 0
     - _N_F_NFD: 0
-    - _N_F_NLASOBF: 1
-    - _N_F_NM: 0
+    - _N_F_NLASOBF: 0
+    - _N_F_NM: 1
     - _N_F_O: 0
     - _N_F_O_NM: 0
     - _N_F_PAL: 1
@@ -341,7 +342,7 @@ Material:
     - _N_F_RL: 1
     - _N_F_SCT: 0
     - _N_F_SL: 0
-    - _N_F_SON: 0
+    - _N_F_SON: 1
     - _N_F_SS: 1
     - _N_F_ST: 0
     - _N_F_STIAL: 0
@@ -350,7 +351,7 @@ Material:
     - _NormalMapSpace: 0
     - _NormalMax: 1
     - _NormalMin: 1
-    - _NormalScale: 0
+    - _NormalScale: -0.3
     - _NormalThreshold: 1.3
     - _ONormMapInt: 1
     - _Opacity: 1
@@ -378,32 +379,32 @@ Material:
     - _RefMetallic: 0
     - _ReflectionIntensity: 0
     - _RefractionModel: 0
-    - _RimLigInt: 0.02
-    - _RimLightColorPower: 0.32
+    - _RimLigInt: 0.279
+    - _RimLightColorPower: 0.61
     - _RimLightInLight: 1
-    - _RimLightSoftness: 0.08
-    - _RimLightUnfill: 1.7
+    - _RimLightSoftness: 1
+    - _RimLightUnfill: 7.83
     - _SPECIN: 1
     - _SPECMODE: 0
-    - _SSRefDeOn: 0
-    - _SSRefGBu: 2
-    - _SSRefMoVe: 32
+    - _SSRefDeOn: 8
+    - _SSRefGBu: 10
+    - _SSRefMoVe: 40
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
     - _SelfLitIntensity: 0
-    - _SelfLitPower: 50
+    - _SelfLitPower: -12875
     - _SelfShadowAffectedByLightShadowStrength: 1
-    - _SelfShadowHardness: 0.32
+    - _SelfShadowHardness: 0.631
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 0.81
+    - _SelfShadowRealtimeShadowIntensity: 0.867
     - _SelfShadowShadowTAtViewDirection: 0
-    - _SelfShadowThreshold: 1
+    - _SelfShadowThreshold: 0.945
     - _ShadowColorTexturePower: 0
-    - _ShadowHardness: 1
+    - _ShadowHardness: 0
     - _ShadowTColorPower: 1
     - _ShadowTHardness: 1
-    - _ShadowTIntensity: 1
+    - _ShadowTIntensity: 0
     - _ShadowTLightThreshold: 50
     - _ShadowTShadowThreshold: 0
     - _ShowInAmbientLightShadowIntensity: 1
@@ -411,7 +412,7 @@ Material:
     - _ShowNormal: 0
     - _SimTrans: 0
     - _SmoothObjectNormal: 0
-    - _Smoothness: 0.19
+    - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
     - _SpecularAAScreenSpaceVariance: 0.1
@@ -429,7 +430,7 @@ Material:
     - _SubsurfaceMask: 1
     - _SupportDecals: 1
     - _SurfaceType: 0
-    - _TEXMCOLINT: 0
+    - _TEXMCOLINT: 663.9
     - _TOAO: 1
     - _TRANSMODE: 0
     - _TexWorldScale: 1
@@ -451,10 +452,10 @@ Material:
     - _UseEmissiveIntensity: 0
     - _UseSecondaryCutoutOnly: 0
     - _UseShadowThreshold: 0
-    - _UseTLB: 1
+    - _UseTLB: 0
     - _VertexColorBlueAffectOutlineWitdh: 0
     - _VertexColorGreenControlSelfShadowThreshold: 0
-    - _VertexColorRedControlSmoothObjectNormal: 0
+    - _VertexColorRedControlSmoothObjectNormal: 1
     - _ZTeForLiOpa: 3
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
@@ -472,17 +473,17 @@ Material:
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightColor: {r: 0, g: 0, b: 0, a: 1}
+    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
-    - _MainColor: {r: 0.024896357, g: 0.010877962, b: 0.004345119, a: 1}
+    - _MainColor: {r: 0.18867922, g: 0.13438945, b: 0.13438945, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _PTCol: {r: 0, g: 0, b: 0, a: 1}
-    - _RimLightColor: {r: 1, g: 0.56253964, b: 0.3726415, a: 1}
-    - _SSAOColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SelfLitColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimLightColor: {r: 1, g: 0.4820498, b: 0.2028302, a: 1}
+    - _SSAOColor: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 0}
+    - _SelfLitColor: {r: 1.4941084, g: 13.589274, b: 7.6670957, a: 1}
     - _SelfShadowRealTimeShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowTColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
