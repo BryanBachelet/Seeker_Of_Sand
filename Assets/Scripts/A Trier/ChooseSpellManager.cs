@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SpellSystem;
 using TMPro;
+using GuerhoubaGames.UI;
 
 public class ChooseSpellManager : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class ChooseSpellManager : MonoBehaviour
     private bool m_hasChooseSpell = false;
     private int m_indexSpellChoose = -1;
 
+    public GameObject FirstObjectSelect;
 
     #region Unity Functions
 
@@ -137,6 +139,13 @@ public class ChooseSpellManager : MonoBehaviour
         }
     }
 
+
+    public void OpenSpellChoice()
+    {
+        if (!GameState.instance.IsGamepad()) return;
+
+        UITools.instance.SetUIObjectSelect(FirstObjectSelect);
+    }
 
     public void ResetRandomSpell()
     {

@@ -154,7 +154,6 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-
     private void AddUpgradeToList(ref List<UpgradeObject> listAray, UpgradeObject[] listToAdd, SpellSystem.SpellProfil spellProfil)
     {
         for (int i = 0; i < listToAdd.Length; i++)
@@ -171,6 +170,8 @@ public class UpgradeManager : MonoBehaviour
             }
         }
     }
+    
+
 
     private UpgradeObject ChooseUpgrade(int spellIndex)
     {
@@ -230,6 +231,7 @@ public class UpgradeManager : MonoBehaviour
         spellChoiceUI.SetActive(true);
         upgradeBook.SetActive(true);
         if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
+        m_chooseSpellManagerComponent.OpenSpellChoice();
         m_chooseSpellManagerComponent.ResetRandomSpell();
         GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
     }
@@ -274,6 +276,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.iconSpell = upgradeLevelingData.iconSpell;
         m_upgradeLevelingData.upgradePoint = upgradeLevelingData.upgradePoint;
 
+        m_upgradeChoosingComponent.OpenUpgradeUI();
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
         Debug.Log("Open Upgrade interface");
     }

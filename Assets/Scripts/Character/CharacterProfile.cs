@@ -46,12 +46,13 @@ public class CharacterProfile : MonoBehaviour
         }
     }
 
-
     public void OpenPauseMenuInput(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed) m_pauseMenuObject.GetComponent<PauseMenu>().CallPauseMenu();
-       
+        if (ctx.performed)
+        {
+            m_pauseMenuObject.GetComponent<PauseMenu>().CallPauseMenu();
+        }
     }
 
 
-}
+    }

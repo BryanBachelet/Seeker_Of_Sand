@@ -27,6 +27,30 @@ namespace Render.Camera
         const float angleValue = 360.0f / maxDirection;
         private int indexDirection = 0;
 
+
+        // Oriented Camera Variable 
+        [Header("Oriented Camera Parameter")]
+        public float cameraOrientedAngleSpeed = 0.25f;
+        public int minFrameCamOriented = 5; 
+        
+        private bool m_isOrientedCamera;
+        private Quaternion m_orientedCameraQuat;
+        private Vector3 m_orientedAngle;
+        private Vector2 m_stickDir2D;
+
+        private Vector3 m_startOrientedInputValue = Vector3.zero;
+        private Vector3 m_currentOrientedInputValue = Vector3.forward;
+        private Vector3 m_targetOrientedInputValue = Vector3.zero;
+
+        private float m_startOrientedInputAngle = 0.0f;
+        private float m_currentOrientedInputAngle = 0.0f;
+        private float m_targetOrientedInputAngle = 0.0f;
+
+        private int frameToEndLerp;
+        private int frameCount;
+
+        // -----------  
+
         private Vector3 m_finalPosition;
         private Vector3 m_finalRotation;
 
@@ -38,6 +62,7 @@ namespace Render.Camera
         private float m_lerpTime = 0.3f;
         private float m_lerpTimer = 0.0f;
 
+        [Space]
         public CameraMode cameraMode = CameraMode.HIGH_VIEW;
         private CameraEffect[] cameraEffects;
         public Transform sun;
@@ -161,6 +186,7 @@ namespace Render.Camera
                 // ------------------------
 
                 if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_mouseDeltaValue);
+                if (m_isOrientedCamera && m_isRotationInputPress) OrientedCameraRotation();
 
                 SetCameraRotation();
                 SetCameraPosition();
@@ -344,16 +370,63 @@ namespace Render.Camera
         #region Camera Rotation Functions
 
 
+        public void RotationCameraOrientedInput(InputAction.CallbackContext ctx)
+        {
+            if (!IsGamepad()) return;
+
+            if (ctx.performed && this.enabled)
+            {
+                // 1. Need to verified to reset lerp 
+                // 2. Determine Speed to lerp;
+                // 2. Lerp system 
+
+                m_isOrientedCamera = true;
+                Vector2 stickDir2D = ctx.ReadValue<Vector2>();
+                if (stickDir2D.magnitude < .25f)
+                {
+                    m_isOrientedCamera = true;
+                    m_mouseDeltaValue = 0.0f;
+                    m_isRotationInputPress = false;
+                    return;
+                }
+                m_stickDir2D = stickDir2D.normalized;
+                m_isRotationInputPress = true;
+
+
+
+
+
+            }
+
+            if (ctx.canceled && this.enabled)
+            {
+                m_mouseDeltaValue = 0.0f;
+                m_isRotationInputPress = false;
+                m_isOrientedCamera = true;
+            }
+        }
+
+
         public void RotationAimInput(InputAction.CallbackContext ctx)
         {
-            if (m_mouseInputActivate && this.enabled)
-            {
 
+            if (m_mouseInputActivate && this.enabled && ctx.performed)
+            {
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
+                m_isOrientedCamera = false;
 
-                if (!IsGamepad()) m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<float>();
-                else m_mouseDeltaValue = value * m_gamepadSensibility * ctx.ReadValue<float>();
+                if (!IsGamepad())
+                {
+                    m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<float>();
+                }
+                else
+                {
+                    m_mouseDeltaValue = value * m_gamepadSensibility * ctx.ReadValue<float>();
+                    //Debug.Log("Is gamepad ");
+
+                }
+
 
                 if (Mathf.Abs(m_mouseDeltaValue) < m_mousDeltaThreshold) m_mouseDeltaValue = 0;
                 //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
@@ -364,13 +437,7 @@ namespace Render.Camera
 
             }
 
-            //if (ctx.canceled && m_mouseInputActivate && this.enabled)
-            //{
-            //    //Cursor.lockState = CursorLockMode.None;
-            //    Debug.Log("Unlock Cursor");
-            //    //m_mouseDeltaValue = 0.0f;
-            //    //if (m_activeDebugMouseRotation) Debug.Log("Mouse Delta = " + m_mouseDeltaValue.ToString());
-            //}
+
         }
 
         public void RotationMouseInput(InputAction.CallbackContext ctx)
@@ -433,9 +500,51 @@ namespace Render.Camera
             m_nextAngle = angleValue * indexDirection;
         }
 
+        private void OrientedCameraRotation()
+        {
+            Vector3 stickDir3D = new Vector3(m_stickDir2D.x, 0, m_stickDir2D.y);
+            Vector3 deltaInputDirecton = m_targetOrientedInputValue + stickDir3D;
+
+            if (deltaInputDirecton.magnitude > .1f)
+            {
+                m_targetOrientedInputValue = -stickDir3D;
+                Vector3 cameraBaseDirection = new Vector3(0.0f, 0.0f, m_cameraDirection.z);
+
+                m_startOrientedInputValue = m_orientedCameraQuat * cameraBaseDirection.normalized;
+                m_startOrientedInputAngle = Vector3.SignedAngle(-Vector3.forward,m_startOrientedInputValue, Vector3.up);
+
+                float angle = Vector3.SignedAngle(m_startOrientedInputValue, m_targetOrientedInputValue, Vector3.up);
+
+                frameToEndLerp = (int)(Mathf.Abs(angle) / cameraOrientedAngleSpeed);
+                frameToEndLerp = Mathf.Clamp(frameToEndLerp, minFrameCamOriented, 1000);
+                frameCount = 0;
+                
+            }else
+            {
+                if (frameCount <= frameToEndLerp)
+                {
+                    frameCount++;
+                    float ratio = ((float)frameCount / (float)frameToEndLerp);
+                    ratio = Mathf.Clamp(ratio, 0.0f, 1.0f);
+                    m_currentOrientedInputAngle = m_startOrientedInputAngle + Vector3.SignedAngle(m_startOrientedInputValue, m_targetOrientedInputValue, Vector3.up) * ratio;
+                }
+
+            }
+
+
+
+            m_orientedAngle.y = m_currentOrientedInputAngle;
+            m_currentAngle = m_currentOrientedInputAngle;
+            m_orientedCameraQuat = Quaternion.Euler(0, m_currentOrientedInputAngle, 0);
+
+        }
+
 
         private void FreeRotation(float sign)
         {
+            if (m_isOrientedCamera) return;
+
+
             if (sign == 0) return;
             sign = Mathf.Sign(sign);
             float deltaInputMove = Time.time - timeLastRotationInput;
@@ -505,7 +614,15 @@ namespace Render.Camera
 
         private void SetCameraRotation()
         {
-            m_finalRotation = m_baseAngle + Vector3.Lerp(m_prevRot, m_nextRot, m_lerpTimer / m_lerpTime);
+            if (!m_isOrientedCamera)
+            {
+                m_finalRotation = m_baseAngle + Vector3.Lerp(m_prevRot, m_nextRot, m_lerpTimer / m_lerpTime);
+            }
+            else
+            {
+                m_finalRotation = m_baseAngle + m_orientedAngle;
+            }
+
             for (int i = 0; i < cameraEffects.Length; i++)
             {
                 m_finalRotation += cameraEffects[i].GetEffectRot();
@@ -513,9 +630,18 @@ namespace Render.Camera
         }
         private void SetCameraPosition()
         {
-            m_finalPosition = m_targetTransform.position;
-            m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget;
-            if (cameraMode == CameraMode.THIRD_VIEW) m_finalPosition += m_baseOffset;
+            if (!m_isOrientedCamera)
+            {
+                m_finalPosition = m_targetTransform.position;
+                m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget;
+                if (cameraMode == CameraMode.THIRD_VIEW) m_finalPosition += m_baseOffset;
+            }
+            else
+            {
+                m_finalPosition = m_targetTransform.position;
+                m_finalPosition += m_orientedCameraQuat * m_cameraDirection.normalized * m_distanceToTarget;
+            }
+
             for (int i = 0; i < cameraEffects.Length; i++)
             {
                 m_finalPosition += cameraEffects[i].GetEffectPos();

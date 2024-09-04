@@ -36,6 +36,9 @@ public class MarchandUiView : MonoBehaviour
     public TMP_Text descriptionElementText;
     public Image imageDescription;
 
+    [Header("Gamepad Parameters")]
+    public GameObject firstButtonToSelect;
+
     public void Start()
     {
         InitEventComponent();
@@ -57,7 +60,12 @@ public class MarchandUiView : MonoBehaviour
         isOpen = true;
         shopContainer.SetActive(isOpen);
         merchandItemData = itemData;
-        UpdateShopInterface();
+
+
+        if (GameState.instance.IsGamepad())
+            UITools.instance.SetUIObjectSelect(firstButtonToSelect); 
+        
+            UpdateShopInterface();
     }
 
     public void DeactiveMarchandUI()

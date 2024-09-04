@@ -33,10 +33,10 @@ namespace GuerhoubaGames.SaveData
             sec = int.Parse(timeValue[timeValue.Length - 1]);
             min = int.Parse(timeValue[timeValue.Length - 2]);
             hours = int.Parse(timeValue[timeValue.Length - 3]);
-  
+
             playerData.gameTime = new TimeSpan(hours, min, sec);
 
-            if (isDebugActive) 
+            if (isDebugActive)
                 Debug.Log("Update Game data file");
 
             return playerData;
@@ -97,7 +97,7 @@ namespace GuerhoubaGames.SaveData
             if (!Directory.Exists(Application.dataPath + "\\Temp"))
             {
                 Debug.LogError("The folder temp need to be create");
-                return "" ;
+                return "";
             }
 #else
             string filePath = Application.dataPath + m_playerDataFileName + GameManager.instance.profileName + m_playerDataFileExtention;
@@ -129,7 +129,7 @@ namespace GuerhoubaGames.SaveData
             else
             {
                 m_playerData = PlayerData.ReadData(Save.SaveManager.ReadGameData(filePath), m_isDebugActive);
-                m_playerData.ShowDebug();
+                if (isDebugActive) m_playerData.ShowDebug();
             }
 
         }
@@ -151,7 +151,7 @@ namespace GuerhoubaGames.SaveData
             m_playerData.gameTime += m_timeSpanSession;
             Debug.Log(m_timeSpanSession.ToString());
 
-           if(m_isDebugActive) m_playerData.ShowDebug();
+            if (m_isDebugActive) m_playerData.ShowDebug();
 
             Save.SaveManager.WriteGameData(GetFilePath(), m_playerData.WriteData());
         }

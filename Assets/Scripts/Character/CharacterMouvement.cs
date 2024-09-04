@@ -117,9 +117,7 @@ namespace Character
         private float m_knockbackBaseGravityPower = 10.0f;
         private Vector3 m_directionKnockback;
 
-
         public MouvementState mouvementState;
-
 
         [SerializeField] private SpeedData m_speedData = new SpeedData();
         private bool m_directionInputActive = false;
@@ -135,6 +133,7 @@ namespace Character
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
         public LayerMask obstacleLayerMask;
+        private GuerhoubaGames.Input.DivideSchemeManager m_divideSchemeManager;
 
         public void InitComponentStat(CharacterStat stat)
         {
@@ -155,7 +154,7 @@ namespace Character
             m_characterAim = GetComponent<CharacterAim>();
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
-
+            m_divideSchemeManager = GetComponent<GuerhoubaGames.Input.DivideSchemeManager>();
         }
 
         private void Start()
@@ -197,7 +196,19 @@ namespace Character
             {
                 m_inputDirection = Vector2.zero;
                 m_directionInputActive = false;
-                CancelSlide();
+
+                if (IsGamepad())
+                {
+                    if (m_divideSchemeManager.isAbleToChangeMap)
+                    {
+                        m_divideSchemeManager.ChangeToCombatActionMap();
+                        CancelSlide();
+                    }
+                }
+                else
+                {
+                    CancelSlide();
+                }
 
             }
 
@@ -223,7 +234,8 @@ namespace Character
                         m_BookAnim.SetBool("Running", true);
                         m_CharacterAnim.SetBool("Casting", false);
                         m_BookAnim.SetBool("Running", false);
-                    }else
+                    }
+                    else
                     {
                         m_isSlideInputActive = false;
                         SlideActivation(false);
@@ -290,9 +302,10 @@ namespace Character
                 m_BookAnim.SetBool("Casting", false);
                 //  cameraPlayer.BlockZoom(false);
                 DisplayNewCurrentState(1);
+
             }
 
-            if (!isActive && combatState ==false)
+            if (!isActive && combatState == false)
             {
                 m_characterShoot.ActivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", true);
@@ -303,7 +316,6 @@ namespace Character
             }
 
         }
-
 
         public void SetCombatMode(bool state)
         {
@@ -533,6 +545,15 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
                 m_velMovement = Vector3.zero;
+
+                if (IsGamepad())
+                {
+                    if (m_divideSchemeManager.isAbleToChangeMap)
+                    {
+                        m_divideSchemeManager.ChangeToCombatActionMap();
+                        CancelSlide();
+                    }
+                }
                 if (m_rigidbody.velocity.magnitude > 0)
                 {
                     m_rigidbody.velocity = m_rigidbody.velocity.normalized * (m_rigidbody.velocity.magnitude - (2 * Time.deltaTime));
@@ -746,7 +767,7 @@ namespace Character
             m_velMovement += direction.normalized * (m_velMovement.magnitude / ratioSmoothMouvement + m_accelerationSpeed * Time.deltaTime);
             if (!m_isSlowdown)
             {
-               
+
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
             }
             else
@@ -837,7 +858,8 @@ namespace Character
                     m_startRotation = transform.rotation;
                     m_prevInputDirection = inputDirection;
                     m_rotationTime = 0.0f;
-                }else
+                }
+                else
                 {
                     m_rotationTime += .1f;
                 }

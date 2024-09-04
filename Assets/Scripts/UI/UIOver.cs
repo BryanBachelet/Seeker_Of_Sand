@@ -6,15 +6,28 @@ using System;
 
 public class UIOver : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public UpgradeUI upgradeUI_object;
     [SerializeField] private int m_indexUpgrade = 0;
     public bool isOver;
     public Action<int> OnEnter;
+    public GameObject gameObjectToSelect;
 
 
-    private void Start()
+
+    public void Update()
     {
-        //upgradeUI_object = transform.parent.transform.parent.GetComponent<UpgradeUI>();
+        if (!GameState.instance.IsGamepad()) return;
+
+        bool isSelected = EventSystem.current.currentSelectedGameObject == gameObjectToSelect;
+
+        if (isSelected)
+        {
+            if (OnEnter != null) OnEnter.Invoke(m_indexUpgrade);
+            isOver = true;
+        }
+        else
+        {
+            isOver = false;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

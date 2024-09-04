@@ -110,7 +110,7 @@ public class TerrainGenerator : MonoBehaviour
         currentRoomManager.RetriveComponent();
         currentRoomManager.currentRoomType = RoomType.Free;
         currentRoomManager.rewardType = RewardType.SPELL;
-
+        currentRoomManager.isRoomHasBeenDeactivated = true;
 
         currentRoomManager.roomInfoUI = roomInfoUI;
         roomInfoUI.currentRoomManager = currentRoomManager;
@@ -149,8 +149,8 @@ public class TerrainGenerator : MonoBehaviour
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             isHealthBossRoom = true;
-            roomManager.m_CRT.Initialize();
-            newTerrain.SetActive(false);
+            roomManager.m_CRT.Update();
+            StartCoroutine(roomManager.RoomDeactivation(3));
             return;
         }
 
@@ -205,13 +205,15 @@ public class TerrainGenerator : MonoBehaviour
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             RenderTexture custom_TRT = roomManager.previewCamera.targetTexture;
-            roomManager.m_CRT.Initialize();
-            newTerrain.SetActive(false);
+            roomManager.m_CRT.Update();
+            StartCoroutine(roomManager.RoomDeactivation(3));
+            //newTerrain.SetActive(false);
         }
 
         if (currentRoomManager.currentRoomType == RoomType.Free)
             roomTypeList.Insert((int)currentRoomManager.currentRoomType, currentRoomManager.currentRoomType);
-        //AssociateNewReward(selectedTerrainNumber);
+        
+  //      AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
         roomGeneration_Static = countRoomGeneration;
     }
