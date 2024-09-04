@@ -74,8 +74,11 @@ public class TrainingArea : MonoBehaviour
                     {
                         GameObject attackInstiate = Instantiate(attack[i], foundNewPosition() + (playerRigidBodyVelocity * predictionPercent[i]), transform.rotation, transform);
                         GameObject vfx = Instantiate(shotVfx, altarAssociated.transform.position + offSetSign, transform.rotation);
-                        vfx.GetComponent<SignAttack>().positionToGo = attackInstiate.transform.position;
-                        //Debug.Log("Attack spawned : " + attackInstiate.name);
+                        float speed = Vector3.Distance(vfx.transform.position, attackInstiate.transform.position) / tempsRealese[i];
+                        SignAttack signAttack_Projectil = vfx.GetComponent<SignAttack>();
+                        signAttack_Projectil.positionToGo = attackInstiate.transform.position;
+                        signAttack_Projectil.speedMovement = speed;
+                        //Debug.Log("Attack spawned : " + attackInstiate.name + " Life time is : " + tempsRealese[i] + " distance with player is : " + distance + " Speed will be : " + (distance / tempsRealese[i]));
                         AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
                         dataLife.lifeTimeVFX = tempsRealese[i];
                         dataLife.playerTarget = playerPosition;

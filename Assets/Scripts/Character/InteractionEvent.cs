@@ -91,6 +91,8 @@ public class InteractionEvent : MonoBehaviour
 
         GameObject interactiveObject = FindClosestElement(col);
 
+        //selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
+        //if (selection != null) { selection.ChangeLayerToSelection(); }
         InteractionInterface interactionInterface = interactiveObject.GetComponent<InteractionInterface>();
         if (interactionInterface == null)
         {
@@ -190,6 +192,9 @@ public class InteractionEvent : MonoBehaviour
                 }
             }
 
+            selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
+            if (selection != null) { selection.ChangeLayerToSelection(); }
+
         }
         else if (col.Length == 0 && currentInteractibleObject != null)
         {
@@ -198,6 +203,8 @@ public class InteractionEvent : MonoBehaviour
                 hintInputInteraction.SetActive(false) ;
             }
             //bandeDiscussion.SetBool("NearNPC", false);
+            selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
+            if (selection != null) { selection.ChangeLayerToDefault(); }
             currentInteractibleObject = null;
             m_socleTransform = null;
             StartCoroutine(CloseUIWithDelay(2));
