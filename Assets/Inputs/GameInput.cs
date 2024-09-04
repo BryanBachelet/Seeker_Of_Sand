@@ -1462,7 +1462,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""16bc01b8-9529-4b28-8ff7-86392e0a5484"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1517,7 +1517,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f0884002-4d90-46a6-b6cf-33528633267b"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
