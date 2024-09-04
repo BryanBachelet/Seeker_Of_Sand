@@ -57,6 +57,8 @@ public class RoomManager : MonoBehaviour
     private bool rewardGenerated = false;
 
 
+    public bool isRoomHasBeenDeactivated;
+
      private DateTime m_startRoomChallengeTime; 
      private DateTime m_EndRoomChallengeTime; 
     private TimeSpan timeSpan;
@@ -185,13 +187,16 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+
+
+
     public void Update()
     {
-        if (!isRoomHasBeenValidate) return;
+        if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
 
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
         {
-            ActivateTeleporters();
+             ActivateTeleporters();
             isTeleporterActive = true;
         }
 
@@ -265,6 +270,24 @@ public class RoomManager : MonoBehaviour
 
 
     }
+
+
+    public IEnumerator RoomDeactivation(int frameCount)
+       
+    {
+
+        int framePassed = 0;
+
+        while (framePassed<frameCount)
+        {
+            yield return Time.deltaTime;
+            framePassed++;
+        }
+
+        isRoomHasBeenDeactivated = true;
+        transform.parent.gameObject.SetActive(false);
+    }
+
 
     private void OnDrawGizmosSelected()
     {

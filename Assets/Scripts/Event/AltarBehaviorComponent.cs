@@ -402,6 +402,8 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public void SpawnAltarReward()
     {
+
+        return;
         for (int i = 0; i < nextReward; i++)
         {
             Vector3 randomRadiusPosition = new Vector3(Random.Range(-radiusEjection, radiusEjection), 0, Random.Range(-radiusEjection, radiusEjection));

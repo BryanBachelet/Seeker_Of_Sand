@@ -179,7 +179,7 @@ namespace Enemies
             }
 
             this.gameObject.layer = 16;
-            destroyEvent.Invoke(direction, power);
+          if(destroyEvent != null) destroyEvent.Invoke(direction, power);
 
             m_enemyManager.EnemyHasDied(this, xpToDrop);
 

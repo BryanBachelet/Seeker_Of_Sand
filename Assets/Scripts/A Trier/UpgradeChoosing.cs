@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.UI;
 
 
 public class UpgradeChoosing : MonoBehaviour
@@ -39,6 +40,8 @@ public class UpgradeChoosing : MonoBehaviour
     public TMPro.TMP_Text[] upgradeTextStatModify = new TMPro.TMP_Text[6];
     public UIOver[] uiUpgradeButton = new UIOver[3];
 
+    public GameObject firstObjectSelect;
+
     private void Awake()
     {
         if (m_imageBandeau != null)
@@ -60,6 +63,11 @@ public class UpgradeChoosing : MonoBehaviour
         {
             uiUpgradeButton[i].OnEnter += SetModifySpellStat;
         }
+    }
+
+    public void OpenUpgradeUI()
+    {
+        if (GameState.instance.IsGamepad()) UITools.instance.SetUIObjectSelect(firstObjectSelect);
     }
 
     public void SetNewUpgradeData(UpgradeLevelingData data)

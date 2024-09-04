@@ -231,6 +231,7 @@ public class UpgradeManager : MonoBehaviour
         spellChoiceUI.SetActive(true);
         upgradeBook.SetActive(true);
         if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
+        m_chooseSpellManagerComponent.OpenSpellChoice();
         m_chooseSpellManagerComponent.ResetRandomSpell();
         GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
     }
@@ -275,6 +276,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.iconSpell = upgradeLevelingData.iconSpell;
         m_upgradeLevelingData.upgradePoint = upgradeLevelingData.upgradePoint;
 
+        m_upgradeChoosingComponent.OpenUpgradeUI();
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
         Debug.Log("Open Upgrade interface");
     }

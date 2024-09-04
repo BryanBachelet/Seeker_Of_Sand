@@ -18,6 +18,19 @@ public class PopupFunction : MonoBehaviour, IPointerEnterHandler
         }
     }
 
+    public void Update()
+    {
+        if (!GameState.instance.IsGamepad()) return;
+
+        bool isSelected = EventSystem.current.currentSelectedGameObject == this.gameObject;
+
+        if(isSelected)
+        {
+            overring = true;
+            spellManager.SpellOverring(popupIndex, this);
+        }
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         overring = true;

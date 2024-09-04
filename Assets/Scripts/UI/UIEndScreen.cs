@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine.UI;
 using UnityEngine;
-
+using GuerhoubaGames.UI;
 using TMPro;
 
 public class UIEndScreen : MonoBehaviour
@@ -45,6 +44,11 @@ public class UIEndScreen : MonoBehaviour
 
     private int[] spellDamaged = new int[4];
     int spellCount = 0;
+
+
+    public GameObject FirstMenuButtonObject;
+    public GameObject FirstObjectSelect;
+
     public void Update()
     {
         if (m_isUpdatingStat)
@@ -72,6 +76,8 @@ public class UIEndScreen : MonoBehaviour
         //StartDisplayStat();
         SpellLink(characterShoot.spellProfils);
 
+        if (GameState.instance.IsGamepad()) 
+            UITools.instance.SetUIObjectSelect(FirstMenuButtonObject);
     }
 
     private string ConvertGameTimeToString(int duration)
@@ -95,6 +101,9 @@ public class UIEndScreen : MonoBehaviour
         lastXpBuffered = Time.time;
         m_finishDisplayStat = false;
         m_isUpdatingStat = true;
+
+        if (GameState.instance.IsGamepad()) 
+            UITools.instance.SetUIObjectSelect(FirstObjectSelect);
 
     }
     private void BufferXpDisplay(float time)

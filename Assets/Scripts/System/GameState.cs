@@ -100,6 +100,8 @@ public class GameState : MonoBehaviour
     private bool m_activeDebug = true;
     private GameManager m_gmComponent;
 
+    private PlayerInput m_playerInput;
+
     private Scene scene;
     private bool m_activeSceneEvent = false;
 
@@ -108,6 +110,7 @@ public class GameState : MonoBehaviour
         m_enemyManager = GetComponent<Enemies.EnemyManager>();
         m_uiManager = uiManagerGO;
         s_playerGo = playerGo;
+        m_playerInput = playerGo.GetComponent<PlayerInput>();
         listObject.Clear();
         m_isPlaying = true;
         instance = this;
@@ -136,7 +139,6 @@ public class GameState : MonoBehaviour
 
         }
     }
-
 
     public void Start()
     {
@@ -243,5 +245,10 @@ public class GameState : MonoBehaviour
     public void HideGlobalUI()
     {
         fixeElementHolder.SetActive(false);
+    }
+
+    public bool IsGamepad()
+    {
+       return m_playerInput.currentControlScheme == "Gamepad";
     }
 }
