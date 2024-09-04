@@ -40,6 +40,7 @@ public class HealthPlayerComponent : MonoBehaviour
     private float tempsEcouleSlowEffect = 0;
     private bool slowDownActive = false;
 
+    private float m_healthLost;
 
     private bool m_isInvulnerableLeger = false;
     private bool m_isInvulnerableLourd = false;
@@ -158,7 +159,7 @@ public class HealthPlayerComponent : MonoBehaviour
             }
             else
             {
-                m_CurrentHealth -= attackDamageInfo.damage;
+                m_CurrentHealth -= attackDamageInfo.damage; 
             }
 
             if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
@@ -312,16 +313,13 @@ public class HealthPlayerComponent : MonoBehaviour
 
     private void BufferXpDisplay()
     {
-        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (timeLastHit - Time.time - 1) / 1);
-
+        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (Time.time -timeLastHit) / 0.5f);
     }
 
     public void OnCollisionEnter(Collision collision)
-    {
-        // Debug.Log("Coll");
+    { 
         if (collision.collider.tag == "Enemy")
         {
-            //Debug.Log("Coll valid");
             OnContactEvent(collision.transform.position, EntitiesTrigger.Enemies, collision.gameObject);
         }
     }
