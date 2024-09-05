@@ -31,6 +31,14 @@ public class CharacterArtefact : MonoBehaviour
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_healthComponent = GetComponent<HealthPlayerComponent>();
         positionRandom = Random.insideUnitSphere * rangeRandom;
+
+        List<ArtefactsInfos> cloneList = new List<ArtefactsInfos>( artefactsList.ToArray());
+        artefactsList.Clear();
+        for (int i = 0; i < cloneList.Count; i++)
+        {
+            AddArtefact(cloneList[i]);
+        }
+
         for (int i = 0; i < artefactsList.Count; i++)
         {
             SetupArtefact(artefactsList[i]);
@@ -62,12 +70,13 @@ public class CharacterArtefact : MonoBehaviour
 
     public void AddArtefact(ArtefactsInfos artefacts)
     {
-        artefactsList.Add(artefacts);
+        ArtefactsInfos clone = artefacts.Clone();
+        artefactsList.Add(clone);
 
-        LogSystem.LogMsg("Artefact add  is " + artefacts.name);
-        GenerateNewArtefactAround(artefacts);
-        SetupArtefact(artefacts);
-        uiFragmentTooltip.AddNewFragment(artefacts);
+        LogSystem.LogMsg("Artefact add  is " + clone.name);
+        GenerateNewArtefactAround(clone);
+        SetupArtefact(clone);
+        uiFragmentTooltip.AddNewFragment(clone);
     }
 
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)

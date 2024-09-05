@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using UnityEngine;
 
 public enum ConditionsTrigger
 {
@@ -44,6 +42,15 @@ public class ArtefactsInfos : ScriptableObject
     public string nameArtefact;
     public bool isDebugActive = false;
 
+    [HideInInspector] public int activationCount;
+
+
+    public ArtefactsInfos Clone()
+    {
+        ArtefactsInfos clone = Instantiate(this);
+        return clone;
+    }
+
     public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
     {
 
@@ -59,6 +66,7 @@ public class ArtefactsInfos : ScriptableObject
             GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData, objectPre);
+            activationCount++;
         }
 
     }
@@ -78,6 +86,7 @@ public class ArtefactsInfos : ScriptableObject
             GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData,agent);
+            activationCount++;
         }
     }
 
@@ -87,5 +96,6 @@ public class ArtefactsInfos : ScriptableObject
         artefactData.entitiesTargetSystem = entitiesTargetSystem;
         artefactData.characterGo = characterGo;
         artefactData.radius = radius;
+        artefactData.nameArtefact = nameArtefact;
     }
 }

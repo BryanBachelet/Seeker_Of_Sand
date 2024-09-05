@@ -548,11 +548,13 @@ namespace Character
 
                 if (IsGamepad())
                 {
-                    if (m_divideSchemeManager.isAbleToChangeMap)
-                    {
-                        m_divideSchemeManager.ChangeToCombatActionMap();
-                        CancelSlide();
-                    }
+                    //if (m_divideSchemeManager.isAbleToChangeMap)
+                    //{
+                    //    m_divideSchemeManager.ChangeToCombatActionMap();
+                        
+                    //}
+
+                    CancelSlide();
                 }
                 if (m_rigidbody.velocity.magnitude > 0)
                 {
@@ -858,12 +860,11 @@ namespace Character
                     m_startRotation = transform.rotation;
                     m_prevInputDirection = inputDirection;
                     m_rotationTime = 0.0f;
-                    Debug.Log("Reset Rotate");
+                    
                 }
                 else
                 {
                     m_rotationTime += .1f;
-                    Debug.Log("Continue Rotate");
                 }
 
                 Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;

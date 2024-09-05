@@ -88,10 +88,15 @@ namespace GuerhoubaGames.Input
             if (m_isKeyboardScheme) return;
             playerInputComponent.SwitchCurrentActionMap("Player");
             m_isKeyboardScheme = true;
-            InputDevice[] devices = new InputDevice[3];
+            int countDevices = 2;
+            if (Gamepad.current != null)
+            {
+                countDevices = 3;
+            }
+            InputDevice[] devices = new InputDevice[countDevices];
             devices[0] = Keyboard.current;
             devices[1] = Mouse.current;
-            devices[2] = Gamepad.current;
+            if (Gamepad.current != null) devices[2] = Gamepad.current;
             playerInputComponent.SwitchCurrentControlScheme("Keyboard&Mouse", devices);
 
         }
@@ -103,10 +108,16 @@ namespace GuerhoubaGames.Input
             SetGamepadActionMap();
 
             m_isKeyboardScheme = false;
-            InputDevice[] devices = new InputDevice[3];
+            int countDevices = 2;
+            if (Gamepad.current != null)
+            {
+                countDevices = 3;
+            }
+            InputDevice[] devices = new InputDevice[countDevices];
             devices[0] = Keyboard.current;
             devices[1] = Mouse.current;
-            devices[2] = Gamepad.current;
+            if (Gamepad.current != null) devices[2] = Gamepad.current;
+
             playerInputComponent.SwitchCurrentControlScheme("Gamepad", devices);
 
         }

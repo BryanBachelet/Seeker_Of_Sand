@@ -224,6 +224,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""5276ad4e-d033-4428-b2ca-e18db8896ae1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -494,7 +503,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""aef83595-8195-4a3f-b728-240c0bd04905"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -637,7 +646,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""positive"",
                     ""id"": ""f37a636d-24a0-4796-a485-de365d75194f"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -685,17 +694,6 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Slide"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""06cd93f8-0d14-4f07-9d6f-7ebfe897aebf"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
                     ""action"": ""Slide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -840,6 +838,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""RecapDamage"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2773296a-5914-4448-8b02-4b31bf548414"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2bfed26d-d92d-48fd-abf7-9bed58aafc66"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -2473,6 +2493,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_SpawnEnemy = m_Player.FindAction("SpawnEnemy", throwIfNotFound: true);
         m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
         m_Player_RecapDamage = m_Player.FindAction("RecapDamage", throwIfNotFound: true);
+        m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -2604,6 +2625,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SpawnEnemy;
     private readonly InputAction m_Player_OpenInventory;
     private readonly InputAction m_Player_RecapDamage;
+    private readonly InputAction m_Player_Cancel;
     public struct PlayerActions
     {
         private @GameInput m_Wrapper;
@@ -2630,6 +2652,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         public InputAction @SpawnEnemy => m_Wrapper.m_Player_SpawnEnemy;
         public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
         public InputAction @RecapDamage => m_Wrapper.m_Player_RecapDamage;
+        public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2705,6 +2728,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @RecapDamage.started += instance.OnRecapDamage;
             @RecapDamage.performed += instance.OnRecapDamage;
             @RecapDamage.canceled += instance.OnRecapDamage;
+            @Cancel.started += instance.OnCancel;
+            @Cancel.performed += instance.OnCancel;
+            @Cancel.canceled += instance.OnCancel;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -2775,6 +2801,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @RecapDamage.started -= instance.OnRecapDamage;
             @RecapDamage.performed -= instance.OnRecapDamage;
             @RecapDamage.canceled -= instance.OnRecapDamage;
+            @Cancel.started -= instance.OnCancel;
+            @Cancel.performed -= instance.OnCancel;
+            @Cancel.canceled -= instance.OnCancel;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -3333,6 +3362,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         void OnSpawnEnemy(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnRecapDamage(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
