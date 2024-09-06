@@ -773,14 +773,16 @@ namespace Enemies
             if (detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
             if (spawning)
             {
-                gsm.globalMusicInstance.setParameterByName("Repos", 0);
+                //gsm.globalMusicInstance.setParameterByName("Repos", 0);
+                gsm.globalMusicInstance.setParameterByName("Intensity", 2);
                 StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
                 m_enemyIcon.color = colorSignUI[0];
                 m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
             }
             else
             {
-                gsm.globalMusicInstance.setParameterByName("Repos", 1);
+                //gsm.globalMusicInstance.setParameterByName("Repos", 1);
+                gsm.globalMusicInstance.setParameterByName("Intensity", 3);
                 StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1]));
                 m_enemyIcon.color = colorSignUI[1];
                 m_tmpTextEnemyRemain.color = colorSignUI[1];

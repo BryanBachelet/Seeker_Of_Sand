@@ -9,6 +9,9 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
 {
+    [Range(0, 5)]
+    public int element = 0; // 4-Rien, 0-Eau, 1-Air, 2-Fire, 3-Earth
+    
     [HideInInspector] public Camera previewCamera;
     public CustomRenderTexture m_CRT;
     public Material m_materialPreviewTRT;
