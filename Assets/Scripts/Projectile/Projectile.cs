@@ -21,6 +21,7 @@ public struct ProjectileData
     public SpellSystem.SpellProfil spellProfil;
     public Character.CharacterShoot characterShoot;
     public CharacterObjectType objectType;
+    public int element;
     public string nameFragment;
 }
 
@@ -68,6 +69,7 @@ public class Projectile : MonoBehaviour
     private Vector3 hitPoint;
 
     protected string damageSourceName;
+    protected int elementIndex;
 
     void Update()
     {
@@ -122,6 +124,7 @@ public class Projectile : MonoBehaviour
         objectType = data.objectType;
 
         damageSourceName = spellProfil.name;
+        elementIndex = (int)spellProfil.tagData.element;
         if (objectType == CharacterObjectType.FRAGMENT)
         {
             damageSourceName = data.nameFragment;
@@ -138,6 +141,7 @@ public class Projectile : MonoBehaviour
         m_characterShoot = data.characterShoot;
         m_speed = data.speed;
         objectType = data.objectType;
+        elementIndex = data.element;
 
         damageSourceName = "NoName";
 
@@ -215,7 +219,7 @@ public class Projectile : MonoBehaviour
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
 
-            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, -1);
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)

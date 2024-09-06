@@ -11,7 +11,7 @@ public class HealthManager : MonoBehaviour
     private List<DamageHealthFD> m_activeText;
 
     private int m_damageFDMax;
-    private int m_textActiveCount =1;
+    private int m_textActiveCount = 1;
 
     [SerializeField] public Camera m_cameraReference;
     [SerializeField] public SerieController m_serieController;
@@ -25,7 +25,7 @@ public class HealthManager : MonoBehaviour
     }
 
 
-  
+
     public void InitTextFeedback()
     {
         m_damageFDMax = m_damageHealthFDs.Length;
@@ -46,37 +46,36 @@ public class HealthManager : MonoBehaviour
     {
         if (m_textActiveCount == m_damageFDMax) return;
 
-       if(m_serieController) m_serieController.RefreshSeries(true);
+        if (m_serieController) m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
         Tool_DamageMeter.AddDamage(damage);
-        if(colorElementType < 0)
-        {
 
-            if (characterShoot.lastElement == GameElement.AIR)
-            {
-                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
-            }
-            else if (characterShoot.lastElement == GameElement.FIRE)
-            {
-                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
-            }
-            else if (characterShoot.lastElement == GameElement.WATER)
-            {
-                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
-            }
-            else if (characterShoot.lastElement == GameElement.EARTH)
-            {
-                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
-            }
-            else
-            {
-                currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
-            }
+
+        if (colorElementType == (int)GameElement.AIR)
+        {
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
+        }
+        else if (colorElementType == (int)GameElement.FIRE)
+        {
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
+        }
+        else if (colorElementType == (int)GameElement.WATER)
+        {
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
+        }
+        else if (colorElementType == (int)GameElement.EARTH)
+        {
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
+        }
+        else
+        {
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
         }
 
 
 
-        m_activeText[ m_textActiveCount] = currentDamageFD;
+
+        m_activeText[m_textActiveCount] = currentDamageFD;
         m_inactiveText[m_damageFDMax - m_textActiveCount] = null;
 
         m_textActiveCount++;

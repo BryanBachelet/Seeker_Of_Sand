@@ -98,6 +98,7 @@ namespace Artefact
             data.piercingMax = piercing;
             data.characterShoot = m_characterShoot;
             data.nameFragment = m_artefactData.nameArtefact;
+            data.element = m_artefactData.element;
             
             data.objectType = GuerhoubaGames.GameEnum.CharacterObjectType.FRAGMENT;
             instance.GetComponent<Projectile>().SetFragmentDirectProjectile(data);

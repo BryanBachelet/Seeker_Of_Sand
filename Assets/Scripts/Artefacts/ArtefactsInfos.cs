@@ -97,5 +97,6 @@ public class ArtefactsInfos : ScriptableObject
         artefactData.characterGo = characterGo;
         artefactData.radius = radius;
         artefactData.nameArtefact = nameArtefact;
+        artefactData.element = (int)gameElement;
     }
 }

@@ -9,6 +9,10 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
 {
+    private const float distanceBeforeActivatingRooom = 15;
+
+
+
     [HideInInspector] public Camera previewCamera;
     public CustomRenderTexture m_CRT;
     public Material m_materialPreviewTRT;
@@ -59,9 +63,13 @@ public class RoomManager : MonoBehaviour
 
     public bool isRoomHasBeenDeactivated;
 
-     private DateTime m_startRoomChallengeTime; 
-     private DateTime m_EndRoomChallengeTime; 
+    private DateTime m_startRoomChallengeTime;
+    private DateTime m_EndRoomChallengeTime;
     private TimeSpan timeSpan;
+
+
+    private bool m_isStartActivation = false;
+    private bool m_isDistanceActivationDone = false;
 
     public void RetriveComponent()
     {
@@ -100,22 +108,45 @@ public class RoomManager : MonoBehaviour
         {
             Camera.main.GetComponent<Render.Camera.CameraBehavior>().SetupCamaraAnglge(spawnAngle);
         }
-
-
+        currentCountOfEnemy = 0;
+        m_isStartActivation = true;
         m_startRoomChallengeTime = DateTime.Now;
         baseRoomType = currentRoomType;
-        if (currentRoomType == RoomType.Enemy)
-        {
-            m_enemyManager.OnDeathSimpleEvent += CountEnemy;
-            m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
-        }
-        currentCountOfEnemy = 0;
+        //if (currentRoomType == RoomType.Enemy)
+        //{
+        //    m_enemyManager.OnDeathSimpleEvent += CountEnemy;
+        //    m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
+        //}
 
-        if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
-        else m_enemyManager.isStopSpawn = true;
+
+        //if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
+        //else
+        m_enemyManager.isStopSpawn = true;
 
         SetupRoomType();
 
+    }
+
+    public void ActivateRoomAfterDistanceTP()
+    {
+        if (currentRoomType == RoomType.Enemy && !m_isDistanceActivationDone && m_isStartActivation)
+        {
+            if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
+            {
+                m_startRoomChallengeTime = DateTime.Now;
+                baseRoomType = currentRoomType;
+                if (currentRoomType == RoomType.Enemy)
+                {
+                    m_enemyManager.OnDeathSimpleEvent += CountEnemy;
+                    m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
+                }
+                m_isDistanceActivationDone = true;
+
+                if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
+
+
+            }
+        }
     }
 
     public void DeactivateRoom()
@@ -192,11 +223,13 @@ public class RoomManager : MonoBehaviour
 
     public void Update()
     {
+        ActivateRoomAfterDistanceTP();
+
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
 
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
         {
-             ActivateTeleporters();
+            ActivateTeleporters();
             isTeleporterActive = true;
         }
 
@@ -273,12 +306,12 @@ public class RoomManager : MonoBehaviour
 
 
     public IEnumerator RoomDeactivation(int frameCount)
-       
+
     {
 
         int framePassed = 0;
 
-        while (framePassed<frameCount)
+        while (framePassed < frameCount)
         {
             yield return Time.deltaTime;
             framePassed++;
@@ -293,10 +326,10 @@ public class RoomManager : MonoBehaviour
     {
         if (isActiveStartRotation)
         {
-            Vector3 position = Quaternion.Euler(0, spawnAngle, 0) * Vector3.forward * -24 + teleporterSpawn.transform.position + Vector3.up *10;
+            Vector3 position = Quaternion.Euler(0, spawnAngle, 0) * Vector3.forward * -24 + teleporterSpawn.transform.position + Vector3.up * 10;
             Gizmos.DrawCube(position, new Vector3(7, 7, 7));
 
-            Gizmos.DrawRay(position, (teleporterSpawn.transform.position-position).normalized *100);
+            Gizmos.DrawRay(position, (teleporterSpawn.transform.position - position).normalized * 100);
         }
     }
 
