@@ -155,7 +155,7 @@ public class InteractionEvent : MonoBehaviour
                 eventDataInfo = altarBehaviorComponent.GetAltarData();
 
                 // Removing the event animation
-                m_lastHintAnimator.SetBool("InteractionOn", true); 
+                m_lastHintAnimator.SetBool("InteractionOn", true);
 
                 if (eventDataInfo[0] == "0")
                 {
@@ -204,7 +204,7 @@ public class InteractionEvent : MonoBehaviour
         {
             if (hintInputInteraction.activeSelf)
             {
-                hintInputInteraction.SetActive(false) ;
+                hintInputInteraction.SetActive(false);
             }
             //bandeDiscussion.SetBool("NearNPC", false);
             selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
@@ -219,7 +219,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
-            
+
             if (currentInteractionInterface != null)
             {
                 currentInteractionInterface.CallOpenInteraction(this.gameObject);
@@ -229,12 +229,11 @@ public class InteractionEvent : MonoBehaviour
                 }
                 return;
             }
-           
+
         }
         m_characterMouvement.SlideInput(ctx);
 
     }
-
 
     public void CancelInteraction(InputAction.CallbackContext ctx)
     {
@@ -255,6 +254,40 @@ public class InteractionEvent : MonoBehaviour
 
         }
     }
+
+
+    public void GeneralInputInteraction(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+
+            if (currentInteractionInterface != null && !currentInteractionInterface.isOpen)
+            {
+
+                currentInteractionInterface.CallOpenInteraction(this.gameObject);
+                if (currentInteractionInterface.hasClosePhase)
+                {
+                    saveInteractionInterface = currentInteractionInterface;
+                }
+                return;
+            }
+
+
+            if (currentInteractionInterface != null)
+            {
+                currentInteractionInterface.CallCloseInteraction(this.gameObject);
+                return;
+            }
+            if (saveInteractionInterface != null)
+            {
+                saveInteractionInterface.CallCloseInteraction(this.gameObject);
+                saveInteractionInterface = null;
+                return;
+            }
+
+        }
+    }
+
 
     public void NearTrader()
     {
