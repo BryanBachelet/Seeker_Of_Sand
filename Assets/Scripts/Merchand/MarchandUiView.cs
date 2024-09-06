@@ -173,7 +173,7 @@ public class MarchandUiView : MonoBehaviour
 
     public void ActualizeFragmentInteface(int index)
     {
-        ItemData itemData = merchandItemData.itemFragmentData[index];
+         ItemData itemData = merchandItemData.itemFragmentData[index];
         if (itemData.hasBeenBuy)
         {
             fragmentSpriteArray[index].sprite = null;

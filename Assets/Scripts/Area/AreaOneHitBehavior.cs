@@ -85,6 +85,7 @@ namespace SpellSystem
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
 
+                m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject);
                 DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
                 npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
             }
