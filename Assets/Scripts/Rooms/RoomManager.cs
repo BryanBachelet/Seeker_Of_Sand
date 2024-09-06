@@ -9,7 +9,7 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class RoomManager : MonoBehaviour
 {
-    private const float distanceBeforeActivatingRooom = 15;
+    private const float distanceBeforeActivatingRooom = 30;
 
 
 
@@ -133,6 +133,7 @@ public class RoomManager : MonoBehaviour
         {
             if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
             {
+                roomInfoUI.ActiveMajorGoalInterface();
                 m_startRoomChallengeTime = DateTime.Now;
                 baseRoomType = currentRoomType;
                 if (currentRoomType == RoomType.Enemy)
@@ -209,7 +210,7 @@ public class RoomManager : MonoBehaviour
                 break;
             case RoomType.Enemy:
                 DeactivateAltar();
-                roomInfoUI.ActiveMajorGoalInterface();
+              
                 int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                 enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
                 break;
