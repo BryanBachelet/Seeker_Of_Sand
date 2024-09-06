@@ -28,6 +28,11 @@ public class GameStats : MonoBehaviour
         instance = this;
     }
     
+    public bool IsContains(string name)
+    {
+        return m_damageStat.ContainsKey(name);
+    }
+
     public int GetDamage(string name)
     {
         if(m_damageStat.ContainsKey(name))

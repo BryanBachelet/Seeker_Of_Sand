@@ -32,7 +32,7 @@ public class CharacterArtefact : MonoBehaviour
         m_healthComponent = GetComponent<HealthPlayerComponent>();
         positionRandom = Random.insideUnitSphere * rangeRandom;
 
-        List<ArtefactsInfos> cloneList = new List<ArtefactsInfos>( artefactsList.ToArray());
+        List<ArtefactsInfos> cloneList = new List<ArtefactsInfos>(artefactsList.ToArray());
         artefactsList.Clear();
         for (int i = 0; i < cloneList.Count; i++)
         {
@@ -68,6 +68,43 @@ public class CharacterArtefact : MonoBehaviour
 
     }
 
+
+    public ArtefactsInfos[] GetMostDamageArtefactInfo(int count)
+    {
+
+        ArtefactsInfos[] artefactsInfosArray;
+        if (artefactsList.Count <= count)
+        {
+            artefactsInfosArray = artefactsList.ToArray();
+            return artefactsInfosArray;
+        }
+
+        artefactsInfosArray = new ArtefactsInfos[count];
+        int[] artefactDamage = new int[count];
+
+        for (int i = 0; i < artefactsList.Count; i++)
+        {
+
+            if (!GameStats.instance.IsContains(artefactsList[i].nameArtefact))
+                continue;
+
+            int damageOccur = GameStats.instance.GetDamage(artefactsList[0].nameArtefact);
+
+            for (int j = 0; j < artefactsInfosArray.Length; j++)
+            {
+                if (damageOccur > artefactDamage[j])
+                {
+                    artefactsInfosArray[j] = artefactsList[i];
+                    artefactDamage[j] = damageOccur;
+                    break;
+                }
+            }
+        }
+
+
+        return artefactsInfosArray;
+    }
+
     public void AddArtefact(ArtefactsInfos artefacts)
     {
         ArtefactsInfos clone = artefacts.Clone();
@@ -78,7 +115,6 @@ public class CharacterArtefact : MonoBehaviour
         SetupArtefact(clone);
         uiFragmentTooltip.AddNewFragment(clone);
     }
-
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
     {
 

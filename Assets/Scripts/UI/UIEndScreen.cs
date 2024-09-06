@@ -78,7 +78,7 @@ public class UIEndScreen : MonoBehaviour
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);
         //StartDisplayStat();
         SpellLink(characterShoot.spellProfils);
-        FragmentLink(characterShoot.GetComponent<CharacterArtefact>().artefactsList);
+        FragmentLink(characterShoot.GetComponent<CharacterArtefact>().GetMostDamageArtefactInfo(2));
         if (GameState.instance.IsGamepad()) 
             UITools.instance.SetUIObjectSelect(FirstMenuButtonObject);
     }
@@ -146,13 +146,13 @@ public class UIEndScreen : MonoBehaviour
 
     }
 
-    private void FragmentLink(List<ArtefactsInfos> artefactsInfos)
+    private void FragmentLink(ArtefactsInfos[] artefactsInfos)
     {
         float artefactCount = 0;
 
-        if (artefactsInfos.Count < 2)
+        if (artefactsInfos.Length < 2)
         {
-            artefactCount = artefactsInfos.Count;
+            artefactCount = artefactsInfos.Length;
         }
         else
         {
