@@ -84,7 +84,6 @@ namespace Enemies
                 moveSoundInstance = RuntimeManager.CreateInstance(moveSoundAssociated);
                 moveSoundInstance.start();
                 moveSoundInstance.setVolume(0);
-                Debug.Log("PAUSE le son !!");
                 //moveSoundInstance.setVolume(0);
             }
             for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
@@ -238,7 +237,6 @@ namespace Enemies
             {
                 moveSoundInstance.setVolume(1);
                 moveSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-                Debug.Log("Je joue le son !!");
             }
 
             this.gameObject.layer = 6;

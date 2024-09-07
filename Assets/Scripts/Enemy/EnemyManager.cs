@@ -691,7 +691,6 @@ namespace Enemies
         public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
         {
 
-            Debug.Log("Test Dammage");
             Vector3 position = npcHealth.transform.position;
             //SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);
@@ -775,7 +774,7 @@ namespace Enemies
                 if (m_spawnCauseState[i] == true)
                     return true;
             }
-            return false;
+            return false; 
         }
         public void ActiveSpawnPhase(bool state, EnemySpawnCause spawnCause)
         {

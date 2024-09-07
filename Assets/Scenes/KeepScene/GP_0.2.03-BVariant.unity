@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2189.39, g: 2259.8752, b: 2903.5686, a: 1}
+  m_IndirectSpecularColor: {r: 2255.8967, g: 2346.7122, b: 3105.8384, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -25064,6 +25064,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 742584567}
   m_CullTransparentMesh: 1
+--- !u!1 &742961711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 742961713}
+  - component: {fileID: 742961712}
+  m_Layer: 0
+  m_Name: Scene Combat Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &742961712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742961711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91e7e240e3998d141b4e69877f583521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 22613994}
+  enemisManager: {fileID: 2132935338}
+  constantSpawning: 0
+  stopPlayerExperience: 0
+  specialEnemisSquad: 1
+  mobCount: 0a00000000000000000000000000000000000000
+--- !u!4 &742961713
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742961711}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 27.149113, y: -13.012894, z: -5.9024277}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &745689667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48358,7 +48408,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1866458877916994663}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2132935338}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 568fa5ed5d3722541a1b840681007ab0, type: 3}
@@ -70948,7 +70998,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1866458877916994663}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2132935338}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 773267658727a4142a6a53905884fe65, type: 3}
@@ -75141,6 +75191,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2128980835}
   m_CullTransparentMesh: 1
+--- !u!1 &2132935338 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1866458878302752457, guid: 2f4f565a178b7c6449e98bb679ac0e9b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1866458877916994663}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2137474119
 GameObject:
   m_ObjectHideFlags: 0
@@ -89834,7 +89890,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1866458877916994663}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2132935338}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b88d9453e78a8bb4ba7c94b3f324d87e, type: 3}
@@ -89846,7 +89902,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1866458877916994663}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2132935338}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ea62e041be61074e9828e4543629e0e, type: 3}
@@ -103979,7 +104035,7 @@ PrefabInstance:
       objectReference: {fileID: 691296846}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: spellIndex.Array.data[0]
-      value: 16
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: icon_Sprite.Array.data[0]
@@ -103997,6 +104053,26 @@ PrefabInstance:
       propertyPath: icon_Sprite.Array.data[3]
       value: 
       objectReference: {fileID: 2456614440978192584}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: spellIndexGeneral.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: spellIndexGeneral.Array.data[1]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: spellIndexGeneral.Array.data[2]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: spellIndexGeneral.Array.data[3]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: spellIndexGeneral.Array.data[4]
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1983534970, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: m_spellGlobalCooldown.Array.data[0]
       value: 
@@ -113044,3 +113120,4 @@ SceneRoots:
   - {fileID: 1867786833}
   - {fileID: 38395981}
   - {fileID: 1203394239}
+  - {fileID: 742961713}
