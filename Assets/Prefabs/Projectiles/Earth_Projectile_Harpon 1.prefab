@@ -1237,8 +1237,8 @@ GameObject:
   - component: {fileID: 4736808335474530456}
   - component: {fileID: 2582008515866989211}
   - component: {fileID: 1036010197533075909}
-  - component: {fileID: 1541150826760589695}
   - component: {fileID: 9014214760686426359}
+  - component: {fileID: 8034980893041319448}
   m_Layer: 15
   m_Name: Earth_Projectile_Harpon 1
   m_TagString: Projectile
@@ -1341,29 +1341,6 @@ MonoBehaviour:
   m_deltaTimeMove: 0
   m_minRangeToImpale: 100
   m_impalementDamageRatio: 1.5
---- !u!136 &1541150826760589695
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9054547251775377373}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.9999999
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &9014214760686426359
 Animator:
   serializedVersion: 5
@@ -1385,6 +1362,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &8034980893041319448
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054547251775377373}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 2.5, z: 2.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &122202888886619851
 PrefabInstance:
   m_ObjectHideFlags: 0

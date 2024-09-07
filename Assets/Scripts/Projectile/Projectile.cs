@@ -21,6 +21,8 @@ public struct ProjectileData
     public SpellSystem.SpellProfil spellProfil;
     public Character.CharacterShoot characterShoot;
     public CharacterObjectType objectType;
+    public int element;
+    public string nameFragment;
 }
 
 
@@ -66,6 +68,8 @@ public class Projectile : MonoBehaviour
     private Vector3 normalHit;
     private Vector3 hitPoint;
 
+    protected string damageSourceName;
+    protected int elementIndex;
 
     void Update()
     {
@@ -118,9 +122,17 @@ public class Projectile : MonoBehaviour
         m_characterShoot = data.characterShoot;
         m_collider = this.GetComponent<Collider>();
         objectType = data.objectType;
+
+        damageSourceName = spellProfil.name;
+        elementIndex = (int)spellProfil.tagData.element;
+        if (objectType == CharacterObjectType.FRAGMENT)
+        {
+            damageSourceName = data.nameFragment;
+        }
+
     }
 
-    public virtual void SetDirectProjectile(ProjectileData data)
+    public virtual void SetFragmentDirectProjectile(ProjectileData data)
     {
         m_piercingMax = 0;
         m_direction = data.direction;
@@ -128,6 +140,15 @@ public class Projectile : MonoBehaviour
         m_damage = data.damage;
         m_characterShoot = data.characterShoot;
         m_speed = data.speed;
+        objectType = data.objectType;
+        elementIndex = data.element;
+
+        damageSourceName = "NoName";
+
+        if (objectType == CharacterObjectType.FRAGMENT)
+        {
+            damageSourceName = data.nameFragment;
+        }
 
     }
 
@@ -197,7 +218,8 @@ public class Projectile : MonoBehaviour
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-            enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, other.transform.position - transform.position, m_power, -1);
+
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)

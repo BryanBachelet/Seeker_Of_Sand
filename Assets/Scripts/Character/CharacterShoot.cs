@@ -715,6 +715,7 @@ namespace Character
                 dataDot.characterShoot = this;
                 dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
                 areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
+                areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
             }
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);

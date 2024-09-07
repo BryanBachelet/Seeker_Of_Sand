@@ -46,17 +46,21 @@ public class InteractionEvent : MonoBehaviour
 
     [SerializeField] private Camera mainCamera;
     private InteractionInterface currentInteractionInterface;
+    private InteractionInterface saveInteractionInterface;
 
     public GameObject currentInteractibleObjectActive = null;
 
     public Animator bandeDiscussion;
     public GameObject hintInputInteraction;
+
+    private Character.CharacterMouvement m_characterMouvement;
     // Start is called before the first frame update
     void Start()
     {
         lastInteractionCheck = 0;
         ui_RectTransformHintInteraction = ui_HintInteractionObject.transform.parent.GetComponent<RectTransform>();
         parentHintTransform = ui_RectTransformHintInteraction;
+        m_characterMouvement = GetComponent<Character.CharacterMouvement>();
     }
 
     // Update is called once per frame
@@ -218,10 +222,38 @@ public class InteractionEvent : MonoBehaviour
             
             if (currentInteractionInterface != null)
             {
-                currentInteractionInterface.CallInteraction(this.gameObject);
+                currentInteractionInterface.CallOpenInteraction(this.gameObject);
+                if (currentInteractionInterface.hasClosePhase)
+                {
+                    saveInteractionInterface = currentInteractionInterface;
+                }
+                return;
             }
+           
         }
+        m_characterMouvement.SlideInput(ctx);
 
+    }
+
+
+    public void CancelInteraction(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+
+            if (currentInteractionInterface != null)
+            {
+                currentInteractionInterface.CallCloseInteraction(this.gameObject);
+                return;
+            }
+            if (saveInteractionInterface != null)
+            {
+                saveInteractionInterface.CallCloseInteraction(this.gameObject);
+                saveInteractionInterface = null;
+                return;
+            }
+
+        }
     }
 
     public void NearTrader()

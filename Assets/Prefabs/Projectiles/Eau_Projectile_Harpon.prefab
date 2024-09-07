@@ -468,8 +468,8 @@ GameObject:
   - component: {fileID: 6623470890406247885}
   - component: {fileID: 9138594798110790902}
   - component: {fileID: 7933025422059073293}
-  - component: {fileID: 5422169375301271588}
   - component: {fileID: 8554265425995580361}
+  - component: {fileID: 1280809246441953211}
   m_Layer: 15
   m_Name: Eau_Projectile_Harpon
   m_TagString: Projectile
@@ -572,29 +572,6 @@ MonoBehaviour:
   m_deltaTimeMove: 0
   m_minRangeToImpale: 100
   m_impalementDamageRatio: 1.5
---- !u!136 &5422169375301271588
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8069713187794879100}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.9999999
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &8554265425995580361
 Animator:
   serializedVersion: 5
@@ -616,6 +593,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &1280809246441953211
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8069713187794879100}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 2.5, z: 2.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8765153239806190235
 GameObject:
   m_ObjectHideFlags: 0

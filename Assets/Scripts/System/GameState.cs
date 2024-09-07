@@ -27,6 +27,7 @@ public struct EndInfoStats
     public float roomCount;
     public float altarSuccessed;
     public float altarRepeated;
+    public float maxCombo;
 
 
     public byte[] SaveData()
@@ -39,6 +40,7 @@ public struct EndInfoStats
         binary.Write(roomCount);
         binary.Write(altarSuccessed);
         binary.Write(altarRepeated);
+        binary.Write(maxCombo);
 
         return stream.ToArray();
     }
@@ -52,7 +54,12 @@ public struct EndInfoStats
         roomCount = binaryReader.ReadSingle();
         altarSuccessed = binaryReader.ReadSingle();
         altarRepeated = binaryReader.ReadSingle();
+        if(binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+            maxCombo = binaryReader.ReadSingle();
+
+        
     }
+    
 
     public bool HasSuperiorValue(EndInfoStats statToCompare)
     {
@@ -62,6 +69,7 @@ public struct EndInfoStats
         if (roomCount < statToCompare.roomCount) return true;
         if (altarSuccessed < statToCompare.altarSuccessed) return true;
         if (altarRepeated < statToCompare.altarRepeated) return true;
+        if (maxCombo < statToCompare.maxCombo) return true;
 
         return false;
     }

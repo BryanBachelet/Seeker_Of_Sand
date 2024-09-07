@@ -15,6 +15,7 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text m_altarLaunchText;
     [SerializeField] private TMP_Text m_altarSuccessedText;
     [SerializeField] private TMP_Text m_durationGameText;
+    [SerializeField] private TMP_Text m_roomCountText;
     [SerializeField] private Image m_nightCompletionFill;
     [SerializeField] private GameObject[] m_nightCompleted;
     [SerializeField] private GameObject fixeElement;
@@ -25,8 +26,10 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text[] m_spellDetailName = new TMP_Text[4];
     [SerializeField] private Image[] m_spellDetailImage = new Image[4];
 
+    [SerializeField] private GameObject[] m_fragmentDetails = new GameObject[2];
     [SerializeField] private TMP_Text[] m_fragmentDetailDamages = new TMP_Text[2];
     [SerializeField] private TMP_Text[] m_fragmentDetailName = new TMP_Text[2];
+    [SerializeField] private TMP_Text[] m_fragmentDetailActivationCount = new TMP_Text[2];
     [SerializeField] private Image[] m_fragmentDetailImage = new Image[2];
 
     private bool m_finishDisplayStat = false;
@@ -75,7 +78,7 @@ public class UIEndScreen : MonoBehaviour
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);
         //StartDisplayStat();
         SpellLink(characterShoot.spellProfils);
-
+        FragmentLink(characterShoot.GetComponent<CharacterArtefact>().GetMostDamageArtefactInfo(2));
         if (GameState.instance.IsGamepad()) 
             UITools.instance.SetUIObjectSelect(FirstMenuButtonObject);
     }
@@ -128,7 +131,8 @@ public class UIEndScreen : MonoBehaviour
         m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, progress).ToString("F0");
         m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, progress).ToString("F0");
         m_altarSuccessedText.text = Mathf.Lerp(0, stat.altarSuccessed, progress).ToString("F0");
-        m_biggestComboText.text = Mathf.Lerp(0, stat.roomCount, progress).ToString("F0");
+        m_biggestComboText.text = Mathf.Lerp(0, stat.maxCombo, progress).ToString("F0");
+        m_roomCountText.text = Mathf.Lerp(0, stat.roomCount, progress).ToString("F0");
         for (int i = 0; i < spellCount; i++)
         {
 
@@ -142,6 +146,37 @@ public class UIEndScreen : MonoBehaviour
 
     }
 
+    private void FragmentLink(ArtefactsInfos[] artefactsInfos)
+    {
+        float artefactCount = 0;
+
+        if (artefactsInfos.Length < 2)
+        {
+            artefactCount = artefactsInfos.Length;
+        }
+        else
+        {
+            artefactCount = 2;
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            if(i<artefactCount)
+            {
+                m_fragmentDetailName[i].text = artefactsInfos[i].nameArtefact;
+                m_fragmentDetailImage[i].sprite = artefactsInfos[i].icon;
+                m_fragmentDetailDamages[i].text = GameStats.instance.GetDamage(artefactsInfos[i].nameArtefact).ToString();
+                m_fragmentDetailActivationCount[i].text = artefactsInfos[i].activationCount.ToString(); ;
+                m_fragmentDetails[i].SetActive(true);
+            }
+            else
+            {
+                m_fragmentDetails[i].SetActive(false);
+            }
+           
+        }
+    }
+    
     private void SpellLink(List<SpellSystem.SpellProfil> spellProfils)
     {
         int[] ennemyKilledbySpell = new int[spellProfils.Count];

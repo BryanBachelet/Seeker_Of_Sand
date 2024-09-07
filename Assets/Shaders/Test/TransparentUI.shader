@@ -6,7 +6,12 @@ Shader "Unlit/TransparentUI"
         _Cutoff("Alpha cutoff", Range(0,1)) = 0.5
     }
         SubShader{
-            Tags {"Queue" = "AlphaTest" "IgnoreProjector" = "True" "RenderType" = "TransparentCutout"}
+            Tags {
+             "Queue" = "AlphaTest"
+            "IgnoreProjector" = "True" 
+            "RenderType" = "Transparent" 
+            "PreviewType" = "Plane"
+            "CanUseSpriteAtlas" = "True"}
             LOD 100
 
             Lighting Off

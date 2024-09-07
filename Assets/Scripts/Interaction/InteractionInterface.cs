@@ -5,6 +5,25 @@ using UnityEngine;
 public abstract class InteractionInterface : MonoBehaviour
 {
     public bool isOpen;
+    public bool hasClosePhase;
+
+    public void CallOpenInteraction(GameObject player)
+    {
+        if(!isOpen)
+        {
+            OnInteractionStart(player);
+            isOpen = true;
+        }
+    }
+
+    public void CallCloseInteraction(GameObject player)
+    {
+        if (isOpen)
+        {
+            OnInteractionEnd(player);
+            isOpen = false;
+        }
+    }
     public void CallInteraction(GameObject player)
     {
         if (isOpen)

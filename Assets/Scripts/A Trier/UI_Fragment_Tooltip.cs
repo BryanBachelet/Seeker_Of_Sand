@@ -20,7 +20,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
 
     public int currentFragmentNumber = 0;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if (fragment_List.Count > 0)
         {

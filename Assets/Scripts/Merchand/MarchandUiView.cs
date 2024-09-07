@@ -173,7 +173,7 @@ public class MarchandUiView : MonoBehaviour
 
     public void ActualizeFragmentInteface(int index)
     {
-        ItemData itemData = merchandItemData.itemFragmentData[index];
+         ItemData itemData = merchandItemData.itemFragmentData[index];
         if (itemData.hasBeenBuy)
         {
             fragmentSpriteArray[index].sprite = null;
@@ -188,7 +188,7 @@ public class MarchandUiView : MonoBehaviour
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
             spellSpriteArray[index].color = new Color(1, 1, 1, 1);
         }
-        cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[(int)itemData.element];
+        cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[((int)itemData.element) -1];
     }
 
     public void ActualizeDescriptionInterface(int index, CharacterObjectType type)

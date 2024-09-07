@@ -31,6 +31,14 @@ public class CharacterArtefact : MonoBehaviour
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_healthComponent = GetComponent<HealthPlayerComponent>();
         positionRandom = Random.insideUnitSphere * rangeRandom;
+
+        List<ArtefactsInfos> cloneList = new List<ArtefactsInfos>(artefactsList.ToArray());
+        artefactsList.Clear();
+        for (int i = 0; i < cloneList.Count; i++)
+        {
+            AddArtefact(cloneList[i]);
+        }
+
         for (int i = 0; i < artefactsList.Count; i++)
         {
             SetupArtefact(artefactsList[i]);
@@ -60,16 +68,53 @@ public class CharacterArtefact : MonoBehaviour
 
     }
 
-    public void AddArtefact(ArtefactsInfos artefacts)
-    {
-        artefactsList.Add(artefacts);
 
-        LogSystem.LogMsg("Artefact add  is " + artefacts.name);
-        GenerateNewArtefactAround(artefacts);
-        SetupArtefact(artefacts);
-        uiFragmentTooltip.AddNewFragment(artefacts);
+    public ArtefactsInfos[] GetMostDamageArtefactInfo(int count)
+    {
+
+        ArtefactsInfos[] artefactsInfosArray;
+        if (artefactsList.Count <= count)
+        {
+            artefactsInfosArray = artefactsList.ToArray();
+            return artefactsInfosArray;
+        }
+
+        artefactsInfosArray = new ArtefactsInfos[count];
+        int[] artefactDamage = new int[count];
+
+        for (int i = 0; i < artefactsList.Count; i++)
+        {
+
+            if (!GameStats.instance.IsContains(artefactsList[i].nameArtefact))
+                continue;
+
+            int damageOccur = GameStats.instance.GetDamage(artefactsList[0].nameArtefact);
+
+            for (int j = 0; j < artefactsInfosArray.Length; j++)
+            {
+                if (damageOccur > artefactDamage[j])
+                {
+                    artefactsInfosArray[j] = artefactsList[i];
+                    artefactDamage[j] = damageOccur;
+                    break;
+                }
+            }
+        }
+
+
+        return artefactsInfosArray;
     }
 
+    public void AddArtefact(ArtefactsInfos artefacts)
+    {
+        ArtefactsInfos clone = artefacts.Clone();
+        artefactsList.Add(clone);
+
+        LogSystem.LogMsg("Artefact add  is " + clone.name);
+        GenerateNewArtefactAround(clone);
+        SetupArtefact(clone);
+        uiFragmentTooltip.AddNewFragment(clone);
+    }
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
     {
 

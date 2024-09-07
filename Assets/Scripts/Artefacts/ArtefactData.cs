@@ -12,5 +12,7 @@ namespace Artefact
         [HideInInspector] public EntitiesTargetSystem entitiesTargetSystem;
         [HideInInspector] public float radius;
         [HideInInspector] public CharacterObjectType objectType = CharacterObjectType.FRAGMENT;
+        [HideInInspector] public string nameArtefact;
+        [HideInInspector] public int element;
     }
 }

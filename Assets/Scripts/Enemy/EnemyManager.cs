@@ -114,7 +114,6 @@ namespace Enemies
 
         private Character.CharacterMouvement m_characterMouvement;
 
-
         private int repositionningLimit = 2;
         private int repositionningCount;
 
@@ -178,6 +177,9 @@ namespace Enemies
         private bool[] m_spawnCauseState = new bool[4];
 
 
+        private int comboCount;
+        private int maxComboValue;
+
         public void Awake()
         {
             NavMesh.pathfindingIterationsPerFrame = 400;
@@ -206,6 +208,12 @@ namespace Enemies
             if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
+
+        public void Start()
+        {
+            playerInput.GetComponent<HealthPlayerComponent>().OnDamage += ResetCombot;
+        }
+
 
         public void DebugInit()
         {
@@ -710,9 +718,20 @@ namespace Enemies
 
 
 
+        public void ResetCombot(AttackDamageInfo attackDamageInfo)
+        {
+            if (comboCount > maxComboValue)
+            {
+                maxComboValue = comboCount;
+            }
+
+            comboCount = 0;
+        }
+
         public void DeathEnemy()
         {
             m_serieController.RefreshSeries(false);
+            comboCount++;
         }
 
         public AltarBehaviorComponent FindClosestAltar(Vector3 position)
@@ -871,7 +890,6 @@ namespace Enemies
         public EndInfoStats FillEndStat()
         {
 
-
             EndInfoStats endInfoStats = new EndInfoStats();
 
             endInfoStats.durationGame = m_timeOfGame;
@@ -880,6 +898,7 @@ namespace Enemies
             endInfoStats.altarRepeated = altarLaunch;
             endInfoStats.roomCount = TerrainGenerator.roomGeneration_Static;
             endInfoStats.nightValidate = m_dayController.m_nightCount;
+            endInfoStats.maxCombo = maxComboValue;
 
             CheckEndStat(endInfoStats);
             return endInfoStats;

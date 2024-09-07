@@ -548,11 +548,13 @@ namespace Character
 
                 if (IsGamepad())
                 {
-                    if (m_divideSchemeManager.isAbleToChangeMap)
-                    {
-                        m_divideSchemeManager.ChangeToCombatActionMap();
-                        CancelSlide();
-                    }
+                    //if (m_divideSchemeManager.isAbleToChangeMap)
+                    //{
+                    //    m_divideSchemeManager.ChangeToCombatActionMap();
+                        
+                    //}
+
+                    CancelSlide();
                 }
                 if (m_rigidbody.velocity.magnitude > 0)
                 {
@@ -858,6 +860,7 @@ namespace Character
                     m_startRotation = transform.rotation;
                     m_prevInputDirection = inputDirection;
                     m_rotationTime = 0.0f;
+                    
                 }
                 else
                 {
