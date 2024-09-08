@@ -145,9 +145,10 @@ namespace Enemies
         [HideInInspector] public bool activeSpawnConstantDebug = false;
         // Allow the enemis to spawn only a enemy type
         [HideInInspector] public bool activeSpecialSquad = false;
-        [HideInInspector] public PlayerInput playerInput;
+
 #endif
         [HideInInspector] public int[] specialSquadSelect;
+        [HideInInspector] public PlayerInput playerInput;
         private int m_squadCount;
         // --------------------
 
@@ -793,7 +794,8 @@ namespace Enemies
             if (spawning)
             {
                 //gsm.globalMusicInstance.setParameterByName("Repos", 0);
-                gsm.globalMusicInstance.setParameterByName("Intensity", 2);
+               //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(3, "Intensity", 13, 1,"TransitionIntensity"));
+                gsm.UpdateParameter(3, "Intensity");
                 StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
                 m_enemyIcon.color = colorSignUI[0];
                 m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
@@ -801,7 +803,8 @@ namespace Enemies
             else
             {
                 //gsm.globalMusicInstance.setParameterByName("Repos", 1);
-                gsm.globalMusicInstance.setParameterByName("Intensity", 3);
+                //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(0.1f, "Intensity", 13, 2, "TransitionIntensity"));
+                gsm.UpdateParameter(0.1f, "Intensity");
                 StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1]));
                 m_enemyIcon.color = colorSignUI[1];
                 m_tmpTextEnemyRemain.color = colorSignUI[1];

@@ -250,7 +250,7 @@ public class RoomManager : MonoBehaviour
         isRoomHasBeenValidate = true;
         playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
         m_EndRoomChallengeTime = DateTime.Now;
-
+        m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
         LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 

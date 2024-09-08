@@ -26,6 +26,10 @@ public class MarchandUiView : MonoBehaviour
     public Image[] fragmentSpriteArray;
     public Image[] cristalFragmentSpriteArray;
     public TMP_Text[] fragmentPriceTextArray;
+    public TMP_Text[] fragmentNameArray;
+    public Image[] fragmentBackground;
+    public Image[] fragmentElementIcon;
+    public Image[] fragmentRarity;
 
     [Header("Spells Elements")]
     public Image[] spellSpriteArray;
@@ -39,6 +43,9 @@ public class MarchandUiView : MonoBehaviour
     [Header("Gamepad Parameters")]
     public GameObject firstButtonToSelect;
 
+    public Sprite[] backgroundElement = new Sprite[4];
+    public Sprite[] rarityCadre = new Sprite[3];
+    public Sprite[] iconElement = new Sprite[4];
     public void Start()
     {
         InitEventComponent();
@@ -164,6 +171,7 @@ public class MarchandUiView : MonoBehaviour
             spellSpriteArray[index].sprite = merchandItemData.spellData[index].spell_Icon;
             spellPriceTextArray[index].text = itemData.price.ToString();
             spellSpriteArray[index].color = new Color(1, 1, 1, 1);
+
             if (itemData.isBuyable) fragmentSpriteArray[index].color = canBuyColor;
             else fragmentSpriteArray[index].color = noEnoughMoneyColor;
 
@@ -184,6 +192,8 @@ public class MarchandUiView : MonoBehaviour
         {
             fragmentSpriteArray[index].sprite = merchandItemData.fragmentData[index].icon;
             fragmentPriceTextArray[index].text = itemData.price.ToString();
+            ChangeFragmentCadre(merchandItemData.fragmentData[index], index);
+
            if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
             spellSpriteArray[index].color = new Color(1, 1, 1, 1);
@@ -234,5 +244,13 @@ public class MarchandUiView : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void ChangeFragmentCadre(ArtefactsInfos fragmentData, int indexFragmentInShop)
+    {
+        int elementIndex = (int)fragmentData.gameElement - 1;
+        fragmentBackground[indexFragmentInShop].sprite = backgroundElement[elementIndex];
+        fragmentElementIcon[indexFragmentInShop].sprite = iconElement[elementIndex];
+        fragmentNameArray[indexFragmentInShop].text = fragmentData.nameArtefact;
     }
 }

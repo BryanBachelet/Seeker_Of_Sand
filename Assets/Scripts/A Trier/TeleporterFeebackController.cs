@@ -18,7 +18,9 @@ public class TeleporterFeebackController : MonoBehaviour
     [ColorUsage(true, true)]
     public Color[] colorSymboleDecal = new Color[4];
     public Texture[] textureReward = new Texture[4];
-
+    public Material[] materialReward = new Material[5];
+    public MeshRenderer meshPortal;
+    public Material mat_meshPortal;
 
     [Range(0, 6)]
     public int rewardToUse = 0;
@@ -38,6 +40,8 @@ public class TeleporterFeebackController : MonoBehaviour
 
     public Animator animatorPortal;
     private bool portalState = false;
+
+    private int colorToUse;
     // Start is called before the first frame update
     void Awake()
     {
@@ -49,6 +53,7 @@ public class TeleporterFeebackController : MonoBehaviour
         }
         if(animatorPortal == null) { animatorPortal = transform.GetComponentInChildren<Animator>(); }
 
+        //mat_meshPortal = meshPortal.material;
     }
 
 
@@ -80,6 +85,7 @@ public class TeleporterFeebackController : MonoBehaviour
             //{
             //    ChangeRewardID(rewardToUse);
             ChangeColorID(idReward);
+            SetColorVfx(colorToUse, idReward);
             //}
 
         }
@@ -105,16 +111,16 @@ public class TeleporterFeebackController : MonoBehaviour
     public void ChangeColorID(int ID)
     {
         zoneAutourVFX.SetGradient("Color", colorZoneAutour[ID]);
-        socleSpawn_mat.SetColor("_SelfLitColor", colorSelfLite[ID]);
-        planeSymbole_mat.SetColor("_Color", colorSymboleDecal[ID]);
+        socleSpawn_mat.SetColor("_SelfLitColor", color_Elem_Portal[ID]);
+        planeSymbole_mat.SetColor("_Color", color_Elem_Portal[ID]);
         dissonance_mat.SetFloat("_Visibility", 0);
+
         for (int i = 0; i < rLow_Holder.transform.childCount; i++)
         {
             rLow_Holder.transform.GetChild(i).GetComponent<MeshRenderer>().materials[1].SetFloat("_Visibility", 0);
         }
     }
-
-    public void ChangeColorVFX(int color)
+    public void SetColorVfx(int color, int ID)
     {
         vfx_lightPortal.SetVector4("SmokeColor", color_Elem_Portal[color]);
         vfx_elecPortal[0].SetVector4("Color_I", color_Elem_Portal[color]);
@@ -123,5 +129,20 @@ public class TeleporterFeebackController : MonoBehaviour
         vfx_elecPortal[1].SetVector4("Color_I", color_Elem_Portal[color]);
         vfx_elecPortal[1].SetVector4("Color_II", color_Elem_Portal[color]);
         vfx_elecPortal[1].SetVector4("Color_III", color_Elem_Portal[color]);
+        //
+        if (mat_meshPortal == null)
+        {
+            mat_meshPortal = meshPortal.material;
+        }
+        if (meshPortal.material == null)
+        {
+            meshPortal.material = materialReward[ID];
+        }
+        meshPortal.material = materialReward[ID];
+        meshPortal.material.SetColor("_SelfLitColor", color_Elem_Portal[color]);
+    }
+    public void ChangeColorVFX(int color)
+    {
+        colorToUse = color;
     }
 }
