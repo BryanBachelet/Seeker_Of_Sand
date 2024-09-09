@@ -255,8 +255,8 @@ Transform:
   m_GameObject: {fileID: 6312134811410829218}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0000000018554747, y: -1, z: 2.0052796e-10, w: 0.00000017136334}
-  m_LocalPosition: {x: 11.813401, y: -0.5072223, z: -2.1520588}
-  m_LocalScale: {x: 5.699633, y: 5.6996336, z: 5.699633}
+  m_LocalPosition: {x: 11.813, y: 9.2724, z: -2.1521}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8577866167267402866}
@@ -320,8 +320,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8577866167267402866}
+  - component: {fileID: 8632611903187436152}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: PortalHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,6 +346,27 @@ Transform:
   - {fileID: 1807296799181428207}
   m_Father: {fileID: 5086168032112035564}
   m_LocalEulerAnglesHint: {x: 0, y: 189.816, z: 0}
+--- !u!95 &8632611903187436152
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492747764336160676}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bf7506d6788ec5d43a261f149476d373, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6574256771147647744
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,7 +487,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6574256771147647744}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -620,7 +642,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4336525803209790834
 Transform:
   m_ObjectHideFlags: 0
@@ -1156,7 +1178,7 @@ MonoBehaviour:
   rLow_Holder: {fileID: 2446615867006964945}
   activeChange: 0
   random: 0
-  animatorPortal: {fileID: 0}
+  animatorPortal: {fileID: 8632611903187436152}
 --- !u!1 &9184070744483598436
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,7 +1194,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1807296799181428207
 Transform:
   m_ObjectHideFlags: 0
@@ -2030,7 +2052,7 @@ PrefabInstance:
     - target: {fileID: 9101483762914781182, guid: 0282cdd3a42b1184684512059722fa57,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -51,7 +51,7 @@ public class TeleporterFeebackController : MonoBehaviour
             dissonance_mat = socleMesh.materials[1];
             planeSymbole_mat = planeSymboleEffect.materials[0];
         }
-        if(animatorPortal == null) { animatorPortal = transform.GetComponentInChildren<Animator>(); }
+        //if(animatorPortal == null) { animatorPortal = transform.GetComponentInChildren<Animator>(); }
 
         //mat_meshPortal = meshPortal.material;
     }
@@ -72,8 +72,12 @@ public class TeleporterFeebackController : MonoBehaviour
         if (activeChange)
         {
             activeChange = false;
-            zoneAutourVFX.enabled = true;
-            if(!portalState) { animatorPortal.SetBool("Ouverture", true); portalState = true; }
+            //zoneAutourVFX.enabled = true;
+            if(!portalState) 
+            { 
+                animatorPortal.SetBool("Ouverture", true); 
+                portalState = true; 
+            }
             //if (random) 
             //{ 
             //    int IDReward = Random.Range(0, 5);
