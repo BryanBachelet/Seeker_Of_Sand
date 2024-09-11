@@ -10,7 +10,8 @@ using UnityEngine.Rendering.HighDefinition;
 public class RoomManager : MonoBehaviour
 {
     private const float distanceBeforeActivatingRooom = 30;
-
+    [Range(0, 5)]
+    public int element = 0; // 4-Rien, 0-Eau, 1-Air, 2-Fire, 3-Earth
 
 
     [HideInInspector] public Camera previewCamera;
@@ -249,7 +250,7 @@ public class RoomManager : MonoBehaviour
         isRoomHasBeenValidate = true;
         playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
         m_EndRoomChallengeTime = DateTime.Now;
-
+        m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
         LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 

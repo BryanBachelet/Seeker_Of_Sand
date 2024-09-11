@@ -18,6 +18,7 @@ public class Teleporter : MonoBehaviour
     public Enemies.EnemyManager enemyManager;
 
     public TeleporterFeebackController tpFeedbackController;
+    public Animator animatorPortal;
     // Start is called before the first frame update
     void Awake()
     {
@@ -39,6 +40,7 @@ public class Teleporter : MonoBehaviour
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
 
         socleMaterial.SetFloat("_TEXMCOLINT", 50f);
+
     }
 
     public void DesactivationTeleportor()

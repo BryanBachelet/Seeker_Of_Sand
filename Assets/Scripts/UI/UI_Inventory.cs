@@ -120,26 +120,29 @@ public class UI_Inventory : MonoBehaviour
         fragmentHold[index].sprite = m_fragmentToolTip.imageFragmentTooltip[index].sprite;
         tooltipFragment[index].name = m_fragmentToolTip.tooltipTrigger[index].name;
         tooltipFragment[index].content = m_fragmentToolTip.tooltipTrigger[index].content;
-        if(fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
-        {
-            fragmentTypeBackground[index].sprite = backgroundElement[0];
-            fragmentElement[index].sprite = iconElement[0];
-        }
-        else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
-        {
-            fragmentTypeBackground[index].sprite = backgroundElement[1];
-            fragmentElement[index].sprite = iconElement[1];
-        }
-        else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
-        {
-            fragmentTypeBackground[index].sprite = backgroundElement[2];
-            fragmentElement[index].sprite = iconElement[2];
-        }
-        else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
-        {
-            fragmentTypeBackground[index].sprite = backgroundElement[3];
-            fragmentElement[index].sprite = iconElement[3];
-        }
+        int GameElementIndex = (int)fragmentInfo.fragmentInfo[index].gameElement;
+        fragmentTypeBackground[index].sprite = backgroundElement[GameElementIndex];
+        fragmentElement[index].sprite = iconElement[GameElementIndex];
+       //if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
+       //{
+       //    fragmentTypeBackground[index].sprite = backgroundElement[0];
+       //    fragmentElement[index].sprite = iconElement[0];
+       //}
+       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
+       //{
+       //    fragmentTypeBackground[index].sprite = backgroundElement[1];
+       //    fragmentElement[index].sprite = iconElement[1];
+       //}
+       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
+       //{
+       //    fragmentTypeBackground[index].sprite = backgroundElement[2];
+       //    fragmentElement[index].sprite = iconElement[2];
+       //}
+       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
+       //{
+       //    fragmentTypeBackground[index].sprite = backgroundElement[3];
+       //    fragmentElement[index].sprite = iconElement[3];
+       //}
         fragmentRarityTier[index].sprite = rarityCadre[0];
         fragmentName[index].text = fragmentInfo.fragmentInfo[index].nameArtefact;
         fragmentHold[index].gameObject.SetActive(true);

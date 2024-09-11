@@ -42,10 +42,10 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638601146621619123
+  lastModified: 638616437631256249
   FileSizes:
   - Name: Desktop
-    Value: 9587616
+    Value: 15770464
   Exists: 1
 --- !u!114 &-8652119187293746100
 MonoBehaviour:
@@ -952,10 +952,10 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638601146621628784
+  lastModified: 638616437631273272
   FileSizes:
   - Name: Desktop
-    Value: 5180
+    Value: 5386
   Exists: 1
 --- !u!114 &-4289898622486494815
 MonoBehaviour:
@@ -1674,13 +1674,15 @@ MonoBehaviour:
   - {fileID: -2396234544891868408}
   - {fileID: 3196754678155748091}
   - {fileID: 4520649705903037342}
+  - {fileID: 3304190604010338547}
+  - {fileID: 8273428569287470898}
   EditorParameters:
   - {fileID: -8098185879387794932}
   MasterBanks:
   - {fileID: -8677712679824705693}
   StringsBanks:
   - {fileID: -4488664334871958410}
-  cacheTime: 638601146621628784
+  cacheTime: 638616437631771384
   cacheVersion: 131609
 --- !u!114 &172576875726406960
 MonoBehaviour:
@@ -2161,6 +2163,30 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &2704448525365405810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Basic - Ambiance/Intensity
+  m_EditorClassIdentifier: 
+  Name: Intensity
+  StudioPath: 
+  Min: 0
+  Max: 4
+  Default: 0
+  ID:
+    data1: 942024231
+    data2: 4062332367
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &2728966151302296222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2323,6 +2349,35 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 700
   Length: 2440
+--- !u!114 &3304190604010338547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Musique/Drum for rythme/Basic - Ambiance
+  m_EditorClassIdentifier: 
+  Path: event:/Musique/Drum for rythme/Basic - Ambiance
+  Guid:
+    Data1: -1846808228
+    Data2: 1170836063
+    Data3: 1831858328
+    Data4: 723462361
+  Banks:
+  - {fileID: -8677712679824705693}
+  - {fileID: 7976304365636210188}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 2704448525365405810}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 135570
 --- !u!114 &3397601288829209339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2512,6 +2567,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 9034
+--- !u!114 &4173024797978221678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Basic - Transition/Intensity
+  m_EditorClassIdentifier: 
+  Name: Intensity
+  StudioPath: 
+  Min: 0
+  Max: 4
+  Default: 0
+  ID:
+    data1: 942024231
+    data2: 4062332367
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &4183111356634543407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3011,6 +3090,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 400
   Length: 16400
+--- !u!114 &6857378140966714289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Basic - Transition/TransitionIntensity
+  m_EditorClassIdentifier: 
+  Name: TransitionIntensity
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 421574359
+    data2: 1625608005
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &6960447660445729377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3154,10 +3257,10 @@ MonoBehaviour:
   Path: Assets/FMOD_PROJECT/AudioVersion1/Build/Desktop/Musique.bank
   Name: Musique
   StudioPath: bank:/Musique
-  lastModified: 638556181530987994
+  lastModified: 638616437631771384
   FileSizes:
   - Name: Desktop
-    Value: 10885696
+    Value: 17071232
   Exists: 1
 --- !u!114 &8196234249540670232
 MonoBehaviour:
@@ -3179,6 +3282,35 @@ MonoBehaviour:
   - Name: Desktop
     Value: 10885696
   Exists: 1
+--- !u!114 &8273428569287470898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Musique/Drum for rythme/Basic - Transition
+  m_EditorClassIdentifier: 
+  Path: event:/Musique/Drum for rythme/Basic - Transition
+  Guid:
+    Data1: 1744654044
+    Data2: 1118406711
+    Data3: -1647150197
+    Data4: -255539804
+  Banks:
+  - {fileID: 7976304365636210188}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 6857378140966714289}
+  - {fileID: 4173024797978221678}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 36046
 --- !u!114 &8288994744021035700
 MonoBehaviour:
   m_ObjectHideFlags: 0

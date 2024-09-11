@@ -16,9 +16,11 @@ public class TerrainDropGeneration : MonoBehaviour
     public GameObject[] cristalDropObject;
 
     public bool generateCristal = false;
+    private RoomManager associateRoomManager;
     // Start is called before the first frame update
     void Start()
     {
+        associateRoomManager = transform.parent.transform.GetComponentInChildren<RoomManager>();
         GenerateRandomCristal();
     }
 
@@ -34,8 +36,8 @@ public class TerrainDropGeneration : MonoBehaviour
     {
         raycastdirection = new Vector3(0, -25, 0);
         int dropToGenerate = dropQuantity + Random.Range(-random, random);
-        int randomCristalType = Random.Range(0, 4);
-
+        int randomCristalType = associateRoomManager.element;
+        if(randomCristalType == 4) { randomCristalType = Random.Range(0, 4); }
         if (dropToGenerate > 0)
         {
             for (int i = 0; i < dropToGenerate; i++)

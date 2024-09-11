@@ -233,7 +233,7 @@ public class DayCyclecontroller : MonoBehaviour
         isNightState = isNight;
         if (nightStartEvent != null) nightStartEvent.Invoke();
         m_GSM.UpdateParameter(1, "DayOrNight");
-        m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
+        //m_GSM.globalMusicInstance.setParameterByName("Repos", 1);
         StartCoroutine(DisplayInstruction("Night fall", 2, Color.white, ""));
         //  GlobalSoundManager.PlayOneShot(34, transform.position);
         //m_LocalNightVolume.enabled = true;

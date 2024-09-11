@@ -612,7 +612,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -908,7 +908,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -1787,7 +1787,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -2399,13 +2399,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6351575010101526523}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.075757146, y: 0.30987567, z: -0.024777867, w: 0.9474302}
-  m_LocalPosition: {x: -236.2, y: 17.3, z: -107.3}
+  m_LocalRotation: {x: 0.15938963, y: -0.07100825, z: 0.0114951, w: 0.9845916}
+  m_LocalPosition: {x: 107.8, y: 31.8, z: -329.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3795174102609166243}
-  m_LocalEulerAnglesHint: {x: 9.143, y: 36.223, z: 0}
+  m_LocalEulerAnglesHint: {x: 18.391, y: -8.25, z: 0}
 --- !u!20 &4008220481766037730
 Camera:
   m_ObjectHideFlags: 0
@@ -2792,15 +2792,15 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  dropQuantity: 4
+  dropQuantity: 2
   random: 1
   rangeFromCenter: 500
   m_DropAreaPosition: {x: 0, y: 0, z: 0}
   cristalDropObject:
+  - {fileID: 1307768737332460006, guid: 2a09d2a9f6221e446ba82b370f36d22e, type: 3}
   - {fileID: 2525742179268374040, guid: 07eb8ba4e2cb7544da9640df78113f7f, type: 3}
   - {fileID: 1059528601979336950, guid: 0f5fb060cf12868408b6afb88336b466, type: 3}
   - {fileID: 6895654206261971907, guid: a6b59b3ac69ec7544bf056ebeded7866, type: 3}
-  - {fileID: 1307768737332460006, guid: 2a09d2a9f6221e446ba82b370f36d22e, type: 3}
   generateCristal: 0
 --- !u!1 &7439351075369611370
 GameObject:
@@ -3046,7 +3046,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -6389,6 +6389,11 @@ PrefabInstance:
       propertyPath: m_CRT
       value: 
       objectReference: {fileID: 8600000, guid: 4fdf60624174c86418b5d492797c5a5d, type: 2}
+    - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
+        type: 3}
+      propertyPath: element
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
         type: 3}
       propertyPath: spawnAngle

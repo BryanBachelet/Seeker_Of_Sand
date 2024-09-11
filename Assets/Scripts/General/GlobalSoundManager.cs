@@ -21,6 +21,11 @@ public class GlobalSoundManager : MonoBehaviour
     public EventReference GlobalMusic;
     public EventInstance globalMusicInstance;
 
+    public EventReference musicIntensity;
+    public EventInstance musicIntensityInstance;
+
+    public EventReference musicIntensityTransition;
+    public EventInstance musicIntensityTransitionInstance;
 
     public EventReference marchandMusic;
     public EventInstance marchandMusicInstance;
@@ -70,7 +75,16 @@ public class GlobalSoundManager : MonoBehaviour
     {
         globalinstance.setParameterByName(parameterName, parameterValue);
         globalMusicInstance.setParameterByName(parameterName, parameterValue);
+        musicIntensityInstance.setParameterByName(parameterName, parameterValue);
     }
+
+    //public IEnumerator UpdateParameterWithDelay(float parameterValue, string parameterName, float delay, float beforeDelayParameterValue, string beforeDelayParameterName)
+    //{
+    //    globalinstance.setParameterByName(parameterName, parameterValue);
+    //    globalMusicInstance.setParameterByName(parameterName, parameterValue);
+    //    musicIntensityInstance.setParameterByName(parameterName, parameterValue);
+    //    musicIntensityTransitionInstance.setParameterByName(beforeDelayParameterName, 0);
+    //}
 
     public IEnumerator StartAmbiant(float delay)
     {
@@ -81,6 +95,10 @@ public class GlobalSoundManager : MonoBehaviour
         globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
         //globalMusicInstance.start();
         globalMusicInstance.setVolume(1);
+        musicIntensityInstance = RuntimeManager.CreateInstance(musicIntensity);
+        musicIntensityInstance.setVolume(1);
+        musicIntensityTransitionInstance = RuntimeManager.CreateInstance(musicIntensityTransition);
+        musicIntensityTransitionInstance.setVolume(1);
         marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
         //marchandMusicInstance.start();
         marchandMusicInstance.setVolume(0);
@@ -91,6 +109,8 @@ public class GlobalSoundManager : MonoBehaviour
     {
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        musicIntensityInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        musicIntensityTransitionInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         canalisationInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
@@ -139,6 +159,11 @@ public class GlobalSoundManager : MonoBehaviour
         //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
         globalMusicInstance.start();
         globalMusicInstance.setVolume(1);
+        musicIntensityInstance.start();
+        musicIntensityInstance.setVolume(1);
+        UpdateParameter(0.1f, "Intensity");
+        musicIntensityTransitionInstance.start();
+        musicIntensityTransitionInstance.setVolume(1);
         //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
         marchandMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         marchandMusicInstance.setVolume(0);
@@ -152,6 +177,9 @@ public class GlobalSoundManager : MonoBehaviour
         //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
         globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         globalMusicInstance.setVolume(0);
+        musicIntensityInstance.start();
+        musicIntensityInstance.setVolume(0);
+        UpdateParameter(0f, "Intensity");
         //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
         marchandMusicInstance.start();
         marchandMusicInstance.setVolume(1);

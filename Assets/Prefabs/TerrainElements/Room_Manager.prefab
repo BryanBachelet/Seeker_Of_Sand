@@ -44,15 +44,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4eb945d277479c459969bf41a4f5d12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  element: 0
+  previewCamera: {fileID: 0}
+  m_CRT: {fileID: 0}
+  m_materialPreviewTRT: {fileID: 0}
   currentRoomType: 0
   baseRoomType: 0
   rewardType: 3
+  healthReward: 0
+  isTimingPassing: 0
   enemyToKillCount: 0
   currentCountOfEnemy: 0
   teleporterArray:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  isRoomHasBeenValidate: 1
   terrainGenerator: {fileID: 0}
   roomInfoUI: {fileID: 0}
   isActiveStartRotation: 0
@@ -65,53 +72,53 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 147.48871
-      outSlope: 147.48871
+      inSlope: 74
+      outSlope: 74
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 148.48871
-      inSlope: 78.89883
-      outSlope: 78.89883
+      value: 75
+      inSlope: 44.5
+      outSlope: 44.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 2
-      value: 158.79765
-      inSlope: 9.278061
-      outSlope: 9.278061
+      value: 90
+      inSlope: 12.5
+      outSlope: 12.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 3
-      value: 167.04483
-      inSlope: 5.15448
-      outSlope: 5.15448
+      value: 100
+      inSlope: 17.5
+      outSlope: 17.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 4
-      value: 169.10661
-      inSlope: 6.1853714
-      outSlope: 6.1853714
+      value: 125
+      inSlope: 25
+      outSlope: 25
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 5
-      value: 179.41557
-      inSlope: 5.15448
-      outSlope: 5.15448
+      value: 150
+      inSlope: 27.207787
+      outSlope: 27.207787
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -119,8 +126,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 6
       value: 179.41557
-      inSlope: 0
-      outSlope: 0
+      inSlope: 14.707787
+      outSlope: 14.707787
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -238,3 +245,4 @@ MonoBehaviour:
     m_RotationOrder: 4
   timeReset: 0.2
   timerReset: 0
+  isRoomHasBeenDeactivated: 0

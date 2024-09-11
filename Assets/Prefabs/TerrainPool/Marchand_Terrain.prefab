@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23788001008024267}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.22769585, z: -0, w: 0.97373235}
+  m_LocalRotation: {x: 0, y: 0.22769658, z: 0, w: 0.9737322}
   m_LocalPosition: {x: 362, y: 180.5, z: 60}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1445,7 +1445,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -2017,7 +2017,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -3098,7 +3098,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -4157,16 +4157,16 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  dropQuantity: 4
+  dropQuantity: 2
   random: 2
   rangeFromCenter: 125
   m_DropAreaPosition: {x: 0, y: 0, z: 0}
   cristalDropObject:
+  - {fileID: 1307768737332460006, guid: 2a09d2a9f6221e446ba82b370f36d22e, type: 3}
   - {fileID: 2525742179268374040, guid: 07eb8ba4e2cb7544da9640df78113f7f, type: 3}
   - {fileID: 1059528601979336950, guid: 0f5fb060cf12868408b6afb88336b466, type: 3}
   - {fileID: 6895654206261971907, guid: a6b59b3ac69ec7544bf056ebeded7866, type: 3}
-  - {fileID: 1307768737332460006, guid: 2a09d2a9f6221e446ba82b370f36d22e, type: 3}
-  generateCristal: 1
+  generateCristal: 0
 --- !u!1 &7660725279511454335
 GameObject:
   m_ObjectHideFlags: 0
@@ -5422,7 +5422,7 @@ MonoBehaviour:
     albedo: {r: 0.4811321, g: 0.4064958, b: 0.29276434, a: 1}
     meanFreePath: 3.6
     blendingMode: 1
-    priority: 0
+    priority: -1
     anisotropy: 0
     volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
     textureScrollingSpeed: {x: 0.5, y: 0, z: 0}
@@ -8514,6 +8514,11 @@ PrefabInstance:
       propertyPath: m_CRT
       value: 
       objectReference: {fileID: 8600000, guid: 567120248ffeb0b4fabed2115cde9668, type: 2}
+    - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
+        type: 3}
+      propertyPath: element
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
         type: 3}
       propertyPath: spawnAngle
@@ -18344,12 +18349,12 @@ PrefabInstance:
     - target: {fileID: 747376936234721264, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.y
-      value: -0.8164967
+      value: -0.81649655
       objectReference: {fileID: 0}
     - target: {fileID: 747376936234721264, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.z
-      value: -0.5773503
+      value: -0.57735026
       objectReference: {fileID: 0}
     - target: {fileID: 747376936234721264, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
@@ -19889,12 +19894,12 @@ PrefabInstance:
     - target: {fileID: 914741881986529003, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.y
-      value: -0.81649655
+      value: -0.8164967
       objectReference: {fileID: 0}
     - target: {fileID: 914741881986529003, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.z
-      value: -0.57735026
+      value: -0.5773503
       objectReference: {fileID: 0}
     - target: {fileID: 914741881986529003, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
@@ -20304,12 +20309,12 @@ PrefabInstance:
     - target: {fileID: 3076465368149507635, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.y
-      value: -0.81649655
+      value: -0.8164967
       objectReference: {fileID: 0}
     - target: {fileID: 3076465368149507635, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.z
-      value: -0.57735026
+      value: -0.5773503
       objectReference: {fileID: 0}
     - target: {fileID: 3076465368149507635, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
@@ -21644,12 +21649,12 @@ PrefabInstance:
     - target: {fileID: 4684562419269516702, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.y
-      value: -0.81649655
+      value: -0.8164967
       objectReference: {fileID: 0}
     - target: {fileID: 4684562419269516702, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
       propertyPath: serializeData.gravityDirection.z
-      value: -0.57735026
+      value: -0.5773503
       objectReference: {fileID: 0}
     - target: {fileID: 4684562419269516702, guid: 8f96f142294993a448cca0a4ef97953e,
         type: 3}
