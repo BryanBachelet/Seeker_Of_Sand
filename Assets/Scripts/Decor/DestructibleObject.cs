@@ -8,6 +8,9 @@ public class DestructibleObject : MonoBehaviour
     public bool test = false;
     private Rigidbody rigidbody;
     private bool hasSpawn = false;
+
+    public bool sd_Destruction = true;
+    public int indexSound = 51;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +23,7 @@ public class DestructibleObject : MonoBehaviour
         {
             test = false;
             ActiveDestruction();
+
         }
     }
 
@@ -27,6 +31,7 @@ public class DestructibleObject : MonoBehaviour
     void ActiveDestruction()
     {
         if (hasSpawn) return;
+        if (sd_Destruction) { GlobalSoundManager.PlayOneShot(51, transform.position); }
         Vector3 parentScale = transform.localScale;
         GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation,transform.parent);
         instance.transform.localScale = parentScale;
@@ -56,6 +61,7 @@ public class DestructibleObject : MonoBehaviour
     public void SetupDestruction(float power,Vector3 direction)
     {
         if (hasSpawn) return;
+        if (sd_Destruction) { GlobalSoundManager.PlayOneShot(51, transform.position); }
         GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation, transform.parent);
         Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
 

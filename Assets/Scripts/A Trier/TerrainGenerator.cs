@@ -261,7 +261,7 @@ public class TerrainGenerator : MonoBehaviour
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
         Character.CharacterShoot shootComponent = player.GetComponent<Character.CharacterShoot>();
-        if (shootComponent.spellIndex.Count >= maxPlayerSpell && rewardList.Contains(RewardType.SPELL))
+        if (shootComponent.spellIndexGeneral.Count >= maxPlayerSpell && rewardList.Contains(RewardType.SPELL))
         {
             rewardList.Remove(RewardType.SPELL);
         }

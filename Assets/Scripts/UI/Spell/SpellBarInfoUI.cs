@@ -29,9 +29,9 @@ public class SpellBarInfoUI : MonoBehaviour
             m_spellTooltipArray[eventData.index].header = "";
             return;
         }
-        int capsuleIndex = m_characterShoot.spellIndex[eventData.index];
-        string headerText = m_characterShoot.m_spellManger.spellProfils[capsuleIndex].name;
-        string contextText = "Level : " + m_characterShoot.m_spellManger.spellProfils[capsuleIndex].level + "\n" + m_characterShoot.m_spellManger.spellProfils[capsuleIndex].description + "\n"+ m_characterShoot.spellProfils[eventData.index].DebugStat();
+        int capsuleIndex = m_characterShoot.spellEquip[eventData.index];
+        string headerText = m_characterShoot.spellProfils[capsuleIndex].name;
+        string contextText = "Level : " + m_characterShoot.spellProfils[capsuleIndex].level + "\n" + m_characterShoot.spellProfils[capsuleIndex].description + "\n"+ m_characterShoot.spellProfils[capsuleIndex].DebugStat();
 
         m_spellTooltipArray[eventData.index].content = contextText;
         m_spellTooltipArray[eventData.index].header = headerText;

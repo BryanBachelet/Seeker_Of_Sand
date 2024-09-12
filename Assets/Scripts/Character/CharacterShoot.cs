@@ -27,7 +27,8 @@ namespace Character
         [Header("Spell Composition Parameters")]
         public int[] spellEquip;
         [HideInInspector] public int maxSpellIndex;
-        public List<int> spellIndex;
+        public List<int> spellIndexGeneral;
+        public List<int> spellIndexSpecific;
 
         private int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
@@ -188,9 +189,9 @@ namespace Character
             InitCapsule();
             InitSpriteSpell();
             InitStacking();
-            for (int i = 0; i < spellIndex.Count; i++)
+            for (int i = 0; i < spellIndexGeneral.Count; i++)
             {
-                m_dropInventory.AddNewItem(spellIndex[i]);
+                m_dropInventory.AddNewItem(spellIndexGeneral[i]);
             }
 
             // Init Variables
@@ -372,24 +373,27 @@ namespace Character
         {
             // Add Spell in Spell List
             // Get the spell stats for each spell
-            for (int i = 0; i < spellIndex.Count; i++)
+            for (int i = 0; i < spellIndexGeneral.Count; i++)
             {
-                if (spellIndex[i] == -1) continue;
+                if (spellIndexGeneral[i] == -1) continue;
 
-                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndex[i]].Clone());
-                SpellManager.RemoveSpecificSpellFromSpellPool(spellIndex[i]);
+                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone());
+                spellIndexSpecific.Add(i);
+                SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
             }
 
+           
             SpellManager.RemoveSpecificSpellFromSpellPool(0);
             SpellManager.RemoveSpecificSpellFromSpellPool(1);
             SpellManager.RemoveSpecificSpellFromSpellPool(2);
             SpellManager.RemoveSpecificSpellFromSpellPool(3);
 
+
             //  Set to Spell Equip
             spellEquip = new int[4];
             for (int i = 0; i < spellEquip.Length; i++)
             {
-                if (i >= spellIndex.Count)
+                if (i >= spellIndexGeneral.Count)
                     spellEquip[i] = -1;
                 else
 
@@ -400,7 +404,8 @@ namespace Character
             }
             m_currentIndexCapsule = spellEquip[0];
             ChangeVfxOnUI(m_currentIndexCapsule);
-            maxSpellIndex = Mathf.Clamp(spellIndex.Count, 0, 4);
+            maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
+            m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
 
         }
 
@@ -422,13 +427,13 @@ namespace Character
                 {
                     RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
-                spellIndex.Add(RndCapsule);
+                spellIndexGeneral.Add(RndCapsule);
             }
         }
 
         private void GenerateNewBuildSpecificStart(int index)
         {
-            spellIndex.Add(index);
+            spellIndexGeneral.Add(index);
         }
         private void InitStacking()
         {
@@ -737,7 +742,7 @@ namespace Character
             SpellSystem.SpellProfil spellProfil = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(spellProfil);
             int mod = GetStartIndexProjectile(spellProfil);
-            
+
             for (int i = 0; i < spellProfil.GetIntStat(StatType.Projectile); i++)
             {
                 Transform transformUsed = transform;
@@ -781,9 +786,15 @@ namespace Character
                 m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
             }
             if (m_currentStack[m_currentRotationIndex] <= 0)
+            {
                 return true;
+
+            }
+
             else
+            { 
                 return false;
+            }
         }
 
         private bool ShootAttackArea(int capsuleIndex)
@@ -886,14 +897,17 @@ namespace Character
             m_canEndShot = false;
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(m_currentIndexCapsule);
 
+
             if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 
         private void EndShoot()
         {
+
             if (!m_canShoot) return;
 
             currentShotNumber = 0;
+
 
             m_spellTimer = 0.0f;
             m_spellLaunchTime = 0.0f;
@@ -1318,19 +1332,22 @@ namespace Character
         public void AddSpell(int index)
         {
             int prevIndex = m_characterSpellBook.GetSpellCount();
-            spellIndex.Add(index);
-            m_characterSpellBook.AddSpell(m_spellManger.spellProfils[index].Clone());
+            spellIndexGeneral.Add(index);
+
+            SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone();
+            m_characterSpellBook.AddSpell(clone);
             m_dropInventory.AddNewItem(index);
+       
 
-
-            if (spellIndex.Count <= spellEquip.Length)
+            if (spellIndexGeneral.Count <= spellEquip.Length)
             {
-                spellProfils.Add(m_spellManger.spellProfils[index]);
-                spellEquip[spellIndex.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+                spellProfils.Add(clone);
+                spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();
                 m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex], m_textStack[maxSpellIndex]);
-                maxSpellIndex = Mathf.Clamp(spellIndex.Count, 0, 4);
+                maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
                 RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
                 m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
             }
@@ -1339,7 +1356,7 @@ namespace Character
         public void RemoveSpell(int index)
         {
             int spellIndex = spellEquip[index];
-            this.spellIndex.RemoveAt(spellIndex);
+            this.spellIndexGeneral.RemoveAt(spellIndex);
             spellProfils.RemoveAt(spellIndex);
             m_characterSpellBook.RemoveSpell(spellIndex);
             m_stackingClock[index].DeactivateClock();
@@ -1353,7 +1370,7 @@ namespace Character
                 spellEquip[i] = spellEquip[i + 1];
             }
 
-            maxSpellIndex = Mathf.Clamp(this.spellIndex.Count, 0, 4);
+            maxSpellIndex = Mathf.Clamp(this.spellIndexGeneral.Count, 0, 4);
             spellEquip[maxSpellIndex] = -1;
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
@@ -1371,6 +1388,7 @@ namespace Character
         public void ChangeSpell(int spellSlot, int indexSpell)
         {
             spellEquip[spellSlot] = indexSpell;
+            
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
         }
@@ -1384,8 +1402,8 @@ namespace Character
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
 
-            m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell1],m_textStack[indexSpell1]);
-            m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
+            m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell1], m_textStack[indexSpell1]);
+            m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
 
             int tempStack = m_currentStack[indexSpell1];
             m_currentStack[indexSpell1] = m_currentStack[indexSpell2];
