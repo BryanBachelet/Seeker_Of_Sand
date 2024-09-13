@@ -184,18 +184,19 @@ public class HealthPlayerComponent : MonoBehaviour
         else
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
-            StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
             ActiveBufferHealth(Time.time, m_CurrentHealth);
             feedbackHit = true;
             vignette.intensity.value = 0.35f;
             if (m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
+                StartCoroutine(GetInvulnerableLourd(1.5f));
                 ActiveSlowEffect(1.5f, m_CurrentQuarter);
                 m_CurrentQuarter -= 1;
                 m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
             }
             else
             {
+                StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
                 m_CurrentHealth -= attackDamageInfo.damage;
             }
             if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);

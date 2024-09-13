@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
 using GuerhoubaGames.GameEnum;
+using UnityEngine.VFX;
 namespace Character
 {
 
@@ -65,6 +66,8 @@ namespace Character
 
         private bool m_exitCombatState = false;
         public Vector3 v3Ref;
+
+        public VisualEffect vfxCast;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);

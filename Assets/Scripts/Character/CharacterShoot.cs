@@ -571,6 +571,7 @@ namespace Character
         {
             float ratio = m_spellTimer / maxValue;
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
             if (lastElementToUse != null)
             {
                 lastElementToUse.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 2, ratio);
@@ -784,6 +785,7 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.ByPart)
             {
                 m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+                m_characterAim.vfxCast.SetFloat("Progress", ratio);
             }
             if (m_currentStack[m_currentRotationIndex] <= 0)
             {
@@ -941,6 +943,7 @@ namespace Character
 
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / GetMaxStack(currentSpellProfil));
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
             m_uiPlayerInfos.DeactiveSpellCanalisation();
 
             m_deltaTimeFrame = UnityEngine.Time.deltaTime;
@@ -1063,6 +1066,7 @@ namespace Character
             }
 
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
         }
 
         #endregion
