@@ -158,7 +158,8 @@ public class TerrainGenerator : MonoBehaviour
         {
 
             int indexRoomType = 0;
-            indexRoomType = Random.Range(0, roomTypeList.Count);
+            if (roomGeneration_Static < 6) { indexRoomType = Random.Range(0, 2); }
+            else { indexRoomType = Random.Range(0, roomTypeList.Count); }
             GameObject newTerrain;
             isHealthBossRoom = false;
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
@@ -192,6 +193,7 @@ public class TerrainGenerator : MonoBehaviour
                 if (i > 0)
                 {
                     indexReward = Random.Range(0, rewardList.Count - 1);
+
                 }
                 else
                 {
@@ -209,9 +211,6 @@ public class TerrainGenerator : MonoBehaviour
             StartCoroutine(roomManager.RoomDeactivation(3));
             //newTerrain.SetActive(false);
         }
-
-        if (currentRoomManager.currentRoomType == RoomType.Free)
-            roomTypeList.Insert((int)currentRoomManager.currentRoomType, currentRoomManager.currentRoomType);
         
   //      AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
