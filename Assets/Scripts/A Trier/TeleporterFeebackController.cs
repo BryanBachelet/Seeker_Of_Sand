@@ -8,6 +8,7 @@ public class TeleporterFeebackController : MonoBehaviour
     [Range(0, 4)]
     public int elementToUse = 0; //0 --> Feu. 1 --> Elec. 2-->Eau. 3-->Terre. 4 --> Neutre
     public MeshRenderer previewMeshPlane;
+    public VisualEffect vfx_DeformPortal;
     public VisualEffect vfx_lightPortal;
     public VisualEffect[] vfx_elecPortal;
     [ColorUsage(true, true)]
@@ -134,6 +135,7 @@ public class TeleporterFeebackController : MonoBehaviour
         vfx_elecPortal[1].SetVector4("Color_II", color_Elem_Portal[color]);
         vfx_elecPortal[1].SetVector4("Color_III", color_Elem_Portal[color]);
         //
+        vfx_DeformPortal.SetVector4("ColorSymbol", color_Elem_Portal[color]);
         if (mat_meshPortal == null)
         {
             mat_meshPortal = meshPortal.material;
@@ -148,5 +150,6 @@ public class TeleporterFeebackController : MonoBehaviour
     public void ChangeColorVFX(int color)
     {
         colorToUse = color;
+        vfx_DeformPortal.SetVector4("ColorSymbol", Color.black);
     }
 }

@@ -158,8 +158,8 @@ public class TerrainGenerator : MonoBehaviour
         {
 
             int indexRoomType = 0;
-            if (roomGeneration_Static < 6) { indexRoomType = Random.Range(0, 2); }
-            else { indexRoomType = Random.Range(0, roomTypeList.Count); }
+            if (roomGeneration_Static < 10) { indexRoomType = Random.Range(0, 2); }
+            //else { indexRoomType = Random.Range(0, roomTypeList.Count); }
             GameObject newTerrain;
             isHealthBossRoom = false;
             if (roomTypeList[indexRoomType] == RoomType.Merchant)

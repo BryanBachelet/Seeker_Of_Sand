@@ -113,6 +113,7 @@ namespace Enemies
         private List<Vector3> posspawn = new List<Vector3>();
 
         private Character.CharacterMouvement m_characterMouvement;
+        private Character.CharacterUpgrade m_characterUpgrade;
 
         private int repositionningLimit = 2;
         private int repositionningCount;
@@ -197,6 +198,7 @@ namespace Enemies
             gsm = m_cameraTransform.GetComponentInChildren<GlobalSoundManager>();
 
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
+            m_characterUpgrade = m_playerTranform.GetComponent<Character.CharacterUpgrade>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
             m_serieController = m_playerTranform.GetComponent<SerieController>();
@@ -544,7 +546,7 @@ namespace Enemies
             npcHealth.SetInitialData(m_healthManager, this);
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
-            npcHealth.RestartObject();
+            npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
 
             m_enemiesArray.Add(npcInfo);
@@ -597,7 +599,7 @@ namespace Enemies
             npcHealth.SetInitialData(m_healthManager, this);
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
-            npcHealth.RestartObject();
+            npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
 
             m_enemiesArray.Add(npcInfo);

@@ -122,6 +122,11 @@ namespace Character
 
         public int specifiqueSpellStart = 0;
         public bool chooseBuild = false;
+
+        public Texture currentPreviewDecalTexture; // Inspector, set texture named "box"
+
+        private Texture m_initialPreviewDecal;
+        public Gradient[] gradientDecalElement;
         public enum CanalisationBarType
         {
             ByPart,
@@ -161,12 +166,15 @@ namespace Character
 
         private CharacterSummonManager m_characterSummmonManager;
 
+
+
         #region Unity Functions
 
         private void Awake()
         {
             m_spellCouroutine = new Coroutine[100];
             currentManaValue = manaMax;
+            m_initialPreviewDecal = currentPreviewDecalTexture;
         }
 
 
@@ -485,6 +493,9 @@ namespace Character
             //m_activeSpellLoad = true;
             m_deltaTimeFrame = Time.deltaTime;
             hasStartShoot = true;
+            currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+            m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
+            m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(currentSpellProfil.tagData.element));
             //m_totalCanalisationDuration = currentSpellProfil.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
 
             //if (m_canalisationType == CanalisationBarType.ByPart)
@@ -530,6 +541,9 @@ namespace Character
             if (highCanalisationTest)
             {
                 m_CharacterMouvement.m_SpeedReduce = currentSpellProfil.GetFloatStat(StatType.SpeedReduce);
+                currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+                m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
+                m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(currentSpellProfil.tagData.element));
             }
             else
             {
@@ -539,7 +553,9 @@ namespace Character
             if (highCanalisationTest || currentSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION)
             {
 
-
+                currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+                m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
+                m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(currentSpellProfil.tagData.element));
                 if (m_spellTimer >= currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
                 {
                     m_activeSpellLoad = false;
@@ -910,7 +926,9 @@ namespace Character
 
             currentShotNumber = 0;
 
-
+            currentPreviewDecalTexture = m_initialPreviewDecal;
+            m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
+            m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(GameElement.NONE));
             m_spellTimer = 0.0f;
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
@@ -1438,8 +1456,31 @@ namespace Character
                 vfxUISign[spellProfils.Count - 1].SendEvent("OnStop");
             }
         }
-
+        public Gradient SetDecalColor(GameElement gameElement)
+        {
+            Gradient color = gradientDecalElement[0];
+            switch(gameElement)
+            {
+                case GameElement.NONE:
+                    color = gradientDecalElement[0];
+                    break;
+                case GameElement.AIR:
+                    color = gradientDecalElement[2];
+                    break;
+                case GameElement.EARTH:
+                    color = gradientDecalElement[4];
+                    break;
+                case GameElement.FIRE:
+                    color = gradientDecalElement[3];
+                    break;
+                case GameElement.WATER:
+                    color = gradientDecalElement[1];
+                    break;
+            }
+            return color;
+        }
     }
+
 
 
 

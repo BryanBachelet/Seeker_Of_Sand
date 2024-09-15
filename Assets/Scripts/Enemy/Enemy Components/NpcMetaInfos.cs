@@ -67,7 +67,7 @@ namespace Enemies
 
         public void RestartEnemy()
         {
-            m_healthComponent.RestartObject();
+            m_healthComponent.RestartObject(1);
             moveComponent.RestartObject();
         }
 

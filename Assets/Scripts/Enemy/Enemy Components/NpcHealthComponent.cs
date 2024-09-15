@@ -90,7 +90,7 @@ namespace Enemies
             {
                 m_materialList.Add(m_SkinMeshRenderer.materials[i]);
             }
-            RestartObject();
+            RestartObject(1);
 
         }
 
@@ -222,7 +222,7 @@ namespace Enemies
             m_npcInfo.state = (NpcState)m_previousNpcState;
         }
 
-        public void RestartObject()
+        public void RestartObject(int playerLevel)
         {
             if (IsDebugActive)
             {
@@ -230,6 +230,7 @@ namespace Enemies
             }
             m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
+            m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
             death = false;
             if (hasDeathAnimation) m_entityAnimator.ResetTrigger("Death");
             m_npcInfo.state = NpcState.MOVE;

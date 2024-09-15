@@ -27,6 +27,9 @@ namespace SpellSystem
         public bool isDebugActive;
         public Color color;
         [Range(0, 1)] public float transparency = 0.5f;
+
+        public bool asPreviewDecal;
+        public Texture2D previewDecal;
         private SpellProfil profil;
         void Start()
         {
@@ -91,6 +94,10 @@ namespace SpellSystem
             }
         }
 
+        public Texture2D ReturnDecalPreview()
+        {
+            return previewDecal;
+        }
         public void OnDrawGizmos()
         {
             if (!isDebugActive) return;
