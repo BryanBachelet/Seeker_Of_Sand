@@ -209,9 +209,6 @@ public class TerrainGenerator : MonoBehaviour
             StartCoroutine(roomManager.RoomDeactivation(3));
             //newTerrain.SetActive(false);
         }
-
-        if (currentRoomManager.currentRoomType == RoomType.Free)
-            roomTypeList.Insert((int)currentRoomManager.currentRoomType, currentRoomManager.currentRoomType);
         
   //      AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;

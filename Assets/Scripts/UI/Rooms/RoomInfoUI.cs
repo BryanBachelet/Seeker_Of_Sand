@@ -53,6 +53,9 @@ namespace GuerhoubaGames.UI
 
         public void Awake()
         {
+
+            if (!this.enabled) return;
+
             // Init Top Goal Interface
             m_objectifAnimator = UiObjectifGO.GetComponent<Animator>();
             m_rewardAnimator = UiRewardGO.GetComponent<Animator>();

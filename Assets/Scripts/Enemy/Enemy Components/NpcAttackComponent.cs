@@ -96,6 +96,8 @@ namespace Enemies
                     countRangeAttack++;
                 }
 
+        
+
             }
 
             timerAttackCooldown = new float[attackEnemiesObjectsArr.Length];
@@ -118,6 +120,18 @@ namespace Enemies
             currentAttackState = AttackPhase.PREP;
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;
+
+            // Custom Attack Section
+            if(currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.customAttackData = FillCustomAttackData(currentAttackData, currentAttackIndex);
+                currentAttackData.customAttack.ResetAttack();
+                currentAttackData.customAttack.ActivePrepPhase();
+
+                return;
+            }
+
+            //
             m_mouvementComponent.DirectRotateToTarget();
             if (currentAttackData.isStopMovingAtPrep)
             {
@@ -129,7 +143,7 @@ namespace Enemies
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.prepationTime;
            
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
@@ -166,9 +180,17 @@ namespace Enemies
             OnContactAttack?.Invoke();
             currentAttackState = AttackPhase.CONTACT;
 
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.ActiveContactPhase();
+
+                return;
+            }
+
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.contactTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
@@ -191,9 +213,17 @@ namespace Enemies
             OnRecoverAttack?.Invoke();
             currentAttackState = AttackPhase.RECOVERY;
 
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.ActiveRecoverPhase();
+
+                return;
+            }
+
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.recoverTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
@@ -209,30 +239,63 @@ namespace Enemies
         public void FinishPreparationAttack()
         {
             m_timer = 0.0f;
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.EndPrepPhase();
+            }
             ActiveAttackContact();
         }
 
         public void FinishContactAttack()
         {
             m_timer = 0.0f;
-            if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.EndContactPhase();
+            }
+            else
+            {
+
+                if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) 
+                    colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
+            }
             ActiveRecoverPhase();
         }
 
         public void FinishRecoverAttack()
         {
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.EndRecoverPhase();
+            }
             isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
         }
+
         #endregion
 
         #region Update Phase Functions
         public void UpdatePrepAttack()
         {
             if (currentAttackState != AttackPhase.PREP) return;
+
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+               bool result =  currentAttackData.customAttack.UpdatePrepPhase();
+                if(result)
+                {
+                    FinishPreparationAttack();
+                }
+
+                return;
+            }
 
             if (currentAttackData.isFollowTarget || m_timer < currentAttackData.rotationTime)
             {
@@ -270,6 +333,18 @@ namespace Enemies
         {
             if (currentAttackState != AttackPhase.CONTACT) return;
 
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                bool result = currentAttackData.customAttack.UpdateContactPhase();
+                if (result)
+                {
+                    FinishContactAttack();
+                }
+
+                return;
+            }
+
             if (currentAttackData.attackMovement)
             {
                 currentAttackData.attackMovement.UpdateMvt();
@@ -300,6 +375,18 @@ namespace Enemies
         public void UpdateRecoverAttack()
         {
             if (currentAttackState != AttackPhase.RECOVERY) return;
+
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                bool result = currentAttackData.customAttack.UpdateRecoverPhase();
+                if (result)
+                {
+                    FinishRecoverAttack();
+                }
+
+                return;
+            }
 
             if (m_timer > currentAttackData.recoverTime)
             {
@@ -388,12 +475,29 @@ namespace Enemies
 
                 }
             }
+
+
         }
 
         public bool IsAttackOnCooldown(int index)
         {
           return  isAttackOnCooldown[index];
         }
+
+        public CustomAttackData FillCustomAttackData(AttackNPCData attackNPCData, int attackIndex)
+        {
+            CustomAttackData customAttackData = new CustomAttackData();
+            customAttackData.name = attackNPCData.nameAttack;
+            customAttackData.damage = attackNPCData.damage;
+            customAttackData.attackIndex = attackIndex;
+            customAttackData.npcAttackFeedback = m_NPCAttackFeedbackComponent;
+            customAttackData.npcAttacksComp = this;
+            customAttackData.targetTransform = m_mouvementComponent.targetData.baseTarget;
+            customAttackData.ownTransform = this.transform;
+
+            return customAttackData;
+        }
+
         
 
         #endregion

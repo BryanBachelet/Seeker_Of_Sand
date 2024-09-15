@@ -16,6 +16,8 @@ namespace Enemies
             Self,
         }
 
+        public NPCCustomAttack customAttack;
+
         public string nameAttack;
         [Header("Attack parameters")]
         public float prepationTime;
@@ -29,6 +31,7 @@ namespace Enemies
         public bool isStunLockingAttack;
         public bool isStopMovingAtPrep;
         public bool isHeavyAttack;
+        [Tooltip("Allow the AI to constantly rotate during prep time")]
         public bool isFollowTarget;
         public AttackLaunchMoment launchMoment;
         public NPCMoveAttackObject attackMovement;

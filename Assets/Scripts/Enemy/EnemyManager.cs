@@ -24,6 +24,7 @@ namespace Enemies
         CHAMAN,
         TANK,
         RUNNER,
+        TWILIGHT_SISTER,
     }
 
     [System.Serializable]
@@ -80,7 +81,7 @@ namespace Enemies
 
         #region EnemyParameter
 
-        [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[5];
+        [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[6];
 
 
         [Header("Enemy Bonus")]

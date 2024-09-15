@@ -86,10 +86,15 @@ namespace Enemies
                 moveSoundInstance.setVolume(0);
                 //moveSoundInstance.setVolume(0);
             }
-            for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
+
+            if (m_SkinMeshRenderer)
             {
-                m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+                for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
+                {
+                    m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+                }
             }
+           
             RestartObject();
 
         }
