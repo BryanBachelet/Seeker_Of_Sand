@@ -68,6 +68,41 @@ MonoBehaviour:
     maskMode: 0
     materialMask: {fileID: 0}
   m_Version: 2
+--- !u!1 &52990012933413248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8453701081085852268}
+  m_Layer: 3
+  m_Name: DragonTree_Parent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8453701081085852268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52990012933413248}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 228364764594050372}
+  - {fileID: 5884438655177058444}
+  - {fileID: 2504302106667072542}
+  - {fileID: 4717220553831133115}
+  m_Father: {fileID: 6667183528753631163}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &104170908317277149
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,6 +884,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &684460137150309772
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5884438655177058444}
+  m_Layer: 3
+  m_Name: DragonTree
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5884438655177058444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684460137150309772}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1485356872535560161}
+  - {fileID: 2215747000715583937}
+  m_Father: {fileID: 8453701081085852268}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &717653413282542814
 GameObject:
   m_ObjectHideFlags: 0
@@ -1080,7 +1148,7 @@ GameObject:
   - component: {fileID: 1248652005327041952}
   - component: {fileID: 606687238064809898}
   m_Layer: 3
-  m_Name: Plane.004_1
+  m_Name: Dragon_Trunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1099,7 +1167,7 @@ Transform:
   m_LocalScale: {x: 7.492323, y: 7.492324, z: 14.722416}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6667183528753631163}
+  m_Father: {fileID: 5884438655177058444}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 71.967}
 --- !u!33 &3069060971644014843
 MeshFilter:
@@ -2264,7 +2332,7 @@ GameObject:
   - component: {fileID: 8759725236398849557}
   - component: {fileID: 8760537286294119211}
   m_Layer: 3
-  m_Name: Plane.003_2
+  m_Name: Dragon_Leaves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2278,12 +2346,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2268337795486571987}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.4066375, y: 0.57848597, z: 0.5784859, w: 0.40663734}
+  m_LocalRotation: {x: -0.40663752, y: 0.578486, z: 0.57848597, w: 0.40663737}
   m_LocalPosition: {x: 82.45079, y: 220.12482, z: 76.29415}
-  m_LocalScale: {x: 11.521898, y: 11.521901, z: 11.5218935}
+  m_LocalScale: {x: 11.521894, y: 11.521899, z: 11.521892}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6667183528753631163}
+  m_Father: {fileID: 5884438655177058444}
   m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 109.791}
 --- !u!33 &8759725236398849557
 MeshFilter:
@@ -4140,10 +4208,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.35910824, y: -0.014187223, z: -0.609132, w: 0.70696414}
   m_LocalPosition: {x: -175.2, y: 136.5, z: 117.7}
-  m_LocalScale: {x: 3.0684, y: 3.0684, z: 3.0684}
+  m_LocalScale: {x: 3.068399, y: 3.0683994, z: 3.0683994}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3646961382041366820}
+  m_Father: {fileID: 8453701081085852268}
   m_LocalEulerAnglesHint: {x: 29.371, y: -31.671, z: -90}
 --- !u!2083052967 &167180147460615278
 VisualEffect:
@@ -5022,8 +5090,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2504302106667072542}
-  - {fileID: 4717220553831133115}
   - {fileID: 8095527540587137413}
   - {fileID: 2495494261555107428}
   - {fileID: 5591925442080652778}
@@ -5164,7 +5230,7 @@ GameObject:
   - component: {fileID: 8525864070763335092}
   - component: {fileID: 406721824563491865}
   m_Layer: 3
-  m_Name: Plane.003_1
+  m_Name: Dragon_Leaves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5183,7 +5249,7 @@ Transform:
   m_LocalScale: {x: 7.0563226, y: 7.056322, z: 7.0563216}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6667183528753631163}
+  m_Father: {fileID: 228364764594050372}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8525864070763335092
 MeshFilter:
@@ -5238,6 +5304,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4916055722304854110
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 228364764594050372}
+  m_Layer: 3
+  m_Name: DragonTree 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &228364764594050372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916055722304854110}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7288419094868830453}
+  - {fileID: 2192474873539493333}
+  m_Father: {fileID: 8453701081085852268}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5141941696642639226
 GameObject:
   m_ObjectHideFlags: 0
@@ -6624,10 +6723,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.35910824, y: -0.014187223, z: -0.609132, w: 0.70696414}
   m_LocalPosition: {x: 58.6, y: 184.5, z: 87.7}
-  m_LocalScale: {x: 3.0684, y: 3.0684, z: 3.0684}
+  m_LocalScale: {x: 3.068399, y: 3.0683994, z: 3.0683994}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3646961382041366820}
+  m_Father: {fileID: 8453701081085852268}
   m_LocalEulerAnglesHint: {x: 29.371, y: -31.671, z: -90}
 --- !u!2083052967 &9156890148613510002
 VisualEffect:
@@ -7326,7 +7425,7 @@ GameObject:
   - component: {fileID: 2617181093109263836}
   - component: {fileID: 6965831603772554676}
   m_Layer: 3
-  m_Name: Plane.004_2
+  m_Name: Dragon_Trunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7345,7 +7444,7 @@ Transform:
   m_LocalScale: {x: 7.0563226, y: 7.056322, z: 7.0563216}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6667183528753631163}
+  m_Father: {fileID: 228364764594050372}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8456731675981439255
 MeshFilter:
@@ -8033,10 +8132,7 @@ Transform:
   - {fileID: 5507807266056808496}
   - {fileID: 5888628407711157970}
   - {fileID: 3828117685331480884}
-  - {fileID: 7288419094868830453}
-  - {fileID: 1485356872535560161}
-  - {fileID: 2192474873539493333}
-  - {fileID: 2215747000715583937}
+  - {fileID: 8453701081085852268}
   - {fileID: 1185098873106189569}
   - {fileID: 3401429092458091492}
   - {fileID: 604423132490194149}
