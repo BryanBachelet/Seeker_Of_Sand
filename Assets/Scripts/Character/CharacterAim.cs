@@ -24,6 +24,7 @@ namespace Character
         [SerializeField] private LayerMask m_aimLayer;
 
         [Header("Aim Feedback")]
+        public int distanceMinimumProjectorVisor = 1;
         public GameObject projectorVisorObject;
         [SerializeField] private Texture2D m_cursorTex;
         [SerializeField] private RectTransform m_cursor;
@@ -133,7 +134,16 @@ namespace Character
             m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetSpellProfil());
             m_aimDirection = (m_aimFinalPoint - transform.position).normalized;
             m_aimPointToPlayerDistance = (m_aimFinalPoint - transform.position).magnitude;
-            projectorVisorObject.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
+            if(m_aimPointToPlayerDistance < distanceMinimumProjectorVisor)
+            {
+                Vector3 newpos = new Vector3(m_aimFinalPoint.x, 0, m_aimFinalPoint.z) - new Vector3(transform.position.x, 0, transform.position.z);
+                newpos = newpos.normalized * distanceMinimumProjectorVisor;
+                projectorVisorObject.transform.position = this.transform.position + newpos + new Vector3(0, 5, 0);
+            }
+            else
+            {
+                projectorVisorObject.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
+            }
             projectorVisorObject.transform.LookAt(this.transform);
             m_aimInputPointUI = m_camera.WorldToScreenPoint(m_rawAimPoint);
             m_aimFinalPointUI = m_camera.WorldToScreenPoint(m_aimFinalPoint);

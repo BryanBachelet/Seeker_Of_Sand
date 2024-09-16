@@ -192,12 +192,12 @@ public class TerrainGenerator : MonoBehaviour
                 int indexReward = 0;
                 if (i > 0)
                 {
-                    indexReward = Random.Range(0, rewardList.Count - 1);
+                    indexReward = Random.Range(0, 1);
 
                 }
                 else
                 {
-                    indexReward = Random.Range(0, rewardList.Count - 2);
+                    indexReward = Random.Range(0, 3);
                 }
 
                 roomManager.rewardType = rewardList[indexReward];

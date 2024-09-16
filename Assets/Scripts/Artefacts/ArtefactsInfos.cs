@@ -44,18 +44,21 @@ public class ArtefactsInfos : ScriptableObject
 
     [HideInInspector] public int activationCount;
 
-
+    private int proc = 0;
+    private float lastTimeHit = 0;
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
         return clone;
     }
 
-    public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
+    public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre, GameElement element)
     {
 
         if (entitiesTrigger != tag) return;
-
+        if (element != gameElement && element != GameElement.NONE) return;
+        if (Time.time <= lastTimeHit + 0.1f) return;
+        lastTimeHit = Time.time;
         float change = Random.Range(0, 100.0f);
         if (change < spawnRate)
         {

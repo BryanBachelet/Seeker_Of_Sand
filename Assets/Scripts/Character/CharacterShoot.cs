@@ -98,7 +98,7 @@ namespace Character
         private CharacterSpellBook m_characterSpellBook;
         private CharacterDash m_characterDash;
 
-        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
+        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
         public event OnHit onHit = delegate { };
 
         [Header("UI Object")]
@@ -902,10 +902,10 @@ namespace Character
             return true;
         }
 
-        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent)
+        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent, GameElement element)
         {
 
-            onHit(position, tag, agent);
+            onHit(position, tag, agent, element);
         }
 
         private void StartShoot()

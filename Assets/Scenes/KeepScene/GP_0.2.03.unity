@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2206.3245, g: 2282.3723, b: 2957.76, a: 1}
+  m_IndirectSpecularColor: {r: 2189.2864, g: 2259.9417, b: 2904.51, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9482,9 +9482,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   cdAttack:
-  - 5
-  - Infinity
-  - Infinity
+  - 4
+  - 6
+  - 7
   tempsEcouleLastAttack:
   - 0
   - 0
@@ -51192,10 +51192,10 @@ VisualEffect:
       m_Array:
       - m_Value:
           serializedVersion: 2
-          key0: {r: 1.1353014, g: 0.112935744, b: 0.0416079, a: 0}
-          key1: {r: 0, g: 0.028734619, b: 0.21698111, a: 0.6901961}
-          key2: {r: 0.12550107, g: 0, b: 0.4716981, a: 0.5686275}
-          key3: {r: 0, g: 0, b: 0, a: 0}
+          key0: {r: 1.1353014, g: 0.112935744, b: 0.0416079, a: 0.44705883}
+          key1: {r: 0, g: 0.028734619, b: 0.21698111, a: 0}
+          key2: {r: 0.12550107, g: 0, b: 0.4716981, a: 0.6901961}
+          key3: {r: 0, g: 0, b: 0, a: 0.5686275}
           key4: {r: 0, g: 0, b: 0, a: 0}
           key5: {r: 0, g: 0, b: 0, a: 0}
           key6: {r: 0, g: 0, b: 0, a: 0}
@@ -51209,8 +51209,8 @@ VisualEffect:
           ctime6: 0
           ctime7: 0
           atime0: 0
-          atime1: 38743
-          atime2: 65535
+          atime1: 1157
+          atime2: 38743
           atime3: 65535
           atime4: 65535
           atime5: 65535
@@ -51219,7 +51219,7 @@ VisualEffect:
           m_Mode: 0
           m_ColorSpace: 1
           m_NumColorKeys: 3
-          m_NumAlphaKeys: 3
+          m_NumAlphaKeys: 4
         m_Name: Gradient 1
         m_Overridden: 1
     m_NamedObject:
@@ -63076,6 +63076,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5ea7935ee93fb6644b233001bd901135, type: 2}
   - {fileID: 11400000, guid: 21b2c4c04a0936a41a1837ff409fc95b, type: 2}
   - {fileID: 11400000, guid: 3fd15e55954cdcc4aaa3900c77cfa150, type: 2}
+  - {fileID: 11400000, guid: f2afebf86a9f9a24683ee2f8a7112993, type: 2}
   artefactPiedestalAnimator: []
   artefactHolder: []
   artefactMouvement:
@@ -92690,13 +92691,38 @@ PrefabInstance:
       objectReference: {fileID: 159058571}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
+      propertyPath: enemyCountCurve.m_Curve.Array.data[2].time
+      value: 4.489417
+      objectReference: {fileID: 0}
+    - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
+        type: 3}
+      propertyPath: enemyCountCurve.m_Curve.Array.data[3].time
+      value: 5.011125
+      objectReference: {fileID: 0}
+    - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
+        type: 3}
+      propertyPath: enemyCountCurve.m_Curve.Array.data[4].time
+      value: 6.835651
+      objectReference: {fileID: 0}
+    - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
+        type: 3}
+      propertyPath: enemyCountCurve.m_Curve.Array.data[5].time
+      value: 9.216004
+      objectReference: {fileID: 0}
+    - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
+        type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[6].time
-      value: 6
+      value: 12.272899
+      objectReference: {fileID: 0}
+    - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
+        type: 3}
+      propertyPath: enemyCountCurve.m_Curve.Array.data[7].time
+      value: 15.329792
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[8].time
-      value: 8
+      value: 21.398254
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
@@ -92706,37 +92732,37 @@ PrefabInstance:
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[2].value
-      value: 125.46604
+      value: 104.203186
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[3].value
-      value: 159.11003
+      value: 148.59235
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[4].value
-      value: 243.21999
+      value: 190.23584
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[5].value
-      value: 327.32996
+      value: 209.59418
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[6].value
-      value: 387.28253
+      value: 243.21999
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[7].value
-      value: 426.29565
+      value: 327.32996
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[8].value
-      value: 481.72922
+      value: 426.29565
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
@@ -92791,182 +92817,182 @@ PrefabInstance:
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[0].inSlope
-      value: 74.00007
+      value: 24.207603
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[1].inSlope
-      value: 61.864365
+      value: 22.296696
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[2].inSlope
-      value: 41.686325
+      value: 52.735043
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[3].inSlope
-      value: 58.876972
+      value: 53.954292
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[4].inSlope
-      value: 84.10996
+      value: 15.4784155
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[5].inSlope
-      value: 72.482414
+      value: 9.566269
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[6].inSlope
-      value: 49.93399
+      value: 19.257421
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[7].inSlope
-      value: 47.223343
+      value: 21.911526
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[8].inSlope
-      value: 34.683426
+      value: 13.827085
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[9].inSlope
-      value: 24.308334
+      value: 11.345964
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[0].outSlope
-      value: 74.00007
+      value: 24.207603
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[10].inSlope
-      value: 34.683456
+      value: 11.345985
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[11].inSlope
-      value: 17.341766
+      value: 5.673005
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[13].inSlope
-      value: 52.025116
+      value: 17.018955
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[14].inSlope
-      value: 52.025116
+      value: 17.018955
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[15].inSlope
-      value: 17.341736
+      value: 5.672995
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[16].inSlope
-      value: 52.025177
+      value: 17.018976
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[17].inSlope
-      value: 148.68079
+      value: 48.63784
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[18].inSlope
-      value: 227.99469
+      value: 74.58372
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[1].outSlope
-      value: 61.864365
+      value: 22.296696
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[2].outSlope
-      value: 41.686325
+      value: 52.735043
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[3].outSlope
-      value: 58.876972
+      value: 53.954292
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[4].outSlope
-      value: 84.10996
+      value: 15.4784155
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[5].outSlope
-      value: 72.482414
+      value: 9.566269
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[6].outSlope
-      value: 49.93399
+      value: 19.257421
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[7].outSlope
-      value: 47.223343
+      value: 21.911526
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[8].outSlope
-      value: 34.683426
+      value: 13.827085
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[9].outSlope
-      value: 24.308334
+      value: 11.345964
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[10].outSlope
-      value: 34.683456
+      value: 11.345985
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[11].outSlope
-      value: 17.341766
+      value: 5.673005
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[13].outSlope
-      value: 52.025116
+      value: 17.018955
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[14].outSlope
-      value: 52.025116
+      value: 17.018955
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[15].outSlope
-      value: 17.341736
+      value: 5.672995
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[16].outSlope
-      value: 52.025177
+      value: 17.018976
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[17].outSlope
-      value: 148.68079
+      value: 48.63784
       objectReference: {fileID: 0}
     - target: {fileID: 4079461155799853642, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
       propertyPath: enemyCountCurve.m_Curve.Array.data[18].outSlope
-      value: 227.99469
+      value: 74.58372
       objectReference: {fileID: 0}
     - target: {fileID: 4378672271349744173, guid: bd6e627a2cd7bb6459bf0658cbcc76db,
         type: 3}
@@ -107640,6 +107666,10 @@ PrefabInstance:
       propertyPath: m_cursor
       value: 
       objectReference: {fileID: 1280916430}
+    - target: {fileID: 1983534971, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
+      propertyPath: distanceMinimumProjectorVisor
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1983534982, guid: 209ed8e3012a4944d94dcdbb26abcfb5, type: 3}
       propertyPath: CanvasRect
       value: 

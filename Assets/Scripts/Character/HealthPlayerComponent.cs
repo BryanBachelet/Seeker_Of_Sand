@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
-
+using GuerhoubaGames.GameEnum;
 public struct AttackDamageInfo
 {
     public string attackName;
@@ -65,7 +65,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     public System.Action<AttackDamageInfo> OnDamage;
 
-    public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
+    public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
     public event OnContact OnContactEvent = delegate { };
 
 
@@ -321,7 +321,7 @@ public class HealthPlayerComponent : MonoBehaviour
     { 
         if (collision.collider.tag == "Enemy")
         {
-            OnContactEvent(collision.transform.position, EntitiesTrigger.Enemies, collision.gameObject);
+            OnContactEvent(collision.transform.position, EntitiesTrigger.Enemies, collision.gameObject, GameElement.NONE);
         }
     }
 

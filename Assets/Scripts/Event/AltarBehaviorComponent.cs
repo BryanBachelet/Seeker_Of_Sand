@@ -86,7 +86,7 @@ public class AltarBehaviorComponent : InteractionInterface
     public GameObject punkeleton;
 
     private int m_idSpellReward;
-    private int m_enemiesCountConditionToWin = 0;
+    public int m_enemiesCountConditionToWin = 0;
     public Sprite instructionImage;
     private InteractionEvent m_interactionEvent;
     private GameObject[] punketon = new GameObject[0];
@@ -103,6 +103,8 @@ public class AltarBehaviorComponent : InteractionInterface
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
     public bool hasBeenActivate = false;
+
+
     #endregion Variable
 
     #region Unity Functions
@@ -301,7 +303,7 @@ public class AltarBehaviorComponent : InteractionInterface
         m_interactionEvent = GameState.s_playerGo.GetComponent<InteractionEvent>();
 
 
-        m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
+        //m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
         m_enemyManager.ActiveEvent(transform);
 
         m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
