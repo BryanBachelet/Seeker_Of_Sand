@@ -103,7 +103,7 @@ public class AltarBehaviorComponent : InteractionInterface
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
     public bool hasBeenActivate = false;
-
+    private selection_Feedback m_selectionFeedback;
 
     #endregion Variable
 
@@ -215,6 +215,7 @@ public class AltarBehaviorComponent : InteractionInterface
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_questMarker = GetComponent<QuestMarker>();
         m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
+        m_selectionFeedback = this.GetComponent<selection_Feedback>();
     }
 
 
@@ -310,19 +311,20 @@ public class AltarBehaviorComponent : InteractionInterface
         progression = 0;
 
         m_myAnimator.SetBool("ActiveEvent", true);
-
+        m_selectionFeedback.ChangeLayerToDefault();
         if (resetNumber == 0)
         {
             m_myAnimator.SetTrigger("Activation");
         }
-        if (resetNumber >= 0)
+        int nightCount = m_enemyManager.m_dayController.m_nightCount;
+        if (nightCount >= 0)
         {
-            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[resetNumber], transform.position, transform.rotation);
+            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[nightCount], transform.position, transform.rotation);
             lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
         }
 
 
-        SetMeshesEventIntensity(0.33f * (resetNumber + 1));
+        SetMeshesEventIntensity(0.33f * (1 + 1));
         m_visualEffectActivation.Play();
 
         GlobalSoundManager.PlayOneShot(13, transform.position);

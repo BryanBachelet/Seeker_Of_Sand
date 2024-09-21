@@ -69,12 +69,17 @@ namespace Character
         public Vector3 v3Ref;
 
         public VisualEffect vfxCast;
+        public GameObject gameObject_vfxCastEnd;
+        public VisualEffect vfxCastEnd;
+
+        public Vector3 lastRawPosition;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
+            vfxCastEnd = gameObject_vfxCastEnd.GetComponentInChildren<VisualEffect>();
         }
 
 
@@ -134,17 +139,19 @@ namespace Character
             m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetSpellProfil());
             m_aimDirection = (m_aimFinalPoint - transform.position).normalized;
             m_aimPointToPlayerDistance = (m_aimFinalPoint - transform.position).magnitude;
-            if(m_aimPointToPlayerDistance < distanceMinimumProjectorVisor)
-            {
+            //if(m_aimPointToPlayerDistance < distanceMinimumProjectorVisor)
+            //{
                 Vector3 newpos = new Vector3(m_aimFinalPoint.x, 0, m_aimFinalPoint.z) - new Vector3(transform.position.x, 0, transform.position.z);
                 newpos = newpos.normalized * distanceMinimumProjectorVisor;
                 projectorVisorObject.transform.position = this.transform.position + newpos + new Vector3(0, 5, 0);
-            }
-            else
-            {
-                projectorVisorObject.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
-            }
+            //}
+            //else
+            //{
+               lastRawPosition =  m_rawAimPoint + new Vector3(0, 5, 0);
+            gameObject_vfxCastEnd.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
+            //}
             projectorVisorObject.transform.LookAt(this.transform);
+            gameObject_vfxCastEnd.transform.LookAt(this.transform);
             m_aimInputPointUI = m_camera.WorldToScreenPoint(m_rawAimPoint);
             m_aimFinalPointUI = m_camera.WorldToScreenPoint(m_aimFinalPoint);
 

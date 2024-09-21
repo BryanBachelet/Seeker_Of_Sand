@@ -69,7 +69,7 @@ namespace Enemies
         [SerializeField] private float m_minimumSpeedToRepositing = 30.0f;
         private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private Transform m_enemyHolder;
-
+        [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
@@ -119,7 +119,7 @@ namespace Enemies
         private int repositionningCount;
 
 
-        private DayCyclecontroller m_dayController;
+        public DayCyclecontroller m_dayController;
         private float m_timeOfGame;
 
         private SerieController m_serieController;
@@ -994,6 +994,21 @@ namespace Enemies
                 m_pullingSystem.ResetEnemyNavMesh(npcHealth.gameObject, type);
             }
             //m_enemiesArray.Clear();
+        }
+
+        public bool GenerateDissonance()
+        {
+            bool canSpawnDissonance = false;
+            int randomNumber = Random.Range(0, 100);
+            if(randomNumber < enemyGenerateDissonanceProba.Evaluate(m_enemiesArray.Count))
+            {
+                canSpawnDissonance = true;
+            }
+            else
+            {
+                canSpawnDissonance = false;
+            }
+            return canSpawnDissonance;
         }
     }
 

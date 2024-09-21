@@ -171,6 +171,7 @@ namespace SpellSystem
         public GameObject VFX;
         public Material matToUse;
         public Texture previewDecal_mat;
+        public Texture previewDecalEnd_mat;
 
         [HideInInspector] public int level;
         [Header("Tag Parameters")]

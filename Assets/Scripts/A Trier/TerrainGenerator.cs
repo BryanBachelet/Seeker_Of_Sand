@@ -39,6 +39,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public RoomInfoUI roomInfoUI;
     public DayCyclecontroller dayController;
+    private int lastNightCount = -1;
 
     private List<RewardType> rewardList = new List<RewardType>();
     private List<RoomType> roomTypeList = new List<RoomType>();
@@ -130,7 +131,7 @@ public class TerrainGenerator : MonoBehaviour
         GuerhoubaTools.LogSystem.LogMsg("The next hour is " + dayController.GetNextHour().ToString());
 
 
-        
+
         if (dayController.IsNextRoomIsDay() && !isHealthBossRoom)
         {
             GameObject newTerrain;
@@ -158,13 +159,29 @@ public class TerrainGenerator : MonoBehaviour
         {
 
             int indexRoomType = 0;
-            if (roomGeneration_Static < 10) { indexRoomType = Random.Range(0, 2); }
+            //if (roomGeneration_Static < 10) { indexRoomType = Random.Range(0, 2); }
             //else { indexRoomType = Random.Range(0, roomTypeList.Count); }
+            indexRoomType = Random.Range(0, roomTypeList.Count);
+            if (!player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
+            {
+                while(roomTypeList[indexRoomType] == RoomType.Merchant)
+                {
+                    indexRoomType = Random.Range(0, roomTypeList.Count);
+                }
+            }
             GameObject newTerrain;
             isHealthBossRoom = false;
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
-                newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                if(player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
+                {
+                    newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                }
+                else
+                {
+                    int randomTerrain = Random.Range(1, poolNumber);
+                    newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                }
 
             }
             else
@@ -189,17 +206,20 @@ public class TerrainGenerator : MonoBehaviour
             }
             else
             {
-                int indexReward = 0;
-                if (i > 0)
-                {
-                    indexReward = Random.Range(0, 1);
-
+                int indexReward = -1;
+                if (lastNightCount != dayController.m_nightCount) 
+                { 
+                    lastNightCount = dayController.m_nightCount;
+                    indexReward = 1;
                 }
-                else
+                if(indexReward < 0)
                 {
-                    indexReward = Random.Range(0, 3);
+                    indexReward = Random.Range(0, 2);
                 }
-
+                //if( indexReward == 3)
+                //    do
+                //    indexReward = Random.Range(1, 2);
+                //    while (indexReward == 3) ;
                 roomManager.rewardType = rewardList[indexReward];
                 roomManager.isTimingPassing = true;
             }
@@ -211,8 +231,8 @@ public class TerrainGenerator : MonoBehaviour
             StartCoroutine(roomManager.RoomDeactivation(3));
             //newTerrain.SetActive(false);
         }
-        
-  //      AssociateNewReward(selectedTerrainNumber);
+
+        //      AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
         roomGeneration_Static = countRoomGeneration;
     }
