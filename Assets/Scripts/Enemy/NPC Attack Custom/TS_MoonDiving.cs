@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 
 
 namespace Enemies
@@ -126,7 +126,10 @@ namespace Enemies
         private void LaunchAttack(int index)
         {
             // 1. TP Boss
+            NavMeshAgent navMeshAgent = customAttackData.npcAttacksComp.GetComponent<NavMeshAgent>();
+            navMeshAgent.Warp(divePosition[index]);
             // 2. Do Damage
+
 
             if (Vector3.Distance(divePosition[index], customAttackData.targetTransform.position) < attackRadius)
             {
