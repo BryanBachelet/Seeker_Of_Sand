@@ -46,8 +46,32 @@ MonoBehaviour:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
   agent: {fileID: 0}
-  description: 
+  description: P1
   indexAttack: 0
+--- !u!114 &-8677697688344046990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f11d61436ef9ae418db7dd1fcc6e7f7, type: 3}
+  m_Name: HasAttackCooldownEnd
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 88c3888ce66a9a943a21863d9b39aa76
+  position: {x: -861.0002, y: 266.00003}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  child: {fileID: -304767382010580570}
+  indexAttack: 7
+  onlyOneTest: 1
 --- !u!114 &-7705588941842072156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,12 +109,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: e271577190a9daa46a86c4bcb2ddebbb
-  position: {x: -532, y: 488.5}
+  position: {x: -531.9999, y: 484.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
   agent: {fileID: 0}
-  description: 
+  description: Moon Diving
   indexAttack: 6
 --- !u!114 &-7317426530478169139
 MonoBehaviour:
@@ -221,7 +245,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 6c857c60e70b2fe439e56c244546cb7c
-  position: {x: 689.9999, y: 308.99997}
+  position: {x: 672, y: 312.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -250,7 +274,9 @@ MonoBehaviour:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
   agent: {fileID: 0}
-  description: 
+  description: 'Moon Dive
+
+'
   children:
   - {fileID: -2311334584214465990}
 --- !u!114 &-2432397558991779811
@@ -290,7 +316,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 19c229cfe81d37d4dbfddf7f94c0a311
-  position: {x: -557.1376, y: 266.00006}
+  position: {x: -555.4792, y: 266}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -321,6 +347,53 @@ MonoBehaviour:
   agent: {fileID: 0}
   description: 
   indexAttack: 5
+--- !u!114 &-383088173993341019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7db9ee69f758ec47b1b299b37a5654a, type: 3}
+  m_Name: SequenceNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 9fccf45b0d3f55d49be9d338dc9249ae
+  position: {x: -810, y: 104}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  children:
+  - {fileID: -8677697688344046990}
+--- !u!114 &-304767382010580570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4024657c2a1ce034b90e79afb8c91e0d, type: 3}
+  m_Name: IsAttackRange
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 0b1ff82b67b504644a5750fad8a42023
+  position: {x: -848, y: 406}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: 
+  child: {fileID: 4177927872347871350}
+  indexAttack: 7
+  onlyOneTest: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,6 +428,10 @@ MonoBehaviour:
   - {fileID: -2311334584214465990}
   - {fileID: -6205412196828322526}
   - {fileID: -7571904020327448352}
+  - {fileID: -383088173993341019}
+  - {fileID: 4177927872347871350}
+  - {fileID: -8677697688344046990}
+  - {fileID: -304767382010580570}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -406,6 +483,28 @@ MonoBehaviour:
   children:
   - {fileID: -4210430472047641599}
   - {fileID: -1572864394776814728}
+--- !u!114 &4177927872347871350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 691056a065759a54c86d442dcec985f7, type: 3}
+  m_Name: Attack
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: ddc1243b52e8d224487f440d86693518
+  position: {x: -847.9002, y: 543.00006}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+  agent: {fileID: 0}
+  description: Auto Attack
+  indexAttack: 7
 --- !u!114 &4240057106597385042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,6 +527,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   description: 
   children:
+  - {fileID: -383088173993341019}
   - {fileID: -2913249690341376842}
   - {fileID: -8997434871762541015}
   - {fileID: 3894827462998791773}

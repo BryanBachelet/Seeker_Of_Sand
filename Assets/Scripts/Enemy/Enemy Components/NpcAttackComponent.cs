@@ -85,6 +85,8 @@ namespace Enemies
             for (int i = 0; i < attackEnemiesObjectsArr.Length; i++)
             {
                 AttackEnemiesObject currObj = attackEnemiesObjectsArr[i];
+                if (currObj.data.customAttack != null) continue;
+
                 if (currObj.data.typeAttack == AttackType.COLLIDER_OBJ)
                 {
                     currObj.data.indexCollider = countCloseAttack;
@@ -179,7 +181,7 @@ namespace Enemies
         {
             OnContactAttack?.Invoke();
             currentAttackState = AttackPhase.CONTACT;
-
+            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
             // Custom Attack Section
             if (currentAttackData.customAttack != null)
             {
@@ -204,7 +206,7 @@ namespace Enemies
             }
 
             m_timer = 0.0f;
-            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
+            
 
         }
 
@@ -300,6 +302,8 @@ namespace Enemies
             if (currentAttackData.isFollowTarget || m_timer < currentAttackData.rotationTime)
             {
                 m_mouvementComponent.DirectRotateToTarget();
+                Rigidbody rb = GetComponent<Rigidbody>();
+                rb.angularVelocity = Vector3.zero;
             }
             else
             {
@@ -312,6 +316,8 @@ namespace Enemies
                     nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
                     nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
 
+                    Rigidbody rb = GetComponent<Rigidbody>();
+                    rb.angularVelocity = Vector3.zero;
                     currentAttackData.attackMovement.StartMvt(nPCMoveAttData);
 
                     if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)

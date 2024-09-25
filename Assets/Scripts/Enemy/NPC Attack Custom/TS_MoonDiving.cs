@@ -20,6 +20,10 @@ namespace Enemies
         public float timeBetweenDive;
         private float m_timerBetweenDive;
 
+        [Tooltip("Time to recover after the attack")]
+        public float recoverAttackTime;
+        private float m_recoverAttackTimer;
+
         private int m_currentDiveCount;
         private int m_diveStartCount;
 
@@ -35,18 +39,15 @@ namespace Enemies
             m_diveStartCount = 0;
             m_currentDiveCount = 0;
             m_attackDoneCount = 0;
+            m_recoverAttackTimer = 0;
 
         }
 
-        public override void ActivePrepPhase()
-        {
-            base.ActivePrepPhase();
-        }
 
-        public override bool UpdatePrepPhase()
+        public override void ActiveContactPhase()
         {
-            return true;
-
+            customAttackData.npcAttacksComp.GetComponent<NpcMouvementComponent>().StopMouvement();
+            customAttackData.npcAttacksComp.GetComponent<NpcMetaInfos>().state = NpcState.ATTACK;
         }
 
         public override bool UpdateContactPhase()
@@ -57,6 +58,21 @@ namespace Enemies
 
             if (m_attackDoneCount == diveNumber) return true;
             return false;
+
+        }
+
+        public override bool UpdateRecoverPhase()
+        {
+            if (m_recoverAttackTimer > recoverAttackTime)
+            {
+                m_recoverAttackTimer = 0.0f;
+                return true;
+            }
+            else
+            {
+                m_recoverAttackTimer += Time.deltaTime;
+                return false;
+            }
 
         }
 
@@ -80,7 +96,7 @@ namespace Enemies
             m_timerBetweenDive = 0.0f;
             m_currentDiveCount++;
             // Determine attack
-            divePosition[m_diveStartCount] = CalculateAttackPosition();
+            divePosition[m_diveStartCount] = CalculateAttackPosition(m_diveStartCount);
             // Spanw Decal and store position
             AttackInfoData attackDamageInfo = new AttackInfoData();
             attackDamageInfo.duration = prepDiveDuration;
@@ -113,16 +129,18 @@ namespace Enemies
 
             }
         }
-        
-        private Vector3 CalculateAttackPosition()
+
+        private Vector3 CalculateAttackPosition(int tpCount)
         {
             Vector3 playerPosition = customAttackData.targetTransform.position;
 
-            Debug.Log("Attack Prediction position of Moon divin not implement");
+            Character.CharacterMouvement characterMouvement = customAttackData.targetTransform.GetComponent<Character.CharacterMouvement>();
+            Vector3 playerDirection = characterMouvement.currentDirection;
+            if((tpCount % 2) == 0)  playerPosition += playerDirection.normalized * 10;
 
             return playerPosition;
         }
-        
+
         private void LaunchAttack(int index)
         {
             // 1. TP Boss
