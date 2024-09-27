@@ -15,10 +15,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 06180beea0f505241a05b63fe1014eb4
-  position: {x: 160.63795, y: 196.50009}
+  position: {x: 591.00006, y: 192.50002}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   children:
@@ -41,10 +43,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 6d19861ce4e157b4b93cd1b9f08351e9
-  position: {x: -101.362, y: 636.5001}
+  position: {x: 329.00006, y: 632.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: P1
   indexAttack: 0
@@ -63,10 +67,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 88c3888ce66a9a943a21863d9b39aa76
-  position: {x: -861.0002, y: 266.00003}
+  position: {x: -334.80814, y: 348.99997}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: -304767382010580570}
@@ -87,10 +93,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 41edf7d8e9607ca48b4796a56ea16968
-  position: {x: 100.63814, y: 636.5001}
+  position: {x: 531.0001, y: 632.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   indexAttack: 1
@@ -109,10 +117,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: e271577190a9daa46a86c4bcb2ddebbb
-  position: {x: -531.9999, y: 484.5}
+  position: {x: -5.808075, y: 568}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: Moon Diving
   indexAttack: 6
@@ -131,15 +141,67 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 2b3846a77f338e94aa9646b782bbfd09
-  position: {x: -101.362, y: 518.50006}
+  position: {x: 329.00006, y: 514.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: -8877925340540580670}
   indexAttack: 0
   onlyOneTest: 1
+--- !u!114 &-6282672055888649220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a921377af40b6d74e9583db9c2c44291, type: 3}
+  m_Name: CanLaunchSpecialCapacity
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: de3bbe06842fbdd4cb93b795f9adc8f5
+  position: {x: -685.09753, y: 302.50003}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  child: {fileID: -2884813232986764488}
+  indexCapacitySpecial: 0
+--- !u!114 &-6268612710634227846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7db9ee69f758ec47b1b299b37a5654a, type: 3}
+  m_Name: SequenceNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 0aea430e9e4127542a752c5d72526a98
+  position: {x: -644.6775, y: 171.99997}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  children:
+  - {fileID: -6282672055888649220}
 --- !u!114 &-6205412196828322526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,10 +217,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 58638ac128cc5a34fa49c9818c03e61e
-  position: {x: -532, y: 374}
+  position: {x: -5.808075, y: 457.00006}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: -7571904020327448352}
@@ -183,6 +247,8 @@ MonoBehaviour:
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   stopDistance: 0
@@ -201,10 +267,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 98bfd9c183626614cb0c31bf11a81197
-  position: {x: 704, y: 543}
+  position: {x: 1150.7703, y: 537.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   indexAttack: 4
@@ -223,10 +291,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: cbec1fd38b0265248ae657a49165deea
-  position: {x: 340.32907, y: 636.99994}
+  position: {x: 770.0001, y: 632.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   indexAttack: 2
@@ -245,10 +315,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 6c857c60e70b2fe439e56c244546cb7c
-  position: {x: 672, y: 312.5}
+  position: {x: 1118.7704, y: 307.49994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: 2070113507211042239}
@@ -269,16 +341,42 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 8d2a8bec9a780b9449aaa7cb38377e3f
-  position: {x: -470.1377, y: 117.00005}
+  position: {x: 56.191895, y: 200.00002}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 'Moon Dive
 
 '
   children:
   - {fileID: -2311334584214465990}
+--- !u!114 &-2884813232986764488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2383ea28a81150b40972083d420a9e3e, type: 3}
+  m_Name: ActivateSpecialCapacity
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 0e3fc1da651ae90408436329e8fa70b7
+  position: {x: -674.0001, y: 442}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  indexCapacitySpecial: 0
 --- !u!114 &-2432397558991779811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,6 +396,8 @@ MonoBehaviour:
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: 4240057106597385042}
@@ -316,10 +416,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 19c229cfe81d37d4dbfddf7f94c0a311
-  position: {x: -555.4792, y: 266}
+  position: {x: -28.808075, y: 348.99997}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: -6205412196828322526}
@@ -340,10 +442,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 38c7fb7a9d2d1b04582c9385624784f4
-  position: {x: 929.0002, y: 543}
+  position: {x: 1375.7703, y: 537.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   indexAttack: 5
@@ -362,10 +466,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 9fccf45b0d3f55d49be9d338dc9249ae
-  position: {x: -810, y: 104}
+  position: {x: -283.80814, y: 187.00003}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   children:
@@ -385,10 +491,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 0b1ff82b67b504644a5750fad8a42023
-  position: {x: -848, y: 406}
+  position: {x: -321.80807, y: 488.99994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: 4177927872347871350}
@@ -432,9 +540,14 @@ MonoBehaviour:
   - {fileID: 4177927872347871350}
   - {fileID: -8677697688344046990}
   - {fileID: -304767382010580570}
+  - {fileID: -2884813232986764488}
+  - {fileID: -6268612710634227846}
+  - {fileID: -6282672055888649220}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
 --- !u!114 &2070113507211042239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,10 +563,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 2ed53ace9c7a83047b93c6cb09cef2d4
-  position: {x: 704, y: 430}
+  position: {x: 1150.7703, y: 424.49994}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: -4691635691742498013}
@@ -474,10 +589,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 4c2fee678a6b26b4da3b1113ccc62197
-  position: {x: 854, y: 150.50005}
+  position: {x: 1300.7703, y: 145.49995}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   children:
@@ -498,10 +615,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: ddc1243b52e8d224487f440d86693518
-  position: {x: -847.9002, y: 543.00006}
+  position: {x: -321.80807, y: 626}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: Auto Attack
   indexAttack: 7
@@ -524,9 +643,12 @@ MonoBehaviour:
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   children:
+  - {fileID: -6268612710634227846}
   - {fileID: -383088173993341019}
   - {fileID: -2913249690341376842}
   - {fileID: -8997434871762541015}
@@ -547,10 +669,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: d0e036c46db5d2043abf50723442a711
-  position: {x: -119.80007, y: 345.00003}
+  position: {x: 310.00012, y: 340.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   child: {fileID: -7317426530478169139}
@@ -571,10 +695,12 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: c6e33f107b4d3b24c9be5d628a7fed04
-  position: {x: 521.63794, y: 636.5001}
+  position: {x: 952, y: 632.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
   indexAttack: 3

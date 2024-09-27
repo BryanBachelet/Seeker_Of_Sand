@@ -92,6 +92,8 @@ GameObject:
   - component: {fileID: 5630804304538944160}
   - component: {fileID: 5779616590622647222}
   - component: {fileID: 553454839458569544}
+  - component: {fileID: 461640954189689231}
+  - component: {fileID: 3108002389149068764}
   m_Layer: 6
   m_Name: Mini-Boss
   m_TagString: Enemy
@@ -559,6 +561,7 @@ MonoBehaviour:
   type: 5
   state: 0
   attackComponent: {fileID: 7558812344738510730}
+  specialCapacities: {fileID: 0}
   moveComponent: {fileID: 0}
   manager: {fileID: 0}
   behaviorTreeComponent: {fileID: 0}
@@ -757,6 +760,35 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &461640954189689231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e379c52ee3e5e974383a88739c5d2b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  specialCapacities:
+  - {fileID: 3108002389149068764}
+--- !u!114 &3108002389149068764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4be348be51e2064d89387167100540f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ringGO: {fileID: 1558127246603317473, guid: be6f13495c591a548b186794760cfa56, type: 3}
+  centerPosition: {fileID: 0}
+  radius: 200
 --- !u!1 &2843630899504991280
 GameObject:
   m_ObjectHideFlags: 0

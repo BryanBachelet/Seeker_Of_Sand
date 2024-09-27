@@ -5,26 +5,53 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class TS_RingSkill : MonoBehaviour
+    public class TS_RingSkill : SpecialCapacity
     {
         [Header("Ring Object Parameters")]
         public GameObject ringGO;
+        private GameObject ringInstance;
+        public Transform centerPosition;
 
         private Vector3 centerRing;
 
         [Header("Ring Stats Parameters")]
         public float radius = 200;
-        
+        public float skillLaunchDuration = 1;
+        private float m_skillLaunchDuration = 0.0f;
+
+        [Space] public bool activeDebug;
+            
+        private bool canBeLaunch;
+        private NpcSpecialCapacities m_specialCapacities;
+        private NpcHealthComponent m_npcHealthComponent;
+        private GameObject playerGO;
+
+        #region Unity Functions
+
+        public void Start()
+        {
+            m_specialCapacities = GetComponent<NpcSpecialCapacities>();
+            m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            playerGO = m_npcHealthComponent.targetData.target.gameObject;
+        }
 
         // Update is called once per frame
         void Update()
         {
-
+            UpdateRingSkill();
         }
+
+        #endregion
+
 
         public void ActiveRingSkill()
         {
-            ringGO.transform.position = new Vector3(centerRing.x, centerRing.y, centerRing.z);
+            SetPositionRing();
+            if (ringInstance == null)
+            {
+                ringInstance = Instantiate(ringGO, Vector3.zero,Quaternion.identity);
+            }
+            ringInstance.transform.position = new Vector3(centerRing.x, centerRing.y, centerRing.z);
         }
 
         private void SetPositionRing()
@@ -34,7 +61,42 @@ namespace Enemies
 
         public void UpdateRingSkill()
         {
+            if (Vector3.Distance(playerGO.transform.position, centerRing) > radius)
+            {
+                Debug.Break();
+               // Trigger Teleport;
+            }
+        }
 
+        public override void ActivateSkill()
+        {
+            Debug.Log("ActivateSkill");
+            canBeLaunch = false;
+            ActiveRingSkill();
+        }
+
+        public override void UpdateSkill(float deltaTime)
+        {
+            if (m_skillLaunchDuration > skillLaunchDuration)
+            {
+                m_skillLaunchDuration = 0;
+                m_specialCapacities.OnFinish.Invoke(true);
+            }
+            else
+            {
+                m_skillLaunchDuration += deltaTime;
+            }
+
+        }
+
+        public override bool CanLaunchSkill()
+        {
+            return canBeLaunch;
+        }
+
+        public void OnDrawGizmosSelected()
+        {
+            if(activeDebug) Gizmos.DrawWireSphere(centerRing, radius);
         }
     }
 }

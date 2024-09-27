@@ -8,6 +8,8 @@ using GuerhoubaGames.AI;
 
 namespace Enemies
 {
+
+
     public class NpcAttackComponent : MonoBehaviour
     {
         [Header("Attack Objects")]

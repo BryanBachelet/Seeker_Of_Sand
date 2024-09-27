@@ -14,6 +14,7 @@ namespace Enemies
         ATTACK,
         PREP_ATTACK,
         RECUPERATION,
+        SPECIAL_CAPACITIES,
         DEATH,
         PAUSE,
     }
@@ -25,6 +26,7 @@ namespace Enemies
         public EnemyType type;
         public NpcState state;
         public NpcAttackComponent attackComponent;
+        public NpcSpecialCapacities specialCapacities;
         private NpcHealthComponent m_healthComponent;
         [HideInInspector] public NpcMouvementComponent moveComponent;
         [HideInInspector] public EnemyManager manager;
@@ -37,6 +39,7 @@ namespace Enemies
             m_healthComponent = GetComponent<NpcHealthComponent>();
             moveComponent = GetComponent<NpcMouvementComponent>();
             attackComponent = GetComponent<NpcAttackComponent>();
+            specialCapacities = GetComponent<NpcSpecialCapacities>();
             behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
         }
 
