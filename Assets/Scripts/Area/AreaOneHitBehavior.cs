@@ -27,6 +27,9 @@ namespace SpellSystem
         public bool isDebugActive;
         public Color color;
         [Range(0, 1)] public float transparency = 0.5f;
+
+        public bool asPreviewDecal;
+        public Texture2D previewDecal;
         private SpellProfil profil;
         void Start()
         {
@@ -85,12 +88,16 @@ namespace SpellSystem
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
                 Vector3 direction = collider[i].transform.position - transform.position;
 
-                m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject);
+                m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, m_element);
                 DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
                 npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
             }
         }
 
+        public Texture2D ReturnDecalPreview()
+        {
+            return previewDecal;
+        }
         public void OnDrawGizmos()
         {
             if (!isDebugActive) return;

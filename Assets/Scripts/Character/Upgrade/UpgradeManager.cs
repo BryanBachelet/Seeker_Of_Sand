@@ -49,7 +49,7 @@ public class UpgradeManager : MonoBehaviour
 
     private UpgradeData.UpgradeTable m_upgradeData = new UpgradeData.UpgradeTable();
 
-    public void Start()
+    public void Awake()
     {
 
         upgradeSort = new UpgradeData.UpgradeSort();

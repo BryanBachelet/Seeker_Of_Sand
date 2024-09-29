@@ -40,6 +40,8 @@ namespace GuerhoubaGames.AI
                 if (onlyOneTest && state == State.RUNNING)
                 {
                     isLock = true;
+                    blackboard.IsSpecialCapacityCall = false;
+                    blackboard.indexSpecialCapacityCall = -1;
                 }
 
                 return state;

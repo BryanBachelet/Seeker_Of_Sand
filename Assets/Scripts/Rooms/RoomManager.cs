@@ -31,7 +31,7 @@ public class RoomManager : MonoBehaviour
     public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
 
-    private Enemies.EnemyManager m_enemyManager;
+    public Enemies.EnemyManager m_enemyManager;
     public bool isRoomHasBeenValidate = true;
     private bool isTeleporterActive = true;
     private Chosereward choserewardRef;
@@ -61,7 +61,7 @@ public class RoomManager : MonoBehaviour
 
     private bool rewardGenerated = false;
 
-
+    public BossRoom bossRoom;
     public bool isRoomHasBeenDeactivated;
 
     private DateTime m_startRoomChallengeTime;
@@ -72,6 +72,8 @@ public class RoomManager : MonoBehaviour
     private bool m_isStartActivation = false;
     private bool m_isDistanceActivationDone = false;
 
+    private Character.CharacterUpgrade m_characterUpgrade;
+
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -80,11 +82,16 @@ public class RoomManager : MonoBehaviour
         isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
         playerGO = GameObject.Find("Player");
+
         if (playerRewardDistribution == null)
         {
 
             playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
+        }
+        if(m_characterUpgrade == null)
+        {
+            m_characterUpgrade = playerGO.GetComponent<Character.CharacterUpgrade>();
         }
 
 
@@ -205,7 +212,9 @@ public class RoomManager : MonoBehaviour
                 if (obj != null)
                 {
                     obj.ResetAltar();
-                    obj.roomInfoUI = roomInfoUI; ;
+                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
+                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                   obj.roomInfoUI = roomInfoUI; ;
                 }
 
                 break;
@@ -214,6 +223,12 @@ public class RoomManager : MonoBehaviour
               
                 int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                 enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
+                enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                break;
+            case RoomType.Boss:
+                DeactivateAltar();
+
+                
                 break;
             default:
                 break;

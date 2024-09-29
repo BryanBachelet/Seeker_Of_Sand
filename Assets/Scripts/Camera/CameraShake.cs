@@ -7,10 +7,10 @@ namespace Render.Camera
     public class CameraShake : CameraEffect
     {
 
-        [Range(0, 1.0f)] [SerializeField] private float m_shakeAmount = 0.5f;
-        [Range(0, 180.0f)] [SerializeField] private float m_shakeYaw = 5f;
-        [Range(0, 180.0f)] [SerializeField] private float m_shakeRoll = 5f;
-        [Range(0, 180.0f)] [SerializeField] private float m_shakePitch = 5f;
+        [Range(0, 0.1f)] [SerializeField] private float m_shakeAmount = 0.1f;
+        [Range(10, 180.0f)] [SerializeField] private float m_shakeYaw = 5f;
+        [Range(10, 180.0f)] [SerializeField] private float m_shakeRoll = 5f;
+        [Range(10, 180.0f)] [SerializeField] private float m_shakePitch = 5f;
         [SerializeField] private float m_shakeOffsetX = 5f;
         [SerializeField] private float m_shakeOffsetY = 5f;
         [SerializeField] private float m_shakeOffsetZ = 5f;

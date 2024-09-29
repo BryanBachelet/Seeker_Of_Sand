@@ -7,6 +7,7 @@ using GuerhoubaGames.GameEnum;
 public class CristalInventory : MonoBehaviour
 {
     public int[] cristalCount = new int[4];
+    public bool hasEnoughCristalToSpawn = false;
 
     private GuerhoubaGames.UI.CristalUI m_cristalUI;
 
@@ -26,12 +27,28 @@ public class CristalInventory : MonoBehaviour
     {
         cristalCount[cristalType-1] += cristalNumberAdd;
         m_cristalUI.UpdateUICristal(cristalCount[cristalType - 1], cristalType-1);
+        hasEnoughCristalToSpawn = false;
+        for (int i = 0; i < cristalCount.Length; i++)
+        {
+            if (cristalCount[i] > 25)
+            {
+                hasEnoughCristalToSpawn = true;
+            }
+        }
     }
     
     public void RemoveCristalCount(int cristalType, int cristalNumberAdd)
     {
         cristalCount[cristalType-1] += cristalNumberAdd;
         m_cristalUI.UpdateUICristal(cristalCount[cristalType-1], cristalType);
+        hasEnoughCristalToSpawn = false;
+        for (int i = 0; i < cristalCount.Length; i++)
+        {
+            if(cristalCount[i] > 25)
+            {
+                hasEnoughCristalToSpawn = true;
+            }
+        }
     }
 
     public bool HasEnoughCristal(int value,GameElement element)

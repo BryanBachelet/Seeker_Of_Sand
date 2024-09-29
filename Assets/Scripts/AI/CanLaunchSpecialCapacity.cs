@@ -43,7 +43,6 @@ namespace GuerhoubaGames.AI
                 }
 
                 return state;
-
             }
             else
             {

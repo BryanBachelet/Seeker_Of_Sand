@@ -18,6 +18,7 @@ namespace GuerhoubaGames.GameEnum
         Enemy = 1,
         Free = 2,
         Merchant = 3,
+        Boss =4,
     }
 
     public enum RewardType

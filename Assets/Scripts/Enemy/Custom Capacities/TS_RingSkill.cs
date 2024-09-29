@@ -21,9 +21,10 @@ namespace Enemies
 
         [Space] public bool activeDebug;
             
-        private bool canBeLaunch;
+        private bool canBeLaunch =true;
         private NpcSpecialCapacities m_specialCapacities;
         private NpcHealthComponent m_npcHealthComponent;
+        private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
 
         #region Unity Functions
@@ -32,6 +33,7 @@ namespace Enemies
         {
             m_specialCapacities = GetComponent<NpcSpecialCapacities>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
             playerGO = m_npcHealthComponent.targetData.target.gameObject;
         }
 
@@ -61,9 +63,12 @@ namespace Enemies
 
         public void UpdateRingSkill()
         {
+            if (canBeLaunch) return;
+
             if (Vector3.Distance(playerGO.transform.position, centerRing) > radius)
             {
-                Debug.Break();
+                canBeLaunch = true;
+                m_specialCapacities.TriggerSpecialCapacityBehavior(indexSpecialCapacity);
                // Trigger Teleport;
             }
         }

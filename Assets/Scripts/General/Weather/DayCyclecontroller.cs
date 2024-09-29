@@ -73,6 +73,7 @@ public class DayCyclecontroller : MonoBehaviour
     public bool menuMovement = false;
 
     public bool timeByGeneration = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -135,10 +136,12 @@ public class DayCyclecontroller : MonoBehaviour
     {
         float alpha = m_timeOfDay / 24.0f;
         float sunRotation = Mathf.Lerp(-90, 270, alpha);
+
+            Debug.Log(sunRotation);
         float moonRotation = sunRotation - 180;
 
-        m_sun.transform.rotation = Quaternion.Euler(sunRotation, -150.0f, 0);
-        m_moon.transform.rotation = Quaternion.Euler(moonRotation, -150.0f, 0);
+        m_sun.transform.rotation = Quaternion.Euler(sunRotation, -130, 0);
+        m_moon.transform.rotation = Quaternion.Euler(moonRotation, -130, 0);
 
         AdjustPostProcessByHour(m_timeOfDay);
         //UpdatePostProcess();

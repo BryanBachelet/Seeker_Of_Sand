@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexEnemy: 3
-  m_maxLife: 100
+  maxLife: 0
   gainPerMinute: 1
   spawnMinute: 0
   m_vfxHitFeedback: {fileID: 2575186347912425037, guid: 69a1bec963035b943bda3a2bfb1f638f,
@@ -741,7 +741,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1897375566322654638}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -758,7 +758,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &461640954189689231
 MonoBehaviour:
@@ -786,9 +786,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4be348be51e2064d89387167100540f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  indexSpecialCapacity: 0
   ringGO: {fileID: 1558127246603317473, guid: be6f13495c591a548b186794760cfa56, type: 3}
   centerPosition: {fileID: 0}
   radius: 200
+  skillLaunchDuration: 1
+  activeDebug: 0
 --- !u!1 &2843630899504991280
 GameObject:
   m_ObjectHideFlags: 0

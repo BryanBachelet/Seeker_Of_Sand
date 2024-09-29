@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GuerhoubaGames.AI;
 
 namespace Enemies
 {
     [System.Serializable]
     public class SpecialCapacity : MonoBehaviour
     {
+        public int indexSpecialCapacity;
         public virtual void ActivateSkill()
         {
 
@@ -34,16 +36,19 @@ namespace Enemies
         private bool isLaunchingSpecialCapacity;
 
         private NpcMetaInfos m_npcMetaInfos;
+        private BehaviorTreeComponent m_behaviorTreeComponent;
 
         public void Awake()
         {
             m_npcMetaInfos = GetComponent<NpcMetaInfos>();
+            m_behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
         }
 
         public void ActivateSpecialCapacity(int index)
         {
             m_npcMetaInfos.state = NpcState.SPECIAL_CAPACITIES;
             specialCapacities[index].ActivateSkill();
+            specialCapacities[index].indexSpecialCapacity = index;
             currentSpecialCapacityIndex = index;
             isLaunchingSpecialCapacity = true;
             OnFinish += ResetSpecialCapacity;
@@ -54,6 +59,13 @@ namespace Enemies
             if (!isLaunchingSpecialCapacity) return;
             specialCapacities[currentSpecialCapacityIndex].UpdateSkill(Time.deltaTime);
 
+        }
+
+
+        public void TriggerSpecialCapacityBehavior(int index)
+        {
+            m_behaviorTreeComponent.behaviorTree.blackboard.IsSpecialCapacityCall = true;
+            m_behaviorTreeComponent.behaviorTree.blackboard.indexSpecialCapacityCall = index;
         }
 
         public void ResetSpecialCapacity(bool isFinish)

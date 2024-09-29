@@ -214,7 +214,7 @@ public class Projectile : MonoBehaviour
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
@@ -246,7 +246,7 @@ public class Projectile : MonoBehaviour
         {
             Punketone enemyTouch = other.GetComponent<Punketone>();
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
 
             enemyTouch.currentHP -= m_damage;
 
@@ -263,7 +263,7 @@ public class Projectile : MonoBehaviour
         {
             dummy enemyTouch = other.GetComponent<dummy>();
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject);
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
             enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power, -1);
 
             enemyTouch.currentHP -= m_damage;

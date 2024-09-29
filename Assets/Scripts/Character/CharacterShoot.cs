@@ -98,7 +98,7 @@ namespace Character
         private CharacterSpellBook m_characterSpellBook;
         private CharacterDash m_characterDash;
 
-        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
+        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
         public event OnHit onHit = delegate { };
 
         [Header("UI Object")]
@@ -122,6 +122,12 @@ namespace Character
 
         public int specifiqueSpellStart = 0;
         public bool chooseBuild = false;
+
+        public Texture currentPreviewDecalTexture; // Inspector, set texture named "box"
+        public Texture currentPreviewDecalEndTexture; // Inspector, set texture named "box"
+
+        private Texture m_initialPreviewDecal;
+        public Gradient[] gradientDecalElement;
         public enum CanalisationBarType
         {
             ByPart,
@@ -161,12 +167,15 @@ namespace Character
 
         private CharacterSummonManager m_characterSummmonManager;
 
+
+
         #region Unity Functions
 
         private void Awake()
         {
             m_spellCouroutine = new Coroutine[100];
             currentManaValue = manaMax;
+            m_initialPreviewDecal = currentPreviewDecalTexture;
         }
 
 
@@ -485,6 +494,9 @@ namespace Character
             //m_activeSpellLoad = true;
             m_deltaTimeFrame = Time.deltaTime;
             hasStartShoot = true;
+            currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+            currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+            ChangeDecalTexture(currentSpellProfil.tagData.element);
             //m_totalCanalisationDuration = currentSpellProfil.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
 
             //if (m_canalisationType == CanalisationBarType.ByPart)
@@ -530,6 +542,9 @@ namespace Character
             if (highCanalisationTest)
             {
                 m_CharacterMouvement.m_SpeedReduce = currentSpellProfil.GetFloatStat(StatType.SpeedReduce);
+                currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+                currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+                ChangeDecalTexture(currentSpellProfil.tagData.element);
             }
             else
             {
@@ -539,7 +554,9 @@ namespace Character
             if (highCanalisationTest || currentSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION)
             {
 
-
+                currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+                currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+                ChangeDecalTexture(currentSpellProfil.tagData.element);
                 if (m_spellTimer >= currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
                 {
                     m_activeSpellLoad = false;
@@ -571,6 +588,8 @@ namespace Character
         {
             float ratio = m_spellTimer / maxValue;
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             if (lastElementToUse != null)
             {
                 lastElementToUse.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 2, ratio);
@@ -711,7 +730,7 @@ namespace Character
 
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.projectorVisorObject.transform.position, rot);
+            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
 
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
@@ -723,7 +742,7 @@ namespace Character
                 areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
             }
 
-            SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+            SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
             areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
 
             return true;
@@ -752,7 +771,7 @@ namespace Character
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
-                    position = m_characterAim.projectorVisorObject.transform.position + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
+                    position = m_characterAim.lastRawPosition + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
                     rot = m_characterAim.GetTransformHead().rotation; ;
                 }
 
@@ -767,7 +786,7 @@ namespace Character
 
                 if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
                 {
-                    SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+                    SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
                     projectileCreate.GetComponent<SpellSystem.AreaMeta>().areaData = data;
 
                 }
@@ -784,6 +803,8 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.ByPart)
             {
                 m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+                m_characterAim.vfxCast.SetFloat("Progress", ratio);
+                m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             }
             if (m_currentStack[m_currentRotationIndex] <= 0)
             {
@@ -835,7 +856,7 @@ namespace Character
             Vector3 positionToSpawn = transform.position;
             if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
             {
-                positionToSpawn = m_characterAim.projectorVisorObject.transform.position;
+                positionToSpawn = m_characterAim.lastRawPosition;
             }
 
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
@@ -849,7 +870,7 @@ namespace Character
 
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
             {
-                SpellSystem.AreaData dataArea = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+                SpellSystem.AreaData dataArea = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
                 summonInstance.GetComponent<SpellSystem.AreaMeta>().areaData = dataArea;
 
             }
@@ -884,10 +905,10 @@ namespace Character
             return true;
         }
 
-        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent)
+        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent, GameElement element)
         {
 
-            onHit(position, tag, agent);
+            onHit(position, tag, agent, element);
         }
 
         private void StartShoot()
@@ -908,7 +929,9 @@ namespace Character
 
             currentShotNumber = 0;
 
-
+            ChangeDecalTexture(GameElement.NONE);
+            m_characterAim.vfxCast.SetFloat("Progress", 0);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
             m_spellTimer = 0.0f;
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
@@ -941,6 +964,8 @@ namespace Character
 
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / GetMaxStack(currentSpellProfil));
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             m_uiPlayerInfos.DeactiveSpellCanalisation();
 
             m_deltaTimeFrame = UnityEngine.Time.deltaTime;
@@ -1063,6 +1088,8 @@ namespace Character
             }
 
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
         }
 
         #endregion
@@ -1434,8 +1461,40 @@ namespace Character
                 vfxUISign[spellProfils.Count - 1].SendEvent("OnStop");
             }
         }
+        public Gradient SetDecalColor(GameElement gameElement)
+        {
+            Gradient color = gradientDecalElement[0];
+            switch(gameElement)
+            {
+                case GameElement.NONE:
+                    color = gradientDecalElement[0];
+                    break;
+                case GameElement.AIR:
+                    color = gradientDecalElement[2];
+                    break;
+                case GameElement.EARTH:
+                    color = gradientDecalElement[4];
+                    break;
+                case GameElement.FIRE:
+                    color = gradientDecalElement[3];
+                    break;
+                case GameElement.WATER:
+                    color = gradientDecalElement[1];
+                    break;
+            }
+            return color;
+        }
 
+        public void ChangeDecalTexture(GameElement element)
+        {
+            //currentPreviewDecalTexture = m_initialPreviewDecal;
+            m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
+            m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(element));
+            m_characterAim.vfxCastEnd.SetTexture("Symbol", currentPreviewDecalEndTexture);
+            m_characterAim.vfxCastEnd.SetGradient("Gradient 1", SetDecalColor(element));
+        }
     }
+
 
 
 
