@@ -16,7 +16,7 @@ namespace Enemies
         public float speed = 5;
         public float speedThreshold = 1;
         [HideInInspector] public bool isSlow;
-        public Transform  baseTransform;
+        public Transform baseTransform;
         private float m_baseSpeed;
         private float m_currentSpeed;
 
@@ -47,10 +47,15 @@ namespace Enemies
 
         public TargetData targetData;
         public bool isDebugActive = false;
-        
+
         [HideInInspector] public bool isGoingAway;
         [HideInInspector] public float awayDistance;
         private Vector3 fleePosition;
+
+        [Header("Custom Movement Parameters")]
+        public bool hasCustomMovement;
+        public NpcCustomMouvement customMouvement;
+        private bool isFirstTimeCustomMove = true;
 
         public void Start()
         {
@@ -103,8 +108,34 @@ namespace Enemies
 
             if (m_npcInfo.state == NpcState.MOVE)
             {
-              
-                if(isGoingAway)
+                if (hasCustomMovement)
+                {
+                    if (isFirstTimeCustomMove)
+                    {
+                        CustomMovementData customMovementData = new CustomMovementData();
+                        customMovementData.agent = m_navMeshAgent;
+                        customMovementData.m_speedMax = speed;
+                        customMovementData.m_transform = transform;
+                        customMouvement.SetupMove(customMovementData);
+                        isFirstTimeCustomMove = false;
+                    }
+                    NavMeshPath path;
+
+                    if (isGoingAway)
+                    {
+                        ComputeFleePosition();
+                        path = MovePath(fleePosition);
+                    }
+                    else
+                    {
+                        path = MoveTargetPath();
+                    }
+
+                    customMouvement.Move(path);
+                    return;
+                }
+
+                if (isGoingAway)
                 {
                     if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
                     if (isAffectedBySlope)
@@ -118,7 +149,7 @@ namespace Enemies
                         if (isSlow) m_navMeshAgent.speed *= slowSpeed;
                     }
 
-                    if(IsOutsideRange(awayDistance) && !IsFacingTarget())
+                    if (IsOutsideRange(awayDistance) && !IsFacingTarget())
                     {
                         RotateToTarget();
                     }
@@ -128,7 +159,7 @@ namespace Enemies
                     Move(fleePosition);
                     return;
                 }
-    
+
                 if (!IsInRange())
                 {
                     if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
@@ -149,20 +180,21 @@ namespace Enemies
                 }
                 else
                 {
-                    
+
                     m_navMeshAgent.isStopped = true;
                     m_navMeshAgent.velocity = Vector3.zero;
                     m_rigidbody.velocity = Vector3.zero;
+                    isFirstTimeCustomMove = true;
                 }
 
-                
+
             }
 
         }
 
         public void ComputeFleePosition(bool isDirect = false)
         {
-            if(isDirect)
+            if (isDirect)
             {
                 fleePosition = targetData.target.position + (baseTransform.position - targetData.target.position).normalized * awayDistance;
                 return;
@@ -173,28 +205,29 @@ namespace Enemies
                 Vector3 tempPosition = targetData.target.position + (baseTransform.position - targetData.target.position).normalized * awayDistance;
                 fleePosition = tempPosition;
             }
-            
+
         }
 
         public void StopMouvement()
         {
-                   m_navMeshAgent.isStopped = true;
-                    m_navMeshAgent.velocity = Vector3.zero;
-                    m_rigidbody.velocity = Vector3.zero;
+
+            m_navMeshAgent.isStopped = true;
+            m_navMeshAgent.velocity = Vector3.zero;
+            m_rigidbody.velocity = Vector3.zero;
         }
 
         public bool IsInRange()
         {
-                float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
+            float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
 
-            return distance  < minTargetDistance;
+            return distance < minTargetDistance;
         }
 
         public bool IsOutsideRange(float outRange)
         {
             float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
-           
-            if (outRange - distance < 0.5f) 
+
+            if (outRange - distance < 0.5f)
                 distance = outRange;
 
             return distance >= outRange;
@@ -203,7 +236,7 @@ namespace Enemies
         public bool IsFacingTarget()
         {
             Vector3 tarDir = targetData.target.position - baseTransform.position;
-            float angle = Vector3.SignedAngle(baseTransform.forward, tarDir,Vector3.up);
+            float angle = Vector3.SignedAngle(baseTransform.forward, tarDir, Vector3.up);
             angle = Mathf.Abs(angle);
 
             return angle < facingAngle;
@@ -220,10 +253,10 @@ namespace Enemies
             if (Mathf.Abs(angle) < minAngleToFace)
             {
                 baseTransform.rotation = Quaternion.Euler(baseTransform.rotation.eulerAngles.x, worldAngle, baseTransform.rotation.eulerAngles.z);
-            } 
+            }
             else
             {
-                baseTransform.rotation *= Quaternion.Euler(0, Mathf.Sign(angle)* 360 * Time.deltaTime, 0);
+                baseTransform.rotation *= Quaternion.Euler(0, Mathf.Sign(angle) * 360 * Time.deltaTime, 0);
             }
 
         }
@@ -315,7 +348,7 @@ namespace Enemies
                     {
                         if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
                         {
-                            if(isDebugActive) Debug.Log(name + "is not on the navMesh");
+                            if (isDebugActive) Debug.Log(name + "is not on the navMesh");
                             m_navMeshAgent.Warp(hit.position);
                         }
                     }
@@ -347,6 +380,57 @@ namespace Enemies
             }
         }
 
+        public NavMeshPath MovePath(Vector3 position)
+        {
+            NavMeshPath path = new NavMeshPath();
+            m_navMeshAgent.enabled = true;
+            if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(position);
+            if (!m_navMeshAgent.hasPath)
+            {
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(position, out hit, 100.0f, NavMesh.AllAreas))
+                {
+
+                    if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.CalculatePath(hit.position, path);
+                    else
+                    {
+                        if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
+                        {
+                            if (isDebugActive) Debug.Log(name + "is not on the navMesh");
+                            // m_navMeshAgent.Warp(hit.position);
+                        }
+                    }
+                }
+            }
+            return path;
+        }
+
+        public NavMeshPath MoveTargetPath()
+        {
+            NavMeshPath path = new NavMeshPath();
+            m_navMeshAgent.enabled = true;
+            if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.CalculatePath(targetData.target.position, path);
+            if (!m_navMeshAgent.hasPath)
+            {
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(targetData.target.position, out hit, 100.0f, NavMesh.AllAreas))
+                {
+
+                    if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.CalculatePath(hit.position, path);
+                    else
+                    {
+                        if (NavMesh.SamplePosition(transform.position, out hit, 100.0f, NavMesh.AllAreas))
+                        {
+                            if (isDebugActive) Debug.Log(name + "is not on the navMesh");
+                            m_navMeshAgent.Warp(hit.position);
+                        }
+                    }
+                }
+            }
+            return path;
+        }
+
+
 
         public void OnDeath(Vector3 direction, float power)
         {
@@ -358,7 +442,7 @@ namespace Enemies
 
                 m_rigidbody.isKinematic = false;
                 m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
-             
+
             }
 
             this.enabled = false;
@@ -374,7 +458,7 @@ namespace Enemies
 
         public void OnDrawGizmosSelected()
         {
-         
+
         }
     }
 }

@@ -131,6 +131,11 @@ namespace Enemies
                 currentAttackData.customAttack.customAttackData = FillCustomAttackData(currentAttackData, currentAttackIndex);
                 currentAttackData.customAttack.ResetAttack();
                 currentAttackData.customAttack.ActivePrepPhase();
+                if (currentAttackData.isStopMovingAtPrep)
+                {
+                    m_mouvementComponent.StopMouvement();
+                    m_npcMetaInfos.state = NpcState.ATTACK;
+                }
 
                 return;
             }
@@ -187,6 +192,12 @@ namespace Enemies
             // Custom Attack Section
             if (currentAttackData.customAttack != null)
             {
+                if (currentAttackData.isStopMovingAtPrep)
+                {
+                    m_mouvementComponent.StopMouvement();
+                    m_npcMetaInfos.state = NpcState.ATTACK;
+                }
+
                 currentAttackData.customAttack.ActiveContactPhase();
 
                 return;
@@ -220,6 +231,12 @@ namespace Enemies
             // Custom Attack Section
             if (currentAttackData.customAttack != null)
             {
+                if (currentAttackData.isStopMovingAtPrep)
+                {
+                    m_mouvementComponent.StopMouvement();
+                    m_npcMetaInfos.state = NpcState.ATTACK;
+                }
+
                 currentAttackData.customAttack.ActiveRecoverPhase();
 
                 return;

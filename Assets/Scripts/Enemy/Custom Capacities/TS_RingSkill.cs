@@ -24,6 +24,7 @@ namespace Enemies
         private bool canBeLaunch =true;
         private NpcSpecialCapacities m_specialCapacities;
         private NpcHealthComponent m_npcHealthComponent;
+        private NpcMetaInfos m_npcMetaInfo;
         private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
 
@@ -33,6 +34,7 @@ namespace Enemies
         {
             m_specialCapacities = GetComponent<NpcSpecialCapacities>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_npcMetaInfo = GetComponent<NpcMetaInfos>();
             m_behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
             playerGO = m_npcHealthComponent.targetData.target.gameObject;
         }
@@ -41,6 +43,10 @@ namespace Enemies
         void Update()
         {
             UpdateRingSkill();
+            if(m_npcMetaInfo.state == NpcState.DEATH)
+            {
+                Destroy(ringInstance);
+            }
         }
 
         #endregion
@@ -65,12 +71,16 @@ namespace Enemies
         {
             if (canBeLaunch) return;
 
+            Vector3 pos = playerGO.transform.position;
+            pos.y = centerRing.y;
             if (Vector3.Distance(playerGO.transform.position, centerRing) > radius)
             {
                 canBeLaunch = true;
                 m_specialCapacities.TriggerSpecialCapacityBehavior(indexSpecialCapacity);
-               // Trigger Teleport;
+                // Trigger Teleport;
+                Destroy(ringInstance);
             }
+
         }
 
         public override void ActivateSkill()
