@@ -1,3 +1,4 @@
+using GuerhoubaGames.AI;
 using GuerhoubaGames.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,19 +15,29 @@ public class BossRoom : MonoBehaviour
 
     // Boss components 
    private Enemies.NpcHealthComponent m_bossHealth;
-
+    private BossCamera bossCamera;
     public void Start()
     {
         enemyManager = roomManager.m_enemyManager;
         roomInfoUI = roomManager.roomInfoUI;
-      
+        bossCamera = GetComponent<BossCamera>();
     }
 
     public void SpawnBossInstance()
     {
+        GameState.ChangeState();
         GameObject bossInstance = enemyManager.SpawnBoss(centerTransform.position, Enemies.EnemyType.TWILIGHT_SISTER);
+        DayCyclecontroller dayCyclecontroller = enemyManager.m_dayController;
         m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
-        m_bossHealth.SetupLife(bossLife);
+        m_bossHealth.SetupLife(bossLife + dayCyclecontroller.m_nightCount *bossLife);
+        bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
+        bossCamera.StartCamera(Camera.main,bossInstance.transform);
+
+    }
+
+    public void LaunchBoss()
+    {
+        GameState.ChangeState();
         roomInfoUI.ActiveMajorGoalInterface();
     }
 

@@ -12,7 +12,8 @@ namespace GuerhoubaGames.AI
         #region Mono Functions
         public void Update()
         {
-            if(isActivate) behaviorTree.Update();
+            if(isActivate) 
+                behaviorTree.Update();
         }
         #endregion
 

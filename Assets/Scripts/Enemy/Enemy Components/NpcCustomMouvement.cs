@@ -34,6 +34,11 @@ namespace Enemies
 
         }
 
+        public virtual bool CanStopMoving()
+        {
+            return false;
+        }
+
 
     }
 }
