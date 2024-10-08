@@ -263,5 +263,10 @@ namespace Enemies
         {
             return m_healthSystem.health;
         }
+
+        public float GetCurrentLifePercent()
+        {
+            return m_healthSystem.percentHealth;
+        }
     }
 }

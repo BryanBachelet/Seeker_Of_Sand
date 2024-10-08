@@ -9,9 +9,9 @@ public class NPCEnemiAnimation : MonoBehaviour
     public string closeNameTrigger = "Close";
     public Animator m_animator;
 
-    public void CallAnimPrepAttack()
+    public void CallAnimPrepAttack(int index)
     {
-        m_animator.SetTrigger(prepAttackNameTrigger);
+        m_animator.SetTrigger(prepAttackNameTrigger + index.ToString());
         Debug.Log("Call anim attack");
     }
     public void CallAnimPrepAttackByIndex(int index)
@@ -20,17 +20,17 @@ public class NPCEnemiAnimation : MonoBehaviour
         Debug.Log("Call anim attack");
     }
 
-    public void ResetAnimAttack()
+    public void ResetAnimAttack(int index)
     {
-        m_animator.ResetTrigger(prepAttackNameTrigger);
+        m_animator.ResetTrigger(prepAttackNameTrigger + index.ToString());
     }
 
-    public void CallCloseAnimation()
+    public void CallCloseAnimation(int index)
     {
         m_animator.SetBool(closeNameTrigger, true);
     }
 
-    public void ResetCloseAnimation()
+    public void ResetCloseAnimation(int index)
     {
         m_animator.SetBool(closeNameTrigger, false);
     }

@@ -28,6 +28,7 @@ namespace Enemies
         private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
         private VisualEffect ringVFX;
+        private bool activeRingIntensity;
         #region Unity Functions
 
         public void Start()
@@ -46,6 +47,18 @@ namespace Enemies
             if(m_npcMetaInfo.state == NpcState.DEATH)
             {
                 Destroy(ringInstance);
+            }
+            else 
+            {
+                if(m_npcHealthComponent.GetCurrentLifePercent() < 0.25f && !activeRingIntensity && ringInstance != null)
+                {
+                    activeRingIntensity = true;
+                    VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
+                    for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
+                    {
+                        ringInstanceVFXIntensity[i].SetInt("IntensityFactor", 4);
+                    }
+                }
             }
         }
 
