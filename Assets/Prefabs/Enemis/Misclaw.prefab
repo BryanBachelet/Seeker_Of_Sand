@@ -217,7 +217,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3294013781257085869}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 985a98bfef0e8f345a49128c3ba0a772, type: 2}
   m_CullingMode: 0
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexEnemy: 3
-  m_maxLife: 15
+  maxLife: 0
   gainPerMinute: 1
   spawnMinute: 0
   m_vfxHitFeedback: {fileID: 2575186347912425037, guid: 69a1bec963035b943bda3a2bfb1f638f,
@@ -576,6 +576,8 @@ MonoBehaviour:
   isDebugActive: 0
   isGoingAway: 0
   awayDistance: 0
+  hasCustomMovement: 0
+  customMouvement: {fileID: 0}
 --- !u!114 &-9025062962692320421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,6 +624,7 @@ MonoBehaviour:
   type: 4
   state: 0
   attackComponent: {fileID: 0}
+  specialCapacities: {fileID: 0}
   moveComponent: {fileID: 0}
   manager: {fileID: 0}
   behaviorTreeComponent: {fileID: 0}
@@ -852,6 +855,7 @@ MonoBehaviour:
   isHeavyAttack: 0
   ActiveDebug: 0
   attackName: 
+  angleOfAttack: 180
 --- !u!1 &8291774482455464969
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,6 +927,7 @@ MonoBehaviour:
   isHeavyAttack: 0
   ActiveDebug: 0
   attackName: 
+  angleOfAttack: 180
 --- !u!1001 &130639036238493464
 PrefabInstance:
   m_ObjectHideFlags: 0

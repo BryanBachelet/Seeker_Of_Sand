@@ -5,12 +5,18 @@ using UnityEngine;
 public class NPCEnemiAnimation : MonoBehaviour
 {
     public string prepAttackNameTrigger = "Attacking";
+    public List<int> indexAttackTrigger = new List<int>();
     public string closeNameTrigger = "Close";
     public Animator m_animator;
 
     public void CallAnimPrepAttack()
     {
         m_animator.SetTrigger(prepAttackNameTrigger);
+        Debug.Log("Call anim attack");
+    }
+    public void CallAnimPrepAttackByIndex(int index)
+    {
+        m_animator.SetTrigger(prepAttackNameTrigger + index);
         Debug.Log("Call anim attack");
     }
 

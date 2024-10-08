@@ -45,6 +45,11 @@ namespace Enemies
         public Action OnRecoverAttack;
         public Action<bool> OnFinishAttack;
 
+        public List<Action> list_OnPrepAttack = new List<Action>();
+        public List<Action> list_OnContactAttack = new List<Action>();
+        public List<Action> list_OnRecoverAttack = new List<Action>();
+        public List<Action<bool>> list_OnFinishAttack = new List<Action<bool>>();
+
         public bool variantePrecision = false;
         public float rangeVariante = 1;
         #region MonoBehavior Functions
@@ -60,6 +65,15 @@ namespace Enemies
             {
                 OnPrepAttack += m_NPCEnemiAnimation.CallCloseAnimation;
                 OnPrepAttack += m_NPCEnemiAnimation.CallAnimPrepAttack;
+                //for(int i = 0; i < attackEnemiesObjectsArr.Length; i++)
+                //{
+                //    OnPrepAttack closeAnim += m_NPCEnemiAnimation.CallCloseAnimation;
+                //    list_OnPrepAttack.Add(closeAnim);
+                //    list_OnPrepAttack[i] += m_NPCEnemiAnimation.CallAnimPrepAttack;
+                //
+                //    list_OnRecoverAttack[i] += m_NPCEnemiAnimation.ResetAnimAttack;
+                //    list_OnRecoverAttack[i] += m_NPCEnemiAnimation.ResetCloseAnimation;
+                //}
 
 
                 OnRecoverAttack += m_NPCEnemiAnimation.ResetAnimAttack;
@@ -121,6 +135,7 @@ namespace Enemies
         public void ActivePrepationAttack(int index)
         {
             OnPrepAttack?.Invoke();
+            //list_OnPrepAttack[index]?.Invoke();
             currentAttackState = AttackPhase.PREP;
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;

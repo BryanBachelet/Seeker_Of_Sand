@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 553454839458569544}
   - component: {fileID: 461640954189689231}
   - component: {fileID: 3108002389149068764}
+  - component: {fileID: 8639129744682881334}
   m_Layer: 6
   m_Name: Mini-Boss
   m_TagString: Enemy
@@ -795,6 +796,22 @@ MonoBehaviour:
   radius: 200
   skillLaunchDuration: 1
   activeDebug: 0
+--- !u!114 &8639129744682881334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3657c5f2f321a242ac3287edee5371a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prepAttackNameTrigger: Attacking_
+  indexAttackTrigger: 0000000000000000000000000000000000000000000000000000000007000000
+  closeNameTrigger: Close
+  m_animator: {fileID: 1090285314931375831}
 --- !u!1 &2843630899504991280
 GameObject:
   m_ObjectHideFlags: 0
@@ -1468,6 +1485,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39172c26fa0df604eb629cf60268346c, type: 3}
+--- !u!95 &1090285314931375831 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2828462607602111284, guid: 39172c26fa0df604eb629cf60268346c,
+    type: 3}
+  m_PrefabInstance: {fileID: 2909834943709736419}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7322872029357675338 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5603003748412849833, guid: 39172c26fa0df604eb629cf60268346c,
