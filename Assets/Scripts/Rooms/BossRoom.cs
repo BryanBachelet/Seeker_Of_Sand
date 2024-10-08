@@ -9,7 +9,7 @@ public class BossRoom : MonoBehaviour
     public Transform centerTransform;
     public RoomManager roomManager;
     private GameObject m_bossInstance;
-    private Enemies.EnemyManager enemyManager;
+    [HideInInspector] public Enemies.EnemyManager enemyManager;
     public int bossLife = 200;
     [HideInInspector] public RoomInfoUI roomInfoUI;
 

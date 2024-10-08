@@ -19,7 +19,7 @@ public class BossCamera : MonoBehaviour
     private float halfTimer;
     private BossRoom BossRoom;
     private Transform targetCam;
-
+    private bool activeMusique = false;
     public void StartCamera(Camera cameraPara, Transform target)
     {
         BossRoom = GetComponent<BossRoom>();
@@ -37,7 +37,7 @@ public class BossCamera : MonoBehaviour
     public void Update()
     {
         if (!isActive) return;
-
+        if (!activeMusique) BossRoom.roomManager.m_enemyManager.gsm.UpdateParameter(2.5f, "Intensity"); activeMusique = true;
         camera.transform.LookAt(targetCam);
         if (timer < timeP1)
         {

@@ -835,7 +835,7 @@ namespace Enemies
             {
                 //gsm.globalMusicInstance.setParameterByName("Repos", 0);
                //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(3, "Intensity", 13, 1,"TransitionIntensity"));
-                gsm.UpdateParameter(3, "Intensity");
+                gsm.UpdateParameter(1.5f, "Intensity");
                 StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
                 m_enemyIcon.color = colorSignUI[0];
                 m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;

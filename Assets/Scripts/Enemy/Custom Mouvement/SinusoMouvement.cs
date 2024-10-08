@@ -36,7 +36,7 @@ namespace Enemies.Movement
                 if (distance > stopDistance + m_agent.stoppingDistance)
                     m_agent.Move(offsetPosition);
                 else
-                    Debug.Break();
+                    //Debug.Break();
 
                 return;
             }
