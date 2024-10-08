@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -27,7 +27,7 @@ namespace Enemies
         private NpcMetaInfos m_npcMetaInfo;
         private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
-
+        private VisualEffect ringVFX;
         #region Unity Functions
 
         public void Start()
@@ -58,6 +58,9 @@ namespace Enemies
             if (ringInstance == null)
             {
                 ringInstance = Instantiate(ringGO, Vector3.zero,Quaternion.identity);
+                ringVFX = ringInstance.GetComponentInChildren<VisualEffect>();
+                ringVFX.SetFloat("Radius", radius * 2);
+                ringVFX.gameObject.transform.position = new Vector3(0, 0 - radius, 0);
             }
             ringInstance.transform.position = new Vector3(centerRing.x, centerRing.y, centerRing.z);
         }
