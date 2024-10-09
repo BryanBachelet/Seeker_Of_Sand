@@ -26,6 +26,8 @@ namespace Enemies.Movement
             {
                 m_path = path;
             }
+
+            if (m_path == null) return;
             m_lastPosition = m_path.corners[m_path.corners.Length - 1];
             Vector3 offsetPosition = Vector3.zero;
             float distance = Vector3.Distance(m_transform.position, m_lastPosition);

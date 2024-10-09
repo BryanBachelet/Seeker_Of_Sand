@@ -19,9 +19,11 @@ namespace GuerhoubaGames.AI
 
         public void Init()
         {
-            isActivate = true; 
+            if (isActivate) return;
+
             behaviorTree = behaviorTree.CloneTree();
             behaviorTree.BindTree(GetComponent<Enemies.NpcMetaInfos>());
+            isActivate = true; 
         }
     }
 }
