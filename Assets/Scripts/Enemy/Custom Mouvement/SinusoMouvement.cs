@@ -27,7 +27,7 @@ namespace Enemies.Movement
                 m_path = path;
             }
 
-            if (m_path == null) return;
+            if (m_path == null || m_path.corners.Length == 0) return;
             m_lastPosition = m_path.corners[m_path.corners.Length - 1];
             Vector3 offsetPosition = Vector3.zero;
             float distance = Vector3.Distance(m_transform.position, m_lastPosition);
@@ -44,7 +44,7 @@ namespace Enemies.Movement
             }
 
 
-            float sin = Mathf.Sin(frequence * m_timeMoving);
+            float sin = Mathf.Sin( 1 +  frequence * m_timeMoving);
             float sign = Mathf.Sign(sin);
             sin = sin * sign;
             sin = Mathf.Clamp(sin, -1.0f, 1.0f);

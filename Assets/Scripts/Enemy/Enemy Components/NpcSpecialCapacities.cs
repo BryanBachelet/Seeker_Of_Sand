@@ -43,6 +43,7 @@ namespace Enemies
         public void Awake()
         {
             m_npcMetaInfos = GetComponent<NpcMetaInfos>();
+            m_npcAttackComponent = GetComponent<NpcAttackComponent>();
             m_behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
         }
 
