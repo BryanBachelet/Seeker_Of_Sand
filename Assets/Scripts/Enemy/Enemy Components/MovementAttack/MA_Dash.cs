@@ -81,7 +81,7 @@ namespace Enemies
                 while (!hasFoundNavMesh && indexMeter < 300)
                 {
                      originPoint = data.npcGo.transform.position + dashDirection.normalized * distance + (-dashDirection.normalized * indexMeter * .5f);
-                    hasFoundNavMesh = NavMesh.SamplePosition(originPoint, out navHit, data.npcGo.transform.localScale.y , NavMesh.AllAreas);
+                    hasFoundNavMesh = NavMesh.SamplePosition(originPoint, out navHit, 10 , NavMesh.AllAreas);
                     indexMeter++;
                 }
                 if (indexMeter >= 300)

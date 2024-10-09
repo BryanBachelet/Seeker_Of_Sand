@@ -36,6 +36,8 @@ namespace Enemies
         private bool isLaunchingSpecialCapacity;
 
         private NpcMetaInfos m_npcMetaInfos;
+        private NpcAttackComponent m_npcAttackComponent;
+        
         private BehaviorTreeComponent m_behaviorTreeComponent;
 
         public void Awake()
@@ -73,6 +75,7 @@ namespace Enemies
             isLaunchingSpecialCapacity = false;
             currentSpecialCapacityIndex = -1;
             OnFinish -= ResetSpecialCapacity;
+            m_npcAttackComponent.isGeneralAttackCooldownActive = true;
         }
 
         public bool CanActivateSpecialSkill(int index)

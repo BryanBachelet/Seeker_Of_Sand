@@ -6,7 +6,7 @@ namespace GuerhoubaGames.AI
 {
     public class IsAttacking : DecoratorNode
     {
-         public bool onlyOneTest;
+        public bool onlyOneTest;
         private bool isLock;
         protected override void OnStart()
         {

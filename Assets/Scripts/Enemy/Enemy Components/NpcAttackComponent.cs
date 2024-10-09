@@ -33,6 +33,11 @@ namespace Enemies
         private bool isMvtAttackInit = false;
         private Vector3 prepTargetPosition;
 
+        public bool isGeneralAttackCooldownActive;
+        public float baseCooldownAttack = 0;
+        private float baseCooldownAttackTimer;
+          
+
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
@@ -84,10 +89,21 @@ namespace Enemies
 
         public void Update()
         {
+            if (isGeneralAttackCooldownActive)
+            {
+                if(baseCooldownAttackTimer >baseCooldownAttack)
+                {
+                    isGeneralAttackCooldownActive = false;
+                    baseCooldownAttackTimer = 0.0f;
+                }
+                baseCooldownAttackTimer += Time.deltaTime;
+                return;
+            }
             UpdatePrepAttack();
             UpdateContactAttack();
             UpdateRecoverAttack();
             UpdateCooldown();
+
         }
 
         #endregion
@@ -430,6 +446,7 @@ namespace Enemies
             if (m_timer > currentAttackData.recoverTime)
             {
                 FinishRecoverAttack();
+                isGeneralAttackCooldownActive = true;
             }
             else
             {
@@ -537,9 +554,14 @@ namespace Enemies
             return customAttackData;
         }
 
-        
+
 
         #endregion
+
+        public bool IsGeneralRecoveringFromAttackActive()
+        {
+            return isGeneralAttackCooldownActive;
+        }
 
     }
 }

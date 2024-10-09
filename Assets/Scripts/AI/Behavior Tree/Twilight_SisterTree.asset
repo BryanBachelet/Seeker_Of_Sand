@@ -78,6 +78,34 @@ MonoBehaviour:
   child: {fileID: -304767382010580570}
   indexAttack: 7
   onlyOneTest: 1
+--- !u!114 &-8303683279656337673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94105c668cbe8fd4b8de0b8d7f4367d3, type: 3}
+  m_Name: Selector
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: bc262984ba0d7a3449aa828f5ffd4f97
+  position: {x: 663.74963, y: -325.8748}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  children:
+  - {fileID: -2664354695749052903}
+  - {fileID: -743125959105985037}
+  - {fileID: 438161460774531580}
+  - {fileID: -5460468407766723356}
 --- !u!114 &-7705588941842072156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,7 +297,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 1ea680a4cc959c64ea1b105220a73972
-  position: {x: 1974.7052, y: 151.50003}
+  position: {x: 1030, y: -202}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -446,7 +474,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: e34bb9e712e419546b04d3ef3b5ac1a5
-  position: {x: -750, y: 46.999996}
+  position: {x: -775, y: -202}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -471,7 +499,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 7cac52d68fd0a044d89430b6ab2ab4e2
-  position: {x: 741, y: -340.72}
+  position: {x: 640, y: -473.19925}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -479,7 +507,7 @@ MonoBehaviour:
     indexSpecialCapacityCall: 0
   agent: {fileID: 0}
   description: 
-  child: {fileID: 4240057106597385042}
+  child: {fileID: -8303683279656337673}
 --- !u!114 &-2311334584214465990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -568,7 +596,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: f9a2472ccaf76564ba2d5ebbb8031fa4
-  position: {x: -275.0002, y: 93.00002}
+  position: {x: -311.99982, y: -202.00003}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -676,11 +704,37 @@ MonoBehaviour:
   - {fileID: -1761438970273731470}
   - {fileID: -2664354695749052903}
   - {fileID: -743125959105985037}
+  - {fileID: 438161460774531580}
+  - {fileID: -8303683279656337673}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
     IsSpecialCapacityCall: 0
     indexSpecialCapacityCall: 0
+--- !u!114 &438161460774531580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10feda40cc873f849a5ec29a2241da93, type: 3}
+  m_Name: CanAttack
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: a60af56861cb4c24281e6d1a140e5612
+  position: {x: 490, y: -193}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  child: {fileID: 4240057106597385042}
 --- !u!114 &2070113507211042239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -772,7 +826,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 9cef7b565525be3478376cb6a1bfd057
-  position: {x: 787.35004, y: -143.4}
+  position: {x: 490, y: -80}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -781,13 +835,10 @@ MonoBehaviour:
   agent: {fileID: 0}
   description: 
   children:
-  - {fileID: -2664354695749052903}
-  - {fileID: -743125959105985037}
   - {fileID: -2913249690341376842}
   - {fileID: -8997434871762541015}
   - {fileID: 3894827462998791773}
   - {fileID: -383088173993341019}
-  - {fileID: -5460468407766723356}
 --- !u!114 &4495393024334817868
 MonoBehaviour:
   m_ObjectHideFlags: 0
