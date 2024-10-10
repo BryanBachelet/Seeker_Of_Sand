@@ -446,7 +446,7 @@ namespace Enemies
             if (m_timer > currentAttackData.recoverTime)
             {
                 FinishRecoverAttack();
-                isGeneralAttackCooldownActive = true;
+                if(currentAttackData.isTriggerGeneralCooldown) isGeneralAttackCooldownActive = true;
             }
             else
             {

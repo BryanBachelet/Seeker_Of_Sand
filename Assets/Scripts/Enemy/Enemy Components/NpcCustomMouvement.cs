@@ -9,9 +9,9 @@ namespace Enemies
     public struct CustomMovementData
     {
         public NavMeshAgent agent;
-        public Transform m_transform;
-        public NavMeshPath m_path;
-        public float m_speedMax;
+        public Transform transform;
+        public NavMeshPath path;
+        public float speedMax;
     }
 
     [System.Serializable]
@@ -25,9 +25,9 @@ namespace Enemies
         public virtual void SetupMove(CustomMovementData customMovementData)
         {
             m_agent = customMovementData.agent;
-            m_transform = customMovementData.m_transform;
-            m_speedMax = customMovementData.m_speedMax;
-            m_agent = customMovementData.agent;
+            m_transform = customMovementData.transform;
+            m_speedMax = customMovementData.speedMax;
+            m_path = customMovementData.path;
         }
         public virtual void Move(NavMeshPath path)
         {

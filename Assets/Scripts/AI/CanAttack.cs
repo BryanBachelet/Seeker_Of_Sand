@@ -20,7 +20,6 @@ namespace GuerhoubaGames.AI
         {
             if (agent.attackComponent.IsGeneralRecoveringFromAttackActive() )
             {
-
        
                 return State.FAILURE;
             }
