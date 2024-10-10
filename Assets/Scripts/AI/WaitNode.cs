@@ -11,6 +11,7 @@ namespace GuerhoubaGames.AI
         protected override void OnStart()
         {
             m_startTime = Time.time;
+            
         }
 
         protected override void OnStop()

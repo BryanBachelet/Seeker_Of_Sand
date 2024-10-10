@@ -114,8 +114,8 @@ namespace Enemies
                     {
                         CustomMovementData customMovementData = new CustomMovementData();
                         customMovementData.agent = m_navMeshAgent;
-                        customMovementData.m_speedMax = speed;
-                        customMovementData.m_transform = transform;
+                        customMovementData.speedMax = speed;
+                        customMovementData.transform = transform;
                         customMouvement.SetupMove(customMovementData);
                         isFirstTimeCustomMove = false;
                     }
