@@ -49,6 +49,10 @@ public class UpgradeManager : MonoBehaviour
 
     private UpgradeData.UpgradeTable m_upgradeData = new UpgradeData.UpgradeTable();
 
+    public TMPro.TMP_Text levelCurrentSpell;
+    public Image progressRang;
+    public Image progressNextRang;
+
     public void Awake()
     {
 
@@ -94,6 +98,22 @@ public class UpgradeManager : MonoBehaviour
     public UpgradeObject[] GetRandomUpgradesToSpecificSpell(int spellIndex, int indexSpellEquip)
     {
         UpgradeObject[] upgradeGenerate = new UpgradeObject[upgradeGenerateCount];
+        int level = m_characterUpgradeComponent.m_characterShoot.spellProfils[indexSpellEquip].level;
+        if(level >= 12)
+        {
+            progressRang.fillAmount = 1;
+            progressNextRang.fillAmount = 1;
+        }
+        else
+        {
+            int Tier = level / 4;
+            float fillAmountPR = ((float)(level - (float)(Tier * 4)) / 4);
+            float fillAmoutPNR = (float)((float)(level + 1 - (float)(Tier * 4)) / 4);
+            progressRang.fillAmount = fillAmountPR;
+            progressNextRang.fillAmount = fillAmoutPNR;
+        }
+        levelCurrentSpell.text = "Lv. " + level;
+
         for (int i = 0; i < upgradeGenerate.Length; i++)
         {
             UpgradeObject nxtProfil = ChooseUpgrade(indexSpellEquip);

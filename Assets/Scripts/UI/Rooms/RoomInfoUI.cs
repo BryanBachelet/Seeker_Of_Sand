@@ -48,6 +48,7 @@ namespace GuerhoubaGames.UI
         // General Element
         [HideInInspector] public RoomManager currentRoomManager;
 
+        public Color[] colorUI = new Color[2];
 
         #region Unity Functions
 
@@ -66,7 +67,7 @@ namespace GuerhoubaGames.UI
             m_rewardIcon = UiRewardGO.GetComponentsInChildren<Image>()[1];
 
             // Init Major Goal Interface
-            m_majorGoalAnimator = majorGoalGO.GetComponent<Animator>(); 
+            m_majorGoalAnimator = majorGoalGO.GetComponent<Animator>();
         }
 
         public void Update()
@@ -83,7 +84,7 @@ namespace GuerhoubaGames.UI
             // Reward inteface update
             m_rewardIcon.sprite = m_rewardSpriteArray[(int)currentRoomManager.rewardType];
 
-            int indexRoomType = Mathf.Clamp((int)currentRoomManager.currentRoomType, 0, m_objectifSpriteArray.Length-1);
+            int indexRoomType = Mathf.Clamp((int)currentRoomManager.currentRoomType, 0, m_objectifSpriteArray.Length - 1);
             // Goal interface update
             m_objectifIcon.sprite = m_objectifSpriteArray[indexRoomType];
             m_objectifText.text = m_objectifTextArray[indexRoomType];
@@ -99,20 +100,22 @@ namespace GuerhoubaGames.UI
             if (!majorGoalGO.activeSelf || !m_hasMajorGoalChange) return;
 
             m_majorGoalSprite.fillAmount = 1.0f - m_majorGoalProgress;
-
-            if (timeBeforeDecreaseDelay + m_timeLastUpdate > Time.time) return;
+            if (timeBeforeDecreaseDelay + m_timeLastUpdate > Time.time) { m_majorGoalSprite.color = Color.Lerp(colorUI[0], colorUI[1], 1 - ((timeBeforeDecreaseDelay + m_timeLastUpdate) - Time.time)); return; }
 
             if (m_isMajorGoalChanging)
             {
-                  m_isMajorGoalChanging = false;
+                m_isMajorGoalChanging = false;
+
             }
 
-            m_majorGoalSpriteDelay.fillAmount -= decreaseSpeed *Time.deltaTime;
+            m_majorGoalSpriteDelay.fillAmount -= decreaseSpeed * Time.deltaTime;
+            //m_majorGoalSprite.color = Color.Lerp(m_majorGoalSprite.color, colorUI[1], 0.1f);
 
-            if(m_majorGoalSpriteDelay.fillAmount < m_majorGoalSprite.fillAmount)
+            if (m_majorGoalSpriteDelay.fillAmount < m_majorGoalSprite.fillAmount)
             {
                 m_majorGoalSpriteDelay.fillAmount = m_majorGoalSprite.fillAmount;
                 m_hasMajorGoalChange = false;
+                m_majorGoalSprite.color = colorUI[1];
             }
 
         }
@@ -125,6 +128,7 @@ namespace GuerhoubaGames.UI
             m_timeLastUpdate = Time.time;
             m_isMajorGoalChanging = true;
             m_hasMajorGoalChange = true;
+            m_majorGoalSprite.color = colorUI[0];
         }
 
         public void ActiveMajorGoalInterface()
