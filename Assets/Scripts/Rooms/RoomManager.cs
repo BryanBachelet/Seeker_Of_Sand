@@ -283,7 +283,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward);
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward, (GameElement)element);
 
     }
 
