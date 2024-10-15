@@ -233,6 +233,8 @@ namespace Character
                         m_CharacterAnim.SetBool("Running", true);
                         m_BookAnim.SetBool("Running", true);
                         m_CharacterAnim.SetBool("Casting", false);
+                        m_characterAim.vfxCast.SetFloat("Progress", 0);
+                        m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
                         m_BookAnim.SetBool("Running", false);
                     }
                     else

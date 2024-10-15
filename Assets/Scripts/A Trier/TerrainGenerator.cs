@@ -7,12 +7,15 @@ using GuerhoubaGames.GameEnum;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    public GlobalSoundManager gsm;
+
     private const int maxPlayerSpell = 4;
     public Transform lastTerrainPlay;
 
     public GameObject teleporterPrefab;
     public LayerMask groundLayer;
     public List<GameObject> terrainPool = new List<GameObject>();
+    public GameObject  BossTerrain; // Boss Terrain
     public List<GameObject> terrainInstantiated = new List<GameObject>();
     public List<GameObject> previousTerrain = new List<GameObject>();
     public List<GameObject> oldTerrain = new List<GameObject>();
@@ -34,11 +37,12 @@ public class TerrainGenerator : MonoBehaviour
     public CameraFadeFunction cameraFadeFunction;
     private int lastTerrainSelected = 0;
 
-    private RoomManager currentRoomManager;
+    [HideInInspector] public RoomManager currentRoomManager;
     public static RoomManager staticRoomManager;
 
     public RoomInfoUI roomInfoUI;
     public DayCyclecontroller dayController;
+    private int lastNightCount = -1;
 
     private List<RewardType> rewardList = new List<RewardType>();
     private List<RoomType> roomTypeList = new List<RoomType>();
@@ -46,6 +50,9 @@ public class TerrainGenerator : MonoBehaviour
     public TMPro.TMP_Text roomGeneration_text;
 
     private bool isHealthBossRoom;
+
+    [Header("Debug Parameter")]
+    public bool isOnlyBoss;
 
     public void Start()
     {
@@ -101,6 +108,7 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         roomTypeList.Remove(RoomType.Free);
+        roomTypeList.Remove(RoomType.Boss);
     }
 
     public void SetupFirstRoom()
@@ -129,23 +137,50 @@ public class TerrainGenerator : MonoBehaviour
 
         GuerhoubaTools.LogSystem.LogMsg("The next hour is " + dayController.GetNextHour().ToString());
 
-
-        
-        if (dayController.IsNextRoomIsDay() && !isHealthBossRoom)
+        // Temp ---------------------
+        if(isOnlyBoss)
         {
             GameObject newTerrain;
             int randomTerrain = Random.Range(1, poolNumber);
-            newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * 0), transform.rotation);
+            newTerrain = Instantiate(BossTerrain, transform.position + new Vector3(positionNewTerrain, 500, 1500 * 0), transform.rotation);
 
             terrainInstantiated.Add(newTerrain);
 
             RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
             roomManager.RetriveComponent();
             roomManager.terrainGenerator = this;
-            roomManager.currentRoomType = RoomType.Free;
-            roomManager.rewardType = RewardType.HEAL;
+            roomManager.currentRoomType = RoomType.Boss;
+            roomManager.rewardType = RewardType.SPELL;
             roomManager.healthReward = HealthReward.FULL;
             roomManager.isTimingPassing = false;
+            roomManager.roomInfoUI = roomInfoUI;
+
+            GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
+            isHealthBossRoom = true;
+            roomManager.m_CRT.Update();
+            StartCoroutine(roomManager.RoomDeactivation(3));
+            return;
+
+
+        }
+        // -------------------------
+
+        if (dayController.IsNextRoomIsDay() && !isHealthBossRoom)
+        {
+            GameObject newTerrain;
+            int randomTerrain = Random.Range(1, poolNumber);
+            newTerrain = Instantiate(BossTerrain, transform.position + new Vector3(positionNewTerrain, 500, 1500 * 0), transform.rotation);
+
+            terrainInstantiated.Add(newTerrain);
+
+            RoomManager roomManager = newTerrain.GetComponentInChildren<RoomManager>();
+            roomManager.RetriveComponent();
+            roomManager.terrainGenerator = this;
+            roomManager.currentRoomType = RoomType.Boss;
+            roomManager.rewardType = RewardType.UPGRADE;
+            roomManager.healthReward = HealthReward.FULL;
+            roomManager.isTimingPassing = false;
+            roomManager.roomInfoUI = roomInfoUI;
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             isHealthBossRoom = true;
@@ -158,12 +193,29 @@ public class TerrainGenerator : MonoBehaviour
         {
 
             int indexRoomType = 0;
+            //if (roomGeneration_Static < 10) { indexRoomType = Random.Range(0, 2); }
+            //else { indexRoomType = Random.Range(0, roomTypeList.Count); }
             indexRoomType = Random.Range(0, roomTypeList.Count);
+            if (!player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
+            {
+                while(roomTypeList[indexRoomType] == RoomType.Merchant)
+                {
+                    indexRoomType = Random.Range(0, roomTypeList.Count);
+                }
+            }
             GameObject newTerrain;
             isHealthBossRoom = false;
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {
-                newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                if(player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
+                {
+                    newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                }
+                else
+                {
+                    int randomTerrain = Random.Range(1, poolNumber);
+                    newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                }
 
             }
             else
@@ -188,16 +240,20 @@ public class TerrainGenerator : MonoBehaviour
             }
             else
             {
-                int indexReward = 0;
-                if (i > 0)
-                {
-                    indexReward = Random.Range(0, rewardList.Count - 1);
+                int indexReward = -1;
+                if (lastNightCount != dayController.m_nightCount) 
+                { 
+                    lastNightCount = dayController.m_nightCount;
+                    indexReward = 1;
                 }
-                else
+                if(indexReward < 0)
                 {
-                    indexReward = Random.Range(0, rewardList.Count - 2);
+                    indexReward = Random.Range(0, 2);
                 }
-
+                //if( indexReward == 3)
+                //    do
+                //    indexReward = Random.Range(1, 2);
+                //    while (indexReward == 3) ;
                 roomManager.rewardType = rewardList[indexReward];
                 roomManager.isTimingPassing = true;
             }
@@ -209,9 +265,6 @@ public class TerrainGenerator : MonoBehaviour
             StartCoroutine(roomManager.RoomDeactivation(3));
             //newTerrain.SetActive(false);
         }
-
-        if (currentRoomManager.currentRoomType == RoomType.Free)
-            roomTypeList.Insert((int)currentRoomManager.currentRoomType, currentRoomManager.currentRoomType);
         
   //      AssociateNewReward(selectedTerrainNumber);
         countRoomGeneration++;
@@ -255,13 +308,15 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
+        if(roomManager.currentRoomType == RoomType.Boss) { gsm.UpdateParameter(1, "BossAmbiant"); }
+        else { gsm.UpdateParameter(0, "BossAmbiant"); }
 
     }
 
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
         Character.CharacterShoot shootComponent = player.GetComponent<Character.CharacterShoot>();
-        if (shootComponent.spellIndex.Count >= maxPlayerSpell && rewardList.Contains(RewardType.SPELL))
+        if (shootComponent.spellIndexGeneral.Count >= maxPlayerSpell && rewardList.Contains(RewardType.SPELL))
         {
             rewardList.Remove(RewardType.SPELL);
         }

@@ -8,6 +8,7 @@ public class TeleporterFeebackController : MonoBehaviour
     [Range(0, 4)]
     public int elementToUse = 0; //0 --> Feu. 1 --> Elec. 2-->Eau. 3-->Terre. 4 --> Neutre
     public MeshRenderer previewMeshPlane;
+    public VisualEffect vfx_DeformPortal;
     public VisualEffect vfx_lightPortal;
     public VisualEffect[] vfx_elecPortal;
     [ColorUsage(true, true)]
@@ -21,6 +22,8 @@ public class TeleporterFeebackController : MonoBehaviour
     public Material[] materialReward = new Material[5];
     public MeshRenderer meshPortal;
     public Material mat_meshPortal;
+    public MeshRenderer meshDeform;
+    public Material mat_meshDeform;
 
     [Range(0, 6)]
     public int rewardToUse = 0;
@@ -51,7 +54,7 @@ public class TeleporterFeebackController : MonoBehaviour
             dissonance_mat = socleMesh.materials[1];
             planeSymbole_mat = planeSymboleEffect.materials[0];
         }
-        if(animatorPortal == null) { animatorPortal = transform.GetComponentInChildren<Animator>(); }
+        //if(animatorPortal == null) { animatorPortal = transform.GetComponentInChildren<Animator>(); }
 
         //mat_meshPortal = meshPortal.material;
     }
@@ -72,8 +75,12 @@ public class TeleporterFeebackController : MonoBehaviour
         if (activeChange)
         {
             activeChange = false;
-            zoneAutourVFX.enabled = true;
-            if(!portalState) { animatorPortal.SetBool("Ouverture", true); portalState = true; }
+            //zoneAutourVFX.enabled = true;
+            if(!portalState) 
+            { 
+                animatorPortal.SetBool("Ouverture", true); 
+                portalState = true; 
+            }
             //if (random) 
             //{ 
             //    int IDReward = Random.Range(0, 5);
@@ -130,6 +137,7 @@ public class TeleporterFeebackController : MonoBehaviour
         vfx_elecPortal[1].SetVector4("Color_II", color_Elem_Portal[color]);
         vfx_elecPortal[1].SetVector4("Color_III", color_Elem_Portal[color]);
         //
+        vfx_DeformPortal.SetVector4("ColorSymbol", color_Elem_Portal[color]);
         if (mat_meshPortal == null)
         {
             mat_meshPortal = meshPortal.material;
@@ -140,9 +148,15 @@ public class TeleporterFeebackController : MonoBehaviour
         }
         meshPortal.material = materialReward[ID];
         meshPortal.material.SetColor("_SelfLitColor", color_Elem_Portal[color]);
+        if(mat_meshDeform == null)
+        {
+            mat_meshDeform = meshDeform.material;
+        }
+        meshDeform.material.SetColor("_Color", color_Elem_Portal[color]);
     }
     public void ChangeColorVFX(int color)
     {
         colorToUse = color;
+        vfx_DeformPortal.SetVector4("ColorSymbol", Color.black);
     }
 }

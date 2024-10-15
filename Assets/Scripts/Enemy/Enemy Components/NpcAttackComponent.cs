@@ -8,6 +8,8 @@ using GuerhoubaGames.AI;
 
 namespace Enemies
 {
+
+
     public class NpcAttackComponent : MonoBehaviour
     {
         [Header("Attack Objects")]
@@ -31,6 +33,11 @@ namespace Enemies
         private bool isMvtAttackInit = false;
         private Vector3 prepTargetPosition;
 
+        public bool isGeneralAttackCooldownActive;
+        public float baseCooldownAttack = 0;
+        private float baseCooldownAttackTimer;
+          
+
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
@@ -38,10 +45,15 @@ namespace Enemies
 
 
         // Event for each attack step
-        public Action OnPrepAttack;
-        public Action OnContactAttack;
-        public Action OnRecoverAttack;
+        public Action<int> OnPrepAttack;
+        public Action<int> OnContactAttack;
+        public Action<int> OnRecoverAttack;
         public Action<bool> OnFinishAttack;
+
+        public List<Action<int>> list_OnPrepAttack = new List<Action<int>>();
+        public List<Action> list_OnContactAttack = new List<Action>();
+        public List<Action> list_OnRecoverAttack = new List<Action>();
+        public List<Action<bool>> list_OnFinishAttack = new List<Action<bool>>();
 
         public bool variantePrecision = false;
         public float rangeVariante = 1;
@@ -58,6 +70,14 @@ namespace Enemies
             {
                 OnPrepAttack += m_NPCEnemiAnimation.CallCloseAnimation;
                 OnPrepAttack += m_NPCEnemiAnimation.CallAnimPrepAttack;
+                //for(int i = 0; i < attackEnemiesObjectsArr.Length; i++)
+                //{
+                //    list_OnPrepAttack[i] += m_NPCEnemiAnimation.CallCloseAnimation;
+                //    list_OnPrepAttack[i] += m_NPCEnemiAnimation.CallAnimPrepAttack;
+                //
+                //    list_OnRecoverAttack[i] += m_NPCEnemiAnimation.ResetAnimAttack;
+                //    list_OnRecoverAttack[i] += m_NPCEnemiAnimation.ResetCloseAnimation;
+                //}
 
 
                 OnRecoverAttack += m_NPCEnemiAnimation.ResetAnimAttack;
@@ -69,10 +89,21 @@ namespace Enemies
 
         public void Update()
         {
+            if (isGeneralAttackCooldownActive)
+            {
+                if(baseCooldownAttackTimer >baseCooldownAttack)
+                {
+                    isGeneralAttackCooldownActive = false;
+                    baseCooldownAttackTimer = 0.0f;
+                }
+                baseCooldownAttackTimer += Time.deltaTime;
+                return;
+            }
             UpdatePrepAttack();
             UpdateContactAttack();
             UpdateRecoverAttack();
             UpdateCooldown();
+
         }
 
         #endregion
@@ -85,6 +116,8 @@ namespace Enemies
             for (int i = 0; i < attackEnemiesObjectsArr.Length; i++)
             {
                 AttackEnemiesObject currObj = attackEnemiesObjectsArr[i];
+                if (currObj.data.customAttack != null) continue;
+
                 if (currObj.data.typeAttack == AttackType.COLLIDER_OBJ)
                 {
                     currObj.data.indexCollider = countCloseAttack;
@@ -95,6 +128,8 @@ namespace Enemies
                     currObj.data.indexProjectileGO = countRangeAttack;
                     countRangeAttack++;
                 }
+
+        
 
             }
 
@@ -114,10 +149,28 @@ namespace Enemies
         #region  Active Phase Functions
         public void ActivePrepationAttack(int index)
         {
-            OnPrepAttack?.Invoke();
+            OnPrepAttack?.Invoke(index);
+            //list_OnPrepAttack?.Invoke(index);
             currentAttackState = AttackPhase.PREP;
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;
+
+            // Custom Attack Section
+            if(currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.customAttackData = FillCustomAttackData(currentAttackData, currentAttackIndex);
+                currentAttackData.customAttack.ResetAttack();
+                currentAttackData.customAttack.ActivePrepPhase();
+                if (currentAttackData.isStopMovingAtPrep)
+                {
+                    m_mouvementComponent.StopMouvement();
+                    m_npcMetaInfos.state = NpcState.ATTACK;
+                }
+
+                return;
+            }
+
+            //
             m_mouvementComponent.DirectRotateToTarget();
             if (currentAttackData.isStopMovingAtPrep)
             {
@@ -129,7 +182,7 @@ namespace Enemies
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.prepationTime;
            
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
@@ -163,12 +216,26 @@ namespace Enemies
 
         public void ActiveAttackContact()
         {
-            OnContactAttack?.Invoke();
+            OnContactAttack?.Invoke(0);
             currentAttackState = AttackPhase.CONTACT;
+            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                if (currentAttackData.isStopMovingAtPrep)
+                {
+                    m_mouvementComponent.StopMouvement();
+                    m_npcMetaInfos.state = NpcState.ATTACK;
+                }
+
+                currentAttackData.customAttack.ActiveContactPhase();
+
+                return;
+            }
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.contactTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
@@ -182,18 +249,32 @@ namespace Enemies
             }
 
             m_timer = 0.0f;
-            if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is attacking with {currentAttackData.nameAttack} the target");
+            
 
         }
 
         public void ActiveRecoverPhase()
         {
-            OnRecoverAttack?.Invoke();
+            OnRecoverAttack?.Invoke(currentAttackIndex);
             currentAttackState = AttackPhase.RECOVERY;
+
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                if (currentAttackData.isStopMovingAtPrep)
+                {
+                    m_mouvementComponent.StopMouvement();
+                    m_npcMetaInfos.state = NpcState.ATTACK;
+                }
+
+                currentAttackData.customAttack.ActiveRecoverPhase();
+
+                return;
+            }
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.attackNPCData = currentAttackData;
+            attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.recoverTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
@@ -209,24 +290,45 @@ namespace Enemies
         public void FinishPreparationAttack()
         {
             m_timer = 0.0f;
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.EndPrepPhase();
+            }
             ActiveAttackContact();
         }
 
         public void FinishContactAttack()
         {
             m_timer = 0.0f;
-            if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.EndContactPhase();
+            }
+            else
+            {
+
+                if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) 
+                    colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
+            }
             ActiveRecoverPhase();
         }
 
         public void FinishRecoverAttack()
         {
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                currentAttackData.customAttack.EndRecoverPhase();
+            }
             isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
         }
+
         #endregion
 
         #region Update Phase Functions
@@ -234,9 +336,23 @@ namespace Enemies
         {
             if (currentAttackState != AttackPhase.PREP) return;
 
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+               bool result =  currentAttackData.customAttack.UpdatePrepPhase();
+                if(result)
+                {
+                    FinishPreparationAttack();
+                }
+
+                return;
+            }
+
             if (currentAttackData.isFollowTarget || m_timer < currentAttackData.rotationTime)
             {
                 m_mouvementComponent.DirectRotateToTarget();
+                Rigidbody rb = GetComponent<Rigidbody>();
+                rb.angularVelocity = Vector3.zero;
             }
             else
             {
@@ -249,6 +365,8 @@ namespace Enemies
                     nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
                     nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
 
+                    Rigidbody rb = GetComponent<Rigidbody>();
+                    rb.angularVelocity = Vector3.zero;
                     currentAttackData.attackMovement.StartMvt(nPCMoveAttData);
 
                     if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
@@ -269,6 +387,18 @@ namespace Enemies
         public void UpdateContactAttack()
         {
             if (currentAttackState != AttackPhase.CONTACT) return;
+
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                bool result = currentAttackData.customAttack.UpdateContactPhase();
+                if (result)
+                {
+                    FinishContactAttack();
+                }
+
+                return;
+            }
 
             if (currentAttackData.attackMovement)
             {
@@ -301,9 +431,22 @@ namespace Enemies
         {
             if (currentAttackState != AttackPhase.RECOVERY) return;
 
+            // Custom Attack Section
+            if (currentAttackData.customAttack != null)
+            {
+                bool result = currentAttackData.customAttack.UpdateRecoverPhase();
+                if (result)
+                {
+                    FinishRecoverAttack();
+                }
+
+                return;
+            }
+
             if (m_timer > currentAttackData.recoverTime)
             {
                 FinishRecoverAttack();
+                if(currentAttackData.isTriggerGeneralCooldown) isGeneralAttackCooldownActive = true;
             }
             else
             {
@@ -388,15 +531,37 @@ namespace Enemies
 
                 }
             }
+
+
         }
 
         public bool IsAttackOnCooldown(int index)
         {
           return  isAttackOnCooldown[index];
         }
-        
+
+        public CustomAttackData FillCustomAttackData(AttackNPCData attackNPCData, int attackIndex)
+        {
+            CustomAttackData customAttackData = new CustomAttackData();
+            customAttackData.name = attackNPCData.nameAttack;
+            customAttackData.damage = attackNPCData.damage;
+            customAttackData.attackIndex = attackIndex;
+            customAttackData.npcAttackFeedback = m_NPCAttackFeedbackComponent;
+            customAttackData.npcAttacksComp = this;
+            customAttackData.targetTransform = m_mouvementComponent.targetData.baseTarget;
+            customAttackData.ownTransform = this.transform;
+
+            return customAttackData;
+        }
+
+
 
         #endregion
+
+        public bool IsGeneralRecoveringFromAttackActive()
+        {
+            return isGeneralAttackCooldownActive;
+        }
 
     }
 }

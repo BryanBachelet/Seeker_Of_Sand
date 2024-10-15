@@ -14,6 +14,7 @@ namespace Enemies
         ATTACK,
         PREP_ATTACK,
         RECUPERATION,
+        SPECIAL_CAPACITIES,
         DEATH,
         PAUSE,
     }
@@ -25,6 +26,7 @@ namespace Enemies
         public EnemyType type;
         public NpcState state;
         public NpcAttackComponent attackComponent;
+        public NpcSpecialCapacities specialCapacities;
         private NpcHealthComponent m_healthComponent;
         [HideInInspector] public NpcMouvementComponent moveComponent;
         [HideInInspector] public EnemyManager manager;
@@ -37,20 +39,21 @@ namespace Enemies
             m_healthComponent = GetComponent<NpcHealthComponent>();
             moveComponent = GetComponent<NpcMouvementComponent>();
             attackComponent = GetComponent<NpcAttackComponent>();
+            specialCapacities = GetComponent<NpcSpecialCapacities>();
             behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
         }
 
         public void Start()
         {
-            if (behaviorTreeComponent)
+          
+            m_objectGameState = new ObjectState();
+            GameState.AddObject(m_objectGameState);
+
+            if (behaviorTreeComponent && m_objectGameState.isPlaying)
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
             }
-
-
-            m_objectGameState = new ObjectState();
-            GameState.AddObject(m_objectGameState);
         }
 
         public void Update()
@@ -67,7 +70,7 @@ namespace Enemies
 
         public void RestartEnemy()
         {
-            m_healthComponent.RestartObject();
+            m_healthComponent.RestartObject(1);
             moveComponent.RestartObject();
         }
 
@@ -75,10 +78,21 @@ namespace Enemies
         {
             m_previousNpcState = (int)state;
             state = NpcState.PAUSE;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+                
+            }
         }
         public void RemovePauseState()
         {
             state = (NpcState)m_previousNpcState;
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.Init();
+                behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
+            }
         }
 
         public void TeleportToPool()

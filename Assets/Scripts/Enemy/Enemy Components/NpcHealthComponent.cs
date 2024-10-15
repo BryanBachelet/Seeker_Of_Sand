@@ -20,7 +20,7 @@ namespace Enemies
     {
         public int indexEnemy = 0;
         [Header("Health Parameter")]
-        public float m_maxLife;
+        public float maxLife;
         public float gainPerMinute = 2;
         public int spawnMinute;
         private float m_baseLife;
@@ -79,19 +79,23 @@ namespace Enemies
             m_npcInfo = GetComponent<NpcMetaInfos>();
             m_entityAnimator = GetComponentInChildren<Animator>();
             _propBlock = new MaterialPropertyBlock();
-            if(!isMassed)
+            if (!isMassed)
             {
                 moveSoundInstance = RuntimeManager.CreateInstance(moveSoundAssociated);
                 moveSoundInstance.start();
                 moveSoundInstance.setVolume(0);
-                Debug.Log("PAUSE le son !!");
                 //moveSoundInstance.setVolume(0);
             }
-            for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
+            if (m_SkinMeshRenderer != null)
             {
-                m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+                for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
+                {
+                    m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+                }
+
             }
-            RestartObject();
+
+            RestartObject(1);
 
         }
 
@@ -120,14 +124,14 @@ namespace Enemies
                     //m_materialList[materialCutout[i]].SetColor("_EmissiveColor", Color.gray * emissiveProgress.Evaluate(emissiveValue));
                 }
             }
-            if(!isMassed)
+            if (!isMassed)
             {
                 moveSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
             }
 
         }
 
-        public void SetTarget(Transform targetTransform,Transform baseTranform)
+        public void SetTarget(Transform targetTransform, Transform baseTranform)
         {
             targetData.target = targetTransform;
             targetData.baseTarget = baseTranform;
@@ -149,7 +153,7 @@ namespace Enemies
             m_enemyManager = enemyManager;
         }
 
-        public void ReceiveDamage(string nameDamage,DamageStatData damageStat, Vector3 direction, float power, int element)
+        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element)
         {
             m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
@@ -171,7 +175,7 @@ namespace Enemies
 
             if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
             m_npcInfo.state = NpcState.DEATH;
-            
+
 
             if (!isMassed)
             {
@@ -179,7 +183,7 @@ namespace Enemies
             }
 
             this.gameObject.layer = 16;
-          if(destroyEvent != null) destroyEvent.Invoke(direction, power);
+            if (destroyEvent != null) destroyEvent.Invoke(direction, power);
 
             m_enemyManager.EnemyHasDied(this, xpToDrop);
 
@@ -189,7 +193,7 @@ namespace Enemies
             }
 
             //StartCoroutine(Death());
-          if(gameObject.activeSelf)  StartCoroutine(TeleportToPool());
+            if (gameObject.activeSelf) StartCoroutine(TeleportToPool());
         }
 
 
@@ -202,10 +206,15 @@ namespace Enemies
                 moveSoundInstance.setVolume(0);
                 Debug.Log("Pause le son 2 le son !!");
             }
-            GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
-            GameObject dissonanceInstance = Instantiate(dissonancePrefabObject, transform.position, transform.rotation);
-            ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
-            ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
+            if (m_enemyManager.GenerateDissonance())
+            {
+                GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
+                GameObject dissonanceInstance = Instantiate(dissonancePrefabObject, transform.position, transform.rotation);
+                ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
+                ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
+
+            }
+
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction / 2);
             Instantiate(death_vfx, transform.position, transform.rotation);
@@ -223,14 +232,15 @@ namespace Enemies
             m_npcInfo.state = (NpcState)m_previousNpcState;
         }
 
-        public void RestartObject()
+        public void RestartObject(int playerLevel)
         {
             if (IsDebugActive)
             {
-                Debug.Log("Setup current max life : " + (m_maxLife + spawnMinute * gainPerMinute));
+                Debug.Log("Setup current max life : " + (maxLife + spawnMinute * gainPerMinute));
             }
-            m_healthSystem.Setup(m_maxLife + spawnMinute * gainPerMinute);
+            m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
+            m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
             death = false;
             if (hasDeathAnimation) m_entityAnimator.ResetTrigger("Death");
             m_npcInfo.state = NpcState.MOVE;
@@ -238,10 +248,25 @@ namespace Enemies
             {
                 moveSoundInstance.setVolume(1);
                 moveSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-                Debug.Log("Je joue le son !!");
             }
 
             this.gameObject.layer = 6;
+        }
+
+        public void SetupLife(float value)
+        {
+            maxLife = value;
+            m_healthSystem.Setup(value);
+        }
+
+        public float GetCurrentLife()
+        {
+            return m_healthSystem.health;
+        }
+
+        public float GetCurrentLifePercent()
+        {
+            return m_healthSystem.percentHealth;
         }
     }
 }

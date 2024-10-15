@@ -12,17 +12,31 @@ public class CloseAttackComponent : MonoBehaviour
     public bool ActiveDebug = false;
     public string attackName;
 
+    [Range(0, 180)]
+    public float angleOfAttack = 180.0f;
+
+    private float dotRatio;
+
     public void OnEnable()
     {
         targetTouch.Clear();
         colliderAttack = GetComponent<Collider>();
+
+        if (angleOfAttack == 0) angleOfAttack = 180.0f;
+        dotRatio = 1.0f - (angleOfAttack / 180f);
     }
 
     public void OnTriggerEnter(Collider other)
     {
         if (other.tag != "Player") return;
         HealthPlayerComponent healthPlayerComponent = other.GetComponent<HealthPlayerComponent>();
-       
+
+        Vector3 dirTarget = healthPlayerComponent.transform.position - basePosition.position;
+        float dot = Vector3.Dot(basePosition.forward, dirTarget.normalized);
+        if (dot < dotRatio) return;
+             
+
+
         if(!targetTouch.Contains(other.gameObject))
         {
 

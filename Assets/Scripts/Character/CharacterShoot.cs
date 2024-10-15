@@ -27,7 +27,8 @@ namespace Character
         [Header("Spell Composition Parameters")]
         public int[] spellEquip;
         [HideInInspector] public int maxSpellIndex;
-        public List<int> spellIndex;
+        public List<int> spellIndexGeneral;
+        public List<int> spellIndexSpecific;
 
         private int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
@@ -97,7 +98,7 @@ namespace Character
         private CharacterSpellBook m_characterSpellBook;
         private CharacterDash m_characterDash;
 
-        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit);
+        public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
         public event OnHit onHit = delegate { };
 
         [Header("UI Object")]
@@ -121,6 +122,12 @@ namespace Character
 
         public int specifiqueSpellStart = 0;
         public bool chooseBuild = false;
+
+        public Texture currentPreviewDecalTexture; // Inspector, set texture named "box"
+        public Texture currentPreviewDecalEndTexture; // Inspector, set texture named "box"
+
+        private Texture m_initialPreviewDecal;
+        public Gradient[] gradientDecalElement;
         public enum CanalisationBarType
         {
             ByPart,
@@ -160,12 +167,15 @@ namespace Character
 
         private CharacterSummonManager m_characterSummmonManager;
 
+
+
         #region Unity Functions
 
         private void Awake()
         {
             m_spellCouroutine = new Coroutine[100];
             currentManaValue = manaMax;
+            m_initialPreviewDecal = currentPreviewDecalTexture;
         }
 
 
@@ -188,9 +198,9 @@ namespace Character
             InitCapsule();
             InitSpriteSpell();
             InitStacking();
-            for (int i = 0; i < spellIndex.Count; i++)
+            for (int i = 0; i < spellIndexGeneral.Count; i++)
             {
-                m_dropInventory.AddNewItem(spellIndex[i]);
+                m_dropInventory.AddNewItem(spellIndexGeneral[i]);
             }
 
             // Init Variables
@@ -372,24 +382,27 @@ namespace Character
         {
             // Add Spell in Spell List
             // Get the spell stats for each spell
-            for (int i = 0; i < spellIndex.Count; i++)
+            for (int i = 0; i < spellIndexGeneral.Count; i++)
             {
-                if (spellIndex[i] == -1) continue;
+                if (spellIndexGeneral[i] == -1) continue;
 
-                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndex[i]].Clone());
-                SpellManager.RemoveSpecificSpellFromSpellPool(spellIndex[i]);
+                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone());
+                spellIndexSpecific.Add(i);
+                SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
             }
 
+           
             SpellManager.RemoveSpecificSpellFromSpellPool(0);
             SpellManager.RemoveSpecificSpellFromSpellPool(1);
             SpellManager.RemoveSpecificSpellFromSpellPool(2);
             SpellManager.RemoveSpecificSpellFromSpellPool(3);
 
+
             //  Set to Spell Equip
             spellEquip = new int[4];
             for (int i = 0; i < spellEquip.Length; i++)
             {
-                if (i >= spellIndex.Count)
+                if (i >= spellIndexGeneral.Count)
                     spellEquip[i] = -1;
                 else
 
@@ -400,7 +413,8 @@ namespace Character
             }
             m_currentIndexCapsule = spellEquip[0];
             ChangeVfxOnUI(m_currentIndexCapsule);
-            maxSpellIndex = Mathf.Clamp(spellIndex.Count, 0, 4);
+            maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
+            m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
 
         }
 
@@ -422,13 +436,13 @@ namespace Character
                 {
                     RndCapsule = UnityEngine.Random.Range(4, 7);
                 }
-                spellIndex.Add(RndCapsule);
+                spellIndexGeneral.Add(RndCapsule);
             }
         }
 
         private void GenerateNewBuildSpecificStart(int index)
         {
-            spellIndex.Add(index);
+            spellIndexGeneral.Add(index);
         }
         private void InitStacking()
         {
@@ -480,6 +494,9 @@ namespace Character
             //m_activeSpellLoad = true;
             m_deltaTimeFrame = Time.deltaTime;
             hasStartShoot = true;
+            currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+            currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+            ChangeDecalTexture(currentSpellProfil.tagData.element);
             //m_totalCanalisationDuration = currentSpellProfil.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
 
             //if (m_canalisationType == CanalisationBarType.ByPart)
@@ -525,6 +542,9 @@ namespace Character
             if (highCanalisationTest)
             {
                 m_CharacterMouvement.m_SpeedReduce = currentSpellProfil.GetFloatStat(StatType.SpeedReduce);
+                currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+                currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+                ChangeDecalTexture(currentSpellProfil.tagData.element);
             }
             else
             {
@@ -534,7 +554,9 @@ namespace Character
             if (highCanalisationTest || currentSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION)
             {
 
-
+                currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
+                currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+                ChangeDecalTexture(currentSpellProfil.tagData.element);
                 if (m_spellTimer >= currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
                 {
                     m_activeSpellLoad = false;
@@ -566,6 +588,8 @@ namespace Character
         {
             float ratio = m_spellTimer / maxValue;
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             if (lastElementToUse != null)
             {
                 lastElementToUse.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 2, ratio);
@@ -706,7 +730,7 @@ namespace Character
 
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.projectorVisorObject.transform.position, rot);
+            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
 
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
@@ -718,7 +742,7 @@ namespace Character
                 areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
             }
 
-            SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+            SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
             areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
 
             return true;
@@ -737,7 +761,7 @@ namespace Character
             SpellSystem.SpellProfil spellProfil = GetCurrentWeaponStat(capsuleIndex);
             float angle = GetShootAngle(spellProfil);
             int mod = GetStartIndexProjectile(spellProfil);
-            
+
             for (int i = 0; i < spellProfil.GetIntStat(StatType.Projectile); i++)
             {
                 Transform transformUsed = transform;
@@ -747,7 +771,7 @@ namespace Character
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
-                    position = m_characterAim.projectorVisorObject.transform.position + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
+                    position = m_characterAim.lastRawPosition + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
                     rot = m_characterAim.GetTransformHead().rotation; ;
                 }
 
@@ -762,7 +786,7 @@ namespace Character
 
                 if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
                 {
-                    SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+                    SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
                     projectileCreate.GetComponent<SpellSystem.AreaMeta>().areaData = data;
 
                 }
@@ -779,11 +803,19 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.ByPart)
             {
                 m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+                m_characterAim.vfxCast.SetFloat("Progress", ratio);
+                m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             }
             if (m_currentStack[m_currentRotationIndex] <= 0)
+            {
                 return true;
+
+            }
+
             else
+            { 
                 return false;
+            }
         }
 
         private bool ShootAttackArea(int capsuleIndex)
@@ -824,7 +856,7 @@ namespace Character
             Vector3 positionToSpawn = transform.position;
             if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
             {
-                positionToSpawn = m_characterAim.projectorVisorObject.transform.position;
+                positionToSpawn = m_characterAim.lastRawPosition;
             }
 
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
@@ -838,7 +870,7 @@ namespace Character
 
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
             {
-                SpellSystem.AreaData dataArea = FillAreaData(spellProfil, m_characterAim.projectorVisorObject.transform.position);
+                SpellSystem.AreaData dataArea = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
                 summonInstance.GetComponent<SpellSystem.AreaMeta>().areaData = dataArea;
 
             }
@@ -873,10 +905,10 @@ namespace Character
             return true;
         }
 
-        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent)
+        public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent, GameElement element)
         {
 
-            onHit(position, tag, agent);
+            onHit(position, tag, agent, element);
         }
 
         private void StartShoot()
@@ -886,15 +918,20 @@ namespace Character
             m_canEndShot = false;
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(m_currentIndexCapsule);
 
+
             if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 
         private void EndShoot()
         {
+
             if (!m_canShoot) return;
 
             currentShotNumber = 0;
 
+            ChangeDecalTexture(GameElement.NONE);
+            m_characterAim.vfxCast.SetFloat("Progress", 0);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
             m_spellTimer = 0.0f;
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
@@ -927,6 +964,8 @@ namespace Character
 
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / GetMaxStack(currentSpellProfil));
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             m_uiPlayerInfos.DeactiveSpellCanalisation();
 
             m_deltaTimeFrame = UnityEngine.Time.deltaTime;
@@ -1049,6 +1088,8 @@ namespace Character
             }
 
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
+            m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
         }
 
         #endregion
@@ -1318,19 +1359,22 @@ namespace Character
         public void AddSpell(int index)
         {
             int prevIndex = m_characterSpellBook.GetSpellCount();
-            spellIndex.Add(index);
-            m_characterSpellBook.AddSpell(m_spellManger.spellProfils[index].Clone());
+            spellIndexGeneral.Add(index);
+
+            SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone();
+            m_characterSpellBook.AddSpell(clone);
             m_dropInventory.AddNewItem(index);
+       
 
-
-            if (spellIndex.Count <= spellEquip.Length)
+            if (spellIndexGeneral.Count <= spellEquip.Length)
             {
-                spellProfils.Add(m_spellManger.spellProfils[index]);
-                spellEquip[spellIndex.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+                spellProfils.Add(clone);
+                spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();
                 m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex], m_textStack[maxSpellIndex]);
-                maxSpellIndex = Mathf.Clamp(spellIndex.Count, 0, 4);
+                maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
                 RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
                 m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
             }
@@ -1339,7 +1383,7 @@ namespace Character
         public void RemoveSpell(int index)
         {
             int spellIndex = spellEquip[index];
-            this.spellIndex.RemoveAt(spellIndex);
+            this.spellIndexGeneral.RemoveAt(spellIndex);
             spellProfils.RemoveAt(spellIndex);
             m_characterSpellBook.RemoveSpell(spellIndex);
             m_stackingClock[index].DeactivateClock();
@@ -1353,7 +1397,7 @@ namespace Character
                 spellEquip[i] = spellEquip[i + 1];
             }
 
-            maxSpellIndex = Mathf.Clamp(this.spellIndex.Count, 0, 4);
+            maxSpellIndex = Mathf.Clamp(this.spellIndexGeneral.Count, 0, 4);
             spellEquip[maxSpellIndex] = -1;
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
@@ -1371,6 +1415,7 @@ namespace Character
         public void ChangeSpell(int spellSlot, int indexSpell)
         {
             spellEquip[spellSlot] = indexSpell;
+            
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
         }
@@ -1384,8 +1429,8 @@ namespace Character
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
 
-            m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell1],m_textStack[indexSpell1]);
-            m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetIntStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
+            m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell1], m_textStack[indexSpell1]);
+            m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
 
             int tempStack = m_currentStack[indexSpell1];
             m_currentStack[indexSpell1] = m_currentStack[indexSpell2];
@@ -1416,8 +1461,40 @@ namespace Character
                 vfxUISign[spellProfils.Count - 1].SendEvent("OnStop");
             }
         }
+        public Gradient SetDecalColor(GameElement gameElement)
+        {
+            Gradient color = gradientDecalElement[0];
+            switch(gameElement)
+            {
+                case GameElement.NONE:
+                    color = gradientDecalElement[0];
+                    break;
+                case GameElement.AIR:
+                    color = gradientDecalElement[2];
+                    break;
+                case GameElement.EARTH:
+                    color = gradientDecalElement[4];
+                    break;
+                case GameElement.FIRE:
+                    color = gradientDecalElement[3];
+                    break;
+                case GameElement.WATER:
+                    color = gradientDecalElement[1];
+                    break;
+            }
+            return color;
+        }
 
+        public void ChangeDecalTexture(GameElement element)
+        {
+            //currentPreviewDecalTexture = m_initialPreviewDecal;
+            m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
+            m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(element));
+            m_characterAim.vfxCastEnd.SetTexture("Symbol", currentPreviewDecalEndTexture);
+            m_characterAim.vfxCastEnd.SetGradient("Gradient 1", SetDecalColor(element));
+        }
     }
+
 
 
 

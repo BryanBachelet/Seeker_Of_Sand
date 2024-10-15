@@ -53,19 +53,19 @@ public class HealthManager : MonoBehaviour
 
         if (colorElementType == (int)GameElement.AIR)
         {
-            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[0]);
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
         }
         else if (colorElementType == (int)GameElement.FIRE)
         {
-            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
         }
         else if (colorElementType == (int)GameElement.WATER)
         {
-            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
         }
         else if (colorElementType == (int)GameElement.EARTH)
         {
-            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
+            currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[4]);
         }
         else
         {

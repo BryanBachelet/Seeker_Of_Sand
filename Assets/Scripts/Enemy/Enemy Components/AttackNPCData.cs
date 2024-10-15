@@ -16,12 +16,15 @@ namespace Enemies
             Self,
         }
 
+        public NPCCustomAttack customAttack;
+
         public string nameAttack;
         [Header("Attack parameters")]
         public float prepationTime;
         public float recoverTime;
         public float contactTime;
         public float coooldownAttack;
+        public bool isTriggerGeneralCooldown;
         [Tooltip("Periods during the ai is going to rotate to follow the player")]
         public float rotationTime;
         public int damage;
@@ -29,6 +32,7 @@ namespace Enemies
         public bool isStunLockingAttack;
         public bool isStopMovingAtPrep;
         public bool isHeavyAttack;
+        [Tooltip("Allow the AI to constantly rotate during prep time")]
         public bool isFollowTarget;
         public AttackLaunchMoment launchMoment;
         public NPCMoveAttackObject attackMovement;
@@ -49,6 +53,7 @@ namespace Enemies
         [Header("Projectile Parameters")]
         public float rangeProjectile;
         public float durationProjectile;
+
 
 
         [HideInInspector] public int indexCollider;

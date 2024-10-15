@@ -11,7 +11,7 @@ namespace Enemies
     {
         public int attackIndex;
         public AttackPhase phase;
-        public AttackNPCData attackNPCData;
+        public float radius;
         public float duration;
         public Vector3 positionAttack;
         public Transform target;
@@ -64,14 +64,14 @@ namespace Enemies
                     spawnPositon = attackInfoData.positionAttack;
 
 
-                vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0,transform.eulerAngles.y,0));
+               vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0,transform.eulerAngles.y,0));
                
 
             }
 
             GuerhoubaGames.VFX.VFXAttackMeta vfxMeta  = vfx.GetComponent<GuerhoubaGames.VFX.VFXAttackMeta>();
             GuerhoubaGames.VFX.VfxAttackData vfxData = new GuerhoubaGames.VFX.VfxAttackData();
-            vfxData.attackRange = attackInfoData.attackNPCData.radius;
+            vfxData.attackRange = attackInfoData.radius;
             vfxData.duration = attackInfoData.duration;
             vfxData.isDestroying = attackFeedbackData.isSpawn;
             vfxData.parent = transform;

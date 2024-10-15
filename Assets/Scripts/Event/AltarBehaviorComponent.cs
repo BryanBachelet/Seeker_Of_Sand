@@ -86,7 +86,7 @@ public class AltarBehaviorComponent : InteractionInterface
     public GameObject punkeleton;
 
     private int m_idSpellReward;
-    private int m_enemiesCountConditionToWin = 0;
+    public int m_enemiesCountConditionToWin = 0;
     public Sprite instructionImage;
     private InteractionEvent m_interactionEvent;
     private GameObject[] punketon = new GameObject[0];
@@ -103,6 +103,8 @@ public class AltarBehaviorComponent : InteractionInterface
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
     public bool hasBeenActivate = false;
+    private selection_Feedback m_selectionFeedback;
+
     #endregion Variable
 
     #region Unity Functions
@@ -213,6 +215,7 @@ public class AltarBehaviorComponent : InteractionInterface
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_questMarker = GetComponent<QuestMarker>();
         m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
+        m_selectionFeedback = this.GetComponent<selection_Feedback>();
     }
 
 
@@ -301,26 +304,27 @@ public class AltarBehaviorComponent : InteractionInterface
         m_interactionEvent = GameState.s_playerGo.GetComponent<InteractionEvent>();
 
 
-        m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
+        //m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
         m_enemyManager.ActiveEvent(transform);
 
         m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
         progression = 0;
 
         m_myAnimator.SetBool("ActiveEvent", true);
-
+        m_selectionFeedback.ChangeLayerToDefault();
         if (resetNumber == 0)
         {
             m_myAnimator.SetTrigger("Activation");
         }
-        if (resetNumber >= 0)
+        int nightCount = m_enemyManager.m_dayController.m_nightCount;
+        if (nightCount >= 0)
         {
-            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[resetNumber], transform.position, transform.rotation);
+            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[nightCount], transform.position, transform.rotation);
             lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
         }
 
 
-        SetMeshesEventIntensity(0.33f * (resetNumber + 1));
+        SetMeshesEventIntensity(0.33f * (1 + 1));
         m_visualEffectActivation.Play();
 
         GlobalSoundManager.PlayOneShot(13, transform.position);

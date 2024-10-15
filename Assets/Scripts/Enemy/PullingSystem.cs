@@ -34,7 +34,7 @@ public class PullingSystem : MonoBehaviour
     {
         for (int i = 0; i < m_enemyInfoArray.Count; i++)
         {
-            SpawnElementFromPullingSystem(m_enemyInfoArray[i]);
+            SpawnEnemisFromPullingSystem(m_enemyInfoArray[i]);
         }
 
         isFullyInitialized = true;
@@ -45,7 +45,7 @@ public class PullingSystem : MonoBehaviour
     /// Spawn all instance of an enemy type
     /// </summary>
     /// <param name="enemyTypeInfo"></param>
-    private void SpawnElementFromPullingSystem(EnemyPullingInfo enemyTypeInfo)
+    private void SpawnEnemisFromPullingSystem(EnemyPullingInfo enemyTypeInfo)
     {
         for (int i = 0; i < enemyTypeInfo.maxCount; i++)
         {
@@ -86,7 +86,7 @@ public class PullingSystem : MonoBehaviour
         return instance;
     }
 
-    public void ResetEnemy(GameObject instance,EnemyType type)
+    public void ResetEnemy(GameObject instance, EnemyType type)
     {
         instance.GetComponent<NpcMetaInfos>().state = NpcState.MOVE;
         instance.GetComponent<NpcMetaInfos>().SetPauseState();
@@ -107,12 +107,13 @@ public class PullingSystem : MonoBehaviour
         instance.GetComponent<NavMeshAgent>().updatePosition = false;
         instance.GetComponent<NavMeshAgent>().enabled = false;
     }
-        public int GetAllEnemyCount()
+
+    public int GetAllEnemyCount()
     {
         int maxPop = 0;
         for (int i = 0; i < m_enemyInfoArray.Count; i++)
         {
-           maxPop +=  m_enemyInfoArray[i].maxCount;
+            maxPop += m_enemyInfoArray[i].maxCount;
         }
 
         return maxPop;

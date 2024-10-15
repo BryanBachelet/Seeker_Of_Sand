@@ -40,16 +40,19 @@ Material:
   - N_F_RELGI_ON
   - N_F_RL_ON
   - N_F_R_ON
+  - N_F_SIMTRANS_ON
   - N_F_SL_ON
   - N_F_SS_ON
+  - N_F_TRANS_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
-  stringTagMap: {}
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -228,13 +231,13 @@ Material:
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _Anisotropy: 0
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _BlendMode: 0
     - _CoatMask: 0
     - _CullMode: 2
     - _CullModeForward: 2
-    - _Culling: 2
+    - _Culling: 0
     - _CustomLightDirectionFollowObjectRotation: 0
     - _CustomLightDirectionIntensity: 0
     - _Cutoff: 0.5
@@ -387,9 +390,9 @@ Material:
     - _RimLightUnfill: 4.71
     - _SPECIN: 1
     - _SPECMODE: 0
-    - _SSRefDeOn: 8
-    - _SSRefGBu: 10
-    - _SSRefMoVe: 40
+    - _SSRefDeOn: 0
+    - _SSRefGBu: 2
+    - _SSRefMoVe: 32
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
@@ -411,9 +414,9 @@ Material:
     - _ShowInAmbientLightShadowIntensity: 1
     - _ShowInAmbientLightShadowThreshold: 0.4
     - _ShowNormal: 0
-    - _SimTrans: 0
+    - _SimTrans: 1
     - _SmoothObjectNormal: 0
-    - _Smoothness: 0.19
+    - _Smoothness: 0
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
     - _SpecularAAScreenSpaceVariance: 0.1
@@ -433,7 +436,7 @@ Material:
     - _SurfaceType: 0
     - _TEXMCOLINT: -0.5
     - _TOAO: 1
-    - _TRANSMODE: 0
+    - _TRANSMODE: 1
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _TexturePatternStyle: 0
@@ -457,7 +460,7 @@ Material:
     - _VertexColorBlueAffectOutlineWitdh: 0
     - _VertexColorGreenControlSelfShadowThreshold: 0
     - _VertexColorRedControlSmoothObjectNormal: 0
-    - _ZTeForLiOpa: 3
+    - _ZTeForLiOpa: 4
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
@@ -474,7 +477,7 @@ Material:
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightColor: {r: 0.084905684, g: 0, b: 0.03641951, a: 1}
+    - _HighlightColor: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _MainColor: {r: 0.43374914, g: 0.43374914, b: 0.43374914, a: 1}
@@ -484,7 +487,7 @@ Material:
     - _PTCol: {r: 0, g: 0, b: 0, a: 1}
     - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
     - _SSAOColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SelfLitColor: {r: 3.4415908, g: 0.16336805, b: 0, a: 1}
+    - _SelfLitColor: {r: 4.5947943, g: 4.5947943, b: 4.5947943, a: 1}
     - _SelfShadowRealTimeShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowTColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

@@ -139,6 +139,7 @@ namespace GuerhoubaTools.Gameplay
                 foreach (var type in types)
                 {
                     Vector2 mousPos = evt.mousePosition;
+                    mousPos= contentViewContainer.WorldToLocal(evt.mousePosition);
                     evt.menu.AppendAction($"[{type.BaseType.Name}] {type.Name}", (a) => CreateNode(type, mousPos));
                 }
             }
@@ -148,6 +149,7 @@ namespace GuerhoubaTools.Gameplay
                 foreach (var type in types)
                 {
                     Vector2 mousPos = evt.mousePosition;
+                    mousPos = contentViewContainer.WorldToLocal(evt.mousePosition);
                     evt.menu.AppendAction($"[{type.BaseType.Name}] {type.Name}", (a) => CreateNode(type, mousPos));
                 }
             }
@@ -157,6 +159,7 @@ namespace GuerhoubaTools.Gameplay
                 foreach (var type in types)
                 {
                     Vector2 mousPos = evt.mousePosition;
+                    mousPos = contentViewContainer.WorldToLocal(evt.mousePosition);
                     evt.menu.AppendAction($"[{type.BaseType.Name}] {type.Name}", (a) => CreateNode(type, mousPos));
                 }
             }

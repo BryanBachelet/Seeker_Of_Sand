@@ -24,6 +24,7 @@ namespace Enemies
         CHAMAN,
         TANK,
         RUNNER,
+        TWILIGHT_SISTER,
     }
 
     [System.Serializable]
@@ -69,7 +70,7 @@ namespace Enemies
         [SerializeField] private float m_minimumSpeedToRepositing = 30.0f;
         private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private Transform m_enemyHolder;
-
+        [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
@@ -80,7 +81,7 @@ namespace Enemies
 
         #region EnemyParameter
 
-        [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[5];
+        [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[6];
 
 
         [Header("Enemy Bonus")]
@@ -113,12 +114,13 @@ namespace Enemies
         private List<Vector3> posspawn = new List<Vector3>();
 
         private Character.CharacterMouvement m_characterMouvement;
+        private Character.CharacterUpgrade m_characterUpgrade;
 
         private int repositionningLimit = 2;
         private int repositionningCount;
 
 
-        private DayCyclecontroller m_dayController;
+        public DayCyclecontroller m_dayController;
         private float m_timeOfGame;
 
         private SerieController m_serieController;
@@ -197,6 +199,7 @@ namespace Enemies
             gsm = m_cameraTransform.GetComponentInChildren<GlobalSoundManager>();
 
             m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
+            m_characterUpgrade = m_playerTranform.GetComponent<Character.CharacterUpgrade>();
             m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
             m_serieController = m_playerTranform.GetComponent<SerieController>();
@@ -511,6 +514,38 @@ namespace Enemies
             GlobalSoundManager.PlayOneShot(37, position);
         }
 
+        public GameObject  SpawnBoss(Vector3 pos,EnemyType enemyType)
+        {
+            GameObject enemyObjectPull = null;
+            NpcHealthComponent npcHealth = null;
+            NpcMouvementComponent npcMove = null;
+            NpcMetaInfos npcInfo = null;
+
+            enemyObjectPull = m_pullingSystem.GetEnemy(enemyType);
+            enemyTypeStats[(int)enemyType].instanceCount += 1;
+            enemyTypeStats[(int)enemyType].instanceSpawnPerRoom += 1;
+            enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
+            enemyObjectPull.GetComponent<NavMeshAgent>().Warp(pos);
+            enemyObjectPull.GetComponent<NavMeshAgent>().enabled = true;
+
+            npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
+            npcInfo.manager = this;
+
+            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
+            npcMove.enabled = true;
+            npcMove.enemiesManager = this;
+
+            npcHealth = enemyObjectPull.GetComponent<NpcHealthComponent>();
+            npcHealth.SetInitialData(m_healthManager, this);
+            npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
+            npcHealth.targetData.isMoving = true;
+            npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
+            npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
+
+            m_enemiesArray.Add(npcInfo);
+            return enemyObjectPull;
+        }
+
         private void SpawnEnemyByPool(Vector3 positionSpawn)
         {
 
@@ -544,7 +579,7 @@ namespace Enemies
             npcHealth.SetInitialData(m_healthManager, this);
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
-            npcHealth.RestartObject();
+            npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
 
             m_enemiesArray.Add(npcInfo);
@@ -597,7 +632,7 @@ namespace Enemies
             npcHealth.SetInitialData(m_healthManager, this);
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
-            npcHealth.RestartObject();
+            npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
 
             m_enemiesArray.Add(npcInfo);
@@ -692,7 +727,12 @@ namespace Enemies
         public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
         {
 
-            Debug.Log("Test Dammage");
+            NpcMetaInfos npcMetaInfos = npcHealth.GetComponent<NpcMetaInfos>();
+            if(npcMetaInfos.type == EnemyType.TWILIGHT_SISTER)
+            {
+                m_terrainGenerator.currentRoomManager.bossRoom.EndRoomBoss();
+            }
+
             Vector3 position = npcHealth.transform.position;
             //SpawnExp(position, xpCount, npcHealth.indexEnemy);
             IncreseAlterEnemyCount(npcHealth);
@@ -776,7 +816,7 @@ namespace Enemies
                 if (m_spawnCauseState[i] == true)
                     return true;
             }
-            return false;
+            return false; 
         }
         public void ActiveSpawnPhase(bool state, EnemySpawnCause spawnCause)
         {
@@ -795,7 +835,7 @@ namespace Enemies
             {
                 //gsm.globalMusicInstance.setParameterByName("Repos", 0);
                //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(3, "Intensity", 13, 1,"TransitionIntensity"));
-                gsm.UpdateParameter(3, "Intensity");
+                gsm.UpdateParameter(1.5f, "Intensity");
                 StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
                 m_enemyIcon.color = colorSignUI[0];
                 m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
@@ -993,6 +1033,21 @@ namespace Enemies
                 m_pullingSystem.ResetEnemyNavMesh(npcHealth.gameObject, type);
             }
             //m_enemiesArray.Clear();
+        }
+
+        public bool GenerateDissonance()
+        {
+            bool canSpawnDissonance = false;
+            int randomNumber = Random.Range(0, 100);
+            if(randomNumber < enemyGenerateDissonanceProba.Evaluate(m_enemiesArray.Count))
+            {
+                canSpawnDissonance = true;
+            }
+            else
+            {
+                canSpawnDissonance = false;
+            }
+            return canSpawnDissonance;
         }
     }
 

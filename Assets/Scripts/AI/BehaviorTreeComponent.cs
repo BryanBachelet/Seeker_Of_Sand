@@ -12,15 +12,18 @@ namespace GuerhoubaGames.AI
         #region Mono Functions
         public void Update()
         {
-            if(isActivate) behaviorTree.Update();
+            if(isActivate) 
+                behaviorTree.Update();
         }
         #endregion
 
         public void Init()
         {
-            isActivate = true; 
+            if (isActivate) return;
+
             behaviorTree = behaviorTree.CloneTree();
             behaviorTree.BindTree(GetComponent<Enemies.NpcMetaInfos>());
+            isActivate = true; 
         }
     }
 }

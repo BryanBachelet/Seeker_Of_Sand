@@ -197,7 +197,18 @@ public class InteractionEvent : MonoBehaviour
             }
 
             selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
-            if (selection != null) { selection.ChangeLayerToSelection(); }
+            if(currentInteractibleObject.GetComponent<AltarBehaviorComponent>())
+            {
+                if (selection != null && !currentInteractibleObject.GetComponent<AltarBehaviorComponent>().hasBeenActivate) { selection.ChangeLayerToSelection(); }
+            }
+            else
+            {
+                if (selection != null)
+                {
+                    selection.ChangeLayerToSelection();
+                }
+            }
+
 
         }
         else if (col.Length == 0 && currentInteractibleObject != null)

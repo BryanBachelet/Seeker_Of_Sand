@@ -235,8 +235,8 @@ public class ProjectileExplosif : Projectile
             }
                
 
-            m_characterShoot.ActiveOnHit(stickyEnemy.transform.position, EntitiesTrigger.Enemies, stickyEnemy.gameObject);
-           
+            m_characterShoot.ActiveOnHit(stickyEnemy.transform.position, EntitiesTrigger.Enemies, stickyEnemy.gameObject, (GameElement)elementIndex);
+
             stickyEnemy.ReceiveDamage(spellProfil.name, damageStatData, stickyEnemy.transform.position - transform.position, m_power, -1);
             m_stickTransform = null;
         }

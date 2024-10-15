@@ -129,7 +129,7 @@ namespace Character
             data.spellState = m_characterShoot.spellProfils.ToArray();
             data.spellCount = m_characterShoot.maxSpellIndex;
             data.iconSpell = m_characterShoot.GetSpellSprite();
-            data.capsuleIndex = m_characterShoot.spellIndex.ToArray();
+            data.capsuleIndex = m_characterShoot.spellIndexGeneral.ToArray();
             data.upgradePoint = upgradePoint;
             upgradeManager.OpenUpgradeUI(data);
 

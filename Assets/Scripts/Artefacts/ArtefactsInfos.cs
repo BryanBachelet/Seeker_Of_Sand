@@ -44,17 +44,21 @@ public class ArtefactsInfos : ScriptableObject
 
     [HideInInspector] public int activationCount;
 
-
+    private int proc = 0;
+    public int maxProc = 10;
+    private float lastTimeRefresh = 0;
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
         return clone;
     }
 
-    public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre)
+    public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre, GameElement element)
     {
 
         if (entitiesTrigger != tag) return;
+        if (element != gameElement && element != GameElement.NONE) return;
+
 
         float change = Random.Range(0, 100.0f);
         if (change < spawnRate)
@@ -63,6 +67,7 @@ public class ArtefactsInfos : ScriptableObject
             { 
                 Debug.Log("Artefact active OnHit"); 
             }
+            if (!CanApplyOnHit()) return;
             GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData, objectPre);
@@ -98,5 +103,27 @@ public class ArtefactsInfos : ScriptableObject
         artefactData.radius = radius;
         artefactData.nameArtefact = nameArtefact;
         artefactData.element = (int)gameElement;
+    }
+
+    public bool CanApplyOnHit()
+    {
+        bool usable = false;
+        if (Time.time >= lastTimeRefresh + 0.1f)
+        {
+            lastTimeRefresh = Time.time;
+            proc = 0;
+        }
+        if (proc < maxProc)
+        {
+            proc++;
+            usable = true;
+        }
+        else
+        {
+            usable = false;
+        }
+
+
+        return usable;
     }
 }

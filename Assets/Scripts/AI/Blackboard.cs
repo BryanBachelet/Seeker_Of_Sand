@@ -9,5 +9,7 @@ namespace GuerhoubaGames.AI
     {
         public Vector3 moveToPosition;
         public GameObject moveToObject;
+        public bool IsSpecialCapacityCall;
+        public int indexSpecialCapacityCall;
     }
 }
