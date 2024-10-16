@@ -17,7 +17,7 @@ public class RewardDistribution : MonoBehaviour
         isRewardSend = true;
     }
 
-    public void GiveReward(RewardType rewardType, Transform positionReward,HealthReward healthReward)
+    public void GiveReward(RewardType rewardType, Transform positionReward,HealthReward healthReward, GameElement roomElementColor)
     {
         GameObject NewReward = Instantiate(rewardHolderPrefan, positionReward.position, this.transform.rotation);
         ExperienceMouvement newXp  = NewReward.GetComponentInChildren<ExperienceMouvement>();
@@ -27,6 +27,7 @@ public class RewardDistribution : MonoBehaviour
         rewardTypopologie.rewardType = rewardType;
         rewardTypopologie.healthReward = healthReward;
         rewardTypopologie.rewardDistribution = this;
+        rewardTypopologie.element = (int)roomElementColor;
         isRewardSend = false;
     }
 }

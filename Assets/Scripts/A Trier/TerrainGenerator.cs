@@ -7,6 +7,8 @@ using GuerhoubaGames.GameEnum;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    public GlobalSoundManager gsm;
+
     private const int maxPlayerSpell = 4;
     public Transform lastTerrainPlay;
 
@@ -175,7 +177,7 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.RetriveComponent();
             roomManager.terrainGenerator = this;
             roomManager.currentRoomType = RoomType.Boss;
-            roomManager.rewardType = RewardType.SPELL;
+            roomManager.rewardType = RewardType.UPGRADE;
             roomManager.healthReward = HealthReward.FULL;
             roomManager.isTimingPassing = false;
             roomManager.roomInfoUI = roomInfoUI;
@@ -306,6 +308,8 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
+        if(roomManager.currentRoomType == RoomType.Boss) { gsm.UpdateParameter(1, "BossAmbiant"); }
+        else { gsm.UpdateParameter(0, "BossAmbiant"); }
 
     }
 

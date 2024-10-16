@@ -74,6 +74,7 @@ public class RoomManager : MonoBehaviour
 
     private Character.CharacterUpgrade m_characterUpgrade;
 
+    static public int enemyMaxSpawnInRoon;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -89,7 +90,7 @@ public class RoomManager : MonoBehaviour
             playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
         }
-        if(m_characterUpgrade == null)
+        if (m_characterUpgrade == null)
         {
             m_characterUpgrade = playerGO.GetComponent<Character.CharacterUpgrade>();
         }
@@ -195,6 +196,7 @@ public class RoomManager : MonoBehaviour
 
     public void SetupRoomType()
     {
+        m_enemyManager.countEnemySpawnMaximum = 0;
         switch (currentRoomType)
         {
             case RoomType.Free:
@@ -214,21 +216,23 @@ public class RoomManager : MonoBehaviour
                     obj.ResetAltar();
                     obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                     obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
-                   obj.roomInfoUI = roomInfoUI; ;
+                    enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
+                    obj.roomInfoUI = roomInfoUI;
                 }
 
                 break;
             case RoomType.Enemy:
                 DeactivateAltar();
-              
+
                 int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                 enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
                 enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                enemyMaxSpawnInRoon = enemyToKillCount;
                 break;
             case RoomType.Boss:
                 DeactivateAltar();
 
-                
+
                 break;
             default:
                 break;
@@ -283,7 +287,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward);
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward, (GameElement)element);
 
     }
 

@@ -22,6 +22,8 @@ public class TeleporterFeebackController : MonoBehaviour
     public Material[] materialReward = new Material[5];
     public MeshRenderer meshPortal;
     public Material mat_meshPortal;
+    public MeshRenderer meshDeform;
+    public Material mat_meshDeform;
 
     [Range(0, 6)]
     public int rewardToUse = 0;
@@ -146,6 +148,11 @@ public class TeleporterFeebackController : MonoBehaviour
         }
         meshPortal.material = materialReward[ID];
         meshPortal.material.SetColor("_SelfLitColor", color_Elem_Portal[color]);
+        if(mat_meshDeform == null)
+        {
+            mat_meshDeform = meshDeform.material;
+        }
+        meshDeform.material.SetColor("_Color", color_Elem_Portal[color]);
     }
     public void ChangeColorVFX(int color)
     {

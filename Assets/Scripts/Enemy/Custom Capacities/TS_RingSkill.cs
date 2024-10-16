@@ -56,7 +56,7 @@ namespace Enemies
                     VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
                     for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
                     {
-                        ringInstanceVFXIntensity[i].SetInt("IntensityFactor", 4);
+                        ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
                     }
                 }
             }
