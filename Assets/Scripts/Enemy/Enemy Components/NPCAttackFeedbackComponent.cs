@@ -45,7 +45,7 @@ namespace Enemies
             if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.Target)
                 spawnPositon = attackInfoData.positionAttack;
 
-            GlobalSoundManager.PlayOneShot(attackFeedbackData.sfxIndex, spawnPositon);
+            GlobalSoundManager.PlayOneShot(attackFeedbackData.sfxIndex, transform.position);
         }
 
         private void SpawnVisualFeedback(AttackFeedbackData attackFeedbackData,AttackInfoData attackInfoData)

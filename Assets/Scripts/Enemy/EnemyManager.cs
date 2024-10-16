@@ -71,6 +71,8 @@ namespace Enemies
         private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private Transform m_enemyHolder;
         [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
+
+        public int countEnemySpawnMaximum;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
@@ -434,7 +436,7 @@ namespace Enemies
             if (!isDebug && isStopSpawn) return;
             position = FindPosition();
             posspawn.Add(position);
-            InstantiateSpawnFeedback();
+
 #if UNITY_EDITOR
             if (activeSpecialSquad)
             {
@@ -443,11 +445,17 @@ namespace Enemies
                 return;
             }
 #endif
-
-            for (int i = 0; i < m_groupEnemySize; i++)
+            if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon)
             {
-                SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
+                for (int i = 0; i < m_groupEnemySize; i++)
+                {
+                    SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
+
+                }
+                InstantiateSpawnFeedback();
             }
+            
+
         }
 
         private void SpawnCooldown()
@@ -581,7 +589,7 @@ namespace Enemies
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
-
+            countEnemySpawnMaximum++;
             m_enemiesArray.Add(npcInfo);
         }
 
