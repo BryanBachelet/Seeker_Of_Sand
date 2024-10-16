@@ -24,12 +24,12 @@ public class NPCEnemiAnimation : MonoBehaviour
     public void CallAnimPrepAttack(int index)
     {
         m_animator.SetTrigger(prepAttackNameTrigger + index.ToString());
-        Debug.Log("Call anim attack");
+        
     }
     public void CallAnimPrepAttackByIndex(int index)
     {
         m_animator.SetTrigger(prepAttackNameTrigger + index);
-        Debug.Log("Call anim attack");
+       
     }
 
     public void ResetAnimAttack(int index)

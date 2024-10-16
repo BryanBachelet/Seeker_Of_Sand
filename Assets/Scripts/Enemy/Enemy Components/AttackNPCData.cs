@@ -24,7 +24,13 @@ namespace Enemies
         public float recoverTime;
         public float contactTime;
         public float coooldownAttack;
+
         public bool isTriggerGeneralCooldown;
+
+        public bool isStartinAttackSequence;
+        public bool isEndingAttackSequence;
+
+
         [Tooltip("Periods during the ai is going to rotate to follow the player")]
         public float rotationTime;
         public int damage;

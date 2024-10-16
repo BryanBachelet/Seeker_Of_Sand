@@ -38,7 +38,7 @@ namespace GuerhoubaGames.UI
         {
 
             m_uiTextDisplay[indexElement].text = "" + value;
-            StartCoroutine(DisplayUIFeedback(indexElement));
+           if(this.gameObject.activeSelf) StartCoroutine(DisplayUIFeedback(indexElement));
         }
 
 

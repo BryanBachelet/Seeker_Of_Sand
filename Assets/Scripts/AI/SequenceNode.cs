@@ -11,6 +11,7 @@ namespace GuerhoubaGames.AI
     public class SequenceNode : CompositeNode
     {
         int current = 0;
+        public bool isAttackSequence;
         protected override void OnStart()
         {
             current = 0;
@@ -37,6 +38,7 @@ namespace GuerhoubaGames.AI
                     break;
             }
 
+                
             return current == children.Count ? State.SUCCESS : State.RUNNING;
         }
     }

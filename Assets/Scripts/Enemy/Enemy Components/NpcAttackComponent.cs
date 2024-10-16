@@ -43,7 +43,6 @@ namespace Enemies
         public bool isActiveDebug = false;
 
 
-
         // Event for each attack step
         public Action<int> OnPrepAttack;
         public Action<int> OnContactAttack;
@@ -57,6 +56,11 @@ namespace Enemies
 
         public bool variantePrecision = false;
         public float rangeVariante = 1;
+
+        public bool isInAttackSequence;
+        public int sequenceIndex =-1;
+
+
         #region MonoBehavior Functions
         public void Start()
         {
@@ -147,7 +151,7 @@ namespace Enemies
         }
 
         #region  Active Phase Functions
-        public void ActivePrepationAttack(int index)
+        public void ActivePrepationAttack(int index , int sequence)
         {
             OnPrepAttack?.Invoke(index);
             //list_OnPrepAttack?.Invoke(index);
@@ -155,8 +159,14 @@ namespace Enemies
             currentAttackIndex = index;
             currentAttackData = attackEnemiesObjectsArr[index].data;
 
+            if (currentAttackData.isStartinAttackSequence)
+            {
+                isInAttackSequence = true;
+                sequenceIndex = sequence;
+            }
+
             // Custom Attack Section
-            if(currentAttackData.customAttack != null)
+            if (currentAttackData.customAttack != null)
             {
                 currentAttackData.customAttack.customAttackData = FillCustomAttackData(currentAttackData, currentAttackIndex);
                 currentAttackData.customAttack.ResetAttack();
@@ -322,9 +332,19 @@ namespace Enemies
             {
                 currentAttackData.customAttack.EndRecoverPhase();
             }
-            isAttackOnCooldown[currentAttackIndex] = true;
+
+     
+            if (currentAttackData.isEndingAttackSequence)
+            {
+                isInAttackSequence = false;
+                sequenceIndex = -1;
+            }
+
+
+                isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
+            m_npcMetaInfos.state = NpcState.IDLE;
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
         }
