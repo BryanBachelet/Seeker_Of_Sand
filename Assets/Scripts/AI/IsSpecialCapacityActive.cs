@@ -26,6 +26,10 @@ namespace GuerhoubaGames.AI
             if (isLock)
             {
                 State state = child.Evaluate();
+                if (state == State.FAILURE && debugTest)
+                {
+                    Debug.LogError(child.name + " has failed");
+                }
                 if (state == State.FAILURE || state == State.SUCCESS)
                 {
                     isLock = false;
@@ -37,6 +41,10 @@ namespace GuerhoubaGames.AI
             if (blackboard.IsSpecialCapacityCall && blackboard.indexSpecialCapacityCall == indexSpecialCapacity)
             {
                 State state = child.Evaluate();
+                if (state == State.FAILURE && debugTest)
+                {
+                    Debug.LogError(child.name + " has failed");
+                }
                 if (onlyOneTest && state == State.RUNNING)
                 {
                     isLock = true;
@@ -49,6 +57,7 @@ namespace GuerhoubaGames.AI
             }
             else
             {
+              
 
                 return State.FAILURE;
             }

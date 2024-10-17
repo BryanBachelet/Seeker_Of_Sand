@@ -260,8 +260,10 @@ public class TerrainGenerator : MonoBehaviour
 
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
+            roomManager.previewCamera.gameObject.SetActive(true);
             RenderTexture custom_TRT = roomManager.previewCamera.targetTexture;
             roomManager.m_CRT.Update();
+            
             StartCoroutine(roomManager.RoomDeactivation(3));
             //newTerrain.SetActive(false);
         }

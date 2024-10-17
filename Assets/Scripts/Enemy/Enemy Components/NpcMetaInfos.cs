@@ -27,7 +27,7 @@ namespace Enemies
         public NpcState state;
         public NpcAttackComponent attackComponent;
         public NpcSpecialCapacities specialCapacities;
-        private NpcHealthComponent m_healthComponent;
+        [HideInInspector] public NpcHealthComponent m_healthComponent;
         [HideInInspector] public NpcMouvementComponent moveComponent;
         [HideInInspector] public EnemyManager manager;
         [HideInInspector] public GuerhoubaGames.AI.BehaviorTreeComponent behaviorTreeComponent;

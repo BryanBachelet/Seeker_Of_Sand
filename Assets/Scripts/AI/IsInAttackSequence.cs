@@ -2,34 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace GuerhoubaGames.AI
 {
-    public class CanAttack : DecoratorNode
+    public class IsInAttackSequence : DecoratorNode
     {
+        public int sequenceValidIndex;
         protected override void OnStart()
         {
-           
+            
         }
 
         protected override void OnStop()
         {
-
+            
         }
 
         protected override State OnUpdate()
         {
-            if (agent.attackComponent.IsGeneralRecoveringFromAttackActive() )
+            if (agent.attackComponent.isInAttackSequence && agent.attackComponent.sequenceIndex != sequenceValidIndex)
             {
-                if (debugTest && !once)
+                if(debugTest)
                 {
-                    once = true;
-                    Debug.LogError("Stop Attack");
+                    Debug.LogError("Sequence not valid, info : index " + agent.attackComponent.sequenceIndex );
+
                 }
                 return State.FAILURE;
             }
             else
             {
-                if (debugTest) once = false;
                 State state = child.Evaluate();
                 return state;
             }

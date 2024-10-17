@@ -133,7 +133,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.isStopSpawn = true;
 
         SetupRoomType();
-
+        previewCamera.gameObject.SetActive(false);
     }
 
     public void ActivateRoomAfterDistanceTP()
@@ -142,6 +142,7 @@ public class RoomManager : MonoBehaviour
         {
             if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
             {
+                
                 roomInfoUI.ActiveMajorGoalInterface();
                 m_startRoomChallengeTime = DateTime.Now;
                 baseRoomType = currentRoomType;
@@ -337,6 +338,7 @@ public class RoomManager : MonoBehaviour
             yield return Time.deltaTime;
             framePassed++;
         }
+
 
         isRoomHasBeenDeactivated = true;
         transform.parent.gameObject.SetActive(false);
