@@ -36,7 +36,9 @@ namespace Enemies
         public bool isGeneralAttackCooldownActive;
         public float baseCooldownAttack = 0;
         private float baseCooldownAttackTimer;
-          
+        private bool m_hasToActiveGeneralCooldown;
+        private const int m_generalCooldownFrameCount = 2;
+        private int m_generalCooldownFrameCounter;
 
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
@@ -88,11 +90,24 @@ namespace Enemies
                 OnRecoverAttack += m_NPCEnemiAnimation.ResetCloseAnimation;
             }
 
-
         }
 
         public void Update()
         {
+            if (m_hasToActiveGeneralCooldown)
+            {
+                if (m_generalCooldownFrameCounter > m_generalCooldownFrameCount)
+                {
+                    isGeneralAttackCooldownActive = true;
+                    m_generalCooldownFrameCounter = 0;
+                    m_hasToActiveGeneralCooldown = false;
+                }
+                else
+                {
+                    m_generalCooldownFrameCounter++;
+                }
+            }
+
             if (isGeneralAttackCooldownActive)
             {
                 if(baseCooldownAttackTimer >baseCooldownAttack)
@@ -189,6 +204,8 @@ namespace Enemies
             }
             m_timer = 0.0f;
 
+            
+
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
@@ -216,8 +233,8 @@ namespace Enemies
 
             isMvtAttackInit = false;
 
-          
 
+           
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
         }
@@ -327,21 +344,20 @@ namespace Enemies
 
         public void FinishRecoverAttack()
         {
+            if (currentAttackData.isEndingAttackSequence)
+            {
+                    isInAttackSequence = false;
+                sequenceIndex = -1;
+            }
+            if (currentAttackData.isEndingAttackSequence) m_hasToActiveGeneralCooldown = true;
+
             // Custom Attack Section
             if (currentAttackData.customAttack != null)
             {
                 currentAttackData.customAttack.EndRecoverPhase();
             }
-
-     
-            if (currentAttackData.isEndingAttackSequence)
-            {
-                isInAttackSequence = false;
-                sequenceIndex = -1;
-            }
-
-
-                isAttackOnCooldown[currentAttackIndex] = true;
+   
+             isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
             m_npcMetaInfos.state = NpcState.IDLE;
@@ -350,6 +366,11 @@ namespace Enemies
         }
 
         #endregion
+
+        private void SetGeneralCooldown(bool state)
+        {
+            if (currentAttackData.isTriggerGeneralCooldown) isGeneralAttackCooldownActive = true;
+        }
 
         #region Update Phase Functions
         public void UpdatePrepAttack()
@@ -466,7 +487,7 @@ namespace Enemies
             if (m_timer > currentAttackData.recoverTime)
             {
                 FinishRecoverAttack();
-                if(currentAttackData.isTriggerGeneralCooldown) isGeneralAttackCooldownActive = true;
+                
             }
             else
             {

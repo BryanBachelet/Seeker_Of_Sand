@@ -37,27 +37,38 @@ namespace GuerhoubaGames.AI
         [HideInInspector] public Blackboard blackboard;
         [HideInInspector] public Enemies.NpcMetaInfos agent;
         [TextArea] public string description;
-        
+        public bool debugTest;
 
+        protected bool once;
 
         public virtual State Evaluate()
         {
+
+
             if (!started)
             {
                 OnStart();
                 started = true;
+                once = false;
             }
             state = OnUpdate();
             if (state == State.FAILURE || state == State.SUCCESS)
             {
                 OnStop();
                 started = false;
+                if (debugTest && !once)
+                {
+                    once = true;
+                    Debug.LogError("Stop Attack");
+                }
             }
             return state;
         }
         
         public void StopNode()
         {
+
+         
             OnStop();
             started = false;
         }
