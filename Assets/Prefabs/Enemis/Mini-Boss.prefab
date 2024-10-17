@@ -249,6 +249,7 @@ GameObject:
   - component: {fileID: 461640954189689231}
   - component: {fileID: 3108002389149068764}
   - component: {fileID: 8639129744682881334}
+  - component: {fileID: -6111061326333291495}
   m_Layer: 6
   m_Name: Mini-Boss
   m_TagString: Enemy
@@ -720,6 +721,7 @@ MonoBehaviour:
   state: 0
   attackComponent: {fileID: 7558812344738510730}
   specialCapacities: {fileID: 0}
+  m_healthComponent: {fileID: 0}
   moveComponent: {fileID: 0}
   manager: {fileID: 0}
   behaviorTreeComponent: {fileID: 0}
@@ -756,8 +758,9 @@ MonoBehaviour:
   - {fileID: 793578448744671341, guid: 74b6b642dde795f41a2bd42d03d363cb, type: 3}
   isGeneralAttackCooldownActive: 0
   baseCooldownAttack: 1.5
+  attackCooldownReduction: 0
   currentAttackState: 0
-  isActiveDebug: 1
+  isActiveDebug: 0
   variantePrecision: 0
   rangeVariante: 1
   isInAttackSequence: 0
@@ -999,6 +1002,22 @@ MonoBehaviour:
   indexAttackTrigger: 0000000000000000000000000000000000000000000000000000000007000000
   closeNameTrigger: Close
   m_animator: {fileID: 1090285314931375831}
+--- !u!114 &-6111061326333291495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bba41b4eb747a84bbe233eafdd82a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAttackCooldownUpdateValue: 0.25
+  cooldownAttackReduction: 0.25
+  maxSpeedUpdateValue: 100
+  minSpeedUpdateValue: 40
 --- !u!1 &2428030630988664286
 GameObject:
   m_ObjectHideFlags: 0

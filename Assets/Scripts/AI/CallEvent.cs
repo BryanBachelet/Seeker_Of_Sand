@@ -19,7 +19,7 @@ public class CallEvent : ActionNode
     {
         if (blackboard.event1 != null)
         {
-            blackboard.event1.Invoke();
+            blackboard.event1?.Invoke();
             return State.SUCCESS;
         }
         else

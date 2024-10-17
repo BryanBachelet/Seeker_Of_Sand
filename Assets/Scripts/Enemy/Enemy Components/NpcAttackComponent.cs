@@ -40,6 +40,11 @@ namespace Enemies
         private const int m_generalCooldownFrameCount = 2;
         private int m_generalCooldownFrameCounter;
 
+        [HideInInspector]
+        [Range(0, 1f)]
+        [Tooltip("Stat of cooldown reduction for all attack")]
+        public float attackCooldownReduction = 0.0f;  
+
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
@@ -502,11 +507,11 @@ namespace Enemies
             {
                 if (!isAttackOnCooldown[i]) continue;
 
-                if(timerAttackCooldown[i]> attackEnemiesObjectsArr[i].data.coooldownAttack)
+                if(timerAttackCooldown[i]> attackEnemiesObjectsArr[i].data.coooldownAttack * (1.0f- attackCooldownReduction))
                 {
                     isAttackOnCooldown[i] = false;
                     timerAttackCooldown[i] = 0;
-                    Debug.Log("Attack" + attackEnemiesObjectsArr[i].data.nameAttack + "cooldown is finish");
+                   if(isActiveDebug) Debug.Log("Attack" + attackEnemiesObjectsArr[i].data.nameAttack + "cooldown is finish");
                 }
                 else
                 {

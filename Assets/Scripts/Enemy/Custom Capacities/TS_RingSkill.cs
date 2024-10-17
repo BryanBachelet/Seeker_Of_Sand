@@ -48,22 +48,20 @@ namespace Enemies
             {
                 Destroy(ringInstance);
             }
-            else 
-            {
-                if(m_npcHealthComponent.GetCurrentLifePercent() < 0.25f && !activeRingIntensity && ringInstance != null)
-                {
-                    activeRingIntensity = true;
-                    VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
-                    for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
-                    {
-                        ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
-                    }
-                }
-            }
+            
         }
 
         #endregion
 
+        public void UpgradeRingVisual()
+        {
+            activeRingIntensity = true;
+            VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
+            for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
+            {
+                ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
+            }
+        }
 
         public void ActiveRingSkill()
         {
