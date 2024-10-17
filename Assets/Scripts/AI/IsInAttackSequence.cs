@@ -22,6 +22,11 @@ namespace GuerhoubaGames.AI
         {
             if (agent.attackComponent.isInAttackSequence && agent.attackComponent.sequenceIndex != sequenceValidIndex)
             {
+                if(debugTest)
+                {
+                    Debug.LogError("Sequence not valid, info : index " + agent.attackComponent.sequenceIndex );
+
+                }
                 return State.FAILURE;
             }
             else

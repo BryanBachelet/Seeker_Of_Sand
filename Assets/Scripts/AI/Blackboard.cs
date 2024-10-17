@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace GuerhoubaGames.AI
 {
@@ -11,5 +12,6 @@ namespace GuerhoubaGames.AI
         public GameObject moveToObject;
         public bool IsSpecialCapacityCall;
         public int indexSpecialCapacityCall;
+        public Action event1;
     }
 }

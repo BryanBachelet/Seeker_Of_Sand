@@ -18,10 +18,8 @@ namespace GuerhoubaGames.AI
             if (agent.attackComponent.currentAttackState != GameEnum.AttackPhase.NONE)
             {
                 isSucces = -1;
-                if (debugTest)
-                {
-                    Debug.LogError("Bug");
-                }
+
+            
             }
             else
             {
@@ -30,10 +28,7 @@ namespace GuerhoubaGames.AI
                 agent.attackComponent.OnFinishAttack += IsFinish;
                 isSucces = 0;
                 Debug.Log("Start Attack : " + description);
-                if (debugTest)
-                {
-                    Debug.LogError(" No Bug");
-                }
+       
             }
         }
 

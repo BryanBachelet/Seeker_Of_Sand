@@ -54,13 +54,14 @@ namespace GuerhoubaGames.AI
             state = OnUpdate();
             if (state == State.FAILURE || state == State.SUCCESS)
             {
+                if (state == State.FAILURE && debugTest)
+                {
+                    Debug.LogError(name + " has failed");
+                }
+
                 OnStop();
                 started = false;
-                if (debugTest && !once)
-                {
-                    once = true;
-                    Debug.LogError("Stop Attack");
-                }
+             
             }
             return state;
         }
