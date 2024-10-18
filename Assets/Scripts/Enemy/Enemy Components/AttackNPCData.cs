@@ -37,7 +37,6 @@ namespace Enemies
         public float attackRange;
         public bool isStunLockingAttack;
         public bool isStopMovingAtPrep;
-        public bool isHeavyAttack;
         [Tooltip("Allow the AI to constantly rotate during prep time")]
         public bool isFollowTarget;
         public AttackLaunchMoment launchMoment;

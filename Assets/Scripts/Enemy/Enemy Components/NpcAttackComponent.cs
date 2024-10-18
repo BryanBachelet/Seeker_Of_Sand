@@ -532,7 +532,6 @@ namespace Enemies
                 colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(true);
                 CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
                 closeAttackComponent.damage = currentAttackData.damage;
-                closeAttackComponent.isHeavyAttack = currentAttackData.isHeavyAttack;
                 closeAttackComponent.attackName = currentAttackData.nameAttack;
             }
             else

@@ -14,7 +14,7 @@ namespace GuerhoubaTools.Gameplay
         private TMPro.TMP_Text textStackAssociated;
         private int stack;
 
-        public void SetTimerDuration(float duration, Image clockImage, TMPro.TMP_Text textStack)
+        public void SetTimerDuration(float duration, Image clockImage = null, TMPro.TMP_Text textStack = null)
         {
             m_duration = duration;
             clockAssociated = clockImage;
@@ -35,7 +35,7 @@ namespace GuerhoubaTools.Gameplay
             }else
             {
                 m_timer += Time.deltaTime;
-                textStackAssociated.text = "" + stack;
+                if (textStackAssociated != null) textStackAssociated.text = "" + stack;
                 return false;
             }
 
@@ -59,7 +59,7 @@ namespace GuerhoubaTools.Gameplay
         }
         public void DeactivateClock()
         {
-            clockAssociated.fillAmount = 1;
+            if (clockAssociated != null) clockAssociated.fillAmount = 1;
             isActivate = false;
         }
         

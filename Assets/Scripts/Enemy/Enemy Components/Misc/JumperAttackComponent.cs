@@ -144,7 +144,7 @@ namespace Enemies
                 attackDamageInfo.attackName = "Jumper attack";
                 attackDamageInfo.position = transform.position;
                 attackDamageInfo.damage = (int)damage;
-                m_target.GetComponent<HealthPlayerComponent>().GetHeavyDamage(attackDamageInfo);
+
 
             }
             if (m_curveBehavior.IsCurveFinish())

@@ -98,7 +98,7 @@ namespace Enemies
                     attackDamageInfo.attackName = "Tank Attack";
                     attackDamageInfo.position = transform.position;
                     attackDamageInfo.damage = (int)damage;
-                    m_targetTransform.GetComponent<HealthPlayerComponent>().GetLightDamage(attackDamageInfo);
+                    m_targetTransform.GetComponent<HealthPlayerComponent>().ApplyDamage(attackDamageInfo);
                    
                 }
                 if (m_targetTransform.tag == "Altar")
