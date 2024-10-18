@@ -54,8 +54,9 @@ namespace Enemies
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
-                OnStart?.Invoke();
+               
             }
+            
         }
 
         public void Update()
@@ -72,8 +73,7 @@ namespace Enemies
 
         public void RestartEnemy()
         {
-            m_healthComponent.RestartObject(1);
-            moveComponent.RestartObject();
+            OnStart?.Invoke();
         }
 
         public void SetPauseState()
@@ -94,7 +94,7 @@ namespace Enemies
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
-                OnStart?.Invoke();
+                
             }
         }
 

@@ -33,13 +33,17 @@ namespace Enemies
             m_npcMetaComponent.OnStart += SetupComponent;
         }
 
-        public void SetupComponent()
-        {
-            m_behaviorTreeComponent.behaviorTree.blackboard.event1 += LowLifeEvent;
-        }
 
 
         #endregion
+
+
+        public void SetupComponent()
+        {
+            // Rotate character to the player
+            transform.rotation = Quaternion.FromToRotation(transform.forward, (m_npcMovementComponent.targetData.baseTarget.position - transform.position).normalized);
+            m_behaviorTreeComponent.behaviorTree.blackboard.event1 += LowLifeEvent;
+        }
 
         public void LowLifeEvent()
         {
