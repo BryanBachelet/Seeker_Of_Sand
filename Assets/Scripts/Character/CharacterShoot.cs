@@ -1350,7 +1350,7 @@ namespace Character
 
         public void UpdateFeedbackAimLayout()
         {
-            m_textCurrentLayout.text = "Current layout : \n" + m_aimModeState.ToString();
+            //m_textCurrentLayout.text = "Current layout : \n" + m_aimModeState.ToString();
         }
 
         #region Spell Functions

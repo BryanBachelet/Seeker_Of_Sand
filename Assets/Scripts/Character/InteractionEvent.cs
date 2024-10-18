@@ -58,8 +58,8 @@ public class InteractionEvent : MonoBehaviour
     void Start()
     {
         lastInteractionCheck = 0;
-        ui_RectTransformHintInteraction = ui_HintInteractionObject.transform.parent.GetComponent<RectTransform>();
-        parentHintTransform = ui_RectTransformHintInteraction;
+        //ui_RectTransformHintInteraction = ui_HintInteractionObject.transform.parent.GetComponent<RectTransform>();
+        //parentHintTransform = ui_RectTransformHintInteraction;
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
     }
 
@@ -143,7 +143,7 @@ public class InteractionEvent : MonoBehaviour
                 //ui_HintInteractionObject.SetActive(true);
 
                 /// Remove Event UI
-                m_hintInteractionManager.ActivateAutelData(true);
+                //m_hintInteractionManager.ActivateAutelData(true);
             }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
@@ -152,31 +152,31 @@ public class InteractionEvent : MonoBehaviour
                 if (!altarBehaviorComponent) return;
 
                 m_socleTransform = GameObject.Find("low_Socle").transform;
-                eventDataInfo = altarBehaviorComponent.GetAltarData();
+                //eventDataInfo = altarBehaviorComponent.GetAltarData();
 
                 // Removing the event animation
                 m_lastHintAnimator.SetBool("InteractionOn", true);
 
-                if (eventDataInfo[0] == "0")
-                {
-                    img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
-                }
-                else if (eventDataInfo[0] == "1")
-                {
-                    img_ImageReward.sprite = sprite_List[4]; // Experience Icon
-                }
-                else if (eventDataInfo[0] == "2")
-                {
-
-                    img_ImageReward.sprite = SpellManager.instance.spellProfils[int.Parse(eventDataInfo[3])].spell_Icon;
-                    //Trouver methode pour récupérer le sprite du sort obtenu
-                }
-                else if (eventDataInfo[0] == "3")
-                {
-                    img_ImageReward.sprite = sprite_List[5]; //Health Quarter icon
-                }
-                txt_ObjectifDescription.text = eventDataInfo[1];
-                txt_RewardDescription.text = eventDataInfo[2] + "x";
+                //if (eventDataInfo[0] == "0")
+                //{
+                //    img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
+                //}
+                //else if (eventDataInfo[0] == "1")
+                //{
+                //    img_ImageReward.sprite = sprite_List[4]; // Experience Icon
+                //}
+                //else if (eventDataInfo[0] == "2")
+                //{
+                //
+                //    img_ImageReward.sprite = SpellManager.instance.spellProfils[int.Parse(eventDataInfo[3])].spell_Icon;
+                //    //Trouver methode pour récupérer le sprite du sort obtenu
+                //}
+                //else if (eventDataInfo[0] == "3")
+                //{
+                //    img_ImageReward.sprite = sprite_List[5]; //Health Quarter icon
+                //}
+                //txt_ObjectifDescription.text = eventDataInfo[1];
+                //txt_RewardDescription.text = eventDataInfo[2] + "x";
                 //img_progressionBar.fillAmount = float.Parse(eventDataInfo[4]);
             }
 
@@ -222,7 +222,7 @@ public class InteractionEvent : MonoBehaviour
             if (selection != null) { selection.ChangeLayerToDefault(); }
             currentInteractibleObject = null;
             m_socleTransform = null;
-            StartCoroutine(CloseUIWithDelay(2));
+            //StartCoroutine(CloseUIWithDelay(2));
         }
     }
 
@@ -390,7 +390,7 @@ public class InteractionEvent : MonoBehaviour
                 {
                     NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
                     m_lastHintAnimator.SetBool("InteractionOn", true);
-                    txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
+                    //txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
                     m_lastArtefactAnimator.SetBool("PlayerProxi", true);
                 }
 
@@ -402,10 +402,10 @@ public class InteractionEvent : MonoBehaviour
             if (m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
 
             m_lastArtefactAnimator = null;
-            txt_ObjectifDescription.text = "";
-            txt_ObjectifDescriptionPnj.text = "";
+            //txt_ObjectifDescription.text = "";
+            //txt_ObjectifDescriptionPnj.text = "";
 
-            StartCoroutine(CloseUIWithDelay(2));
+            //StartCoroutine(CloseUIWithDelay(2));
         }
     }
 
@@ -443,6 +443,6 @@ public class InteractionEvent : MonoBehaviour
         ((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * 0.5f)));
 
         //now you can set the position of the ui element
-        parentHintTransform.anchoredPosition = WorldObject_ScreenPosition + offsetPopUpDisplay;
+        //parentHintTransform.anchoredPosition = WorldObject_ScreenPosition + offsetPopUpDisplay;
     }
 }

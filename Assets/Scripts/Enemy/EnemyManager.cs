@@ -88,7 +88,7 @@ namespace Enemies
 
         [Header("Enemy Bonus")]
         [SerializeField] private GameObject m_expBonus;
-        [Range(0, 1.0f)] [SerializeField] private float m_spawnRateExpBonus = 0.01f;
+        [Range(0, 1.0f)][SerializeField] private float m_spawnRateExpBonus = 0.01f;
         #endregion
 
         private Experience_System m_experienceSystemComponent;
@@ -211,7 +211,7 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<PullingSystem>();
             m_pullingSystem.InitializePullingSystem();
-            if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
+            //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
 
@@ -251,11 +251,11 @@ namespace Enemies
             if (remainEnemy > 0)
             {
                 //<size=130%>999 <voffset=0.2em> \n<size=100%>Remain
-                m_tmpTextEnemyRemain.text = "<size=130%>" + remainEnemy + "<voffset=0.2em> \n<size=100%>Remain";
+                //m_tmpTextEnemyRemain.text = "<size=130%>" + remainEnemy + "<voffset=0.2em> \n<size=100%>Remain";
             }
             else
             {
-                m_tmpTextEnemyRemain.text = "<size=130%>" + 0 + "<voffset=0.2em> \n<size=100%>Remain";
+                //m_tmpTextEnemyRemain.text = "<size=130%>" + 0 + "<voffset=0.2em> \n<size=100%>Remain";
             }
             if (spawningPhase)
             {
@@ -266,38 +266,38 @@ namespace Enemies
 
 
 
-            if (m_uiManagerGameObject && lastAltarActivated != null)
-            {
-                lastSkeletonCount = lastAltarActivated.skeletonCount;
-                if (lastSkeletonCount != punketoneInvoked.Count)
-                {
-                    punketoneInvoked.Clear();
-                    for (int i = 0; i < lastSkeletonCount; i++)
-                    {
-                        punketoneInvoked.Add(lastAltarActivated.punketonHP[i]);
-                        m_UiEventManager.SetupUIBoss(i);
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < lastSkeletonCount; i++)
-                    {
-                        m_UiEventManager.UpdateUIBossLifebar(i, punketoneInvoked[i].percentHP, punketoneInvoked[i].currentHP);
-                    }
-                }
-
-            }
-            else
-            {
-                if (punketoneInvoked.Count > 0)
-                {
-                    for (int i = 0; i < lastSkeletonCount; i++)
-                    {
-                        m_UiEventManager.RemoveUIBoss(i);
-                    }
-                    punketoneInvoked.Clear();
-                }
-            }
+            //if (m_uiManagerGameObject && lastAltarActivated != null)
+            //{
+            //    lastSkeletonCount = lastAltarActivated.skeletonCount;
+            //    if (lastSkeletonCount != punketoneInvoked.Count)
+            //    {
+            //        punketoneInvoked.Clear();
+            //        for (int i = 0; i < lastSkeletonCount; i++)
+            //        {
+            //            punketoneInvoked.Add(lastAltarActivated.punketonHP[i]);
+            //            m_UiEventManager.SetupUIBoss(i);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (int i = 0; i < lastSkeletonCount; i++)
+            //        {
+            //            m_UiEventManager.UpdateUIBossLifebar(i, punketoneInvoked[i].percentHP, punketoneInvoked[i].currentHP);
+            //        }
+            //    }
+            //
+            //}
+            //else
+            //{
+            //    if (punketoneInvoked.Count > 0)
+            //    {
+            //        for (int i = 0; i < lastSkeletonCount; i++)
+            //        {
+            //            m_UiEventManager.RemoveUIBoss(i);
+            //        }
+            //        punketoneInvoked.Clear();
+            //    }
+            //}
 
         }
 
@@ -365,17 +365,28 @@ namespace Enemies
             float magnitude = (m_playerTranform.position - m_cameraTransform.position).magnitude;
             for (int i = 0; i < 25; i++)
             {
-                Vector3 basePosition = m_playerTranform.transform.position + m_playerTranform.forward * m_offsetToSpawnCenter;
+                float distance = 200;
+                Vector3 basePosition = new Vector3(0, 0, 0);
+                //while (Mathf.Abs(distance) > 40)
+                //{
+                basePosition = m_playerTranform.transform.position + m_playerTranform.forward * m_offsetToSpawnCenter;
                 basePosition += Vector3.up * m_upperStartPositionMagnitude;
                 basePosition += GetRandomPosition();
 
+                //}
                 Vector3 v3Pos = basePosition;
 
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(v3Pos, out hit, Mathf.Infinity, NavMesh.AllAreas))
                 {
+                    distance = hit.position.y - m_playerTranform.position.y;
+                    if (distance < 0) { distance = -distance; }
+                    if(distance < 40)
+                    {
+                        i = 25;
+                        return hit.position;
+                    }
 
-                    return hit.position;
                 }
 
             }
@@ -407,11 +418,13 @@ namespace Enemies
 
         public bool ReplaceFarEnemy(GameObject enemy)
         {
-            if (m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing || repositionningCount >= repositionningLimit)
+            if (/*m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing ||*/ repositionningCount >= repositionningLimit)
                 return false;
 
             repositionningCount++;
-            enemy.transform.position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
+            Vector3 position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
+            enemy.GetComponent<NavMeshAgent>().Warp(position);
+            enemy.transform.position = position;
             return true;
         }
         private float GetTimeSpawn()
@@ -454,7 +467,7 @@ namespace Enemies
                 }
                 InstantiateSpawnFeedback();
             }
-            
+
 
         }
 
@@ -522,7 +535,7 @@ namespace Enemies
             GlobalSoundManager.PlayOneShot(37, position);
         }
 
-        public GameObject  SpawnBoss(Vector3 pos,EnemyType enemyType)
+        public GameObject SpawnBoss(Vector3 pos, EnemyType enemyType)
         {
             GameObject enemyObjectPull = null;
             NpcHealthComponent npcHealth = null;
@@ -539,9 +552,7 @@ namespace Enemies
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
             npcInfo.manager = this;
 
-            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
-            npcMove.enabled = true;
-            npcMove.enemiesManager = this;
+
 
             npcHealth = enemyObjectPull.GetComponent<NpcHealthComponent>();
             npcHealth.SetInitialData(m_healthManager, this);
@@ -549,6 +560,10 @@ namespace Enemies
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
+
+            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
+            npcMove.enabled = true;
+            npcMove.enemiesManager = this;
 
             m_enemiesArray.Add(npcInfo);
             return enemyObjectPull;
@@ -579,9 +594,7 @@ namespace Enemies
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
             npcInfo.manager = this;
 
-            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
-            npcMove.enabled = true;
-            npcMove.enemiesManager = this;
+
 
             npcHealth = enemyObjectPull.GetComponent<NpcHealthComponent>();
             npcHealth.SetInitialData(m_healthManager, this);
@@ -590,6 +603,11 @@ namespace Enemies
             npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
             npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
             countEnemySpawnMaximum++;
+
+            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
+            npcMove.enabled = true;
+            npcMove.enemiesManager = this;
+
             m_enemiesArray.Add(npcInfo);
         }
 
@@ -685,7 +703,7 @@ namespace Enemies
                 lastAltarActivated = target.GetComponent<AltarBehaviorComponent>();
             }
 
-            m_UiEventManager.SetupEventUI(healthSystemReference, indexTargetList);
+            //m_UiEventManager.SetupEventUI(healthSystemReference, indexTargetList);
         }
 
         public void DeactiveEvent(Transform target)
@@ -700,7 +718,7 @@ namespace Enemies
             m_altarTransform.Remove(target);
             lastAltarActivated = null;
 
-            m_UiEventManager.RemoveEventUI(indexTargetList);
+            //m_UiEventManager.RemoveEventUI(indexTargetList);
         }
 
 
@@ -736,7 +754,7 @@ namespace Enemies
         {
 
             NpcMetaInfos npcMetaInfos = npcHealth.GetComponent<NpcMetaInfos>();
-            if(npcMetaInfos.type == EnemyType.TWILIGHT_SISTER)
+            if (npcMetaInfos.type == EnemyType.TWILIGHT_SISTER)
             {
                 m_terrainGenerator.currentRoomManager.bossRoom.EndRoomBoss();
             }
@@ -824,7 +842,7 @@ namespace Enemies
                 if (m_spawnCauseState[i] == true)
                     return true;
             }
-            return false; 
+            return false;
         }
         public void ActiveSpawnPhase(bool state, EnemySpawnCause spawnCause)
         {
@@ -838,15 +856,15 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            if (detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
+            //if (detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
             if (spawning)
             {
                 //gsm.globalMusicInstance.setParameterByName("Repos", 0);
-               //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(3, "Intensity", 13, 1,"TransitionIntensity"));
+                //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(3, "Intensity", 13, 1,"TransitionIntensity"));
                 gsm.UpdateParameter(1.5f, "Intensity");
                 StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
-                m_enemyIcon.color = colorSignUI[0];
-                m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
+                //m_enemyIcon.color = colorSignUI[0];
+                //m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
             }
             else
             {
@@ -854,8 +872,8 @@ namespace Enemies
                 //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(0.1f, "Intensity", 13, 2, "TransitionIntensity"));
                 gsm.UpdateParameter(0.1f, "Intensity");
                 StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1]));
-                m_enemyIcon.color = colorSignUI[1];
-                m_tmpTextEnemyRemain.color = colorSignUI[1];
+                //m_enemyIcon.color = colorSignUI[1];
+                //m_tmpTextEnemyRemain.color = colorSignUI[1];
             }
         }
 
@@ -1036,7 +1054,7 @@ namespace Enemies
                     m_enemiesFocusAltar.Remove(npcHealth);
 
                 enemyTypeStats[(int)type].instanceCount -= 1;
-                if(healthComponent != null) { healthComponent.GetDestroy(Vector3.zero, 0); }
+                if (healthComponent != null) { healthComponent.GetDestroy(Vector3.zero, 0); }
 
                 m_pullingSystem.ResetEnemyNavMesh(npcHealth.gameObject, type);
             }
@@ -1047,7 +1065,7 @@ namespace Enemies
         {
             bool canSpawnDissonance = false;
             int randomNumber = Random.Range(0, 100);
-            if(randomNumber < enemyGenerateDissonanceProba.Evaluate(m_enemiesArray.Count))
+            if (randomNumber < enemyGenerateDissonanceProba.Evaluate(m_enemiesArray.Count))
             {
                 canSpawnDissonance = true;
             }
