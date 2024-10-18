@@ -303,7 +303,7 @@ namespace Character
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
                 //  cameraPlayer.BlockZoom(false);
-                DisplayNewCurrentState(1);
+                //DisplayNewCurrentState(1);
 
             }
 
@@ -312,7 +312,7 @@ namespace Character
                 m_characterShoot.ActivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", true);
                 m_BookAnim.SetBool("Casting", true);
-                DisplayNewCurrentState(0);
+                //DisplayNewCurrentState(0);
                 //  cameraPlayer.BlockZoom(true);
                 SetCombatMode(true);
             }

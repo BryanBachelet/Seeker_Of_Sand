@@ -237,6 +237,11 @@ namespace Enemies
             {
                 Debug.Log("Setup current max life : " + (maxLife + spawnMinute * gainPerMinute));
             }
+
+            NpcMouvementComponent npcMove = this.GetComponent<NpcMouvementComponent>();
+            npcMove.lastTimeSeen = Time.time;
+            npcMove.lastTimeCheck = npcMove.lastTimeSeen;
+            npcMove.lastPosCheck = this.transform.position;
             m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));

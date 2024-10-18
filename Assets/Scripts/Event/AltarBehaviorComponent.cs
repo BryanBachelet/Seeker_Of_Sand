@@ -195,7 +195,7 @@ public class AltarBehaviorComponent : InteractionInterface
             tempsEcoulePunk += Time.deltaTime;
         }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
-        m_eventProgressionSlider.fillAmount = progression;
+        //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 

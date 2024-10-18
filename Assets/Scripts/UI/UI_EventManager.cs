@@ -61,17 +61,17 @@ namespace SeekerOfSand
 
             public void SetupEventUI(ObjectHealthSystem objectHealthSystem,int index)
             {
-                objectHealthSystem.indexUIEvent = index;
-                objectHealthSystem.m_eventLifeUIFeedback = m_imageLifeEvents[index];
-                objectHealthSystem.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[index];
-                objectHealthSystem.m_eventProgressUIFeedback = m_textProgressEvent[index];
+                //objectHealthSystem.indexUIEvent = index;
+                //objectHealthSystem.m_eventLifeUIFeedback = m_imageLifeEvents[index];
+                //objectHealthSystem.m_eventLifeUIFeedbackObj = m_imageLifeEventsObj[index];
+                //objectHealthSystem.m_eventProgressUIFeedback = m_textProgressEvent[index];
 
                 objectHealthSystem.GetComponent<AltarBehaviorComponent>().m_eventProgressionSlider = m_sliderProgressEvent[index];
-                m_sliderProgressEvent[index].gameObject.SetActive(true);
+                //m_sliderProgressEvent[index].gameObject.SetActive(true);
 
-                m_imageLifeEventsObj[index].SetActive(true);
-                m_imageLifeEvents[index].gameObject.SetActive(true);
-                m_textProgressEvent[index].gameObject.SetActive(true);
+                //m_imageLifeEventsObj[index].SetActive(true);
+                //m_imageLifeEvents[index].gameObject.SetActive(true);
+                //m_textProgressEvent[index].gameObject.SetActive(true);
             }
 
             public void RemoveEventUI(int index)

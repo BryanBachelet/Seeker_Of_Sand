@@ -85,7 +85,7 @@ namespace Character
             experience = GetComponent<Experience_System>();
             if (!m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
             // m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
-            upgradePointTextDisplay.text = upgradePoint.ToString();
+            //upgradePointTextDisplay.text = upgradePoint.ToString();
         }
         #endregion
 
@@ -152,9 +152,9 @@ namespace Character
         {
             upgradePoint--;
            // m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
-            upgradePointTextDisplay.text = upgradePoint.ToString();
-            experience.m_LevelTaken++;
-            experience.m_UiPlayerInfo.AddLevelTaken();
+            //upgradePointTextDisplay.text = upgradePoint.ToString();
+            //experience.m_LevelTaken++;
+            //experience.m_UiPlayerInfo.AddLevelTaken();
             LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].name, isDebugActive);
             if (isDebugActive)
             {
@@ -205,7 +205,7 @@ namespace Character
         public void GiveUpgradePoint(int upgradeNumber)
         {
             upgradePoint+= upgradeNumber;
-            upgradePointTextDisplay.text = upgradePoint.ToString();
+            //upgradePointTextDisplay.text = upgradePoint.ToString();
         }
       
         public void ChangeBaseInterfaceDisplay(bool willBeAble)

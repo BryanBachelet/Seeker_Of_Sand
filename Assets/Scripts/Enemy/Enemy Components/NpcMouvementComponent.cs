@@ -57,6 +57,9 @@ namespace Enemies
         public NpcCustomMouvement customMouvement;
         private bool isFirstTimeCustomMove = true;
 
+        [HideInInspector] public float lastTimeSeen = 0;
+        [HideInInspector] public float lastTimeCheck = 0;
+        [HideInInspector] public Vector3 lastPosCheck;
         public void Start()
         {
             InitComponent();
@@ -106,8 +109,54 @@ namespace Enemies
             }
             m_isPauseActive = false;
 
-            if (m_npcInfo.state == NpcState.MOVE)
+            if (m_npcInfo.state == NpcState.MOVE )
             {
+                if(m_npcInfo.type != EnemyType.TWILIGHT_SISTER)
+                {
+                    float time = Time.time;
+                    if (time > lastTimeCheck + 3 && IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main))
+                    {
+                        lastTimeSeen = time;
+                        lastTimeCheck = time;
+                        if(Vector3.Distance(transform.position, lastPosCheck) > 10)
+                        {
+                            lastPosCheck = transform.position;
+                        }
+                        else
+                        {
+                            if (enemiesManager.ReplaceFarEnemy(this.gameObject))
+                            {
+                                //distancePos = Vector3.Distance(transform.position, targetData.target.position);
+                                m_navMeshAgent.destination = targetData.target.position;
+                                m_navMeshAgent.nextPosition = transform.position;
+                                lastPosCheck = transform.position;
+                                return;
+
+                            }
+                        }
+
+
+                    }
+                    else if (time > lastTimeSeen + 5)
+                    {
+                        if (!IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main) || Vector3.Distance(transform.position, lastPosCheck) < 10)
+                        {
+                            lastTimeCheck = time;
+                            lastTimeSeen = time;
+                            if (enemiesManager.ReplaceFarEnemy(this.gameObject))
+                            {
+                                //distancePos = Vector3.Distance(transform.position, targetData.target.position);
+                                m_navMeshAgent.destination = targetData.target.position;
+                                m_navMeshAgent.nextPosition = transform.position;
+                                lastPosCheck = transform.position;
+                                return;
+
+                            }
+                        }
+
+                    }
+
+                }
                 if (hasCustomMovement)
                 {
                     if (isFirstTimeCustomMove)
@@ -465,6 +514,12 @@ namespace Enemies
         public void OnDrawGizmosSelected()
         {
 
+        }
+
+        public bool IsVisibleFrom(Renderer renderer, Camera camera)
+        {
+            Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+            return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
         }
     }
 }
