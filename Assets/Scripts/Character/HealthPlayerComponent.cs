@@ -28,11 +28,11 @@ public class HealthPlayerComponent : MonoBehaviour
     [SerializeField] private float m_CurrentHealth;
     [SerializeField] private float m_invulerableLegerTime;
     [SerializeField] private float m_invulerableLourdTime;
-    [SerializeField] public Image m_SliderCurrentHealthHigh;
-    [SerializeField] public Image m_SliderCurrentHealthHighBuffer;
-    [SerializeField] public Image m_SliderCurrentQuarterHigh;
-    [SerializeField] private Image m_SliderCurrentHealthLow;
-    [SerializeField] private Image m_SliderCurrentQuarterLow;
+    [Header("UI Object")]
+    public GuerhoubaGames.UI.UI_HealthPlayer uiHealthPlayer;
+
+
+
     [SerializeField] private AnimationCurve m_SlowdownEffectCurve;
     [SerializeField] private AnimationCurve m_SlowdownEffectCurveLastQuarter;
     private AnimationCurve m_currentAnimationCurveToUse;
@@ -100,10 +100,6 @@ public class HealthPlayerComponent : MonoBehaviour
             //    GetDamageLeger(damageSend);
 
         }
-        if (healthBuffer)
-        {
-            BufferXpDisplay();
-        }
         if (feedbackHit)
         {
             if (Time.time - timeLastHit < tempsEffetHit)
@@ -164,9 +160,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
             if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
 
-            m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            BufferXpDisplay();
-            m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+            uiHealthPlayer.UpdateLifeBar( m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
             m_characterMouvement.SetKnockback(attackDamageInfo.position);
 
             if (m_CurrentHealth <= 0)
@@ -200,9 +194,8 @@ public class HealthPlayerComponent : MonoBehaviour
                 m_CurrentHealth -= attackDamageInfo.damage;
             }
             if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
-            m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-            BufferXpDisplay();
+
+            uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
 
             if (m_CurrentHealth <= 0)
             {
@@ -241,10 +234,8 @@ public class HealthPlayerComponent : MonoBehaviour
         //Actualiser m_CurrentQuarterMaxHealth && m_CurrentQuarterMinHealth
         //Actualiser m_CurrentQuarter
 
-        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
         ActiveBufferHealth(Time.time, m_CurrentHealth);
-        BufferXpDisplay();
-        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
         m_CurrentHealth = m_MaxHealthQuantity;
         updateHealthValues = false;
         m_isInvulnerableLeger = false;
@@ -263,22 +254,17 @@ public class HealthPlayerComponent : MonoBehaviour
         int indexQuarter = (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
         m_CurrentHealth = Mathf.Clamp((indexQuarter + 1) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
         m_CurrentQuarter = Mathf.Clamp((indexQuarter + 1), 0, 4);
-        UpdateUILifebar();
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
     }
 
-    public void UpdateUILifebar()
-    {
-        ActiveBufferHealth(Time.time, m_CurrentHealth);
-        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-    }
+
 
     public void RestoreFullLife()
     {
 
         m_CurrentHealth = m_MaxHealthQuantity;
         m_CurrentQuarter = 4;
-        UpdateUILifebar();
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
     }
 
     public void RestoreHealQuarter()
@@ -312,10 +298,6 @@ public class HealthPlayerComponent : MonoBehaviour
         lastHealth = health;
     }
 
-    private void BufferXpDisplay()
-    {
-        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (Time.time -timeLastHit) / 0.5f);
-    }
 
     public void OnCollisionEnter(Collision collision)
     { 

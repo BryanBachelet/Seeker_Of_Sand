@@ -48,7 +48,7 @@ namespace Enemies
             
             if (m_npcMetaInfo.state == NpcState.DEATH)
             {
-
+                canBeLaunch = true;
                 allRingVFX = ringInstance.GetComponentsInChildren<VisualEffect>();
                 for (int i = 0; i < allRingVFX.Length; i++)
                 {

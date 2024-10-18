@@ -26,6 +26,7 @@ public class CharacterArtefact : MonoBehaviour
 
     public UI_Fragment_Tooltip uiFragmentTooltip;
     private Vector3 positionRandom;
+
     public void Start()
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
@@ -84,7 +85,6 @@ public class CharacterArtefact : MonoBehaviour
 
         for (int i = 0; i < artefactsList.Count; i++)
         {
-
             if (!GameStats.instance.IsContains(artefactsList[i].nameArtefact))
                 continue;
 
@@ -101,7 +101,6 @@ public class CharacterArtefact : MonoBehaviour
             }
         }
 
-
         return artefactsInfosArray;
     }
 
@@ -117,7 +116,6 @@ public class CharacterArtefact : MonoBehaviour
     }
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
     {
-
         GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefacts.gameElement], transform.position, transform.rotation);
         newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
         artefactAround_List.Add(newArtefactAround);
