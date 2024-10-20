@@ -193,6 +193,13 @@ MonoBehaviour:
   m_offsetToSpawnCenter: 20
   m_minimumSpeedToRepositing: 30
   m_enemyHolder: {fileID: 0}
+  enemyGenerateDissonanceProba:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  countEnemySpawnMaximum: 0
   enemyTypeStats:
   - type: 0
     instanceCount: 0
@@ -572,6 +579,7 @@ MonoBehaviour:
   m_targetTransformLists: []
   spawningPhase: 1
   gsm: {fileID: 0}
+  m_dayController: {fileID: 0}
   m_spawningVFX: {fileID: 7236001423745814053, guid: eaf90b2f092024847961aba5950d8173,
     type: 3}
   altarLaunch: 0
@@ -625,6 +633,9 @@ MonoBehaviour:
   spellChoiceUI: {fileID: 0}
   upgradeBook: {fileID: 0}
   book_Animator: {fileID: 0}
+  levelCurrentSpell: {fileID: 0}
+  progressRang: {fileID: 0}
+  progressNextRang: {fileID: 0}
 --- !u!114 &262313276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -875,6 +886,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5ea7935ee93fb6644b233001bd901135, type: 2}
   - {fileID: 11400000, guid: 21b2c4c04a0936a41a1837ff409fc95b, type: 2}
   - {fileID: 11400000, guid: 3fd15e55954cdcc4aaa3900c77cfa150, type: 2}
+  - {fileID: 11400000, guid: f2afebf86a9f9a24683ee2f8a7112993, type: 2}
+  - {fileID: 11400000, guid: 7d47c9e6bcb2773449d64331851438f2, type: 2}
   artefactHolder: []
   artefactPrefab:
   - {fileID: 0}

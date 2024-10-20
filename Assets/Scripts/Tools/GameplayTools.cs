@@ -67,6 +67,7 @@ namespace GuerhoubaTools.Gameplay
         
         public float GetTimer() { return m_timer; }
 
+        public float GetRatio() { return m_timer / m_duration; }
 
 
 

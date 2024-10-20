@@ -59,7 +59,9 @@ namespace Enemies
         public float rangeProjectile;
         public float durationProjectile;
 
-
+        [Header("Raycast Parameters")]
+        public Vector3 scaleRaycast;
+        public LayerMask rayLayerMask;
 
         [HideInInspector] public int indexCollider;
         [HideInInspector] public int indexProjectileGO;
