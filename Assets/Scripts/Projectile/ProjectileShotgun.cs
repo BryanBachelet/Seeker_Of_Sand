@@ -18,7 +18,6 @@ public class ProjectileShotgun : Projectile
         base.CollisionEvent(other);
         if (other.gameObject.tag == "Enemy")
         {
-            Debug.Log("Test");
         }
     }
 

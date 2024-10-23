@@ -59,7 +59,7 @@ namespace SeekerOfSand
 
             public void UpdateLevelSpell(int index, int value)
             {
-                m_levelText[index].text = value.ToString();
+                //m_levelText[index].text = value.ToString();
             }
             public void UpdateStackingObjects(int[] value)
             {

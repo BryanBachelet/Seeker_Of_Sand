@@ -62,7 +62,7 @@ public class EthernalFeedback : MonoBehaviour
         if (Physics.Raycast(elecObject.position, elecObject.TransformDirection(direction), out hit, Mathf.Infinity, lm))
         {
             Debug.DrawRay(elecObject.position, elecObject.TransformDirection(direction) * hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+            
         }
 
         timeSpend += Time.deltaTime;

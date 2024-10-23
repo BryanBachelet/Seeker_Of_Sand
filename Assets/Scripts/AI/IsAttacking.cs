@@ -33,15 +33,17 @@ namespace GuerhoubaGames.AI
             if (agent.state == Enemies.NpcState.ATTACK)
             {
                 
-                if (onlyOneTest && state == State.RUNNING)
-                {
-                    isLock = true;
-                }
+             
                 return State.FAILURE;
             }
             else
             {
                 State state = child.Evaluate();
+                if (onlyOneTest && state == State.RUNNING)
+                {
+                    isLock = true;
+                }
+             
                 return state;
             }
         }

@@ -45,6 +45,7 @@ public class ObjectHealthSystem : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        return;
         if (m_isInvicible || !state.isPlaying || eventState != EventObjectState.Active) return;
 
         m_currentHealth -= damage;

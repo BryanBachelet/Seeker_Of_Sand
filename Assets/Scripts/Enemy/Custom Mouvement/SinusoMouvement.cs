@@ -104,10 +104,6 @@ namespace Enemies.Movement
         {
             float distance = Vector3.Distance(m_transform.position, m_lastPosition);
             bool canStop = distance < stopDistance + m_agent.stoppingDistance;
-            if (canStop)
-            {
-                Debug.Log("test");
-            }
             return canStop;
         }
     }

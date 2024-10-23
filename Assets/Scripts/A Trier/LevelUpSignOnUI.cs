@@ -13,36 +13,36 @@ public class LevelUpSignOnUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(lastLevelUpTake != Character.CharacterUpgrade.upgradePoint)
-        {
-            lastLevelUpTake = Character.CharacterUpgrade.upgradePoint;
-            if(!vfxIsActive)
-            {
-                vfxIsActive = true;
-                StartCoroutine(ActiveLevelUpSign(1));
-            }
-            if (lastLevelUpTake <= 0)
-            {
-                //ActiveVFX(lastLevelUpTake);
-                DesactiveVFX(lastLevelUpTake);
-                if (vfxIsActive)
-                {
-                    vfxIsActive = false;
-                    StartCoroutine(DesactiveLevelUpSign(1));
-                }
-            }
-            if(lastLevelUpTake < 6)
-            {
-                ActiveVFX(lastLevelUpTake);
-                DesactiveVFX(lastLevelUpTake);
-            }
-            else
-            {
-                ActiveVFX(5);
-            }
-
-
-        }
+        //if(lastLevelUpTake != Character.CharacterUpgrade.upgradePoint)
+        //{
+        //    lastLevelUpTake = Character.CharacterUpgrade.upgradePoint;
+        //    if(!vfxIsActive)
+        //    {
+        //        vfxIsActive = true;
+        //        StartCoroutine(ActiveLevelUpSign(1));
+        //    }
+        //    if (lastLevelUpTake <= 0)
+        //    {
+        //        //ActiveVFX(lastLevelUpTake);
+        //        //DesactiveVFX(lastLevelUpTake);
+        //        if (vfxIsActive)
+        //        {
+        //            vfxIsActive = false;
+        //            StartCoroutine(DesactiveLevelUpSign(1));
+        //        }
+        //    }
+        //    if(lastLevelUpTake < 6)
+        //    {
+        //        //ActiveVFX(lastLevelUpTake);
+        //        //DesactiveVFX(lastLevelUpTake);
+        //    }
+        //    else
+        //    {
+        //        ActiveVFX(5);
+        //    }
+        //
+        //
+        //}
 
     }
 

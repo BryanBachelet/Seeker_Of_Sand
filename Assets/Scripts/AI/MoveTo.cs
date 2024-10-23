@@ -11,6 +11,10 @@ namespace GuerhoubaGames.AI
             agent.state = Enemies.NpcState.MOVE;
             agent.moveComponent.isGoingAway = false;
             agent.moveComponent.minTargetDistance = stopDistance;
+            if(debugTest)
+            {
+                Debug.LogError("IsMoving");
+            }
         }
 
         protected override void OnStop()

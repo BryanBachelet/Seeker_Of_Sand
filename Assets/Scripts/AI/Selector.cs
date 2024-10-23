@@ -53,9 +53,12 @@ namespace GuerhoubaGames.AI
 
         public void ManageChild(Node child)
         {
+           
             if (childChoose != child)
             {
-                if(childChoose)childChoose.StopNode();
+             
+                if (childChoose)
+                    childChoose.StopNode();
                 childChoose = child;
             }
         }

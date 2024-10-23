@@ -10,6 +10,7 @@ namespace GuerhoubaGames.AI
 
         public bool onlyOneTest;
         private bool isLock;
+
         protected override void OnStart()
         {
             
@@ -22,6 +23,7 @@ namespace GuerhoubaGames.AI
 
         protected override State OnUpdate()
         {
+           
 
 
             if (isLock)
@@ -37,6 +39,7 @@ namespace GuerhoubaGames.AI
 
             if (!agent.attackComponent.IsAttackOnCooldown(indexAttack))
             {
+          
                 State state = child.Evaluate();
                 if (onlyOneTest && state == State.RUNNING)
                 {

@@ -23,6 +23,7 @@ namespace GuerhoubaGames.AI
 
         protected override State OnUpdate()
         {
+
             Node child = children[current];
             switch (child.Evaluate())
             {
@@ -37,6 +38,7 @@ namespace GuerhoubaGames.AI
                     break;
             }
 
+                
             return current == children.Count ? State.SUCCESS : State.RUNNING;
         }
     }
