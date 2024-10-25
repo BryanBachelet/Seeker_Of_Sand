@@ -15,6 +15,7 @@ namespace Enemies
         PREP_ATTACK,
         RECUPERATION,
         SPECIAL_CAPACITIES,
+        SPECIAL_ACTION,
         DEATH,
         PAUSE,
     }
@@ -54,7 +55,7 @@ namespace Enemies
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
-               
+                OnStart?.Invoke();
             }
             
         }
@@ -73,7 +74,8 @@ namespace Enemies
 
         public void RestartEnemy()
         {
-            OnStart?.Invoke();
+ 
+           // OnStart?.Invoke();
         }
 
         public void SetPauseState()
@@ -94,7 +96,7 @@ namespace Enemies
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
-                
+                OnStart?.Invoke();
             }
         }
 

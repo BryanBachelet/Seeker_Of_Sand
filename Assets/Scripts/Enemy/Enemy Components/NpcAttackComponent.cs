@@ -51,6 +51,7 @@ namespace Enemies
         // Raycast Attack Value 
         [Header("Raycasts Parameters")]
         [HideInInspector] private Vector3 directionTarget;
+        public Vector3 raycastOffset;
         private bool m_HitDetect;
         private RaycastHit m_Hit;
         public Vector3 raycastHitPoint;
@@ -240,9 +241,9 @@ namespace Enemies
 
                 if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
                 {
-                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - m_mouvementComponent.baseTransform.position;
+                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - ( m_mouvementComponent.baseTransform.position + raycastOffset);
                     Vector3 boxScale = currentAttackData.scaleRaycast;
-                    m_HitDetect = Physics.BoxCast(transform.position, boxScale, directionTarget, out m_Hit, Quaternion.identity, m_MaxDistance);
+                    m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
                     if (m_HitDetect)
                     {
                         raycastHitPoint = m_Hit.point;
@@ -423,7 +424,7 @@ namespace Enemies
                 rb.angularVelocity = Vector3.zero;
                 if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
                 {
-                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position );
+                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     rotationRaycast = transform.rotation;
                 }
             }
@@ -451,7 +452,7 @@ namespace Enemies
 
             // Raycast Shoot
             Vector3 boxScale = currentAttackData.scaleRaycast;
-            m_HitDetect = Physics.BoxCast(transform.position, boxScale, directionTarget, out m_Hit, Quaternion.identity, m_MaxDistance, currentAttackData.rayLayerMask);
+            m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
             if (m_HitDetect)
             {
                 raycastHitPoint = m_Hit.point;
@@ -600,6 +601,7 @@ namespace Enemies
                     npcAttackProjectile.duration = currentAttackData.durationProjectile;
                     npcAttackProjectile.range = currentAttackData.rangeProjectile;
                     npcAttackProjectile.attackName = currentAttackData.nameAttack;
+                    npcAttackProjectile.isHeavy = currentAttackData.isHeavyAttack;
 
 
                 }
@@ -615,6 +617,7 @@ namespace Enemies
                     attackObjMetaData.damage = currentAttackData.damage;
                     attackObjMetaData.nameAttack = currentAttackData.nameAttack;
                     attackObjMetaData.isOneShoot = true;
+                    attackObjMetaData.isHeavy = currentAttackData.isHeavyAttack;
                     attackObjectArea.InitAttackObject(attackObjMetaData);
 
                 }
@@ -624,7 +627,7 @@ namespace Enemies
             {
 
                 Vector3 boxScale = currentAttackData.scaleRaycast;
-                m_HitDetect = Physics.BoxCast(transform.position ,boxScale, directionTarget, out m_Hit, Quaternion.identity, m_MaxDistance);
+                m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask) ;
                 if (m_HitDetect)
                 {
                     raycastHitPoint = m_Hit.point;
@@ -635,6 +638,7 @@ namespace Enemies
                         attackDamageInfo.attackName = currentAttackData.nameAttack;
                         attackDamageInfo.damage = currentAttackData.damage;
                         attackDamageInfo.position = m_Hit.point - directionTarget * 1;
+                        attackDamageInfo.bIsHeavy = currentAttackData.isHeavyAttack;
                         healthPlayer.ApplyDamage(attackDamageInfo);
                     }
                 }
@@ -681,7 +685,7 @@ namespace Enemies
                 {
                     Gizmos.color = Color.red;
                     //Draw a Ray forward from GameObject toward the hit
-                    Gizmos.DrawRay(transform.position , directionTarget.normalized * m_Hit.distance);
+                    Gizmos.DrawRay(transform.position + raycastOffset, directionTarget.normalized * m_Hit.distance);
                     //Draw a cube that extends to where the hit exists
 
                     Gizmos.matrix = Matrix4x4.Rotate(rotationRaycast) * Gizmos.matrix;
@@ -694,7 +698,7 @@ namespace Enemies
                     Gizmos.color = Color.green;
                     Gizmos.matrix = Matrix4x4.identity;
                     //Draw a Ray forward from GameObject toward the maximum distance
-                    Gizmos.DrawRay(transform.position , directionTarget.normalized * m_MaxDistance);
+                    Gizmos.DrawRay(transform.position  = raycastOffset, directionTarget.normalized * m_MaxDistance);
                     //Draw a cube at the maximum distance
                     Gizmos.DrawWireCube(transform.position + directionTarget * m_MaxDistance, transform.localScale);
                 }

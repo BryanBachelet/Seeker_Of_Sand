@@ -10693,30 +10693,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b8d1ce1423a2d4bae0a7805fe9c7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MaxHealthQuantity: 100
+  m_invulerableLightTime: 0.2
+  m_invulerableHeavyTime: 0.2
+  m_CurrentHealth: 100
+  m_CurrentQuarter: 4
   activeDeath: 0
   m_gameOverMenu: {fileID: 0}
-  m_MaxHealthQuantity: 100
-  m_CurrentQuarterMaxHealth:
-  - 0
-  - 0
-  - 0
-  - 0
-  m_CurrentQuarterMinHealth:
-  - 0
-  - 0
-  - 0
-  - 0
-  m_QuarterNumber: 4
-  m_CurrentQuarter: 4
-  m_QuarterHealthQuantity: 25
-  m_CurrentHealth: 100
-  m_invulerableLegerTime: 0.25
-  m_invulerableLourdTime: 0.75
-  m_SliderCurrentHealthHigh: {fileID: 0}
-  m_SliderCurrentHealthHighBuffer: {fileID: 0}
-  m_SliderCurrentQuarterHigh: {fileID: 0}
-  m_SliderCurrentHealthLow: {fileID: 0}
-  m_SliderCurrentQuarterLow: {fileID: 0}
+  uiHealthPlayer: {fileID: 0}
   m_SlowdownEffectCurve:
     serializedVersion: 2
     m_Curve:
@@ -10775,45 +10759,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   m_DurationSlowdownEffect: 1
-  updateHealthValues: 0
-  damageSend: 10
+  m_isFeedbackHitActive: 0
   volume: {fileID: 0}
-  feedbackHit: 1
-  evolutionVignetteOverTime:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.000077080564
-      value: 0.034404635
-      inSlope: -1.2299068
-      outSlope: -1.2299068
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.100494385
-      value: 0.80084187
-      inSlope: -1.3760017
-      outSlope: -1.3760017
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.045267485
-    - serializedVersion: 3
-      time: 1
-      value: 0.055
-      inSlope: -0.7122597
-      outSlope: -0.7122597
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.056790233
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  tempsEffetHit: 0.5
-  gameStateObject: {fileID: 0}
   m_fieldOfViewEdit:
     serializedVersion: 2
     m_Curve:
@@ -10862,6 +10809,41 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  gameStateObject: {fileID: 0}
+  evolutionVignetteOverTime:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.000077080564
+      value: 0.034404635
+      inSlope: -1.2299068
+      outSlope: -1.2299068
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.100494385
+      value: 0.80084187
+      inSlope: -1.3760017
+      outSlope: -1.3760017
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.045267485
+    - serializedVersion: 3
+      time: 1
+      value: 0.055
+      inSlope: -0.7122597
+      outSlope: -0.7122597
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.056790233
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  timeVignetteFeedbackActive: 0.25
 --- !u!114 &6427973256731412273
 MonoBehaviour:
   m_ObjectHideFlags: 0

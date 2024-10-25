@@ -13,6 +13,7 @@ namespace Enemies
         public float range = 0;
         public float duration = 0;
         public string attackName;
+        public bool isHeavy;
         [HideInInspector] public Vector3 direction;
 
         private float m_speedProjectile;
