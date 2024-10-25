@@ -903,7 +903,7 @@ namespace Character
 
         #region Knockback
 
-        public void SetKnockback(Vector3 attackPosition)
+        public void SetKnockback(Vector3 attackPosition, float powerKnockback =50)
         {
 
             if (mouvementState == MouvementState.Knockback) return;
@@ -911,7 +911,7 @@ namespace Character
             Vector3 attackDirection = transform.position - attackPosition;
             attackDirection = attackDirection.normalized;
             attackDirection.y = 0.0f;
-            m_directionKnockback = attackDirection.normalized * 50.0f;
+            m_directionKnockback = attackDirection.normalized * powerKnockback;
             m_applyKnockback = true;
             m_velMovement = Vector3.zero;
             m_rigidbody.velocity = Vector3.zero;

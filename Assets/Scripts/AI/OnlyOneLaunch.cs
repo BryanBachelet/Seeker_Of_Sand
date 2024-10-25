@@ -20,7 +20,7 @@ public class OnlyOneLaunch : DecoratorNode
     {
         if (!isAlreadyLaunch)
         {
-            isAlreadyLaunch = true;
+             isAlreadyLaunch = true;
             return child.Evaluate();
         }
         else

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enemies;
 using GuerhoubaTools.Gameplay;
+using UnityEngine.VFX;
 namespace GuerhoubaGames.VFX
 {
 
@@ -10,23 +11,28 @@ namespace GuerhoubaGames.VFX
     {
         private VFXAttackMeta m_vfxAttackMeta;
         private NpcAttackComponent m_npcAttackComponent;
+        public Transform startTransform;
         public Transform endPointTransform;
-
+        private VisualEffect vfx;
         private ClockTimer m_lifeTimer = new ClockTimer();
+
+        public AnimationCurve scaleYInTime;
 
         public void Awake()
         {
             m_vfxAttackMeta = GetComponent<VFXAttackMeta>();
+            m_vfxAttackMeta.OnStart += InitVFX;
         }
-        public void OnEnable()
-        {
-            InitVFX();
-            endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
-        }
+
+
         public void  Update()
         {
             if (!this.enabled) return;
 
+
+            vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()));
+            vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.9f);
+            vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.65f);
             endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
             if(m_lifeTimer.UpdateTimer())
             {
@@ -40,11 +46,13 @@ namespace GuerhoubaGames.VFX
             m_vfxAttackMeta = GetComponent<VFXAttackMeta>();
             if (m_vfxAttackMeta.vfxData.parent)
             {
+                vfx = GetComponent<VisualEffect>();
                 m_npcAttackComponent = m_vfxAttackMeta.vfxData.parent.GetComponent<NpcAttackComponent>();
                 m_lifeTimer.SetTimerDuration(m_npcAttackComponent.currentAttackData.prepationTime);
                 m_lifeTimer.ActiaveClock();
             }
-                
+            endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
+
         }
     }
 }

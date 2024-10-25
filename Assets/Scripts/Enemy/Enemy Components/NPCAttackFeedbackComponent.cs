@@ -54,6 +54,7 @@ namespace Enemies
             if (!attackFeedbackData.isSpawn)
             {
                 vfx = attackFeedbackData.Vfx;
+                attackFeedbackData.Vfx.SetActive(true);
             }
             else
             {
@@ -78,10 +79,6 @@ namespace Enemies
             vfxData.target = attackInfoData.target;
             vfxMeta.InitVFXObject(vfxData);
 
-            if (!attackFeedbackData.isSpawn)
-            {
-                attackFeedbackData.Vfx.SetActive(true);
-            }
 
         }
 

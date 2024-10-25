@@ -13,6 +13,7 @@ namespace Enemies
         public Transform target;
         public bool isOneShoot;
         public string nameAttack;
+        public bool isHeavy;
     }
 
 

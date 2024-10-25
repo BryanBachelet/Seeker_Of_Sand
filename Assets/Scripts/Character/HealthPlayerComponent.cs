@@ -12,6 +12,7 @@ public struct AttackDamageInfo
     public string attackName;
     public int damage;
     public Vector3 position;
+    public bool bIsHeavy;
 }
 
 public class HealthPlayerComponent : MonoBehaviour
@@ -26,9 +27,14 @@ public class HealthPlayerComponent : MonoBehaviour
     private float m_QuarterHealthQuantity;
 
 
-    [SerializeField] private float m_invulerableTime;
-    private bool m_isInvulnerable = false;
-    private ClockTimer m_invulerableClock =   new ClockTimer();
+    [SerializeField] private float m_invulerableLightTime;
+    [SerializeField] private float m_invulerableHeavyTime;
+    private bool m_isLightInvulnerable = false;
+    private bool m_isHeavyInvulnerable = false;
+
+    private ClockTimer m_invulerableLightClock = new ClockTimer();
+    private ClockTimer m_invulerableHeavyClock = new ClockTimer();
+
 
     [Header("Heath Info")]
     [SerializeField] private float m_CurrentHealth;
@@ -62,7 +68,7 @@ public class HealthPlayerComponent : MonoBehaviour
     public GameState gameStateObject;
     private Character.CharacterMouvement m_characterMouvement;
 
-   
+
 
     public AnimationCurve evolutionVignetteOverTime;
     private float m_timeLastHit;
@@ -98,10 +104,15 @@ public class HealthPlayerComponent : MonoBehaviour
             return;
         }
 
-        if (m_invulerableClock.UpdateTimer())
+        if (m_invulerableLightClock.UpdateTimer())
         {
-            m_invulerableClock.DeactivateClock();
-            m_isInvulnerable = false;
+            m_invulerableLightClock.DeactivateClock();
+            m_isLightInvulnerable = false;
+        }
+        if (m_invulerableHeavyClock.UpdateTimer())
+        {
+            m_invulerableHeavyClock.DeactivateClock();
+            m_isHeavyInvulnerable = false;
         }
 
         if (m_isFeedbackHitActive)
@@ -141,46 +152,62 @@ public class HealthPlayerComponent : MonoBehaviour
 
     public void ApplyDamage(AttackDamageInfo attackDamageInfo)
     {
-        if (m_isInvulnerable) return;
+        if (m_isHeavyInvulnerable) return;
+        if (!attackDamageInfo.bIsHeavy && m_isLightInvulnerable) return;
+
+        GlobalSoundManager.PlayOneShot(29, transform.position);
+        m_isFeedbackHitActive = true;
+        StartInvulnerability(attackDamageInfo.bIsHeavy);
+
+        vignette.intensity.value = 0.35f;
+        if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
+        {
+            ActiveSlowEffect(1.5f, m_CurrentQuarter);
+            m_CurrentQuarter -= 1;
+            m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
+
+        }
         else
         {
-            GlobalSoundManager.PlayOneShot(29, transform.position);
-            m_isFeedbackHitActive = true;
-            StartInvulnerability();
-
-            vignette.intensity.value = 0.35f;
-            if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
-            {
-                ActiveSlowEffect(1.5f, m_CurrentQuarter);
-                m_CurrentQuarter -= 1;
-                m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
-
-            }
-            else
-            {
-                m_CurrentHealth -= attackDamageInfo.damage;
-            }
-
-            if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
-
-            uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
-            m_characterMouvement.SetKnockback(attackDamageInfo.position);
-
-            if (m_CurrentHealth <= 0)
-            {
-                activeDeath = true;
-            }
+            m_CurrentHealth -= attackDamageInfo.damage;
         }
+
+        if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
+
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        if (attackDamageInfo.bIsHeavy)
+        {
+            m_characterMouvement.SetKnockback(attackDamageInfo.position, 100);
+        }
+        else
+        {
+            m_characterMouvement.SetKnockback(attackDamageInfo.position);
+        }
+        if (m_CurrentHealth <= 0)
+        {
+            activeDeath = true;
+        }
+
 
     }
 
 
-    private void StartInvulnerability()
+    private void StartInvulnerability(bool isHeavy)
     {
-        m_isInvulnerable = true;
-        m_invulerableClock.SetTimerDuration(m_invulerableTime);
-        m_invulerableClock.ActiaveClock();
+        if (!isHeavy)
+        {
+            m_isLightInvulnerable = true;
+            m_invulerableLightClock.SetTimerDuration(m_invulerableLightTime);
+            m_invulerableLightClock.ActiaveClock();
 
+        }
+        else
+
+        {
+            m_isHeavyInvulnerable = true;
+            m_invulerableHeavyClock.SetTimerDuration(m_invulerableHeavyTime);
+            m_invulerableHeavyClock.ActiaveClock();
+        }
     }
 
 
@@ -198,8 +225,8 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
-        m_CurrentHealth = m_MaxHealthQuantity;;
-        m_isInvulnerable = false;
+        m_CurrentHealth = m_MaxHealthQuantity; ;
+        m_isLightInvulnerable = false;
     }
 
     public void AugmenteMaxHealth(int quantity)
