@@ -12,6 +12,6 @@ namespace GuerhoubaGames.AI
         public GameObject moveToObject;
         public bool IsSpecialCapacityCall;
         public int indexSpecialCapacityCall;
-        public Action event1;
+        public Action event1 ;
     }
 }

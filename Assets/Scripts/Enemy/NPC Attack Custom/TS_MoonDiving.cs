@@ -156,7 +156,7 @@ namespace Enemies
                 attackDamageInfo.attackName = customAttackData.name;
                 attackDamageInfo.position = customAttackData.ownTransform.position;
                 attackDamageInfo.damage = customAttackData.damage;
-                hpPlayer.GetLightDamage(attackDamageInfo);
+                hpPlayer.ApplyDamage(attackDamageInfo);
             }
 
             // 3.Launch Animation

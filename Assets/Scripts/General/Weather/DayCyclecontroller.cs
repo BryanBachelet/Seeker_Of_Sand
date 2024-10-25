@@ -137,7 +137,7 @@ public class DayCyclecontroller : MonoBehaviour
         float alpha = m_timeOfDay / 24.0f;
         float sunRotation = Mathf.Lerp(-90, 270, alpha);
 
-            Debug.Log(sunRotation);
+         
         float moonRotation = sunRotation - 180;
 
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -130, 0);

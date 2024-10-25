@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaTools.Gameplay;
 public struct AttackDamageInfo
 {
     public string attackName;
@@ -15,53 +16,57 @@ public struct AttackDamageInfo
 
 public class HealthPlayerComponent : MonoBehaviour
 {
-    [SerializeField] private bool activeDeath = false;
-    [SerializeField] private GameObject m_gameOverMenu;
 
-    private bool isActivate = false;
+
+    [Header("Heath Parameters")]
     [SerializeField] private float m_MaxHealthQuantity;
-    [SerializeField] private float[] m_CurrentQuarterMaxHealth;
-    [SerializeField] private float[] m_CurrentQuarterMinHealth;
-    [SerializeField] private float m_QuarterNumber;
-    [SerializeField] private int m_CurrentQuarter;
-    [SerializeField] private float m_QuarterHealthQuantity;
+
+    private float[] m_CurrentQuarterMinHealth;
+    private int m_QuarterNumber = 4;
+    private float m_QuarterHealthQuantity;
+
+
+    [SerializeField] private float m_invulerableTime;
+    private bool m_isInvulnerable = false;
+    private ClockTimer m_invulerableClock =   new ClockTimer();
+
+    [Header("Heath Info")]
     [SerializeField] private float m_CurrentHealth;
-    [SerializeField] private float m_invulerableLegerTime;
-    [SerializeField] private float m_invulerableLourdTime;
-    [SerializeField] public Image m_SliderCurrentHealthHigh;
-    [SerializeField] public Image m_SliderCurrentHealthHighBuffer;
-    [SerializeField] public Image m_SliderCurrentQuarterHigh;
-    [SerializeField] private Image m_SliderCurrentHealthLow;
-    [SerializeField] private Image m_SliderCurrentQuarterLow;
+    [SerializeField] private int m_CurrentQuarter;
+
+    [Header("Death Info")]
+    [SerializeField] private bool activeDeath = false;
+    private bool isEndMenuActivate = false;
+    public GameObject m_gameOverMenu;
+
+    [Header("UI Object")]
+    public GuerhoubaGames.UI.UI_HealthPlayer uiHealthPlayer;
+
+    [Header("Damage Feedback Parameters")]
     [SerializeField] private AnimationCurve m_SlowdownEffectCurve;
     [SerializeField] private AnimationCurve m_SlowdownEffectCurveLastQuarter;
     private AnimationCurve m_currentAnimationCurveToUse;
     [SerializeField] private float m_DurationSlowdownEffect = 1;
+    [SerializeField] private bool m_isFeedbackHitActive = false;
     private float tempsEcouleSlowEffect = 0;
     private bool slowDownActive = false;
-
-    private float m_healthLost;
-
-    private bool m_isInvulnerableLeger = false;
-    private bool m_isInvulnerableLourd = false;
-
-    public bool updateHealthValues = false;
-
-    private Character.CharacterMouvement m_characterMouvement;
-
-    public float damageSend;
-
-    public Volume volume;
     private Vignette vignette;
     private ColorAdjustments colorAdjustments;
+    public Volume volume;
+    private Camera m_cameraUsed;
+    [SerializeField] private AnimationCurve m_fieldOfViewEdit;
+    [SerializeField] private AnimationCurve m_ColorAdjustementSaturation;
 
-    public bool feedbackHit = false;
-    private float timeLastHit;
+
+    [Header("Object Parameters")]
+    public GameState gameStateObject;
+    private Character.CharacterMouvement m_characterMouvement;
+
+   
+
     public AnimationCurve evolutionVignetteOverTime;
-    public float tempsEffetHit = 0.25f;
-    private bool healthBuffer;
-    private float lastHealth;
-
+    private float m_timeLastHit;
+    public float timeVignetteFeedbackActive = 0.25f;
 
     public System.Action<AttackDamageInfo> OnDamage;
 
@@ -69,10 +74,6 @@ public class HealthPlayerComponent : MonoBehaviour
     public event OnContact OnContactEvent = delegate { };
 
 
-    public GameState gameStateObject;
-    private Camera m_cameraUsed;
-    [SerializeField] private AnimationCurve m_fieldOfViewEdit;
-    [SerializeField] private AnimationCurve m_ColorAdjustementSaturation;
     // Start is called before the first frame update
     void Start()
     {
@@ -81,39 +82,38 @@ public class HealthPlayerComponent : MonoBehaviour
         m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out colorAdjustments);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (activeDeath && m_CurrentHealth <= 0 && !isActivate)
+        if (activeDeath && m_CurrentHealth <= 0 && !isEndMenuActivate)
         {
             GuerhoubaGames.SaveData.GameData.UpdateFarestRoom(TerrainGenerator.roomGeneration_Static);
             GameState.LaunchEndMenu();
             gameStateObject.HideGlobalUI();
 
-            isActivate = true;
+            isEndMenuActivate = true;
             return;
         }
-        if (updateHealthValues)
-        {
-            //    GetDamageLeger(damageSend);
 
-        }
-        if (healthBuffer)
+        if (m_invulerableClock.UpdateTimer())
         {
-            BufferXpDisplay();
+            m_invulerableClock.DeactivateClock();
+            m_isInvulnerable = false;
         }
-        if (feedbackHit)
+
+        if (m_isFeedbackHitActive)
         {
-            if (Time.time - timeLastHit < tempsEffetHit)
+            if (Time.time - m_timeLastHit < timeVignetteFeedbackActive)
             {
-                vignette.opacity.value = /*((0.35f + (0.05f * m_CurrentQuarter)) * */evolutionVignetteOverTime.Evaluate(Time.time - timeLastHit);
+                vignette.opacity.value = evolutionVignetteOverTime.Evaluate(Time.time - m_timeLastHit);
             }
             else
             {
                 vignette.opacity.value = 0;
-                feedbackHit = false;
+                m_isFeedbackHitActive = false;
             }
         }
         if (slowDownActive)
@@ -124,7 +124,7 @@ public class HealthPlayerComponent : MonoBehaviour
             colorAdjustments.saturation.value = m_ColorAdjustementSaturation.Evaluate(progress);
             Time.timeScale = newTimeScale;
             tempsEcouleSlowEffect += (Time.deltaTime * (1 + (1 - newTimeScale)));
-            if(tempsEcouleSlowEffect >= m_DurationSlowdownEffect)
+            if (tempsEcouleSlowEffect >= m_DurationSlowdownEffect)
             {
                 newTimeScale = 1;
                 tempsEcouleSlowEffect = 0;
@@ -139,16 +139,15 @@ public class HealthPlayerComponent : MonoBehaviour
 
     }
 
-    public void GetLightDamage(AttackDamageInfo attackDamageInfo)
+    public void ApplyDamage(AttackDamageInfo attackDamageInfo)
     {
-        if (m_isInvulnerableLourd) return;
-        if (m_isInvulnerableLeger) return;
+        if (m_isInvulnerable) return;
         else
         {
             GlobalSoundManager.PlayOneShot(29, transform.position);
-            StartCoroutine(GetInvulnerableLeger(m_invulerableLegerTime));
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
-            feedbackHit = true;
+            m_isFeedbackHitActive = true;
+            StartInvulnerability();
+
             vignette.intensity.value = 0.35f;
             if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
             {
@@ -159,14 +158,12 @@ public class HealthPlayerComponent : MonoBehaviour
             }
             else
             {
-                m_CurrentHealth -= attackDamageInfo.damage; 
+                m_CurrentHealth -= attackDamageInfo.damage;
             }
 
             if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
 
-            m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            BufferXpDisplay();
-            m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
+            uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
             m_characterMouvement.SetKnockback(attackDamageInfo.position);
 
             if (m_CurrentHealth <= 0)
@@ -174,57 +171,18 @@ public class HealthPlayerComponent : MonoBehaviour
                 activeDeath = true;
             }
         }
-        updateHealthValues = false;
 
     }
 
-    public void GetHeavyDamage(AttackDamageInfo attackDamageInfo)
+
+    private void StartInvulnerability()
     {
-        if (m_isInvulnerableLourd) return;
-        else
-        {
-            GlobalSoundManager.PlayOneShot(29, transform.position);
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
-            feedbackHit = true;
-            vignette.intensity.value = 0.35f;
-            if (m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
-            {
-                StartCoroutine(GetInvulnerableLourd(1.5f));
-                ActiveSlowEffect(1.5f, m_CurrentQuarter);
-                m_CurrentQuarter -= 1;
-                m_CurrentHealth = m_CurrentQuarterMinHealth[m_CurrentQuarter];
-            }
-            else
-            {
-                StartCoroutine(GetInvulnerableLourd(m_invulerableLourdTime));
-                m_CurrentHealth -= attackDamageInfo.damage;
-            }
-            if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
-            m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-            m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-            BufferXpDisplay();
+        m_isInvulnerable = true;
+        m_invulerableClock.SetTimerDuration(m_invulerableTime);
+        m_invulerableClock.ActiaveClock();
 
-            if (m_CurrentHealth <= 0)
-            {
-                activeDeath = true;
-            }
-        }
-        updateHealthValues = false;
     }
 
-    IEnumerator GetInvulnerableLeger(float time)
-    {
-        m_isInvulnerableLeger = true;
-        yield return new WaitForSeconds(time);
-        m_isInvulnerableLeger = false;
-    }
-
-    IEnumerator GetInvulnerableLourd(float time)
-    {
-        m_isInvulnerableLourd = true;
-        yield return new WaitForSeconds(time);
-        m_isInvulnerableLourd = false;
-    }
 
     public void InitializedHealthData()
     {
@@ -232,93 +190,48 @@ public class HealthPlayerComponent : MonoBehaviour
         //m_CurrentHealth = m_MaxHealthQuantity;
         m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
         m_CurrentQuarter = (int)Mathf.Ceil(m_CurrentHealth / m_MaxHealthQuantity * m_QuarterNumber);
-        for (int i = 0; i < m_CurrentQuarterMaxHealth.Length; i++)
+        m_CurrentQuarterMinHealth = new float[m_QuarterNumber];
+        for (int i = 0; i < m_CurrentQuarterMinHealth.Length; i++)
         {
             m_CurrentQuarterMinHealth[i] = m_QuarterHealthQuantity * i;
-            m_CurrentQuarterMaxHealth[i] = m_QuarterHealthQuantity * i + m_QuarterHealthQuantity;
         }
-        //Calculer la valeur d'un quart de vie
-        //Actualiser m_CurrentQuarterMaxHealth && m_CurrentQuarterMinHealth
-        //Actualiser m_CurrentQuarter
 
-        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-        ActiveBufferHealth(Time.time, m_CurrentHealth);
-        BufferXpDisplay();
-        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-        m_CurrentHealth = m_MaxHealthQuantity;
-        updateHealthValues = false;
-        m_isInvulnerableLeger = false;
-        m_isInvulnerableLourd = false;
+
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        m_CurrentHealth = m_MaxHealthQuantity;;
+        m_isInvulnerable = false;
     }
 
     public void AugmenteMaxHealth(int quantity)
     {
         m_MaxHealthQuantity += quantity;
-        m_CurrentHealth += m_CurrentHealth;
+        m_CurrentHealth += quantity;
         InitializedHealthData();
     }
 
     public void RestoreQuarter()
     {
+        if (m_QuarterHealthQuantity == 0 || m_QuarterNumber == 0) return;
+
         int indexQuarter = (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
         m_CurrentHealth = Mathf.Clamp((indexQuarter + 1) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
         m_CurrentQuarter = Mathf.Clamp((indexQuarter + 1), 0, 4);
-        UpdateUILifebar();
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
     }
 
-    public void UpdateUILifebar()
-    {
-        ActiveBufferHealth(Time.time, m_CurrentHealth);
-        m_SliderCurrentHealthHighBuffer.fillAmount = m_CurrentHealth / m_MaxHealthQuantity;
-        m_SliderCurrentQuarterHigh.fillAmount = 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter);
-    }
+
 
     public void RestoreFullLife()
     {
 
         m_CurrentHealth = m_MaxHealthQuantity;
         m_CurrentQuarter = 4;
-        UpdateUILifebar();
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
     }
 
-    public void RestoreHealQuarter()
-    {
-        m_CurrentHealth += m_QuarterHealthQuantity;
-        if (m_CurrentHealth > m_MaxHealthQuantity)
-        {
-            ActiveBufferHealth(Time.time, m_CurrentHealth);
-            m_CurrentHealth = m_MaxHealthQuantity;
-            //m_CurrentQuarter = (int)m_QuarterNumber;
-        }
-        else
-        {
-            //m_CurrentQuarter += 1;
-        }
-        InitializedHealthData();
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        //  Debug.Log("Hit an Object !");
-        if (collision.transform.tag != "Enemy" || !GameState.IsPlaying()) return;
-        // Debug.Log("Object was an Enemy !");
-        //   GetLightDamage(2,collision.transform.position);
-    }
-
-    private void ActiveBufferHealth(float time, float health)
-    {
-        timeLastHit = time;
-        healthBuffer = true;
-        lastHealth = health;
-    }
-
-    private void BufferXpDisplay()
-    {
-        m_SliderCurrentHealthHigh.fillAmount = Mathf.Lerp(lastHealth / m_MaxHealthQuantity, m_CurrentHealth / m_MaxHealthQuantity, (Time.time -timeLastHit) / 0.5f);
-    }
 
     public void OnCollisionEnter(Collision collision)
-    { 
+    {
         if (collision.collider.tag == "Enemy")
         {
             OnContactEvent(collision.transform.position, EntitiesTrigger.Enemies, collision.gameObject, GameElement.NONE);

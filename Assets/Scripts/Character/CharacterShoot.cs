@@ -907,7 +907,6 @@ namespace Character
 
         public void ActiveOnHit(Vector3 position, EntitiesTrigger tag, GameObject agent, GameElement element)
         {
-
             onHit(position, tag, agent, element);
         }
 

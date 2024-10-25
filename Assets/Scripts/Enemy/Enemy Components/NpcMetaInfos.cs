@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 namespace Enemies
 {
 
@@ -34,6 +34,7 @@ namespace Enemies
         public ObjectState m_objectGameState;
         private int m_previousNpcState;
 
+      public  Action OnStart;
         public void Awake()
         {
             m_healthComponent = GetComponent<NpcHealthComponent>();
@@ -53,7 +54,9 @@ namespace Enemies
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
+               
             }
+            
         }
 
         public void Update()
@@ -70,8 +73,7 @@ namespace Enemies
 
         public void RestartEnemy()
         {
-            m_healthComponent.RestartObject(1);
-            moveComponent.RestartObject();
+            OnStart?.Invoke();
         }
 
         public void SetPauseState()
@@ -92,6 +94,7 @@ namespace Enemies
             {
                 behaviorTreeComponent.Init();
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
+                
             }
         }
 

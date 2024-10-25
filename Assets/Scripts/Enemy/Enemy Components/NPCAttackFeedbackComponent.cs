@@ -53,7 +53,6 @@ namespace Enemies
             GameObject vfx = null;
             if (!attackFeedbackData.isSpawn)
             {
-                attackFeedbackData.Vfx.SetActive(true);
                 vfx = attackFeedbackData.Vfx;
             }
             else
@@ -62,10 +61,11 @@ namespace Enemies
 
                 if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.Target)
                     spawnPositon = attackInfoData.positionAttack;
+                if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.LastHit)
+                    spawnPositon = attackInfoData.positionAttack;
 
+                vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
 
-               vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0,transform.eulerAngles.y,0));
-               
 
             }
 
@@ -78,7 +78,10 @@ namespace Enemies
             vfxData.target = attackInfoData.target;
             vfxMeta.InitVFXObject(vfxData);
 
-
+            if (!attackFeedbackData.isSpawn)
+            {
+                attackFeedbackData.Vfx.SetActive(true);
+            }
 
         }
 

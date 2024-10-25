@@ -56,10 +56,7 @@ namespace GuerhoubaGames.AI
                 isSucces = 1;
             else
                 isSucces = -1;
-            if (debugTest)
-            {
-                Debug.LogError(" Test");
-            }
+            
 
         }
     }

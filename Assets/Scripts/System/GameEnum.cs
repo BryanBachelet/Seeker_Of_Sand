@@ -55,6 +55,7 @@ namespace GuerhoubaGames.GameEnum
     {
         COLLIDER_OBJ = 0,
         PROJECTILE_OBJ = 1,
+        RAYCAST_OBJ = 2,
     }
 
     public enum RangeAttackType

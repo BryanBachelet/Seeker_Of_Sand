@@ -123,7 +123,7 @@ public class RewardTypologie : MonoBehaviour
                     break;
                 case RewardType.HEAL:
                    if(healthReward == HealthReward.QUARTER)
-                        other.GetComponent<HealthPlayerComponent>().RestoreHealQuarter();
+                        other.GetComponent<HealthPlayerComponent>().RestoreQuarter();
                    else
                         other.GetComponent<HealthPlayerComponent>().RestoreFullLife();
                     break;

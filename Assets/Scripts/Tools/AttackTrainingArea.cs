@@ -84,7 +84,7 @@ public class AttackTrainingArea : MonoBehaviour
             attackDamageInfo.attackName = "Mortar";
             attackDamageInfo.position = positionOnDestroy;
             attackDamageInfo.damage = damage;
-            hpPlayer.GetLightDamage(attackDamageInfo);
+            hpPlayer.ApplyDamage(attackDamageInfo);
             //vfxExplosionObject.GetComponent<VisualEffect>().Play();
             //Debug.Log("Hit at [" + Vector3.Distance(positionOnDestroy, playerTarget.position) + "]");
         }

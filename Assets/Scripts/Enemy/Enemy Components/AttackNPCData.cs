@@ -37,7 +37,6 @@ namespace Enemies
         public float attackRange;
         public bool isStunLockingAttack;
         public bool isStopMovingAtPrep;
-        public bool isHeavyAttack;
         [Tooltip("Allow the AI to constantly rotate during prep time")]
         public bool isFollowTarget;
         public AttackLaunchMoment launchMoment;
@@ -60,7 +59,9 @@ namespace Enemies
         public float rangeProjectile;
         public float durationProjectile;
 
-
+        [Header("Raycast Parameters")]
+        public Vector3 scaleRaycast;
+        public LayerMask rayLayerMask;
 
         [HideInInspector] public int indexCollider;
         [HideInInspector] public int indexProjectileGO;

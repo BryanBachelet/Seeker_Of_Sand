@@ -28,7 +28,9 @@ namespace Enemies
         private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
         private VisualEffect ringVFX;
+        private VisualEffect[] allRingVFX;
         private bool activeRingIntensity;
+
         #region Unity Functions
 
         public void Start()
@@ -43,27 +45,35 @@ namespace Enemies
         // Update is called once per frame
         void Update()
         {
-            UpdateRingSkill();
-            if(m_npcMetaInfo.state == NpcState.DEATH)
+            
+            if (m_npcMetaInfo.state == NpcState.DEATH)
             {
-                Destroy(ringInstance);
-            }
-            else 
-            {
-                if(m_npcHealthComponent.GetCurrentLifePercent() < 0.25f && !activeRingIntensity && ringInstance != null)
+                canBeLaunch = true;
+                allRingVFX = ringInstance.GetComponentsInChildren<VisualEffect>();
+                for (int i = 0; i < allRingVFX.Length; i++)
                 {
-                    activeRingIntensity = true;
-                    VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
-                    for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
-                    {
-                        ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
-                    }
+                    DestroyImmediate(allRingVFX[i].gameObject);
                 }
             }
+            else
+            {
+                UpdateRingSkill();
+            }
+            
+            
         }
 
         #endregion
 
+        public void UpgradeRingVisual()
+        {
+            activeRingIntensity = true;
+            VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
+            for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
+            {
+               if(ringInstanceVFXIntensity[i].HasFloat("IntensityFactor")) ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
+            }
+        }
 
         public void ActiveRingSkill()
         {

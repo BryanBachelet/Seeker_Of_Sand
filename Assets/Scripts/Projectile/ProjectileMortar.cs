@@ -95,7 +95,7 @@ public class ProjectileMortar : MonoBehaviour
                     attackDamageInfo.attackName = "Mortar";
                     attackDamageInfo.position = transform.position;
                     attackDamageInfo.damage = damage;
-                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(attackDamageInfo);
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().ApplyDamage(attackDamageInfo);
 
                 }
                 if (m_projectileData.target.tag == "Altar")
@@ -124,7 +124,7 @@ public class ProjectileMortar : MonoBehaviour
                     attackDamageInfo.attackName = "Mortar";
                     attackDamageInfo.position = transform.position;
                     attackDamageInfo.damage = damage;
-                    m_projectileData.target.GetComponent<HealthPlayerComponent>().GetLightDamage(attackDamageInfo);
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().ApplyDamage(attackDamageInfo);
                     
                 }
             }

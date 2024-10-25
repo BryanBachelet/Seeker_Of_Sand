@@ -12,6 +12,7 @@ namespace Enemies
         {
             Target,
             Self,
+            LastHit,
         }
 
         public FeedbackType feedbackType;

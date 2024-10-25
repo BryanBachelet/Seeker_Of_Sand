@@ -14,6 +14,7 @@ public class RainBullet : Projectile
     public SphereCollider m_Spherecollider;
     private VisualEffect m_VisualEffect;
     private int[] m_EventNameIdentifier;
+
     public void Start()
     {
         m_Spherecollider = GetComponent<SphereCollider>();

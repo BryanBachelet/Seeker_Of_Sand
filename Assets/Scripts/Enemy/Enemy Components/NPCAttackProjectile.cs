@@ -82,7 +82,7 @@ namespace Enemies
                     attackDamageInfo.attackName = "attackName";
                     attackDamageInfo.position = transform.position;
                     attackDamageInfo.damage = damage;
-                    healthPlayer.GetLightDamage(attackDamageInfo);
+                    healthPlayer.ApplyDamage(attackDamageInfo);
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace Enemies
                     attackDamageInfo.attackName = "attackName";
                     attackDamageInfo.position = transform.position;
                     attackDamageInfo.damage = damage;
-                    healthPlayer.GetLightDamage(attackDamageInfo);
+                    healthPlayer.ApplyDamage(attackDamageInfo);
                 }
             }
         }

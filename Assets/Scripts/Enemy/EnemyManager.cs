@@ -564,7 +564,7 @@ namespace Enemies
             npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
             npcMove.enabled = true;
             npcMove.enemiesManager = this;
-
+            npcInfo.RestartEnemy();
             m_enemiesArray.Add(npcInfo);
             return enemyObjectPull;
         }

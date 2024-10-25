@@ -42,7 +42,7 @@ namespace Enemies
                 attackDamageInfo.attackName = attackObj.nameAttack;
                 attackDamageInfo.position = transform.position;
                 attackDamageInfo.damage = attackObj.damage;
-                hpPlayer.GetLightDamage(attackDamageInfo);
+                hpPlayer.ApplyDamage(attackDamageInfo);
             }
         }
 

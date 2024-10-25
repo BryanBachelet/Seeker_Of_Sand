@@ -1,10 +1,8 @@
+using GuerhoubaGames.GameEnum;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using GuerhoubaGames.GameEnum;
-using GuerhoubaGames.AI;
 
 namespace Enemies
 {
@@ -21,7 +19,7 @@ namespace Enemies
         private bool[] isAttackOnCooldown = new bool[0];
         private float[] timerAttackCooldown = new float[0];
 
-        private AttackNPCData currentAttackData;
+        public AttackNPCData currentAttackData;
         private int currentAttackIndex;
         private float m_timer;
         private NpcMetaInfos m_npcMetaInfos;
@@ -40,10 +38,26 @@ namespace Enemies
         private const int m_generalCooldownFrameCount = 2;
         private int m_generalCooldownFrameCounter;
 
+        [HideInInspector]
+        [Range(0, 1f)]
+        [Tooltip("Stat of cooldown reduction for all attack")]
+        public float attackCooldownReduction = 0.0f;
+
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
         public bool isActiveDebug = false;
 
+
+        // Raycast Attack Value 
+        [Header("Raycasts Parameters")]
+        [HideInInspector] private Vector3 directionTarget;
+        private bool m_HitDetect;
+        private RaycastHit m_Hit;
+        public Vector3 raycastHitPoint;
+        private const float m_MaxDistance = 300;
+        public bool isRaycastDebug;
+        private bool m_showRaycastDebug;
+        private Quaternion rotationRaycast;
 
         // Event for each attack step
         public Action<int> OnPrepAttack;
@@ -60,11 +74,11 @@ namespace Enemies
         public float rangeVariante = 1;
 
         public bool isInAttackSequence;
-        public int sequenceIndex =-1;
+        public int sequenceIndex = -1;
 
 
         #region MonoBehavior Functions
-        public void Start()
+        public void Awake()
         {
             m_npcMetaInfos = GetComponent<NpcMetaInfos>();
             m_mouvementComponent = GetComponent<NpcMouvementComponent>();
@@ -110,7 +124,7 @@ namespace Enemies
 
             if (isGeneralAttackCooldownActive)
             {
-                if(baseCooldownAttackTimer >baseCooldownAttack)
+                if (baseCooldownAttackTimer > baseCooldownAttack)
                 {
                     isGeneralAttackCooldownActive = false;
                     baseCooldownAttackTimer = 0.0f;
@@ -148,7 +162,7 @@ namespace Enemies
                     countRangeAttack++;
                 }
 
-        
+
 
             }
 
@@ -166,7 +180,7 @@ namespace Enemies
         }
 
         #region  Active Phase Functions
-        public void ActivePrepationAttack(int index , int sequence)
+        public void ActivePrepationAttack(int index, int sequence)
         {
             OnPrepAttack?.Invoke(index);
             //list_OnPrepAttack?.Invoke(index);
@@ -204,28 +218,40 @@ namespace Enemies
             }
             m_timer = 0.0f;
 
-            
+
 
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
             attackInfoData.radius = currentAttackData.radius;
             attackInfoData.duration = currentAttackData.prepationTime;
-           
+
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.PREP;
 
             if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target)
             {
                 Vector3 rndPosition = Vector3.zero;
-                if (variantePrecision) 
-                { 
-                    rndPosition = new Vector3(UnityEngine.Random.Range(-rangeVariante, rangeVariante), 0, UnityEngine.Random.Range(-rangeVariante, rangeVariante)); 
+                if (variantePrecision)
+                {
+                    rndPosition = new Vector3(UnityEngine.Random.Range(-rangeVariante, rangeVariante), 0, UnityEngine.Random.Range(-rangeVariante, rangeVariante));
                 }
                 prepTargetPosition = m_mouvementComponent.targetData.baseTarget.position + rndPosition;
+
+                if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
+                {
+                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - m_mouvementComponent.baseTransform.position;
+                    Vector3 boxScale = currentAttackData.scaleRaycast;
+                    m_HitDetect = Physics.BoxCast(transform.position, boxScale, directionTarget, out m_Hit, Quaternion.identity, m_MaxDistance);
+                    if (m_HitDetect)
+                    {
+                        raycastHitPoint = m_Hit.point;
+                    }
+                    rotationRaycast = transform.rotation;
+                }
             }
 
-            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Self) 
+            if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Self)
                 prepTargetPosition = transform.position;
 
             attackInfoData.positionAttack = prepTargetPosition;
@@ -233,8 +259,8 @@ namespace Enemies
 
             isMvtAttackInit = false;
 
+            m_showRaycastDebug = true;
 
-           
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
         }
@@ -269,14 +295,14 @@ namespace Enemies
             attackInfoData.phase = AttackPhase.CONTACT;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
 
-           
+
             if (currentAttackData.launchMoment == AttackLaunchMoment.START_CONTACT)
             {
                 LaunchAttack();
             }
-
+          
             m_timer = 0.0f;
-            
+
 
         }
 
@@ -322,6 +348,7 @@ namespace Enemies
             {
                 currentAttackData.customAttack.EndPrepPhase();
             }
+            m_showRaycastDebug = false;
             ActiveAttackContact();
         }
 
@@ -336,7 +363,7 @@ namespace Enemies
             else
             {
 
-                if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ) 
+                if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ)
                     colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(false);
             }
             ActiveRecoverPhase();
@@ -346,7 +373,7 @@ namespace Enemies
         {
             if (currentAttackData.isEndingAttackSequence)
             {
-                    isInAttackSequence = false;
+                isInAttackSequence = false;
                 sequenceIndex = -1;
             }
             if (currentAttackData.isEndingAttackSequence) m_hasToActiveGeneralCooldown = true;
@@ -356,8 +383,8 @@ namespace Enemies
             {
                 currentAttackData.customAttack.EndRecoverPhase();
             }
-   
-             isAttackOnCooldown[currentAttackIndex] = true;
+
+            isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
             m_npcMetaInfos.state = NpcState.IDLE;
@@ -380,8 +407,8 @@ namespace Enemies
             // Custom Attack Section
             if (currentAttackData.customAttack != null)
             {
-               bool result =  currentAttackData.customAttack.UpdatePrepPhase();
-                if(result)
+                bool result = currentAttackData.customAttack.UpdatePrepPhase();
+                if (result)
                 {
                     FinishPreparationAttack();
                 }
@@ -394,6 +421,11 @@ namespace Enemies
                 m_mouvementComponent.DirectRotateToTarget();
                 Rigidbody rb = GetComponent<Rigidbody>();
                 rb.angularVelocity = Vector3.zero;
+                if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
+                {
+                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position );
+                    rotationRaycast = transform.rotation;
+                }
             }
             else
             {
@@ -401,7 +433,7 @@ namespace Enemies
                 {
                     isMvtAttackInit = true;
 
-                       NPCMoveAttData nPCMoveAttData = new NPCMoveAttData();
+                    NPCMoveAttData nPCMoveAttData = new NPCMoveAttData();
                     nPCMoveAttData.npcGo = this.gameObject;
                     nPCMoveAttData.maxHeight = GetComponent<NavMeshAgent>().height;
                     nPCMoveAttData.targetTransform = m_mouvementComponent.targetData.baseTarget;
@@ -413,6 +445,22 @@ namespace Enemies
                     if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
                         currentAttackData.attackMovement.EndMovement += LaunchAttack;
                 }
+
+                
+            }
+
+            // Raycast Shoot
+            Vector3 boxScale = currentAttackData.scaleRaycast;
+            m_HitDetect = Physics.BoxCast(transform.position, boxScale, directionTarget, out m_Hit, Quaternion.identity, m_MaxDistance, currentAttackData.rayLayerMask);
+            if (m_HitDetect)
+            {
+                raycastHitPoint = m_Hit.point;
+                prepTargetPosition = m_Hit.point;
+            }
+            else
+            {
+                prepTargetPosition = transform.position + directionTarget * m_MaxDistance;
+                raycastHitPoint = transform.position + directionTarget * m_MaxDistance;
             }
 
             if (m_timer > currentAttackData.prepationTime)
@@ -449,7 +497,7 @@ namespace Enemies
             if (m_timer > currentAttackData.contactTime)
             {
                 FinishContactAttack();
-          
+
             }
             else
             {
@@ -465,7 +513,7 @@ namespace Enemies
                 m_timer += Time.deltaTime;
             }
 
-            
+
         }
 
         public void UpdateRecoverAttack()
@@ -487,7 +535,7 @@ namespace Enemies
             if (m_timer > currentAttackData.recoverTime)
             {
                 FinishRecoverAttack();
-                
+
             }
             else
             {
@@ -502,11 +550,11 @@ namespace Enemies
             {
                 if (!isAttackOnCooldown[i]) continue;
 
-                if(timerAttackCooldown[i]> attackEnemiesObjectsArr[i].data.coooldownAttack)
+                if (timerAttackCooldown[i] > attackEnemiesObjectsArr[i].data.coooldownAttack * (1.0f - attackCooldownReduction))
                 {
                     isAttackOnCooldown[i] = false;
                     timerAttackCooldown[i] = 0;
-                    Debug.Log("Attack" + attackEnemiesObjectsArr[i].data.nameAttack + "cooldown is finish");
+                    if (isActiveDebug) Debug.Log("Attack" + attackEnemiesObjectsArr[i].data.nameAttack + "cooldown is finish");
                 }
                 else
                 {
@@ -527,10 +575,9 @@ namespace Enemies
                 colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(true);
                 CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
                 closeAttackComponent.damage = currentAttackData.damage;
-                closeAttackComponent.isHeavyAttack = currentAttackData.isHeavyAttack;
                 closeAttackComponent.attackName = currentAttackData.nameAttack;
             }
-            else
+            if (currentAttackData.typeAttack == AttackType.PROJECTILE_OBJ)
             {
                 GameObject projectile = projectileAttackArrray[currentAttackData.indexProjectileGO];
                 Vector3 spawnPosition = Vector3.zero;
@@ -573,12 +620,30 @@ namespace Enemies
                 }
             }
 
+            if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
+            {
 
+                Vector3 boxScale = currentAttackData.scaleRaycast;
+                m_HitDetect = Physics.BoxCast(transform.position ,boxScale, directionTarget, out m_Hit, Quaternion.identity, m_MaxDistance);
+                if (m_HitDetect)
+                {
+                    raycastHitPoint = m_Hit.point;
+                    if (m_Hit.collider.tag == "Player")
+                    {
+                        HealthPlayerComponent healthPlayer = m_Hit.collider.GetComponent<HealthPlayerComponent>();
+                        AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                        attackDamageInfo.attackName = currentAttackData.nameAttack;
+                        attackDamageInfo.damage = currentAttackData.damage;
+                        attackDamageInfo.position = m_Hit.point - directionTarget * 1;
+                        healthPlayer.ApplyDamage(attackDamageInfo);
+                    }
+                }
+            }
         }
 
         public bool IsAttackOnCooldown(int index)
         {
-          return  isAttackOnCooldown[index];
+            return isAttackOnCooldown[index];
         }
 
         public CustomAttackData FillCustomAttackData(AttackNPCData attackNPCData, int attackIndex)
@@ -602,6 +667,38 @@ namespace Enemies
         public bool IsGeneralRecoveringFromAttackActive()
         {
             return isGeneralAttackCooldownActive;
+        }
+
+        void OnDrawGizmos()
+        {
+          
+
+            if (isRaycastDebug)
+            {
+                if (!m_showRaycastDebug) return;
+                //Check if there has been a hit yet
+                if (m_HitDetect)
+                {
+                    Gizmos.color = Color.red;
+                    //Draw a Ray forward from GameObject toward the hit
+                    Gizmos.DrawRay(transform.position , directionTarget.normalized * m_Hit.distance);
+                    //Draw a cube that extends to where the hit exists
+
+                    Gizmos.matrix = Matrix4x4.Rotate(rotationRaycast) * Gizmos.matrix;
+                   
+                    Gizmos.DrawWireCube(Gizmos.matrix.inverse * raycastHitPoint, currentAttackData.scaleRaycast *2);
+                }
+                //If there hasn't been a hit yet, draw the ray at the maximum distance
+                else
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.matrix = Matrix4x4.identity;
+                    //Draw a Ray forward from GameObject toward the maximum distance
+                    Gizmos.DrawRay(transform.position , directionTarget.normalized * m_MaxDistance);
+                    //Draw a cube at the maximum distance
+                    Gizmos.DrawWireCube(transform.position + directionTarget * m_MaxDistance, transform.localScale);
+                }
+            }
         }
 
     }
