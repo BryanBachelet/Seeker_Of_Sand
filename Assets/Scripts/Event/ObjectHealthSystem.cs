@@ -32,6 +32,7 @@ public class ObjectHealthSystem : MonoBehaviour
     public float rangeDegatAugmente;
     public AnimationCurve evolutionDegatAugment;
     public int indexUIEvent;
+
     private void Start()
     {
         GameState.AddObject(state);

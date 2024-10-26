@@ -127,6 +127,8 @@ namespace Character
         public Texture currentPreviewDecalEndTexture; // Inspector, set texture named "box"
 
         private Texture m_initialPreviewDecal;
+
+        [GradientUsage(true)]
         public Gradient[] gradientDecalElement;
         public enum CanalisationBarType
         {

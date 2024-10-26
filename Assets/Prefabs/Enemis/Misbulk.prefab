@@ -68,9 +68,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basePosition: {fileID: 3294013781257085864}
   damage: 1
-  isHeavyAttack: 0
   ActiveDebug: 0
   attackName: 
+  angleOfAttack: 180
 --- !u!1 &3294013781257085869
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 4841692019479195601}
   - component: {fileID: 5490627967273508962}
   - component: {fileID: 5056973524547089000}
+  - component: {fileID: 8484841291473713859}
   m_Layer: 6
   m_Name: Misbulk
   m_TagString: Enemy
@@ -236,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexEnemy: 4
-  m_maxLife: 50
+  maxLife: 0
   gainPerMinute: 1
   spawnMinute: 0
   m_vfxHitFeedback: {fileID: 2575186347912425037, guid: 69a1bec963035b943bda3a2bfb1f638f,
@@ -531,6 +532,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   dissonancePrefabObject: {fileID: 7295789607246562677, guid: 8aa5f6bc9689b6c4a86350d370f69034,
     type: 3}
+  m_HitEffectHighLight: {fileID: 0}
 --- !u!114 &3479212884096835323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,6 +571,11 @@ MonoBehaviour:
   isDebugActive: 0
   isGoingAway: 0
   awayDistance: 0
+  hasCustomMovement: 0
+  customMouvement: {fileID: 0}
+  lastTimeSeen: 0
+  lastTimeCheck: 0
+  lastPosCheck: {x: 0, y: 0, z: 0}
 --- !u!65 &5109676256834685899
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -625,6 +632,8 @@ MonoBehaviour:
   type: 3
   state: 0
   attackComponent: {fileID: 7100519370626080054}
+  specialCapacities: {fileID: 0}
+  m_healthComponent: {fileID: 0}
   moveComponent: {fileID: 0}
   manager: {fileID: 0}
   behaviorTreeComponent: {fileID: 0}
@@ -650,10 +659,52 @@ MonoBehaviour:
   - {fileID: 4859472291981760264}
   projectileAttackArrray:
   - {fileID: 3808057417710552666, guid: 58cb8534ab5cc22469e1fccef28cad49, type: 3}
+  currentAttackData:
+    customAttack: {fileID: 0}
+    nameAttack: 
+    prepationTime: 0
+    recoverTime: 0
+    contactTime: 0
+    coooldownAttack: 0
+    isTriggerGeneralCooldown: 0
+    isStartinAttackSequence: 0
+    isEndingAttackSequence: 0
+    rotationTime: 0
+    damage: 0
+    attackRange: 0
+    isHeavyAttack: 0
+    isStunLockingAttack: 0
+    isStopMovingAtPrep: 0
+    isFollowTarget: 0
+    launchMoment: 0
+    attackMovement: {fileID: 0}
+    updateTimeAttackLaunch: 0
+    typeAttack: 0
+    rangeTypeAttack: 0
+    postionToSpawnType: 0
+    radius: 0
+    shapeType: 0
+    rangeProjectile: 0
+    durationProjectile: 0
+    scaleRaycast: {x: 0, y: 0, z: 0}
+    rayLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    indexCollider: 0
+    indexProjectileGO: 0
+    indexDecals: 0
+  isGeneralAttackCooldownActive: 0
+  baseCooldownAttack: 0
+  attackCooldownReduction: 0
   currentAttackState: 0
   isActiveDebug: 1
+  raycastOffset: {x: 0, y: 0, z: 0}
+  raycastHitPoint: {x: 0, y: 0, z: 0}
+  isRaycastDebug: 0
   variantePrecision: 0
   rangeVariante: 1
+  isInAttackSequence: 0
+  sequenceIndex: -1
 --- !u!114 &4841692019479195601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -667,6 +718,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prepAttackNameTrigger: Attacking
+  moveTriggerName: 
+  indexAttackTrigger: 
   closeNameTrigger: Attack
   m_animator: {fileID: 5564361537813060116}
 --- !u!114 &5490627967273508962
@@ -752,6 +805,70 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   behaviorTree: {fileID: 11400000, guid: c5a2ddf53cd88934e8ffb58fb3fa64ee, type: 2}
   isActivate: 0
+--- !u!114 &8484841291473713859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d01bc4847301a2249816a087eb44db7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectDuration: 0.35
+  effectCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5015588
+      inSlope: -347.88666
+      outSlope: 7.1891727
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.04121662
+      value: 0.7978722
+      inSlope: 7.1891727
+      outSlope: 3.323174
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.10279369
+      value: 1.0025035
+      inSlope: 3.323174
+      outSlope: -1.1117988
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0044888
+      value: 0
+      inSlope: -1.1117988
+      outSlope: -1.2385823
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  colorsUsed:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 3.8490567, g: 0.34496254, b: 0.34496254, a: 1}
+  colorsIntensity:
+  - 0
+  - 25
+  m_meshRenderer: {fileID: 1214105953748283967}
+  indexMatAffected: 0
+  m_materialAffected: {fileID: 0}
 --- !u!1 &5049940483994822181
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,9 +937,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basePosition: {fileID: 3294013781257085864}
   damage: 1
-  isHeavyAttack: 0
   ActiveDebug: 0
   attackName: 
+  angleOfAttack: 180
 --- !u!1 &6076304484621789231
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,6 +1334,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Tank_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3562819310713958649, guid: ef53d2138862a7f4a882dbcc668fdf83,
+        type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7822865740799285458, guid: ef53d2138862a7f4a882dbcc668fdf83,
         type: 3}
