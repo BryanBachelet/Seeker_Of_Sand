@@ -180,7 +180,6 @@ namespace Enemies
                         path = MoveTargetPath();
                     }
 
-                    Debug.LogError("is Move To");
                     customMouvement.Move(path);
                     return;
                 }

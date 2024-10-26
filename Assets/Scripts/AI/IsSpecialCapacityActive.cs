@@ -11,9 +11,10 @@ namespace GuerhoubaGames.AI
 
         public bool onlyOneTest;
         private bool isLock;
+
         protected override void OnStart()
         {
-         
+          
         }
 
         protected override void OnStop()

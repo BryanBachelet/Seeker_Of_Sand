@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using FMOD.Studio;
 using FMODUnity;
+using GuerhoubaGames.Resources;
 namespace Enemies
 {
 
@@ -159,7 +160,16 @@ namespace Enemies
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage, element);
-            Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
+            if (GamePullingSystem.instance !=null)
+            {
+                GameObject vfxHitInstance = GamePullingSystem.instance.SpawnObject(m_vfxHitFeedback.GetInstanceID());
+                vfxHitInstance.transform.position = transform.position;
+            }
+            else
+            {
+                Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
+            }
+
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
