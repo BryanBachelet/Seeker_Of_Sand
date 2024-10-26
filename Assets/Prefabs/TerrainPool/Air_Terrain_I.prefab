@@ -1742,6 +1742,7 @@ Transform:
   - {fileID: 4380760549591216684}
   - {fileID: 8123594660772824075}
   - {fileID: 3490678351716512955}
+  - {fileID: 5610862581607220143}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8817186119722113225
@@ -2338,6 +2339,74 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1017.32385, y: 449.44238, z: 55.121338}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7427026916505937727
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5610862581607220143}
+  - component: {fileID: 2563119489685830858}
+  m_Layer: 0
+  m_Name: L_Fog_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5610862581607220143
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7427026916505937727}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -43.14972, y: -118.7, z: 226.13297}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7496052333131820876}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2563119489685830858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7427026916505937727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+    albedo: {r: 1, g: 0.87685657, b: 0.6933962, a: 1}
+    meanFreePath: 8.8
+    blendingMode: 1
+    priority: 0
+    anisotropy: 0
+    volumeMask: {fileID: 11700000, guid: 80eceedfbed74c04fa0d2ecf873d6c8b, type: 3}
+    textureScrollingSpeed: {x: 0.1, y: 0, z: 0}
+    textureTiling: {x: 2, y: 2, z: 2}
+    positiveFade: {x: 0.024598151, y: 0.17445561, z: 0.046261005}
+    negativeFade: {x: 0.024598151, y: 0.17445561, z: 0.046261005}
+    m_EditorUniformFade: 19.594238
+    m_EditorPositiveFade: {x: 0, y: 0, z: 0}
+    m_EditorNegativeFade: {x: 0, y: 0, z: 0}
+    m_EditorAdvancedFade: 0
+    size: {x: 796.5736, y: 112.31647, z: 423.5584}
+    invertFade: 0
+    distanceFadeStart: 50000
+    distanceFadeEnd: 50000
+    textureOffset: {x: 0, y: 0, z: 0}
+    falloffMode: 0
+    maskMode: 0
+    materialMask: {fileID: 0}
+  m_Version: 2
 --- !u!1 &8632038480440276982
 GameObject:
   m_ObjectHideFlags: 0

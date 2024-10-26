@@ -70,7 +70,7 @@ namespace Character
             characterModel[0].SetActive(false);
             characterModel[1].SetActive(false);
             //characterModel[2].SetActive(true);
-            characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
+            //characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
             m_isDashValid = CalculateDashEndPoint(m_dashDistance);
             if (!m_isDashValid) return;
             GlobalSoundManager.PlayOneShot(28, transform.position);
@@ -132,7 +132,7 @@ namespace Character
             characterModel[0].SetActive(true);
             characterModel[1].SetActive(true);
             //characterModel[2].SetActive(false);
-            characterModel[2].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            //characterModel[2].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
 
         private void DashMouvement(float dashDuration)
@@ -193,7 +193,7 @@ namespace Character
             characterModel[0].SetActive(false);
             characterModel[1].SetActive(false);
             //characterModel[2].SetActive(true);
-            characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
+            //characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
             m_isDashValid = CalculateDashEndPoint(distance, true);
             if (!m_isDashValid) return;
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.SpecialSpell);

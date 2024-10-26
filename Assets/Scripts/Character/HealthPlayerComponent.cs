@@ -79,7 +79,7 @@ public class HealthPlayerComponent : MonoBehaviour
     public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
     public event OnContact OnContactEvent = delegate { };
 
-
+    public HitEffectHighLight m_HitEffectHighLight;
     // Start is called before the first frame update
     void Start()
     {
@@ -88,6 +88,7 @@ public class HealthPlayerComponent : MonoBehaviour
         m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out colorAdjustments);
+        if (this.GetComponent<HitEffectHighLight>() != null) { m_HitEffectHighLight = this.GetComponent<HitEffectHighLight>(); }
 
     }
 
@@ -157,6 +158,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
         GlobalSoundManager.PlayOneShot(29, transform.position);
         m_isFeedbackHitActive = true;
+        if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
         StartInvulnerability(attackDamageInfo.bIsHeavy);
 
         vignette.intensity.value = 0.35f;

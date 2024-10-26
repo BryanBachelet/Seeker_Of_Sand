@@ -70,6 +70,7 @@ namespace Enemies
         public AnimationCurve maxHealthEvolution;
 
         public GameObject dissonancePrefabObject;
+        public HitEffectHighLight m_HitEffectHighLight;
         void Awake()
         {
             InitComponent();
@@ -95,7 +96,7 @@ namespace Enemies
                 }
 
             }
-
+            if (this.GetComponent<HitEffectHighLight>() != null) { m_HitEffectHighLight = this.GetComponent<HitEffectHighLight>(); }
             RestartObject(1);
 
         }
@@ -169,7 +170,7 @@ namespace Enemies
             {
                 Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             }
-
+            if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
