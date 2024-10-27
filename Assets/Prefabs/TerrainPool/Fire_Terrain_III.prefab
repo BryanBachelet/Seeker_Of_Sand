@@ -510,7 +510,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5527383155410246529}
   - component: {fileID: 5974103599735868746}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2349,7 +2349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2208560997556431637}
   - component: {fileID: 1605555552002401591}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2635,7 +2635,7 @@ GameObject:
   - component: {fileID: 7968733285187984267}
   - component: {fileID: 4342915902187641223}
   - component: {fileID: 5487832702157636919}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2753,6 +2753,7 @@ Transform:
   - {fileID: 7079212459353988981}
   - {fileID: 6658627772130871299}
   - {fileID: 2288673347100109798}
+  - {fileID: 7283899742116622554}
   - {fileID: 616531189608810538}
   - {fileID: 4362983999267588896}
   - {fileID: 6385534273375182700}
@@ -2781,7 +2782,7 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 8
-  m_UseGeometry: 0
+  m_UseGeometry: 1
   m_DefaultArea: 0
   m_GenerateLinks: 0
   m_IgnoreNavMeshAgent: 1
@@ -2789,9 +2790,9 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 1.6666666
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: fc16458ec22ce8343bae1726b4bde0d4, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: bc88243079280f442941798c6e2b9da7, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &4217377415172845139
 GameObject:
@@ -3244,7 +3245,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4345578030153408884}
   - component: {fileID: 6888529042230527595}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3712,7 +3713,7 @@ GameObject:
   - component: {fileID: 7092597885459589268}
   - component: {fileID: 4167191549764671178}
   - component: {fileID: 6465858796248183668}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3802,7 +3803,7 @@ GameObject:
   m_Component:
   - component: {fileID: 212789299704242671}
   - component: {fileID: 121892713589668886}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4295,6 +4296,54 @@ Transform:
   - {fileID: 1572668887685140893}
   m_Father: {fileID: 7583959746136561846}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6158028697334195724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7283899742116622554}
+  - component: {fileID: 4383410156461700480}
+  m_Layer: 3
+  m_Name: NavMesh Modifier Volume_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7283899742116622554
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6158028697334195724}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.18127511, z: -0, w: 0.9834324}
+  m_LocalPosition: {x: -321, y: 34.9, z: 82}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2326808101877413770}
+  m_LocalEulerAnglesHint: {x: 0, y: -20.888, z: 0}
+--- !u!114 &4383410156461700480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6158028697334195724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Size: {x: 978.29785, y: 498.5949, z: 735.2586}
+  m_Center: {x: 279.5816, y: 192.29745, z: 276.63303}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &6321706106478235799
 GameObject:
   m_ObjectHideFlags: 0
@@ -4655,7 +4704,7 @@ GameObject:
   - component: {fileID: 9200599623281017779}
   - component: {fileID: 4252273410931305046}
   - component: {fileID: 1211462178493215826}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5110,7 +5159,7 @@ GameObject:
   - component: {fileID: 7897668940110267464}
   - component: {fileID: 1831767104964134043}
   - component: {fileID: 4904988642027188299}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Local Volumetric Fog (1)_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
