@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GuerhoubaGames.GameEnum;
 
 namespace GuerhoubaGames.VFX
 {
 
     public struct VfxAttackData
     {
-        public float attackRange;
         public float duration;
         public bool isDestroying ;
         public Transform parent;
         public Transform target;
+        public AreaType areaType;
+        public Vector3 scale;
+
     }
 
 

@@ -34,7 +34,7 @@ namespace GuerhoubaGames.VFX
             visualEffect = GetComponent<VisualEffect>();
             data = vfxMetaComponent.vfxData;
 
-            visualEffect.SetFloat("Size", data.attackRange*2);
+            visualEffect.SetVector3("Size", data.scale);
             visualEffect.SetFloat("TempsRealese", data.duration);
             visualEffect.SendEvent("ActiveArea");
 

@@ -52,9 +52,13 @@ namespace Enemies
         public AttackPosition postionToSpawnType;
 
         [Header("Area Parameters")]
-        public float radius;
-        public AreaType shapeType;
        
+        public AreaType shapeType;
+
+        [Tooltip("Only for circle")]
+        public float radius;
+        [Tooltip("For all form except circle")]
+        public Vector3 scale;
 
         [Header("Projectile Parameters")]
         public float rangeProjectile;
@@ -69,7 +73,14 @@ namespace Enemies
         [HideInInspector] public int indexDecals;
 
 
-
+        public Vector3 GetScale()
+        {
+            if(shapeType== AreaType.CIRCLE)
+            {
+                return new Vector3(radius, radius, radius);
+            }
+            return scale;
+        }
     }
 
 }

@@ -13,17 +13,21 @@ MonoBehaviour:
   m_Name: Misclaw(1)Jump
   m_EditorClassIdentifier: 
   data:
+    customAttack: {fileID: 0}
     nameAttack: Misclaw(1)Jump
     prepationTime: 2
     recoverTime: 2
     contactTime: 0.5
     coooldownAttack: 12
+    isTriggerGeneralCooldown: 0
+    isStartinAttackSequence: 0
+    isEndingAttackSequence: 0
     rotationTime: 1
     damage: 15
     attackRange: 100
+    isHeavyAttack: 0
     isStunLockingAttack: 0
     isStopMovingAtPrep: 1
-    isHeavyAttack: 0
     isFollowTarget: 0
     launchMoment: 0
     attackMovement: {fileID: 11400000, guid: cc6c26f4efa49d24c95675603745be60, type: 2}
@@ -31,10 +35,15 @@ MonoBehaviour:
     typeAttack: 0
     rangeTypeAttack: 0
     postionToSpawnType: 0
-    radius: 50
-    shapeType: 0
+    shapeType: 1
+    radius: 0
+    scale: {x: 5, y: 5, z: 50}
     rangeProjectile: 0
     durationProjectile: 0
+    scaleRaycast: {x: 0, y: 0, z: 0}
+    rayLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
     indexCollider: 0
     indexProjectileGO: 0
     indexDecals: 0

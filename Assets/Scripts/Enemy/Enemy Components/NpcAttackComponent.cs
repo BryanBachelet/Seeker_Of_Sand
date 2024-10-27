@@ -224,11 +224,12 @@ namespace Enemies
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.radius = currentAttackData.radius;
+            attackInfoData.scale = currentAttackData.GetScale();
             attackInfoData.duration = currentAttackData.prepationTime;
 
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.PREP;
+            attackInfoData.areaType = currentAttackData.shapeType;
 
             if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target)
             {
@@ -289,11 +290,12 @@ namespace Enemies
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.radius = currentAttackData.radius;
+            attackInfoData.scale = currentAttackData.GetScale();
             attackInfoData.duration = currentAttackData.contactTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.CONTACT;
+            attackInfoData.areaType = currentAttackData.shapeType;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
 
 
@@ -328,11 +330,12 @@ namespace Enemies
 
             AttackInfoData attackInfoData = new AttackInfoData();
             attackInfoData.attackIndex = currentAttackIndex;
-            attackInfoData.radius = currentAttackData.radius;
+            attackInfoData.scale = currentAttackData.GetScale();
             attackInfoData.duration = currentAttackData.recoverTime;
             attackInfoData.positionAttack = prepTargetPosition;
             attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
             attackInfoData.phase = AttackPhase.RECOVERY;
+            attackInfoData.areaType = currentAttackData.shapeType;
             m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is recoving from the attack launch");
