@@ -224,6 +224,8 @@ void LitPassFragment(Varyings input
 		builtinData.shadowMask3 = shaMask.w;
 	#endif
 
+
+		
 	#if UNITY_VERSION >= 202310
 		builtinData.renderingLayers = GetMeshRenderingLayerMask();
 	#else

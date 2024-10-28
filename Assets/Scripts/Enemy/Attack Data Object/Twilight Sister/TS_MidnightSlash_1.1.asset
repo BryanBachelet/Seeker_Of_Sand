@@ -25,9 +25,9 @@ MonoBehaviour:
     rotationTime: 0.7
     damage: 10
     attackRange: 35
+    isHeavyAttack: 0
     isStunLockingAttack: 0
     isStopMovingAtPrep: 1
-    isHeavyAttack: 0
     isFollowTarget: 0
     launchMoment: 1
     attackMovement: {fileID: 0}
@@ -35,10 +35,15 @@ MonoBehaviour:
     typeAttack: 0
     rangeTypeAttack: 0
     postionToSpawnType: 0
-    radius: 25
     shapeType: 1
+    radius: 25
+    scale: {x: 25, y: 30, z: 30}
     rangeProjectile: 0
     durationProjectile: 0
+    scaleRaycast: {x: 0, y: 0, z: 0}
+    rayLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
     indexCollider: 3
     indexProjectileGO: 0
     indexDecals: 0

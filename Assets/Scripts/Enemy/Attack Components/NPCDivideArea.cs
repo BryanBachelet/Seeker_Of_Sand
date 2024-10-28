@@ -13,7 +13,7 @@ namespace Enemies
         public GameObject area;
         public float timerTrigger;
         public float lifetimer;
-        public float areaSize;
+        public Vector3 scale;
     }
 
     public class NPCDivideArea : MonoBehaviour
@@ -110,7 +110,7 @@ namespace Enemies
             VFXAttackMeta vFXAttackMeta = areaData.area.GetComponent<VFXAttackMeta>();
 
             VfxAttackData vfxAttackData = new VfxAttackData();
-            vfxAttackData.attackRange = areaData.areaSize;
+            vfxAttackData.scale = areaData.scale;
             vfxAttackData.duration = areaData.lifetimer;
             vfxAttackData.isDestroying = true;
 

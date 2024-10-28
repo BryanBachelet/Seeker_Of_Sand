@@ -171,7 +171,6 @@ namespace Enemies
             {
                 Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
             }
-
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
@@ -184,7 +183,12 @@ namespace Enemies
         {
             if (m_npcInfo.state == NpcState.DEATH) return;
 
-            if (hasDeathAnimation) m_entityAnimator.SetTrigger("Death");
+            if (hasDeathAnimation)
+            {
+
+                    m_entityAnimator.SetTrigger("Death");
+
+            }
             m_npcInfo.state = NpcState.DEATH;
 
 
@@ -258,7 +262,10 @@ namespace Enemies
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
             death = false;
-            if (hasDeathAnimation) m_entityAnimator.ResetTrigger("Death");
+            if (hasDeathAnimation)
+            {
+                    m_entityAnimator.ResetTrigger("Death");
+            }
             m_npcInfo.state = NpcState.MOVE;
             if (!isMassed)
             {

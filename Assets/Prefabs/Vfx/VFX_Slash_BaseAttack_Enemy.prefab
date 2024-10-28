@@ -12,8 +12,10 @@ GameObject:
   - component: {fileID: 3364842658428688691}
   - component: {fileID: 5939264568326763703}
   - component: {fileID: -5467932050421234677}
+  - component: {fileID: -2970013328997834396}
+  - component: {fileID: 4588748805899797041}
   m_Layer: 0
-  m_Name: Test_Slash_Enemy
+  m_Name: VFX_Slash_BaseAttack_Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -194,3 +196,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1799c6b8c66b1074b9a7945a31b9a563, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-2970013328997834396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2732796919212328939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ae8b0f64a51428419a73977888279a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isNotDestroying: 0
+  m_DestroyAfterTime: 3
+  isResetingOnPull: 1
+--- !u!114 &4588748805899797041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2732796919212328939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0

@@ -50,9 +50,11 @@ public class CloseAttackComponent : MonoBehaviour
     }
 
     public void OnDrawGizmos()
-    {
+    { 
         Gizmos.color = Color.red;
-       if(ActiveDebug) Gizmos.DrawCube( colliderAttack.bounds.center, colliderAttack.bounds.size);
+
+        Gizmos.matrix = Matrix4x4.Rotate(transform.rotation) * Gizmos.matrix;
+        if (ActiveDebug) Gizmos.DrawWireCube(Gizmos.matrix.inverse * colliderAttack.bounds.center, colliderAttack.bounds.size);
     }
 
 
