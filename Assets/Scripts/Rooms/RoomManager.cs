@@ -34,7 +34,7 @@ public class RoomManager : MonoBehaviour
     public Enemies.EnemyManager m_enemyManager;
     public bool isRoomHasBeenValidate = true;
     private bool isTeleporterActive = true;
-    private Chosereward choserewardRef;
+    [SerializeField] private Chosereward choserewardRef;
     public TerrainGenerator terrainGenerator;
 
     [HideInInspector] public RoomInfoUI roomInfoUI;

@@ -199,9 +199,7 @@ public class UI_Inventory : MonoBehaviour
             }
         }
         UpdateTradeDisplay();
-      
-
-        if(hasSomethingInPanier) { tmpText_TradeButton.color = Color.white; }
+        if (hasSomethingInPanier) { tmpText_TradeButton.color = Color.white; }
         else { tmpText_TradeButton.color = Color.gray; }
     }
 
@@ -214,6 +212,7 @@ public class UI_Inventory : MonoBehaviour
             m_cristalInventory.cristalCount[i] += m_panierTrade[i];
             tmpText_TradeCristal[i].text = "";
             tmpText_TradeCristal[i].color = Color.white;
+            m_panierTrade[i] = 0;
         }
         tmpText_TradeButton.color = Color.gray;
         ActualizeInventory();
@@ -238,7 +237,7 @@ public class UI_Inventory : MonoBehaviour
                 tmpText_TradeCristal[i].text = m_panierTrade[i] + "";
                 tmpText_TradeCristal[i].color = Color.red;
             }
-            m_panierTrade[i] = 0;
+            //
         }
     }
 
@@ -253,6 +252,7 @@ public class UI_Inventory : MonoBehaviour
             tmpText_TradeCristal[i].color = Color.white;
         }
         tmpText_TradeButton.color = Color.gray;
+        UpdateTradeDisplay();
     }
 
 }

@@ -145,10 +145,27 @@ public class Chosereward : MonoBehaviour
 
     public void GiveArtefact(GameElement gameElement)
     {
-        int rndArtefact = Random.Range(0, artefactToChose.Count);
+        List<ArtefactsInfos> temp_artefactToChose = new List<ArtefactsInfos>(artefactToChose);
+        int rndArtefact = 0;
+        ArtefactsInfos artefactInfo = artefactToChose[rndArtefact];
+        for (int i = 0; i < artefactToChose.Count;)
+        {
+            rndArtefact = Random.Range(0, temp_artefactToChose.Count);
 
-        m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactToChose[rndArtefact]);
-        m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactToChose[rndArtefact]);
+            if (temp_artefactToChose[rndArtefact].gameElement != gameElement)
+            {
+                i++;
+                temp_artefactToChose.RemoveAt(rndArtefact);
+            }
+            else
+            {
+                i = artefactToChose.Count + 1;
+                artefactInfo = temp_artefactToChose[rndArtefact];
+            }
+        }
+
+        m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactInfo);
+        m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactInfo);
     }
 
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)

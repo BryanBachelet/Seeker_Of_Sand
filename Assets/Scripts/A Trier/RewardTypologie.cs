@@ -6,7 +6,8 @@ using GuerhoubaGames.GameEnum;
 public class RewardTypologie : MonoBehaviour
 {
     public RewardType rewardType;
-    private Chosereward choseReward;
+    public Chosereward choseRewardAttribution;
+    private static Chosereward choseReward;
     public RewardDistribution rewardDistribution;
     public Texture[] text_Reward;
     public Material mat;
@@ -38,6 +39,7 @@ public class RewardTypologie : MonoBehaviour
 
     public void Update()
     {
+
         if(TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
             vfxMesh.material = materialRewardChange;
@@ -46,6 +48,8 @@ public class RewardTypologie : MonoBehaviour
     }
     private void Start()
     {
+        if(choseReward == null) { choseReward = choseRewardAttribution; }
+
         xpMovement = this.GetComponent<ExperienceMouvement>();
         vfxReward = vfxMesh.material;
         mat = meshDisplayReward.material;
@@ -68,7 +72,7 @@ public class RewardTypologie : MonoBehaviour
                 //materialRewardChange = materialsRewardChange[1];
                 break;
             case RewardType.ARTEFACT:
-                if (choseReward == null)
+                //if (choseReward == null)
                 mat.mainTexture = text_Reward[2];
                 meshToChange.mesh = m_RewardType[2];
                     //meshToChangeMaterial.material = m_materialRewardType[2];
@@ -118,8 +122,10 @@ public class RewardTypologie : MonoBehaviour
                     break;
                 case RewardType.ARTEFACT:
                     if (choseReward == null)
-                        choseReward = FindAnyObjectByType<Chosereward>();
-                    choseReward.GiveArtefact((GameElement)element);
+                    {
+                        choseReward = GameObject.Find("Artefact-Choose-Trio").GetComponent<Chosereward>();
+                    }
+                    choseReward.GiveArtefact((GameElement) element + 1);
                     break;
                 case RewardType.HEAL:
                    if(healthReward == HealthReward.QUARTER)
@@ -150,6 +156,6 @@ public class RewardTypologie : MonoBehaviour
         {
             Destroy(goDestroy[i]);
         }
-        Destroy(this.gameObject);
+        Destroy(this.transform.parent.gameObject);
     }
 }
