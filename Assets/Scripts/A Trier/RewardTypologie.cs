@@ -69,8 +69,8 @@ public class RewardTypologie : MonoBehaviour
                 break;
             case RewardType.ARTEFACT:
                 if (choseReward == null)
-                    mat.mainTexture = text_Reward[2];
-                    meshToChange.mesh = m_RewardType[2];
+                mat.mainTexture = text_Reward[2];
+                meshToChange.mesh = m_RewardType[2];
                     //meshToChangeMaterial.material = m_materialRewardType[2];
                 m_skinMeshRender.material = m_materialRewardTypeCristals[2];
                 materialRewardChange = materialsRewardChange[2];
@@ -119,7 +119,7 @@ public class RewardTypologie : MonoBehaviour
                 case RewardType.ARTEFACT:
                     if (choseReward == null)
                         choseReward = FindAnyObjectByType<Chosereward>();
-                    choseReward.GiveArtefact();
+                    choseReward.GiveArtefact((GameElement)element);
                     break;
                 case RewardType.HEAL:
                    if(healthReward == HealthReward.QUARTER)

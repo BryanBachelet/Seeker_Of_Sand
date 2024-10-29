@@ -1,3 +1,4 @@
+using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -142,7 +143,7 @@ public class Chosereward : MonoBehaviour
         }
     }
 
-    public void GiveArtefact()
+    public void GiveArtefact(GameElement gameElement)
     {
         int rndArtefact = Random.Range(0, artefactToChose.Count);
 

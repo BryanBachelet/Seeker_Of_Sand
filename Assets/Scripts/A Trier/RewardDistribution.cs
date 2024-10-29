@@ -30,4 +30,6 @@ public class RewardDistribution : MonoBehaviour
         rewardTypopologie.element = (int)roomElementColor;
         isRewardSend = false;
     }
+
+    //public void GetRewardByElement
 }
