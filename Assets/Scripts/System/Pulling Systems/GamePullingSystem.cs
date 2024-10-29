@@ -79,9 +79,9 @@ namespace GuerhoubaGames.Resources
         // Need to be able to identify the object to pull;
         public GameObject[] PrefabToInstance;
         public int[] QuantityToInstance;
-        public List<PullObjects> listObjectToPull = new List<PullObjects>();
-        public List<int> idList = new List<int>();
-        public List<GameObject> originalPullObjectList = new List<GameObject>();
+        private List<PullObjects> m_listObjectToPull = new List<PullObjects>();
+        private List<int> m_idList = new List<int>();
+        private List<GameObject> m_originalPullObjectList = new List<GameObject>();
 
         public static GamePullingSystem instance;
         public Transform parent;
@@ -108,22 +108,27 @@ namespace GuerhoubaGames.Resources
 
             PullObjects pullObjects = new PullObjects(instance, quantity, id, transform.position, parent);
 
-            listObjectToPull.Add(pullObjects);
-            idList.Add(id);
-            originalPullObjectList.Add(instance);
+            m_listObjectToPull.Add(pullObjects);
+            m_idList.Add(id);
+            m_originalPullObjectList.Add(instance);
         }
 
         public void DeletePull(int id)
         {
-            PullObjects pullObjects = listObjectToPull[idList.IndexOf(id)];
+            PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
             pullObjects.CleanPull();
-            listObjectToPull.Remove(pullObjects);
-            originalPullObjectList.RemoveAt(idList.IndexOf(id));
+            m_listObjectToPull.Remove(pullObjects);
+            m_originalPullObjectList.RemoveAt(m_idList.IndexOf(id));
+        }
+        
+        public bool isObjectPoolExisting(int id)
+        {
+            return m_idList.Contains(id);
         }
 
         public GameObject SpawnObject(int id)
         {
-            PullObjects pullObjects = listObjectToPull[idList.IndexOf(id)];
+            PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
             if (pullObjects.currentlyUse < pullObjects.quantity)
             {
                 GameObject instanceObj = pullObjects.gameObjectsArray[pullObjects.currentlyUse];
@@ -137,8 +142,8 @@ namespace GuerhoubaGames.Resources
             }
             else
             {
-                int index = idList.IndexOf(id);
-                GameObject instance = GameObject.Instantiate(originalPullObjectList[index], Vector3.zero, Quaternion.identity, parent);
+                int index = m_idList.IndexOf(id);
+                GameObject instance = GameObject.Instantiate(m_originalPullObjectList[index], Vector3.zero, Quaternion.identity, parent);
                 PullingMetaData pullingMetaData = instance.GetComponent<PullingMetaData>();
                 pullingMetaData.id = id;
                 pullingMetaData.bIsExtraSpawn = true;
@@ -157,7 +162,7 @@ namespace GuerhoubaGames.Resources
         public void ResetObject(GameObject instance, int id)
         {
             PullingMetaData pullingMetaData = instance.GetComponent<PullingMetaData>();
-            PullObjects pullObjects = listObjectToPull[idList.IndexOf(id)];
+            PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
             instance.SetActive(false);
          
             if(pullingMetaData.bIsExtraSpawn)

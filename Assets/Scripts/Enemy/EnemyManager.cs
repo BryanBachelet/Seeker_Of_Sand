@@ -184,7 +184,7 @@ namespace Enemies
 
         private int comboCount;
         private int maxComboValue;
-
+        [SerializeField] private LayerMask layerMaskGround;
         public void Awake()
         {
             NavMesh.pathfindingIterationsPerFrame = 400;
@@ -531,7 +531,13 @@ namespace Enemies
 
         private void InstantiateSpawnFeedback()
         {
-            Instantiate(m_spawningVFX, position, transform.rotation);
+            RaycastHit hit;
+            // Does the ray intersect any objects excluding the player layer
+            if (Physics.Raycast(position, Vector3.down, out hit, Mathf.Infinity, layerMaskGround))
+            {
+
+            }
+            Instantiate(m_spawningVFX, hit.point + new Vector3(0,-18,0), transform.rotation);
             GlobalSoundManager.PlayOneShot(37, position);
         }
 

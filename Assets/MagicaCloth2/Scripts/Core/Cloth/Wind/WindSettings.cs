@@ -18,7 +18,7 @@ namespace MagicaCloth2
         /// [OK] Runtime changes.
         /// [OK] Export/Import with Presets
         /// </summary>
-        [Range(0.0f, 2.0f)]
+        [Range(0.0f, 20.0f)]
         public float influence = 1.0f;
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace MagicaCloth2
 
         public void DataValidate()
         {
-            influence = Mathf.Clamp(influence, 0.0f, 2.0f);
+            influence = Mathf.Clamp(influence, 0.0f, 20.0f);
             frequency = Mathf.Clamp(frequency, 0.0f, 2.0f);
             turbulence = Mathf.Clamp(turbulence, 0.0f, 2.0f);
             blend = Mathf.Clamp01(blend);

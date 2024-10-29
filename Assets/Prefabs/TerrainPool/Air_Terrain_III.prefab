@@ -453,6 +453,7 @@ Transform:
   - {fileID: 1446155928977665042}
   - {fileID: 2750057211376239270}
   - {fileID: 5821327654709214687}
+  - {fileID: 2885657195007540531}
   - {fileID: 6628146370004666333}
   - {fileID: 1021990285259850792}
   - {fileID: 8374346912764757638}
@@ -492,9 +493,9 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 1.6666666
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 834c82d9b1e90654aa72aa708b3928da, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 86be603670289be4780ecfad8f72936f, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &2909999820765566364
 GameObject:
@@ -1094,6 +1095,54 @@ Transform:
   - {fileID: 1653958858942508407}
   m_Father: {fileID: 1525566304323954372}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4669848327944067871
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2885657195007540531}
+  - component: {fileID: 3226477560918663728}
+  m_Layer: 3
+  m_Name: NavMesh Modifier Volume_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2885657195007540531
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4669848327944067871}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.079643786, z: -0, w: 0.9968234}
+  m_LocalPosition: {x: 450, y: 0, z: -247}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1525566304323954372}
+  m_LocalEulerAnglesHint: {x: 0, y: 9.136, z: 0}
+--- !u!114 &3226477560918663728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4669848327944067871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Size: {x: 298.29437, y: 275.61652, z: 946.5536}
+  m_Center: {x: -77.14789, y: -24.008846, z: 207.56305}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &4870676756540293056
 GameObject:
   m_ObjectHideFlags: 0

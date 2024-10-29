@@ -103,7 +103,8 @@ namespace Enemies
             attackDamageInfo.phase = GuerhoubaGames.GameEnum.AttackPhase.CONTACT;
             attackDamageInfo.positionAttack = divePosition[m_diveStartCount];
             attackDamageInfo.attackIndex = customAttackData.attackIndex;
-            attackDamageInfo.radius = attackRadius;
+            attackDamageInfo.scale = new Vector3( attackRadius, attackRadius, attackRadius);
+            attackDamageInfo.areaType = GuerhoubaGames.GameEnum.AreaType.CIRCLE;
 
             customAttackData.npcAttackFeedback.SpawnFeedbacks(attackDamageInfo);
 

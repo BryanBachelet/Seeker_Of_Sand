@@ -21,10 +21,15 @@ namespace Enemies
         private bool m_hasDamagePlayer;
         private Vector3 m_normalHit;
         private Vector3 m_hitPoint;
+        private float timeInstantiate;
+        [Range(0.1f,3)]
+        [SerializeField] private float timeMaxSpeed = 1.5f;
+        [SerializeField] private AnimationCurve speedEvolution;
         // Start is called before the first frame update
         void Start()
         {
             InitComponent();
+            timeInstantiate = Time.time;
         }
 
         // Update is called once per frame
@@ -49,8 +54,9 @@ namespace Enemies
 
         public void Move()
         {
-
-            if (Physics.Raycast(transform.position, direction.normalized, m_speedProjectile * Time.deltaTime, GameLayer.instance.propsGroundLayerMask))
+            float speed = speedEvolution.Evaluate(Time.time / (timeInstantiate + timeMaxSpeed));
+            float speedProjecitle = m_speedProjectile * Time.deltaTime * speed;
+            if (Physics.Raycast(transform.position, direction.normalized, speedProjecitle, GameLayer.instance.propsGroundLayerMask))
             {
                 Destroy(this.gameObject);
             }
@@ -65,8 +71,8 @@ namespace Enemies
 
 
             }
-            transform.position += transform.forward * m_speedProjectile * Time.deltaTime;
-            m_distanceMoved += m_speedProjectile * Time.deltaTime;
+            transform.position += transform.forward * speedProjecitle;
+            m_distanceMoved += speedProjecitle;
         }
 
         #region Trigger Function

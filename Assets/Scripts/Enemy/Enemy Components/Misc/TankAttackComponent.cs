@@ -74,7 +74,8 @@ namespace Enemies
                 {
                     m_npcMeta.state = NpcState.MOVE;
                     timeofRecuperation = 0;
-                    m_entityAnimator.SetBool("Attack", false);
+                        m_entityAnimator.SetBool("Attack", false);
+
                     vfxRangeAttack.SendEvent("UnActiveArea");
                     m_SignAttackReset = true;
                 }
@@ -88,8 +89,7 @@ namespace Enemies
 
         public void AttackTank()
         {
-            m_entityAnimator.SetBool("Attack", true);
-
+                m_entityAnimator.SetBool("Attack", true);
             if (Vector3.Distance(m_targetTransform.position, m_monsterBodyTransform.position) < radiusOfAttack)
             {
                 if (m_targetTransform.tag == "Player")

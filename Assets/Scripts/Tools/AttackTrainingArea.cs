@@ -45,7 +45,7 @@ public class AttackTrainingArea : MonoBehaviour
         {
             hpPlayer = playerTarget.GetComponent<HealthPlayerComponent>();
             destroyScript.m_DestroyAfterTime = lifeTimeVFX;
-            m_Vfx.SetFloat("Size", rangeHit * 3f);
+            m_Vfx.SetVector3("Size", new Vector3(1,1,1) * rangeHit * 3f);
             m_Vfx.SetFloat("TempsRealese", lifeTimeVFX);
             m_Vfx.SendEvent("ActiveArea");
 

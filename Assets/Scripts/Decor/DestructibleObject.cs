@@ -68,7 +68,7 @@ public class DestructibleObject : MonoBehaviour
         for (int i = 0; i < rigidBodies.Length; i++)
         {
             rigidBodies[i].AddForce( direction.normalized * power * 1000,ForceMode.Impulse);
-            Debug.Log(power + "--> Is power of impulse. Direction is [" + direction + "]");
+          //  Debug.Log(power + "--> Is power of impulse. Direction is [" + direction + "]");
         }
 
         Destroy(gameObject);
