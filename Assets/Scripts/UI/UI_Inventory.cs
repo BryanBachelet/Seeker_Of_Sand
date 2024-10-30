@@ -12,6 +12,15 @@ public class UI_Inventory : MonoBehaviour
 
     private MarchandUiView m_marchandUiView;
     private CristalInventory m_cristalInventory;
+
+    [Header("Trading Cristal")] //Eau --> Air --> Feu --> Terre --> Eau
+    [SerializeField] private string m_cristalTradeString;
+    [SerializeField] private int[] m_panierTrade = new int[4];
+    [SerializeField] private TMP_Text[] tmpText_TradeCristal = new TMP_Text[4];
+    [SerializeField] private TMP_Text[] tmpText_CurrentCristal = new TMP_Text[4];
+    [SerializeField] private TMP_Text tmpText_TradeButton;
+    public bool hasSomethingInPanier = false;
+
     private Character.CharacterSpellBook m_characterSpellBool;
     private Character.CharacterShoot m_characterShoot;
     private UI_Fragment_Tooltip m_fragmentToolTip;
@@ -80,6 +89,7 @@ public class UI_Inventory : MonoBehaviour
         for (int i = 0; i < cristalCount.Count; i++)
         {
             cristalCount[i].text = "" + m_cristalInventory.cristalCount[i];
+            tmpText_CurrentCristal[i].text = "" + m_cristalInventory.cristalCount[i];
         }
         List<GameObject> tempFragment = m_fragmentToolTip.fragment_List;
         for (int i = 0; i < m_fragmentToolTip.currentFragmentNumber; i++)
@@ -155,5 +165,94 @@ public class UI_Inventory : MonoBehaviour
         //fragmentTypeBackground[index].sprite
     }
 
+
+    public void CheckTradePossibility(int cristalElement)
+    {
+        if (cristalElement == 0)
+        {
+            if (m_cristalInventory.cristalCount[3] + m_panierTrade[3] < 2)
+            {
+                Debug.Log("Not enought cristal");
+                return;
+            }
+            else
+            {
+                m_panierTrade[cristalElement] += 1;
+                m_panierTrade[3] -= 2;
+                hasSomethingInPanier = true;
+
+            }
+
+        }
+        else
+        {
+            if (m_cristalInventory.cristalCount[cristalElement - 1] + m_panierTrade[cristalElement - 1] < 2)
+            {
+                Debug.Log("Not enought cristal");
+                return;
+            }
+            else
+            {
+                m_panierTrade[cristalElement] += 1;
+                m_panierTrade[cristalElement - 1] -= 2;
+                hasSomethingInPanier = true;
+            }
+        }
+        UpdateTradeDisplay();
+        if (hasSomethingInPanier) { tmpText_TradeButton.color = Color.white; }
+        else { tmpText_TradeButton.color = Color.gray; }
+    }
+
+    public void UpdateTradeResult()
+    {
+        if (!hasSomethingInPanier) return;
+        hasSomethingInPanier = false;
+        for (int i = 0; i < m_cristalInventory.cristalCount.Length; i++)
+        {
+            m_cristalInventory.cristalCount[i] += m_panierTrade[i];
+            tmpText_TradeCristal[i].text = "";
+            tmpText_TradeCristal[i].color = Color.white;
+            m_panierTrade[i] = 0;
+        }
+        tmpText_TradeButton.color = Color.gray;
+        ActualizeInventory();
+    }
+
+    public void UpdateTradeDisplay()
+    {
+        for(int i = 0; i < m_cristalInventory.cristalCount.Length; i++)
+        {
+            if (m_panierTrade[i] == 0)
+            {
+                tmpText_TradeCristal[i].text = "";
+                tmpText_TradeCristal[i].color = Color.white;
+            }
+            else if (m_panierTrade[i] > 0)
+            {
+                tmpText_TradeCristal[i].text = m_panierTrade[i] + "";
+                tmpText_TradeCristal[i].color = Color.green;
+            }
+            else if (m_panierTrade[i] < 0)
+            {
+                tmpText_TradeCristal[i].text = m_panierTrade[i] + "";
+                tmpText_TradeCristal[i].color = Color.red;
+            }
+            //
+        }
+    }
+
+    public void CancelTrade()
+    {
+        if (!hasSomethingInPanier) return;
+        hasSomethingInPanier = false;
+        for (int i = 0; i < m_panierTrade.Length; i++)
+        {
+            m_panierTrade[i] = 0;
+            tmpText_TradeCristal[i].text = "";
+            tmpText_TradeCristal[i].color = Color.white;
+        }
+        tmpText_TradeButton.color = Color.gray;
+        UpdateTradeDisplay();
+    }
 
 }
