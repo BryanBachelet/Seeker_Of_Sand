@@ -6,6 +6,8 @@ namespace GuerhoubaGames.AI
 {
     public class IsAttacking : DecoratorNode
     {
+        [Tooltip("Active the check if the attack allow the movemement ")]
+        public bool activeTestMovingState;
         public bool onlyOneTest;
         private bool isLock;
         protected override void OnStart()
@@ -30,7 +32,7 @@ namespace GuerhoubaGames.AI
                 return state;
             }
 
-            if (agent.state == Enemies.NpcState.ATTACK)
+            if (agent.state == Enemies.NpcState.ATTACK || activeTestMovingState && agent.attackComponent.currentAttackData.isStopMovingAtPrep)
             {
                 
              
