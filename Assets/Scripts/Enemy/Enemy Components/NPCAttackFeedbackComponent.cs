@@ -17,6 +17,7 @@ namespace Enemies
         public Vector3 positionAttack;
         public Transform target;
         public AreaType areaType;
+ 
 
         
     }
@@ -68,8 +69,11 @@ namespace Enemies
                 if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.LastHit)
                     spawnPositon = attackInfoData.positionAttack;
 
+
+                spawnPositon = spawnPositon + Quaternion.Euler(0, transform.eulerAngles.y, 0) * attackFeedbackData.offsetSpawnPosition;
                 if (GamePullingSystem.instance == null)
                 {
+                    
                     vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
                 }
                 else
@@ -78,11 +82,13 @@ namespace Enemies
                     if (GamePullingSystem.instance.isObjectPoolExisting(id))
                     {
                         vfx =  GamePullingSystem.instance.SpawnObject(id);
+                     
                         vfx.transform.position = spawnPositon;
                         vfx.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
                     }
                     else
                     {
+
                         vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
                     }
                 }

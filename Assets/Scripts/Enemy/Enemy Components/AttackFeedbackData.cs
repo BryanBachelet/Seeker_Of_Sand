@@ -23,5 +23,6 @@ namespace Enemies
         public int sfxIndex;
         public int attackIndex;
         public AttackPhase attackPhase;
+        public Vector3 offsetSpawnPosition;
     }
 }
