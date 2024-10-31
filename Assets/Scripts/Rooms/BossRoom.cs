@@ -52,6 +52,7 @@ public class BossRoom : MonoBehaviour
     public void EndRoomBoss()
     {
         roomManager.ValidateRoom();
+        DayCyclecontroller.m_nightCountGlobal++;
         enemyManager.gsm.UpdateParameter(0.1f, "Intensity");
     }
 }

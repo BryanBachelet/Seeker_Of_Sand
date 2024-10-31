@@ -52,6 +52,7 @@ public class DayCyclecontroller : MonoBehaviour
 
     [SerializeField] private GameObject m_EndUI;
     [SerializeField] public int m_nightCount { get; private set; }
+    public static int m_nightCountGlobal;
     private string dayprogress;
     private string phaseprogress;
 
@@ -77,6 +78,8 @@ public class DayCyclecontroller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        m_nightCount = 0;
+        m_nightCountGlobal = 0;
         time = 0;
         m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'�couler IRL.  On multiplie le nombre de minutes r�gl�e dans l'inspector par 60 pour le convertire en seconde.
         durationNight = m_SettingDurationDay / 3;
@@ -209,7 +212,7 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_sun.transform.rotation.eulerAngles.x > 180)
             {
                 StartNight();
-                m_nightCount++;
+                //m_nightCount++;
 
             }
         }
