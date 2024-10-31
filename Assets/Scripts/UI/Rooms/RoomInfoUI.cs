@@ -78,8 +78,8 @@ namespace GuerhoubaGames.UI
 
         public void ActualizeRoomInfoInterface()
         {
-            m_objectifAnimator.ResetTrigger("ActiveDisplay");
-            m_rewardAnimator.ResetTrigger("ActiveDisplay");
+          if(m_objectifAnimator.isActiveAndEnabled)  m_objectifAnimator.ResetTrigger("ActiveDisplay");
+            if (m_rewardAnimator.isActiveAndEnabled) m_rewardAnimator.ResetTrigger("ActiveDisplay");
 
             // Reward inteface update
             m_rewardIcon.sprite = m_rewardSpriteArray[(int)currentRoomManager.rewardType];
@@ -89,8 +89,8 @@ namespace GuerhoubaGames.UI
             m_objectifIcon.sprite = m_objectifSpriteArray[indexRoomType];
             m_objectifText.text = m_objectifTextArray[indexRoomType];
 
-            m_objectifAnimator.SetTrigger("ActiveDisplay");
-            m_rewardAnimator.SetTrigger("ActiveDisplay");
+            if (m_objectifAnimator.isActiveAndEnabled) m_objectifAnimator.SetTrigger("ActiveDisplay");
+            if (m_rewardAnimator.isActiveAndEnabled) m_rewardAnimator.SetTrigger("ActiveDisplay");
         }
 
         #region Major Goal Functions

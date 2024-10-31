@@ -1,3 +1,4 @@
+using GuerhoubaGames.Resources;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class ExperienceMouvement : MonoBehaviour
     [SerializeField] private float m_speed = 15;
     [SerializeField] private float m_speedUp = 40;
     [SerializeField] private TrailRenderer m_trail;
-    [HideInInspector] public float m_timeBeforeDestruction = 3;
+    [HideInInspector] public float timeBeforeDestruction = 3;
     public int quantity;
 
     public int cristalType = 0;
@@ -23,39 +24,50 @@ public class ExperienceMouvement : MonoBehaviour
 
     private float m_timeSpawned = 0;
     private float m_tempsEcoule;
-    private ObjectState state;
+    private ObjectState m_state;
     private Collider m_coll;
+    private PullingMetaData m_pullingMetaData;
+    private float m_timerBeforeDestruction;
+
+    private void Awake()
+    {
+
+        m_pullingMetaData = GetComponent<PullingMetaData>();
+
+    }
+
     private void Start()
     {
-        state = new ObjectState();
-        GameState.AddObject(state);
+        m_state = new ObjectState();
+        GameState.AddObject(m_state);
         m_timeSpawned = Time.time;
         m_coll = this.GetComponent<Collider>();
+        m_timerBeforeDestruction = timeBeforeDestruction;
 
     }
     // Update is called once per frame
     void Update()
     {
-        if(!m_isGrounded && GroundPosition != Vector3.zero)
+        if (!m_isGrounded && GroundPosition != Vector3.zero)
         {
             MoveGround();
-            if(m_tempsEcoule < 2)
+            if (m_tempsEcoule < 2)
             {
                 m_tempsEcoule += Time.deltaTime;
             }
             else
             {
                 m_isGrounded = true;
-                
+
             }
         }
         else
         {
             if (m_playerPosition)
             {
-                if (Vector3.Distance(transform.position, m_playerPosition.position) < 1) 
-                { 
-                    m_isGrounded = true; 
+                if (Vector3.Distance(transform.position, m_playerPosition.position) < 1)
+                {
+                    m_isGrounded = true;
                 }
                 else
                 {
@@ -65,18 +77,34 @@ public class ExperienceMouvement : MonoBehaviour
 
             }
         }
-        
+
         if (m_destruction)
         {
-            m_timeBeforeDestruction -= Time.deltaTime;
-          if(m_trail)  m_trail.time = m_timeBeforeDestruction;
-            if (m_timeBeforeDestruction < 0) Destroy(this.gameObject);
+            m_timerBeforeDestruction -= Time.deltaTime;
+            if (m_trail) m_trail.time = m_timerBeforeDestruction;
+            if (m_timerBeforeDestruction < 0) DestroyObject();
         }
     }
 
-    public void DestoyObject()
+    public void DestroyObject()
     {
-        Destroy(this.gameObject);
+        if (m_pullingMetaData == null)
+        {
+            Destroy(this.gameObject);
+        }
+        else if (m_pullingMetaData.isActive)
+        {
+            int idData = GetComponent<PullingMetaData>().id;
+            GamePullingSystem.instance.ResetObject(this.gameObject, idData);
+            ResetComponent();
+        }
+    }
+
+    private void ResetComponent()
+    {
+        m_tempsEcoule = 0;
+        m_isGrounded = false;
+        m_timerBeforeDestruction = timeBeforeDestruction;
     }
 
 
@@ -96,9 +124,9 @@ public class ExperienceMouvement : MonoBehaviour
 
     public void InitDestruction()
     {
-        GameState.RemoveObject(state);
+        GameState.RemoveObject(m_state);
         m_destruction = true;
-      if(m_coll)  m_coll.enabled = false;
+        if (m_coll) m_coll.enabled = false;
     }
 
     public void MoveDestination()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4838727453909540307}
   - component: {fileID: 7060482178936712806}
   - component: {fileID: 8823960380804695004}
+  - component: {fileID: 5693557007614695298}
   m_Layer: 0
   m_Name: Attack Column
   m_TagString: Untagged
@@ -66,15 +67,15 @@ MonoBehaviour:
   - area: {fileID: 6757218936333539896}
     timerTrigger: 0
     lifetimer: 0.2
-    areaSize: 0
+    scale: {x: 0, y: 0, z: 0}
   - area: {fileID: 3683525916412524668}
     timerTrigger: 0.25
     lifetimer: 0.2
-    areaSize: 0
+    scale: {x: 0, y: 0, z: 0}
   - area: {fileID: 3683525916412524668}
     timerTrigger: 0.5
     lifetimer: 0.2
-    areaSize: 0
+    scale: {x: 0, y: 0, z: 0}
   totalTimer: 0
 --- !u!114 &8823960380804695004
 MonoBehaviour:
@@ -90,6 +91,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isNotDestroying: 0
   m_DestroyAfterTime: 3
+  isResetingOnPull: 1
+--- !u!114 &5693557007614695298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3808057417710552666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0
 --- !u!1001 &2569035831929993382
 PrefabInstance:
   m_ObjectHideFlags: 0

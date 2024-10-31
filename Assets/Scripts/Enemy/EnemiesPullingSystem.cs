@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enemies;
 using UnityEngine.AI;
+using GuerhoubaGames.Resources;
 
 [System.Serializable]
 public struct EnemyPullingInfo
@@ -13,7 +14,7 @@ public struct EnemyPullingInfo
     public List<GameObject> instanceArray;
 }
 
-public class PullingSystem : MonoBehaviour
+public class EnemiesPullingSystem : MonoBehaviour
 {
     #region Variables
 
@@ -29,9 +30,43 @@ public class PullingSystem : MonoBehaviour
     #endregion
 
     public GameObject gameObjectHolder;
+
+    private List<PullConstrutionData> pullingObjectData = new List<PullConstrutionData>();
+
     // Init all the system
     public void InitializePullingSystem()
     {
+        // Collect Pulling info
+
+        for (int i = 0; i < m_enemyInfoArray.Count; i++)
+        {
+            GameObject prefab = m_enemyInfoArray[i].prefabToSpawn;
+            NPCPullingData NpcPullingData = prefab.GetComponent<NPCPullingData>();
+            if (NpcPullingData == null) continue;
+
+            for (int j = 0; j < NpcPullingData.pullDataList.Count; j++)
+            {
+                if (pullingObjectData.Contains(NpcPullingData.pullDataList[j]))
+                {
+                    int index = pullingObjectData.IndexOf(NpcPullingData.pullDataList[j]);
+                    PullConstrutionData pullConstrutionData = pullingObjectData[index];
+                    pullConstrutionData.count += NpcPullingData.pullDataList[j].count * m_enemyInfoArray[i].maxCount;
+                    pullingObjectData[index] = pullConstrutionData;
+                }
+                else
+                {
+                    PullConstrutionData pullConstrutionData = NpcPullingData.pullDataList[j];
+                    pullConstrutionData.count = pullConstrutionData.count * m_enemyInfoArray[i].maxCount;
+                    pullingObjectData.Add(pullConstrutionData);
+                }
+            }
+        }
+
+        for (int i = 0; i < pullingObjectData.Count; i++)
+        {
+            GamePullingSystem.instance.CreatePull(pullingObjectData[i]);
+        }
+
         for (int i = 0; i < m_enemyInfoArray.Count; i++)
         {
             SpawnEnemisFromPullingSystem(m_enemyInfoArray[i]);

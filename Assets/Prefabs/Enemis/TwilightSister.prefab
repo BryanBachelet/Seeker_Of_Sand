@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 8639129744682881334}
   - component: {fileID: -6111061326333291495}
   - component: {fileID: 8056349823282169993}
+  - component: {fileID: 1480183017902568212}
   m_Layer: 6
   m_Name: TwilightSister
   m_TagString: Enemy
@@ -757,9 +758,6 @@ MonoBehaviour:
   - {fileID: 5037036291567998497}
   - {fileID: 4614233537405179969}
   - {fileID: 7927506587208341633}
-  projectileAttackArrray:
-  - {fileID: 793578448744671341, guid: 67977c3456c66c048941ac4edefa2f33, type: 3}
-  - {fileID: 793578448744671341, guid: 74b6b642dde795f41a2bd42d03d363cb, type: 3}
   currentAttackData:
     customAttack: {fileID: 0}
     nameAttack: 
@@ -782,6 +780,7 @@ MonoBehaviour:
     updateTimeAttackLaunch: 0
     typeAttack: 0
     rangeTypeAttack: 0
+    projectileLaunch: {fileID: 0}
     postionToSpawnType: 0
     shapeType: 0
     radius: 0
@@ -1134,6 +1133,35 @@ MonoBehaviour:
   m_meshRenderer: {fileID: 5772345691694639964}
   indexMatAffected: 0
   m_materialAffected: {fileID: 0}
+--- !u!114 &1480183017902568212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95968bccdda15c64cb9e354194072996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullDataList:
+  - instance: {fileID: 4628487204184700574, guid: c0e19b232dbe7c3448b6d0507b192b42,
+      type: 3}
+    idInstance: 33696
+    count: 3
+  - instance: {fileID: 6159178158635227296, guid: 4ea57173fe2633f4bb9b98c01af9ee1c,
+      type: 3}
+    idInstance: 47062
+    count: 1
+  - instance: {fileID: 793578448744671341, guid: 67977c3456c66c048941ac4edefa2f33,
+      type: 3}
+    idInstance: 47098
+    count: 1
+  - instance: {fileID: 793578448744671341, guid: 74b6b642dde795f41a2bd42d03d363cb,
+      type: 3}
+    idInstance: 47100
+    count: 1
 --- !u!1 &2428030630988664286
 GameObject:
   m_ObjectHideFlags: 0

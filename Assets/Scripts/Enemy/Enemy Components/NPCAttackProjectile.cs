@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GuerhoubaGames.Resources;
+using UnityEngine.VFX;
 
 namespace Enemies
 {
@@ -22,15 +23,26 @@ namespace Enemies
         private Vector3 m_normalHit;
         private Vector3 m_hitPoint;
         private float timeInstantiate;
-        [Range(0.1f,3)]
+        [Range(0.1f, 3)]
         [SerializeField] private float timeMaxSpeed = 1.5f;
         [SerializeField] private AnimationCurve speedEvolution;
+
+        private PullingMetaData m_pullingMetaData;
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
-            InitComponent();
-            timeInstantiate = Time.time;
+            m_pullingMetaData = GetComponent<PullingMetaData>();
+          
+
+            
         }
+
+        public void Start()
+        {
+            if (m_pullingMetaData == null) InitComponent(); 
+        }
+
+
 
         // Update is called once per frame
         void Update()
@@ -41,14 +53,16 @@ namespace Enemies
 
         public void InitComponent()
         {
+            
             m_speedProjectile = range / duration;
+            timeInstantiate = Time.time;
         }
 
         public void CountRangeProjectile()
         {
             if (m_distanceMoved >= range)
             {
-                Destroy(this.gameObject);
+                DestroyProjectile();
             }
         }
 
@@ -58,7 +72,7 @@ namespace Enemies
             float speedProjecitle = m_speedProjectile * Time.deltaTime * speed;
             if (Physics.Raycast(transform.position, direction.normalized, speedProjecitle, GameLayer.instance.propsGroundLayerMask))
             {
-                Destroy(this.gameObject);
+                DestroyProjectile();
             }
             RaycastHit hit = new RaycastHit();
 
@@ -121,6 +135,39 @@ namespace Enemies
             transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
         }
 
+
+        public void DestroyProjectile()
+        {
+            if (m_pullingMetaData == null)
+            {
+                Destroy(this.gameObject);
+            }
+            else if(m_pullingMetaData.isActive)
+            {
+                int idData = GetComponent<PullingMetaData>().id;
+                GamePullingSystem.instance.ResetObject(this.gameObject, idData);
+                ResetProjectile();
+            }
+        }
+
+
+        public void ResetProjectile()
+        {
+            VisualEffect vfx = GetComponent<VisualEffect>();
+            if (vfx != null)
+            {
+                vfx.Reinit();
+            }
+
+            VisualEffect[] vfxArray = GetComponentsInChildren<VisualEffect>();
+            for (int i = 0; i < vfxArray.Length; i++)
+            {
+                vfxArray[i].Reinit();
+            }
+
+            m_distanceMoved = 0;
+            m_hasDamagePlayer = false;
+        }
     }
 }
 

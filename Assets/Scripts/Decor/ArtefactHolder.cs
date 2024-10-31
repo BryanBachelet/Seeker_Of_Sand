@@ -15,7 +15,7 @@ public class ArtefactHolder : MonoBehaviour
             other.GetComponent<DropInventory>().AddNewArtefact(m_artefactsInfos);
 
              m_firstTime = true;
-            transform.parent.GetComponent<ExperienceMouvement>().DestoyObject();
+            transform.parent.GetComponent<ExperienceMouvement>().DestroyObject();
            // transform.parent.GetComponent<ExperienceMouvement>().m_timeBeforeDestruction = 0.2f;
           
 
@@ -31,7 +31,7 @@ public class ArtefactHolder : MonoBehaviour
             other.GetComponent<DropInventory>().AddNewArtefact(m_artefactsInfos);
 
             m_firstTime = true;
-            transform.parent.GetComponent<ExperienceMouvement>().DestoyObject();
+            transform.parent.GetComponent<ExperienceMouvement>().DestroyObject();
           //  transform.parent.GetComponent<ExperienceMouvement>().m_timeBeforeDestruction = 0.2f;
 
 

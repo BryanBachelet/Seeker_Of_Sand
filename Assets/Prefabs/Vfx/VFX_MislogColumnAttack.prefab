@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1148347850592317822}
   - component: {fileID: 2039551461830900651}
   - component: {fileID: 6192738341878181938}
+  - component: {fileID: -1485759127171736379}
   m_Layer: 0
   m_Name: VFX_MislogColumnAttack
   m_TagString: Untagged
@@ -66,15 +67,15 @@ MonoBehaviour:
   - area: {fileID: 7272085923141833559}
     timerTrigger: 0
     lifetimer: 1
-    areaSize: 10
+    scale: {x: 0, y: 0, z: 0}
   - area: {fileID: 8074585344028235479}
     timerTrigger: 0
     lifetimer: 1.25
-    areaSize: 10
+    scale: {x: 0, y: 0, z: 0}
   - area: {fileID: 7163480379243362549}
     timerTrigger: 0
     lifetimer: 1.5
-    areaSize: 10
+    scale: {x: 0, y: 0, z: 0}
   totalTimer: 0
 --- !u!114 &6192738341878181938
 MonoBehaviour:
@@ -90,6 +91,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isNotDestroying: 0
   m_DestroyAfterTime: 3
+  isResetingOnPull: 1
+--- !u!114 &-1485759127171736379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709791515623686792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0
 --- !u!1001 &2545232964583247467
 PrefabInstance:
   m_ObjectHideFlags: 0

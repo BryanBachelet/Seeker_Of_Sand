@@ -71,31 +71,8 @@ namespace Enemies
 
 
                 spawnPositon = spawnPositon + Quaternion.Euler(0, transform.eulerAngles.y, 0) * attackFeedbackData.offsetSpawnPosition;
-                if (GamePullingSystem.instance == null)
-                {
-                    
-                    vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
-                }
-                else
-                {
-                    int id = attackFeedbackData.Vfx.GetInstanceID();
-                    if (GamePullingSystem.instance.isObjectPoolExisting(id))
-                    {
-                        vfx =  GamePullingSystem.instance.SpawnObject(id);
-                     
-                        vfx.transform.position = spawnPositon;
-                        vfx.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-                    }
-                    else
-                    {
-
-                        vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
-                    }
-                }
-
-                
-
-
+                vfx = GamePullingSystem.SpawnObject(attackFeedbackData.Vfx,spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y,0));
+ 
             }
 
             GuerhoubaGames.VFX.VFXAttackMeta vfxMeta  = vfx.GetComponent<GuerhoubaGames.VFX.VFXAttackMeta>();

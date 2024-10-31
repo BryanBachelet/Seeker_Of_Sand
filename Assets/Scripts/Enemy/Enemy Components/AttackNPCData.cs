@@ -48,6 +48,7 @@ namespace Enemies
         public AttackType typeAttack;
         [Tooltip("Only useful for the projectile type of attack")]
         public RangeAttackType rangeTypeAttack;
+        public GameObject projectileLaunch;
 
         public AttackPosition postionToSpawnType;
 
