@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7162928526373707205}
   - component: {fileID: 5757572578201089103}
   - component: {fileID: -560588142749373717}
+  - component: {fileID: 2835734147712835515}
   m_Layer: 0
   m_Name: DissonanceObject
   m_TagString: Untagged
@@ -238,7 +239,7 @@ MonoBehaviour:
   m_speed: 20
   m_speedUp: 30
   m_trail: {fileID: 7162928526373707205}
-  m_timeBeforeDestruction: 3
+  timeBeforeDestruction: 3
   quantity: 0
   cristalType: 0
   m_destruction: 0
@@ -257,3 +258,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isNotDestroying: 0
   m_DestroyAfterTime: 12
+  isResetingOnPull: 1
+--- !u!114 &2835734147712835515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7295789607246562677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0

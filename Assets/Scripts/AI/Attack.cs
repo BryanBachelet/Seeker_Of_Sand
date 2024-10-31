@@ -10,7 +10,8 @@ namespace GuerhoubaGames.AI
         public int indexAttack = 0;
         public int sequenceIndex = 0;
         private short isSucces = 0; //  If equal 0 is Running, equal 1 is Succes , equal -1 is Fail
-    
+        public bool activeDebug =false;
+
         protected override void OnStart()
         {
 
@@ -27,7 +28,7 @@ namespace GuerhoubaGames.AI
                 agent.attackComponent.ActivePrepationAttack(indexAttack,sequenceIndex) ;
                 agent.attackComponent.OnFinishAttack += IsFinish;
                 isSucces = 0;
-                Debug.Log("Start Attack : " + description);
+                if(activeDebug)  Debug.Log("Start Attack : " + description);
        
             }
         }

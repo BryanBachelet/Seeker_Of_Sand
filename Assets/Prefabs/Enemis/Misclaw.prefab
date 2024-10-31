@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 4299716901122372160}
   - component: {fileID: 4225197152022904189}
   - component: {fileID: 852114777670516340}
+  - component: {fileID: 4523480540794086140}
   m_Layer: 6
   m_Name: Misclaw
   m_TagString: Enemy
@@ -653,7 +654,6 @@ MonoBehaviour:
   colliderAttackArray:
   - {fileID: 1691592237698652592}
   - {fileID: 6365520252252032175}
-  projectileAttackArrray: []
   currentAttackData:
     customAttack: {fileID: 0}
     nameAttack: 
@@ -676,6 +676,7 @@ MonoBehaviour:
     updateTimeAttackLaunch: 0
     typeAttack: 0
     rangeTypeAttack: 0
+    projectileLaunch: {fileID: 0}
     postionToSpawnType: 0
     shapeType: 0
     radius: 0
@@ -728,6 +729,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 0
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -742,6 +744,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 1
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &4299716901122372160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -837,6 +840,19 @@ MonoBehaviour:
   m_meshRenderer: {fileID: 4333177854473765387}
   indexMatAffected: 0
   m_materialAffected: {fileID: 0}
+--- !u!114 &4523480540794086140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95968bccdda15c64cb9e354194072996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullDataList: []
 --- !u!1 &4852806396939262081
 GameObject:
   m_ObjectHideFlags: 0

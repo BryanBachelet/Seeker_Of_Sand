@@ -11,6 +11,7 @@ namespace Enemies
     {
 
         public float attackRadius = 30;
+        public float predictionDistance = 10;
 
         [Tooltip("Time before the attack is launch")]
         public float prepDiveDuration;
@@ -103,7 +104,7 @@ namespace Enemies
             attackDamageInfo.phase = GuerhoubaGames.GameEnum.AttackPhase.CONTACT;
             attackDamageInfo.positionAttack = divePosition[m_diveStartCount];
             attackDamageInfo.attackIndex = customAttackData.attackIndex;
-            attackDamageInfo.scale = new Vector3( attackRadius, attackRadius, attackRadius);
+            attackDamageInfo.scale = new Vector3( 2*attackRadius, 2*attackRadius, 2*attackRadius);
             attackDamageInfo.areaType = GuerhoubaGames.GameEnum.AreaType.CIRCLE;
 
             customAttackData.npcAttackFeedback.SpawnFeedbacks(attackDamageInfo);
@@ -137,7 +138,8 @@ namespace Enemies
 
             Character.CharacterMouvement characterMouvement = customAttackData.targetTransform.GetComponent<Character.CharacterMouvement>();
             Vector3 playerDirection = characterMouvement.currentDirection;
-            if((tpCount % 2) == 0)  playerPosition += playerDirection.normalized * 10;
+            //if((tpCount % 2) == 0)  playerPosition += playerDirection.normalized * predictionDistance;
+            playerPosition += playerDirection.normalized * predictionDistance;
 
             return playerPosition;
         }

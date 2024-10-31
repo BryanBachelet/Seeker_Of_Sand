@@ -5,7 +5,6 @@ using UnityEditor;
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(CombatSceneManager))]
-
 public class CombatSceneCustomInterface : Editor
 {
 

@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 344461231000591635}
   - component: {fileID: 6277646825451676745}
   - component: {fileID: 2230807567131238627}
+  - component: {fileID: 5773370731043247900}
   m_Layer: 6
   m_Name: Misp
   m_TagString: Enemy
@@ -687,7 +688,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 99f3e9d0b88e3f745a83cfb8437b24aa, type: 2}
   colliderAttackArray:
   - {fileID: 4700023510464426618}
-  projectileAttackArrray: []
   currentAttackData:
     customAttack: {fileID: 0}
     nameAttack: 
@@ -710,6 +710,7 @@ MonoBehaviour:
     updateTimeAttackLaunch: 0
     typeAttack: 0
     rangeTypeAttack: 0
+    projectileLaunch: {fileID: 0}
     postionToSpawnType: 0
     shapeType: 0
     radius: 0
@@ -779,6 +780,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 0
     attackPhase: 1
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &2230807567131238627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -843,6 +845,23 @@ MonoBehaviour:
   m_meshRenderer: {fileID: 7710195976898996122}
   indexMatAffected: 0
   m_materialAffected: {fileID: 0}
+--- !u!114 &5773370731043247900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95968bccdda15c64cb9e354194072996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullDataList:
+  - instance: {fileID: 2732796919212328939, guid: 441d68b79b720744ab0dcf619c7ed78d,
+      type: 3}
+    idInstance: 297719493
+    count: 1
 --- !u!1 &5382761927510735852
 GameObject:
   m_ObjectHideFlags: 0

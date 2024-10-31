@@ -166,7 +166,7 @@ namespace Enemies
         [SerializeField] private TMP_Text m_tmpTextEnemyRemain;
         [SerializeField] private Color[] colorSignUI = new Color[2];
 
-        private PullingSystem m_pullingSystem;
+        private EnemiesPullingSystem m_pullingSystem;
 
         public GameObject m_uiManagerGameObject;
         private UI_EventManager m_UiEventManager;
@@ -209,7 +209,7 @@ namespace Enemies
             m_terrainGenerator = FindAnyObjectByType<TerrainGenerator>();
 
             m_timeOfGame = 0;
-            m_pullingSystem = GetComponent<PullingSystem>();
+            m_pullingSystem = GetComponent<EnemiesPullingSystem>();
             m_pullingSystem.InitializePullingSystem();
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }

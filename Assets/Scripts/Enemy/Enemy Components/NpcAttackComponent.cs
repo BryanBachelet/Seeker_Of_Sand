@@ -1,4 +1,5 @@
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Resources;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Enemies
         public Transform baseTransform;
         public AttackEnemiesObject[] attackEnemiesObjectsArr = new AttackEnemiesObject[0];
         public Collider[] colliderAttackArray = new Collider[0];
-        public GameObject[] projectileAttackArrray = new GameObject[0];
+
 
         private bool[] isAttackOnCooldown = new bool[0];
         private float[] timerAttackCooldown = new float[0];
@@ -157,11 +158,7 @@ namespace Enemies
                     currObj.data.indexCollider = countCloseAttack;
                     countCloseAttack++;
                 }
-                else
-                {
-                    currObj.data.indexProjectileGO = countRangeAttack;
-                    countRangeAttack++;
-                }
+
 
 
 
@@ -242,7 +239,7 @@ namespace Enemies
 
                 if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
                 {
-                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - ( m_mouvementComponent.baseTransform.position + raycastOffset);
+                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     Vector3 boxScale = currentAttackData.scaleRaycast;
                     m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
                     if (m_HitDetect)
@@ -303,7 +300,7 @@ namespace Enemies
             {
                 LaunchAttack();
             }
-          
+
             m_timer = 0.0f;
 
 
@@ -450,7 +447,7 @@ namespace Enemies
                         currentAttackData.attackMovement.EndMovement += LaunchAttack;
                 }
 
-                
+
             }
 
             // Raycast Shoot
@@ -583,7 +580,7 @@ namespace Enemies
             }
             if (currentAttackData.typeAttack == AttackType.PROJECTILE_OBJ)
             {
-                GameObject projectile = projectileAttackArrray[currentAttackData.indexProjectileGO];
+                GameObject projectile = currentAttackData.projectileLaunch;
                 Vector3 spawnPosition = Vector3.zero;
 
                 if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE) spawnPosition = baseTransform.position + baseTransform.forward * 1;
@@ -593,7 +590,8 @@ namespace Enemies
                 Quaternion rotObj = Quaternion.Euler(0.0f, transform.eulerAngles.y, 0);
                 if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Target) rotObj = Quaternion.identity;
 
-                GameObject instance = Instantiate(projectile, spawnPosition, rotObj);
+                GameObject instance = GamePullingSystem.SpawnObject(currentAttackData.projectileLaunch, spawnPosition, rotObj);
+
 
                 if (currentAttackData.rangeTypeAttack == RangeAttackType.PROJECTILE)
                 {
@@ -605,6 +603,8 @@ namespace Enemies
                     npcAttackProjectile.range = currentAttackData.rangeProjectile;
                     npcAttackProjectile.attackName = currentAttackData.nameAttack;
                     npcAttackProjectile.isHeavy = currentAttackData.isHeavyAttack;
+
+                    npcAttackProjectile.InitComponent();
 
 
                 }
@@ -630,7 +630,7 @@ namespace Enemies
             {
 
                 Vector3 boxScale = currentAttackData.scaleRaycast;
-                m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask) ;
+                m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
                 if (m_HitDetect)
                 {
                     raycastHitPoint = m_Hit.point;
@@ -678,7 +678,7 @@ namespace Enemies
 
         void OnDrawGizmos()
         {
-          
+
 
             if (isRaycastDebug)
             {
@@ -692,8 +692,8 @@ namespace Enemies
                     //Draw a cube that extends to where the hit exists
 
                     Gizmos.matrix = Matrix4x4.Rotate(rotationRaycast) * Gizmos.matrix;
-                   
-                    Gizmos.DrawWireCube(Gizmos.matrix.inverse * raycastHitPoint, currentAttackData.scaleRaycast *2);
+
+                    Gizmos.DrawWireCube(Gizmos.matrix.inverse * raycastHitPoint, currentAttackData.scaleRaycast * 2);
                 }
                 //If there hasn't been a hit yet, draw the ray at the maximum distance
                 else
@@ -701,7 +701,7 @@ namespace Enemies
                     Gizmos.color = Color.green;
                     Gizmos.matrix = Matrix4x4.identity;
                     //Draw a Ray forward from GameObject toward the maximum distance
-                    Gizmos.DrawRay(transform.position  = raycastOffset, directionTarget.normalized * m_MaxDistance);
+                    Gizmos.DrawRay(transform.position = raycastOffset, directionTarget.normalized * m_MaxDistance);
                     //Draw a cube at the maximum distance
                     Gizmos.DrawWireCube(transform.position + directionTarget * m_MaxDistance, transform.localScale);
                 }

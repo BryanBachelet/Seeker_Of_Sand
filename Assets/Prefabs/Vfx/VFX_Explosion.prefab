@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 659503455244116022}
   - component: {fileID: 6328409078834012468}
   - component: {fileID: -3378752170094397099}
+  - component: {fileID: 3293651709158320277}
   m_Layer: 0
   m_Name: VFX_Explosion
   m_TagString: Untagged
@@ -48,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isNotDestroying: 0
   m_DestroyAfterTime: 5
+  isResetingOnPull: 1
 --- !u!114 &-3378752170094397099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,6 +62,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1799c6b8c66b1074b9a7945a31b9a563, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3293651709158320277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659503455244116027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0
 --- !u!1 &734889951205059786
 GameObject:
   m_ObjectHideFlags: 0

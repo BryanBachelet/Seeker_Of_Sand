@@ -312,7 +312,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 1ea680a4cc959c64ea1b105220a73972
-  position: {x: 1189.0001, y: -80.5}
+  position: {x: 1189, y: -84}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -365,7 +365,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 98bfd9c183626614cb0c31bf11a81197
-  position: {x: 1160, y: 661}
+  position: {x: 1160, y: 638}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -498,7 +498,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 9514a41412dcb09418230d8458aa3ad1
-  position: {x: 1189, y: -204}
+  position: {x: 1193, y: -324.3475}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -508,7 +508,7 @@ MonoBehaviour:
   description: 
   debugTest: 0
   children:
-  - {fileID: -5460468407766723356}
+  - {fileID: 7650066561199175199}
 --- !u!114 &-3339390413363751421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -639,6 +639,7 @@ MonoBehaviour:
   description: 
   debugTest: 0
   child: {fileID: -3975896601291512754}
+  activeTestMovingState: 0
   onlyOneTest: 1
 --- !u!114 &-2432397558991779811
 MonoBehaviour:
@@ -731,7 +732,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 38c7fb7a9d2d1b04582c9385624784f4
-  position: {x: 1460, y: 732}
+  position: {x: 1410, y: 653}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -767,6 +768,7 @@ MonoBehaviour:
   description: 
   debugTest: 0
   child: {fileID: -3339390413363751421}
+  activeTestMovingState: 0
   onlyOneTest: 1
 --- !u!114 &-383088173993341019
 MonoBehaviour:
@@ -909,6 +911,7 @@ MonoBehaviour:
   - {fileID: -3339390413363751421}
   - {fileID: -3041627451110953358}
   - {fileID: 2390460304958799021}
+  - {fileID: 7650066561199175199}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -980,7 +983,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 2ed53ace9c7a83047b93c6cb09cef2d4
-  position: {x: 1160, y: 519}
+  position: {x: 1160, y: 518.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -1059,7 +1062,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 1f3af5b257639264dad69b6866cb59a1
-  position: {x: 391.0001, y: 285.5}
+  position: {x: 390.99994, y: 293.00003}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -1109,7 +1112,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 4c2fee678a6b26b4da3b1113ccc62197
-  position: {x: 1235, y: 140}
+  position: {x: 1216.485, y: 107.00015}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -1255,6 +1258,33 @@ MonoBehaviour:
   debugTest: 0
   indexAttack: 7
   sequenceIndex: 0
+--- !u!114 &7650066561199175199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476c35d3c43a60944b3dd6aecf5cb961, type: 3}
+  m_Name: IsAttacking
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 1e71036079e4f0240a456c352c049459
+  position: {x: 1193, y: -204}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  debugTest: 0
+  child: {fileID: -5460468407766723356}
+  activeTestMovingState: 0
+  onlyOneTest: 0
 --- !u!114 &7710883735929837464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1295,7 +1325,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 6d9039d57a0709545a0cfdf92c2199a5
-  position: {x: 1160, y: 275}
+  position: {x: 1160, y: 275.5001}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}

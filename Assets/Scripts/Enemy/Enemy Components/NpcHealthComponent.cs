@@ -162,15 +162,9 @@ namespace Enemies
             // VfX feedback
             m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage, element);
             if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
-            if (GamePullingSystem.instance !=null)
-            {
-                GameObject vfxHitInstance = GamePullingSystem.instance.SpawnObject(m_vfxHitFeedback.GetInstanceID());
-                vfxHitInstance.transform.position = transform.position;
-            }
-            else
-            {
-                Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
-            }
+
+            GameObject vfxHitInstance = GamePullingSystem.SpawnObject(m_vfxHitFeedback, transform.position, Quaternion.identity);
+
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
@@ -224,7 +218,8 @@ namespace Enemies
             if (m_enemyManager.GenerateDissonance())
             {
                 GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
-                GameObject dissonanceInstance = Instantiate(dissonancePrefabObject, transform.position, transform.rotation);
+                
+                GameObject dissonanceInstance = GamePullingSystem.SpawnObject(dissonancePrefabObject,transform.position,transform.rotation) ;
                 ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
                 ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
 
@@ -232,7 +227,7 @@ namespace Enemies
 
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
             yield return new WaitForSeconds(timeBeforeDestruction / 2);
-            Instantiate(death_vfx, transform.position, transform.rotation);
+            GamePullingSystem.SpawnObject(death_vfx, transform.position, transform.rotation);
             m_npcInfo.TeleportToPool();
 
         }

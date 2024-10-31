@@ -181,7 +181,7 @@ Transform:
   m_GameObject: {fileID: 404862329068964125}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.14, y: 0, z: 8.39}
+  m_LocalPosition: {x: 0.14, y: 0, z: 6.51}
   m_LocalScale: {x: 0.16666667, y: 0.16666667, z: 0.16666667}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -206,7 +206,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 25, y: 10, z: 100}
+  m_Size: {x: 25, y: 10, z: 70}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5260153512030618894
 MonoBehaviour:
@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 8639129744682881334}
   - component: {fileID: -6111061326333291495}
   - component: {fileID: 8056349823282169993}
+  - component: {fileID: 1480183017902568212}
   m_Layer: 6
   m_Name: TwilightSister
   m_TagString: Enemy
@@ -757,9 +758,6 @@ MonoBehaviour:
   - {fileID: 5037036291567998497}
   - {fileID: 4614233537405179969}
   - {fileID: 7927506587208341633}
-  projectileAttackArrray:
-  - {fileID: 793578448744671341, guid: 67977c3456c66c048941ac4edefa2f33, type: 3}
-  - {fileID: 793578448744671341, guid: 74b6b642dde795f41a2bd42d03d363cb, type: 3}
   currentAttackData:
     customAttack: {fileID: 0}
     nameAttack: 
@@ -782,6 +780,7 @@ MonoBehaviour:
     updateTimeAttackLaunch: 0
     typeAttack: 0
     rangeTypeAttack: 0
+    projectileLaunch: {fileID: 0}
     postionToSpawnType: 0
     shapeType: 0
     radius: 0
@@ -834,6 +833,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 0
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -848,6 +848,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 1
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -862,6 +863,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 2
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -876,6 +878,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 4
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -890,6 +893,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 6
     attackPhase: 1
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 0
@@ -904,6 +908,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 7
     attackPhase: 0
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -918,6 +923,7 @@ MonoBehaviour:
     sfxIndex: 0
     attackIndex: 7
     attackPhase: 1
+    offsetSpawnPosition: {x: 0, y: 0, z: 5}
   - feedbackType: 1
     areaSpawnType: 1
     isSpawn: 0
@@ -932,6 +938,7 @@ MonoBehaviour:
     sfxIndex: 52
     attackIndex: 7
     attackPhase: 1
+    offsetSpawnPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &5630804304538944160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,6 +1133,35 @@ MonoBehaviour:
   m_meshRenderer: {fileID: 5772345691694639964}
   indexMatAffected: 0
   m_materialAffected: {fileID: 0}
+--- !u!114 &1480183017902568212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95968bccdda15c64cb9e354194072996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullDataList:
+  - instance: {fileID: 4628487204184700574, guid: c0e19b232dbe7c3448b6d0507b192b42,
+      type: 3}
+    idInstance: 33696
+    count: 3
+  - instance: {fileID: 6159178158635227296, guid: 4ea57173fe2633f4bb9b98c01af9ee1c,
+      type: 3}
+    idInstance: 47062
+    count: 1
+  - instance: {fileID: 793578448744671341, guid: 67977c3456c66c048941ac4edefa2f33,
+      type: 3}
+    idInstance: 47098
+    count: 1
+  - instance: {fileID: 793578448744671341, guid: 74b6b642dde795f41a2bd42d03d363cb,
+      type: 3}
+    idInstance: 47100
+    count: 1
 --- !u!1 &2428030630988664286
 GameObject:
   m_ObjectHideFlags: 0
@@ -3131,7 +3167,7 @@ Transform:
   m_GameObject: {fileID: 7855125348527850608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2.64}
+  m_LocalPosition: {x: 0, y: 0, z: 3.26}
   m_LocalScale: {x: 0.16666667, y: 0.16666667, z: 0.16666667}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3156,7 +3192,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 25, y: 10, z: 30}
+  m_Size: {x: 25, y: 10, z: 40}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7019483122711585637
 MonoBehaviour:
@@ -3513,7 +3549,7 @@ PrefabInstance:
     - target: {fileID: 511503879287666029, guid: d5c3d98931ec7744ca1abfc5ad793e8a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.14
       objectReference: {fileID: 0}
     - target: {fileID: 511503879287666029, guid: d5c3d98931ec7744ca1abfc5ad793e8a,
         type: 3}
@@ -3523,7 +3559,7 @@ PrefabInstance:
     - target: {fileID: 511503879287666029, guid: d5c3d98931ec7744ca1abfc5ad793e8a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.39
+      value: 9.27
       objectReference: {fileID: 0}
     - target: {fileID: 511503879287666029, guid: d5c3d98931ec7744ca1abfc5ad793e8a,
         type: 3}
@@ -11825,12 +11861,12 @@ PrefabInstance:
     - target: {fileID: 3521074142490501094, guid: 077937a536b146a4a9c99972e5b08671,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3521074142490501094, guid: 077937a536b146a4a9c99972e5b08671,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.64
+      value: 3.26
       objectReference: {fileID: 0}
     - target: {fileID: 3521074142490501094, guid: 077937a536b146a4a9c99972e5b08671,
         type: 3}

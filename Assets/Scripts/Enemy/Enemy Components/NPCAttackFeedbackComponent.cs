@@ -17,6 +17,7 @@ namespace Enemies
         public Vector3 positionAttack;
         public Transform target;
         public AreaType areaType;
+ 
 
         
     }
@@ -68,28 +69,10 @@ namespace Enemies
                 if (attackFeedbackData.areaSpawnType == AttackFeedbackData.FeedbackPosition.LastHit)
                     spawnPositon = attackInfoData.positionAttack;
 
-                if (GamePullingSystem.instance == null)
-                {
-                    vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
-                }
-                else
-                {
-                    int id = attackFeedbackData.Vfx.GetInstanceID();
-                    if (GamePullingSystem.instance.isObjectPoolExisting(id))
-                    {
-                        vfx =  GamePullingSystem.instance.SpawnObject(id);
-                        vfx.transform.position = spawnPositon;
-                        vfx.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-                    }
-                    else
-                    {
-                        vfx = Instantiate(attackFeedbackData.Vfx, spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y, 0));
-                    }
-                }
 
-                
-
-
+                spawnPositon = spawnPositon + Quaternion.Euler(0, transform.eulerAngles.y, 0) * attackFeedbackData.offsetSpawnPosition;
+                vfx = GamePullingSystem.SpawnObject(attackFeedbackData.Vfx,spawnPositon, Quaternion.Euler(0, transform.eulerAngles.y,0));
+ 
             }
 
             GuerhoubaGames.VFX.VFXAttackMeta vfxMeta  = vfx.GetComponent<GuerhoubaGames.VFX.VFXAttackMeta>();
