@@ -8,6 +8,9 @@ using SeekerOfSand.UI;
 using GuerhoubaTools.Gameplay;
 using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
+using SpellSystem;
+using GuerhoubaGames.Resources;
+
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour
@@ -390,10 +393,11 @@ namespace Character
 
                 m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone());
                 spellIndexSpecific.Add(i);
+                CreatePullObject(m_characterSpellBook.GetSpecificSpell(m_characterSpellBook.GetSpellCount() - 1));
                 SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
             }
 
-           
+
             SpellManager.RemoveSpecificSpellFromSpellPool(0);
             SpellManager.RemoveSpecificSpellFromSpellPool(1);
             SpellManager.RemoveSpecificSpellFromSpellPool(2);
@@ -411,6 +415,7 @@ namespace Character
                 {
                     spellEquip[i] = i;
                     spellProfils.Add(m_characterSpellBook.GetSpecificSpell(i));
+
                 }
             }
             m_currentIndexCapsule = spellEquip[0];
@@ -740,12 +745,15 @@ namespace Character
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
                 dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
-                areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
-                areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
+                SpellSystem.DOTMeta dOTMeta = areaInstance.GetComponent<SpellSystem.DOTMeta>();
+                dOTMeta.dotData = dataDot;
+                dOTMeta.ResetOnSpawn();
             }
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
-            areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
+            SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
+            areaMeta.areaData = data;
+            areaMeta.ResetOnSpawn();
 
             return true;
         }
@@ -777,7 +785,7 @@ namespace Character
                     rot = m_characterAim.GetTransformHead().rotation; ;
                 }
 
-                GameObject projectileCreate = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
+                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
                 if (projectileCreate.GetComponent<Projectile>())
@@ -789,8 +797,9 @@ namespace Character
                 if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
                 {
                     SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
-                    projectileCreate.GetComponent<SpellSystem.AreaMeta>().areaData = data;
-
+                    SpellSystem.AreaMeta areaMeta = projectileCreate.GetComponent<SpellSystem.AreaMeta>();
+                    areaMeta.areaData = data;
+                    areaMeta.ResetOnSpawn();
                 }
 
 
@@ -815,7 +824,7 @@ namespace Character
             }
 
             else
-            { 
+            {
                 return false;
             }
         }
@@ -830,7 +839,9 @@ namespace Character
             GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, position);
-            areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
+            SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
+            areaMeta.areaData = data;
+            areaMeta.ResetOnSpawn();
 
             m_currentStack[m_currentRotationIndex]--;
 
@@ -870,10 +881,13 @@ namespace Character
             summonInstance.GetComponent<SpellSystem.SummonsMeta>().summonData = data;
 
 
+            // When the summon at the area tag
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
             {
                 SpellSystem.AreaData dataArea = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
-                summonInstance.GetComponent<SpellSystem.AreaMeta>().areaData = dataArea;
+                SpellSystem.AreaMeta areaMeta = summonInstance.GetComponent<SpellSystem.AreaMeta>();
+                areaMeta.areaData = dataArea;
+                areaMeta.ResetOnSpawn();
 
             }
 
@@ -883,7 +897,9 @@ namespace Character
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
                 dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
-                summonInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
+                SpellSystem.DOTMeta dOTMeta = summonInstance.GetComponent<SpellSystem.DOTMeta>();
+                dOTMeta.dotData = dataDot;
+                dOTMeta.ResetOnSpawn();
             }
 
 
@@ -1157,8 +1173,6 @@ namespace Character
             }
         }
 
-
-
         /// <summary>
         /// This function is counting the timing between each spell
         /// </summary>
@@ -1318,7 +1332,6 @@ namespace Character
 
         }
 
-
         public Sprite[] GetSpellSprite()
         {
             Sprite[] spriteArray = new Sprite[maxSpellIndex];
@@ -1365,8 +1378,8 @@ namespace Character
             SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone();
             m_characterSpellBook.AddSpell(clone);
             m_dropInventory.AddNewItem(index);
-       
 
+            CreatePullObject(clone);
             if (spellIndexGeneral.Count <= spellEquip.Length)
             {
                 spellProfils.Add(clone);
@@ -1416,7 +1429,7 @@ namespace Character
         public void ChangeSpell(int spellSlot, int indexSpell)
         {
             spellEquip[spellSlot] = indexSpell;
-            
+
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
         }
@@ -1462,10 +1475,11 @@ namespace Character
                 vfxUISign[spellProfils.Count - 1].SendEvent("OnStop");
             }
         }
+
         public Gradient SetDecalColor(GameElement gameElement)
         {
             Gradient color = gradientDecalElement[0];
-            switch(gameElement)
+            switch (gameElement)
             {
                 case GameElement.NONE:
                     color = gradientDecalElement[0];
@@ -1494,6 +1508,39 @@ namespace Character
             m_characterAim.vfxCastEnd.SetTexture("Symbol", currentPreviewDecalEndTexture);
             m_characterAim.vfxCastEnd.SetGradient("Gradient 1", SetDecalColor(element));
         }
+
+
+        public int CountSpellInstanceToSpawn(SpellProfil spellProfil)
+        {
+            int projectileCount = 1;
+            int shootCount = 1;
+
+            if (spellProfil.HasStats(StatType.Projectile)) projectileCount = spellProfil.GetIntStat(StatType.Projectile);
+            if (spellProfil.HasStats(StatType.ShootNumber)) shootCount = spellProfil.GetIntStat(StatType.ShootNumber);
+
+            int finalNumber = shootCount * projectileCount;
+
+            // Spell can be reshoot before they are all destroy. So we boost the quantity;
+            finalNumber += (int)(finalNumber * .7f);
+
+            return finalNumber;
+        }
+
+        public void CreatePullObject(SpellProfil spellProfil)
+        {
+            int quantity = CountSpellInstanceToSpawn(spellProfil);
+            PullConstrutionData pullConstrutionData = new PullConstrutionData(spellProfil.objectToSpawn, quantity);
+            GamePullingSystem.instance.CreatePull(pullConstrutionData);
+        }
+
+        public void UpdatePullObject(SpellProfil spellProfil)
+        {
+            int quantity = CountSpellInstanceToSpawn(spellProfil);
+            int id = GamePullingSystem.GetDeterministicHashCode(spellProfil.objectToSpawn.name);
+            GamePullingSystem.instance.UpdatePullQuantity(quantity, id);
+        }
+
+
     }
 
 

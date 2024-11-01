@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
-
+using GuerhoubaGames.Resources;
 
 public struct ProjectileData
 {
@@ -57,7 +57,7 @@ public class Projectile : MonoBehaviour
 
     private float spawnTime;
     private bool checkSpawnTime = false;
-    [SerializeField] private float m_deltaTimeMove;
+    [SerializeField] private float m_deltaTimeMove = 0.0f;
     private bool willDestroy = false;
     protected Collider m_collider;
     protected CharacterObjectType objectType;
@@ -157,7 +157,7 @@ public class Projectile : MonoBehaviour
         //Debug.Log("Test");
         if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
         {
-            Destroy(this.gameObject);
+            ActiveDeath();
         }
         RaycastHit hit = new RaycastHit();
 
@@ -176,7 +176,7 @@ public class Projectile : MonoBehaviour
     {
         if (m_lifeTimer > m_lifeTime + m_timeBeforeDestruction)
         {
-            Destroy(this.gameObject);
+            ActiveDeath();
             return;
         }
         if (m_lifeTimer > m_lifeTime)
@@ -192,8 +192,32 @@ public class Projectile : MonoBehaviour
 
     }
 
-    private void ActiveDeath()
+
+
+    protected virtual void ResetProjectile()
     {
+        m_lifeTimer = 0.0f;
+        willDestroy = false;
+        m_collider.enabled = true;
+        checkSpawnTime = false;
+        piercingCount = 0;
+        m_travelTimer = 0.0f;
+        transform.localScale = m_initialScale;
+        isStartToMove = false;
+    }
+
+    protected virtual void ActiveDeath()
+    {
+        PullingMetaData pullingMetaData = GetComponent<PullingMetaData>();
+        if (GamePullingSystem.instance != null && pullingMetaData != null)
+        {
+            ResetProjectile();
+            GamePullingSystem.instance.ResetObject(this.gameObject, pullingMetaData.id);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
 
     }
 

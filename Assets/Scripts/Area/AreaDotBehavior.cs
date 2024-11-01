@@ -43,15 +43,15 @@ namespace SpellSystem
 
         #region Unity Functions
         // Start is called before the first frame update
-        void Start()
+
+        public void Awake()
         {
             m_areaMeta = GetComponent<AreaMeta>();
             m_DotMeta = GetComponent<DOTMeta>();
-            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
-                m_summonMeta = GetComponent<SummonsMeta>();
-            GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
-            InitComponent();
+          
+            m_areaMeta.OnSpawn += InitComponent;
         }
+
 
         // Update is called once per frame
         void Update()
@@ -62,6 +62,10 @@ namespace SpellSystem
 
         public void InitComponent()
         {
+            GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
+            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+                m_summonMeta = GetComponent<SummonsMeta>();
+
             profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);

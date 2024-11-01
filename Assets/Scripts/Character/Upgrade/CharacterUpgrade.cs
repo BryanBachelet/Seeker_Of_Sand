@@ -151,29 +151,28 @@ namespace Character
         public void ApplyUpgrade(UpgradeObject upgradeChoose)
         {
             upgradePoint--;
-           // m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
-            //upgradePointTextDisplay.text = upgradePoint.ToString();
-            //experience.m_LevelTaken++;
-            //experience.m_UiPlayerInfo.AddLevelTaken();
-            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].name, isDebugActive);
+
+
+            SpellSystem.SpellProfil spellProfil = m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink];
+            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + spellProfil.name, isDebugActive);
             if (isDebugActive)
             {
-               
-                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].DebugStat();
+
+                spellProfil.DebugStat();
             }
 
-            //TODO : Change Apply from upgrade
-            upgradeChoose.Apply(m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink]);
+            upgradeChoose.Apply(spellProfil);
+            m_characterShoot.UpdatePullObject(spellProfil);
             if (m_UiPlayerInfo)
             {
-                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level++;
+                spellProfil.level++;
                 
-                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level);
+                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil.level);
             }
             avatarUpgradeList.Add(upgradeChoose);
             if (isDebugActive)
             {
-                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].DebugStat();
+                spellProfil.DebugStat();
             }
             if (upgradePoint == 0 && isUpgradeWindowOpen)
             {
