@@ -16,7 +16,7 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text m_altarSuccessedText;
     [SerializeField] private TMP_Text m_durationGameText;
     [SerializeField] private TMP_Text m_roomCountText;
-    [SerializeField] private Image m_nightCompletionFill;
+    [SerializeField] private Image[] m_nightCompletionFill = new Image[3];
     [SerializeField] private GameObject[] m_nightCompleted;
     [SerializeField] private GameObject fixeElement;
     [SerializeField] private GameObject[] m_spellDetail = new GameObject[4];
@@ -112,21 +112,35 @@ public class UIEndScreen : MonoBehaviour
     private void BufferXpDisplay(float time)
     {
         float tempsEcoule = (Mathf.Lerp(0, time, Time.time - time + 1) / 60);
-        m_nightCompletionFill.fillAmount = tempsEcoule / 27;
-        if (tempsEcoule > 9)
-        {
-            m_nightCompleted[0].SetActive(true);
-        }
-        if (tempsEcoule > 18.5f)
-        {
-            m_nightCompleted[1].SetActive(true);
-        }
-        if (tempsEcoule > 28)
-        {
-            m_nightCompleted[2].SetActive(true);
-        }
 
         float progress = (Time.time - time) / tempsDisplay;
+        if(stat.nightValidate < 1)
+        {
+            m_nightCompletionFill[0].fillAmount = Mathf.Lerp(0, stat.roomCount / 7, progress);
+            //m_nightCompletionFill[1].fillAmount = 0;
+            //m_nightCompletionFill[2].fillAmount = 0;
+        }
+        else if(stat.nightValidate > 0 && stat.nightValidate < 2 && progress > 0.33f)
+        {
+            m_nightCompleted[0].SetActive(true);
+            //m_nightCompletionFill[0].fillAmount = 1;
+            m_nightCompletionFill[1].fillAmount = Mathf.Lerp(0, (stat.roomCount - 7) / 7, progress);
+            //m_nightCompletionFill[2].fillAmount = 0;
+        }
+        else if (stat.nightValidate > 1 && stat.nightValidate < 3 && progress > 0.66f)
+        {
+            m_nightCompleted[1].SetActive(true);
+            //m_nightCompletionFill[0].fillAmount = 1;
+            //m_nightCompletionFill[1].fillAmount = 1;
+            m_nightCompletionFill[2].fillAmount = Mathf.Lerp(0, (stat.roomCount - 14) / 7, progress);
+        }
+        else if (stat.nightValidate >= 3 && progress >= 0.99f)
+        {
+            m_nightCompleted[2].SetActive(true);
+            //m_nightCompletionFill[0].fillAmount = 1;
+            //m_nightCompletionFill[1].fillAmount = 1;
+            //m_nightCompletionFill[2].fillAmount = 1;
+        }
         m_killCountText.text = Mathf.Lerp(0, stat.enemyKill, progress).ToString("F0");
         m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, progress).ToString("F0");
         m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, progress).ToString("F0");

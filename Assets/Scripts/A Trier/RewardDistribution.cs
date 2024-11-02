@@ -19,7 +19,7 @@ public class RewardDistribution : MonoBehaviour
 
     public void GiveReward(RewardType rewardType, Transform positionReward,HealthReward healthReward, GameElement roomElementColor)
     {
-        currentRewardHolder = GamePullingSystem.SpawnObject(rewardHolderPrefan, positionReward.position, this.transform.rotation);
+        currentRewardHolder = Instantiate(rewardHolderPrefan, positionReward.position, this.transform.rotation);
         RewardTypologie rewardTypopologie = currentRewardHolder.GetComponentInChildren<RewardTypologie>();
         rewardTypopologie.rewardType = rewardType;
         rewardTypopologie.healthReward = healthReward;

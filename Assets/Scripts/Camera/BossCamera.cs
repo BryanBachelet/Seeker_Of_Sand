@@ -20,6 +20,7 @@ public class BossCamera : MonoBehaviour
     private BossRoom BossRoom;
     private Transform targetCam;
     private bool activeMusique = false;
+
     public void StartCamera(Camera cameraPara, Transform target)
     {
         BossRoom = GetComponent<BossRoom>();

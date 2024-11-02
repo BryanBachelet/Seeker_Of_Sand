@@ -143,6 +143,20 @@ namespace Enemies
 
         #endregion
 
+        public void ResetComponent()
+        {
+            currentAttackState = AttackPhase.NONE;
+
+            isInAttackSequence = false;
+            sequenceIndex = -1;
+            m_timer = 0.0f;
+            for (int i = 0; i < attackEnemiesObjectsArr.Length; i++)
+            {
+                timerAttackCooldown[i] = 0;
+                isAttackOnCooldown[i] = false;
+            }
+        }
+
         public void InitComponent()
         {
             // Setuping Attack
@@ -263,8 +277,6 @@ namespace Enemies
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
         }
-
-
 
         public void ActiveAttackContact()
         {

@@ -71,6 +71,7 @@ namespace Enemies
 
         public GameObject dissonancePrefabObject;
         public HitEffectHighLight m_HitEffectHighLight;
+        public Action OnDeathEvent;
         void Awake()
         {
             InitComponent();
@@ -193,7 +194,7 @@ namespace Enemies
 
             this.gameObject.layer = 16;
             if (destroyEvent != null) destroyEvent.Invoke(direction, power);
-
+            OnDeathEvent?.Invoke();
             m_enemyManager.EnemyHasDied(this, xpToDrop);
 
             if (!death)

@@ -74,7 +74,7 @@ namespace Enemies
 
         public void RestartEnemy()
         {
- 
+            attackComponent.ResetComponent();
            // OnStart?.Invoke();
         }
 
