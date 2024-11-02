@@ -69,10 +69,10 @@ namespace GuerhoubaGames.Resources
         {
             bool isPullingMetaErrorActive = false;
             bool isAddingObject = newQuantity > quantity;
-            bool isAlreadyHaveGoodSize =  isAddingObject && arrayQuantity > newQuantity;
+            bool isAlreadyHaveGoodSize =  arrayQuantity > newQuantity;
 
             GameObject[] newArray = new GameObject[newQuantity];
-            gameObjectsArray.CopyTo(newArray, 0);
+            if(isAddingObject && !isAlreadyHaveGoodSize) gameObjectsArray.CopyTo(newArray, 0);
             if (!isDebugDeactivate) Debug.Log("Pulling System:  Creation of new array for " + originObject.name + ". Previous Size: " + gameObjectsArray.Length + " and new size is : " + newArray.Length);
 
             if (isAddingObject)
@@ -82,12 +82,13 @@ namespace GuerhoubaGames.Resources
                 for (int i = 0; i < deltaQuantity; i++)
                 {
                     GameObject instance = GameObject.Instantiate(originObject, position, Quaternion.identity, parent);
+                    SettingUpObject(instance, isPullingMetaErrorActive, originObject.name, id);
+
                     if (!isAlreadyHaveGoodSize)
                         newArray[quantity + i] = instance;
                     else
                         gameObjectsArray[quantity + i] = instance; 
 
-                    SettingUpObject(instance, isPullingMetaErrorActive, originObject.name, id);
                 }
             }
             else
@@ -96,19 +97,23 @@ namespace GuerhoubaGames.Resources
                 // what will happen on the screen if a object is active. 
 
                 int deltaQuantity = quantity - newQuantity;
-                for (int i = 0; i < deltaQuantity; i++)
+                for (int i = newQuantity; i < quantity; i++)
                 {
-                    GameObject.Destroy(gameObjectsArray[newQuantity + i]);
+                    GameObject.Destroy(gameObjectsArray[i]);
                 }
+                arrayQuantity = gameObjectsArray.Length;
+                currentlyUse = 0;
             }
 
-            gameObjectsArray = newArray;
             quantity = newQuantity;
-            if (!isAlreadyHaveGoodSize)
+  
+
+            if (isAddingObject &&!isAlreadyHaveGoodSize)
             {
+                gameObjectsArray = newArray;
                 arrayQuantity = newQuantity;
             }
-        }
+            }
 
         public void CleanPull()
         {
@@ -143,6 +148,11 @@ namespace GuerhoubaGames.Resources
                 isPullingMetaErrorActive = true;
             }
             pullingMetaData.isActive = true;
+
+            if(id == -1 )
+            {
+                Debug.LogError("Not a valid id for the object" + instanceClone.name);
+            }
             pullingMetaData.id = id;
             pullingMetaData.bIsExtraSpawn = false;
         }
@@ -272,6 +282,10 @@ namespace GuerhoubaGames.Resources
         public void ResetObject(GameObject instance, int id)
         {
             PullingMetaData pullingMetaData = instance.GetComponent<PullingMetaData>();
+            if(id == -1)
+            {
+                if (!isErrorRemove) Debug.LogError("This object" + instance.name + " don't have a valid id");
+            }
             PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
             instance.SetActive(false);
 
@@ -283,6 +297,7 @@ namespace GuerhoubaGames.Resources
             else
             {
                 pullObjects.currentlyUse--;
+                pullObjects.currentlyUse = Mathf.Clamp(pullObjects.currentlyUse, 0,int.MaxValue);
             }
         }
 

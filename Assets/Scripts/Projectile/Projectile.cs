@@ -198,7 +198,7 @@ public class Projectile : MonoBehaviour
     {
         m_lifeTimer = 0.0f;
         willDestroy = false;
-        m_collider.enabled = true;
+      if(m_collider)  m_collider.enabled = true;
         checkSpawnTime = false;
         piercingCount = 0;
         m_travelTimer = 0.0f;
