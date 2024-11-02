@@ -49,6 +49,9 @@ namespace GuerhoubaGames.UI
         [HideInInspector] public RoomManager currentRoomManager;
 
         public Color[] colorUI = new Color[2];
+        public RectTransform flareGameObject;
+        public RectTransform[] transformsProgression = new RectTransform[2];
+        private Animator flareAnimator;
 
         #region Unity Functions
 
@@ -68,6 +71,11 @@ namespace GuerhoubaGames.UI
 
             // Init Major Goal Interface
             m_majorGoalAnimator = majorGoalGO.GetComponent<Animator>();
+
+            if (flareGameObject != null)
+            {
+                flareAnimator = flareGameObject.GetComponent<Animator>();
+            }
         }
 
         public void Update()
@@ -100,8 +108,15 @@ namespace GuerhoubaGames.UI
             if (!majorGoalGO.activeSelf || !m_hasMajorGoalChange) return;
 
             m_majorGoalSprite.fillAmount = 1.0f - m_majorGoalProgress;
+            flareGameObject.position = Vector3.Lerp(transformsProgression[0].position, transformsProgression[1].position, 1.0f - m_majorGoalProgress);
+            //flareAnimator.SetBool("BufferProgression", true);
+            flareAnimator.ResetTrigger("CancelBuffer");
+            flareAnimator.SetTrigger("ActiveBuffer");
             if (timeBeforeDecreaseDelay + m_timeLastUpdate > Time.time) { m_majorGoalSprite.color = Color.Lerp(colorUI[0], colorUI[1], 1 - ((timeBeforeDecreaseDelay + m_timeLastUpdate) - Time.time)); return; }
 
+            //flareAnimator.SetBool("BufferProgression", false);
+            flareAnimator.ResetTrigger("ActiveBuffer");
+            flareAnimator.SetTrigger("CancelBuffer");
             if (m_isMajorGoalChanging)
             {
                 m_isMajorGoalChanging = false;
@@ -109,11 +124,13 @@ namespace GuerhoubaGames.UI
             }
 
             m_majorGoalSpriteDelay.fillAmount -= decreaseSpeed * Time.deltaTime;
+
             //m_majorGoalSprite.color = Color.Lerp(m_majorGoalSprite.color, colorUI[1], 0.1f);
 
             if (m_majorGoalSpriteDelay.fillAmount < m_majorGoalSprite.fillAmount)
             {
                 m_majorGoalSpriteDelay.fillAmount = m_majorGoalSprite.fillAmount;
+                flareAnimator.SetTrigger("CancelBuffer");
                 m_hasMajorGoalChange = false;
                 m_majorGoalSprite.color = colorUI[1];
             }
