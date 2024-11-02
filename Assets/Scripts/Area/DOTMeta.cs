@@ -16,6 +16,12 @@ namespace SpellSystem
     public class DOTMeta : MonoBehaviour
     {
         public DOTData dotData;
-        public Action<Vector3> OnDamage;  
+        public Action<Vector3> OnDamage;
+        public Action OnSpawn;
+
+        public void ResetOnSpawn()
+        {
+            OnSpawn?.Invoke();
+        }
     }
 }

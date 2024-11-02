@@ -31,10 +31,13 @@ namespace SpellSystem
         public bool asPreviewDecal;
         public Texture2D previewDecal;
         private SpellProfil profil;
-        void Start()
+       
+       
+
+        public void Awake()
         {
             m_areaMeta = GetComponent<AreaMeta>();
-            InitAreaData();
+            m_areaMeta.OnSpawn += InitAreaData;
         }
 
         public void InitAreaData()
@@ -56,7 +59,7 @@ namespace SpellSystem
             if (m_timerBeforeHit > timeBeforeHit)
             {
                 ApplyAreaDamage();
-                Destroy(this.gameObject);
+                ActiveDeath();
             }
             else
             {
@@ -92,6 +95,27 @@ namespace SpellSystem
                 DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
                 npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
             }
+        }
+
+        protected virtual void ResetArea()
+        {
+            m_timerBeforeHit = 0.0f;
+        }
+
+
+        protected virtual void ActiveDeath()
+        {
+            PullingMetaData pullingMetaData = GetComponent<PullingMetaData>();
+            if (GamePullingSystem.instance != null && pullingMetaData != null)
+            {
+                ResetArea();
+                GamePullingSystem.instance.ResetObject(this.gameObject, pullingMetaData.id);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+
         }
 
         public Texture2D ReturnDecalPreview()

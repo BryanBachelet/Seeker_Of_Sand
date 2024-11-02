@@ -25,20 +25,21 @@ public class NPCEnemiAnimation : MonoBehaviour
 
     public void CallAnimPrepAttack(int index)
     {
-        if (!HasParameter(prepAttackNameTrigger, m_animator)) return;
+        if (!HasParameter(prepAttackNameTrigger + index.ToString(), m_animator)) return;
         m_animator.SetTrigger(prepAttackNameTrigger + index.ToString());
         
     }
     public void CallAnimPrepAttackByIndex(int index)
     {
-        if (!HasParameter(prepAttackNameTrigger, m_animator)) return;
+        if (!HasParameter(prepAttackNameTrigger + index.ToString(), m_animator)) return;
         m_animator.SetTrigger(prepAttackNameTrigger + index);
        
     }
 
     public void ResetAnimAttack(int index)
     {
-        if (!HasParameter(prepAttackNameTrigger, m_animator)) return;
+        if (!HasParameter(prepAttackNameTrigger + index.ToString(), m_animator)) return;
+
         m_animator.ResetTrigger(prepAttackNameTrigger + index.ToString());
     }
 

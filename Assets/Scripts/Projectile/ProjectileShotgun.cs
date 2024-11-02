@@ -16,9 +16,7 @@ public class ProjectileShotgun : Projectile
     public override void CollisionEvent(Collider other)
     {
         base.CollisionEvent(other);
-        if (other.gameObject.tag == "Enemy")
-        {
-        }
+       
     }
 
 }
