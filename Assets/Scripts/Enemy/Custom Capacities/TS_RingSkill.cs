@@ -95,6 +95,7 @@ namespace Enemies
         private void SetPositionRing()
         {
             centerRing = transform.position;
+            GlobalSoundManager.PlayOneShot(55, centerRing);
         }
 
         public void UpdateRingSkill()
@@ -106,6 +107,7 @@ namespace Enemies
             if (Vector3.Distance(playerGO.transform.position, centerRing) > radius)
             {
                 canBeLaunch = true;
+                GlobalSoundManager.PlayOneShot(54, centerRing);
                 m_specialCapacities.TriggerSpecialCapacityBehavior(indexSpecialCapacity);
                 // Trigger Teleport;
                 Destroy(ringInstance);
