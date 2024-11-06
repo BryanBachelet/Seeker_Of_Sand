@@ -91,10 +91,10 @@ public class GlobalSoundManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         globalinstance = RuntimeManager.CreateInstance(Globalsound); 
         //globalinstance.start();
-        globalinstance.setVolume(1);
-        globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        //globalMusicInstance.start();
-        globalMusicInstance.setVolume(1);
+        //globalinstance.setVolume(1);
+        //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
+        ////globalMusicInstance.start();
+        //globalMusicInstance.setVolume(1);
         musicIntensityInstance = RuntimeManager.CreateInstance(musicIntensity);
         musicIntensityInstance.setVolume(1);
         musicIntensityTransitionInstance = RuntimeManager.CreateInstance(musicIntensityTransition);
@@ -107,7 +107,7 @@ public class GlobalSoundManager : MonoBehaviour
 
     public void OnDisable()
     {
-        globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        //globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntensityInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntensityTransitionInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -157,8 +157,8 @@ public class GlobalSoundManager : MonoBehaviour
         globalinstance.start();
         globalinstance.setVolume(1);
         //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        globalMusicInstance.start();
-        globalMusicInstance.setVolume(1);
+        //globalMusicInstance.start();
+        //globalMusicInstance.setVolume(1);
         musicIntensityInstance.start();
         musicIntensityInstance.setVolume(1);
         UpdateParameter(0.1f, "Intensity");
@@ -175,8 +175,8 @@ public class GlobalSoundManager : MonoBehaviour
         globalinstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         globalinstance.setVolume(0);
         //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        globalMusicInstance.setVolume(0);
+        //globalMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        //globalMusicInstance.setVolume(0);
         musicIntensityInstance.start();
         musicIntensityInstance.setVolume(0);
         UpdateParameter(0f, "Intensity");

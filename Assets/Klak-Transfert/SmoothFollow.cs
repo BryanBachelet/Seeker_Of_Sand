@@ -36,6 +36,7 @@ namespace Klak.Motion
         private Vector3 positionRandom;
         private float rangePositionRnd;
         private float rangeRotationRnd;
+        
 
         #region Nested Classes
 
@@ -65,6 +66,8 @@ namespace Klak.Motion
         [SerializeField, Range(0, 360)]
         float _jumpAngle = 60;
 
+        [SerializeField]
+        bool _isBook = false;
         #endregion
 
         #region Public Properties And Methods
@@ -97,6 +100,12 @@ namespace Klak.Motion
         public float jumpAngle {
             get { return _jumpAngle; }
             set { _jumpAngle = value; }
+        }
+
+        public bool bookState
+        {
+            get { return _isBook; }
+            set { _isBook = value; }
         }
 
         public void Snap()
@@ -148,12 +157,16 @@ namespace Klak.Motion
 
         private void Start()
         {
-            positionRandom = Random.insideUnitSphere * rangeRandom;
-            rangePositionRnd = Random.Range(2.5f, 12f);
-            rangeRotationRnd = Random.Range(2.5f, 12f);
+            if(!_isBook)
+            {
+                positionRandom = Random.insideUnitSphere * rangeRandom;
+                //rangePositionRnd = Random.Range(2.5f, 12f);
+                //rangeRotationRnd = Random.Range(2.5f, 12f);
 
-            _positionSpeed = rangePositionRnd;
-            _rotationSpeed = rangeRotationRnd;
+                _positionSpeed = rangePositionRnd;
+                _rotationSpeed = rangeRotationRnd;
+            }
+
         }
         void Update()
         {

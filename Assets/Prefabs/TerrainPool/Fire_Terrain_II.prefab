@@ -905,6 +905,7 @@ Transform:
   - {fileID: 5024349378951308048}
   - {fileID: 723504573039468108}
   - {fileID: 6256793152585090184}
+  - {fileID: 5167618910851231346}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6792072503785015584
@@ -934,7 +935,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 1.6666666
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: cccc30c4bf07fd84b9ee772fc78da9d8, type: 2}
   m_BuildHeightMesh: 0
@@ -2094,6 +2095,82 @@ MonoBehaviour:
     maskMode: 0
     materialMask: {fileID: 0}
   m_Version: 2
+--- !u!1 &3493814157534413527
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5167618910851231346}
+  - component: {fileID: 9215351395521262357}
+  m_Layer: 0
+  m_Name: Magica Wind Zone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5167618910851231346
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493814157534413527}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 502, y: 305, z: 471}
+  m_LocalScale: {x: 0.33333334, y: 0.3333333, z: 0.33333334}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8599145097808106879}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9215351395521262357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493814157534413527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2e01f3f330fcf34eb7f2aa7b311cee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  size: {x: 10, y: 10, z: 10}
+  radius: 1785.2
+  main: 30
+  turbulence: 1
+  directionAngleX: 125
+  directionAngleY: 0
+  attenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  isAddition: 1
 --- !u!1 &3518467914884405419
 GameObject:
   m_ObjectHideFlags: 0
@@ -5336,6 +5413,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7321604278124858796, guid: ef8bea8ccd28b9d42a2e3104008cc814,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8053170735803201541, guid: ef8bea8ccd28b9d42a2e3104008cc814,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -5946,6 +6028,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321604278124858796, guid: ef8bea8ccd28b9d42a2e3104008cc814,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8053170735803201541, guid: ef8bea8ccd28b9d42a2e3104008cc814,
         type: 3}
@@ -12419,11 +12506,26 @@ PrefabInstance:
       propertyPath: serializeData2.selectionData.attributes.Array.data[11].Value
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 262647799520555628, guid: 5a259c5f9616cf548b41638db0b2c979,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 973816038328312470, guid: 5a259c5f9616cf548b41638db0b2c979,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1112462321925956534, guid: 5a259c5f9616cf548b41638db0b2c979,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 75ca0598d37580d47a344de13bc78f43, type: 2}
+    - target: {fileID: 1189291824690702192, guid: 5a259c5f9616cf548b41638db0b2c979,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1575355212675923077, guid: 5a259c5f9616cf548b41638db0b2c979,
         type: 3}
       propertyPath: serializeData.gravityDirection.y
@@ -13488,6 +13590,21 @@ PrefabInstance:
         type: 3}
       propertyPath: serializeData2.selectionData.attributes.Array.data[51].Value
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2400938605080225217, guid: 5a259c5f9616cf548b41638db0b2c979,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2674350173898579458, guid: 5a259c5f9616cf548b41638db0b2c979,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3222299867912177595, guid: 5a259c5f9616cf548b41638db0b2c979,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3737096187949790301, guid: 5a259c5f9616cf548b41638db0b2c979,
         type: 3}
@@ -17830,6 +17947,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7321604278124858796, guid: ef8bea8ccd28b9d42a2e3104008cc814,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8053170735803201541, guid: ef8bea8ccd28b9d42a2e3104008cc814,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -18634,6 +18756,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321604278124858796, guid: ef8bea8ccd28b9d42a2e3104008cc814,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8053170735803201541, guid: ef8bea8ccd28b9d42a2e3104008cc814,
         type: 3}
