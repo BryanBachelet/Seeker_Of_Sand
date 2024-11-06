@@ -177,37 +177,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8334913232764949399}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4316598404621683851
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7770942309816139537}
-  m_Layer: 0
-  m_Name: Spot Light
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7770942309816139537
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4316598404621683851}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.7071063, y: -0, z: -0, w: 0.70710737}
-  m_LocalPosition: {x: 0, y: 9.810018, z: -0.16413128}
-  m_LocalScale: {x: 3.282626, y: 3.2826264, z: 2.7633855}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8334913232764949399}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &5472441829525668166
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,7 +462,6 @@ Transform:
   - {fileID: 7826540519092052006}
   - {fileID: 7236974914558655810}
   - {fileID: 5563323854927697235}
-  - {fileID: 7770942309816139537}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5115060520322041023
@@ -508,13 +476,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e04f5e50cd25d4df6ad5fe43d1f88cca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolator: 2
+  distanceMinimumFromTarget: 5
+  rangeRandom: 15
+  _interpolator: 1
   _target: {fileID: 0}
   _positionSpeed: 4.5
   _rotationSpeed: 10
-  _jumpDistance: 10
+  _jumpDistance: 1
   _jumpAngle: 60
-  distanceMinimumFromTarget: 5
+  _activeRandom: 1
   activeGizmo: 0
 --- !u!1001 &6560592092366186415
 PrefabInstance:

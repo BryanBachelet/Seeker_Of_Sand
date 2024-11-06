@@ -10,6 +10,7 @@ using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
 using SpellSystem;
 using GuerhoubaGames.Resources;
+using Klak.Motion;
 
 namespace Character
 {
@@ -172,7 +173,7 @@ namespace Character
 
         private CharacterSummonManager m_characterSummmonManager;
 
-
+        private SmoothFollow bookSmoothFollow;
 
         #region Unity Functions
 
@@ -365,6 +366,7 @@ namespace Character
             m_BookAnimator = bookTransform.GetComponent<Animator>();
             m_clockImage = m_uiPlayerInfos.ReturnClock();
             m_textStack = m_uiPlayerInfos.ReturnStack();
+            if (m_BookAnimator.GetComponent<SmoothFollow>()) m_BookAnimator.GetComponent<SmoothFollow>();
         }
 
         private void InitSpriteSpell()
@@ -619,11 +621,10 @@ namespace Character
             if (!m_canShoot) return;
 
             //GlobalSoundManager.PlayOneShot(27, transform.position);
-            m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
+            //m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
-
             if (currentShotNumber == 0 && !m_hasBeenLoad)
             {
                 StartShoot();
@@ -1183,7 +1184,6 @@ namespace Character
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
             m_CharacterMouvement.m_SpeedReduce = 1;
-
             float totalShootTime = baseTimeBetweenSpell;
 
             if (m_timerBetweenSpell > totalShootTime)
@@ -1282,6 +1282,7 @@ namespace Character
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);
             m_CharacterMouvement.SetCombatMode(true);
+            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); bookSmoothFollow.JumpRandomly(); }
             return;
         }
 
@@ -1297,8 +1298,9 @@ namespace Character
 
             m_lastTimeShot = Mathf.Infinity;
             avatarTransform.localRotation = Quaternion.identity;
-            bookTransform.localRotation = Quaternion.identity;
+            //bookTransform.localRotation = Quaternion.identity;
             if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
+            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); bookSmoothFollow.Snap(); }
 
         }
 
