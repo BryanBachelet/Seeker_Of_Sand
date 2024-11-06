@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.Resources;
+
 namespace Artefact
 {
     public class Ar_Fireball : MonoBehaviour
@@ -10,6 +12,7 @@ namespace Artefact
         public float speed;
         public int piercing;
         private ArtefactData m_artefactData;
+        private PullingMetaData m_pullingMetaData;
         [Header("Around Parameter")]
         private float radiusEffect;
         public LayerMask enemyMask;
@@ -18,10 +21,19 @@ namespace Artefact
 
 
         private bool m_hasBeenInit = false;
-        public void Start()
+        public void Awake()
         {
             m_hasBeenInit = true;
             m_artefactData = GetComponent<ArtefactData>();
+            m_pullingMetaData = GetComponent<PullingMetaData>();
+            m_artefactData.OnSpawn += InitArtefact;
+
+
+        }
+
+
+        public void InitArtefact()
+        {
             m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             radiusEffect = m_artefactData.radius;
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
@@ -44,7 +56,7 @@ namespace Artefact
 
             if (enemies.Length == 0)
             {
-                Destroy(gameObject);
+                GamePullingSystem.instance.ResetObject(gameObject, m_pullingMetaData.id);
                 return;
             }
 
@@ -60,7 +72,7 @@ namespace Artefact
 
             if (enemies.Length == 0)
             {
-                Destroy(gameObject);
+                GamePullingSystem.instance.ResetObject(gameObject, m_pullingMetaData.id);
                 return;
             }
 
@@ -77,7 +89,7 @@ namespace Artefact
             }
             if (indexEnemy == -1)
             {
-                Destroy(gameObject);
+                GamePullingSystem.instance.ResetObject(gameObject,m_pullingMetaData.id);
                 return;
             }
 
@@ -89,7 +101,7 @@ namespace Artefact
             Vector3 direction = agentPosition - m_artefactData.characterGo.transform.position;
             Quaternion rot = Quaternion.FromToRotation(Vector3.forward, direction);
             Vector3 posOffset = new Vector3(0, 5, 0);
-            GameObject instance = GameObject.Instantiate(fireBallGO, m_artefactData.characterGo.transform.position + posOffset , rot);
+            GameObject instance = GamePullingSystem.SpawnObject(fireBallGO, m_artefactData.characterGo.transform.position + posOffset , rot);
             ProjectileData data = new ProjectileData();
             data.direction = direction;
             data.damage = m_damage;

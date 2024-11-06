@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
+using UnityEngine.VFX;
 
 public struct ProjectileData
 {
@@ -70,6 +71,8 @@ public class Projectile : MonoBehaviour
 
     protected string damageSourceName;
     protected int elementIndex;
+
+    public bool isDebugInstance;
 
     void Update()
     {
@@ -143,6 +146,9 @@ public class Projectile : MonoBehaviour
         objectType = data.objectType;
         elementIndex = data.element;
 
+
+        m_initialScale = transform.localScale;
+
         damageSourceName = "NoName";
 
         if (objectType == CharacterObjectType.FRAGMENT)
@@ -204,10 +210,17 @@ public class Projectile : MonoBehaviour
         m_travelTimer = 0.0f;
         transform.localScale = m_initialScale;
         isStartToMove = false;
+        VisualEffect visual = GetComponent<VisualEffect>();
+
+        if (visual != null) visual.Reinit();
     }
 
     protected virtual void ActiveDeath()
     {
+        if(isDebugInstance)
+        {
+            Debug.Log("Stop Execution");
+        }
         PullingMetaData pullingMetaData = GetComponent<PullingMetaData>();
         if (GamePullingSystem.instance != null && pullingMetaData != null)
         {

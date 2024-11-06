@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaTools;
+using GuerhoubaGames.Resources;
 
 public class CharacterArtefact : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class CharacterArtefact : MonoBehaviour
     public List<GameObject> artefactAround_List = new List<GameObject>();
 
     public float rangeRandom = 5;
+
+    private int pullingQuantity = 100;
 
     public UI_Fragment_Tooltip uiFragmentTooltip;
     private Vector3 positionRandom;
@@ -109,11 +112,31 @@ public class CharacterArtefact : MonoBehaviour
         ArtefactsInfos clone = artefacts.Clone();
         artefactsList.Add(clone);
 
+        CreatePull(clone);
+
         LogSystem.LogMsg("Artefact add  is " + clone.name);
         GenerateNewArtefactAround(clone);
         SetupArtefact(clone);
         uiFragmentTooltip.AddNewFragment(clone);
     }
+
+    public void CreatePull(ArtefactsInfos instance)
+    {
+        PullConstructionData pullConstructionData = new PullConstructionData(instance.m_artefactToSpawn, pullingQuantity);
+
+        if (GamePullingSystem.instance == null) return;
+        GamePullingSystem.instance.CreatePull(pullConstructionData);
+
+        if(instance.m_artefactProjectile != null)
+        {
+            PullConstructionData pullConstructionData1 = new PullConstructionData(instance.m_artefactProjectile, pullingQuantity);
+            if (GamePullingSystem.instance == null) return;
+            GamePullingSystem.instance.CreatePull(pullConstructionData1);
+
+        }
+
+    }
+
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
     {
         GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefacts.gameElement], transform.position, transform.rotation);

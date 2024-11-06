@@ -1529,7 +1529,7 @@ namespace Character
         public void CreatePullObject(SpellProfil spellProfil)
         {
             int quantity = CountSpellInstanceToSpawn(spellProfil);
-            PullConstrutionData pullConstrutionData = new PullConstrutionData(spellProfil.objectToSpawn, quantity);
+            PullConstructionData pullConstrutionData = new PullConstructionData(spellProfil.objectToSpawn, quantity);
             GamePullingSystem.instance.CreatePull(pullConstrutionData);
         }
 

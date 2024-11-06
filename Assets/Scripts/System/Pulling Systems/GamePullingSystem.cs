@@ -192,7 +192,7 @@ namespace GuerhoubaGames.Resources
         }
         #endregion
 
-        public void CreatePull(PullConstrutionData pullConstrutionData)
+        public void CreatePull(PullConstructionData pullConstrutionData)
         {
             int id = pullConstrutionData.idInstance;
 
