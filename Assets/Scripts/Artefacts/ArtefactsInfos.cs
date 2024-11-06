@@ -1,5 +1,6 @@
 using GuerhoubaGames.GameEnum;
 using UnityEngine;
+using GuerhoubaGames.Resources;
 
 public enum ConditionsTrigger
 {
@@ -35,6 +36,7 @@ public class ArtefactsInfos : ScriptableObject
     public EntitiesTargetSystem entitiesTargetSystem;
 
     public GameObject m_artefactToSpawn;
+    public GameObject m_artefactProjectile;
     [HideInInspector] public GameObject characterGo;
     public Sprite icon;
     [TextArea]
@@ -47,6 +49,8 @@ public class ArtefactsInfos : ScriptableObject
     private int proc = 0;
     public int maxProc = 10;
     private float lastTimeRefresh = 0;
+
+
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
@@ -68,9 +72,10 @@ public class ArtefactsInfos : ScriptableObject
                 Debug.Log("Artefact active OnHit"); 
             }
             if (!CanApplyOnHit()) return;
-            GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
+            GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData, objectPre);
+            artefactData.OnSpawn?.Invoke();
             activationCount++;
         }
 
@@ -88,9 +93,10 @@ public class ArtefactsInfos : ScriptableObject
         if (change < spawnRate)
         {
             if (isDebugActive) Debug.Log("Artefact in launch");
-            GameObject obj = GameObject.Instantiate(m_artefactToSpawn, position, Quaternion.identity);
+            GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
             SetupArtefactData(artefactData,agent);
+            artefactData.OnSpawn?.Invoke();
             activationCount++;
         }
     }

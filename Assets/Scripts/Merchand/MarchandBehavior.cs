@@ -31,8 +31,8 @@ public class MarchandBehavior : InteractionInterface
     }
 
     [Header("Marchand Variables")]
-    public int spellPrice = 50;
-    public int fragmentPrice = 25;
+    public int spellPrice = 100;
+    public int fragmentPrice = 80;
 
 
     private MarchandUiView m_merchandView;

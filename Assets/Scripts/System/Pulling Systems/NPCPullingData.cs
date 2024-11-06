@@ -7,13 +7,13 @@ using System;
 namespace GuerhoubaGames.Resources
 {
     [System.Serializable]
-    public struct PullConstrutionData
+    public struct PullConstructionData
     {
         public GameObject instance;
         public int idInstance;
         public int count;
 
-        public PullConstrutionData( GameObject instanceObj, int count = 1)
+        public PullConstructionData( GameObject instanceObj, int count = 1)
         {
             idInstance =  GamePullingSystem.GetDeterministicHashCode(instanceObj.name);
             instance = instanceObj;
@@ -23,9 +23,9 @@ namespace GuerhoubaGames.Resources
         public override bool Equals(object obj)
         {
 
-            if (obj is PullConstrutionData)
+            if (obj is PullConstructionData)
             {
-                return idInstance == ((PullConstrutionData)(obj)).idInstance;
+                return idInstance == ((PullConstructionData)(obj)).idInstance;
             }
             else
             {
@@ -43,7 +43,7 @@ namespace GuerhoubaGames.Resources
     [System.Serializable]
     public class NPCPullingData : MonoBehaviour
     {
-        public List<PullConstrutionData> pullDataList = new List<PullConstrutionData>();
+        public List<PullConstructionData> pullDataList = new List<PullConstructionData>();
 
         private NPCAttackFeedbackComponent m_NPCAttackFeedbackComponent;
         private NpcAttackComponent m_NpcAttackComponent;
@@ -67,7 +67,7 @@ namespace GuerhoubaGames.Resources
             {
                 if (!attackFeedbackData[i].isSpawn) continue;
 
-                PullConstrutionData instancePullData = new PullConstrutionData( attackFeedbackData[i].Vfx);
+                PullConstructionData instancePullData = new PullConstructionData( attackFeedbackData[i].Vfx);
                 if (pullDataList.Contains(instancePullData)) continue;
 
                 pullDataList.Add(instancePullData);
@@ -82,7 +82,7 @@ namespace GuerhoubaGames.Resources
                 
                 if (attackNPCData.typeAttack != GameEnum.AttackType.PROJECTILE_OBJ) continue;
 
-                PullConstrutionData instancePullData = new PullConstrutionData( attackNPCData.projectileLaunch, 1);
+                PullConstructionData instancePullData = new PullConstructionData( attackNPCData.projectileLaunch, 1);
 
                 if (pullDataList.Contains(instancePullData)) continue;
 

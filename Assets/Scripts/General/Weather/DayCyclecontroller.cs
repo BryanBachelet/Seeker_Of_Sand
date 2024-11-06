@@ -85,6 +85,7 @@ public class DayCyclecontroller : MonoBehaviour
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
         Time.timeScale = timescale;
+        if(currentPhase < 0) currentPhase = 0;
         m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
     }
 
