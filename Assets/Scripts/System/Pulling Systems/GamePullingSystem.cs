@@ -171,6 +171,7 @@ namespace GuerhoubaGames.Resources
         public List<int> m_idList = new List<int>();
         public List<GameObject> m_originalPullObjectList = new List<GameObject>();
 
+        public EnemiesPullingSystem enemiesPulling;
         public static GamePullingSystem instance;
         public Transform parent;
 
@@ -189,6 +190,8 @@ namespace GuerhoubaGames.Resources
             {
                 CreatePull(PrefabToInstance[i], QuantityToInstance[i]);
             }
+
+            enemiesPulling.InitializePullingSystem();
         }
         #endregion
 

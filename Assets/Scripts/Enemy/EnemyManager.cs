@@ -210,7 +210,7 @@ namespace Enemies
 
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<EnemiesPullingSystem>();
-            m_pullingSystem.InitializePullingSystem();
+
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
