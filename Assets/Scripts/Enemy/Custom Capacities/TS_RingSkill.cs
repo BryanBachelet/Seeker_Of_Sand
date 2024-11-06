@@ -25,6 +25,7 @@ namespace Enemies
         private NpcSpecialCapacities m_specialCapacities;
         private NpcHealthComponent m_npcHealthComponent;
         private NpcMetaInfos m_npcMetaInfo;
+        private NpcAttackComponent m_npcAttackComponent;
         private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
         private VisualEffect ringVFX;
@@ -41,6 +42,7 @@ namespace Enemies
             m_npcMetaInfo = GetComponent<NpcMetaInfos>();
             m_behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
             playerGO = m_npcHealthComponent.targetData.target.gameObject;
+            m_npcAttackComponent = GetComponent<NpcAttackComponent>();
         }
 
         // Update is called once per frame
@@ -100,7 +102,7 @@ namespace Enemies
 
         public void UpdateRingSkill()
         {
-            if (canBeLaunch) return;
+            if (canBeLaunch ||  m_npcMetaInfo.state == NpcState.ATTACK || m_npcMetaInfo.state == NpcState.SPECIAL_CAPACITIES || m_npcAttackComponent.isInAttackSequence== true)    return;
 
             Vector3 pos = playerGO.transform.position;
             pos.y = centerRing.y;
