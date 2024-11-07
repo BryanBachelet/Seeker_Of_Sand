@@ -110,15 +110,18 @@ public class RewardTypologie : MonoBehaviour
         if(other.tag == "Player" && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
             rewardDistribution.RewardValidate();
-
+            Character.CharacterUpgrade characterUpgrade = other.GetComponent<Character.CharacterUpgrade>();
+            characterUpgrade.lastRoomElement = (GameElement)element;
             switch (rewardType)
             {
                 case RewardType.UPGRADE:
-                    other.GetComponent<Character.CharacterUpgrade>().GiveUpgradePoint(3);
-                    other.GetComponent<Character.CharacterUpgrade>().ShowUpgradeWindow();
+                   
+                    characterUpgrade.GiveUpgradePoint(3);
+                    characterUpgrade.ShowUpgradeWindow();
                     break;
                 case RewardType.SPELL:
-                    other.GetComponent<Character.CharacterUpgrade>().ShowSpellChoiceInteface();
+           
+                    characterUpgrade.ShowSpellChoiceInteface();
                     break;
                 case RewardType.ARTEFACT:
                     if (choseReward == null)

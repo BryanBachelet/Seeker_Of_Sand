@@ -197,6 +197,7 @@ public class AltarBehaviorComponent : InteractionInterface
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
+        roomInfoUI.UpdateTextProgression(m_enemiesCountConditionToWin - m_CurrentKillCount, m_enemiesCountConditionToWin);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI

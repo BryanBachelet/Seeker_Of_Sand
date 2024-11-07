@@ -10,8 +10,7 @@ using UnityEngine.Rendering.HighDefinition;
 public class RoomManager : MonoBehaviour
 {
     private const float distanceBeforeActivatingRooom = 30;
-    [Range(0, 5)]
-    public int element = 0; // 4-Rien, 0-Eau, 1-Air, 2-Fire, 3-Earth
+    public GameElement element = 0; 
 
 
     [HideInInspector] public Camera previewCamera;
@@ -288,7 +287,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward, (GameElement)element);
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward,element);
 
     }
 
@@ -320,6 +319,7 @@ public class RoomManager : MonoBehaviour
             else
             {
                 roomInfoUI.ActualizeMajorGoalProgress(progress);
+                roomInfoUI.UpdateTextProgression(enemyToKillCount - currentCountOfEnemy, enemyToKillCount);
             }
         }
 

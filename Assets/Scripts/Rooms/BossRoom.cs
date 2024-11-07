@@ -45,7 +45,9 @@ public class BossRoom : MonoBehaviour
     {
         if(m_bossHealth)
         {
-            roomInfoUI.ActualizeMajorGoalProgress(1.0f-(m_bossHealth.GetCurrentLife() / m_bossHealth.maxLife));
+            float bossHealth_float = m_bossHealth.GetCurrentLife();
+            roomInfoUI.ActualizeMajorGoalProgress(1.0f-(bossHealth_float / m_bossHealth.maxLife));
+            roomInfoUI.UpdateTextProgression((int)bossHealth_float, (int)m_bossHealth.maxLife);
         }
     }
 

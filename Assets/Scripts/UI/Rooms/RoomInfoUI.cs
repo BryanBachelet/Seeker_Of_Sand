@@ -53,6 +53,7 @@ namespace GuerhoubaGames.UI
         public RectTransform[] transformsProgression = new RectTransform[2];
         private Animator flareAnimator;
 
+        [SerializeField] private TMP_Text textProgress;
         #region Unity Functions
 
         public void Awake()
@@ -164,5 +165,10 @@ namespace GuerhoubaGames.UI
         }
 
         #endregion
+
+        public void UpdateTextProgression(int currentProgress, int currentGoal)
+        {
+            textProgress.text = "" + currentProgress + "/" + currentGoal;
+        }
     };
 }
