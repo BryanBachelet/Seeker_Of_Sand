@@ -118,12 +118,14 @@ namespace Enemies
                     {
                         lastTimeSeen = time;
                         lastTimeCheck = time;
+                        
                         if(Vector3.Distance(transform.position, lastPosCheck) > 10)
                         {
                             lastPosCheck = transform.position;
                         }
-                        else
+                        if(m_navMeshAgent.path.status == NavMeshPathStatus.PathPartial)
                         {
+                            Debug.Log("Path invalid");
                             if (enemiesManager.ReplaceFarEnemy(this.gameObject))
                             {
                                 //distancePos = Vector3.Distance(transform.position, targetData.target.position);

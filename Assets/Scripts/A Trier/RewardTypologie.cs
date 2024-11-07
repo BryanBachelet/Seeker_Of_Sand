@@ -128,7 +128,7 @@ public class RewardTypologie : MonoBehaviour
                     {
                         choseReward = GameObject.Find("Artefact-Choose-Trio").GetComponent<Chosereward>();
                     }
-                    choseReward.GiveArtefact((GameElement) element + 1);
+                    choseReward.GiveArtefact((GameElement) element );
                     break;
                 case RewardType.HEAL:
                    if(healthReward == HealthReward.QUARTER)

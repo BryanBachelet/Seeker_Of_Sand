@@ -173,9 +173,6 @@ namespace Enemies
                     countCloseAttack++;
                 }
 
-
-
-
             }
 
             timerAttackCooldown = new float[attackEnemiesObjectsArr.Length];
@@ -255,7 +252,7 @@ namespace Enemies
                 {
                     directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     Vector3 boxScale = currentAttackData.scaleRaycast;
-                    m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
+                    m_HitDetect = Physics.Raycast(m_mouvementComponent.baseTransform.position + raycastOffset, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
                     if (m_HitDetect)
                     {
                         raycastHitPoint = m_Hit.point;
@@ -464,11 +461,12 @@ namespace Enemies
 
             // Raycast Shoot
             Vector3 boxScale = currentAttackData.scaleRaycast;
-            m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
+            m_HitDetect = Physics.Raycast(m_mouvementComponent.baseTransform.position + raycastOffset, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
             if (m_HitDetect)
             {
                 raycastHitPoint = m_Hit.point;
                 prepTargetPosition = m_Hit.point;
+                
             }
             else
             {
@@ -696,16 +694,12 @@ namespace Enemies
             {
                 if (!m_showRaycastDebug) return;
                 //Check if there has been a hit yet
+            
                 if (m_HitDetect)
                 {
                     Gizmos.color = Color.red;
-                    //Draw a Ray forward from GameObject toward the hit
-                    Gizmos.DrawRay(transform.position + raycastOffset, directionTarget.normalized * m_Hit.distance);
-                    //Draw a cube that extends to where the hit exists
-
-                    Gizmos.matrix = Matrix4x4.Rotate(rotationRaycast) * Gizmos.matrix;
-
-                    Gizmos.DrawWireCube(Gizmos.matrix.inverse * raycastHitPoint, currentAttackData.scaleRaycast * 2);
+                    Gizmos.DrawLine(transform.position + raycastOffset, raycastHitPoint);
+                    Gizmos.DrawWireCube(raycastHitPoint, currentAttackData.scaleRaycast * 2);
                 }
                 //If there hasn't been a hit yet, draw the ray at the maximum distance
                 else
@@ -713,10 +707,14 @@ namespace Enemies
                     Gizmos.color = Color.green;
                     Gizmos.matrix = Matrix4x4.identity;
                     //Draw a Ray forward from GameObject toward the maximum distance
-                    Gizmos.DrawRay(transform.position = raycastOffset, directionTarget.normalized * m_MaxDistance);
+                    Gizmos.DrawRay(transform.position + raycastOffset, directionTarget.normalized * m_MaxDistance);
                     //Draw a cube at the maximum distance
                     Gizmos.DrawWireCube(transform.position + directionTarget * m_MaxDistance, transform.localScale);
                 }
+
+
+               
+              
             }
         }
 
