@@ -157,6 +157,10 @@ namespace GuerhoubaGames.UI
             m_majorGoalAnimator.SetBool("MajorDisplay", true);
         }
 
+
+
+        
+
         public void DeactivateMajorGoalInterface()
         {
             m_majorGoalAnimator.SetBool("MajorDisplay", false);

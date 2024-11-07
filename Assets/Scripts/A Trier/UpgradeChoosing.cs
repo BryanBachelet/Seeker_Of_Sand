@@ -39,6 +39,7 @@ public class UpgradeChoosing : MonoBehaviour
     public TMPro.TMP_Text[] upgradeTextStatBase = new TMPro.TMP_Text[6];
     public TMPro.TMP_Text[] upgradeTextStatModify = new TMPro.TMP_Text[6];
     public UIOver[] uiUpgradeButton = new UIOver[3];
+    public TMPro.TMP_Text rerollText;
 
     public GameObject firstObjectSelect;
 
@@ -68,6 +69,7 @@ public class UpgradeChoosing : MonoBehaviour
     public void OpenUpgradeUI()
     {
         if (GameState.instance.IsGamepad()) UITools.instance.SetUIObjectSelect(firstObjectSelect);
+        rerollText.text = m_upgradeManager.rerollPoint.ToString();
     }
 
     public void SetNewUpgradeData(UpgradeLevelingData data)
@@ -113,6 +115,12 @@ public class UpgradeChoosing : MonoBehaviour
         SetBaseSpellStat(index);
 
     }
+    public void RerollUpgrade()
+    {
+        m_upgradeManager.ReDrawUpgrade();
+        rerollText.text = m_upgradeManager.rerollPoint.ToString();
+    }
+
 
     public IEnumerator SpellFadeOut(int upgradeNumber, float time)
     {
