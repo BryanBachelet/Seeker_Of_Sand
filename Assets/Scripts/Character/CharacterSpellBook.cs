@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using GuerhoubaGames.GameEnum;
 
 namespace Character
 {
@@ -30,6 +31,21 @@ namespace Character
         public void ChangeSpellOfRotation(int indexRotation, int spellIndex)
         {
             m_spellsRotationArray[indexRotation] = m_bookOfSpell[spellIndex];
+        }
+
+        public GameElement[] GetElementSpellInRotation()
+        {
+            GameElement[] gameElements = new GameElement[4];
+
+            for (int i = 0; i < m_spellsRotationArray.Length; i++)
+            {
+                if (m_spellsRotationArray[i] != null)
+                    gameElements[i] = m_spellsRotationArray[i].tagData.element;
+                else
+                    gameElements[i] = GameElement.NONE;
+
+            }
+            return gameElements;
         }
 
         public SpellSystem.SpellProfil GetSpellOfRotation(int spellIndex)

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using SpellSystem;
 using TMPro;
 using GuerhoubaGames.UI;
+using GuerhoubaGames.GameEnum;
 
 public class ChooseSpellManager : MonoBehaviour
 {
@@ -45,6 +46,10 @@ public class ChooseSpellManager : MonoBehaviour
 
     public GameObject FirstObjectSelect;
 
+    [Header("Elements Reward ")]
+    public GameElement lastRoomElement;
+    public float percentForSpellMatchingElementRoom;
+
     #region Unity Functions
 
     private void Awake()
@@ -63,7 +68,7 @@ public class ChooseSpellManager : MonoBehaviour
     void Start()
     {
         m_animator = this.GetComponent<Animator>();
-        if(descriptionHolder !=  null) { descriptionHolderAnimator = descriptionHolder.GetComponent<Animator>(); }
+        if (descriptionHolder != null) { descriptionHolderAnimator = descriptionHolder.GetComponent<Animator>(); }
 
 
     }
@@ -80,9 +85,9 @@ public class ChooseSpellManager : MonoBehaviour
                 m_animator.SetBool("ActiveChoice", true);
             }
         }
-            if (animatorStateInfo.IsName("NewSpellChoice_Open"))
+        if (animatorStateInfo.IsName("NewSpellChoice_Open"))
         {
-            if ( m_hasChooseSpell)
+            if (m_hasChooseSpell)
             {
                 ClearVfxInstance();
                 m_hasChooseSpell = false;
@@ -90,7 +95,7 @@ public class ChooseSpellManager : MonoBehaviour
 
                 for (int i = 0; i < vfxHolder.Length; i++)
                 {
-                    vfxHolder[i].SetActive(false) ;
+                    vfxHolder[i].SetActive(false);
                     spellHolder[i].SetActive(false);
                     vfxSpell[i].enabled = false;
                     vfxSpell[i].sprite = null;
@@ -100,7 +105,7 @@ public class ChooseSpellManager : MonoBehaviour
 
                 }
                 m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
-               
+
             }
         }
 
@@ -112,9 +117,9 @@ public class ChooseSpellManager : MonoBehaviour
         m_hasChooseSpell = false;
         m_indexSpellChoose = -1;
 
-        if(!m_animator) m_animator = this.GetComponent<Animator>();
+        if (!m_animator) m_animator = this.GetComponent<Animator>();
         m_animator.ResetTrigger("Choosed");
-        m_animator.SetBool("ActiveChoice",true);
+        m_animator.SetBool("ActiveChoice", true);
         overable = true; // --> Je sais pas
     }
 
@@ -154,7 +159,9 @@ public class ChooseSpellManager : MonoBehaviour
         for (int i = 0; i < randomSpellToChoose.Length; i++)
         {
             // ---------------------
-            randomSpellToChoose[i] = SpellManager.GetRandomCapsuleIndex();
+            randomSpellToChoose[i] = DrawRandomSpell();
+
+
             newSpell[i] = spellManager.spellProfils[randomSpellToChoose[i]];
             SpellManager.RemoveSpecificSpellFromSpellPool(randomSpellToChoose[i]);
             // --------------------
@@ -175,6 +182,36 @@ public class ChooseSpellManager : MonoBehaviour
         ResetUIAnimation();
     }
 
+
+    private int DrawRandomSpell()
+    {
+        GameElement[] elements = m_upgradeManagerComponenet.m_characterUpgradeComponent.m_characterInventory.GetElementSpellInRotation();
+        bool isElementOwn = false;
+        for (int i = 0; i < elements.Length; i++)
+        {
+            if (lastRoomElement == elements[i])
+            {
+                isElementOwn = true;
+                break;
+            }
+        }
+
+        if (isElementOwn) return SpellManager.GetRandomCapsuleIndex();
+
+        float percent = Random.Range(0.0f, 100.0f);
+
+        if(percent< percentForSpellMatchingElementRoom)
+        {
+            return SpellManager.GetElementRandomSpellIndex(lastRoomElement);
+        }else
+        {
+            return  SpellManager.GetRandomCapsuleIndex();
+        }
+
+    }
+
+
+
     public void Choose(int indexChoice)
     {
         ActivateChoiceAnimation();
@@ -190,7 +227,7 @@ public class ChooseSpellManager : MonoBehaviour
 
         for (int i = 0; i < randomSpellToChoose.Length; i++)
         {
-            if(indexChoice != i )
+            if (indexChoice != i)
             {
                 SpellManager.AddSpecificSpellFromSpellPool(randomSpellToChoose[i]);
             }
@@ -204,7 +241,7 @@ public class ChooseSpellManager : MonoBehaviour
         if (lastSpell == popup) return;
         if (!overable) return;
         descriptionHolder.SetActive(true);
-        if(descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", true); }
+        if (descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", true); }
         lastSpell = popup;
         name.text = newSpell[spellIndex].name;
         description.text = newSpell[spellIndex].description;
@@ -221,7 +258,7 @@ public class ChooseSpellManager : MonoBehaviour
     public IEnumerator SpellFadeOut(int spellNumber, float time)
     {
         decorationHolder[spellNumber].SetActive(false);
-        
+
         while (time + timeSolve - Time.time > 0)
         {
             m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (time + timeSolve - Time.time) / timeSolve - 0.5f);
@@ -233,7 +270,7 @@ public class ChooseSpellManager : MonoBehaviour
 
     public IEnumerator SpellFadeIn(int spellNumber, float time)
     {
-        while(Time.time - time < timeSolve)
+        while (Time.time - time < timeSolve)
         {
             m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (Time.time - time) / timeSolve - 0.5f);
             yield return Time.deltaTime;

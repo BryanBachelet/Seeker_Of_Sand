@@ -36,8 +36,8 @@ public class TerrainDropGeneration : MonoBehaviour
     {
         raycastdirection = new Vector3(0, -25, 0);
         int dropToGenerate = dropQuantity + Random.Range(-random, random);
-        int randomCristalType = associateRoomManager.element;
-        if(randomCristalType == 4) { randomCristalType = Random.Range(0, 4); }
+        int randomCristalType = (int)associateRoomManager.element ;
+        if(randomCristalType == 0) { randomCristalType = Random.Range(1, 5); }
         if (dropToGenerate > 0)
         {
             for (int i = 0; i < dropToGenerate; i++)
@@ -50,7 +50,7 @@ public class TerrainDropGeneration : MonoBehaviour
                 {
                     Debug.DrawRay(newPosition, raycastdirection * hit.distance, Color.cyan);
                     m_DropAreaPosition = hit.point + new Vector3(0, -5, 0);
-                    Instantiate(cristalDropObject[randomCristalType], m_DropAreaPosition, transform.rotation,transform.parent);
+                    Instantiate(cristalDropObject[randomCristalType -1], m_DropAreaPosition, transform.rotation,transform.parent);
 
                 }
                 else

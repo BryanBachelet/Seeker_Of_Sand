@@ -417,7 +417,7 @@ namespace Character
                 {
                     spellEquip[i] = i;
                     spellProfils.Add(m_characterSpellBook.GetSpecificSpell(i));
-
+                    m_characterSpellBook.m_spellsRotationArray[i] = (m_characterSpellBook.GetSpecificSpell(i));
                 }
             }
             m_currentIndexCapsule = spellEquip[0];
@@ -1386,6 +1386,7 @@ namespace Character
             {
                 spellProfils.Add(clone);
                 spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+                m_characterSpellBook.m_spellsRotationArray[spellIndexGeneral.Count - 1] = clone;
 
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();
@@ -1411,6 +1412,7 @@ namespace Character
                     spellEquip[i + 1] = spellEquip[i + 1] - 1;
 
                 spellEquip[i] = spellEquip[i + 1];
+                m_characterSpellBook.m_spellsRotationArray[i] = m_characterSpellBook.GetSpecificSpell(spellEquip[i]);
             }
 
             maxSpellIndex = Mathf.Clamp(this.spellIndexGeneral.Count, 0, 4);
@@ -1444,6 +1446,10 @@ namespace Character
             int tempIndex = spellEquip[indexSpell1];
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
+            SpellProfil spellProfilTemp = m_characterSpellBook.m_spellsRotationArray[tempIndex];
+            m_characterSpellBook.m_spellsRotationArray[indexSpell1] = m_characterSpellBook.m_spellsRotationArray[indexSpell2];
+            m_characterSpellBook.m_spellsRotationArray[indexSpell2] = spellProfilTemp;
+
 
             m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell1], m_textStack[indexSpell1]);
             m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
