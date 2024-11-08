@@ -1,7 +1,7 @@
 using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
-
+using UnityEditor;
 public enum ConditionsTrigger
 {
     OnHit,
@@ -24,6 +24,7 @@ public enum EntitiesTargetSystem
     EnemyRandomAround,
 }
 
+[System.Serializable]
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Artefacts Info", order = 1)]
 public class ArtefactsInfos : ScriptableObject
 {

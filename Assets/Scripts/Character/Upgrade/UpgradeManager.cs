@@ -54,6 +54,8 @@ public class UpgradeManager : MonoBehaviour
     public Image progressRang;
     public Image progressNextRang;
 
+    public int rerollPoint = 3;
+
     public float percentForSpellMatchingElementRoom = 75;
 
     public void Awake()
@@ -369,6 +371,18 @@ public class UpgradeManager : MonoBehaviour
 
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
+    }
+
+    public void ReDrawUpgrade()
+    {
+        if (rerollPoint <= 0) return;
+        int indexSpellEquip = GenerateSpellIndex(m_upgradeLevelingData.roomElement);
+        int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
+        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, m_upgradeLevelingData.roomElement);
+        m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
+        rerollPoint--;
+
+        m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
     }
 
     public IEnumerator CloseUIWithDelay(float time)
