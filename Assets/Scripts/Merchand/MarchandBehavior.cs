@@ -44,7 +44,7 @@ public class MarchandBehavior : InteractionInterface
     private CristalInventory m_cristalInventory;
 
     [HideInInspector] public ItemData[] spellItemData = new ItemData[2];
-    [HideInInspector] public ItemData[] fragmentItemData = new ItemData[2];
+    [HideInInspector] public ItemData[] fragmentItemData = new ItemData[4];
 
     private MerchandItemData merchandItemData;
 
@@ -107,8 +107,8 @@ public class MarchandBehavior : InteractionInterface
 
     public void SetFragmentItem()
     {
-        merchandItemData.fragmentData = new ArtefactsInfos[2];
-        for (int i = 0; i < 2; i++)
+        merchandItemData.fragmentData = new ArtefactsInfos[4];
+        for (int i = 0; i < 4; i++)
         {
            int index = m_fragmentManager.GetRandomIndexFragment();
             merchandItemData.fragmentData[i] = m_fragmentManager.GetArtefacts(index);
