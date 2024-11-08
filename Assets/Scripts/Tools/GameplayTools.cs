@@ -84,6 +84,21 @@ namespace GuerhoubaTools.Gameplay
         {
             return (mask.value & (1 << obj.layer)) > 0;
         }
+
+        /// <summary>
+        /// Allow to change the layer of a Gameobject and it's children
+        /// </summary>
+        public static void ChangeLayerGameObject(int layer, GameObject obj)
+        {
+            obj.layer = layer;
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                ChangeLayerGameObject(layer, obj.transform.GetChild(i).gameObject);
+            }
+        }
+
+
+
     }
 
 

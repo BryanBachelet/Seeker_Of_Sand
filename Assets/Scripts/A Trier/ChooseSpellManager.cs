@@ -48,7 +48,8 @@ public class ChooseSpellManager : MonoBehaviour
 
     [Header("Elements Reward ")]
     public GameElement lastRoomElement;
-    public float percentForSpellMatchingElementRoom;
+    public float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
+    private int countSpellDraw = 0;
 
     #region Unity Functions
 
@@ -148,7 +149,7 @@ public class ChooseSpellManager : MonoBehaviour
     public void OpenSpellChoice()
     {
         if (!GameState.instance.IsGamepad()) return;
-
+        countSpellDraw = 0;
         UITools.instance.SetUIObjectSelect(FirstObjectSelect);
     }
 
@@ -164,6 +165,7 @@ public class ChooseSpellManager : MonoBehaviour
 
             newSpell[i] = spellManager.spellProfils[randomSpellToChoose[i]];
             SpellManager.RemoveSpecificSpellFromSpellPool(randomSpellToChoose[i]);
+            countSpellDraw++;
             // --------------------
             StartCoroutine(SpellFadeIn(i, Time.time));
             vfxSpell[i].sprite = newSpell[i].spell_Icon;
@@ -187,6 +189,7 @@ public class ChooseSpellManager : MonoBehaviour
     {
         GameElement[] elements = m_upgradeManagerComponenet.m_characterUpgradeComponent.m_characterInventory.GetElementSpellInRotation();
         bool isElementOwn = false;
+
         for (int i = 0; i < elements.Length; i++)
         {
             if (lastRoomElement == elements[i])
@@ -196,16 +199,16 @@ public class ChooseSpellManager : MonoBehaviour
             }
         }
 
-        if (isElementOwn) return SpellManager.GetRandomCapsuleIndex();
+        if (lastRoomElement == GameElement.NONE) return SpellManager.GetRandomCapsuleIndex();
 
         float percent = Random.Range(0.0f, 100.0f);
 
-        if(percent< percentForSpellMatchingElementRoom)
+        if(percent< percentForUpgradeMatchingElementRoom[countSpellDraw])
         {
             return SpellManager.GetElementRandomSpellIndex(lastRoomElement);
         }else
         {
-            return  SpellManager.GetRandomCapsuleIndex();
+            return  SpellManager.GetRandomSpellIndexWithoutOneElememt(lastRoomElement);
         }
 
     }
@@ -233,6 +236,7 @@ public class ChooseSpellManager : MonoBehaviour
             }
         }
         m_indexSpellChoose = indexChoice;
+        countSpellDraw = 0;
 
     }
 

@@ -60,6 +60,15 @@ namespace Enemies
         public bool isRaycastDebug;
         private bool m_showRaycastDebug;
         private Quaternion rotationRaycast;
+        
+        public float lagRaycastTargetTime = 0.5f;
+        private float m_lagRaycastTargetTimer;
+        
+        public float speedRaycast;
+        private Vector3 targetLagRaycastPosition;
+        private Vector3 targetLagRaycastPositionStart;
+        private Vector3 dirTargerMvt;
+
 
         // Event for each attack step
         public Action<int> OnPrepAttack;
@@ -77,6 +86,7 @@ namespace Enemies
 
         public bool isInAttackSequence;
         public int sequenceIndex = -1;
+        
 
 
         #region MonoBehavior Functions
@@ -252,6 +262,8 @@ namespace Enemies
                 {
                     directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     Vector3 boxScale = currentAttackData.scaleRaycast;
+                    targetLagRaycastPositionStart = m_mouvementComponent.baseTransform.position ;
+                    directionTarget = targetLagRaycastPositionStart - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     m_HitDetect = Physics.Raycast(m_mouvementComponent.baseTransform.position + raycastOffset, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
                     if (m_HitDetect)
                     {
@@ -433,7 +445,16 @@ namespace Enemies
                 rb.angularVelocity = Vector3.zero;
                 if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
                 {
-                    directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position + raycastOffset);
+                    Character.CharacterMouvement characterMvt = m_mouvementComponent.targetData.baseTarget.GetComponent<Character.CharacterMouvement>();
+                    dirTargerMvt = Vector3.Lerp(dirTargerMvt, characterMvt.currentDirection.normalized, 0.01f);
+                    Vector3 deltaDir = characterMvt.currentDirection.normalized - dirTargerMvt.normalized;
+                    if(deltaDir.magnitude <.5f)
+                    {
+                        dirTargerMvt = characterMvt.currentDirection.normalized;
+                    }
+                    Vector3 predictTargetPosition = (m_mouvementComponent.targetData.baseTarget.position + dirTargerMvt.normalized * characterMvt.combatSpeed + dirTargerMvt.normalized * characterMvt.combatSpeed*2*Time.deltaTime);
+                    targetLagRaycastPosition =  Vector3.Lerp(targetLagRaycastPositionStart, predictTargetPosition, (m_timer/currentAttackData.rotationTime));
+                    directionTarget = targetLagRaycastPosition - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     rotationRaycast = transform.rotation;
                 }
             }
@@ -640,7 +661,7 @@ namespace Enemies
             {
 
                 Vector3 boxScale = currentAttackData.scaleRaycast;
-                m_HitDetect = Physics.Raycast(transform.position, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
+                m_HitDetect = Physics.Raycast(transform.position + raycastOffset, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
                 if (m_HitDetect)
                 {
                     raycastHitPoint = m_Hit.point;
