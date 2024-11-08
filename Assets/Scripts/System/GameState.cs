@@ -244,6 +244,7 @@ public class GameState : MonoBehaviour
 
     public static void LaunchEndMenu()
     {
+        m_enemyManager.DestroyAllEnemy();
         EndInfoStats stats = m_enemyManager.FillEndStat();
         endMenu.ActiveUIEndScreen(stats);
 

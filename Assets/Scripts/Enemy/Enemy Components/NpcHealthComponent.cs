@@ -148,6 +148,8 @@ namespace Enemies
             m_hasChangeTarget = true;
             NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
             npcMouvement.SetTarget(targetData);
+            int layerEnemy = LayerMask.NameToLayer("Enemy");
+            gameObject.layer = layerEnemy;
         }
 
         public void SetInitialData(HealthManager healthManager, EnemyManager enemyManager)
@@ -170,6 +172,7 @@ namespace Enemies
             GlobalSoundManager.PlayOneShot(12, transform.position);
 
             if (m_healthSystem.health > 0) return;
+
 
             GetDestroy(direction, power);
         }
