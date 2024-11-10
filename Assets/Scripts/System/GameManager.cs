@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
     public string profileName;
     public TMP_InputField FieldNameProfile;
     public Character.AimMode m_aimModeChoose;
-
+    [SerializeField] public TMP_Text m_textName;
+    [SerializeField] public TMP_Text m_placeHolderName;
     public static GameManager instance;
 
     [SerializeField] public static int aimModeNumber;
@@ -18,17 +20,44 @@ public class GameManager : MonoBehaviour
     // Start is called before the first  frame update
     void Awake()
     {
-        if(instance!=null)
+
+        if (instance!=null)
         {
+            if(FieldNameProfile) instance.FieldNameProfile = this.FieldNameProfile;
+            instance.m_textName = this.m_textName;
+            instance.m_textName.text = instance.profileName;
+            instance.m_placeHolderName = this.m_placeHolderName;
+            instance.m_placeHolderName.text = instance.profileName;
+            if (FieldNameProfile) instance.FieldNameProfile.onEndEdit.AddListener(instance.GetName); 
             this.gameObject.SetActive(false);
             this.enabled = false;
             Destroy(this.gameObject);
+
         }
-        instance = this;
-        DontDestroyOnLoad(this.gameObject);
-        if(FieldNameProfile) FieldNameProfile.onEndEdit.AddListener(GetName);
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+            if (FieldNameProfile) FieldNameProfile.onEndEdit.AddListener(GetName);
+        }
+
+        //else
+        //{
+        //    FieldNameProfile = GameObject.Find("InputField_PlayerName").GetComponent<TMP_InputField>();
+        //    m_textName = GameObject.Find("Text_PlayerName").GetComponent<TMP_Text>();
+        //    if (FieldNameProfile) FieldNameProfile.onEndEdit.AddListener(GetName);
+        //}
     }
 
+    private void Start()
+    {
+        //if(m_textName ==  null)
+        //{
+        //m_textName = GameObject.Find("ProfilName").GetComponent<TMP_Text>();
+        //if (profileName != "") { m_textName.text = instance.profileName; }
+        //}
+
+    }
     public void ChangeAimMode(int aimModeIndex)
     {
         aimModeNumber = aimModeIndex;
@@ -54,6 +83,6 @@ public class GameManager : MonoBehaviour
     }
     public void GetName(string name)
     {
-        profileName = name;
+        instance.profileName = name;
     }
 }

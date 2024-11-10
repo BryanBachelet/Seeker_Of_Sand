@@ -20,6 +20,7 @@ public class CharacterProfile : MonoBehaviour
     private Buff.BuffsManager m_buffManager;
 
     [SerializeField] private GameObject m_pauseMenuObject;
+    [SerializeField] private GameObject m_CustomPassSeeThrough;
 
     private void Start()
     {
@@ -51,6 +52,7 @@ public class CharacterProfile : MonoBehaviour
         if (ctx.performed)
         {
             m_pauseMenuObject.GetComponent<PauseMenu>().CallPauseMenu();
+            m_CustomPassSeeThrough.gameObject.SetActive(!m_CustomPassSeeThrough.gameObject.activeSelf);
         }
     }
 

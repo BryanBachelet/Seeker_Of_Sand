@@ -56,6 +56,10 @@ public class UpgradeManager : MonoBehaviour
 
     public int rerollPoint = 3;
 
+    public int countUpgradePointUse;
+
+
+    public float[] percentForUpgradeMatchingElementRoom =  new float[4] { 100, 75, 50 ,25};
     public float percentForSpellMatchingElementRoom = 75;
 
     public void Awake()
@@ -291,7 +295,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
         m_upgradeLevelingData.spellCount = upgradeLevelingData.spellCount;
 
-
+        countUpgradePointUse = 0;
         int indexSpellEquip = GenerateSpellIndex(upgradeLevelingData.roomElement);
         int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, upgradeLevelingData.roomElement);
@@ -314,6 +318,7 @@ public class UpgradeManager : MonoBehaviour
         bool isOwnElement = false;
 
         List<int> indexElement = new List<int>();
+        List<int> indexOtherElement = new List<int>();
         for (int i = 0; i < elements.Length; i++)
         {
             if (element == elements[i])
@@ -321,20 +326,25 @@ public class UpgradeManager : MonoBehaviour
                 isOwnElement = true;
                 indexElement.Add(i);
             }
+            else
+            {
+                indexOtherElement.Add(i);
+            }
         }
 
         if (!isOwnElement) return UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
 
         float percent = UnityEngine.Random.Range(0.0f, 100.0f);
 
-        if (percent < percentForSpellMatchingElementRoom)
+        if (percent < percentForUpgradeMatchingElementRoom[countUpgradePointUse])
         {
             int indexSpell = UnityEngine.Random.Range(0, indexElement.Count);
             return indexElement[indexSpell];
         }
         else
         {
-            return UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
+            int indexSpell = UnityEngine.Random.Range(0, indexOtherElement.Count);
+            return indexOtherElement[indexSpell];
         }
     }
 
@@ -368,7 +378,7 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, m_upgradeLevelingData.roomElement);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
-
+        countUpgradePointUse++;
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }

@@ -558,6 +558,7 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
                 m_velMovement = Vector3.zero;
+                currentDirection = Vector3.zero;
 
                 if (IsGamepad())
                 {

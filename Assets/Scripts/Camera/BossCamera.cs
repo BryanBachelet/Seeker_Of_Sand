@@ -2,6 +2,7 @@ using Render.Camera;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using static UnityEditor.Rendering.CoreEditorDrawer<TData>;
 
 public class BossCamera : MonoBehaviour
 {
@@ -20,38 +21,70 @@ public class BossCamera : MonoBehaviour
     private BossRoom BossRoom;
     private Transform targetCam;
     private bool activeMusique = false;
+    private bool activeDisplay = false;
+    private Animator animator;
 
+    private Animator bandeNoir;
+    private Quaternion initialRotation;
+    public float xRot;
     public void StartCamera(Camera cameraPara, Transform target)
     {
         BossRoom = GetComponent<BossRoom>();
         camera = cameraPara;
         startPosition = cameraPara.transform.position;
+        initialRotation = cameraPara.transform.rotation;
         isActive = true;
         timer = 0;
         halfTimer = timeCinematic / 2.0f;
         camera.GetComponent<CameraBehavior>().enabled = false;
+        animator = camera.GetComponent<Animator>();
+        bandeNoir = camera.GetComponent<CameraFadeFunction>().bandeNoir;
         targetCam = target;
-
+        animator.enabled = true;
+        animator.SetBool("LaunchBoss", true);
+        bandeNoir.SetBool("BossBande", true);
         timeCinematic = timeP1 + timeP2;
+
     }
 
     public void Update()
     {
         if (!isActive) return;
-        if (!activeMusique) BossRoom.roomManager.m_enemyManager.gsm.UpdateParameter(2.5f, "Intensity"); activeMusique = true;
-        camera.transform.LookAt(targetCam);
+
+        camera.transform.eulerAngles = new Vector3(-90, 0, 0);
         if (timer < timeP1)
         {
             float ratio = timer / timeMvt;
-            camera.transform.position = Vector3.Lerp(startPosition, positionCam1.position, ratio);
+            //camera.transform.position = Vector3.Lerp(startPosition, positionCam1.position, ratio);
+            camera.transform.eulerAngles = new Vector3(Mathf.Lerp(0, -90, ratio), 0, 0);
+            if (timer / timeMvt >= 1 )
+            {
+                camera.transform.position = Vector3.Lerp(startPosition, positionCam1.position, 1);
+                camera.transform.eulerAngles = new Vector3(-90, 0, 0);
+                animator.SetBool("LaunchBoss", false);
+                bandeNoir.SetBool("BossBande", false);
+            }
+
         }
-        else
+        else 
         {
-            float ratio = (timer - timeP1) / timeP2;
-            camera.transform.position = Vector3.Lerp(positionCam1.position, startPosition, ratio);
+            //float ratio = (timer - timeP1) / timeP2;
+            //camera.transform.position = Vector3.Lerp(positionCam1.position, startPosition, ratio);
+            if(timer + 2.2f > timeCinematic)
+            {
+                animator.enabled = false;
+                if (!activeMusique) BossRoom.roomManager.m_enemyManager.gsm.UpdateParameter(2.5f, "Intensity"); activeMusique = true;
+                camera.transform.LookAt(targetCam);
+                camera.transform.position = startPosition;
+            }
+            if (timer + 1.8f > timeCinematic)
+            {
+                if (!activeDisplay) { activeDisplay = true; BossRoom.DisplayBossHealth(); camera.transform.rotation = initialRotation; }
+            }
             if (timer > timeCinematic)
             {
-                BossRoom.LaunchBoss();
+                camera.transform.rotation = initialRotation;
+                BossRoom.LaunchBoss(); 
                 isActive = false;
                 camera.GetComponent<CameraBehavior>().enabled = true;
             }

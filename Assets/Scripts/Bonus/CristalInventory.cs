@@ -51,9 +51,14 @@ public class CristalInventory : MonoBehaviour
         }
     }
 
-    public bool HasEnoughCristal(int value,GameElement element)
+    public bool HasEnoughCristal(int value,GameElement element, string name)
     {
         int indexCristal = (int)element;
+        Debug.Log("Element :" + element.ToString());
+        if(element == GameElement.NONE)
+        {
+            Debug.LogError("This element is None " + name);
+        }
         return cristalCount[indexCristal - 1] >= value;
     }
 

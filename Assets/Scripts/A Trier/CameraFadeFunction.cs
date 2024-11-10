@@ -14,17 +14,25 @@ public class CameraFadeFunction : MonoBehaviour
 
     public bool fadeOutActive;
     public bool fadeOutActivation;
+    public bool manuelFade = false;
 
     public TeleporterBehavior tpBehavior;
+    public Animator bandeNoir;
     // Start is called before the first frame update
     void Start()
     {
         fadeMat = fadeObject.material;
+        fadeOutActivation = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(manuelFade)
+        {
+            ChangeFadeAlpha(fadeProgress);
+            return;
+        }
         if(fadeInActivation)
         {
             fadeInActive = true;
@@ -42,6 +50,7 @@ public class CameraFadeFunction : MonoBehaviour
                 fadeProgress = 1;
                 fadeInActive = false;
                 tpBehavior.ActivationTeleportation();
+
 
             }
             ChangeFadeAlpha(fadeProgress);

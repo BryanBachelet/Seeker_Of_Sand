@@ -223,6 +223,7 @@ namespace Render.Camera
 
         public void InputZoom(InputAction.CallbackContext ctx)
         {
+            if (!GameState.IsPlaying()) return;
             if (ctx.performed)
             {
                 m_zoomInputGamepad = ctx.ReadValue<float>();
@@ -409,7 +410,7 @@ namespace Render.Camera
 
         public void RotationAimInput(InputAction.CallbackContext ctx)
         {
-
+            if (!GameState.IsPlaying()) return;
             if (m_mouseInputActivate && this.enabled && ctx.performed)
             {
                 int value = 1;

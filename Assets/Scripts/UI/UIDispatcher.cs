@@ -7,10 +7,10 @@ public class UIDispatcher : MonoBehaviour
     public MarchandUiView marchandUiView;
     public GameObject fixeGameplayUI;
     public UI_Inventory uiInventory;
-    public GuerhoubaGames.UI.DamageRecapUI damageRecap; 
+    public GuerhoubaGames.UI.DamageRecapUI damageRecap;
     public GuerhoubaGames.UI.DragManager dragManager;
     public GuerhoubaGames.UI.CristalUI cristalUI;
-  
+    public PauseMenu pauseMenu;
         public GameObject bandenoir;
     public void ActiveUIElement()
     {

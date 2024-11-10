@@ -5,6 +5,8 @@ using System;
 using FMOD.Studio;
 using FMODUnity;
 using GuerhoubaGames.Resources;
+using GuerhoubaTools.Gameplay;
+
 namespace Enemies
 {
 
@@ -148,6 +150,8 @@ namespace Enemies
             m_hasChangeTarget = true;
             NpcMouvementComponent npcMouvement = GetComponent<NpcMouvementComponent>();
             npcMouvement.SetTarget(targetData);
+            int layerEnemy = LayerMask.NameToLayer("Enemy");
+            Tools.ChangeLayerGameObject(layerEnemy, gameObject);
         }
 
         public void SetInitialData(HealthManager healthManager, EnemyManager enemyManager)
@@ -171,6 +175,7 @@ namespace Enemies
 
             if (m_healthSystem.health > 0) return;
 
+
             GetDestroy(direction, power);
         }
 
@@ -192,7 +197,9 @@ namespace Enemies
                 //moveSoundInstance.setVolume(0);
             }
 
-            this.gameObject.layer = 16;
+
+            Tools.ChangeLayerGameObject(16, gameObject);
+
             if (destroyEvent != null) destroyEvent.Invoke(direction, power);
             OnDeathEvent?.Invoke();
             m_enemyManager.EnemyHasDied(this, xpToDrop);
