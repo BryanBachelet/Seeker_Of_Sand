@@ -23,7 +23,7 @@ namespace MagicaCloth2
         public ClothProcess.ClothType clothType = ClothProcess.ClothType.MeshCloth;
 
         /// <summary>
-        /// Renderer list used in MeshCloth.
+        /// Renderer list used [in] MeshCloth.
         /// [NG] Runtime changes.
         /// [NG] Export/Import with Presets
         /// </summary>

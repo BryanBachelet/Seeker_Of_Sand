@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
-
+using System;
 namespace Artefact
 {
     public class ArtefactData : MonoBehaviour
@@ -14,5 +14,6 @@ namespace Artefact
         [HideInInspector] public CharacterObjectType objectType = CharacterObjectType.FRAGMENT;
         [HideInInspector] public string nameArtefact;
         [HideInInspector] public int element;
+        public Action OnSpawn;
     }
 }

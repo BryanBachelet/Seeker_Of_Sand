@@ -24,6 +24,7 @@
 using UnityEngine;
 using Klak.Math;
 using Klak.VectorMathExtension;
+using UnityEngine.UIElements;
 
 namespace Klak.Motion
 {
@@ -36,10 +37,12 @@ namespace Klak.Motion
         private Vector3 positionRandom;
         private float rangePositionRnd;
         private float rangeRotationRnd;
+        private bool activeFollow = true;
 
         #region Nested Classes
 
-        public enum Interpolator {
+        public enum Interpolator
+        {
             Exponential, Spring, DampedSpring
         }
 
@@ -65,44 +68,58 @@ namespace Klak.Motion
         [SerializeField, Range(0, 360)]
         float _jumpAngle = 60;
 
+        [SerializeField]
+        bool _activeRandom = false;
         #endregion
 
         #region Public Properties And Methods
 
-        public Interpolator interpolationType {
+        public Interpolator interpolationType
+        {
             get { return _interpolator; }
             set { _interpolator = value; }
         }
 
-        public Transform target {
+        public Transform target
+        {
             get { return _target; }
             set { _target = value; }
         }
 
-        public float positionSpeed {
+        public float positionSpeed
+        {
             get { return _positionSpeed; }
             set { _positionSpeed = value; }
         }
 
-        public float rotationSpeed {
+        public float rotationSpeed
+        {
             get { return _rotationSpeed; }
             set { _rotationSpeed = value; }
         }
 
-        public float jumpDistance {
+        public float jumpDistance
+        {
             get { return _jumpDistance; }
             set { _jumpDistance = value; }
         }
 
-        public float jumpAngle {
+        public float jumpAngle
+        {
             get { return _jumpAngle; }
             set { _jumpAngle = value; }
         }
 
+        public bool bookState
+        {
+            get { return _activeRandom; }
+            set { _activeRandom = value; }
+        }
+
         public void Snap()
         {
-            if (_positionSpeed > 0) transform.position = target.position;
-            if (_rotationSpeed > 0) transform.rotation = target.rotation;
+            if (_positionSpeed > 0) transform.localPosition = target.localPosition;
+            if (_rotationSpeed > 0) transform.localRotation = target.localRotation;
         }
 
         public void JumpRandomly()
@@ -114,6 +131,7 @@ namespace Klak.Motion
             var dr = Quaternion.AngleAxis(_jumpAngle * r2, Random.onUnitSphere);
 
             transform.position = dp + target.position;
+            transform.position = new Vector3(transform.position.x, target.position.y, transform.position.z);
             transform.rotation = dr * target.rotation;
         }
 
@@ -148,20 +166,36 @@ namespace Klak.Motion
 
         private void Start()
         {
-            positionRandom = Random.insideUnitSphere * rangeRandom;
-            rangePositionRnd = Random.Range(2.5f, 12f);
-            rangeRotationRnd = Random.Range(2.5f, 12f);
+            if (_activeRandom)
+            {
+                positionRandom = Random.insideUnitSphere * rangeRandom;
+                rangePositionRnd = Random.Range(2.5f, 12f);
+                rangeRotationRnd = Random.Range(2.5f, 12f);
 
-            _positionSpeed = rangePositionRnd;
-            _rotationSpeed = rangeRotationRnd;
+                _positionSpeed = rangePositionRnd;
+                _rotationSpeed = rangeRotationRnd;
+            }
+            else
+            {
+                positionRandom = Vector3.zero;
+            }
+
         }
         void Update()
         {
             if (target == null) return;
-            Vector3 positionRange = transform.position - target.position ;
-            Vector3 newPositionRange = positionRandom + target.position + positionRange.normalized * 5;
+            if(!activeFollow)
+            {
+                transform.localPosition = new Vector3(0, 0, 0);
+                transform.rotation = new Quaternion(0, 0, 0, 0);
+                return;
+            }
+            Vector3 newPositionRange = Vector3.zero;
+            Vector3 positionRange = transform.position - target.position;
+            newPositionRange = positionRandom + target.position + positionRange.normalized * 1;
+
             //Debug.Log(this.name + " goes to [" + newPositionRange);
-            
+
             if (_interpolator == Interpolator.Exponential)
             {
                 if (_positionSpeed > 0)
@@ -192,5 +226,28 @@ namespace Klak.Motion
 
         }
         #endregion
+
+        public void ChangeForBook(bool activeOffSet)
+        {
+            if (activeOffSet)
+            {
+                _positionSpeed = 10;
+                _jumpDistance = 50;
+                _jumpAngle = 45;
+
+                activeFollow = true;
+                JumpRandomly();
+            }
+            else
+            {
+                _positionSpeed = 0.1f;
+                _jumpDistance = 0.1f;
+                _jumpAngle = 0.1f;
+                
+                activeFollow = false;
+
+
+            }
+        }
     }
 }

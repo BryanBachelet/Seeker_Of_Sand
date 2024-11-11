@@ -17,6 +17,7 @@ public struct UpgradeLevelingData
     public SpellSystem.SpellProfil[] spellState;
     public Sprite[] iconSpell;
     public UpgradeObject[] upgradeChoose;
+    public GameElement roomElement;
 }
 
 public class UpgradeManager : MonoBehaviour
@@ -52,6 +53,14 @@ public class UpgradeManager : MonoBehaviour
     public TMPro.TMP_Text levelCurrentSpell;
     public Image progressRang;
     public Image progressNextRang;
+
+    public int rerollPoint = 3;
+
+    public int countUpgradePointUse;
+
+
+    public float[] percentForUpgradeMatchingElementRoom =  new float[4] { 100, 75, 50 ,25};
+    public float percentForSpellMatchingElementRoom = 75;
 
     public void Awake()
     {
@@ -95,11 +104,11 @@ public class UpgradeManager : MonoBehaviour
         return nxtProfil;
     }
 
-    public UpgradeObject[] GetRandomUpgradesToSpecificSpell(int spellIndex, int indexSpellEquip)
+    public UpgradeObject[] GetRandomUpgradesToSpecificSpell(int spellIndex, int indexSpellEquip, GameElement roomElement)
     {
         UpgradeObject[] upgradeGenerate = new UpgradeObject[upgradeGenerateCount];
         int level = m_characterUpgradeComponent.m_characterShoot.spellProfils[indexSpellEquip].level;
-        if(level >= 12)
+        if (level >= 12)
         {
             progressRang.fillAmount = 1;
             progressNextRang.fillAmount = 1;
@@ -179,7 +188,7 @@ public class UpgradeManager : MonoBehaviour
         for (int i = 0; i < listToAdd.Length; i++)
         {
 
-            if (listToAdd[i].IsMultiTagUpgrade && !listToAdd[i].IsAllTagMatching( spellProfil))
+            if (listToAdd[i].IsMultiTagUpgrade && !listToAdd[i].IsAllTagMatching(spellProfil))
             {
                 continue;
             }
@@ -190,7 +199,7 @@ public class UpgradeManager : MonoBehaviour
             }
         }
     }
-    
+
 
 
     private UpgradeObject ChooseUpgrade(int spellIndex)
@@ -244,13 +253,14 @@ public class UpgradeManager : MonoBehaviour
 
     }
 
-    public void OpenSpellChoiceUI()
+    public void OpenSpellChoiceUI(GameElement roomElement)
     {
         if (!spellChoiceUI) return;
 
         spellChoiceUI.SetActive(true);
         upgradeBook.SetActive(true);
         if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
+        m_chooseSpellManagerComponent.lastRoomElement = roomElement;
         m_chooseSpellManagerComponent.OpenSpellChoice();
         m_chooseSpellManagerComponent.ResetRandomSpell();
         GuerhoubaTools.LogSystem.LogMsg("Open Spell Choice interface");
@@ -283,22 +293,59 @@ public class UpgradeManager : MonoBehaviour
         upgradeBook.SetActive(true);
         if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
-        if (m_upgradeLevelingData.upgradeChoose == null)
-        {
-            int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
-            int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
-            m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
-            m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
-        }
-
         m_upgradeLevelingData.spellCount = upgradeLevelingData.spellCount;
+
+        countUpgradePointUse = 0;
+        int indexSpellEquip = GenerateSpellIndex(upgradeLevelingData.roomElement);
+        int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
+        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, upgradeLevelingData.roomElement);
+        m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
+
+
         m_upgradeLevelingData.spellState = upgradeLevelingData.spellState;
         m_upgradeLevelingData.iconSpell = upgradeLevelingData.iconSpell;
         m_upgradeLevelingData.upgradePoint = upgradeLevelingData.upgradePoint;
+        m_upgradeLevelingData.roomElement = upgradeLevelingData.roomElement;
 
         m_upgradeChoosingComponent.OpenUpgradeUI();
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
         Debug.Log("Open Upgrade interface");
+    }
+
+    private int GenerateSpellIndex(GameElement element)
+    {
+        GameElement[] elements = m_characterUpgradeComponent.m_characterInventory.GetElementSpellInRotation();
+        bool isOwnElement = false;
+
+        List<int> indexElement = new List<int>();
+        List<int> indexOtherElement = new List<int>();
+        for (int i = 0; i < elements.Length; i++)
+        {
+            if (element == elements[i])
+            {
+                isOwnElement = true;
+                indexElement.Add(i);
+            }
+            else
+            {
+                indexOtherElement.Add(i);
+            }
+        }
+
+        if (!isOwnElement) return UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
+
+        float percent = UnityEngine.Random.Range(0.0f, 100.0f);
+
+        if (percent < percentForUpgradeMatchingElementRoom[countUpgradePointUse])
+        {
+            int indexSpell = UnityEngine.Random.Range(0, indexElement.Count);
+            return indexElement[indexSpell];
+        }
+        else
+        {
+            int indexSpell = UnityEngine.Random.Range(0, indexOtherElement.Count);
+            return indexOtherElement[indexSpell];
+        }
     }
 
     public void UpdateUpgradeLevelingData(UpgradeLevelingData upgradeLevelingData)
@@ -323,17 +370,29 @@ public class UpgradeManager : MonoBehaviour
     public void SendUpgrade(UpgradeObject upgradeChoose)
     {
 
-   
+
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
         m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
-        int indexSpellEquip = UnityEngine.Random.Range(0, m_upgradeLevelingData.spellCount);
+        int indexSpellEquip = GenerateSpellIndex(m_upgradeLevelingData.roomElement);
         int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
-        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip);
+        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, m_upgradeLevelingData.roomElement);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
-
+        countUpgradePointUse++;
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
+    }
+
+    public void ReDrawUpgrade()
+    {
+        if (rerollPoint <= 0) return;
+        int indexSpellEquip = GenerateSpellIndex(m_upgradeLevelingData.roomElement);
+        int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
+        m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, m_upgradeLevelingData.roomElement);
+        m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
+        rerollPoint--;
+
+        m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
     }
 
     public IEnumerator CloseUIWithDelay(float time)

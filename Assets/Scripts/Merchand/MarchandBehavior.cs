@@ -31,8 +31,8 @@ public class MarchandBehavior : InteractionInterface
     }
 
     [Header("Marchand Variables")]
-    public int spellPrice = 50;
-    public int fragmentPrice = 25;
+    public int spellPrice = 100;
+    public int fragmentPrice = 80;
 
 
     private MarchandUiView m_merchandView;
@@ -44,7 +44,7 @@ public class MarchandBehavior : InteractionInterface
     private CristalInventory m_cristalInventory;
 
     [HideInInspector] public ItemData[] spellItemData = new ItemData[2];
-    [HideInInspector] public ItemData[] fragmentItemData = new ItemData[2];
+    [HideInInspector] public ItemData[] fragmentItemData = new ItemData[4];
 
     private MerchandItemData merchandItemData;
 
@@ -99,7 +99,7 @@ public class MarchandBehavior : InteractionInterface
             spellItemData[i].type = CharacterObjectType.SPELL;
             spellItemData[i].element = m_capsuleManager.spellProfils[spellIndex].tagData.element;
             spellItemData[i].hasBeenBuy = false;
-            spellItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(spellItemData[i].price, spellItemData[i].element);
+            spellItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(spellItemData[i].price, spellItemData[i].element, merchandItemData.spellData[i].name);
         }
 
         merchandItemData.itemSpellData = spellItemData;
@@ -107,8 +107,8 @@ public class MarchandBehavior : InteractionInterface
 
     public void SetFragmentItem()
     {
-        merchandItemData.fragmentData = new ArtefactsInfos[2];
-        for (int i = 0; i < 2; i++)
+        merchandItemData.fragmentData = new ArtefactsInfos[4];
+        for (int i = 0; i < 4; i++)
         {
            int index = m_fragmentManager.GetRandomIndexFragment();
             merchandItemData.fragmentData[i] = m_fragmentManager.GetArtefacts(index);
@@ -117,7 +117,7 @@ public class MarchandBehavior : InteractionInterface
             fragmentItemData[i].type = CharacterObjectType.FRAGMENT;
             fragmentItemData[i].element = merchandItemData.fragmentData[i].gameElement;
             fragmentItemData[i].hasBeenBuy = false;
-            fragmentItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(fragmentItemData[i].price, fragmentItemData[i].element);
+            fragmentItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(fragmentItemData[i].price, fragmentItemData[i].element, merchandItemData.fragmentData[i].name);
         }
 
         merchandItemData.itemFragmentData = fragmentItemData;
@@ -127,7 +127,7 @@ public class MarchandBehavior : InteractionInterface
     {
         // Check the price and pay price
 
-        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemSpellData[index].price, merchandItemData.itemSpellData[index].element);
+        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemSpellData[index].price, merchandItemData.itemSpellData[index].element, merchandItemData.spellData[index].name);
 
         if (!canPay || merchandItemData.itemSpellData[index].hasBeenBuy) return BuyResult.NOT_ENOUGH_MONEY;
         m_cristalInventory.RemoveCristalCount((int)merchandItemData.itemSpellData[index].element, -merchandItemData.itemSpellData[index].price);
@@ -146,7 +146,7 @@ public class MarchandBehavior : InteractionInterface
 
     public BuyResult AcquiereNewFragment(int index)
     {
-        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[index].price, merchandItemData.itemFragmentData[index].element);
+        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[index].price, merchandItemData.itemFragmentData[index].element , merchandItemData.fragmentData[index].name);
 
         if (!canPay || merchandItemData.itemFragmentData[index].hasBeenBuy) return BuyResult.NOT_ENOUGH_MONEY;
         m_cristalInventory.RemoveCristalCount((int)merchandItemData.itemFragmentData[index].element, -merchandItemData.itemFragmentData[index].price);
@@ -163,8 +163,8 @@ public class MarchandBehavior : InteractionInterface
     {
         for (int i = 0; i < 2; i++)
         {
-            merchandItemData.itemSpellData[i].isBuyable = m_cristalInventory.HasEnoughCristal(merchandItemData.itemSpellData[i].price, merchandItemData.itemSpellData[i].element);
-            merchandItemData.itemFragmentData[i].isBuyable = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[i].price, merchandItemData.itemFragmentData[i].element);
+            merchandItemData.itemSpellData[i].isBuyable = m_cristalInventory.HasEnoughCristal(merchandItemData.itemSpellData[i].price, merchandItemData.itemSpellData[i].element, merchandItemData.spellData[i].name);
+            merchandItemData.itemFragmentData[i].isBuyable = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[i].price, merchandItemData.itemFragmentData[i].element, merchandItemData.fragmentData[i].name);
         }
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using GuerhoubaTools;
-
+using GuerhoubaGames.GameEnum;
 namespace Character
 {
     [System.Serializable]
@@ -35,7 +35,7 @@ namespace Character
        [HideInInspector] public UpgradeManager upgradeManager;
         private SpellManager m_spellManager;
         [HideInInspector] public Character.CharacterShoot m_characterShoot;
-        private Character.CharacterSpellBook m_characterInventory;
+        [HideInInspector] public Character.CharacterSpellBook m_characterInventory;
         private Experience_System experience;
 
         private bool isUpgradeWindowOpen;
@@ -44,6 +44,8 @@ namespace Character
 
         private ObjectState state;
         private SeekerOfSand.UI.UI_PlayerInfos m_UiPlayerInfo;
+
+        public GameElement lastRoomElement;
 
         #region Input Functions
         public void UpgradeWindowInput(InputAction.CallbackContext ctx)
@@ -93,7 +95,7 @@ namespace Character
         {
             if(upgradeManager)
             {
-                upgradeManager.OpenSpellChoiceUI();
+                upgradeManager.OpenSpellChoiceUI(lastRoomElement);
 
                 GameState.ChangeState();
                 isSpellUpgradeWindowOpen = true;
@@ -131,6 +133,7 @@ namespace Character
             data.iconSpell = m_characterShoot.GetSpellSprite();
             data.capsuleIndex = m_characterShoot.spellIndexGeneral.ToArray();
             data.upgradePoint = upgradePoint;
+            data.roomElement = lastRoomElement;
             upgradeManager.OpenUpgradeUI(data);
 
 
@@ -151,29 +154,28 @@ namespace Character
         public void ApplyUpgrade(UpgradeObject upgradeChoose)
         {
             upgradePoint--;
-           // m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
-            //upgradePointTextDisplay.text = upgradePoint.ToString();
-            //experience.m_LevelTaken++;
-            //experience.m_UiPlayerInfo.AddLevelTaken();
-            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].name, isDebugActive);
+
+
+            SpellSystem.SpellProfil spellProfil = m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink];
+            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + spellProfil.name, isDebugActive);
             if (isDebugActive)
             {
-               
-                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].DebugStat();
+
+                spellProfil.DebugStat();
             }
 
-            //TODO : Change Apply from upgrade
-            upgradeChoose.Apply(m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink]);
+            upgradeChoose.Apply(spellProfil);
+            m_characterShoot.UpdatePullObject(spellProfil);
             if (m_UiPlayerInfo)
             {
-                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level++;
+                spellProfil.level++;
                 
-                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].level);
+                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil.level);
             }
             avatarUpgradeList.Add(upgradeChoose);
             if (isDebugActive)
             {
-                m_characterShoot.spellProfils[upgradeChoose.indexSpellLink].DebugStat();
+                spellProfil.DebugStat();
             }
             if (upgradePoint == 0 && isUpgradeWindowOpen)
             {

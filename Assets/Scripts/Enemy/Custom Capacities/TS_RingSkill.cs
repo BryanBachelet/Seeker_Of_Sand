@@ -20,16 +20,17 @@ namespace Enemies
         private float m_skillLaunchDuration = 0.0f;
 
         [Space] public bool activeDebug;
-            
-        private bool canBeLaunch =true;
+
+        private bool canBeLaunch = true;
         private NpcSpecialCapacities m_specialCapacities;
         private NpcHealthComponent m_npcHealthComponent;
         private NpcMetaInfos m_npcMetaInfo;
+        private NpcAttackComponent m_npcAttackComponent;
         private GuerhoubaGames.AI.BehaviorTreeComponent m_behaviorTreeComponent;
         private GameObject playerGO;
         private VisualEffect ringVFX;
         private VisualEffect[] allRingVFX;
-        private bool activeRingIntensity;
+        private bool m_activeRingIntensity;
 
         #region Unity Functions
 
@@ -37,41 +38,46 @@ namespace Enemies
         {
             m_specialCapacities = GetComponent<NpcSpecialCapacities>();
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
+            m_npcHealthComponent.OnDeathEvent += ResetOnDeath;
             m_npcMetaInfo = GetComponent<NpcMetaInfos>();
             m_behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
             playerGO = m_npcHealthComponent.targetData.target.gameObject;
+            m_npcAttackComponent = GetComponent<NpcAttackComponent>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            
-            if (m_npcMetaInfo.state == NpcState.DEATH)
-            {
-                canBeLaunch = true;
-                allRingVFX = ringInstance.GetComponentsInChildren<VisualEffect>();
-                for (int i = 0; i < allRingVFX.Length; i++)
-                {
-                    DestroyImmediate(allRingVFX[i].gameObject);
-                }
-            }
-            else
+
+            if (m_npcMetaInfo.state != NpcState.DEATH)
             {
                 UpdateRingSkill();
             }
-            
-            
+
+
         }
 
         #endregion
 
+
+        public void ResetOnDeath()
+        {
+            canBeLaunch = true;
+            allRingVFX = ringInstance.GetComponentsInChildren<VisualEffect>();
+            for (int i = 0; i < allRingVFX.Length; i++)
+            {
+                Destroy(allRingVFX[i].gameObject);
+            }
+            Destroy(ringInstance);
+        }
+
         public void UpgradeRingVisual()
         {
-            activeRingIntensity = true;
+            m_activeRingIntensity = true;
             VisualEffect[] ringInstanceVFXIntensity = ringInstance.GetComponentsInChildren<VisualEffect>();
             for (int i = 0; i < ringInstanceVFXIntensity.Length; i++)
             {
-               if(ringInstanceVFXIntensity[i].HasFloat("IntensityFactor")) ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
+                if (ringInstanceVFXIntensity[i].HasFloat("IntensityFactor")) ringInstanceVFXIntensity[i].SetFloat("IntensityFactor", 4);
             }
         }
 
@@ -80,7 +86,7 @@ namespace Enemies
             SetPositionRing();
             if (ringInstance == null)
             {
-                ringInstance = Instantiate(ringGO, Vector3.zero,Quaternion.identity);
+                ringInstance = Instantiate(ringGO, Vector3.zero, Quaternion.identity);
                 ringVFX = ringInstance.GetComponentInChildren<VisualEffect>();
                 ringVFX.SetFloat("Radius", radius * 2);
                 ringVFX.gameObject.transform.position = new Vector3(0, 0 - radius, 0);
@@ -91,17 +97,19 @@ namespace Enemies
         private void SetPositionRing()
         {
             centerRing = transform.position;
+            GlobalSoundManager.PlayOneShot(55, centerRing);
         }
 
         public void UpdateRingSkill()
         {
-            if (canBeLaunch) return;
+            if (canBeLaunch ||  m_npcMetaInfo.state == NpcState.ATTACK || m_npcMetaInfo.state == NpcState.SPECIAL_CAPACITIES || m_npcAttackComponent.isInAttackSequence== true)    return;
 
             Vector3 pos = playerGO.transform.position;
             pos.y = centerRing.y;
             if (Vector3.Distance(playerGO.transform.position, centerRing) > radius)
             {
                 canBeLaunch = true;
+                GlobalSoundManager.PlayOneShot(54, centerRing);
                 m_specialCapacities.TriggerSpecialCapacityBehavior(indexSpecialCapacity);
                 // Trigger Teleport;
                 Destroy(ringInstance);
@@ -137,7 +145,7 @@ namespace Enemies
 
         public void OnDrawGizmosSelected()
         {
-            if(activeDebug) Gizmos.DrawWireSphere(centerRing, radius);
+            if (activeDebug) Gizmos.DrawWireSphere(centerRing, radius);
         }
     }
 }

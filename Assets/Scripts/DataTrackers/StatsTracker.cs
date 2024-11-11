@@ -51,6 +51,12 @@ namespace Tracker
                 byte[] bytes = Encoding.ASCII.GetBytes(TransfomInfoStatsIntoString(endInfoStats[i]) + "\n");
                 fs.Write(bytes,0,bytes.Length);
             }
+            for(int i = 0; i < endInfoStats.Length; i++)
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(ParseInfoStats(endInfoStats[i]) + "\n");
+                fs.Write(bytes, 0, bytes.Length);
+            }
+
             fs.Close();
 
             //System.Data.DataSet ds =  ExcelLibrary.DataSetHelper.CreateDataSet(destinationPath );
@@ -75,6 +81,19 @@ namespace Tracker
             dataText += endInfo.altarRepeated.ToString() + ',';
            
             return dataText;
+        }
+
+        private static string[] ParseInfoStats(EndInfoStats endInfo)
+        {
+            string[] stringInfoStats = new string[6];
+            stringInfoStats[0] = endInfo.durationGame.ToString("F0") + ',';
+            stringInfoStats[1] = endInfo.nightValidate.ToString() + ',';
+            stringInfoStats[2] = endInfo.enemyKill.ToString() + ',';
+            stringInfoStats[3] = endInfo.roomCount.ToString("F0") + ',';
+            stringInfoStats[4] = endInfo.altarSuccessed.ToString() + ',';
+            stringInfoStats[5] = endInfo.maxCombo.ToString() + ','; 
+
+            return stringInfoStats;
         }
     }
 

@@ -14,30 +14,27 @@ namespace GuerhoubaGames.Resources
         public int currentlyUse;
         public int arrayQuantity;
         public GameObject[] gameObjectsArray;
-        public bool isDebugActive;
+        public bool isDebugDeactivate;
 
+        private Vector3 position;
+        private Transform parent;
         private List<GameObject> bufferObjectList = new List<GameObject>();
+
         public PullObjects(GameObject baseObject, int quantity, int idGive, Vector3 Position, Transform parent)
         {
             bool isPullingMetaErrorActive = false;
+
             this.id = idGive;
             this.quantity = quantity;
+            this.parent = parent;
             arrayQuantity = quantity;
+            position = Position;
+
             gameObjectsArray = new GameObject[quantity];
             for (int i = 0; i < quantity; i++)
             {
                 gameObjectsArray[i] = GameObject.Instantiate(baseObject, Position, Quaternion.identity, parent);
-                gameObjectsArray[i].SetActive(false);
-
-                PullingMetaData pullingMetaData = gameObjectsArray[i].GetComponent<PullingMetaData>();
-                if (pullingMetaData == null && !isPullingMetaErrorActive)
-                {
-                    Debug.LogError("Add Pulling Meta Data component on " + baseObject.name);
-                    isPullingMetaErrorActive = true;
-                }
-                pullingMetaData.isActive = true;
-                pullingMetaData.id = idGive;
-                pullingMetaData.bIsExtraSpawn = false;
+                SettingUpObject(gameObjectsArray[i], isPullingMetaErrorActive, baseObject.name, idGive);
             }
         }
 
@@ -55,18 +52,68 @@ namespace GuerhoubaGames.Resources
                 GameObject[] newArray = new GameObject[arrayQuantity];
                 gameObjectsArray.CopyTo(newArray, 0);
 
-                Debug.Log("Pulling System:  Creation of new array for " + instance.name + ". Previous Size: " + gameObjectsArray.Length + " and new size is : " + newArray.Length);
+                if (!isDebugDeactivate) Debug.Log("Pulling System:  Creation of new array for " + instance.name + ". Previous Size: " + gameObjectsArray.Length + " and new size is : " + newArray.Length);
                 newArray[quantity] = instance;
                 gameObjectsArray = newArray;
             }
             else
             {
-                Debug.Log("Register a new instance of " + instance.name);
+                if (!isDebugDeactivate) Debug.Log("Register a new instance of " + instance.name);
                 gameObjectsArray[quantity] = instance;
             }
 
             quantity++;
         }
+
+        public void UpdadePullSize(int newQuantity, GameObject originObject)
+        {
+            bool isPullingMetaErrorActive = false;
+            bool isAddingObject = newQuantity > quantity;
+            bool isAlreadyHaveGoodSize =  arrayQuantity > newQuantity;
+
+            GameObject[] newArray = new GameObject[newQuantity];
+            if(isAddingObject && !isAlreadyHaveGoodSize) gameObjectsArray.CopyTo(newArray, 0);
+            if (!isDebugDeactivate) Debug.Log("Pulling System:  Creation of new array for " + originObject.name + ". Previous Size: " + gameObjectsArray.Length + " and new size is : " + newArray.Length);
+
+            if (isAddingObject)
+            {
+            
+                int deltaQuantity = newQuantity - quantity;
+                for (int i = 0; i < deltaQuantity; i++)
+                {
+                    GameObject instance = GameObject.Instantiate(originObject, position, Quaternion.identity, parent);
+                    SettingUpObject(instance, isPullingMetaErrorActive, originObject.name, id);
+
+                    if (!isAlreadyHaveGoodSize)
+                        newArray[quantity + i] = instance;
+                    else
+                        gameObjectsArray[quantity + i] = instance; 
+
+                }
+            }
+            else
+            {
+                // For the pull reductionn, this is very stiff version that do what intend to do without consideration of 
+                // what will happen on the screen if a object is active. 
+
+                int deltaQuantity = quantity - newQuantity;
+                for (int i = newQuantity; i < quantity; i++)
+                {
+                    GameObject.Destroy(gameObjectsArray[i]);
+                }
+                arrayQuantity = gameObjectsArray.Length;
+                currentlyUse = 0;
+            }
+
+            quantity = newQuantity;
+  
+
+            if (isAddingObject &&!isAlreadyHaveGoodSize)
+            {
+                gameObjectsArray = newArray;
+                arrayQuantity = newQuantity;
+            }
+            }
 
         public void CleanPull()
         {
@@ -89,6 +136,28 @@ namespace GuerhoubaGames.Resources
 
             return null;
         }
+
+        private void SettingUpObject(GameObject instanceClone, bool isPullingMetaErrorActive, string baseObjectName, int id)
+        {
+            instanceClone.SetActive(false);
+
+            PullingMetaData pullingMetaData = instanceClone.GetComponent<PullingMetaData>();
+            if (pullingMetaData == null && !isPullingMetaErrorActive)
+            {
+                Debug.LogError("Add Pulling Meta Data component on " + baseObjectName);
+                isPullingMetaErrorActive = true;
+            }
+            pullingMetaData.isActive = true;
+
+            if(id == -1 )
+            {
+                Debug.LogError("Not a valid id for the object" + instanceClone.name);
+            }
+            pullingMetaData.id = id;
+            pullingMetaData.bIsExtraSpawn = false;
+        }
+
+
     }
 
 
@@ -102,13 +171,15 @@ namespace GuerhoubaGames.Resources
         public List<int> m_idList = new List<int>();
         public List<GameObject> m_originalPullObjectList = new List<GameObject>();
 
+        public EnemiesPullingSystem enemiesPulling;
         public static GamePullingSystem instance;
         public Transform parent;
 
         [Header("Pulling Info")]
         public bool isWarningRemove;
         public bool isErrorRemove;
-        public bool activeDebug;
+        public bool isDebugRemove;
+        public bool activeDetailDebug;
 
         #region Unity Functions
         public void Awake()
@@ -119,10 +190,12 @@ namespace GuerhoubaGames.Resources
             {
                 CreatePull(PrefabToInstance[i], QuantityToInstance[i]);
             }
+
+            enemiesPulling.InitializePullingSystem();
         }
         #endregion
 
-        public void CreatePull(PullConstrutionData pullConstrutionData)
+        public void CreatePull(PullConstructionData pullConstrutionData)
         {
             int id = pullConstrutionData.idInstance;
 
@@ -131,6 +204,7 @@ namespace GuerhoubaGames.Resources
             m_listObjectToPull.Add(pullObjects);
             m_idList.Add(id);
             m_originalPullObjectList.Add(pullConstrutionData.instance);
+            pullObjects.isDebugDeactivate = isDebugRemove;
         }
 
         public void CreatePull(GameObject instance, int quantity = 10)
@@ -142,6 +216,7 @@ namespace GuerhoubaGames.Resources
             m_listObjectToPull.Add(pullObjects);
             m_idList.Add(id);
             m_originalPullObjectList.Add(instance);
+            pullObjects.isDebugDeactivate = isDebugRemove;
         }
 
         public void DeletePull(int id)
@@ -184,15 +259,15 @@ namespace GuerhoubaGames.Resources
                 instanceObj.SetActive(true);
                 pullObjects.currentlyUse++;
                 pullingMetaData.ResetOnSpawn();
-                if (activeDebug) Debug.Log(instanceObj.name + " has been pull");
+                if (activeDetailDebug) Debug.Log(instanceObj.name + " has been pull");
                 return instanceObj;
             }
             else
             {
-                int index = m_idList.IndexOf(indexPull);
-                GameObject instance = GameObject.Instantiate(m_originalPullObjectList[index], Vector3.zero, Quaternion.identity, parent);
+               
+                GameObject instance = GameObject.Instantiate(m_originalPullObjectList[indexPull], Vector3.zero, Quaternion.identity, parent);
                 PullingMetaData pullingMetaData = instance.GetComponent<PullingMetaData>();
-                pullingMetaData.id = indexPull;
+                pullingMetaData.id = id;
                 pullingMetaData.bIsExtraSpawn = true;
                 pullingMetaData.isActive = true;
 
@@ -206,9 +281,14 @@ namespace GuerhoubaGames.Resources
 
         }
 
+
         public void ResetObject(GameObject instance, int id)
         {
             PullingMetaData pullingMetaData = instance.GetComponent<PullingMetaData>();
+            if(id == -1)
+            {
+                if (!isErrorRemove) Debug.LogError("This object" + instance.name + " don't have a valid id");
+            }
             PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
             instance.SetActive(false);
 
@@ -220,15 +300,40 @@ namespace GuerhoubaGames.Resources
             else
             {
                 pullObjects.currentlyUse--;
+                pullObjects.currentlyUse = Mathf.Clamp(pullObjects.currentlyUse, 0,int.MaxValue);
             }
         }
+
+
+        /// <summary>
+        /// Allow to update the pull quantity size.
+        /// Warning : This function can be costful so use it carefully
+        /// </summary>
+        /// <param name="newPullSize"> Setting up the new pull size </param>
+        /// <param name="id"> Pull ID number</param>
+        public void UpdatePullQuantity(int newPullSize, int id)
+        {
+            if (newPullSize <= 0)
+            {
+                if (isErrorRemove) Debug.LogError("Pulling System : the updating quantity isn't valid. Set a quantity above zero");
+            }
+
+            PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
+            if (newPullSize == pullObjects.quantity)
+            {
+                if (!activeDetailDebug) Debug.Log("Pulling System: Try to updating pull quantity with the same quantity");
+                return;
+            }
+            pullObjects.UpdadePullSize(newPullSize, m_originalPullObjectList[m_idList.IndexOf(id)]); ;
+        }
+
 
 
         #region Static Functions
 
         public static GameObject SpawnObject(GameObject gameObject, Vector3 position, Quaternion rotation, Transform parent = null)
         {
-            if (GamePullingSystem.instance != null)
+            if (GamePullingSystem.instance != null && GamePullingSystem.instance.isObjectPoolExisting(gameObject))
             {
                 GameObject instance = GamePullingSystem.instance.SpawnObject(gameObject);
                 instance.transform.position = position;

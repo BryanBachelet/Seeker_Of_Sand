@@ -85,6 +85,7 @@ public class DayCyclecontroller : MonoBehaviour
         durationNight = m_SettingDurationDay / 3;
         durationDay = durationNight * 2;
         Time.timeScale = timescale;
+        if(currentPhase < 0) currentPhase = 0;
         m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
     }
 
@@ -143,8 +144,8 @@ public class DayCyclecontroller : MonoBehaviour
          
         float moonRotation = sunRotation - 180;
 
-        m_sun.transform.rotation = Quaternion.Euler(sunRotation, -130, 0);
-        m_moon.transform.rotation = Quaternion.Euler(moonRotation, -130, 0);
+        m_sun.transform.rotation = Quaternion.Euler(sunRotation, -149, 0);
+        m_moon.transform.rotation = Quaternion.Euler(moonRotation, -149, 0);
 
         AdjustPostProcessByHour(m_timeOfDay);
         //UpdatePostProcess();

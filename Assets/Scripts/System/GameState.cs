@@ -29,6 +29,7 @@ public struct EndInfoStats
     public float altarRepeated;
     public float maxCombo;
 
+    public string[] stringInfoStats;
 
     public byte[] SaveData()
     {
@@ -45,7 +46,17 @@ public struct EndInfoStats
         return stream.ToArray();
     }
 
+    public string[] SaveDataString()
+    {
+        stringInfoStats[0] = durationGame.ToString();
+        stringInfoStats[1] = nightValidate.ToString();
+        stringInfoStats[2] = enemyKill.ToString();
+        stringInfoStats[3] = roomCount.ToString();
+        stringInfoStats[4] = altarSuccessed.ToString();
+        stringInfoStats[5] = maxCombo.ToString();
 
+        return stringInfoStats;
+    }
     public void ReadData(BinaryReader binaryReader)
     {
         durationGame = binaryReader.ReadSingle();
@@ -123,7 +134,7 @@ public class GameState : MonoBehaviour
         m_isPlaying = true;
         instance = this;
         GetGameManager();
-
+        m_uiManager.GetComponent<UIDispatcher>().pauseMenu.m_textName.text = profileName;
 
     }
 
@@ -244,6 +255,7 @@ public class GameState : MonoBehaviour
 
     public static void LaunchEndMenu()
     {
+        m_enemyManager.DestroyAllEnemy();
         EndInfoStats stats = m_enemyManager.FillEndStat();
         endMenu.ActiveUIEndScreen(stats);
 

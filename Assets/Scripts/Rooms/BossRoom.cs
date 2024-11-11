@@ -31,21 +31,26 @@ public class BossRoom : MonoBehaviour
         m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
         m_bossHealth.SetupLife(bossLife + dayCyclecontroller.m_nightCount *bossLife);
         bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
-        bossCamera.StartCamera(Camera.main,bossInstance.transform);
+        bossCamera.StartCamera(Camera.main,bossInstance.transform.GetChild(0));
 
     }
 
     public void LaunchBoss()
     {
         GameState.ChangeState();
+
+    }
+    public void DisplayBossHealth()
+    {
         roomInfoUI.ActiveMajorGoalInterface();
     }
-
     public void Update()
     {
         if(m_bossHealth)
         {
-            roomInfoUI.ActualizeMajorGoalProgress(1.0f-(m_bossHealth.GetCurrentLife() / m_bossHealth.maxLife));
+            float bossHealth_float = m_bossHealth.GetCurrentLife();
+            roomInfoUI.ActualizeMajorGoalProgress(1.0f-(bossHealth_float / m_bossHealth.maxLife));
+            roomInfoUI.UpdateTextProgression((int)bossHealth_float, (int)m_bossHealth.maxLife);
         }
     }
 

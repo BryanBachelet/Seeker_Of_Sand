@@ -14,7 +14,7 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] public  GameElement cristalElement; //0 --> Water | 1 --> Aer | 2 --> Fire | 3 --> Ground
     [SerializeField] private UnityEngine.VFX.VisualEffect m_hitPrefab;
     [SerializeField] private GameObject[] cristalPart;
-    private bool m_activeDeath;
+    private bool m_activeDeath = false;
 
     [SerializeField] private float radiusPlayerCollect = 40;
     private SphereCollider sphereCollider;
@@ -55,7 +55,7 @@ public class CristalHealth : MonoBehaviour
         if (m_currentHealth <= 0 && state[2] == false)
         {
             state[2] = true;
-            StartCoroutine(DestroyAfterDelay(3));
+            StartCoroutine(DestroyAfterDelay(1.5f));
             for (int i = 0; i < 6; i++)
             {
                 GameObject cristalInstantiate = Instantiate(m_cristalLootPrefab, transform.position, transform.rotation);
@@ -86,5 +86,10 @@ public class CristalHealth : MonoBehaviour
         {
             ReceiveHit((int)m_currentHealth);
         }
+    }
+
+    private void OnDestroy()
+    {
+        ReceiveHit((int)m_currentHealth);
     }
 }

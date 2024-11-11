@@ -464,6 +464,7 @@ Transform:
   - {fileID: 6244818947656779999}
   - {fileID: 1179936477092516197}
   - {fileID: 2974532238291758312}
+  - {fileID: 4759241757085736381}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8208722108723068048
@@ -1960,6 +1961,82 @@ Transform:
   - {fileID: 546937022117851318}
   m_Father: {fileID: 6628146370004666333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6610073645592503787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4759241757085736381}
+  - component: {fileID: 2118723978688040769}
+  m_Layer: 0
+  m_Name: Magica Wind Zone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4759241757085736381
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6610073645592503787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.33333334, y: 0.3333333, z: 0.33333334}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1525566304323954372}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2118723978688040769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6610073645592503787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2e01f3f330fcf34eb7f2aa7b311cee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  size: {x: 10, y: 10, z: 10}
+  radius: 1785.2
+  main: 30
+  turbulence: 1
+  directionAngleX: 125
+  directionAngleY: 0
+  attenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  isAddition: 1
 --- !u!1 &7053595845799626690
 GameObject:
   m_ObjectHideFlags: 0
@@ -9839,7 +9916,7 @@ PrefabInstance:
     - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
         type: 3}
       propertyPath: element
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6066533219921724104, guid: f06b800c2271cee428bb49f9908c8483,
         type: 3}
@@ -10846,6 +10923,11 @@ PrefabInstance:
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Value.z
       value: -244.35593
       objectReference: {fileID: 0}
+    - target: {fileID: 1488699313814093228, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1795215958160469955, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Value.x
@@ -11171,6 +11253,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -54.954
       objectReference: {fileID: 0}
+    - target: {fileID: 7854504380028499087, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8456800036725701064, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[0].m_Value.x
@@ -11270,6 +11357,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 28.749
+      objectReference: {fileID: 0}
+    - target: {fileID: 8727300529779010471, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9003033971287353870, guid: bbfa7aa8b428ab44b9bdf397a4f40c96,
         type: 3}

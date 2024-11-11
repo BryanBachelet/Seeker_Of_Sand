@@ -8,6 +8,10 @@ using SeekerOfSand.UI;
 using GuerhoubaTools.Gameplay;
 using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
+using SpellSystem;
+using GuerhoubaGames.Resources;
+using Klak.Motion;
+
 namespace Character
 {
     public class CharacterShoot : MonoBehaviour
@@ -169,7 +173,7 @@ namespace Character
 
         private CharacterSummonManager m_characterSummmonManager;
 
-
+        private SmoothFollow bookSmoothFollow;
 
         #region Unity Functions
 
@@ -362,6 +366,7 @@ namespace Character
             m_BookAnimator = bookTransform.GetComponent<Animator>();
             m_clockImage = m_uiPlayerInfos.ReturnClock();
             m_textStack = m_uiPlayerInfos.ReturnStack();
+            if (m_BookAnimator.GetComponent<SmoothFollow>()) m_BookAnimator.GetComponent<SmoothFollow>();
         }
 
         private void InitSpriteSpell()
@@ -390,10 +395,11 @@ namespace Character
 
                 m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone());
                 spellIndexSpecific.Add(i);
+                CreatePullObject(m_characterSpellBook.GetSpecificSpell(m_characterSpellBook.GetSpellCount() - 1));
                 SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
             }
 
-           
+
             SpellManager.RemoveSpecificSpellFromSpellPool(0);
             SpellManager.RemoveSpecificSpellFromSpellPool(1);
             SpellManager.RemoveSpecificSpellFromSpellPool(2);
@@ -411,6 +417,7 @@ namespace Character
                 {
                     spellEquip[i] = i;
                     spellProfils.Add(m_characterSpellBook.GetSpecificSpell(i));
+                    m_characterSpellBook.m_spellsRotationArray[i] = (m_characterSpellBook.GetSpecificSpell(i));
                 }
             }
             m_currentIndexCapsule = spellEquip[0];
@@ -614,11 +621,10 @@ namespace Character
             if (!m_canShoot) return;
 
             //GlobalSoundManager.PlayOneShot(27, transform.position);
-            m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
+            //m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
             m_BookAnimator.SetBool("Shooting", true);
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
-
             if (currentShotNumber == 0 && !m_hasBeenLoad)
             {
                 StartShoot();
@@ -740,12 +746,15 @@ namespace Character
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
                 dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
-                areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
-                areaInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
+                SpellSystem.DOTMeta dOTMeta = areaInstance.GetComponent<SpellSystem.DOTMeta>();
+                dOTMeta.dotData = dataDot;
+                dOTMeta.ResetOnSpawn();
             }
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
-            areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
+            SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
+            areaMeta.areaData = data;
+            areaMeta.ResetOnSpawn();
 
             return true;
         }
@@ -777,7 +786,7 @@ namespace Character
                     rot = m_characterAim.GetTransformHead().rotation; ;
                 }
 
-                GameObject projectileCreate = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
+                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
                 if (projectileCreate.GetComponent<Projectile>())
@@ -789,8 +798,9 @@ namespace Character
                 if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
                 {
                     SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
-                    projectileCreate.GetComponent<SpellSystem.AreaMeta>().areaData = data;
-
+                    SpellSystem.AreaMeta areaMeta = projectileCreate.GetComponent<SpellSystem.AreaMeta>();
+                    areaMeta.areaData = data;
+                    areaMeta.ResetOnSpawn();
                 }
 
 
@@ -815,7 +825,7 @@ namespace Character
             }
 
             else
-            { 
+            {
                 return false;
             }
         }
@@ -830,7 +840,9 @@ namespace Character
             GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, position);
-            areaInstance.GetComponent<SpellSystem.AreaMeta>().areaData = data;
+            SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
+            areaMeta.areaData = data;
+            areaMeta.ResetOnSpawn();
 
             m_currentStack[m_currentRotationIndex]--;
 
@@ -870,10 +882,13 @@ namespace Character
             summonInstance.GetComponent<SpellSystem.SummonsMeta>().summonData = data;
 
 
+            // When the summon at the area tag
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))
             {
                 SpellSystem.AreaData dataArea = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
-                summonInstance.GetComponent<SpellSystem.AreaMeta>().areaData = dataArea;
+                SpellSystem.AreaMeta areaMeta = summonInstance.GetComponent<SpellSystem.AreaMeta>();
+                areaMeta.areaData = dataArea;
+                areaMeta.ResetOnSpawn();
 
             }
 
@@ -883,7 +898,9 @@ namespace Character
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
                 dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
-                summonInstance.GetComponent<SpellSystem.DOTMeta>().dotData = dataDot;
+                SpellSystem.DOTMeta dOTMeta = summonInstance.GetComponent<SpellSystem.DOTMeta>();
+                dOTMeta.dotData = dataDot;
+                dOTMeta.ResetOnSpawn();
             }
 
 
@@ -1157,8 +1174,6 @@ namespace Character
             }
         }
 
-
-
         /// <summary>
         /// This function is counting the timing between each spell
         /// </summary>
@@ -1169,7 +1184,6 @@ namespace Character
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
             m_CharacterMouvement.m_SpeedReduce = 1;
-
             float totalShootTime = baseTimeBetweenSpell;
 
             if (m_timerBetweenSpell > totalShootTime)
@@ -1268,6 +1282,7 @@ namespace Character
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);
             m_CharacterMouvement.SetCombatMode(true);
+            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); bookSmoothFollow.JumpRandomly(); }
             return;
         }
 
@@ -1283,8 +1298,9 @@ namespace Character
 
             m_lastTimeShot = Mathf.Infinity;
             avatarTransform.localRotation = Quaternion.identity;
-            bookTransform.localRotation = Quaternion.identity;
+            //bookTransform.localRotation = Quaternion.identity;
             if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
+            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); bookSmoothFollow.Snap(); }
 
         }
 
@@ -1317,7 +1333,6 @@ namespace Character
             }
 
         }
-
 
         public Sprite[] GetSpellSprite()
         {
@@ -1365,12 +1380,13 @@ namespace Character
             SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone();
             m_characterSpellBook.AddSpell(clone);
             m_dropInventory.AddNewItem(index);
-       
 
+            CreatePullObject(clone);
             if (spellIndexGeneral.Count <= spellEquip.Length)
             {
                 spellProfils.Add(clone);
                 spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+                m_characterSpellBook.m_spellsRotationArray[spellIndexGeneral.Count - 1] = clone;
 
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();
@@ -1396,6 +1412,7 @@ namespace Character
                     spellEquip[i + 1] = spellEquip[i + 1] - 1;
 
                 spellEquip[i] = spellEquip[i + 1];
+                m_characterSpellBook.m_spellsRotationArray[i] = m_characterSpellBook.GetSpecificSpell(spellEquip[i]);
             }
 
             maxSpellIndex = Mathf.Clamp(this.spellIndexGeneral.Count, 0, 4);
@@ -1416,7 +1433,7 @@ namespace Character
         public void ChangeSpell(int spellSlot, int indexSpell)
         {
             spellEquip[spellSlot] = indexSpell;
-            
+
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
         }
@@ -1429,6 +1446,10 @@ namespace Character
             int tempIndex = spellEquip[indexSpell1];
             spellEquip[indexSpell1] = spellEquip[indexSpell2];
             spellEquip[indexSpell2] = tempIndex;
+            SpellProfil spellProfilTemp = m_characterSpellBook.m_spellsRotationArray[tempIndex];
+            m_characterSpellBook.m_spellsRotationArray[indexSpell1] = m_characterSpellBook.m_spellsRotationArray[indexSpell2];
+            m_characterSpellBook.m_spellsRotationArray[indexSpell2] = spellProfilTemp;
+
 
             m_stackingClock[indexSpell1].SetTimerDuration(spellProfils[indexSpell1].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell1], m_textStack[indexSpell1]);
             m_stackingClock[indexSpell2].SetTimerDuration(spellProfils[indexSpell2].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell2], m_textStack[indexSpell2]);
@@ -1462,10 +1483,11 @@ namespace Character
                 vfxUISign[spellProfils.Count - 1].SendEvent("OnStop");
             }
         }
+
         public Gradient SetDecalColor(GameElement gameElement)
         {
             Gradient color = gradientDecalElement[0];
-            switch(gameElement)
+            switch (gameElement)
             {
                 case GameElement.NONE:
                     color = gradientDecalElement[0];
@@ -1494,6 +1516,39 @@ namespace Character
             m_characterAim.vfxCastEnd.SetTexture("Symbol", currentPreviewDecalEndTexture);
             m_characterAim.vfxCastEnd.SetGradient("Gradient 1", SetDecalColor(element));
         }
+
+
+        public int CountSpellInstanceToSpawn(SpellProfil spellProfil)
+        {
+            int projectileCount = 1;
+            int shootCount = 1;
+
+            if (spellProfil.HasStats(StatType.Projectile)) projectileCount = spellProfil.GetIntStat(StatType.Projectile);
+            if (spellProfil.HasStats(StatType.ShootNumber)) shootCount = spellProfil.GetIntStat(StatType.ShootNumber);
+
+            int finalNumber = shootCount * projectileCount;
+
+            // Spell can be reshoot before they are all destroy. So we boost the quantity;
+            finalNumber += (int)(finalNumber * .7f);
+
+            return finalNumber;
+        }
+
+        public void CreatePullObject(SpellProfil spellProfil)
+        {
+            int quantity = CountSpellInstanceToSpawn(spellProfil);
+            PullConstructionData pullConstrutionData = new PullConstructionData(spellProfil.objectToSpawn, quantity);
+            GamePullingSystem.instance.CreatePull(pullConstrutionData);
+        }
+
+        public void UpdatePullObject(SpellProfil spellProfil)
+        {
+            int quantity = CountSpellInstanceToSpawn(spellProfil);
+            int id = GamePullingSystem.GetDeterministicHashCode(spellProfil.objectToSpawn.name);
+            GamePullingSystem.instance.UpdatePullQuantity(quantity, id);
+        }
+
+
     }
 
 

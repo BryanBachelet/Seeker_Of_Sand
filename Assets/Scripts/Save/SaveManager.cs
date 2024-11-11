@@ -37,10 +37,13 @@ namespace Save
                 File.Delete(filePath);
             }
 
+            
             FileStream fs = File.Create(filePath);
             BinaryWriter binaryWriter = new BinaryWriter(fs);
             binaryWriter.Write(data.SaveData());
             fs.Close();
+            
+
 
         }
 

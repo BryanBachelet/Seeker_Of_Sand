@@ -18,7 +18,7 @@ namespace MagicaCloth2
         /// [OK] Runtime changes.
         /// [OK] Export/Import with Presets
         /// </summary>
-        [Range(0.0f, 20.0f)]
+        [Range(0.0f, 2.0f)]
         public float influence = 1.0f;
 
         /// <summary>

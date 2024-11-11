@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using System;
 namespace SpellSystem
 {
     public struct AreaData
@@ -16,6 +17,13 @@ namespace SpellSystem
     public class AreaMeta : MonoBehaviour
     {
         public AreaData areaData;
+
+        public Action OnSpawn;
+
+        public void ResetOnSpawn()
+        {
+            OnSpawn?.Invoke();
+        }
     }
 
 }

@@ -25,17 +25,28 @@ namespace GuerhoubaGames.VFX
         }
 
 
-        public void  Update()
+        public void Update()
         {
             if (!this.enabled) return;
 
 
-            vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()));
-            vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.9f);
-            vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.65f);
+          
             endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
-            if(m_lifeTimer.UpdateTimer())
+            if (m_lifeTimer.GetRatio() > 0.98f)
             {
+                vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(0));
+                vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(0) * 0.9f);
+                vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(0) * 0.65f);
+            }
+            else
+            {
+                vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()));
+                vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.9f);
+                vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.65f);
+            }
+            if (m_lifeTimer.UpdateTimer())
+            {
+                
                 this.gameObject.SetActive(false);
                 m_lifeTimer.DeactivateClock();
             }

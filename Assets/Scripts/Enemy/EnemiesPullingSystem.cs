@@ -31,7 +31,7 @@ public class EnemiesPullingSystem : MonoBehaviour
 
     public GameObject gameObjectHolder;
 
-    private List<PullConstrutionData> pullingObjectData = new List<PullConstrutionData>();
+    private List<PullConstructionData> pullingObjectData = new List<PullConstructionData>();
 
     // Init all the system
     public void InitializePullingSystem()
@@ -49,13 +49,13 @@ public class EnemiesPullingSystem : MonoBehaviour
                 if (pullingObjectData.Contains(NpcPullingData.pullDataList[j]))
                 {
                     int index = pullingObjectData.IndexOf(NpcPullingData.pullDataList[j]);
-                    PullConstrutionData pullConstrutionData = pullingObjectData[index];
+                    PullConstructionData pullConstrutionData = pullingObjectData[index];
                     pullConstrutionData.count += NpcPullingData.pullDataList[j].count * m_enemyInfoArray[i].maxCount;
                     pullingObjectData[index] = pullConstrutionData;
                 }
                 else
                 {
-                    PullConstrutionData pullConstrutionData = NpcPullingData.pullDataList[j];
+                    PullConstructionData pullConstrutionData = NpcPullingData.pullDataList[j];
                     pullConstrutionData.count = pullConstrutionData.count * m_enemyInfoArray[i].maxCount;
                     pullingObjectData.Add(pullConstrutionData);
                 }

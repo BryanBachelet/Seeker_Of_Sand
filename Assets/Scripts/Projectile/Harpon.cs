@@ -49,7 +49,7 @@ public class Harpon : Projectile
                 m_enemyImpale.ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpale.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement);
                 m_enemyImpale.m_npcInfo.state = Enemies.NpcState.PAUSE;
             }
-            Destroy(this.gameObject);
+            ActiveDeath();
         }
 
         if (!m_enemyImpale && Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, m_layer))
@@ -71,6 +71,13 @@ public class Harpon : Projectile
     }
 
 
+    protected override void ResetProjectile()
+    {
+        base.ResetProjectile();
+        m_firstHit = false;
+        m_enemyImpale = null;
+        m_currentDistance = 0.0f;
+    }
 
     public override void CollisionEvent(Collider other)
     {

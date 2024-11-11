@@ -131,7 +131,7 @@ public struct TagData
 
     public bool EqualsSpellParticularity(SpellParticualarity value)
     {
-        return (value == spellParticualarity) || (value == spellParticualarity1) ||  (value == spellParticualarity2);
+        return (value == spellParticualarity) || (value == spellParticualarity1) || (value == spellParticualarity2);
     }
 
     public bool EqualsSpellNature(SpellNature value)
@@ -212,9 +212,21 @@ namespace SpellSystem
             return (int)statsType - ((3 * 1000)) < 1000;
         }
 
+        public bool HasStats(StatType statsType)
+        {
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public int GetIntStat(StatType statsType)
         {
-            if(!IsStatInt(statsType))
+            if (!IsStatInt(statsType))
             {
                 Debug.LogError("This stats isn't an integer");
                 return -1;
@@ -289,12 +301,12 @@ namespace SpellSystem
             return "";
         }
 
-        public void AddToIntStats(StatType statsType ,int val)
+        public void AddToIntStats(StatType statsType, int val)
         {
             if (!IsStatInt(statsType))
             {
                 Debug.LogError("This stats isn't an integer");
-                return ;
+                return;
             }
 
             for (int i = 0; i < statTypes.Length; i++)
@@ -395,7 +407,7 @@ namespace SpellSystem
                 if (!statDatas[i].isVisible) continue;
                 if (IsStatBool(statTypes[i]))
                 {
-                    debugStatString +=  "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_bool.ToString() + " </b> \n";
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_bool.ToString() + " </b> \n";
                     continue;
                 }
 
@@ -428,7 +440,7 @@ namespace SpellSystem
         {
 
             bool testResult = tagData.type == BuffType.DAMAGE_SPELL;
-            ManageStat(StatType.Damage, testResult,true);
+            ManageStat(StatType.Damage, testResult, true);
 
 
             SetupSpellNatureStats(tagData.spellNatureType, tagData.spellNatureType1);
@@ -459,7 +471,7 @@ namespace SpellSystem
                 }
             }
 
-            if (isAdd )
+            if (isAdd)
             {
                 StatData statData = new StatData();
                 statData.stat = statToCheck;
@@ -538,7 +550,7 @@ namespace SpellSystem
             bool testResult;
             testResult = tagData.EqualsSpellNature(SpellNature.PROJECTILE);
             ManageStat(StatType.LifeTime, testResult);
-            ManageStat(StatType.Projectile, testResult,true);
+            ManageStat(StatType.Projectile, testResult, true);
             ManageStat(StatType.ShootNumber, testResult, true);
             ManageStat(StatType.ShootAngle, testResult);
             ManageStat(StatType.TimeBetweenShot, testResult);
@@ -556,7 +568,7 @@ namespace SpellSystem
             ManageStat(StatType.Size, testResult, true);
             ManageStat(StatType.SizeMuplitiplicator, testResult);
 
- 
+
             testResult = tagData.EqualsSpellNature(SpellNature.SUMMON);
             ManageStat(StatType.MaxSummon, testResult, true);
             ManageStat(StatType.SummonSimultanely, testResult, true);
@@ -567,7 +579,7 @@ namespace SpellSystem
             ManageStat(StatType.HitNumber, testResult, true);
 
             testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.DOT);
-            ManageStat(StatType.AreaTargetSimulately, testResult,true);
+            ManageStat(StatType.AreaTargetSimulately, testResult, true);
 
             testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);
             ManageStat(StatType.AttackReload, testResult, true);

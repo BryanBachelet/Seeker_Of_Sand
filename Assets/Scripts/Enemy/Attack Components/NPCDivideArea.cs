@@ -67,7 +67,13 @@ namespace Enemies
                 destroyAfterBasic.m_DestroyAfterTime = m_vfxAttackMeta.vfxData.duration;
             }
 
-            
+            m_objLifetimer = 0.0f;
+
+            for (int i = 0; i < areasData.Count; i++)
+            {
+                areasData[i].area.SetActive(false);
+            }
+
         }
 
         public void Update()
@@ -81,7 +87,7 @@ namespace Enemies
                     if (!areasData[i].area.activeSelf)
                     {
                         SetupElement(areasData[i], i);
-                        areasData.Remove(areasData[i]);
+
                     }
 
 
@@ -110,7 +116,7 @@ namespace Enemies
             VFXAttackMeta vFXAttackMeta = areaData.area.GetComponent<VFXAttackMeta>();
 
             VfxAttackData vfxAttackData = new VfxAttackData();
-            vfxAttackData.scale = areaData.scale;
+            vfxAttackData.scale = m_vfxAttackMeta.vfxData.scale;
             vfxAttackData.duration = areaData.lifetimer;
             vfxAttackData.isDestroying = true;
 

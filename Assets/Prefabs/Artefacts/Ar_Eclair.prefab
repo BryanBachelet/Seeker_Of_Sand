@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8999001311434822970}
   - component: {fileID: 8999001311434822971}
   - component: {fileID: 2002973411741830683}
+  - component: {fileID: 4594100225623090202}
   m_Layer: 0
   m_Name: Ar_Eclair
   m_TagString: Untagged
@@ -26,6 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8999001311434822968}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -33,7 +35,6 @@ Transform:
   m_Children:
   - {fileID: 594504765081136107}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8999001311434822970
 MonoBehaviour:
@@ -48,7 +49,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 0}
+  characterGo: {fileID: 0}
   entitiesTargetSystem: 0
+  radius: 0
+  objectType: 1
+  nameArtefact: 
+  element: 0
 --- !u!114 &8999001311434822971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,7 +68,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_damage: 1
-  radiusEffect: 20
   enemyMask:
     serializedVersion: 2
     m_Bits: 64
@@ -78,12 +83,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae8b0f64a51428419a73977888279a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isNotDestroying: 0
   m_DestroyAfterTime: 3
+  isResetingOnPull: 1
+--- !u!114 &4594100225623090202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999001311434822968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0
 --- !u!1001 &4859191489827500726
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 8999001311434822965}
     m_Modifications:
     - target: {fileID: -7947759339281855227, guid: a85bccbeda71b924bb3ff39be26ea867,
@@ -152,6 +175,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a85bccbeda71b924bb3ff39be26ea867, type: 3}
 --- !u!4 &594504765081136107 stripped
 Transform:

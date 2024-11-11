@@ -61,7 +61,7 @@ namespace MagicaCloth2
         /// main wind (m/s).
         /// [OK] Runtime changes.
         /// </summary>
-        [Range(0, 300)]
+        [Range(0, 30)]
         public float main = 5.0f;
 
         /// <summary>

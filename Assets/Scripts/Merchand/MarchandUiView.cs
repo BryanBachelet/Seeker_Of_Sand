@@ -196,7 +196,7 @@ public class MarchandUiView : MonoBehaviour
 
            if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
-            spellSpriteArray[index].color = new Color(1, 1, 1, 1);
+            fragmentSpriteArray[index].color = new Color(1, 1, 1, 1);
         }
         cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[((int)itemData.element) -1];
     }

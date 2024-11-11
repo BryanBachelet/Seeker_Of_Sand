@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Video;
 using UnityEngine.Rendering;
+using TMPro;
 
 public class ManageIntroGameMenu : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class ManageIntroGameMenu : MonoBehaviour
     public GameObject playMenu;
     public LensFlareDataSRP lensFlaresun;
 
+    [SerializeField] private TMP_Text m_textName;
     public void Start()
     {
         if (lensFlaresun)
@@ -118,5 +120,6 @@ public class ManageIntroGameMenu : MonoBehaviour
         //dayControllerAnimator.SetTrigger("ActivationMenu");
         this.gameObject.SetActive(false);
         playMenu.SetActive(true);
+        m_textName.text = GameManager.instance.profileName;
     }
 }

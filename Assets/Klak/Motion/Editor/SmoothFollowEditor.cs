@@ -36,11 +36,13 @@ namespace Klak.Motion
         SerializedProperty _rotationSpeed;
         SerializedProperty _jumpDistance;
         SerializedProperty _jumpAngle;
+        SerializedProperty _activeRandom;
 
         static GUIContent _textAngle = new GUIContent("Angle");
         static GUIContent _textDistance = new GUIContent("Distance");
         static GUIContent _textPosition = new GUIContent("Position");
         static GUIContent _textRotation = new GUIContent("Rotation");
+        static GUIContent _boolRandom = new GUIContent("Random");
 
         void OnEnable()
         {
@@ -50,6 +52,7 @@ namespace Klak.Motion
             _rotationSpeed = serializedObject.FindProperty("_rotationSpeed");
             _jumpDistance = serializedObject.FindProperty("_jumpDistance");
             _jumpAngle = serializedObject.FindProperty("_jumpAngle");
+            _activeRandom = serializedObject.FindProperty("_activeRandom");
         }
 
         public override void OnInspectorGUI()
@@ -70,6 +73,7 @@ namespace Klak.Motion
             EditorGUILayout.LabelField("Random Jump", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(_jumpDistance, _textDistance);
             EditorGUILayout.PropertyField(_jumpAngle, _textAngle);
+            EditorGUILayout.PropertyField(_activeRandom, _boolRandom);
 
             if (EditorApplication.isPlaying && GUILayout.Button("Jump!"))
                 foreach (SmoothFollow sf in targets)

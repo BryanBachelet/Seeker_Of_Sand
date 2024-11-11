@@ -5,6 +5,7 @@ using System;
 using UnityEngine.InputSystem;
 using FMOD.Studio;
 using FMODUnity;
+using Klak.Motion;
 
 namespace Character
 {
@@ -84,6 +85,8 @@ namespace Character
         private Vector3 m_saveVeloctiy;
         private bool m_saveStateSliding;
 
+        private SmoothFollow bookSmoothFollow;
+
 
         public Vector3 forwardDirection;
         public bool m_isSlowdown;
@@ -155,6 +158,7 @@ namespace Character
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
             m_divideSchemeManager = GetComponent<GuerhoubaGames.Input.DivideSchemeManager>();
+            if(m_BookAnim.GetComponent<SmoothFollow>()) { bookSmoothFollow = m_BookAnim.GetComponent<SmoothFollow>(); }
         }
 
         private void Start()
@@ -236,6 +240,7 @@ namespace Character
                         m_characterAim.vfxCast.SetFloat("Progress", 0);
                         m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
                         m_BookAnim.SetBool("Running", false);
+                        //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
                     }
                     else
                     {
@@ -244,7 +249,8 @@ namespace Character
                         m_CharacterAnim.SetBool("Running", false);
                         m_BookAnim.SetBool("Running", false);
                         m_CharacterAnim.SetBool("Casting", true);
-                        m_BookAnim.SetBool("Running", true);
+                        m_BookAnim.SetBool("Casting", true);
+                        //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true);  }
                     }
                 }
                 else
@@ -289,7 +295,8 @@ namespace Character
             m_CharacterAnim.SetBool("Running", false);
             m_BookAnim.SetBool("Running", false);
             m_CharacterAnim.SetBool("Casting", true);
-            m_BookAnim.SetBool("Running", true);
+            m_BookAnim.SetBool("Casting", true);
+            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
 
         }
 
@@ -302,6 +309,7 @@ namespace Character
                 m_characterShoot.DeactivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
+                if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
                 //  cameraPlayer.BlockZoom(false);
                 //DisplayNewCurrentState(1);
 
@@ -312,6 +320,7 @@ namespace Character
                 m_characterShoot.ActivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", true);
                 m_BookAnim.SetBool("Casting", true);
+                if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
                 //DisplayNewCurrentState(0);
                 //  cameraPlayer.BlockZoom(true);
                 SetCombatMode(true);
@@ -326,6 +335,7 @@ namespace Character
             else
                 combatState = state;
 
+            bookSmoothFollow.ChangeForBook(combatState);
             if (!combatState) cameraPlayer.BlockZoom(false);
         }
 
@@ -398,6 +408,7 @@ namespace Character
                 default:
                     break;
             }
+
         }
 
         public void AfterChangeState(MouvementState newState, MouvementState prevState)
@@ -547,6 +558,7 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
                 m_velMovement = Vector3.zero;
+                currentDirection = Vector3.zero;
 
                 if (IsGamepad())
                 {

@@ -2,6 +2,8 @@ using SpellSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.GameEnum;
+
 
 public class SpellManager : MonoBehaviour
 {
@@ -17,13 +19,81 @@ public class SpellManager : MonoBehaviour
     private int indexAttackInfo;
     private int indexBuffInfo;
 
-    public static int GetRandomCapsuleIndex(bool activeRemove = false)
+    public static int GetElementRandomSpellIndex(GameElement element )
+    {
+        int index = -1;
+
+
+        if (m_capsulePool.Count == 0)
+        {
+            Debug.LogWarning("No spell left");
+            return index;
+        }
+
+        List<int> m_capsuleElementQuantity = new List<int>();
+        for (int i = 0; i < m_capsulePool.Count; i++)
+        {
+            SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsulePool[i]];
+            if (spellProfil.tagData.element == element)
+            {
+                m_capsuleElementQuantity.Add(m_capsulePool[i]);
+            }
+        }
+
+        if (m_capsuleElementQuantity.Count == 0)
+        {
+            Debug.LogWarning("No "+element.ToString()+" spell left");
+            return GetRandomCapsuleIndex();
+        }
+
+        int listIndex = Random.Range(0, m_capsuleElementQuantity.Count);
+        index = m_capsuleElementQuantity[listIndex];
+
+        return index;
+
+    }
+
+    public static int GetRandomSpellIndexWithoutOneElememt(GameElement element)
+    {
+        int index = -1;
+
+
+        if (m_capsulePool.Count == 0)
+        {
+            Debug.LogWarning("No spell left");
+            return index;
+        }
+
+        List<int> m_capsuleElementQuantity = new List<int>();
+        for (int i = 0; i < m_capsulePool.Count; i++)
+        {
+            SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsulePool[i]];
+            if (spellProfil.tagData.element != element)
+            {
+                m_capsuleElementQuantity.Add(m_capsulePool[i]);
+            }
+        }
+
+        if (m_capsuleElementQuantity.Count == 0)
+        {
+            Debug.LogWarning("No " + element.ToString() + " spell left");
+            return GetRandomCapsuleIndex();
+        }
+
+        int listIndex = Random.Range(0, m_capsuleElementQuantity.Count);
+        index = m_capsuleElementQuantity[listIndex];
+
+        return index;
+    }
+
+
+        public static int GetRandomCapsuleIndex(bool activeRemove = false)
     {
         int index = -1;
 
         if (m_capsulePool.Count == 0)
         {
-            Debug.LogWarning("Altar don't have spell");
+            Debug.LogWarning("No spell left");
             return index;
         }
 

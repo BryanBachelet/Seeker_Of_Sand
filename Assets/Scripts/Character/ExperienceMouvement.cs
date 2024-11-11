@@ -33,19 +33,36 @@ public class ExperienceMouvement : MonoBehaviour
     {
 
         m_pullingMetaData = GetComponent<PullingMetaData>();
-
+        if (m_pullingMetaData) m_pullingMetaData.OnSpawn += InitComponent;
     }
 
     private void Start()
     {
         m_state = new ObjectState();
         GameState.AddObject(m_state);
+
+        if (m_pullingMetaData == null)
+        {
+            m_timeSpawned = Time.time;
+            m_coll = this.GetComponent<Collider>();
+            m_timerBeforeDestruction = timeBeforeDestruction;
+        }
+    }
+
+
+
+    public void InitComponent()
+    {
         m_timeSpawned = Time.time;
         m_coll = this.GetComponent<Collider>();
         m_timerBeforeDestruction = timeBeforeDestruction;
-
+        m_destruction = false;
+        if (m_coll) m_coll.enabled = true;
+        m_isGrounded = false;
+        m_tempsEcoule = 0.0f;
+        m_speed = 15.0f;
     }
-    // Update is called once per frame
+
     void Update()
     {
         if (!m_isGrounded && GroundPosition != Vector3.zero)
