@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class BossCamera : MonoBehaviour
 {
-    public Camera camera;
+    #region old variable
+    private Camera camera;
     private float timeCinematic;
     public float timeP1;
     public float timeMvt;
@@ -27,6 +28,24 @@ public class BossCamera : MonoBehaviour
     private Animator bandeNoir;
     private Quaternion initialRotation;
     public float xRot;
+
+    #endregion
+    
+
+    #region new variable
+    private Camera m_cameraPlayer;
+
+    [SerializeField] private bool cinematiqueActive = false;
+    [SerializeField] private float totalTime = 5;           //useless to change, equal to all other time value
+    [SerializeField] private float timePhaseStart = 1;
+    [SerializeField] private float timePhaseEnd = 1;
+    private float currentTime = 0;                          //Timer
+
+    private Vector3 playerPosition;                         //Player ref
+    [SerializeField] private Transform positionCamera;      //Player ref
+
+    private BossRoom m_bossRoom;                            //Boss ref
+    #endregion
     public void StartCamera(Camera cameraPara, Transform target)
     {
         BossRoom = GetComponent<BossRoom>();

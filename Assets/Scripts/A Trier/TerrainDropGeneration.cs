@@ -17,6 +17,8 @@ public class TerrainDropGeneration : MonoBehaviour
 
     public bool generateCristal = false;
     private RoomManager associateRoomManager;
+
+    public List<CristalHealth> cristalHealths = new List<CristalHealth>();
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +52,8 @@ public class TerrainDropGeneration : MonoBehaviour
                 {
                     Debug.DrawRay(newPosition, raycastdirection * hit.distance, Color.cyan);
                     m_DropAreaPosition = hit.point + new Vector3(0, -5, 0);
-                    Instantiate(cristalDropObject[randomCristalType -1], m_DropAreaPosition, transform.rotation,transform.parent);
+                    GameObject cristalHealth = Instantiate(cristalDropObject[randomCristalType - 1], m_DropAreaPosition, transform.rotation, transform.parent);
+                    cristalHealths.Add(cristalHealth.GetComponent<CristalHealth>());
 
                 }
                 else
@@ -62,6 +65,13 @@ public class TerrainDropGeneration : MonoBehaviour
         }
     }
 
+    public void DistributeCristalAtTheEnd()
+    {
+        for(int i = 0; i < cristalHealths.Count; i++)
+        {
+            cristalHealths[i].ReceiveHit(1);
+        }
+    }
 
     private void OnDrawGizmos()
     {

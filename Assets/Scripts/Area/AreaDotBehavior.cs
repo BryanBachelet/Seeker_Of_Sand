@@ -164,7 +164,7 @@ namespace SpellSystem
               
                 for (int i = 0;  i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
                 {
-                    int index = Random.RandomRange(0, colliderDraw.Count);
+                    int index = Random.Range(0, colliderDraw.Count);
                     NpcHealthComponent npcHealthComponent = colliderDraw[index].GetComponent<NpcHealthComponent>();
                     Vector3 direction = colliderDraw[index].transform.position - transform.position;
                     if (npcHealthComponent)

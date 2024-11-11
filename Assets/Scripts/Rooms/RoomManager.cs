@@ -59,7 +59,7 @@ public class RoomManager : MonoBehaviour
     private GameObject playerGO;
 
     private bool rewardGenerated = false;
-
+    public TerrainDropGeneration dropGenerator;
     public BossRoom bossRoom;
     public bool isRoomHasBeenDeactivated;
 
@@ -82,7 +82,10 @@ public class RoomManager : MonoBehaviour
         isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
         playerGO = GameObject.Find("Player");
-
+        if(dropGenerator == null && transform.parent.GetComponentInChildren<TerrainDropGeneration>())
+        {
+            dropGenerator = transform.parent.GetComponentInChildren<TerrainDropGeneration>();
+        }
         if (playerRewardDistribution == null)
         {
 
@@ -268,6 +271,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
         playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+        if(dropGenerator != null) dropGenerator.DistributeCristalAtTheEnd();
         m_EndRoomChallengeTime = DateTime.Now;
         m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
