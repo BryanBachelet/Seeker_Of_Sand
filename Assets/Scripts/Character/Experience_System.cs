@@ -60,6 +60,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     // Update is called once per frame
     void Update()
     {
+        #region oldLoot reward
+        /*
         Collider[] experienceTouched = Physics.OverlapSphere(transform.position, m_RadiusPickupXp, m_ExperienceLayer);
         if (experienceTouched.Length > 0 && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
@@ -75,6 +77,8 @@ public class Experience_System : MonoBehaviour, CharacterComponent
                 m_worldExp.Remove(xpMvtScript);
             }
         }
+        */
+        #endregion
         if (m_xperienceBuffered)
         {
             BufferXpDisplay(lastXpBuffered, levelProgress);

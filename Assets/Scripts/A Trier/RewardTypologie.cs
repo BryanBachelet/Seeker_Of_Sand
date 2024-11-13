@@ -111,6 +111,7 @@ public class RewardTypologie : MonoBehaviour
         {
             rewardDistribution.RewardValidate();
             Character.CharacterUpgrade characterUpgrade = other.GetComponent<Character.CharacterUpgrade>();
+            other.GetComponent<RewardDistribution>().ActiveLootFB();
             characterUpgrade.lastRoomElement = (GameElement)element;
             switch (rewardType)
             {

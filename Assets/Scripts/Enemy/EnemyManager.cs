@@ -116,7 +116,7 @@ namespace Enemies
         private List<Vector3> posspawn = new List<Vector3>();
 
         private Character.CharacterMouvement m_characterMouvement;
-        private Character.CharacterUpgrade m_characterUpgrade;
+        [HideInInspector] public Character.CharacterUpgrade m_characterUpgrade;
 
         private int repositionningLimit = 2;
         private int repositionningCount;

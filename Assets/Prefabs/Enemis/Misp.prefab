@@ -274,7 +274,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 46
   m_CollisionDetection: 0
 --- !u!114 &-5653570618866233606
 MonoBehaviour:
@@ -303,10 +303,11 @@ MonoBehaviour:
     isMoving: 0
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
-  m_EnemyAnimatorDissolve: {fileID: 0}
-  m_SkinMeshRenderer: {fileID: 1957132635730243535}
+  m_EnemyAnimatorDissolve: {fileID: 3427593345006790904}
+  m_DeathTagState: Death
+  m_SkinMeshRenderer: {fileID: 7710195976898996122}
   m_materialList: []
-  materialCutout: 010000000400000005000000
+  materialCutout: 00000000
   materialEmissive: 0000000002000000
   cutoutProgress:
     serializedVersion: 2
@@ -314,26 +315,26 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 4.305747
-      outSlope: 4.305747
+      inSlope: 0.005613961
+      outSlope: 0.005613961
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.06502937
-      value: 0.28
-      inSlope: -0.07479343
-      outSlope: -0.07479343
+      time: 0.29958603
+      value: 0.0016818643
+      inSlope: 0.027566513
+      outSlope: 0.027566513
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.09352682
+      inWeight: 0.38491908
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.7700777
-      outSlope: 0.7700777
+      inSlope: 1.4253259
+      outSlope: 1.4253259
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -732,6 +733,8 @@ MonoBehaviour:
   raycastOffset: {x: 0, y: 0, z: 0}
   raycastHitPoint: {x: 0, y: 0, z: 0}
   isRaycastDebug: 0
+  lagRaycastTargetTime: 0.5
+  speedRaycast: 0
   variantePrecision: 0
   rangeVariante: 1
   isInAttackSequence: 0
@@ -2305,12 +2308,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbfa883f4f9622a4382f40dc60e9b712, type: 3}
---- !u!137 &1957132635730243535 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5609748074221884153, guid: cbfa883f4f9622a4382f40dc60e9b712,
-    type: 3}
-  m_PrefabInstance: {fileID: 6264777447991622966}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6278016326887458521 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 139342705549507567, guid: cbfa883f4f9622a4382f40dc60e9b712,

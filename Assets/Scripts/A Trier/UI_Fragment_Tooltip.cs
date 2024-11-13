@@ -66,6 +66,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[3];
         //}
         imageFragmentTooltip[currentFragmentNumber].sprite = artefactInfo.icon;
+        SelectElement(fragment_List[currentFragmentNumber], artefactInfo);
         currentFragmentNumber += 1;
     }
 
@@ -86,5 +87,49 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         }
 
         currentFragmentNumber--;
+    }
+
+    public void SelectElement(GameObject artefactObject, ArtefactsInfos artefactInfo)
+    {
+
+        if(artefactInfo.gameElement == GameElement.WATER)
+        {
+            GameObject artefactElement = artefactObject.transform.GetChild(0).gameObject;
+            artefactElement.SetActive(true);
+            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
+            artefactObject.transform.GetChild(1).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(2).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(3).gameObject.SetActive(false);
+        }
+        else if (artefactInfo.gameElement == GameElement.AIR)
+        {
+            GameObject artefactElement = artefactObject.transform.GetChild(1).gameObject;
+            artefactElement.SetActive(true);
+            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
+            artefactObject.transform.GetChild(0).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(2).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(3).gameObject.SetActive(false);
+
+        }
+        else if (artefactInfo.gameElement == GameElement.FIRE)
+        {
+            GameObject artefactElement = artefactObject.transform.GetChild(2).gameObject;
+            artefactElement.SetActive(true);
+            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
+            artefactObject.transform.GetChild(0).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(1).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(3).gameObject.SetActive(false);
+
+        }
+        else if (artefactInfo.gameElement == GameElement.EARTH)
+        {
+            GameObject artefactElement = artefactObject.transform.GetChild(3).gameObject;
+            artefactElement.SetActive(true);
+            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
+            artefactObject.transform.GetChild(0).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(1).gameObject.SetActive(false);
+            artefactObject.transform.GetChild(2).gameObject.SetActive(false);
+
+        }
     }
 }

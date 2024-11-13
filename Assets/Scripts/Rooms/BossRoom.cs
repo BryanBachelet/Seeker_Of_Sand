@@ -1,3 +1,4 @@
+using Character;
 using GuerhoubaGames.AI;
 using GuerhoubaGames.UI;
 using System.Collections;
@@ -29,7 +30,7 @@ public class BossRoom : MonoBehaviour
         GameObject bossInstance = enemyManager.SpawnBoss(centerTransform.position, Enemies.EnemyType.TWILIGHT_SISTER);
         DayCyclecontroller dayCyclecontroller = enemyManager.m_dayController;
         m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
-        m_bossHealth.SetupLife(bossLife + dayCyclecontroller.m_nightCount *bossLife);
+        m_bossHealth.SetupLife(bossLife + 50 * enemyManager.m_characterUpgrade.avatarUpgradeList.Count);
         bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
         bossCamera.StartCamera(Camera.main,bossInstance.transform.GetChild(0));
 

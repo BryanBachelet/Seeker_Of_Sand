@@ -12,6 +12,8 @@ public class RewardDistribution : MonoBehaviour
     [HideInInspector] public bool isRewardSend;
     private GameObject currentRewardHolder;
 
+    public UnityEngine.VFX.VisualEffect vfxactiveLoot;
+
     public void RewardValidate()
     {
         isRewardSend = true;
@@ -26,6 +28,11 @@ public class RewardDistribution : MonoBehaviour
         rewardTypopologie.rewardDistribution = this;
         rewardTypopologie.element = (int)roomElementColor;
         isRewardSend = false;
+    }
+
+    public void ActiveLootFB()
+    {
+        vfxactiveLoot.Play();
     }
 
 

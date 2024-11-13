@@ -45,9 +45,13 @@ namespace Enemies
 
         private HealthSystem m_healthSystem;
         private HealthManager m_healthManager;
-        [HideInInspector] public Animator m_entityAnimator;
+        public Animator m_entityAnimator;
         private EnemyManager m_enemyManager;
         [SerializeField] private Animator m_EnemyAnimatorDissolve;
+        [SerializeField] private string m_DeathTagState = "Death"; //Name of the tag of the death State
+        private float deathStateDuration; // Duration of the death animation identified by the death tag
+
+
 
         public SkinnedMeshRenderer m_SkinMeshRenderer;
         [SerializeField] private List<Material> m_materialList = new List<Material>();        // Hit damage
@@ -82,7 +86,7 @@ namespace Enemies
         {
             m_healthSystem = new HealthSystem();
             m_npcInfo = GetComponent<NpcMetaInfos>();
-            m_entityAnimator = GetComponentInChildren<Animator>();
+            m_entityAnimator = GetComponentInChildren<Animator>(false);
             _propBlock = new MaterialPropertyBlock();
             if (!isMassed)
             {
@@ -100,6 +104,8 @@ namespace Enemies
 
             }
             if (this.GetComponent<HitEffectHighLight>() != null) { m_HitEffectHighLight = this.GetComponent<HitEffectHighLight>(); }
+
+            if(deathStateDuration == 0 && hasDeathAnimation) { SearchDeathOnAnimator(); }
             RestartObject(1);
 
         }
@@ -113,13 +119,13 @@ namespace Enemies
         {
             if (death)
             {
-
-                float progressDeath = 1 - (timeBeforeDestruction + deathTimer - Time.time) / 2;
+                deathTimer += Time.deltaTime;
+                float progressDeath = deathTimer / timeBeforeDestruction;
                 float cutoutValue = progressDeath;
                 float emissiveValue = progressDeath;
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
-                    //m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
+                    m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
                 }
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
@@ -186,7 +192,7 @@ namespace Enemies
             if (hasDeathAnimation)
             {
 
-                    m_entityAnimator.SetTrigger("Death");
+                m_EnemyAnimatorDissolve.SetBool("DeathBool", true);
 
             }
             m_npcInfo.state = NpcState.DEATH;
@@ -206,7 +212,7 @@ namespace Enemies
 
             if (!death)
             {
-                deathTimer = Time.time;
+                //deathTimer = Time.time;
             }
 
             //StartCoroutine(Death());
@@ -218,6 +224,7 @@ namespace Enemies
         {
             m_enemyManager.DeathEnemy();
             death = true;
+            deathTimer = 0;
             if (!isMassed)
             {
                 moveSoundInstance.setVolume(0);
@@ -233,8 +240,8 @@ namespace Enemies
 
             }
 
-            //m_EnemyAnimatorDissolve.SetBool("Dissolve", true);
-            yield return new WaitForSeconds(timeBeforeDestruction / 2);
+            //m_EnemyAnimatorDissolve.SetBool("Dissolve", true)
+            yield return new WaitForSeconds(timeBeforeDestruction);
             GamePullingSystem.SpawnObject(death_vfx, transform.position, transform.rotation);
             m_npcInfo.TeleportToPool();
 
@@ -258,6 +265,10 @@ namespace Enemies
             }
 
             NpcMouvementComponent npcMove = this.GetComponent<NpcMouvementComponent>();
+            for (int i = 0; i < materialCutout.Length; i++)
+            {
+                m_materialList[materialCutout[i]].SetFloat("_Cutout", 0);
+            }
             npcMove.lastTimeSeen = Time.time;
             npcMove.lastTimeCheck = npcMove.lastTimeSeen;
             npcMove.lastPosCheck = this.transform.position;
@@ -267,7 +278,7 @@ namespace Enemies
             death = false;
             if (hasDeathAnimation)
             {
-                    m_entityAnimator.ResetTrigger("Death");
+                m_EnemyAnimatorDissolve.SetBool("DeathBool", false);
             }
             m_npcInfo.state = NpcState.MOVE;
             if (!isMassed)
@@ -293,6 +304,19 @@ namespace Enemies
         public float GetCurrentLifePercent()
         {
             return m_healthSystem.percentHealth;
+        }
+
+        public void SearchDeathOnAnimator()
+        {
+            AnimationClip[] clips = m_EnemyAnimatorDissolve.runtimeAnimatorController.animationClips;
+            for (int i = 0; i < clips.Length; i++)
+            {
+                if (clips[i].name == "Death")
+                {
+                    deathStateDuration = clips[i].length;
+                    timeBeforeDestruction = deathStateDuration;
+                }
+            }
         }
     }
 }

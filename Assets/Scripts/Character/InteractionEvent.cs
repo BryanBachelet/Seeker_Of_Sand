@@ -73,6 +73,13 @@ public class InteractionEvent : MonoBehaviour
             if (currentInteractibleObjectActive == null) { NearPossibleInteraction(col); }
             NearTrader();
             NearArtefact();
+            if(colliderProche.Length <= 0)
+            {
+                if (hintInputInteraction.activeSelf)
+                {
+                    hintInputInteraction.SetActive(false);
+                }
+            }
             lastInteractionCheck = Time.time;
         }
         if (currentInteractibleObject != null)
@@ -234,6 +241,7 @@ public class InteractionEvent : MonoBehaviour
             if (currentInteractionInterface != null)
             {
                 currentInteractionInterface.CallOpenInteraction(this.gameObject);
+
                 if (currentInteractionInterface.hasClosePhase)
                 {
                     saveInteractionInterface = currentInteractionInterface;
