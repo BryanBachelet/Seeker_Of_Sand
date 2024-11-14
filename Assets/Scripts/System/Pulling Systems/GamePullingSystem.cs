@@ -127,6 +127,12 @@ namespace GuerhoubaGames.Resources
         {
             for (int i = 0; i < quantity; i++)
             {
+                if(gameObjectsArray[i] == null)
+                {
+                    Debug.LogError("This object has been destroy " + gameObjectsArray[0].name);
+                }
+                    
+
                 if (!gameObjectsArray[i].activeSelf)
                 {
                     return gameObjectsArray[i];
