@@ -262,7 +262,7 @@ namespace Enemies
         public void StopMouvement()
         {
 
-            m_navMeshAgent.isStopped = true;
+           if(m_navMeshAgent.isOnNavMesh) m_navMeshAgent.isStopped = true;
             m_navMeshAgent.velocity = Vector3.zero;
             m_rigidbody.velocity = Vector3.zero;
         }
@@ -293,6 +293,7 @@ namespace Enemies
         public bool IsFacingTarget()
         {
             Vector3 tarDir = targetData.target.position - baseTransform.position;
+            tarDir.y = 0.0f;
             float angle = Vector3.SignedAngle(baseTransform.forward, tarDir, Vector3.up);
             angle = Mathf.Abs(angle);
 
@@ -499,7 +500,7 @@ namespace Enemies
 
                 m_rigidbody.isKinematic = false;
                 m_rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
-
+                isGoingAway = false;
             }
 
             this.enabled = false;

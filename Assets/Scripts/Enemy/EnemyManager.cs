@@ -598,6 +598,7 @@ namespace Enemies
             enemyObjectPull.GetComponent<NavMeshAgent>().enabled = true;
 
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
+            npcInfo.RestartEnemy();
             npcInfo.manager = this;
 
 

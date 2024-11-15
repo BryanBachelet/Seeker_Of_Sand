@@ -59,7 +59,7 @@ public class UpgradeManager : MonoBehaviour
     public int countUpgradePointUse;
 
 
-    public float[] percentForUpgradeMatchingElementRoom =  new float[4] { 100, 75, 50 ,25};
+    public float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
     public float percentForSpellMatchingElementRoom = 75;
 
     public void Awake()
@@ -322,6 +322,8 @@ public class UpgradeManager : MonoBehaviour
         List<int> indexOtherElement = new List<int>();
         for (int i = 0; i < elements.Length; i++)
         {
+            if (element == GameElement.NONE) continue;
+
             if (element == elements[i])
             {
                 isOwnElement = true;

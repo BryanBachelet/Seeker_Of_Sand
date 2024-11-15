@@ -197,6 +197,13 @@ namespace Enemies
             }
             m_npcInfo.state = NpcState.DEATH;
 
+            if (m_npcInfo.type == EnemyType.CHAMAN)
+            {
+
+                Debug.Log("Test");
+            }
+
+            m_npcInfo.behaviorTreeComponent.isActivate = false;
 
             if (!isMassed)
             {

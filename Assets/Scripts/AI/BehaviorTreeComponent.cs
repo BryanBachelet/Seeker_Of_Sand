@@ -14,6 +14,7 @@ namespace GuerhoubaGames.AI
     {
         public BehaviorTree behaviorTree;
         public bool isActivate = false;
+        public bool isFirstSpawn = true;
 
         #region Mono Functions
         public void Update()
@@ -28,8 +29,12 @@ namespace GuerhoubaGames.AI
         {
             if (isActivate) return;
 
-            behaviorTree = behaviorTree.CloneTree();
-            behaviorTree.BindTree(GetComponent<Enemies.NpcMetaInfos>());
+            if (isFirstSpawn)
+            {
+                behaviorTree = behaviorTree.CloneTree();
+                behaviorTree.BindTree(GetComponent<Enemies.NpcMetaInfos>());
+                isFirstSpawn = false;
+            }
             isActivate = true;
         }
     }
