@@ -24,9 +24,9 @@ public struct EndInfoStats
     public float durationGame;
     public int nightValidate;
     public int enemyKill;
-    public float roomCount;
-    public float altarSuccessed;
-    public float altarRepeated;
+    public int roomCount;
+    public int altarSuccessed;
+    public int altarRepeated;
     public float maxCombo;
 
     public string[] stringInfoStats;
@@ -48,29 +48,90 @@ public struct EndInfoStats
 
     public string[] SaveDataString()
     {
-        stringInfoStats[0] = durationGame.ToString();
-        stringInfoStats[1] = nightValidate.ToString();
-        stringInfoStats[2] = enemyKill.ToString();
-        stringInfoStats[3] = roomCount.ToString();
-        stringInfoStats[4] = altarSuccessed.ToString();
-        stringInfoStats[5] = maxCombo.ToString();
+        stringInfoStats = new string[6];   
+        stringInfoStats[0] = "Duration = " + durationGame.ToString();
+        stringInfoStats[1] = "Night Validate = " + nightValidate.ToString();
+        stringInfoStats[2] = "Enemy Kill = " + enemyKill.ToString();
+        stringInfoStats[3] = "Room Count = " + roomCount.ToString();
+        stringInfoStats[4] = "Altar Succes = " + altarSuccessed.ToString();
+        stringInfoStats[5] = "Max Combo = " + maxCombo.ToString();
 
         return stringInfoStats;
     }
     public void ReadData(BinaryReader binaryReader)
     {
+
         durationGame = binaryReader.ReadSingle();
         nightValidate = binaryReader.ReadInt32();
         enemyKill = binaryReader.ReadInt32();
-        roomCount = binaryReader.ReadSingle();
-        altarSuccessed = binaryReader.ReadSingle();
-        altarRepeated = binaryReader.ReadSingle();
-        if(binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+        roomCount = binaryReader.ReadInt32();
+        altarSuccessed = binaryReader.ReadInt32();
+        altarRepeated = binaryReader.ReadInt32();
+        if (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
             maxCombo = binaryReader.ReadSingle();
 
-        
+
     }
-    
+
+    public void ReadData(StreamReader streamReader)
+    {
+        string[] lines = new string[5];
+        int lineFillCount = 0;
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (streamReader.EndOfStream)
+            {
+                break;
+            }
+            lines[i] = streamReader.ReadLine();
+            lineFillCount++;
+        }
+        int currentLine = 0;
+        if (currentLine < lineFillCount)
+        {
+            durationGame = ReadFloat(lines[currentLine]);
+            currentLine++;
+        }
+        if (currentLine < lineFillCount)
+        {
+            nightValidate = ReadInt(lines[currentLine]);
+            currentLine++;
+        }
+        if (currentLine < lineFillCount)
+        {
+            enemyKill = ReadInt(lines[currentLine]);
+            currentLine++;
+
+        }
+        if (currentLine < lineFillCount)
+        {
+            roomCount = ReadInt(lines[currentLine]);
+            currentLine++;
+        }
+        if (currentLine < lineFillCount)
+        {
+            altarSuccessed = ReadInt(lines[currentLine]);
+            currentLine++;
+        }
+
+        if (currentLine < lineFillCount)
+        {
+            maxCombo = ReadFloat(lines[currentLine]);
+            currentLine++;
+        }
+    }
+
+    private float ReadFloat(string line)
+    {
+        string lineData = line.Split("=")[1];
+        return float.Parse(lineData);
+    }
+    private int ReadInt(string line)
+    {
+        string lineData = line.Split("=")[1];
+        return int.Parse(lineData);
+    }
+
 
     public bool HasSuperiorValue(EndInfoStats statToCompare)
     {
@@ -163,10 +224,10 @@ public class GameState : MonoBehaviour
     {
         scene = (SceneManager.GetSceneByBuildIndex(5));
         m_isDeath = false;
-        if(terrainGenerator)terrainGenerator.LaunchRoomGenerator();
+        if (terrainGenerator) terrainGenerator.LaunchRoomGenerator();
         m_uiManager.GetComponent<UIDispatcher>().ActiveUIElement();
         endMenu = endmenu_Attribution;
-       
+
     }
 
     public static void DeathActivation()
@@ -269,6 +330,6 @@ public class GameState : MonoBehaviour
 
     public bool IsGamepad()
     {
-       return m_playerInput.currentControlScheme == "Gamepad";
+        return m_playerInput.currentControlScheme == "Gamepad";
     }
 }

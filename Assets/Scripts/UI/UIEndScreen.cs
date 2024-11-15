@@ -114,7 +114,7 @@ public class UIEndScreen : MonoBehaviour
         float tempsEcoule = (Mathf.Lerp(0, time, Time.time - time + 1) / 60);
 
         float progress = (Time.time - time) / tempsDisplay;
-        if(progress < 0.33f)
+        if (progress < 0.33f)
         {
             m_nightCompletionFill[0].fillAmount = Mathf.Lerp(0, stat.roomCount / 7, progress / 0.33f);
             //m_nightCompletionFill[1].fillAmount = 0;
@@ -140,7 +140,9 @@ public class UIEndScreen : MonoBehaviour
             m_nightCompletionFill[0].fillAmount = 1;
             m_nightCompletionFill[1].fillAmount = 1;
             m_nightCompletionFill[2].fillAmount = 1;
+            m_finishDisplayStat = true;
         }
+
         m_killCountText.text = Mathf.Lerp(0, stat.enemyKill, progress).ToString("F0");
         m_nightValidateText.text = Mathf.Lerp(0, stat.nightValidate, progress).ToString("F0");
         m_altarLaunchText.text = Mathf.Lerp(0, stat.altarRepeated, progress).ToString("F0");
@@ -157,6 +159,10 @@ public class UIEndScreen : MonoBehaviour
 
 
 
+        if (progress >= 1.0f)
+        {
+            m_finishDisplayStat = true;
+        }
 
     }
 

@@ -16,6 +16,7 @@ public class DayCyclecontroller : MonoBehaviour
     VolumetricClouds vClouds;
     CloudLayer vCloudLayer;
     Exposure vExposure;
+    DepthOfField vDepthOfField;
     PhysicallyBasedSky vSpaceEmissionTexture;
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
@@ -134,6 +135,7 @@ public class DayCyclecontroller : MonoBehaviour
         UpdateTime();
     }
 
+    
     public void UpdateTimeByStep()
     {
         time += 201.6f;
@@ -218,7 +220,7 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_sun.transform.rotation.eulerAngles.x > 180)
             {
                 StartNight();
-                //m_nightCount++;
+                
 
             }
         }
@@ -237,6 +239,8 @@ public class DayCyclecontroller : MonoBehaviour
         m_moon.gameObject.SetActive(false);
         checkNightSound = false;
         vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[0];
+        vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
+        //vSpaceEmissionTexture.
     }
 
     private void StartNight()
@@ -256,6 +260,7 @@ public class DayCyclecontroller : MonoBehaviour
         if(volumePP.profile.TryGet<PhysicallyBasedSky>(out vSpaceEmissionTexture))
         {
             vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[1];
+            vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
         }
     }
 
@@ -434,6 +439,14 @@ public class DayCyclecontroller : MonoBehaviour
         if (m_sun && m_colorTemperatureOverTime != null)
         {
             m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
+        }
+    }
+
+    public void UpdateDepthOfField(bool stateEffet)
+    {
+        if(volumePP.profile.TryGet<DepthOfField>(out vDepthOfField))
+        {
+            vDepthOfField.active = stateEffet;
         }
     }
 }

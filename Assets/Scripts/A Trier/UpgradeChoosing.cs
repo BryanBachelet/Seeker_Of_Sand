@@ -179,7 +179,7 @@ public class UpgradeChoosing : MonoBehaviour
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
         UpgradeObject stats = m_upgradeLevelingData.upgradeChoose[index];
 
-
+        GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         string textStatUpgrade = "";
         for (int i = 0; i < spellProfil.statDatas.Count; i++)
         {

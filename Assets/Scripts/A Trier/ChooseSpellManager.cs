@@ -218,6 +218,7 @@ public class ChooseSpellManager : MonoBehaviour
     public void Choose(int indexChoice)
     {
         ActivateChoiceAnimation();
+        GlobalSoundManager.PlayOneShot(31, Vector3.zero);
         for (int i = 0; i < vfxHolder.Length; i++)
         {
             if (i != indexChoice)
@@ -250,6 +251,7 @@ public class ChooseSpellManager : MonoBehaviour
         name.text = newSpell[spellIndex].name;
         description.text = newSpell[spellIndex].description;
         iconSpell.sprite = newSpell[spellIndex].spell_Icon;
+        GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         //description.text = popup.des
     }
 
