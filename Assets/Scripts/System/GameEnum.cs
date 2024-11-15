@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -160,6 +161,7 @@ namespace GuerhoubaGames.GameEnum
         UpgradeSensitivity = 12,
     }
 
+    [System.Serializable]
     public enum GameElement
     {
         NONE = 0,

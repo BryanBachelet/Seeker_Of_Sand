@@ -213,7 +213,7 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_sun.transform.rotation.eulerAngles.x > 180)
             {
                 StartNight();
-                //m_nightCount++;
+                
 
             }
         }
@@ -231,6 +231,7 @@ public class DayCyclecontroller : MonoBehaviour
         //m_LocalNightVolume.enabled = false;
         m_moon.gameObject.SetActive(false);
         checkNightSound = false;
+        m_nightCount++;
     }
 
     private void StartNight()

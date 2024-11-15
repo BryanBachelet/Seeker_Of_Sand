@@ -26,23 +26,33 @@ namespace Save
 
             FileStream fs = File.Create(filePath);
             BinaryFormatter writer = new BinaryFormatter();
-            writer.Serialize(fs ,data);
+            writer.Serialize(fs, data);
             fs.Close();
         }
 
-        public static void WriteEndStats(string filePath, EndInfoStats data )
+        public static void WriteEndStats(string filePath, EndInfoStats data)
         {
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
 
-            
-            FileStream fs = File.Create(filePath);
-            BinaryWriter binaryWriter = new BinaryWriter(fs);
-            binaryWriter.Write(data.SaveData());
-            fs.Close();
-            
+            using (StreamWriter outputFile = new StreamWriter(filePath))
+            {
+                string[] lines = data.SaveDataString();
+
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    outputFile.WriteLine(lines[i]);
+                }
+
+                outputFile.Close();
+            }
+
+            //BinaryWriter binaryWriter = new BinaryWriter(fs);
+            //binaryWriter.Write(data.SaveData());
+            //fs.Close();
+
 
 
         }
@@ -50,13 +60,13 @@ namespace Save
         public static EndInfoStats ReadEndStats(string filePath)
         {
             EndInfoStats stats = new EndInfoStats();
-
-            if (!File.Exists(filePath)) return stats;
+            bool isExisting = File.Exists(filePath);
+            if (!isExisting) return stats;
 
             StreamReader streamReader = new StreamReader(filePath);
             BinaryReader binaryReader = new BinaryReader(streamReader.BaseStream);
 
-            stats.ReadData(binaryReader);
+            stats.ReadData(streamReader);
             streamReader.Close();
             return stats;
         }
