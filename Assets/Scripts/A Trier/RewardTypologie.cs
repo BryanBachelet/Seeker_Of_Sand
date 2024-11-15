@@ -119,10 +119,12 @@ public class RewardTypologie : MonoBehaviour
                    
                     characterUpgrade.GiveUpgradePoint(3);
                     characterUpgrade.ShowUpgradeWindow();
+                    GlobalSoundManager.PlayOneShot(6, Vector3.zero);
                     break;
                 case RewardType.SPELL:
            
                     characterUpgrade.ShowSpellChoiceInteface();
+                    GlobalSoundManager.PlayOneShot(6, Vector3.zero);
                     break;
                 case RewardType.ARTEFACT:
                     if (choseReward == null)
@@ -130,9 +132,11 @@ public class RewardTypologie : MonoBehaviour
                         choseReward = GameObject.Find("Artefact-Choose-Trio").GetComponent<Chosereward>();
                     }
                     choseReward.GiveArtefact((GameElement) element );
+                    GlobalSoundManager.PlayOneShot(56, Vector3.zero);
                     break;
                 case RewardType.HEAL:
-                   if(healthReward == HealthReward.QUARTER)
+                    GlobalSoundManager.PlayOneShot(57, Vector3.zero);
+                    if (healthReward == HealthReward.QUARTER)
                         other.GetComponent<HealthPlayerComponent>().RestoreQuarter();
                    else
                         other.GetComponent<HealthPlayerComponent>().RestoreFullLife();

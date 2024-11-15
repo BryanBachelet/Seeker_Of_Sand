@@ -34,6 +34,7 @@ public class UIOver : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
 
         if (OnEnter != null) OnEnter.Invoke(m_indexUpgrade);
+        GlobalSoundManager.PlayOneShot(5, Vector3.zero);
         isOver = true;
     }
 

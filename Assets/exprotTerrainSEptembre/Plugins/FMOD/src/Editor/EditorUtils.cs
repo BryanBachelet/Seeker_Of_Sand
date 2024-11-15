@@ -684,7 +684,7 @@ namespace FMODUnity
             CheckResult(lowlevel.getVersion(out version));
 
             string text = string.Format(
-                "Version: {0}\n\nCopyright \u00A9 Firelight Technologies Pty, Ltd. 2014-2023 \n\n" +
+                "Version: {0}\n\nCopyright \u00A9 Firelight Technologies Pty, Ltd. 2014-2024 \n\n" +
                 "See LICENSE.TXT for additional license information.",
                 VersionString(version));
 
@@ -1253,6 +1253,18 @@ namespace FMODUnity
                 }
                 AssetDatabase.Refresh();
                 EditorApplication.UnlockReloadAssemblies();
+            }
+        }
+
+        public static string WritableAssetPath(string cacheAssetName)
+        {
+            if (RuntimeUtils.PluginBasePath.StartsWith("Assets/"))
+            {
+                return $"{RuntimeUtils.PluginBasePath}/Cache/Editor/{cacheAssetName}.asset";
+            }
+            else
+            {
+                return $"Assets/Plugins/FMOD/Cache/Editor/{cacheAssetName}.asset";
             }
         }
     }

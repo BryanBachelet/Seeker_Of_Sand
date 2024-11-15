@@ -101,9 +101,9 @@ public class UpgradeChoosing : MonoBehaviour
     {
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
         m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
+        GlobalSoundManager.PlayOneShot(31, Vector3.zero);
 
-     
-        
+
         for (int i = 0; i < upgradeSelectable.Length; i++)
         {
             if (i != index)
