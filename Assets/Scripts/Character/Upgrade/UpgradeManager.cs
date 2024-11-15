@@ -280,6 +280,7 @@ public class UpgradeManager : MonoBehaviour
         if (book_Animator != null) book_Animator.SetBool("BookOpen", false);
         float time = Time.time;
         float timeToClose = book_Animator.GetCurrentAnimatorStateInfo(0).length;
+        m_chooseSpellManagerComponent.CloseSpellChoiceUI();
 
         StartCoroutine(CloseUIWithDelay(timeToClose));
 
