@@ -75,7 +75,17 @@ namespace Enemies
         public void RestartEnemy()
         {
             attackComponent.ResetComponent();
-           // OnStart?.Invoke();
+
+           
+            if(behaviorTreeComponent.isFirstSpawn)
+            {
+                behaviorTreeComponent.Init();
+            }
+            else
+            {
+                behaviorTreeComponent.isActivate = true;
+            }
+
         }
 
         public void SetPauseState()
@@ -85,6 +95,12 @@ namespace Enemies
 
             if (behaviorTreeComponent)
             {
+                if(type==EnemyType.CHAMAN)
+                {
+
+                    Debug.Log("Test");
+                }
+
                 behaviorTreeComponent.isActivate = false;
                 
             }

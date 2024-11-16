@@ -197,6 +197,7 @@ namespace Enemies
             }
             m_npcInfo.state = NpcState.DEATH;
 
+            m_npcInfo.behaviorTreeComponent.isActivate = false;
 
             if (!isMassed)
             {
