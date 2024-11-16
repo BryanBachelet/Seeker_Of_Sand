@@ -1,3 +1,5 @@
+using Character;
+using GuerhoubaGames.Resources;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,13 +13,31 @@ namespace Artefact
         [Header("Around Parameter")]
         private float radiusEffect;
         public LayerMask enemyMask;
-        public void Start()
+        private Character.CharacterShoot m_characterShoot;
+
+        [SerializeField] private bool hasSound = false;
+        [SerializeField] private int indexSound = 0;
+
+        private bool m_hasBeenInit = false;
+        private PullingMetaData m_pullingMetaData;
+
+
+        public void InitArtefact()
         {
-            m_artefactData = GetComponent<ArtefactData>();
+            m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             radiusEffect = m_artefactData.radius;
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.ClosestEnemyAround) ClosestTarget();
+            if (hasSound) GlobalSoundManager.PlayOneShot(indexSound, transform.position);
+        }
+        public void Start()
+        {
+            m_hasBeenInit = true;
+            m_artefactData = GetComponent<ArtefactData>();
+            m_pullingMetaData = GetComponent<PullingMetaData>();
+            m_artefactData.OnSpawn += InitArtefact;
+            if (hasSound) GlobalSoundManager.PlayOneShot(indexSound, transform.position);
         }
 
 
@@ -60,13 +80,13 @@ namespace Artefact
             for (int i = 0; i < enemies.Length; i++)
             {
                 float currentDistance = Vector3.Distance(m_artefactData.agent.transform.position, enemies[i].transform.position);
-                if(currentDistance < minDistance)
+                if (currentDistance < minDistance)
                 {
                     indexEnemy = i;
                     minDistance = currentDistance;
                 }
             }
-            if (indexEnemy ==-1)
+            if (indexEnemy == -1)
             {
                 Destroy(gameObject);
                 return;
@@ -80,7 +100,7 @@ namespace Artefact
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
             DamageStatData damageStatData = new DamageStatData(m_damage, m_artefactData.objectType);
-            if(targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0);
+            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0);
         }
     }
 }

@@ -13,7 +13,7 @@ public class BossRoom : MonoBehaviour
     [HideInInspector] public Enemies.EnemyManager enemyManager;
     public int bossLife = 200;
     [HideInInspector] public RoomInfoUI roomInfoUI;
-
+    DayCyclecontroller dayCyclecontroller;
     // Boss components 
    private Enemies.NpcHealthComponent m_bossHealth;
     private BossCamera bossCamera;
@@ -28,7 +28,8 @@ public class BossRoom : MonoBehaviour
     {
         GameState.ChangeState();
         GameObject bossInstance = enemyManager.SpawnBoss(centerTransform.position, Enemies.EnemyType.TWILIGHT_SISTER);
-        DayCyclecontroller dayCyclecontroller = enemyManager.m_dayController;
+        dayCyclecontroller = enemyManager.m_dayController;
+        dayCyclecontroller.UpdateDepthOfField(false);
         m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
         m_bossHealth.SetupLife(bossLife + 50 * enemyManager.m_characterUpgrade.avatarUpgradeList.Count);
         bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
@@ -58,6 +59,7 @@ public class BossRoom : MonoBehaviour
     public void EndRoomBoss()
     {
         roomManager.ValidateRoom();
+        dayCyclecontroller.UpdateDepthOfField(true);
         DayCyclecontroller.m_nightCountGlobal++;
         enemyManager.gsm.UpdateParameter(0.1f, "Intensity");
     }
