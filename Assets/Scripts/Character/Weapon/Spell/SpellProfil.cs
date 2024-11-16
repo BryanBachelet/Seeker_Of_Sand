@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using GuerhoubaGames.GameEnum;
-
+using System.Globalization;
 
 [System.Serializable]
 public struct TagData
@@ -139,6 +139,29 @@ public struct TagData
         return (value == spellNatureType) || (value == spellNatureType1) || (value == spellNatureType2);
     }
 
+
+    public string[] GetUIInfosValue()
+    {
+        string[] tagString = new string[5];
+
+        SpellTagOrder[] spellTagOrdersArray = { SpellTagOrder.GameElement, SpellTagOrder.SpellNature, SpellTagOrder.SpellNature1, SpellTagOrder.SpellParticualarity , SpellTagOrder.SpellMovementBehavior } ;
+        int diffIndex = 0;
+        for (int i = 0; i < spellTagOrdersArray.Length; i++)
+        {
+            string value = GetValueTag(spellTagOrdersArray[i]);
+            if(value == "NONE")
+            {
+                diffIndex++;
+                continue;
+            }
+            value = CultureInfo.CurrentCulture.TextInfo.ToLower(value);
+            value = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value); ;
+            tagString[i] = "";
+            tagString[i- diffIndex] = value;
+        }
+
+        return tagString;
+    }
 }
 
 

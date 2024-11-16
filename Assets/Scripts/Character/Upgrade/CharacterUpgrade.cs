@@ -112,6 +112,7 @@ namespace Character
 
         public void CloseSpellChoiceInterface()
         {
+            GlobalSoundManager.PlayOneShot(30, Vector3.zero);
             upgradeManager.CloseSpellChoiceUI();
             GameState.ChangeState();
             isSpellUpgradeWindowOpen = false;
@@ -137,7 +138,7 @@ namespace Character
             upgradeManager.OpenUpgradeUI(data);
 
 
-            GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
+            //GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
             GameState.ChangeState(); // Set Game in pause
 
         }

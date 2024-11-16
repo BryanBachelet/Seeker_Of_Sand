@@ -52,6 +52,8 @@ public class ArtefactsInfos : ScriptableObject
     private float lastTimeRefresh = 0;
 
 
+
+
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);

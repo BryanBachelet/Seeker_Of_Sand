@@ -10,10 +10,14 @@ public class DayCyclecontroller : MonoBehaviour
 {
     [SerializeField] public VolumeProfile volumeProfile;
     [SerializeField] public Volume volumePP;
+    [SerializeField] private CubemapParameter[] cubemapForSky;
+    [SerializeField] private AnimationCurve m_cubeMapIntensityPerHour;
     [SerializeField] private AnimationCurve m_ShadowOpacityByHour;
     VolumetricClouds vClouds;
     CloudLayer vCloudLayer;
     Exposure vExposure;
+    DepthOfField vDepthOfField;
+    PhysicallyBasedSky vSpaceEmissionTexture;
     [SerializeField] private AnimationCurve m_OpacityRByHour;
     [SerializeField] private AnimationCurve m_RotationByHour;
     [SerializeField] private AnimationCurve m_ShadowMultiplierByHour;
@@ -75,6 +79,7 @@ public class DayCyclecontroller : MonoBehaviour
 
     public bool timeByGeneration = true;
 
+    public float speed;
     // Start is called before the first frame update
     void Start()
     {
@@ -93,7 +98,8 @@ public class DayCyclecontroller : MonoBehaviour
     void Update()
     {
         //choosingArtefactStart = choosingArtefactDisplay;
-        if(menuMovement)
+
+        if (menuMovement)
         {
             staticTimeOfTheDay = m_timeOfDay;
             UpdateTime();
@@ -129,6 +135,7 @@ public class DayCyclecontroller : MonoBehaviour
         UpdateTime();
     }
 
+    
     public void UpdateTimeByStep()
     {
         time += 201.6f;
@@ -213,7 +220,7 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_sun.transform.rotation.eulerAngles.x > 180)
             {
                 StartNight();
-                //m_nightCount++;
+                
 
             }
         }
@@ -231,6 +238,9 @@ public class DayCyclecontroller : MonoBehaviour
         //m_LocalNightVolume.enabled = false;
         m_moon.gameObject.SetActive(false);
         checkNightSound = false;
+        vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[0];
+        vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
+        //vSpaceEmissionTexture.
     }
 
     private void StartNight()
@@ -247,6 +257,11 @@ public class DayCyclecontroller : MonoBehaviour
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
         m_sun.gameObject.SetActive(false);
+        if(volumePP.profile.TryGet<PhysicallyBasedSky>(out vSpaceEmissionTexture))
+        {
+            vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[1];
+            vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
+        }
     }
 
     public void CheckPhase(float hour)
@@ -416,10 +431,22 @@ public class DayCyclecontroller : MonoBehaviour
             {
                 vExposure.compensation.value = m_ExposureCompensationByHour.Evaluate(hour);
             }
+            if(m_cubeMapIntensityPerHour != null && volumePP.profile.TryGet<PhysicallyBasedSky>(out vSpaceEmissionTexture))
+            {
+                vSpaceEmissionTexture.spaceEmissionMultiplier.value = m_cubeMapIntensityPerHour.Evaluate(hour);
+            }
         }
         if (m_sun && m_colorTemperatureOverTime != null)
         {
             m_sun.colorTemperature = m_colorTemperatureOverTime.Evaluate(hour);
+        }
+    }
+
+    public void UpdateDepthOfField(bool stateEffet)
+    {
+        if(volumePP.profile.TryGet<DepthOfField>(out vDepthOfField))
+        {
+            vDepthOfField.active = stateEffet;
         }
     }
 }

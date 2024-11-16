@@ -103,7 +103,7 @@ public class AltarBehaviorComponent : InteractionInterface
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
     public bool hasBeenActivate = false;
-    private selection_Feedback m_selectionFeedback;
+    private Selection_Feedback m_selectionFeedback;
 
     #endregion Variable
 
@@ -216,7 +216,7 @@ public class AltarBehaviorComponent : InteractionInterface
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_questMarker = GetComponent<QuestMarker>();
         m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
-        m_selectionFeedback = this.GetComponent<selection_Feedback>();
+        m_selectionFeedback = this.GetComponent<Selection_Feedback>();
     }
 
 

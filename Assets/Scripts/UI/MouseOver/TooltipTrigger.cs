@@ -9,7 +9,7 @@ namespace GuerhoubaGames.UI
     [System.Serializable]
     public struct TooltipEventData
     {
-       public int index;
+        public int index;
     }
 
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
@@ -29,18 +29,25 @@ namespace GuerhoubaGames.UI
 
         public void Start()
         {
-            
+
             m_rectTransform = GetComponent<RectTransform>();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-           if(OnEnter != null) OnEnter.Invoke();
-           if(OnEnterData != null) OnEnterData.Invoke(tooltipEventData);
+            if (OnEnter != null) OnEnter.Invoke();
+            if (OnEnterData != null) OnEnterData.Invoke(tooltipEventData);
             m_coroutine = DelayCall(delay);
 
             StartCoroutine(m_coroutine);
         }
+
+        public void OnDisable()
+        {
+            if (m_coroutine != null) StopCoroutine(m_coroutine);
+            TooltipManager.Hide();
+        }
+
 
         public void OnPointerExit(PointerEventData eventData)
         {
@@ -63,16 +70,17 @@ namespace GuerhoubaGames.UI
             if (String.IsNullOrEmpty(header) && String.IsNullOrEmpty(content))
             {
                 yield return null;
-            }else
+            }
+            else
             {
                 TooltipManager.Show(displayData);
             }
 
         }
-            
 
 
-    
+
+
 
         public void OnPointerMove(PointerEventData eventData)
         {

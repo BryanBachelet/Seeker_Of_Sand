@@ -253,6 +253,7 @@ public class RoomManager : MonoBehaviour
 
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
         {
+             playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
             ActivateTeleporters();
             isTeleporterActive = true;
         }
@@ -270,7 +271,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.isStopSpawn = true;
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
-        playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+      
         if(dropGenerator != null) dropGenerator.DistributeCristalAtTheEnd();
         m_EndRoomChallengeTime = DateTime.Now;
         m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);

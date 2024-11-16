@@ -34,7 +34,7 @@ namespace Character
         public List<int> spellIndexGeneral;
         public List<int> spellIndexSpecific;
 
-        private int m_currentIndexCapsule = 0;
+        [HideInInspector] public int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;
 
         [Header("Shoot Component Setup")]
@@ -99,7 +99,7 @@ namespace Character
         public float m_lastTimeShot = 0;
         [SerializeField] private float m_TimeAutoWalk = 2;
 
-        private CharacterSpellBook m_characterSpellBook;
+        [HideInInspector] public CharacterSpellBook m_characterSpellBook;
         private CharacterDash m_characterDash;
 
         public delegate void OnHit(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
@@ -476,7 +476,7 @@ namespace Character
             if (ctx.performed && state.isPlaying)
             {
                 StartCasting();
-                gsm.CanalisationParameterLaunch(0, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
+                //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 m_shootInput = true;
                 m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
@@ -488,7 +488,7 @@ namespace Character
                 m_shootInput = false;
                 m_shootInputActive = false;
                 CancelShoot();
-                gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
+                //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
             }
         }
@@ -506,6 +506,7 @@ namespace Character
             currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
             currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
             ChangeDecalTexture(currentSpellProfil.tagData.element);
+            gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
             //m_totalCanalisationDuration = currentSpellProfil.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
 
             //if (m_canalisationType == CanalisationBarType.ByPart)
@@ -525,6 +526,7 @@ namespace Character
         public void DeactivateCanalisation()
         {
             m_spellTimer = 0.0f;
+            //gsm.CanalisationParameterStop();
             m_uiPlayerInfos.DeactiveSpellCanalisation();
             isCasting = false;
         }
@@ -532,6 +534,7 @@ namespace Character
         public void ActivateCanalisation()
         {
             m_spellTimer = 0.0f;
+            //gsm.CanalisationParameterLaunch(0.1f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
             m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
             UpdateCanalisationBar(m_totalCanalisationDuration);
             m_activeSpellLoad = true;
@@ -551,6 +554,7 @@ namespace Character
             if (highCanalisationTest)
             {
                 m_CharacterMouvement.m_SpeedReduce = currentSpellProfil.GetFloatStat(StatType.SpeedReduce);
+                //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
                 currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
                 ChangeDecalTexture(currentSpellProfil.tagData.element);
@@ -568,6 +572,7 @@ namespace Character
                 ChangeDecalTexture(currentSpellProfil.tagData.element);
                 if (m_spellTimer >= currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
                 {
+                    //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                     m_activeSpellLoad = false;
                     m_isShooting = false;
                     m_spellTimer = m_totalCanalisationDuration;
@@ -641,6 +646,7 @@ namespace Character
             {
                 ShootAttack(m_currentIndexCapsule, ref currentShotNumber, ref m_canEndShot);
                 m_stackingClock[m_currentRotationIndex].RemoveStack();
+                gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
             }
 
 
@@ -946,7 +952,7 @@ namespace Character
             if (!m_canShoot) return;
 
             currentShotNumber = 0;
-
+            //gsm.CanalisationParameterStop();
             ChangeDecalTexture(GameElement.NONE);
             m_characterAim.vfxCast.SetFloat("Progress", 0);
             m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
@@ -954,7 +960,7 @@ namespace Character
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
-            gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
+
 
             if (!m_activeSpellLoad)
             {
@@ -972,8 +978,14 @@ namespace Character
             lastElement = currentSpellProfil.tagData.element;
             currentSpellProfil = spellProfils[m_currentIndexCapsule];
             ChangeVfxElement(((int)lastElement));
+            if (!m_shootInput) 
+            { 
+                m_shootInputActive = false; 
+                //gsm.CanalisationParameterStop(); 
+            }
+            //else gsm.CanalisationParameterLaunch(0.1f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
 
-            if (!m_shootInput) m_shootInputActive = false;
+
             m_canShoot = false;
             m_isShooting = true;
             m_hasBeenLoad = false;
@@ -1002,10 +1014,10 @@ namespace Character
         {
             for (int i = 0; i < ((int)GameElement.EARTH); i++)
             {
-                if (i == elementIndex - 1)
+                if (i == elementIndex)
                 {
-                    vfxElementSign[i].SetActive(true);
-                    lastElementToUse = vfxElementSign[i];
+                    vfxElementSign[i-1].SetActive(true);
+                    lastElementToUse = vfxElementSign[i-1];
                 }
                 else
                 {
@@ -1078,7 +1090,7 @@ namespace Character
             {
 
                 if (m_canalisationType == CanalisationBarType.ByPart) m_spellLaunchTime -= 1;
-                gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element + 0.5f);
+
 
                 m_timerBetweenShoot = 0.0f;
                 if (m_canEndShot)
@@ -1352,7 +1364,7 @@ namespace Character
             if (ctx.performed)
             {
                 int indexAim = (int)m_aimModeState;
-                gsm.CanalisationParameterStop();
+                //gsm.CanalisationParameterStop();
                 indexAim++;
 
                 if (indexAim == 3) indexAim = 0;

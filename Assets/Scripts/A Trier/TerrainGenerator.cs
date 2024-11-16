@@ -133,7 +133,8 @@ public class TerrainGenerator : MonoBehaviour
         previousTerrain = terrainInstantiated;
         terrainInstantiated.Clear();
         int randomNextTerrainNumber = Random.Range(1, 4);
-        int positionNewTerrain = 1500 * TerrainGenerator.roomGeneration_Static + terrainInstantiated.Count;
+            int generation = TerrainGenerator.roomGeneration_Static % 2;
+        int positionNewTerrain = 1500 * generation + terrainInstantiated.Count;
 
         GuerhoubaTools.LogSystem.LogMsg("The next hour is " + dayController.GetNextHour().ToString());
 

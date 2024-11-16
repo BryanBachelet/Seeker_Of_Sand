@@ -251,7 +251,7 @@ MonoBehaviour:
   m_vfxHitFeedback: {fileID: 2575186347912425037, guid: 69a1bec963035b943bda3a2bfb1f638f,
     type: 3}
   timeBeforeDestruction: 2
-  hasDeathAnimation: 0
+  hasDeathAnimation: 1
   xpToDrop: 5
   targetData:
     target: {fileID: 0}
@@ -259,7 +259,8 @@ MonoBehaviour:
     isMoving: 0
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
-  m_EnemyAnimatorDissolve: {fileID: 0}
+  m_EnemyAnimatorDissolve: {fileID: 1575469636531619741}
+  m_DeathTagState: Death
   m_SkinMeshRenderer: {fileID: 4333177854473765387}
   m_materialList: []
   materialCutout: 0000000002000000
@@ -270,26 +271,26 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 4.305747
-      outSlope: 4.305747
+      inSlope: 0.005613961
+      outSlope: 0.005613961
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.06502937
-      value: 0.28
-      inSlope: -0.07479343
-      outSlope: -0.07479343
+      time: 0.29958603
+      value: 0.0016818643
+      inSlope: 0.027566513
+      outSlope: 0.027566513
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.09352682
+      inWeight: 0.38491908
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.7700777
-      outSlope: 0.7700777
+      inSlope: 1.4253259
+      outSlope: 1.4253259
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -698,6 +699,8 @@ MonoBehaviour:
   raycastOffset: {x: 0, y: 0, z: 0}
   raycastHitPoint: {x: 0, y: 0, z: 0}
   isRaycastDebug: 0
+  lagRaycastTargetTime: 0.5
+  speedRaycast: 0
   variantePrecision: 0
   rangeVariante: 1
   isInAttackSequence: 0
@@ -1413,6 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0998c239c44d56447a1e7695b4fbb352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDestroyNotActive: 0
 --- !u!1001 &2010952087627654080
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1674,6 +1678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0998c239c44d56447a1e7695b4fbb352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDestroyNotActive: 0
 --- !u!1001 &3410280465912584062
 PrefabInstance:
   m_ObjectHideFlags: 0

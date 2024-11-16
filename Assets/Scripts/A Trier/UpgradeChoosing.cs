@@ -101,9 +101,9 @@ public class UpgradeChoosing : MonoBehaviour
     {
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
         m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
+        GlobalSoundManager.PlayOneShot(31, Vector3.zero);
 
-     
-        
+
         for (int i = 0; i < upgradeSelectable.Length; i++)
         {
             if (i != index)
@@ -179,7 +179,7 @@ public class UpgradeChoosing : MonoBehaviour
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
         UpgradeObject stats = m_upgradeLevelingData.upgradeChoose[index];
 
-
+        GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         string textStatUpgrade = "";
         for (int i = 0; i < spellProfil.statDatas.Count; i++)
         {

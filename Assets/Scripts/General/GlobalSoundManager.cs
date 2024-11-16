@@ -55,14 +55,14 @@ public class GlobalSoundManager : MonoBehaviour
     public static void PlayOneShot(int sNumber, Vector3 position)
     {
 
-        if(sNumber>= OneS_Sound.Length)
+        if (sNumber >= OneS_Sound.Length)
         {
-          //  Debug.LogError("[FMOD] Event not found because the number calls is out of  bound ");
+            //  Debug.LogError("[FMOD] Event not found because the number calls is out of  bound ");
             return;
-        } 
-            
+        }
+
         try
-        {   
+        {
             RuntimeManager.PlayOneShot(OneS_Sound[sNumber], position);
         }
         catch (EventNotFoundException)
@@ -89,7 +89,7 @@ public class GlobalSoundManager : MonoBehaviour
     public IEnumerator StartAmbiant(float delay)
     {
         yield return new WaitForSeconds(delay);
-        globalinstance = RuntimeManager.CreateInstance(Globalsound); 
+        globalinstance = RuntimeManager.CreateInstance(Globalsound);
         //globalinstance.start();
         //globalinstance.setVolume(1);
         //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
@@ -116,11 +116,15 @@ public class GlobalSoundManager : MonoBehaviour
 
     public void CanalisationParameterLaunch(float canalisationState, float element)
     {
-        canalisationInstance = RuntimeManager.CreateInstance(canalisationReference);
+        if (!canalisationInstance.isValid())
+        {
+            canalisationInstance = RuntimeManager.CreateInstance(canalisationReference);
+            RuntimeManager.AttachInstanceToGameObject(canalisationInstance, this.gameObject);
+            canalisationInstance.start();
+        }
         canalisationInstance.setParameterByName("CanalisationState", canalisationState);
-        //Debug.Log(element);
         canalisationInstance.setParameterByName("Element", element);
-        canalisationInstance.start();
+
     }
 
     public void CanalisationParameterStop()
@@ -132,7 +136,7 @@ public class GlobalSoundManager : MonoBehaviour
 
     static public void SwitchAmbiantToMarchand(bool activeMarchand)
     {
-        if(activeMarchand)
+        if (activeMarchand)
         {
             thisGSM.ActiveMarchand();
         }

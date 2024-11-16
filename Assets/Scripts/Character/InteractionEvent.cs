@@ -5,6 +5,10 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
+
+/// <summary>
+/// Manage Player interaction with the world environement 
+/// </summary>
 public class InteractionEvent : MonoBehaviour
 {
     [SerializeField] private float radiusInteraction;
@@ -54,13 +58,14 @@ public class InteractionEvent : MonoBehaviour
     public GameObject hintInputInteraction;
 
     private Character.CharacterMouvement m_characterMouvement;
+
+    #region Unity Functions
     // Start is called before the first frame update
     void Start()
     {
         lastInteractionCheck = 0;
-        //ui_RectTransformHintInteraction = ui_HintInteractionObject.transform.parent.GetComponent<RectTransform>();
-        //parentHintTransform = ui_RectTransformHintInteraction;
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+      
     }
 
     // Update is called once per frame
@@ -73,18 +78,29 @@ public class InteractionEvent : MonoBehaviour
             if (currentInteractibleObjectActive == null) { NearPossibleInteraction(col); }
             NearTrader();
             NearArtefact();
+            if(colliderProche.Length <= 0)
+            {
+                if (hintInputInteraction.activeSelf)
+                {
+                    hintInputInteraction.SetActive(false);
+                }
+            }
             lastInteractionCheck = Time.time;
         }
+
         if (currentInteractibleObject != null)
         {
             CalculateWorldPosition(currentInteractibleObject);
         }
+
         else if (lastArtefact != null)
         {
             CalculateWorldPosition(lastArtefact.gameObject);
         }
     }
+    #endregion
 
+    #region Finding Functions
     public void FindInteractiveElementAround(Collider[] col)
     {
         if (col.Length == 0)
@@ -196,7 +212,7 @@ public class InteractionEvent : MonoBehaviour
                 }
             }
 
-            selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
+            Selection_Feedback selection = currentInteractibleObject.GetComponent<Selection_Feedback>();
             if(currentInteractibleObject.GetComponent<AltarBehaviorComponent>())
             {
                 if (selection != null && !currentInteractibleObject.GetComponent<AltarBehaviorComponent>().hasBeenActivate) { selection.ChangeLayerToSelection(); }
@@ -218,13 +234,17 @@ public class InteractionEvent : MonoBehaviour
                 hintInputInteraction.SetActive(false);
             }
             //bandeDiscussion.SetBool("NearNPC", false);
-            selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
+            Selection_Feedback selection = currentInteractibleObject.GetComponent<Selection_Feedback>();
             if (selection != null) { selection.ChangeLayerToDefault(); }
             currentInteractibleObject = null;
             m_socleTransform = null;
             //StartCoroutine(CloseUIWithDelay(2));
         }
     }
+
+    #endregion
+
+    #region Input Functions
 
     public void ActionInteraction(InputAction.CallbackContext ctx)
     {
@@ -234,6 +254,7 @@ public class InteractionEvent : MonoBehaviour
             if (currentInteractionInterface != null)
             {
                 currentInteractionInterface.CallOpenInteraction(this.gameObject);
+
                 if (currentInteractionInterface.hasClosePhase)
                 {
                     saveInteractionInterface = currentInteractionInterface;
@@ -265,7 +286,6 @@ public class InteractionEvent : MonoBehaviour
 
         }
     }
-
 
     public void GeneralInputInteraction(InputAction.CallbackContext ctx)
     {
@@ -299,7 +319,9 @@ public class InteractionEvent : MonoBehaviour
         }
     }
 
+    #endregion
 
+    #region Near Functions
     public void NearTrader()
     {
         Collider[] col = Physics.OverlapSphere(transform.position, rangeTrader, traderLayer);
@@ -422,6 +444,9 @@ public class InteractionEvent : MonoBehaviour
         lastArtefact = artefact;
         m_lastArtefactAnimator = artefact.GetComponent<Animator>();
     }
+    #endregion
+
+    #region UI Functions
     public IEnumerator CloseUIWithDelay(float time)
     {
         m_lastHintAnimator.SetBool("InteractionOn", false);
@@ -445,4 +470,6 @@ public class InteractionEvent : MonoBehaviour
         //now you can set the position of the ui element
         //parentHintTransform.anchoredPosition = WorldObject_ScreenPosition + offsetPopUpDisplay;
     }
+    #endregion
+
 }

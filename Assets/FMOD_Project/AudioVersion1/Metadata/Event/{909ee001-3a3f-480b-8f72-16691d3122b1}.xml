@@ -58,13 +58,10 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{8dcdad8d-363b-43d4-83b8-053846f01730}">
 		<property name="maxVoices">
-			<value>6</value>
-		</property>
-		<property name="voiceStealing">
-			<value>4</value>
+			<value>18</value>
 		</property>
 		<property name="maximumDistance">
-			<value>500</value>
+			<value>800</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{b3bc61a7-23cd-4f9c-bf3a-64752a240ccf}" />
@@ -102,6 +99,12 @@
 		<property name="length">
 			<value>2.5</value>
 		</property>
+		<property name="pitch">
+			<value>5</value>
+		</property>
+		<relationship name="modulators">
+			<destination>{ae4ad080-8f7a-400c-924c-29038df10472}</destination>
+		</relationship>
 		<relationship name="fadeInCurve">
 			<destination>{05b4ee6e-850d-40b0-958f-62a202540439}</destination>
 		</relationship>
@@ -114,7 +117,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{d8df3421-5448-4eae-96b3-c73a5b3d1c06}">
 		<property name="volume">
-			<value>-22.5</value>
+			<value>-6.5</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -137,6 +140,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{523c171e-9ffb-435f-813a-8e0fe5c165c3}" />
 	<object class="MixerBusFader" id="{7eb46211-89d6-44cf-bd31-3f56ac50d91d}" />
+	<object class="RandomizerModulator" id="{ae4ad080-8f7a-400c-924c-29038df10472}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>34.5</value>
+		</property>
+	</object>
 	<object class="FadeCurve" id="{05b4ee6e-850d-40b0-958f-62a202540439}">
 		<relationship name="startPoint">
 			<destination>{c8ba60c7-ee59-4bfe-bfe0-9baa0ecb1bca}</destination>
@@ -180,7 +191,7 @@
 	</object>
 	<object class="AutomationPoint" id="{a7663dc5-6f18-4b3c-8724-2b1f2dda44c1}">
 		<property name="position">
-			<value>1</value>
+			<value>0.90000000000000002</value>
 		</property>
 		<property name="value">
 			<value>1</value>

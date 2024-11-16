@@ -29,12 +29,13 @@ public class ChooseSpellManager : MonoBehaviour
     public GameObject[] vfxHolder = new GameObject[3];
     public List<GameObject> vfxLastChooseSpell = new List<GameObject>();
     public PopupFunction[] popupFunction = new PopupFunction[3];
-    public TMP_Text name;
-    public TMP_Text description;
+    public TMP_Text spellName;
+    public TMP_Text spellDescription;
     public Image iconSpell;
     private PopupFunction lastSpell = null;
     public GameObject descriptionHolder = null;
     private Animator descriptionHolderAnimator;
+    public TMPro.TMP_Text[] tagText = new TMPro.TMP_Text[3];
     public bool overable = false;
     public TMP_Text textSpellFeedback;
     [HideInInspector] public UpgradeManager m_upgradeManagerComponenet;
@@ -242,15 +243,26 @@ public class ChooseSpellManager : MonoBehaviour
 
     public void SpellOverring(int spellIndex, PopupFunction popup)
     {
-        if (lastSpell == popup) return;
+        if (lastSpell == popup && descriptionHolder.activeSelf)  return;
         if (!overable) return;
         descriptionHolder.SetActive(true);
         if (descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", true); }
         lastSpell = popup;
-        name.text = newSpell[spellIndex].name;
-        description.text = newSpell[spellIndex].description;
+        spellName.text = newSpell[spellIndex].name;
+        string[] tagLines = newSpell[spellIndex].tagData.GetUIInfosValue();
+        for (int i = 0; i < tagText.Length; i++)
+        {
+            tagText[i].text = tagLines[i];
+        }
+        spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
         iconSpell.sprite = newSpell[spellIndex].spell_Icon;
         //description.text = popup.des
+    }
+
+
+    public void CloseSpellChoiceUI()
+    {
+        SpellOverringExit();
     }
 
     public void SpellOverringExit()

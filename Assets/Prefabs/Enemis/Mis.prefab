@@ -186,10 +186,11 @@ MonoBehaviour:
     isMoving: 0
   m_hasChangeTarget: 0
   m_entityAnimator: {fileID: 0}
-  m_EnemyAnimatorDissolve: {fileID: 0}
+  m_EnemyAnimatorDissolve: {fileID: 6510595331865229320}
+  m_DeathTagState: Death
   m_SkinMeshRenderer: {fileID: 8116202626656758238}
   m_materialList: []
-  materialCutout: 01000000
+  materialCutout: 00000000
   materialEmissive: 000000000200000003000000
   cutoutProgress:
     serializedVersion: 2
@@ -197,26 +198,26 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 4.305747
-      outSlope: 4.305747
+      inSlope: 0.005613961
+      outSlope: 0.005613961
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.06502937
-      value: 0.28
-      inSlope: -0.07479343
-      outSlope: -0.07479343
+      time: 0.29958603
+      value: 0.0016818643
+      inSlope: 0.027566513
+      outSlope: 0.027566513
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.09352682
+      inWeight: 0.38491908
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.7700777
-      outSlope: 0.7700777
+      inSlope: 1.4253259
+      outSlope: 1.4253259
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -507,6 +508,8 @@ MonoBehaviour:
   raycastOffset: {x: 0, y: 0, z: 0}
   raycastHitPoint: {x: 0, y: 0, z: 0}
   isRaycastDebug: 0
+  lagRaycastTargetTime: 0.5
+  speedRaycast: 0
   variantePrecision: 0
   rangeVariante: 1
   isInAttackSequence: 0
@@ -891,6 +894,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.0000006776157
       objectReference: {fileID: 0}
+    - target: {fileID: -614748709264589755, guid: b3198d862ec5bf849b8f385f925aec47,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6808922
+      objectReference: {fileID: 0}
+    - target: {fileID: -614748709264589755, guid: b3198d862ec5bf849b8f385f925aec47,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6808922
+      objectReference: {fileID: 0}
+    - target: {fileID: -614748709264589755, guid: b3198d862ec5bf849b8f385f925aec47,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6808922
+      objectReference: {fileID: 0}
     - target: {fileID: 427659053400134494, guid: b3198d862ec5bf849b8f385f925aec47,
         type: 3}
       propertyPath: m_Mesh
@@ -1044,6 +1062,11 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 016c1788f4ba5da45a99e7155d8fe43c, type: 2}
     - target: {fileID: 641077826031822602, guid: ee096162905c4df44b38c1af21a43254,
         type: 3}
+      propertyPath: m_UpdateMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 641077826031822602, guid: ee096162905c4df44b38c1af21a43254,
+        type: 3}
       propertyPath: m_ApplyRootMotion
       value: 1
       objectReference: {fileID: 0}
@@ -1151,6 +1174,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3112950702439848147, guid: ee096162905c4df44b38c1af21a43254,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3710130723461108427, guid: ee096162905c4df44b38c1af21a43254,
         type: 3}
