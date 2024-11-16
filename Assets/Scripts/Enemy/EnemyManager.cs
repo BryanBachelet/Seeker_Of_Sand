@@ -73,6 +73,8 @@ namespace Enemies
         [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
 
         public int countEnemySpawnMaximum;
+
+        public Transform AstrePositionReference;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
