@@ -276,6 +276,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!spellChoiceUI) return;
 
+        //GlobalSoundManager.PlayOneShot(30, Vector3.zero);
 
         if (book_Animator != null) book_Animator.SetBool("BookOpen", false);
         float time = Time.time;

@@ -219,6 +219,7 @@ public class ChooseSpellManager : MonoBehaviour
     public void Choose(int indexChoice)
     {
         ActivateChoiceAnimation();
+        GlobalSoundManager.PlayOneShot(31, Vector3.zero);
         for (int i = 0; i < vfxHolder.Length; i++)
         {
             if (i != indexChoice)
@@ -256,6 +257,7 @@ public class ChooseSpellManager : MonoBehaviour
         }
         spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
         iconSpell.sprite = newSpell[spellIndex].spell_Icon;
+        GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         //description.text = popup.des
     }
 

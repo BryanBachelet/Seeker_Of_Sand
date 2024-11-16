@@ -33,7 +33,9 @@ public class BossRoom : MonoBehaviour
         m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
         m_bossHealth.SetupLife(bossLife + 50 * enemyManager.m_characterUpgrade.avatarUpgradeList.Count);
         bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
-        bossCamera.StartCamera(Camera.main,bossInstance.transform.GetChild(0));
+        bossCamera.StartCamera(Camera.main,bossInstance.transform.GetChild(0), centerTransform.position);
+        Vector3 posRef = enemyManager.AstrePositionReference.position;
+        bossInstance.transform.GetChild(0).transform.position = posRef;
 
     }
 
