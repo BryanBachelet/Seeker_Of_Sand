@@ -76,7 +76,7 @@ namespace Enemies
         {
             attackComponent.ResetComponent();
 
-           
+            transform.rotation = Quaternion.identity;
             if(behaviorTreeComponent.isFirstSpawn)
             {
                 behaviorTreeComponent.Init();
