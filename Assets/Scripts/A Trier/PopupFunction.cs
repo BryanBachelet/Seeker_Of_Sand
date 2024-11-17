@@ -12,7 +12,7 @@ public class PopupFunction : MonoBehaviour, IPointerEnterHandler
     // Start is called before the first frame update
     void Start()
     {
-        if(spellManager != spellManagerPublic)
+        if (spellManager != spellManagerPublic)
         {
             spellManager = spellManagerPublic;
         }
@@ -24,7 +24,7 @@ public class PopupFunction : MonoBehaviour, IPointerEnterHandler
 
         bool isSelected = EventSystem.current.currentSelectedGameObject == this.gameObject;
 
-        if(isSelected)
+        if (isSelected)
         {
             overring = true;
             spellManager.SpellOverring(popupIndex, this);
@@ -37,4 +37,9 @@ public class PopupFunction : MonoBehaviour, IPointerEnterHandler
         spellManager.SpellOverring(popupIndex, this);
     }
 
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        overring = false;
+    }
 }

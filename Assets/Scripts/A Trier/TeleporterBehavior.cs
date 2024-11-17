@@ -55,7 +55,12 @@ public class TeleporterBehavior : MonoBehaviour
         apparitionVFX.Play();
         if(isTimePassing) dayController.UpdateTimeByStep();
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
-
+        if (dayController.newDay)
+        {
+            cameraFadeFunction.LaunchFadeOut(true, 0.25f);
+            cameraFadeFunction.dayTextAnimator.SetTrigger("NewDay");
+        }
+        else { cameraFadeFunction.LaunchFadeOut(true, 1); cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay"); }
         nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
     }
 }
