@@ -19,6 +19,7 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private Image[] m_nightCompletionFill = new Image[3];
     [SerializeField] private GameObject[] m_nightCompleted;
     [SerializeField] private GameObject fixeElement;
+    [SerializeField] private int m_spelltDisplayCount = 4;
     [SerializeField] private GameObject[] m_spellDetail = new GameObject[4];
     [SerializeField] private TMP_Text[] m_spellDetailUpgrades = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailTier = new TMP_Text[4];
@@ -26,6 +27,7 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text[] m_spellDetailName = new TMP_Text[4];
     [SerializeField] private Image[] m_spellDetailImage = new Image[4];
 
+    [SerializeField] private int m_fragmentDisplayCount = 3;
     [SerializeField] private GameObject[] m_fragmentDetails = new GameObject[2];
     [SerializeField] private TMP_Text[] m_fragmentDetailDamages = new TMP_Text[2];
     [SerializeField] private TMP_Text[] m_fragmentDetailName = new TMP_Text[2];
@@ -78,7 +80,7 @@ public class UIEndScreen : MonoBehaviour
         m_durationGameText.text = ConvertGameTimeToString((int)stats.durationGame);
         //StartDisplayStat();
         SpellLink(characterShoot.spellProfils);
-        FragmentLink(characterShoot.GetComponent<CharacterArtefact>().GetMostDamageArtefactInfo(2));
+        FragmentLink(characterShoot.GetComponent<CharacterArtefact>().GetMostDamageArtefactInfo(m_fragmentDisplayCount));
         if (GameState.instance.IsGamepad()) 
             UITools.instance.SetUIObjectSelect(FirstMenuButtonObject);
     }
@@ -170,16 +172,16 @@ public class UIEndScreen : MonoBehaviour
     {
         float artefactCount = 0;
 
-        if (artefactsInfos.Length < 2)
+        if (artefactsInfos.Length < m_fragmentDisplayCount)
         {
             artefactCount = artefactsInfos.Length;
         }
         else
         {
-            artefactCount = 2;
+            artefactCount = m_fragmentDisplayCount;
         }
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < m_fragmentDisplayCount; i++)
         {
             if(i<artefactCount)
             {
@@ -202,17 +204,17 @@ public class UIEndScreen : MonoBehaviour
         int[] ennemyKilledbySpell = new int[spellProfils.Count];
         int[] upgradeAddedBySpell = new int[spellProfils.Count];
         spellCount = 0;
-        if (spellProfils.Count < 4)
+        if (spellProfils.Count < m_spelltDisplayCount)
         {
             spellCount = spellProfils.Count;
         }
         else
         {
-            spellCount = 4;
+            spellCount = m_spelltDisplayCount;
         }
 
         GameStats.instance.ShowDamageLog();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < m_spelltDisplayCount; i++)
         {
             if (i < spellCount)
             {
