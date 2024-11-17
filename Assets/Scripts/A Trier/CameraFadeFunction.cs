@@ -22,7 +22,7 @@ public class CameraFadeFunction : MonoBehaviour
     void Start()
     {
         fadeMat = fadeObject.material;
-        fadeOutActivation = true;
+        LaunchFadeOut(true, 2);
     }
 
     // Update is called once per frame
@@ -43,13 +43,14 @@ public class CameraFadeFunction : MonoBehaviour
         {
             if(fadeProgress < 0.99f)
             {
-                fadeProgress += Time.deltaTime * fadeSpeed;
+                fadeProgress += Time.deltaTime * (1 / fadeSpeed);
             }
             else
             {
                 fadeProgress = 1;
                 fadeInActive = false;
                 tpBehavior.ActivationTeleportation();
+                LaunchFadeOut(true, 1);
 
 
             }
@@ -79,5 +80,17 @@ public class CameraFadeFunction : MonoBehaviour
     private void ChangeFadeAlpha(float alphaValue)
     {
         fadeMat.SetColor("_UnlitColor", new Color(0,0,0,alphaValue));
+    }
+
+    public void LaunchFadeIn(bool stateFade, float speedFade)
+    {
+        fadeInActivation = stateFade;
+        fadeSpeed = speedFade;
+    }
+
+    public void LaunchFadeOut(bool stateFade, float speedFade)
+    {
+        fadeOutActivation = stateFade;
+        fadeSpeed = speedFade;
     }
 }

@@ -306,7 +306,7 @@ public class TerrainGenerator : MonoBehaviour
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         RoomManager roomManager = terrainInstantiated[selectedTerrain].GetComponentInChildren<RoomManager>();
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
-        cameraFadeFunction.fadeInActivation = true;
+        cameraFadeFunction.LaunchFadeIn(true, 1);
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
         //dayController.UpdateTimeByStep();
