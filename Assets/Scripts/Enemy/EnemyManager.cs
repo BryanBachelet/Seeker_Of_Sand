@@ -262,7 +262,7 @@ namespace Enemies
             if (spawningPhase)
             {
 
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static);
                 SpawnCooldown();
             }
 
@@ -685,8 +685,18 @@ namespace Enemies
             }
             else
             {
-                bool canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                bool canSpawn = false;
+                if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 2)
+                {
+                    canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 2); 
+                }
+                else
+                {
+                    canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                }
                 return canSpawn;
+
+
             }
         }
 
@@ -957,7 +967,7 @@ namespace Enemies
                 debugdata = debugdata + " , " + dataTransformed[i];
 
             }
-            m_MaxUnitControl = tempAnimationCurve;
+            //m_MaxUnitControl = tempAnimationCurve;
             //Debug.Log(debugdata);
 
         }
