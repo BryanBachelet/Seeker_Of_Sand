@@ -33,10 +33,14 @@ namespace Artefact
         }
         public void Start()
         {
-            m_hasBeenInit = true;
-            m_artefactData = GetComponent<ArtefactData>();
-            m_pullingMetaData = GetComponent<PullingMetaData>();
-            m_artefactData.OnSpawn += InitArtefact;
+            if (!m_hasBeenInit)
+            {
+                m_artefactData = GetComponent<ArtefactData>();
+                m_pullingMetaData = GetComponent<PullingMetaData>();
+                m_artefactData.OnSpawn += InitArtefact;
+                m_hasBeenInit = true;
+            }
+
             if (hasSound) GlobalSoundManager.PlayOneShot(indexSound, transform.position);
         }
 
@@ -55,7 +59,7 @@ namespace Artefact
 
             if (enemies.Length == 0)
             {
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
 
@@ -71,7 +75,7 @@ namespace Artefact
 
             if (enemies.Length == 0)
             {
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
 
@@ -88,7 +92,7 @@ namespace Artefact
             }
             if (indexEnemy == -1)
             {
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
 
@@ -102,5 +106,21 @@ namespace Artefact
             DamageStatData damageStatData = new DamageStatData(m_damage, m_artefactData.objectType);
             if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0);
         }
+
+        private void DestroyObject()
+        {
+            PullingMetaData pullingMetaData = GetComponent<PullingMetaData>();
+            if (GamePullingSystem.instance != null && pullingMetaData != null)
+            {
+                GamePullingSystem.instance.ResetObject(this.gameObject, pullingMetaData.id);
+            }
+            else
+            {
+                
+                Destroy(this.gameObject);
+            }
+        }
+
+
     }
 }
