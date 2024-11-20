@@ -33,7 +33,8 @@ public class ManageIntroGameMenu : MonoBehaviour
             lensFlaresun.elements[3].localIntensity = 0;
 
         }
-        StartCoroutine(ActiveMenuDelay(5.1f));
+        GlobalSoundManager.PlayOneShot(0, transform.position);
+        StartCoroutine(ActiveMenuDelay(10f));
     }
     public void Update()
     {

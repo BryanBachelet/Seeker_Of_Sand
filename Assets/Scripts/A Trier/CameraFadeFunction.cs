@@ -18,11 +18,14 @@ public class CameraFadeFunction : MonoBehaviour
 
     public TeleporterBehavior tpBehavior;
     public Animator bandeNoir;
+
+    public Animator dayTextAnimator;
+
     // Start is called before the first frame update
     void Start()
     {
         fadeMat = fadeObject.material;
-        fadeOutActivation = true;
+        LaunchFadeOut(true, 0.5f);
     }
 
     // Update is called once per frame
@@ -50,6 +53,7 @@ public class CameraFadeFunction : MonoBehaviour
                 fadeProgress = 1;
                 fadeInActive = false;
                 tpBehavior.ActivationTeleportation();
+                //LaunchFadeOut(true, 1);
 
 
             }
@@ -71,6 +75,7 @@ public class CameraFadeFunction : MonoBehaviour
             {
                 fadeProgress = 0;
                 fadeOutActive = false;
+                //dayTextAnimator.ResetTrigger("NewDay");
             }
             ChangeFadeAlpha(fadeProgress);
         }
@@ -79,5 +84,18 @@ public class CameraFadeFunction : MonoBehaviour
     private void ChangeFadeAlpha(float alphaValue)
     {
         fadeMat.SetColor("_UnlitColor", new Color(0,0,0,alphaValue));
+    }
+
+    public void LaunchFadeIn(bool stateFade, float speedFade)
+    {
+        fadeInActivation = stateFade;
+        fadeSpeed = speedFade;
+    }
+
+    public void LaunchFadeOut(bool stateFade, float speedFade)
+    {
+
+        fadeOutActivation = stateFade;
+        fadeSpeed = speedFade;
     }
 }

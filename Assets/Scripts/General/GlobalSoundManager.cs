@@ -38,12 +38,15 @@ public class GlobalSoundManager : MonoBehaviour
     public float delayMusic = 0;
 
     private static GlobalSoundManager thisGSM;
+
+    public bool menuMute;
     // Start is called before the first frame update
     void Awake()
     {
         thisGSM = this.gameObject.GetComponent<GlobalSoundManager>();
         everyEvent = everyEvent_Attribution;
         OneS_Sound = OneS_Sound_Attribution;
+
         StartCoroutine(StartAmbiant(delayMusic));
 
     }
@@ -89,25 +92,34 @@ public class GlobalSoundManager : MonoBehaviour
     public IEnumerator StartAmbiant(float delay)
     {
         yield return new WaitForSeconds(delay);
-        globalinstance = RuntimeManager.CreateInstance(Globalsound);
-        //globalinstance.start();
-        //globalinstance.setVolume(1);
-        //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
-        ////globalMusicInstance.start();
-        //globalMusicInstance.setVolume(1);
-        musicIntensityInstance = RuntimeManager.CreateInstance(musicIntensity);
-        musicIntensityInstance.setVolume(1);
-        musicIntensityTransitionInstance = RuntimeManager.CreateInstance(musicIntensityTransition);
-        musicIntensityTransitionInstance.setVolume(1);
-        marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
-        //marchandMusicInstance.start();
-        marchandMusicInstance.setVolume(0);
+        if(menuMute)
+        {
+            globalinstance = RuntimeManager.CreateInstance(Globalsound);
+        }
+        else
+        {
+            globalinstance = RuntimeManager.CreateInstance(Globalsound);
+            //globalinstance.start();
+            //globalinstance.setVolume(1);
+            //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
+            ////globalMusicInstance.start();
+            //globalMusicInstance.setVolume(1);
+            musicIntensityInstance = RuntimeManager.CreateInstance(musicIntensity);
+            musicIntensityInstance.setVolume(1);
+            musicIntensityTransitionInstance = RuntimeManager.CreateInstance(musicIntensityTransition);
+            musicIntensityTransitionInstance.setVolume(1);
+            marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
+            //marchandMusicInstance.start();
+            marchandMusicInstance.setVolume(0);
+
+        }
         StartAmbiantNoDelay();
+
     }
 
     public void OnDisable()
     {
-        //globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntensityInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntensityTransitionInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -157,20 +169,30 @@ public class GlobalSoundManager : MonoBehaviour
 
     public void StartAmbiantNoDelay()
     {
+        if(menuMute)
+        {
+            globalinstance.start();
+            globalinstance.setVolume(1);
+        }
+        else
+        {
+            globalinstance.start();
+            globalinstance.setVolume(1);
+            musicIntensityInstance.start();
+            musicIntensityInstance.setVolume(1);
+            UpdateParameter(0.1f, "Intensity");
+            musicIntensityTransitionInstance.start();
+            musicIntensityTransitionInstance.setVolume(1);
+            //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
+            marchandMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            marchandMusicInstance.setVolume(0);
+        }
         //globalinstance = RuntimeManager.CreateInstance(Globalsound);
-        globalinstance.start();
-        globalinstance.setVolume(1);
+
         //globalMusicInstance = RuntimeManager.CreateInstance(GlobalMusic);
         //globalMusicInstance.start();
         //globalMusicInstance.setVolume(1);
-        musicIntensityInstance.start();
-        musicIntensityInstance.setVolume(1);
-        UpdateParameter(0.1f, "Intensity");
-        musicIntensityTransitionInstance.start();
-        musicIntensityTransitionInstance.setVolume(1);
-        //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
-        marchandMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        marchandMusicInstance.setVolume(0);
+
     }
 
     public void StopAmbiantNoDelay()

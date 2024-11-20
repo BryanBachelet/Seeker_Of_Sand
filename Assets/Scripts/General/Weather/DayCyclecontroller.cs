@@ -80,10 +80,14 @@ public class DayCyclecontroller : MonoBehaviour
     public bool timeByGeneration = true;
 
     public float speed;
+    public bool newDay = false;
+    public TMPro.TMP_Text dayText;
     // Start is called before the first frame update
     void Start()
     {
+        //newDay = true;
         m_nightCount = 0;
+        dayText.text = "Day " + (m_nightCount + 1); 
         m_nightCountGlobal = 0;
         time = 0;
         m_orbitSpeed = 24 / (m_SettingDurationDay * 60); //on divise 24 (nombre d'heure) par le nombre de secondes qui vont s'�couler IRL.  On multiplie le nombre de minutes r�gl�e dans l'inspector par 60 pour le convertire en seconde.
@@ -208,12 +212,13 @@ public class DayCyclecontroller : MonoBehaviour
             if (m_moon.transform.rotation.eulerAngles.x > 180)
             {
                 StartDay();
-                if (m_nightCount == 9)
+                if (m_nightCount == 3)
                 {
-                    GameState.ChangeState();
+                    GameState.LaunchEndMenu();
                     m_EndUI.SetActive(true);
                 }
             }
+
         }
         else
         {
@@ -222,6 +227,10 @@ public class DayCyclecontroller : MonoBehaviour
                 StartNight();
 
 
+            }
+            else
+            {
+                newDay = false;
             }
         }
     }
@@ -245,6 +254,8 @@ public class DayCyclecontroller : MonoBehaviour
         }
         //vSpaceEmissionTexture.
         m_nightCount++;
+        dayText.text = "Day " + (m_nightCount + 1);
+        newDay = true;
     }
 
     private void StartNight()
