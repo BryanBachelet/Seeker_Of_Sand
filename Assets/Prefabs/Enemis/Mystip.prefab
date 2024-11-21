@@ -517,6 +517,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   behaviorTree: {fileID: 11400000, guid: cfaaf318d86c2624db2544685b8ca633, type: 2}
   isActivate: 0
+  isFirstSpawn: 1
 --- !u!114 &2408692065646689356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,10 +576,13 @@ MonoBehaviour:
   baseCooldownAttack: 0
   attackCooldownReduction: 0
   currentAttackState: 0
-  isActiveDebug: 0
-  raycastOffset: {x: 0, y: 10, z: 0}
+  isActiveDebug: 1
+  raycastOffset: {x: 0, y: 20, z: 0}
   raycastHitPoint: {x: 0, y: 0, z: 0}
   isRaycastDebug: 1
+  frameCount: 10
+  frameCounting: 0
+  firstPositionTarget: {x: 0, y: 0, z: 0}
   lagRaycastTargetTime: 0.5
   speedRaycast: 40
   variantePrecision: 1

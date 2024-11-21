@@ -185,6 +185,33 @@ MonoBehaviour:
   indexAttack: 0
   sequenceIndex: 0
   activeDebug: 0
+--- !u!114 &-380678322496167519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7db9ee69f758ec47b1b299b37a5654a, type: 3}
+  m_Name: SequenceNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 8310367e39d7b9f428520b473b0e8362
+  position: {x: -158, y: -8}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  debugTest: 0
+  children:
+  - {fileID: 6968689098757651121}
+  - {fileID: 8712815359533959271}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +243,8 @@ MonoBehaviour:
   - {fileID: 65164790506773487}
   - {fileID: -5427890122404291748}
   - {fileID: -7052212251765788514}
+  - {fileID: -380678322496167519}
+  - {fileID: 6968689098757651121}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -263,7 +292,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 052be234671b61f44be261d24a041753
-  position: {x: 13.00013, y: -46.550003}
+  position: {x: -76, y: -144}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -272,7 +301,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   description: 
   debugTest: 0
-  child: {fileID: 8712815359533959271}
+  child: {fileID: -380678322496167519}
 --- !u!114 &3498327051066446576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +329,31 @@ MonoBehaviour:
   child: {fileID: -947537013201296889}
   indexAttack: 0
   onlyOneTest: 1
+--- !u!114 &6968689098757651121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ded15832379dd8429d3c3b765a57c7d, type: 3}
+  m_Name: WaitNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 97faf1acf0172994d93e72767dc8afe1
+  position: {x: -308, y: 141}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  debugTest: 0
+  duration: 2
 --- !u!114 &7274446724050690473
 MonoBehaviour:
   m_ObjectHideFlags: 0
