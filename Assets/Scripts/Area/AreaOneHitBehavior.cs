@@ -83,7 +83,7 @@ namespace SpellSystem
 
                 Vector3 position = transform.position + transform.forward * halfArea.z;
 
-                collider = Physics.OverlapBox(position, halfArea, Quaternion.identity, GameLayer.instance.enemisLayerMask);
+                collider = Physics.OverlapBox(position, halfArea, transform.rotation, GameLayer.instance.enemisLayerMask);
             }
 
             for (int i = 0; i < collider.Length; i++)
@@ -133,13 +133,14 @@ namespace SpellSystem
             }
             if (areaType == AreaType.RECT)
             {
+                Gizmos.matrix =  transform.localToWorldMatrix;
                 Vector3 halfArea = new Vector3(
                     (baseSize.x * Convert.ToInt32(!Xsize)) + m_sizeArea * Convert.ToInt32(Xsize),
                     (baseSize.y* Convert.ToInt32(!Ysize)) +  m_sizeArea * Convert.ToInt32(Ysize),
                     (baseSize.z * Convert.ToInt32(!Zsize)) + m_sizeArea * Convert.ToInt32(Zsize)
                     );
 
-                Vector3 position = transform.position + transform.forward *( halfArea.z /2.0f);
+                Vector3 position = Vector3.forward *( halfArea.z /2.0f);
                 Gizmos.DrawCube(position, halfArea);
             }
         }

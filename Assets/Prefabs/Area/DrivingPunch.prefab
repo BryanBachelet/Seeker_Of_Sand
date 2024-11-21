@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 195938888011366737}
   - component: {fileID: 6186523981729738970}
   - component: {fileID: 2479156032472751511}
+  - component: {fileID: -1860740268951460654}
   m_Layer: 0
   m_Name: DrivingPunch
   m_TagString: Untagged
@@ -59,14 +60,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaType: 1
-  baseSize: {x: 5, y: 3, z: 15}
+  baseSize: {x: 15, y: 7, z: 15}
   Xsize: 0
   Ysize: 0
-  Zsize: 0
-  timeBeforeHit: 0.5
+  Zsize: 1
+  timeBeforeHit: 0
   isDebugActive: 1
   color: {r: 1, g: 1, b: 1, a: 1}
   transparency: 0.5
+  asPreviewDecal: 0
+  previewDecal: {fileID: 0}
+--- !u!114 &-1860740268951460654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700426666800491551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e94426c8c2c8d844b273270ab4b662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  id: -1
+  bIsExtraSpawn: 0
 --- !u!1001 &2156612071209732453
 PrefabInstance:
   m_ObjectHideFlags: 0

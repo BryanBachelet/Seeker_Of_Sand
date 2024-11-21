@@ -843,7 +843,7 @@ namespace Character
             Transform transformUsed = transform;
             Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, position, rot);
+            GameObject areaInstance =  GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, position);
             SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
@@ -880,7 +880,7 @@ namespace Character
             }
 
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject summonInstance = GameObject.Instantiate(spellProfil.objectToSpawn, positionToSpawn, rot);
+            GameObject summonInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, positionToSpawn, rot);
 
             SpellSystem.SummonData data = new SpellSystem.SummonData();
             data.spellProfil = spellProfil;

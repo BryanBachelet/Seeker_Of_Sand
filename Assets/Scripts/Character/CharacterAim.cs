@@ -73,6 +73,7 @@ namespace Character
         public VisualEffect vfxCastEnd;
 
         public Vector3 lastRawPosition;
+        public Transform basePosition;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
@@ -126,7 +127,6 @@ namespace Character
 
                 m_isNewTarget = true;
                 m_aimFinalPointNormal = hit.normal;
-
             }
         }
 
@@ -137,8 +137,8 @@ namespace Character
             CheckAimPointDistance();
             v3Ref.Normalize();
             m_aimFinalPoint = VerifyAimTrajectory(m_characterShoot.GetSpellProfil());
-            m_aimDirection = (m_aimFinalPoint - transform.position).normalized;
-            m_aimPointToPlayerDistance = (m_aimFinalPoint - transform.position).magnitude;
+            m_aimDirection = (m_aimFinalPoint - basePosition.position).normalized;
+            m_aimPointToPlayerDistance = (m_aimFinalPoint - basePosition.position).magnitude;
             //if(m_aimPointToPlayerDistance < distanceMinimumProjectorVisor)
             //{
                 Vector3 newpos = new Vector3(m_aimFinalPoint.x, 0, m_aimFinalPoint.z) - new Vector3(transform.position.x, 0, transform.position.z);
