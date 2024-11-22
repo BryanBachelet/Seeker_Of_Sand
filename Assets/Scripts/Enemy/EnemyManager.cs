@@ -171,6 +171,7 @@ namespace Enemies
         private EnemiesPullingSystem m_pullingSystem;
 
         public GameObject m_uiManagerGameObject;
+        public UIDispatcher uiDispatcher;
         private UI_EventManager m_UiEventManager;
 
         private AltarBehaviorComponent lastAltarActivated;
@@ -213,6 +214,7 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<EnemiesPullingSystem>();
 
+            uiDispatcher = m_uiManagerGameObject.GetComponent<UIDispatcher>();
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }

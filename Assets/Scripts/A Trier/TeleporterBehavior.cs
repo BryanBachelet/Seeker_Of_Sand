@@ -58,6 +58,7 @@ public class TeleporterBehavior : MonoBehaviour
         if (dayController.newDay)
         {
             cameraFadeFunction.LaunchFadeOut(true, 0.25f);
+            GlobalSoundManager.PlayOneShot(34, this.gameObject.transform.position);
             cameraFadeFunction.dayTextAnimator.SetTrigger("NewDay");
         }
         else { cameraFadeFunction.LaunchFadeOut(true, 1); cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay"); }
