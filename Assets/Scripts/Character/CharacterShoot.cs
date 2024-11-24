@@ -629,13 +629,14 @@ namespace Character
             if (!m_canShoot) return;
 
             //GlobalSoundManager.PlayOneShot(27, transform.position);
-            //m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
+
             m_BookAnimator.SetBool("Shooting", true);
             m_lastTimeShot = Time.time;
             m_CharacterMouvement.m_SpeedReduce = 0.25f;
             if (currentShotNumber == 0 && !m_hasBeenLoad)
             {
                 StartShoot();
+                m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
                 return;
             }
 
