@@ -94,7 +94,7 @@ namespace Enemies
         public bool isInAttackSequence;
         public int sequenceIndex = -1;
 
-
+        public bool DebugSpecificItem;
 
         #region MonoBehavior Functions
         public void Awake()
@@ -179,11 +179,11 @@ namespace Enemies
             // Setuping Attack
             int countCloseAttack = 0;
             int countRangeAttack = 0;
+  
             for (int i = 0; i < attackEnemiesObjectsArr.Length; i++)
             {
                 AttackEnemiesObject currObj = attackEnemiesObjectsArr[i];
-                if (currObj.data.customAttack != null) continue;
-
+               
                 if (currObj.data.typeAttack == AttackType.COLLIDER_OBJ)
                 {
                     currObj.data.indexCollider = countCloseAttack;

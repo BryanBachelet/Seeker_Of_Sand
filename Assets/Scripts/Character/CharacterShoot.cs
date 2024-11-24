@@ -109,8 +109,11 @@ namespace Character
         public GameObject uiManager;
         private UI_PlayerInfos m_uiPlayerInfos;
         [SerializeField] public List<Image> icon_Sprite;
+        [SerializeField] public List<Image> spell_rarity;
         [SerializeField] public List<Image> m_spellGlobalCooldown;
         [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
+
+        [SerializeField] private Sprite[] raritySprite;
 
 
         [Header("Spell Unique ")]
@@ -1359,6 +1362,18 @@ namespace Character
             return spriteArray;
         }
 
+        public int[] GetSpellLevel()
+        {
+            int[] levelArray = new int[maxSpellIndex];
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                if (spellEquip[i] == -1) continue;
+                int index = spellEquip[i];
+                levelArray[i] = m_characterSpellBook.GetAllSpells()[index].level;
+            }
+
+            return levelArray;
+        }
         public void InputChangeAimLayout(InputAction.CallbackContext ctx)
         {
             if (ctx.performed)
@@ -1375,7 +1390,19 @@ namespace Character
             }
         }
 
+        public void UpdateSpellRarityCadre(SpellSystem.SpellProfil[] spellProfilsIcon)
+        {
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                if (spellEquip[i] == -1) continue;
 
+                int index = spellEquip[i];
+                spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].level / 4];
+
+                //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
+            }
+
+        }
         public void UpdateFeedbackAimLayout()
         {
             //m_textCurrentLayout.text = "Current layout : \n" + m_aimModeState.ToString();
@@ -1396,10 +1423,13 @@ namespace Character
             CreatePullObject(clone);
             if (spellIndexGeneral.Count <= spellEquip.Length)
             {
+                icon_Sprite[spellIndexGeneral.Count-1].transform.parent.gameObject.SetActive(true);
                 spellProfils.Add(clone);
                 spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
                 m_characterSpellBook.m_spellsRotationArray[spellIndexGeneral.Count - 1] = clone;
 
+                //m_clockImage[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
+                //m_textStack[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
                 m_stackingClock[maxSpellIndex].ActiaveClock();
                 m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex], m_textStack[maxSpellIndex]);

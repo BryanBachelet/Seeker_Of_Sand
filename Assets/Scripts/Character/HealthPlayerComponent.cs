@@ -242,7 +242,16 @@ public class HealthPlayerComponent : MonoBehaviour
     {
         if (m_QuarterHealthQuantity == 0 || m_QuarterNumber == 0) return;
 
-        int indexQuarter = (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
+        int indexQuarter = 4;
+        if (m_CurrentHealth % m_QuarterHealthQuantity == 0)
+        {
+            indexQuarter = (int)m_CurrentHealth / (int)m_QuarterHealthQuantity;
+        }
+        else
+        {
+            indexQuarter = Mathf.RoundToInt((m_CurrentHealth) / (m_QuarterHealthQuantity) + 0.5f);
+        }
+        
         m_CurrentHealth = Mathf.Clamp((indexQuarter ) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
         m_CurrentQuarter = Mathf.Clamp((indexQuarter), 0, 4);
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));

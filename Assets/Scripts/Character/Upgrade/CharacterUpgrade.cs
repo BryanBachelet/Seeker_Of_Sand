@@ -148,7 +148,7 @@ namespace Character
             isUpgradeWindowOpen = false;
             ChangeBaseInterfaceDisplay(true);
             upgradeManager.CloseUpgradeUI();
-
+            m_characterShoot.UpdateSpellRarityCadre(m_characterShoot.m_characterSpellBook.GetAllSpells());
             GameState.ChangeState();
         }
 
@@ -167,26 +167,46 @@ namespace Character
 
             upgradeChoose.Apply(spellProfil);
             m_characterShoot.UpdatePullObject(spellProfil);
-            if (m_UiPlayerInfo)
-            {
-                spellProfil.level++;
-                
-                m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil.level);
-            }
             avatarUpgradeList.Add(upgradeChoose);
             if (isDebugActive)
             {
                 spellProfil.DebugStat();
             }
+            if (m_UiPlayerInfo)
+            {
+                spellProfil.level++;
+                
+                if(m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil))
+                {
+
+                }
+                else
+                {
+                    if (upgradePoint == 0 && isUpgradeWindowOpen)
+                    {
+
+                        CloseUpgradeWindow();
+                    }
+                }
+            }
+
+
+
+        }
+
+        public void OpenTierUpObject()
+        {
+
+        }
+
+        public void CloseTierUpObject()
+        {
             if (upgradePoint == 0 && isUpgradeWindowOpen)
             {
 
                 CloseUpgradeWindow();
             }
-
         }
-
-  
 
         #endregion
 

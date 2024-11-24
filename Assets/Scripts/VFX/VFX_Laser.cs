@@ -31,7 +31,8 @@ namespace GuerhoubaGames.VFX
 
 
           
-            endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
+            if(endPointTransform.gameObject.activeSelf) { endPointTransform.position = m_npcAttackComponent.raycastHitPoint; }
+
             if (m_lifeTimer.GetRatio() > 0.98f)
             {
                 vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(0));

@@ -249,8 +249,8 @@ public class DayCyclecontroller : MonoBehaviour
         checkNightSound = false;
         if (cubemapForSky.Length >= 1)
         {
-            vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[0];
-            vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
+            //vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[0];
+            //vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
         }
         //vSpaceEmissionTexture.
         m_nightCount++;
@@ -272,14 +272,14 @@ public class DayCyclecontroller : MonoBehaviour
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
         m_sun.gameObject.SetActive(false);
-        if (volumePP.profile.TryGet<PhysicallyBasedSky>(out vSpaceEmissionTexture))
-        {
-            if (cubemapForSky.Length >= 2)
-            {
-                vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[1];
-                vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
-            }
-        }
+        //if (volumePP.profile.TryGet<PhysicallyBasedSky>(out vSpaceEmissionTexture))
+        //{
+        //    if (cubemapForSky.Length >= 2)
+        //    {
+        //        //vSpaceEmissionTexture.spaceEmissionTexture = cubemapForSky[1];
+        //        //vSpaceEmissionTexture.Override(vSpaceEmissionTexture, 1);
+        //    }
+        //}
     }
 
     public void CheckPhase(float hour)

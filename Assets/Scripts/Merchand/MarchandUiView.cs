@@ -248,9 +248,9 @@ public class MarchandUiView : MonoBehaviour
 
     public void ChangeFragmentCadre(ArtefactsInfos fragmentData, int indexFragmentInShop)
     {
-        int elementIndex = (int)fragmentData.gameElement - 1;
+        int elementIndex = (int)fragmentData.gameElement;
         fragmentBackground[indexFragmentInShop].sprite = backgroundElement[elementIndex];
-        fragmentElementIcon[indexFragmentInShop].sprite = iconElement[elementIndex];
+        fragmentElementIcon[indexFragmentInShop].sprite = iconElement[elementIndex - 1];
         fragmentNameArray[indexFragmentInShop].text = fragmentData.nameArtefact;
     }
 }

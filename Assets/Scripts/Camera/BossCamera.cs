@@ -68,6 +68,7 @@ public class BossCamera : MonoBehaviour
         animator.SetBool("LaunchBoss", true);
         bandeNoir.SetBool("BossBande", true);
         timeCinematic = timeP1 + timeP2;
+        BossRoom.enemyManager.uiDispatcher.fixeGameplayUI.SetActive(false);
 
     }
 
@@ -109,7 +110,7 @@ public class BossCamera : MonoBehaviour
             }
             if (timer + 1.8f > timeCinematic)
             {
-                if (!activeDisplay) { activeDisplay = true; BossRoom.DisplayBossHealth(); camera.transform.rotation = initialRotation; }
+                if (!activeDisplay) { BossRoom.enemyManager.uiDispatcher.fixeGameplayUI.SetActive(true); activeDisplay = true; BossRoom.DisplayBossHealth(); camera.transform.rotation = initialRotation; }
                 else { }
             }
             if (timer > timeCinematic)
