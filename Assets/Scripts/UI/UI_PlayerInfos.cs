@@ -97,6 +97,18 @@ namespace SeekerOfSand
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     return true;
                 }
+                else if (spellprofil.level == 12)
+                {
+                    tierUpEffect.SetActive(true);
+                    for (int i = 0; i < vfxTierUp.Length; i++)
+                    {
+                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
+                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
+                    }
+                    tierUpAnimation.SetTrigger("UpgradeTo3");
+                    GlobalSoundManager.PlayOneShot(59, Vector3.zero);
+                    return true;
+                }
                 else
                 {
                     tierUpAnimation.ResetTrigger("UpgradeTo1");

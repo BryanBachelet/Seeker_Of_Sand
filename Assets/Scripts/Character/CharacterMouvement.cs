@@ -18,8 +18,6 @@ namespace Character
         public Vector3 direction;
     }
 
-
-
     [RequireComponent(typeof(Rigidbody))]
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
@@ -66,7 +64,7 @@ namespace Character
         public bool activeCombatModeConstant;
 
         [Header("Slide Parameters")]
-        public float accelerationSlide = 3.0f;
+        public AnimationCurve accelerationCurve;
         public float maxSpeed = 30.0f;
         public float maxSlope = 60.0f;
         public float minSlope = 5.0f;
@@ -74,11 +72,14 @@ namespace Character
         public float angularSpeed;
         public float timeAfterSliding = 0.5f;
         public float timeBeforeSliding = 0.3f;
+
         public float combatDeccelerationSpeed = 6.0f;
+        public float turningRatioOfDecceleration = 1.3f;
+
         private bool isSlidingIsActive;
         private bool m_isSlideInputActive;
         private float m_timerBeforeSliding;
-
+        public float angleMinToRotateInSlide = 3;
         private float m_slope;
         private Vector3 m_groundNormal;
         private bool m_isSave;
@@ -137,6 +138,8 @@ namespace Character
         private CharacterShoot m_characterShoot;
         public LayerMask obstacleLayerMask;
         private GuerhoubaGames.Input.DivideSchemeManager m_divideSchemeManager;
+        private bool m_isSlideRotating;
+
 
         public void InitComponentStat(CharacterStat stat)
         {
@@ -158,7 +161,7 @@ namespace Character
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
             m_divideSchemeManager = GetComponent<GuerhoubaGames.Input.DivideSchemeManager>();
-            if(m_BookAnim.GetComponent<SmoothFollow>()) { bookSmoothFollow = m_BookAnim.GetComponent<SmoothFollow>(); }
+            if (m_BookAnim.GetComponent<SmoothFollow>()) { bookSmoothFollow = m_BookAnim.GetComponent<SmoothFollow>(); }
         }
 
         private void Start()
@@ -455,6 +458,12 @@ namespace Character
                     //m_slidingEffect.SetActive(true);
                     if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
 
+                    if (m_isSlowdown && prevState == MouvementState.Slide)
+                    {
+                        m_speedLimit = m_speedData.referenceSpeed[2];
+                    }
+
+
                     break;
                 case MouvementState.Glide:
                     //m_CharacterAnim.SetBool("Shooting", true);
@@ -574,7 +583,7 @@ namespace Character
                     //if (m_divideSchemeManager.isAbleToChangeMap)
                     //{
                     //    m_divideSchemeManager.ChangeToCombatActionMap();
-                        
+
                     //}
 
                     CancelSlide();
@@ -675,6 +684,17 @@ namespace Character
                 m_speedLimit -= combatDeccelerationSpeed * Time.deltaTime;
                 currentRefSpeed = m_speedLimit;
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
+
+
+            }
+
+            if (m_isSlowdown && mouvementState == MouvementState.Slide)
+            {
+                if (isSliding)
+                {
+                    currentRefSpeed = m_speedData.referenceSpeed[2];
+                    m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                }
             }
 
             if (mouvementState == MouvementState.Glide)
@@ -690,6 +710,8 @@ namespace Character
                 m_speedData.currentSpeed = m_velMovement.magnitude;
                 return;
             }
+
+
 
             RaycastHit hit = new RaycastHit();
             float targetDistance = m_rigidbody.velocity.magnitude;
@@ -763,7 +785,7 @@ namespace Character
 
         private bool IsObstacle()
         {
-            return Physics.Raycast(transform.position, transform.forward, 3, m_objstacleLayer);
+            return Physics.Raycast(transform.position, transform.forward, 3 + m_velMovement.magnitude *Time.deltaTime, m_objstacleLayer);
         }
 
         private bool IsFasterThanSpeedReference(float speedReference)
@@ -811,11 +833,24 @@ namespace Character
 
             m_currentSlideSpeed = 0;
             isSliding = true;
-            if (m_slope < minSlope) m_currentSlideSpeed -= minDecceleration * Time.deltaTime;
-            m_currentSlideSpeed += accelerationSlide * m_slope / maxSlope * Time.deltaTime;
-            m_speedData.currentSpeed += m_currentSlideSpeed;
 
-            if (m_speedData.currentSpeed < runSpeed && m_slope < minSlope)
+            // Decceleration of slide
+            if (m_slope < minSlope)
+            {
+                float multiplyDecceleration = 1;
+                if (m_isSlideRotating)
+                {
+                    multiplyDecceleration = turningRatioOfDecceleration;
+
+                }
+                m_currentSlideSpeed -= minDecceleration * multiplyDecceleration * Time.deltaTime;
+
+            }
+
+            m_currentSlideSpeed += accelerationCurve.Evaluate(  m_slope / maxSlope )* Time.deltaTime;
+            m_speedData.currentSpeed += m_currentSlideSpeed;;
+
+            if (m_speedData.currentSpeed < runSpeed)
             {
                 isSliding = false;
                 m_currentSlideSpeed = 0.0f;
@@ -883,7 +918,7 @@ namespace Character
                     m_startRotation = transform.rotation;
                     m_prevInputDirection = inputDirection;
                     m_rotationTime = 0.0f;
-                    
+
                 }
                 else
                 {
@@ -916,7 +951,15 @@ namespace Character
 
             Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
             float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+            m_isSlideRotating = false;
+            if (Mathf.Abs(angleDir) > angleMinToRotateInSlide)
+            {
+                m_isSlideRotating = true;
+
+            }
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
+
+
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
             m_avatarTransform.localRotation = Quaternion.identity;
         }
@@ -924,7 +967,7 @@ namespace Character
 
         #region Knockback
 
-        public void SetKnockback(Vector3 attackPosition, float powerKnockback =50)
+        public void SetKnockback(Vector3 attackPosition, float powerKnockback = 50)
         {
 
             if (mouvementState == MouvementState.Knockback) return;

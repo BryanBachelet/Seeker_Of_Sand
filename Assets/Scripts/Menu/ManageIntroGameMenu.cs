@@ -18,8 +18,13 @@ public class ManageIntroGameMenu : MonoBehaviour
     public LensFlareDataSRP lensFlaresun;
 
     [SerializeField] private TMP_Text m_textName;
+
     public void Start()
     {
+        // Set Resolution
+        Screen.SetResolution(1920, 1080, true);
+
+
         if (lensFlaresun)
         {
             lensFlaresun.elements[0].localIntensity = 0;

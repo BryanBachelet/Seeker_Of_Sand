@@ -13,6 +13,7 @@ namespace Character
         [SerializeField] private float m_dashDuration = .5f;
         [SerializeField] private float m_dashCooldownDuration = 1.0f;
         [SerializeField] private LayerMask m_obstacleLayerMask;
+        [SerializeField] private LayerMask m_enemyObstacleLayerMask;
         [SerializeField] private GameObject m_playerMesh;
 
         [Header("Dash UI Feedback")]
@@ -80,7 +81,7 @@ namespace Character
 
         }
 
-        private bool CalculateDashEndPoint(float dashDistance, bool isDetermineByMouse = false) // Function that test where the player should arrive
+        private bool CalculateDashEndPoint(float dashDistance,bool isCollisionEnemy =false, bool isDetermineByMouse = false) // Function that test where the player should arrive
         {
             Vector3 m_direction = Vector3.zero;
             if (!isDetermineByMouse)
@@ -98,8 +99,14 @@ namespace Character
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
+
+            LayerMask raycastLayerMaskUse = m_obstacleLayerMask;
+            if(isCollisionEnemy)
+            {
+                raycastLayerMaskUse = m_enemyObstacleLayerMask;
+            }
             // Check if obstacle in the front of the player 
-            if (Physics.Raycast(transform.position, m_direction.normalized, out hit, dashDistance, m_obstacleLayerMask))
+            if (Physics.Raycast(transform.position, m_direction.normalized, out hit, dashDistance, raycastLayerMaskUse))
             {
                 frontPoint = hit.point;
                 m_endPoint = hit.point + hit.normal * 4.5f; ;
@@ -109,7 +116,66 @@ namespace Character
             {
                 frontPoint += m_direction.normalized * dashDistance;
                 // Check if a ground exist to dash on it
-                if (Physics.Raycast(frontPoint, Vector3.down, out hit, dashDistance, m_obstacleLayerMask))
+                if (Physics.Raycast(frontPoint, Vector3.down, out hit, dashDistance, raycastLayerMaskUse))
+                {
+                    m_endPoint = hit.point + hit.normal * 4.5f;
+
+                    return true;
+                }
+
+            }
+            return false;
+
+
+        }
+
+        public bool CalculChargeEndPoint(float dashDistance, bool isCollisionEnemy = false, bool isDetermineByMouse = false)
+        {
+            Vector3 m_direction = Vector3.zero;
+            if (!isDetermineByMouse)
+            {
+
+                m_direction = m_characterMouvement.GetDirection();
+            }
+            else
+            {
+                m_direction = m_characterAim.GetAimDirection();
+                m_direction = m_characterMouvement.OrientateWithSlopeDirection(m_direction);
+            }
+
+
+            m_startPoint = transform.position;
+            RaycastHit hit = new RaycastHit();
+            Vector3 frontPoint = transform.position;
+
+            LayerMask raycastLayerMaskUse = m_obstacleLayerMask;
+            if (isCollisionEnemy)
+            {
+                raycastLayerMaskUse = m_enemyObstacleLayerMask;
+            }
+
+            CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
+
+            Vector3 p1 =  capsuleCollider.center - new Vector3(0, capsuleCollider.height, 0);
+            Vector3 p2 = capsuleCollider.center + new Vector3(0, capsuleCollider.height, 0);
+            if (Physics.CapsuleCast(transform.position +  p1, transform.position + p2,capsuleCollider.radius, m_direction.normalized, out hit, dashDistance, raycastLayerMaskUse))
+            {
+                frontPoint = hit.point;
+                m_endPoint = hit.point + hit.normal * 4.5f + -m_direction.normalized *2.0f;
+
+                if (Physics.Raycast(m_endPoint, Vector3.down, out hit, dashDistance, m_obstacleLayerMask))
+                {
+                    m_endPoint = hit.point + hit.normal * 2;
+
+                    return true;
+                }
+                return true;
+            }
+            else
+            {
+                frontPoint += m_direction.normalized * dashDistance;
+                // Check if a ground exist to dash on it
+                if (Physics.Raycast(frontPoint, Vector3.down, out hit, dashDistance, raycastLayerMaskUse))
                 {
                     m_endPoint = hit.point + hit.normal * 4.5f;
 
@@ -194,7 +260,7 @@ namespace Character
             characterModel[1].SetActive(false);
             //characterModel[2].SetActive(true);
             //characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
-            m_isDashValid = CalculateDashEndPoint(distance, true);
+            m_isDashValid = CalculChargeEndPoint(distance, true,true);
             if (!m_isDashValid) return;
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.SpecialSpell);
             m_spellDashDistance = distance;

@@ -30,6 +30,7 @@ namespace GuerhoubaGames.AI
             }
             else
             {
+                agent.state = Enemies.NpcState.MOVE;
                 return State.RUNNING;
             }
 

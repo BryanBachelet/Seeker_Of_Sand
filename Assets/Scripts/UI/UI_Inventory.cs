@@ -51,6 +51,8 @@ public class UI_Inventory : MonoBehaviour
 
     #region Spell variables
     public List<Image> spellUse = new List<Image>();
+    public List<Image> cadreSpellUse = new List<Image>();
+    [SerializeField] private Sprite[] spell_rarityCadre = new Sprite[4];
     public List<CapsuleProfil> spellProfil = new List<CapsuleProfil>();
     #endregion
 
@@ -99,10 +101,13 @@ public class UI_Inventory : MonoBehaviour
         }
 
         Sprite[] spellSprite = m_characterShoot.GetSpellSprite();
+        int[] spellLevel = m_characterShoot.GetSpellLevel();
         for (int i = 0; i < spellSprite.Length && i < 4; i++)
         {
             spellUse[i].sprite = spellSprite[i];
+            cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i] / 4)];
         }
+
     }
 
     public void OpenInventory()

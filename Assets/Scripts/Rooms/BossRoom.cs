@@ -31,7 +31,7 @@ public class BossRoom : MonoBehaviour
         dayCyclecontroller = enemyManager.m_dayController;
         dayCyclecontroller.UpdateDepthOfField(false);
         m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
-        m_bossHealth.SetupLife(bossLife + 50 * enemyManager.m_characterUpgrade.avatarUpgradeList.Count);
+        m_bossHealth.SetupLife(bossLife + 30 * enemyManager.m_characterUpgrade.avatarUpgradeList.Count + (int)enemyManager.m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
         bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
         bossCamera.StartCamera(Camera.main,bossInstance.transform.GetChild(0), centerTransform.position);
         Vector3 posRef = enemyManager.AstrePositionReference.position;

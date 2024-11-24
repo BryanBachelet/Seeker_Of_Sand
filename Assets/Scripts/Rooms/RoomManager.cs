@@ -218,7 +218,7 @@ public class RoomManager : MonoBehaviour
                 {
                     obj.ResetAltar();
                     //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
-                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                     enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
                     obj.roomInfoUI = roomInfoUI;
                 }
@@ -229,7 +229,7 @@ public class RoomManager : MonoBehaviour
 
                 //int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                 //enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
-                enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                 enemyMaxSpawnInRoon = enemyToKillCount;
                 break;
             case RoomType.Boss:

@@ -148,7 +148,7 @@ namespace Character
             isUpgradeWindowOpen = false;
             ChangeBaseInterfaceDisplay(true);
             upgradeManager.CloseUpgradeUI();
-
+            m_characterShoot.UpdateSpellRarityCadre(m_characterShoot.m_characterSpellBook.GetAllSpells());
             GameState.ChangeState();
         }
 

@@ -8730,6 +8730,7 @@ Transform:
   - {fileID: 7936451746283734366}
   - {fileID: 3171868422204116829}
   - {fileID: 3555442514324123898}
+  - {fileID: 1508194219446230624}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5994473381746275851
@@ -8856,7 +8857,7 @@ MonoBehaviour:
     m_Bits: 264
   m_objstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_groundDistance: 5
   m_maxGroundSlopeAngle: 90
   m_CharacterAnim: {fileID: 699862458290668006}
@@ -8870,15 +8871,40 @@ MonoBehaviour:
   m_lastTimeShot: 0
   m_accelerationSpeed: 150
   activeCombatModeConstant: 1
-  accelerationSlide: 90
-  maxSpeed: 240
+  accelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 20
+      inSlope: 50
+      outSlope: 50
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 70
+      inSlope: 50
+      outSlope: 50
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxSpeed: 200
   maxSlope: 90
   minSlope: 5
-  minDecceleration: 20
+  minDecceleration: 50
   angularSpeed: 200
   timeAfterSliding: 0.2
   timeBeforeSliding: 0.1
   combatDeccelerationSpeed: 2400
+  turningRatioOfDecceleration: 1.5
+  angleMinToRotateInSlide: 3
   forwardDirection: {x: 0, y: 0, z: 0}
   m_isSlowdown: 0
   MouvementSoundReference:
@@ -9833,6 +9859,7 @@ MonoBehaviour:
   maxSpellIndex: 0
   spellIndexGeneral: 
   spellIndexSpecific: 
+  m_currentIndexCapsule: 0
   m_spellManger: {fileID: 0}
   m_OuterCircleHolder: {fileID: 561152201}
   avatarTransform: {fileID: 6632142262200979151}
@@ -9856,6 +9883,7 @@ MonoBehaviour:
   m_textCurrentLayout: {fileID: 0}
   m_lastTimeShot: 0
   m_TimeAutoWalk: 89000000
+  m_characterSpellBook: {fileID: 0}
   uiManager: {fileID: 0}
   icon_Sprite:
   - {fileID: 0}
@@ -10075,6 +10103,7 @@ MonoBehaviour:
   gameObject_vfxCastEnd: {fileID: 4879082049981830840}
   vfxCastEnd: {fileID: 3289980399486179237}
   lastRawPosition: {x: 0, y: 0, z: 0}
+  basePosition: {fileID: 0}
 --- !u!114 &1983534969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10411,6 +10440,9 @@ MonoBehaviour:
   m_obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 264
+  m_enemyObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 328
   m_playerMesh: {fileID: 0}
   m_dashUI: {fileID: 0}
   m_cameraBehavior: {fileID: 0}
@@ -11385,6 +11417,37 @@ Transform:
   - {fileID: 2461132429642941450}
   - {fileID: 5184274692189320543}
   m_Father: {fileID: 6632142262200979151}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7358402802304928514
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1508194219446230624}
+  m_Layer: 11
+  m_Name: Base
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1508194219446230624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7358402802304928514}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.281, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4333526769792634081}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7409673259591215286
 GameObject:

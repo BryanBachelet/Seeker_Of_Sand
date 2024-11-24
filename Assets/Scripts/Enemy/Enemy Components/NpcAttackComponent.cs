@@ -1,5 +1,6 @@
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
+using GuerhoubaTools.Gameplay;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +44,7 @@ namespace Enemies
         [Range(0, 1f)]
         [Tooltip("Stat of cooldown reduction for all attack")]
         public float attackCooldownReduction = 0.0f;
+        public float attackRandomThresholdValue = 0.5f;
 
         [Header("Attack Infos")]
         public AttackPhase currentAttackState;
@@ -60,10 +62,15 @@ namespace Enemies
         public bool isRaycastDebug;
         private bool m_showRaycastDebug;
         private Quaternion rotationRaycast;
-        
+        // -----
+        public int frameCount = 10;
+        public Vector3 firstPositionTarget;
+        public Queue<Vector3> playerPosition = new Queue<Vector3>(10);
+
+
         public float lagRaycastTargetTime = 0.5f;
         private float m_lagRaycastTargetTimer;
-        
+
         public float speedRaycast;
         private Vector3 targetLagRaycastPosition;
         private Vector3 targetLagRaycastPositionStart;
@@ -86,7 +93,7 @@ namespace Enemies
 
         public bool isInAttackSequence;
         public int sequenceIndex = -1;
-        
+
 
 
         #region MonoBehavior Functions
@@ -183,6 +190,9 @@ namespace Enemies
                     countCloseAttack++;
                 }
 
+                float baseCooldown = attackEnemiesObjectsArr[i].data.coooldownAttack;
+                attackEnemiesObjectsArr[i].tempCooldoown = Tools.RandomThreshold(baseCooldown, attackRandomThresholdValue);
+
             }
 
             timerAttackCooldown = new float[attackEnemiesObjectsArr.Length];
@@ -262,9 +272,11 @@ namespace Enemies
                 {
                     directionTarget = m_mouvementComponent.targetData.baseTarget.position - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     Vector3 boxScale = currentAttackData.scaleRaycast;
-                    targetLagRaycastPositionStart = m_mouvementComponent.baseTransform.position ;
+                    targetLagRaycastPositionStart = m_mouvementComponent.baseTransform.position;
                     directionTarget = targetLagRaycastPositionStart - (m_mouvementComponent.baseTransform.position + raycastOffset);
                     m_HitDetect = Physics.Raycast(m_mouvementComponent.baseTransform.position + raycastOffset, directionTarget, out m_Hit, m_MaxDistance, currentAttackData.rayLayerMask);
+                    playerPosition.Enqueue(m_mouvementComponent.targetData.baseTarget.position);
+                    firstPositionTarget = m_mouvementComponent.targetData.baseTarget.position;
                     if (m_HitDetect)
                     {
                         raycastHitPoint = m_Hit.point;
@@ -445,17 +457,29 @@ namespace Enemies
                 rb.angularVelocity = Vector3.zero;
                 if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
                 {
-                    Character.CharacterMouvement characterMvt = m_mouvementComponent.targetData.baseTarget.GetComponent<Character.CharacterMouvement>();
-                    dirTargerMvt = Vector3.Lerp(dirTargerMvt, characterMvt.currentDirection.normalized, 0.01f);
-                    Vector3 deltaDir = characterMvt.currentDirection.normalized - dirTargerMvt.normalized;
-                    if(deltaDir.magnitude <.5f)
+                    playerPosition.Enqueue(m_mouvementComponent.targetData.baseTarget.position);
+                    Vector3 positionTarget = Vector3.zero;
+                    if (playerPosition.Count < frameCount)
                     {
-                        dirTargerMvt = characterMvt.currentDirection.normalized;
+                        positionTarget = firstPositionTarget;
                     }
-                    Vector3 predictTargetPosition = (m_mouvementComponent.targetData.baseTarget.position + dirTargerMvt.normalized * characterMvt.combatSpeed + dirTargerMvt.normalized * characterMvt.combatSpeed*2*Time.deltaTime);
-                    targetLagRaycastPosition =  Vector3.Lerp(targetLagRaycastPositionStart, predictTargetPosition, (m_timer/currentAttackData.rotationTime));
-                    directionTarget = targetLagRaycastPosition - (m_mouvementComponent.baseTransform.position + raycastOffset);
-                    rotationRaycast = transform.rotation;
+                    else
+                    {
+                        positionTarget = playerPosition.Dequeue();
+                    }
+                    directionTarget = positionTarget - (m_mouvementComponent.baseTransform.position + raycastOffset);
+
+                    //Character.CharacterMouvement characterMvt = m_mouvementComponent.targetData.baseTarget.GetComponent<Character.CharacterMouvement>();
+                    //dirTargerMvt = Vector3.Lerp(dirTargerMvt, characterMvt.currentDirection.normalized, 0.01f);
+                    //Vector3 deltaDir = characterMvt.currentDirection.normalized - dirTargerMvt.normalized;
+                    //if (deltaDir.magnitude < .5f)
+                    //{
+                    //    dirTargerMvt = characterMvt.currentDirection.normalized;
+                    //}
+                    //Vector3 predictTargetPosition = (m_mouvementComponent.targetData.baseTarget.position + dirTargerMvt.normalized * characterMvt.combatSpeed + dirTargerMvt.normalized * characterMvt.combatSpeed * 2 * Time.deltaTime);
+                    //targetLagRaycastPosition = Vector3.Lerp(targetLagRaycastPositionStart, predictTargetPosition, (m_timer / currentAttackData.rotationTime));
+                    //directionTarget = targetLagRaycastPosition - (m_mouvementComponent.baseTransform.position + raycastOffset);
+                    //rotationRaycast = transform.rotation;
                 }
             }
             else
@@ -487,7 +511,7 @@ namespace Enemies
             {
                 raycastHitPoint = m_Hit.point;
                 prepTargetPosition = m_Hit.point;
-                
+
             }
             else
             {
@@ -582,7 +606,7 @@ namespace Enemies
             {
                 if (!isAttackOnCooldown[i]) continue;
 
-                if (timerAttackCooldown[i] > attackEnemiesObjectsArr[i].data.coooldownAttack * (1.0f - attackCooldownReduction))
+                if (timerAttackCooldown[i] > attackEnemiesObjectsArr[i].tempCooldoown * (1.0f - attackCooldownReduction))
                 {
                     isAttackOnCooldown[i] = false;
                     timerAttackCooldown[i] = 0;
@@ -675,7 +699,28 @@ namespace Enemies
                         attackDamageInfo.bIsHeavy = currentAttackData.isHeavyAttack;
                         healthPlayer.ApplyDamage(attackDamageInfo);
                     }
+
+                    Collider[] colliders = Physics.OverlapSphere(m_Hit.point, currentAttackData.radiusRaycastExplosion, currentAttackData.rayLayerMask);
+                    if (colliders.Length != 0)
+                    {
+                        for (int i = 0; i < colliders.Length; i++)
+                        {
+                            if (colliders[i].tag == "Player")
+                            {
+                                HealthPlayerComponent healthPlayer = colliders[i].GetComponent<HealthPlayerComponent>();
+                                AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                                attackDamageInfo.attackName = currentAttackData.nameAttack;
+                                attackDamageInfo.damage = currentAttackData.damage;
+                                attackDamageInfo.position = m_Hit.point - directionTarget * 1;
+                                attackDamageInfo.bIsHeavy = currentAttackData.isHeavyAttack;
+                                healthPlayer.ApplyDamage(attackDamageInfo);
+                            }
+                        }
+
+                    }
                 }
+
+
             }
         }
 
@@ -707,7 +752,7 @@ namespace Enemies
             return isGeneralAttackCooldownActive;
         }
 
-        void OnDrawGizmos()
+        public void OnDrawGizmos()
         {
 
 
@@ -715,12 +760,12 @@ namespace Enemies
             {
                 if (!m_showRaycastDebug) return;
                 //Check if there has been a hit yet
-            
+
                 if (m_HitDetect)
                 {
                     Gizmos.color = Color.red;
                     Gizmos.DrawLine(transform.position + raycastOffset, raycastHitPoint);
-                    Gizmos.DrawWireCube(raycastHitPoint, currentAttackData.scaleRaycast * 2);
+                    Gizmos.DrawWireSphere(raycastHitPoint, currentAttackData.radiusRaycastExplosion);
                 }
                 //If there hasn't been a hit yet, draw the ray at the maximum distance
                 else
@@ -731,11 +776,12 @@ namespace Enemies
                     Gizmos.DrawRay(transform.position + raycastOffset, directionTarget.normalized * m_MaxDistance);
                     //Draw a cube at the maximum distance
                     Gizmos.DrawWireCube(transform.position + directionTarget * m_MaxDistance, transform.localScale);
+
                 }
 
 
-               
-              
+
+
             }
         }
 
