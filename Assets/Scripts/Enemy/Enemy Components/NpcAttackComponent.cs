@@ -179,12 +179,18 @@ namespace Enemies
             // Setuping Attack
             int countCloseAttack = 0;
             int countRangeAttack = 0;
-  
+
+
+            if (DebugSpecificItem)
+            {
+                Debug.Log("Start Debug");
+            }
+
             for (int i = 0; i < attackEnemiesObjectsArr.Length; i++)
             {
                 AttackEnemiesObject currObj = attackEnemiesObjectsArr[i];
-               
-                if (currObj.data.typeAttack == AttackType.COLLIDER_OBJ)
+
+                if (currObj.data.typeAttack == AttackType.COLLIDER_OBJ && currObj.data.customAttack == null )
                 {
                     currObj.data.indexCollider = countCloseAttack;
                     countCloseAttack++;
