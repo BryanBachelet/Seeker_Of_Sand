@@ -42,14 +42,16 @@ Material:
   - N_F_RL_ON
   - N_F_R_ON
   - N_F_SS_ON
+  - N_F_TRANS_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2225
-  stringTagMap: {}
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -228,8 +230,8 @@ Material:
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _Anisotropy: 0
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _BlendMode: 0
     - _CoatMask: 0
     - _CullMode: 2
@@ -358,8 +360,8 @@ Material:
     - _Opacity: 1
     - _OpaqueCullMode: 2
     - _OutlineExtrudeMethod: 0
-    - _OutlineWidth: 0.005
-    - _OutlineWidthAffectedByViewDistance: 0
+    - _OutlineWidth: 0.0008
+    - _OutlineWidthAffectedByViewDistance: 1
     - _OutlineZPostionInCamera: 0
     - _OverallShadowColorPower: 1
     - _PPDLodThreshold: 5
@@ -432,8 +434,8 @@ Material:
     - _SupportDecals: 1
     - _SurfaceType: 0
     - _TEXMCOLINT: 0
-    - _TOAO: 1
-    - _TRANSMODE: 0
+    - _TOAO: 0
+    - _TRANSMODE: 1
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _TexturePatternStyle: 0

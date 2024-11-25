@@ -9,6 +9,8 @@ namespace Character
     public class CharacterDash : MonoBehaviour
     {
         [Header("Dash Parameters")]
+        [SerializeField] private int m_currentStack = 1;
+        [SerializeField] private int m_maxStack = 1;
         [SerializeField] private float m_dashDistance = 5;
         [SerializeField] private float m_dashDuration = .5f;
         [SerializeField] private float m_dashCooldownDuration = 1.0f;
@@ -66,7 +68,8 @@ namespace Character
 
         private void StartDash() // Function call at the start of the dash
         {
-            if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell || m_isActiveCooldown || m_isDashValid) return;
+            if (m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.Knockback || m_characterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell || m_currentStack <= 0 || m_isDashValid) return;
+            m_currentStack--;
             Instantiate(vfxDash, transform.position, transform.rotation);
             characterModel[0].SetActive(false);
             characterModel[1].SetActive(false);
@@ -239,7 +242,13 @@ namespace Character
             {
                 if (m_dashCooldownTimer > m_dashCooldownDuration)
                 {
-                    m_isActiveCooldown = false;
+
+                    m_currentStack++;
+                    m_dashCooldownTimer = 0.0f;
+                    if (m_currentStack >= m_maxStack)
+                    {
+                        m_isActiveCooldown = false;
+                    }
 
                 }
                 else
