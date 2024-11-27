@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 using TMPro;
+using Character;
 
 public class DayCyclecontroller : MonoBehaviour
 {
@@ -86,6 +87,7 @@ public class DayCyclecontroller : MonoBehaviour
     void Start()
     {
         //newDay = true;
+
         m_nightCount = 0;
         dayText.text = "Day " + (m_nightCount + 1); 
         m_nightCountGlobal = 0;
@@ -254,6 +256,8 @@ public class DayCyclecontroller : MonoBehaviour
         }
         //vSpaceEmissionTexture.
         m_nightCount++;
+        m_nightCountGlobal++;
+        m_EnemyManager.m_playerTranform.GetComponent<CharacterDash>().gainDash(1, true);
         dayText.text = "Day " + (m_nightCount + 1);
         newDay = true;
     }
