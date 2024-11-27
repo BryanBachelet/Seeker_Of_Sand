@@ -218,6 +218,7 @@ public class RoomManager : MonoBehaviour
                 {
                     obj.ResetAltar();
                     //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
+                    obj.eventElementType = element;
                     obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                     enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
                     obj.roomInfoUI = roomInfoUI;

@@ -186,6 +186,7 @@ namespace Character
                     {
 
                         CloseUpgradeWindow();
+
                     }
                 }
             }

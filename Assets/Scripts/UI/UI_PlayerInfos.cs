@@ -39,6 +39,7 @@ namespace SeekerOfSand
             private Color lastColor;
             private Sprite lastSprite;
 
+            public Animator upgradeScreenAnimator;
             public GameObject tierUpEffect;
             public Animator tierUpAnimation;
             public VisualEffect[] vfxTierUp = new VisualEffect[4];
@@ -82,6 +83,8 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo1");
+                    upgradeScreenAnimator.ResetTrigger("Reset");
+                    upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     return true;
                 }
@@ -94,6 +97,8 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo2");
+                    upgradeScreenAnimator.ResetTrigger("Reset");
+                    upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     return true;
                 }
@@ -106,6 +111,8 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo3");
+                    upgradeScreenAnimator.ResetTrigger("Reset");
+                    upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     return true;
                 }
@@ -113,6 +120,9 @@ namespace SeekerOfSand
                 {
                     tierUpAnimation.ResetTrigger("UpgradeTo1");
                     tierUpAnimation.ResetTrigger("UpgradeTo2");
+                    tierUpAnimation.ResetTrigger("UpgradeTo3");
+                    upgradeScreenAnimator.SetTrigger("Reset");
+                    upgradeScreenAnimator.ResetTrigger("TierUpActivation");
                     return false;
                 }
                 //m_levelText[index].text = value.ToString();

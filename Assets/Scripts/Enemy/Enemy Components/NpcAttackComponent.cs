@@ -181,10 +181,6 @@ namespace Enemies
             int countRangeAttack = 0;
 
 
-            if (DebugSpecificItem)
-            {
-                Debug.Log("Start Debug");
-            }
 
             for (int i = 0; i < attackEnemiesObjectsArr.Length; i++)
             {

@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
 using GuerhoubaGames.UI;
+using GuerhoubaGames.GameEnum;
 
 public class AltarBehaviorComponent : InteractionInterface
 {
     #region Variable
     [Header("Event Parameters")]
     [SerializeField] public QuestMarker m_questMarker;
-    [Range(0, 3)]
-    [SerializeField] int eventElementType = 0;
+    [SerializeField] public GameElement eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
     [SerializeField] private Sprite[] spriteEventCompass;
@@ -105,6 +105,9 @@ public class AltarBehaviorComponent : InteractionInterface
     public bool hasBeenActivate = false;
     private Selection_Feedback m_selectionFeedback;
 
+    [SerializeField] private Light eventLight;
+    [SerializeField] private MeshRenderer meshPointLight;
+
     #endregion Variable
 
     #region Unity Functions
@@ -112,8 +115,7 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         InitComponent();
         tempsEcoulePunk = tempsEntrePunk - tempsEntrePunk / 3;
-        eventElementType = Random.Range(0, 4);
-        m_questMarker.icon = spriteEventCompass[eventElementType];
+        m_questMarker.icon = spriteEventCompass[(int)eventElementType];
         ownNumber = altarCount;
         altarCount++;
 
@@ -225,19 +227,21 @@ public class AltarBehaviorComponent : InteractionInterface
         Light[] lightToSwap = GetComponentsInChildren<Light>();
         for (int i = 0; i < lightToSwap.Length; i++)
         {
-            lightToSwap[i].color = colorEvent[eventElementType];
+            lightToSwap[i].color = colorEvent[(int)eventElementType];
         }
+        eventLight.color = colorEvent[(int)eventElementType];
+        meshPointLight.material.SetColor("_MainColor", colorEventTab[(int)eventElementType]);
 
-        socleMesh.material = materialEvent[eventElementType];
+        socleMesh.material = materialEvent[(int)eventElementType];
 
         m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
-        m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[eventElementType]);
+        m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[(int)eventElementType]);
 
 
-        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
         }
     }
 
@@ -479,7 +483,7 @@ public class AltarBehaviorComponent : InteractionInterface
         {
             nextRewardTypologie = 0;
             nextReward = 30;
-            nextRewardObject = rewardObject[1 + eventElementType];
+            nextRewardObject = rewardObject[(int)eventElementType];
         }
         else if (repeatNumber == 3)
         {
@@ -491,7 +495,7 @@ public class AltarBehaviorComponent : InteractionInterface
         {
             nextRewardTypologie = 0;
             nextReward = 70;
-            nextRewardObject = rewardObject[1 + eventElementType];
+            nextRewardObject = rewardObject[(int)eventElementType];
         }
 
     }
@@ -510,9 +514,11 @@ public class AltarBehaviorComponent : InteractionInterface
         socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[eventElementType]);
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
             altarAllMesh[i].material.SetFloat("_SelfLitIntensity", intensity);
         }
+        eventLight.color = colorEvent[(int)eventElementType];
+        meshPointLight.material.SetColor("_MainColor", colorEvent[(int)eventElementType]);
     }
     #endregion
 
