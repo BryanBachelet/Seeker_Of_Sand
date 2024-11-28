@@ -397,6 +397,7 @@ namespace Character
                 if (spellIndexGeneral[i] == -1) continue;
 
                 m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone());
+             
                 spellIndexSpecific.Add(i);
                 CreatePullObject(m_characterSpellBook.GetSpecificSpell(m_characterSpellBook.GetSpellCount() - 1));
                 SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
@@ -421,6 +422,7 @@ namespace Character
                     spellEquip[i] = i;
                     spellProfils.Add(m_characterSpellBook.GetSpecificSpell(i));
                     m_characterSpellBook.m_spellsRotationArray[i] = (m_characterSpellBook.GetSpecificSpell(i));
+                    m_characterSpellBook.m_currentSpellInRotationCount++;
                 }
             }
             m_currentIndexCapsule = spellEquip[0];
@@ -1428,7 +1430,7 @@ namespace Character
                 spellProfils.Add(clone);
                 spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
                 m_characterSpellBook.m_spellsRotationArray[spellIndexGeneral.Count - 1] = clone;
-
+                m_characterSpellBook.m_currentSpellInRotationCount++;
                 //m_clockImage[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
                 //m_textStack[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
                 m_stackingClock[maxSpellIndex] = new ClockTimer();
@@ -1447,7 +1449,7 @@ namespace Character
             spellProfils.RemoveAt(spellIndex);
             m_characterSpellBook.RemoveSpell(spellIndex);
             m_stackingClock[index].DeactivateClock();
-
+            m_characterSpellBook.m_currentSpellInRotationCount--;
 
             for (int i = index; i < 2; i++)
             {

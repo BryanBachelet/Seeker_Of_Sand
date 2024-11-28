@@ -81,6 +81,21 @@ namespace GuerhoubaGames.GameEnum
         NONE = 3,
     }
 
+    public enum LevelTier
+    {
+        TIER_1 = 0,
+        TIER_2 = 1,
+        TIER_3 = 2,
+    }
+
+    public enum BuyResult
+    {
+        BUY = 0,
+        NOT_ENOUGH_MONEY = 1
+    }
+
+
+
     public enum StatType
     {
         Damage = 1001,
@@ -138,6 +153,7 @@ namespace GuerhoubaGames.GameEnum
         FLOAT = 2000,
         STRING = 3000,
     }
+
 
 
     // Tag Spell

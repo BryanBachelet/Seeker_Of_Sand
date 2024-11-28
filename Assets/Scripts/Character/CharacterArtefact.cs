@@ -109,7 +109,15 @@ public class CharacterArtefact : MonoBehaviour
 
     public void AddArtefact(ArtefactsInfos artefacts)
     {
+        
+        // Verify if the player doesn't already the artefact
+        for (int i = 0; i < artefactsList.Count; i++)
+        {
+            if (artefactsList[i].AddAdditionalFragment(artefacts)) return;        
+        }
+
         ArtefactsInfos clone = artefacts.Clone();
+
         artefactsList.Add(clone);
 
         CreatePull(clone);

@@ -250,6 +250,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
+     
 
             if (currentInteractionInterface != null)
             {
