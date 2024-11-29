@@ -7,18 +7,18 @@ public class Teleporter : MonoBehaviour
     public int TeleporterNumber;
     public bool usedTeleporter = false;
 
-    public bool isReceiver;
-    public bool isSpawn;
-    public bool activation = false;
-    public bool teleportorIsActive = false;
-    public Material socleMaterial;
+    [HideInInspector] public bool isReceiver = true;
+    [HideInInspector] public bool isSpawn;
+    [HideInInspector] public bool activation = false;
+    [HideInInspector] public bool teleportorIsActive = false;
+    [HideInInspector] public Material socleMaterial;
 
     static private TerrainGenerator terrainGen;
-    public AltarBehaviorComponent altarBehavior;
-    public Enemies.EnemyManager enemyManager;
+    [HideInInspector] public AltarBehaviorComponent altarBehavior;
+    [HideInInspector] public Enemies.EnemyManager enemyManager;
 
-    public TeleporterFeebackController tpFeedbackController;
-    public Animator animatorPortal;
+    [HideInInspector] public TeleporterFeebackController tpFeedbackController;
+    [HideInInspector] public Animator animatorPortal;
     // Start is called before the first frame update
     void Awake()
     {

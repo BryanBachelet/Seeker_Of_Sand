@@ -30,11 +30,10 @@ public class RoomManager : MonoBehaviour
     public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
 
-    public Enemies.EnemyManager m_enemyManager;
+    [HideInInspector] public Enemies.EnemyManager m_enemyManager;
     public bool isRoomHasBeenValidate = true;
     private bool isTeleporterActive = true;
-    [SerializeField] private Chosereward choserewardRef;
-    public TerrainGenerator terrainGenerator;
+    [HideInInspector] public TerrainGenerator terrainGenerator;
 
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
@@ -59,8 +58,8 @@ public class RoomManager : MonoBehaviour
     private GameObject playerGO;
 
     private bool rewardGenerated = false;
-    public TerrainDropGeneration dropGenerator;
-    public BossRoom bossRoom;
+    [HideInInspector] public TerrainDropGeneration dropGenerator;
+    [HideInInspector] public BossRoom bossRoom;
     public bool isRoomHasBeenDeactivated;
 
     private DateTime m_startRoomChallengeTime;

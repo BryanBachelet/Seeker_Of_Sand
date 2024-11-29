@@ -97,8 +97,6 @@ public class Punketone : MonoBehaviour
         }
         if (percentHP < 0.01f)
         {
-            altarRefered.punketonHP.Remove(this);
-            altarRefered.skeletonCount--;
             Destroy(this.gameObject);
         }
     }

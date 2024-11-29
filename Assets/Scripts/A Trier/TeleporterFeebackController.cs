@@ -21,24 +21,24 @@ public class TeleporterFeebackController : MonoBehaviour
     public Texture[] textureReward = new Texture[4];
     public Material[] materialReward = new Material[5];
     public MeshRenderer meshPortal;
-    public Material mat_meshPortal;
+    [HideInInspector] public Material mat_meshPortal;
     public MeshRenderer meshDeform;
-    public Material mat_meshDeform;
+    [HideInInspector] public Material mat_meshDeform;
 
     [Range(0, 6)]
-    public int rewardToUse = 0;
+    [HideInInspector] public int rewardToUse = 0;
     public MeshRenderer socleMesh;
-    public Material socleSpawn_mat;
-    public Material dissonance_mat;
+    [HideInInspector] public Material socleSpawn_mat;
+    [HideInInspector] public Material dissonance_mat;
 
     public VisualEffect zoneAutourVFX;
     public MeshRenderer planeSymboleEffect;
-    public Material planeSymbole_mat;
+    [HideInInspector] public Material planeSymbole_mat;
 
     public GameObject rLow_Holder;
     public bool activeChange = false;
 
-    public bool random = false;
+    [HideInInspector] public bool random = false;
     private int idReward;
 
     public Animator animatorPortal;
