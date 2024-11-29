@@ -255,7 +255,7 @@ namespace Enemies
         }
         public void RemovePauseState()
         {
-            m_npcInfo.state = (NpcState)m_previousNpcState;
+         if(m_npcInfo)   m_npcInfo.state = (NpcState)m_previousNpcState;
         }
 
         public void RestartObject(int playerLevel)
@@ -309,6 +309,8 @@ namespace Enemies
 
         public void SearchDeathOnAnimator()
         {
+
+
             AnimationClip[] clips = m_EnemyAnimatorDissolve.runtimeAnimatorController.animationClips;
             for (int i = 0; i < clips.Length; i++)
             {

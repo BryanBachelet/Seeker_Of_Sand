@@ -18,6 +18,9 @@ namespace GuerhoubaGames.VFX
 
         public AnimationCurve scaleYInTime;
 
+        public VisualEffect circleVFX;
+
+
         public void Awake()
         {
             m_vfxAttackMeta = GetComponent<VFXAttackMeta>();
@@ -29,6 +32,7 @@ namespace GuerhoubaGames.VFX
         {
             if (!this.enabled) return;
 
+            
 
           
             if(endPointTransform.gameObject.activeSelf) { endPointTransform.position = m_npcAttackComponent.raycastHitPoint; }
@@ -65,6 +69,24 @@ namespace GuerhoubaGames.VFX
             }
             endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
 
+
+            // Set the circle VFX
+            if(circleVFX != null)
+            {
+                circleVFX.SetVector3("Size", m_vfxAttackMeta.vfxData.scale *0.5f);
+                circleVFX.SetFloat("TempsRealese", m_vfxAttackMeta.vfxData.duration);
+                circleVFX.SendEvent("ActiveArea");
+
+                RaycastHit hit = new RaycastHit();
+
+                if (Physics.Raycast(circleVFX.transform.position + Vector3.up * 3, -Vector3.up, out hit, 100, GameLayer.instance.groundLayerMask))
+                {
+                    float angle = Vector3.SignedAngle(Vector3.up, hit.normal, Vector3.forward);
+
+                    circleVFX.transform.rotation = Quaternion.Euler(angle, circleVFX.transform.eulerAngles.y, circleVFX.transform.eulerAngles.z);
+                    circleVFX.transform.position = hit.point;
+                }
+            }
         }
     }
 }
