@@ -263,7 +263,10 @@ public class AltarBehaviorComponent : InteractionInterface
         if (nightCount >= 0)
         {
             lastItemInstantiate = Instantiate(eventHolder.DangerAddition[nightCount], transform.position, transform.rotation);
-            lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
+            TrainingArea area = lastItemInstantiate.GetComponent<TrainingArea>();
+            area.altarAssociated = this.gameObject;
+            area.element = eventElementType;
+            lastItemInstantiate.SetActive(true);
         }
 
 

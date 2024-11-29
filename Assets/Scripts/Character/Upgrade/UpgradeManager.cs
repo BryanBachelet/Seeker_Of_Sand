@@ -316,6 +316,11 @@ public class UpgradeManager : MonoBehaviour
 
     private int GenerateSpellIndex(GameElement element)
     {
+        if (element == GameElement.NONE)
+        {
+            Debug.LogWarning("The room has not element");
+        }
+
         GameElement[] elements = m_characterUpgradeComponent.m_characterInventory.GetElementSpellInRotation();
         bool isOwnElement = false;
 
@@ -323,7 +328,7 @@ public class UpgradeManager : MonoBehaviour
         List<int> indexOtherElement = new List<int>();
         for (int i = 0; i < elements.Length; i++)
         {
-            if (element == GameElement.NONE) continue;
+            if (elements[i] == GameElement.NONE) continue;
 
             if (element == elements[i])
             {

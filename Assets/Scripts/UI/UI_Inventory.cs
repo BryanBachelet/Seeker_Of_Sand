@@ -56,6 +56,9 @@ public class UI_Inventory : MonoBehaviour
     public List<CapsuleProfil> spellProfil = new List<CapsuleProfil>();
     #endregion
 
+
+    // Avoid the close and t
+    private bool IsNextCallDelay;
     public void InitComponent()
     {
         if (m_marchandUiView != null) return;
@@ -76,13 +79,14 @@ public class UI_Inventory : MonoBehaviour
         m_characterShoot.hasShootBlock = true;
     }
 
-    public void DeactivateInventoryInterface()
+    public void DeactivateInventoryInterface(bool delayNextInput = false)
     {
         if (!isOpen) return;
 
         isOpen = false;
         inventoryContainer.SetActive(isOpen);
         m_characterShoot.hasShootBlock = false;
+        IsNextCallDelay = delayNextInput;
     }
 
 
@@ -112,7 +116,11 @@ public class UI_Inventory : MonoBehaviour
 
     public void OpenInventory()
     {
-
+        if (IsNextCallDelay)
+        {
+            IsNextCallDelay = false;
+            return;
+        }
         if (!inventoryContainer.activeSelf)
         {
             ActualizeInventory();
@@ -138,26 +146,26 @@ public class UI_Inventory : MonoBehaviour
         int GameElementIndex = (int)fragmentInfo.fragmentInfo[index].gameElement;
         fragmentTypeBackground[index].sprite = backgroundElement[GameElementIndex];
         fragmentElement[index].sprite = iconElement[GameElementIndex];
-       //if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[0];
-       //    fragmentElement[index].sprite = iconElement[0];
-       //}
-       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[1];
-       //    fragmentElement[index].sprite = iconElement[1];
-       //}
-       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[2];
-       //    fragmentElement[index].sprite = iconElement[2];
-       //}
-       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[3];
-       //    fragmentElement[index].sprite = iconElement[3];
-       //}
+        //if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
+        //{
+        //    fragmentTypeBackground[index].sprite = backgroundElement[0];
+        //    fragmentElement[index].sprite = iconElement[0];
+        //}
+        //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
+        //{
+        //    fragmentTypeBackground[index].sprite = backgroundElement[1];
+        //    fragmentElement[index].sprite = iconElement[1];
+        //}
+        //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
+        //{
+        //    fragmentTypeBackground[index].sprite = backgroundElement[2];
+        //    fragmentElement[index].sprite = iconElement[2];
+        //}
+        //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
+        //{
+        //    fragmentTypeBackground[index].sprite = backgroundElement[3];
+        //    fragmentElement[index].sprite = iconElement[3];
+        //}
         fragmentRarityTier[index].sprite = rarityCadre[0];
         fragmentName[index].text = fragmentInfo.fragmentInfo[index].nameArtefact;
         fragmentHold[index].gameObject.SetActive(true);
@@ -225,7 +233,7 @@ public class UI_Inventory : MonoBehaviour
 
     public void UpdateTradeDisplay()
     {
-        for(int i = 0; i < m_cristalInventory.cristalCount.Length; i++)
+        for (int i = 0; i < m_cristalInventory.cristalCount.Length; i++)
         {
             if (m_panierTrade[i] == 0)
             {

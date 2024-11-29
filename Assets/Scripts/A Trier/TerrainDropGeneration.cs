@@ -23,22 +23,22 @@ public class TerrainDropGeneration : MonoBehaviour
     void Start()
     {
         associateRoomManager = transform.parent.transform.GetComponentInChildren<RoomManager>();
-        GenerateRandomCristal();
+        if(generateCristal)
+        {
+            GenerateRandomCristal();
+        }
+
     }
 
     private void Update()
     {
-        if(generateCristal)
-        {
-            generateCristal = false;
-            GenerateRandomCristal();
-        }
+
     }
     public void GenerateRandomCristal()
     {
         raycastdirection = new Vector3(0, -25, 0);
         int dropToGenerate = dropQuantity + Random.Range(-random, random);
-        int randomCristalType = (int)associateRoomManager.element ;
+        int randomCristalType = (int)associateRoomManager.element;
         if(randomCristalType == 0) { randomCristalType = Random.Range(1, 5); }
         if (dropToGenerate > 0)
         {

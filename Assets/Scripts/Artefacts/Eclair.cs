@@ -8,7 +8,6 @@ namespace Artefact
 {
     public class Eclair : MonoBehaviour
     {
-        public int m_damage;
         private ArtefactData m_artefactData;
         [Header("Around Parameter")]
         private float radiusEffect;
@@ -26,6 +25,7 @@ namespace Artefact
         {
             m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             radiusEffect = m_artefactData.radius;
+
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.ClosestEnemyAround) ClosestTarget();
@@ -103,7 +103,7 @@ namespace Artefact
 
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
-            DamageStatData damageStatData = new DamageStatData(m_damage, m_artefactData.objectType);
+            DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
             if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0);
         }
 
@@ -116,7 +116,7 @@ namespace Artefact
             }
             else
             {
-                
+
                 Destroy(this.gameObject);
             }
         }
