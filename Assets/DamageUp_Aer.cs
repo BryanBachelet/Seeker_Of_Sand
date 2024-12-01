@@ -80,6 +80,6 @@ public class DamageUp_Aer : MonoBehaviour
     private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
     {
         DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
-        if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, element);
+        if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, element, 0);
     }
 }

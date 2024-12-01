@@ -10,7 +10,6 @@ public class AltarBehaviorComponent : InteractionInterface
 {
     #region Variable
     [Header("Event Parameters")]
-    [SerializeField] public QuestMarker m_questMarker;
     [SerializeField] public GameElement eventElementType = 0;
     [SerializeField] private Color[] colorEvent;
     [SerializeField] private Material[] materialEvent;
@@ -21,15 +20,15 @@ public class AltarBehaviorComponent : InteractionInterface
     [SerializeField] private float m_MaxKillEnemies;
     [SerializeField] private int m_CurrentKillCount;
     [SerializeField] private GameObject[] DangerAddition;
-    public Chosereward rewardManagerReference;
-    public float radiusEventActivePlayer = 300;
-    public float radiusEjection;
-    public int rangeEvent = 100;
+    [HideInInspector] public Chosereward rewardManagerReference;
+    [HideInInspector] public float radiusEventActivePlayer = 300;
+    [HideInInspector] public float radiusEjection;
+    public int rangeEvent = 600;
 
     [Header("Reward Parameters")]
 
     [SerializeField] private GameObject[] rewardObject;
-    [SerializeField] private float m_ImpusleForceXp;
+    private float m_ImpusleForceXp = 20;
 
 
     private bool m_hasEventActivate = true;
@@ -41,40 +40,30 @@ public class AltarBehaviorComponent : InteractionInterface
     private Text eventTextName;
 
     [Header("Event UI Parameters")]
-    public GameObject displayEventDetail;
-    public GameObject displayArrowEvent;
-    private GameObject ownDisplayEventDetail;
-    private GameObject ownArrowDisplayEventDetail;
-
     public Animator m_myAnimator;
-    public EventDisplay displayAnimator;
-
-    private RectTransform canvasPrincipal;
 
     static int altarCount = 0;
     private int ownNumber = 0;
-    private Color myColor;
+
     private Transform m_playerTransform;
 
     public VisualEffect m_visualEffectActivation;
-    public string txt_EventName;
     int resetNumber = 0;
 
     public SkinnedMeshRenderer[] altarAllMesh;
     public MeshRenderer socleMesh;
 
-    public Material socleMaterial;
     [HideInInspector] public bool isAltarDestroy = false;
 
     private ObjectHealthSystem m_objectHealthSystem;
-    public Image m_eventProgressionSlider;
+    [HideInInspector] public Image m_eventProgressionSlider;
 
     [SerializeField] private string instructionOnActivation;
-    [SerializeField] private int nextReward;
-    [SerializeField] private int nextRewardTypologie = 0;
+    private int nextReward;
+    private int nextRewardTypologie = 0;
 
-    [SerializeField] private Enemies.EnemyManager m_enemyManager;
-    public Vector3 m_DropAreaPosition;
+    private Enemies.EnemyManager m_enemyManager;
+    private Vector3 m_DropAreaPosition;
 
     private GameObject lastItemInstantiate;
     private GameObject nextRewardObject;
@@ -83,22 +72,12 @@ public class AltarBehaviorComponent : InteractionInterface
 
     private float progression = 0;
 
-    public GameObject punkeleton;
-
     private int m_idSpellReward;
     public int m_enemiesCountConditionToWin = 0;
     public Sprite instructionImage;
     private InteractionEvent m_interactionEvent;
-    private GameObject[] punketon = new GameObject[0];
-    public float tempsEntrePunk = 10;
-    private float tempsEcoulePunk = 0;
-    public LayerMask groundLayer;
 
-    public List<Punketone> punketonHP = new List<Punketone>();
-    public Transform skeletonFocus;
-    public int skeletonCount = 0;
-
-    public EventHolder eventHolder;
+    [HideInInspector] public EventHolder eventHolder;
 
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
@@ -114,8 +93,6 @@ public class AltarBehaviorComponent : InteractionInterface
     void Start()
     {
         InitComponent();
-        tempsEcoulePunk = tempsEntrePunk - tempsEntrePunk / 3;
-        m_questMarker.icon = spriteEventCompass[(int)eventElementType];
         ownNumber = altarCount;
         altarCount++;
 
@@ -156,46 +133,8 @@ public class AltarBehaviorComponent : InteractionInterface
             SucceedEvent();
             return;
         }
-        if (tempsEcoulePunk > tempsEntrePunk && skeletonCount < 3)
-        {
+        
 
-            //bool isSpawn = false;
-            //while (!isSpawn)
-            //{
-            //    tempsEcoulePunk = 0;
-            //    Vector2 rndPosition = Random.insideUnitCircle;
-            //    rndPosition.Normalize();
-            //    RaycastHit hit;
-            //    if (Physics.Raycast(transform.position + new Vector3(rndPosition.x, 40, rndPosition.y) * 150, Vector3.down, out hit, Mathf.Infinity, groundLayer))
-            //    {
-            //        if (hit.collider.gameObject.layer == 3)
-            //        {
-            //            isSpawn = true;
-            //            return;
-            //            GameObject lastPunk = Instantiate(punkeleton, hit.point, transform.rotation);
-            //            skeletonCount++;
-            //            Punketone lastPunketone = lastPunk.GetComponent<Punketone>();
-            //            punketonHP.Add(lastPunketone);
-            //            lastPunketone.target = this.gameObject;
-            //            lastPunketone.targetFocus = skeletonFocus;
-            //            lastPunketone.altarRefered = this;
-
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            //        //Debug.Log("Did not Hit");
-            //    }
-            //}
-
-
-
-        }
-        else
-        {
-            tempsEcoulePunk += Time.deltaTime;
-        }
         progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
         //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
@@ -216,7 +155,6 @@ public class AltarBehaviorComponent : InteractionInterface
     private void InitComponent()
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
-        m_questMarker = GetComponent<QuestMarker>();
         m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
         m_selectionFeedback = this.GetComponent<Selection_Feedback>();
     }
@@ -325,7 +263,10 @@ public class AltarBehaviorComponent : InteractionInterface
         if (nightCount >= 0)
         {
             lastItemInstantiate = Instantiate(eventHolder.DangerAddition[nightCount], transform.position, transform.rotation);
-            lastItemInstantiate.GetComponent<TrainingArea>().altarAssociated = this.gameObject;
+            TrainingArea area = lastItemInstantiate.GetComponent<TrainingArea>();
+            area.altarAssociated = this.gameObject;
+            area.element = eventElementType;
+            lastItemInstantiate.SetActive(true);
         }
 
 
@@ -389,15 +330,6 @@ public class AltarBehaviorComponent : InteractionInterface
         m_isEventOccuring = false;
 
         m_CurrentKillCount = 0;
-        int count = punketonHP.Count;
-        for (int i = 0; i < count; i++)
-        {
-            GameObject obj = punketonHP[0].gameObject;
-            punketonHP.RemoveAt(0);
-            Destroy(obj);
-
-        }
-        skeletonCount = 0;
         float maxHealth = 100;
 
         m_objectHealthSystem.SetMaxHealth((int)maxHealth);

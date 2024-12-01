@@ -166,12 +166,12 @@ namespace Enemies
             m_enemyManager = enemyManager;
         }
 
-        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element)
+        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal)
         {
             m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage, element);
+            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage + additionnal, element);
             if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
 
             GameObject vfxHitInstance = GamePullingSystem.SpawnObject(m_vfxHitFeedback, transform.position, Quaternion.identity);

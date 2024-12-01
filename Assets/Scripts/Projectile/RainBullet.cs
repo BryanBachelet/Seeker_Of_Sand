@@ -62,7 +62,7 @@ public class RainBullet : Projectile
             for (int i = 0; i < m_salveNumber; i++)
             {
                 DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-                enemy.ReceiveDamage(spellProfil.name, damageStatData, (enemy.transform.position - transform.position).normalized, m_power, -1);
+                enemy.ReceiveDamage(spellProfil.name, damageStatData, (enemy.transform.position - transform.position).normalized, m_power, -1, (int)m_characterProfil.stats.baseStat.damage);
             }
            
             

@@ -43,6 +43,10 @@ namespace Character
         private float m_spellDashDistance;
         private float m_spellDashDuration;
 
+
+        [SerializeField] private Image[] spriteDash = new Image[2];
+        [SerializeField] private Image dashCadre;
+        private GameObject dashHolder;
         // Start is called before the first frame update
         void Start()
         {
@@ -55,6 +59,9 @@ namespace Character
             m_characterMouvement = GetComponent<CharacterMouvement>();
             m_characterAim = GetComponent<CharacterAim>();
             m_dashDecalFeedback = m_dashHolderDecal.material;
+            dashHolder = m_dashUI.transform.parent.gameObject;
+            Image[] tempsSpriteRef = dashHolder.GetComponentsInChildren<Image>();
+            dashHolder.gameObject.SetActive(false);
         }
 
         // Function that get the dash input
@@ -228,6 +235,7 @@ namespace Character
 
         public void Update()
         {
+            //m_maxStack = DayCyclecontroller.m_nightCountGlobal;
             if (!m_isSpellDash)
             {
                 DashMouvement(m_dashDuration);
@@ -277,6 +285,21 @@ namespace Character
             m_isSpellDash = true;
             m_dashTimer = 0.0F;
             m_isDashFinish = false;
+        }
+
+        public void gainDash(int gainNumber, bool state)
+        {
+            if (state)
+            {
+                dashHolder.SetActive(true);
+            }
+            else
+            {
+
+            }
+
+            m_maxStack++;
+            m_currentStack = m_maxStack;
         }
 
     }

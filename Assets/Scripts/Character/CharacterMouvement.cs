@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using FMOD.Studio;
 using FMODUnity;
 using Klak.Motion;
+using UnityEngine.Profiling;
 
 namespace Character
 {
@@ -21,6 +22,7 @@ namespace Character
     [RequireComponent(typeof(Rigidbody))]
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
+        private CharacterProfile profile;
         public Render.Camera.CameraBehavior cameraPlayer;
         [SerializeField] private Transform positionInTrain;
         public float runSpeed = 7.0f;
@@ -140,10 +142,10 @@ namespace Character
         private GuerhoubaGames.Input.DivideSchemeManager m_divideSchemeManager;
         private bool m_isSlideRotating;
 
-
+        public bool updateProfilStateSpeedDebug = false;
         public void InitComponentStat(CharacterStat stat)
         {
-            runSpeed = stat.baseStat.speed;
+            runSpeed = 50 + stat.baseStat.speed;
             InitComponent();
         }
         private void InitComponent()
@@ -166,6 +168,7 @@ namespace Character
 
         private void Start()
         {
+            profile = this.GetComponent<CharacterProfile>();
             m_speedData.referenceSpeed = new float[4];
             m_speedData.referenceSpeed[0] = 0;
             m_speedData.referenceSpeed[1] = runSpeed;
@@ -354,7 +357,7 @@ namespace Character
         public void Update()
         {
             if (!state.isPlaying) return;
-
+            if(updateProfilStateSpeedDebug) { updateProfilStateSpeedDebug = false; }
             if (mouvementState == MouvementState.Train)
             {
                 transform.position = positionInTrain.localPosition;
@@ -799,11 +802,11 @@ namespace Character
 
             if (combatState)
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = combatSpeed;
+                m_speedData.referenceSpeed[(int)mouvementState] = combatSpeed +profile.stats.baseStat.speed;
             }
             else
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed;
+                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed + profile.stats.baseStat.speed;
             }
 
             m_speedData.IsFlexibleSpeed = false;
@@ -899,6 +902,13 @@ namespace Character
             mouvementSoundInstance.setParameterByName(parameterName, parameterValue);
         }
 
+        public void UpdateSpeedData(int additionnalSpeed)
+        {
+            for (int i = 1; i < m_speedData.referenceSpeed.Length; i++)
+            {
+                m_speedData.referenceSpeed[i] += additionnalSpeed;
+            }
+        }
         public void OnDisable()
         {
             mouvementSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);

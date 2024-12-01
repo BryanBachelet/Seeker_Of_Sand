@@ -41,6 +41,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected int m_damage = 1;
     [SerializeField] public int m_indexSFX;
 
+    [HideInInspector] public CharacterProfile m_characterProfil;
     protected Vector3 m_destination;
     protected float m_lifeTimer;
     public int m_piercingMax;
@@ -98,8 +99,9 @@ public class Projectile : MonoBehaviour
     }
 
 
-    public virtual void SetProjectile(ProjectileData data)
+    public virtual void SetProjectile(ProjectileData data, CharacterProfile charaProfil)
     {
+        m_characterProfil = charaProfil;
         m_piercingMax = 0;
         m_direction = data.direction;
         spellProfil = data.spellProfil;
@@ -256,7 +258,7 @@ public class Projectile : MonoBehaviour
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
 
-            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex);
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)m_characterProfil.stats.baseStat.damage);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)

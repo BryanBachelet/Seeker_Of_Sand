@@ -93,7 +93,7 @@ namespace SpellSystem
 
                 m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, m_element);
                 DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
-                npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element);
+                npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element, 0);
             }
         }
 

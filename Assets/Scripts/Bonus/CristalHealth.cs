@@ -7,8 +7,8 @@ public class CristalHealth : MonoBehaviour
 {
     [HideInInspector] static public Transform playerPosition;
 
-    [SerializeField] private float m_healthMax;
-    [SerializeField] private float m_currentHealth;
+    private float m_healthMax = 10;
+    private float m_currentHealth = 10;
     [SerializeField] private GameObject m_cristalLootPrefab;
     private bool[] state = new bool[3];
     [SerializeField] public  GameElement cristalElement; //0 --> Water | 1 --> Aer | 2 --> Fire | 3 --> Ground
@@ -16,7 +16,7 @@ public class CristalHealth : MonoBehaviour
     [SerializeField] private GameObject[] cristalPart;
     private bool m_activeDeath = false;
 
-    [SerializeField] private float radiusPlayerCollect = 40;
+    private float radiusPlayerCollect = 10;
     private SphereCollider sphereCollider;
     // Start is called before the first frame update
     void Start()
