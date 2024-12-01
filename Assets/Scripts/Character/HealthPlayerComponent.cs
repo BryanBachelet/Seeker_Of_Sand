@@ -81,10 +81,15 @@ public class HealthPlayerComponent : MonoBehaviour
 
     public HitEffectHighLight m_HitEffectHighLight;
     // Start is called before the first frame update
+
+    private CharacterProfile m_Profil;
     void Start()
     {
         InitializedHealthData();
+
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        m_Profil = this.GetComponent<CharacterProfile>();
+        AugmenteMaxHealth((int)m_Profil.stats.baseStat.healthMax);
         m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out colorAdjustments);
@@ -162,7 +167,8 @@ public class HealthPlayerComponent : MonoBehaviour
         StartInvulnerability(attackDamageInfo.bIsHeavy);
 
         vignette.intensity.value = 0.35f;
-        if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
+        int damage = attackDamageInfo.damage - m_Profil.stats.baseStat.armor;
+        if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
         {
             ActiveSlowEffect(1.5f, m_CurrentQuarter);
             m_CurrentQuarter -= 1;
@@ -171,7 +177,7 @@ public class HealthPlayerComponent : MonoBehaviour
         }
         else
         {
-            m_CurrentHealth -= attackDamageInfo.damage;
+            m_CurrentHealth -= damage;
         }
 
         if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
@@ -235,7 +241,8 @@ public class HealthPlayerComponent : MonoBehaviour
     {
         m_MaxHealthQuantity += quantity;
         m_CurrentHealth += quantity;
-        InitializedHealthData();
+        m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
+        //InitializedHealthData();
     }
 
     public void RestoreQuarter()

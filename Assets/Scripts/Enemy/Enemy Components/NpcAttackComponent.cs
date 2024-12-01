@@ -284,6 +284,8 @@ namespace Enemies
                         raycastHitPoint = m_Hit.point;
                     }
                     rotationRaycast = transform.rotation;
+
+                    attackInfoData.scale = new Vector3(currentAttackData.radiusRaycastExplosion,currentAttackData.radiusRaycastExplosion, currentAttackData.radiusRaycastExplosion);
                 }
             }
 

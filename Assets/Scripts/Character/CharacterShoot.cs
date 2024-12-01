@@ -751,7 +751,6 @@ namespace Character
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             GameObject areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
-
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 SpellSystem.DOTData dataDot = new SpellSystem.DOTData();
@@ -804,7 +803,7 @@ namespace Character
                 if (projectileCreate.GetComponent<Projectile>())
                 {
                     ProjectileData data = FillProjectileData(spellProfil, 0, angle, transformUsed);
-                    projectileCreate.GetComponent<Projectile>().SetProjectile(data);
+                    projectileCreate.GetComponent<Projectile>().SetProjectile(data, this.m_chracterProfil);
                 }
 
                 if (spellProfil.tagData.EqualsSpellNature(SpellNature.AREA))

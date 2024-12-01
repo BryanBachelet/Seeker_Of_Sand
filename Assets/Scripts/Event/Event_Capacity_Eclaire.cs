@@ -83,6 +83,7 @@ public class Event_Capacity_Eclaire : MonoBehaviour
                         {
                             position = new Vector3(0 , 0, 20 * attackEncourCount[i]);
                         }
+                        transform.LookAt(new Vector3(playerPosition.position.x, this.transform.position.y, playerPosition.position.z));
                         GameObject attackInstiate = Instantiate(attack[i], foundNewPosition(areaRef.altarAssociated.transform.position + offSetSign) + position, transform.rotation, transform);
                         GameObject vfx = Instantiate(shotVfx, areaRef.altarAssociated.transform.position + offSetSign, transform.rotation);
                         float speed = Vector3.Distance(vfx.transform.position, attackInstiate.transform.position) / tempsRealese[i];
@@ -104,7 +105,7 @@ public class Event_Capacity_Eclaire : MonoBehaviour
                 else
                 {
                     attackCheck[i] = false;
-                    transform.LookAt(new Vector3(playerPosition.position.x, this.transform.position.y, playerPosition.position.z));
+
                 }
 
             }

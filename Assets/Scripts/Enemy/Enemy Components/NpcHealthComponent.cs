@@ -166,12 +166,12 @@ namespace Enemies
             m_enemyManager = enemyManager;
         }
 
-        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element)
+        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal)
         {
             m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage, element);
+            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damageStat.damage + additionnal, element);
             if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
 
             GameObject vfxHitInstance = GamePullingSystem.SpawnObject(m_vfxHitFeedback, transform.position, Quaternion.identity);
@@ -255,7 +255,7 @@ namespace Enemies
         }
         public void RemovePauseState()
         {
-            m_npcInfo.state = (NpcState)m_previousNpcState;
+         if(m_npcInfo)   m_npcInfo.state = (NpcState)m_previousNpcState;
         }
 
         public void RestartObject(int playerLevel)
@@ -309,6 +309,8 @@ namespace Enemies
 
         public void SearchDeathOnAnimator()
         {
+
+
             AnimationClip[] clips = m_EnemyAnimatorDissolve.runtimeAnimatorController.animationClips;
             for (int i = 0; i < clips.Length; i++)
             {

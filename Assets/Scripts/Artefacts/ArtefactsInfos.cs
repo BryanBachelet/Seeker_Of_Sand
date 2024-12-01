@@ -2,6 +2,8 @@ using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
 using UnityEditor;
+using UnityEditor.SceneManagement;
+
 public enum ConditionsTrigger
 {
     OnHit,
@@ -54,6 +56,7 @@ public class ArtefactsInfos : ScriptableObject
     private float lastTimeRefresh = 0;
 
     public int damageArtefact = 1;
+
     // Reinforcement Variables
     [Header("ReInforce Feature Variables")]
     public bool isReinforceFeatureActivate = true;
@@ -168,5 +171,22 @@ public class ArtefactsInfos : ScriptableObject
         return usable;
     }
 
+
+    public void OnValidate()
+    {
+        if(spawnRatePerTier.Length < 3)
+        {
+            float[] tempArray = spawnRatePerTier;
+            spawnRatePerTier = new float[3];
+            for (int i = 0; i < tempArray.Length; i++)
+            {
+                spawnRatePerTier[i] = tempArray[i];
+            }
+
+           
+        }
+       
+        EditorUtility.SetDirty(this);
+    }
 
 }

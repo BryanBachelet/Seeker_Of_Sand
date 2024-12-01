@@ -2,13 +2,20 @@ using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GuerhoubaGames.UI;
 
 public class AnvilBehavior : InteractionInterface
 {
 
-
+    private AnvilUIView m_anvilUIComponent;
     private CristalInventory m_cristalInventory;
 
+
+
+    public void Start()
+    {
+        
+    }
 
     /// <summary>
     ///  Apply Fragment Drag and drop in UI;
