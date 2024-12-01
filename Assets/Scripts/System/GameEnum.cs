@@ -185,6 +185,8 @@ namespace GuerhoubaGames.GameEnum
         AIR = 2,
         FIRE = 3,
         EARTH = 4,
+
+        
     }
 
     public enum BuffType

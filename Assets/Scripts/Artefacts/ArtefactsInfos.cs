@@ -88,6 +88,7 @@ public class ArtefactsInfos : ScriptableObject
             return false;
 
         levelTierFragment++;
+        levelTierFragment =  (LevelTier)Mathf.Clamp((int)levelTierFragment, 0, spawnRatePerTier.Length);
 
         return true;
     }
@@ -174,19 +175,19 @@ public class ArtefactsInfos : ScriptableObject
 
     public void OnValidate()
     {
-        if(spawnRatePerTier.Length < 3)
-        {
-            float[] tempArray = spawnRatePerTier;
-            spawnRatePerTier = new float[3];
-            for (int i = 0; i < tempArray.Length; i++)
-            {
-                spawnRatePerTier[i] = tempArray[i];
-            }
+        //if(spawnRatePerTier.Length < 3)
+        //{
+        //    float[] tempArray = spawnRatePerTier;
+        //    spawnRatePerTier = new float[3];
+        //    for (int i = 0; i < tempArray.Length; i++)
+        //    {
+        //        spawnRatePerTier[i] = tempArray[i];
+        //    }
 
            
-        }
+        //}
        
-        EditorUtility.SetDirty(this);
+        //EditorUtility.SetDirty(this);
     }
 
 }

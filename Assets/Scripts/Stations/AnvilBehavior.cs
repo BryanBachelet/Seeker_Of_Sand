@@ -9,20 +9,26 @@ public class AnvilBehavior : InteractionInterface
 
     private AnvilUIView m_anvilUIComponent;
     private CristalInventory m_cristalInventory;
+    [HideInInspector] public ArtefactsInfos currentArtefactReinforce;
 
 
-
+    private UIDispatcher m_uiDispatcher;
     public void Start()
     {
-        
+        InitComponent();
     }
 
-    /// <summary>
-    ///  Apply Fragment Drag and drop in UI;
-    /// </summary>
+    public void InitComponent()
+    {
+        if (GameState.m_uiManager) m_uiDispatcher = GameState.m_uiManager.GetComponent<UIDispatcher>();
+
+        m_anvilUIComponent = m_uiDispatcher.anvilUIView;
+        m_anvilUIComponent.anvilBehavior = this;
+    }
+
     public void SetFragmentUpgrade()
     {
-
+        currentArtefactReinforce.UpgradeTierFragment();
     }
 
     public BuyResult BuyUpgradeFragment()
@@ -30,15 +36,13 @@ public class AnvilBehavior : InteractionInterface
         return BuyResult.BUY;
     }
 
-
-
     public override void OnInteractionStart(GameObject player)
     {
-        throw new System.NotImplementedException();
+        m_anvilUIComponent.OpenUiAnvil();
     }
 
     public override void OnInteractionEnd(GameObject player)
     {
-        throw new System.NotImplementedException();
+        m_anvilUIComponent.CloseUIAnvil();
     }
 }
