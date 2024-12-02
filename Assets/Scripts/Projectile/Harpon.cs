@@ -46,7 +46,7 @@ public class Harpon : Projectile
             if (m_enemyImpale != null && m_firstHit && m_enemyImpale.m_npcInfo.state != Enemies.NpcState.DEATH )
             {
                 DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
-                m_enemyImpale.ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpale.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement, (int)m_characterProfil.stats.baseStat.damage);
+                m_enemyImpale.ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpale.transform.position - transform.position, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.instance.stats.baseStat.damage);
                 m_enemyImpale.m_npcInfo.state = Enemies.NpcState.PAUSE;
             }
             ActiveDeath();
@@ -96,7 +96,7 @@ public class Harpon : Projectile
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)m_characterProfil.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)CharacterProfile.instance.stats.baseStat.damage);
                     return;
                 }
 
@@ -106,7 +106,7 @@ public class Harpon : Projectile
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)m_characterProfil.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)CharacterProfile.instance.stats.baseStat.damage);
 
                     if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
@@ -118,7 +118,7 @@ public class Harpon : Projectile
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
                     DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)m_characterProfil.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)CharacterProfile.instance.stats.baseStat.damage);
                 }
             }
             if (other.tag == "Cristal")

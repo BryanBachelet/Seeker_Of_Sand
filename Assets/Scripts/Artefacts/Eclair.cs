@@ -104,7 +104,7 @@ namespace Artefact
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
             DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
-            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0,0);
+            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0, (int)CharacterProfile.instance.stats.baseStat.damage);
         }
 
         private void DestroyObject()

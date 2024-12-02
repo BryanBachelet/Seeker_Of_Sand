@@ -125,11 +125,11 @@ public class HealthPlayerComponent : MonoBehaviour
         {
             if (Time.time - m_timeLastHit < timeVignetteFeedbackActive)
             {
-                vignette.opacity.value = evolutionVignetteOverTime.Evaluate(Time.time - m_timeLastHit);
+                vignette.intensity.value = evolutionVignetteOverTime.Evaluate(Time.time - m_timeLastHit);
             }
             else
             {
-                vignette.opacity.value = 0;
+                vignette.intensity.value = 0;
                 m_isFeedbackHitActive = false;
             }
         }
@@ -163,7 +163,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
         GlobalSoundManager.PlayOneShot(29, transform.position);
         m_isFeedbackHitActive = true;
-        if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
+        if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); m_timeLastHit = Time.time; }
         StartInvulnerability(attackDamageInfo.bIsHeavy);
 
         vignette.intensity.value = 0.35f;

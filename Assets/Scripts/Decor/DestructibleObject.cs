@@ -8,6 +8,7 @@ public class DestructibleObject : MonoBehaviour
     public bool test = false;
     private Rigidbody rigidbody;
     private bool hasSpawn = false;
+    public LayerMask playerLayer;
 
     public bool sd_Destruction = true;
     public int indexSound = 51;
@@ -64,10 +65,13 @@ public class DestructibleObject : MonoBehaviour
         if (sd_Destruction) { GlobalSoundManager.PlayOneShot(51, transform.position); }
         GameObject instance = Instantiate(ObjDestroyedVersion, transform.position, transform.rotation, transform.parent);
         Rigidbody[] rigidBodies = instance.GetComponentsInChildren<Rigidbody>();
-
+        Collider[] colliders = instance.GetComponentsInChildren<Collider>();   
         for (int i = 0; i < rigidBodies.Length; i++)
         {
             rigidBodies[i].AddForce( direction.normalized * power * 1000,ForceMode.Impulse);
+            rigidBodies[i].mass = 10;
+            rigidBodies[i].excludeLayers = playerLayer;
+            colliders[i].excludeLayers = playerLayer;
           //  Debug.Log(power + "--> Is power of impulse. Direction is [" + direction + "]");
         }
 
