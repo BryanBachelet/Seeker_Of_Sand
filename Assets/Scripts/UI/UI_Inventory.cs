@@ -23,6 +23,7 @@ public class UI_Inventory : MonoBehaviour
 
     private Character.CharacterSpellBook m_characterSpellBool;
     private Character.CharacterShoot m_characterShoot;
+    private CharacterArtefact m_characterArtefact;
     private UI_Fragment_Tooltip m_fragmentToolTip;
 
     #region Resources variables
@@ -33,20 +34,7 @@ public class UI_Inventory : MonoBehaviour
 
     #region Objects variables
 
-    public List<Image> fragmentHold = new List<Image>();
-    public List<Image> fragmentTypeBackground = new List<Image>();
-    public List<Image> fragmentRarityTier = new List<Image>();
-    public List<TMP_Text> fragmentName = new List<TMP_Text>();
-    public List<Image> fragmentElement = new List<Image>();
-    public List<Image> bandeauFragmentName = new List<Image>();
-    public List<ArtefactsInfos> fragmentInfo = new List<ArtefactsInfos>();
-    public List<TooltipTrigger> tooltipFragment = new List<TooltipTrigger>();
-    public List<Image> spellNotUsedHold = new List<Image>();
-    public List<CapsuleProfil> spellNotUsedProfil = new List<CapsuleProfil>();
-
-    public Sprite[] backgroundElement = new Sprite[4];
-    public Sprite[] rarityCadre = new Sprite[3];
-    public Sprite[] iconElement = new Sprite[4];
+    public FragmentUIView[] fragmentUIViews = new FragmentUIView[0];
     #endregion
 
     #region Spell variables
@@ -67,6 +55,7 @@ public class UI_Inventory : MonoBehaviour
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
         m_characterSpellBool = GameState.s_playerGo.GetComponent<Character.CharacterSpellBook>();
         m_characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
+        m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
         m_fragmentToolTip = GameState.m_uiManager.GetComponent<UI_Fragment_Tooltip>();
     }
 
@@ -140,42 +129,13 @@ public class UI_Inventory : MonoBehaviour
 
     public void SetupFragmentImage(UI_Fragment_Tooltip fragmentInfo, int index)
     {
-        fragmentHold[index].sprite = m_fragmentToolTip.imageFragmentTooltip[index].sprite;
-        tooltipFragment[index].name = m_fragmentToolTip.tooltipTrigger[index].name;
-        tooltipFragment[index].content = m_fragmentToolTip.tooltipTrigger[index].content;
-        int GameElementIndex = (int)fragmentInfo.fragmentInfo[index].gameElement;
-        fragmentTypeBackground[index].sprite = backgroundElement[GameElementIndex];
-        fragmentElement[index].sprite = iconElement[GameElementIndex];
-        //if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
-        //{
-        //    fragmentTypeBackground[index].sprite = backgroundElement[0];
-        //    fragmentElement[index].sprite = iconElement[0];
-        //}
-        //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
-        //{
-        //    fragmentTypeBackground[index].sprite = backgroundElement[1];
-        //    fragmentElement[index].sprite = iconElement[1];
-        //}
-        //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
-        //{
-        //    fragmentTypeBackground[index].sprite = backgroundElement[2];
-        //    fragmentElement[index].sprite = iconElement[2];
-        //}
-        //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
-        //{
-        //    fragmentTypeBackground[index].sprite = backgroundElement[3];
-        //    fragmentElement[index].sprite = iconElement[3];
-        //}
-        fragmentRarityTier[index].sprite = rarityCadre[0];
-        fragmentName[index].text = fragmentInfo.fragmentInfo[index].nameArtefact;
-        fragmentHold[index].gameObject.SetActive(true);
-        fragmentTypeBackground[index].gameObject.SetActive(true);
-        fragmentRarityTier[index].gameObject.SetActive(true);
-        fragmentName[index].gameObject.SetActive(true);
-        fragmentElement[index].gameObject.SetActive(true);
-        bandeauFragmentName[index].gameObject.SetActive(true);
-        //if(fragmentInfo.)
-        //fragmentTypeBackground[index].sprite
+        fragmentUIViews[index].gameObject.SetActive(true);
+        fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
+
+
+        fragmentUIViews[index].tooltipTrigger.name = m_fragmentToolTip.tooltipTrigger[index].name;
+        fragmentUIViews[index].tooltipTrigger.content = m_fragmentToolTip.tooltipTrigger[index].content;
+
     }
 
 

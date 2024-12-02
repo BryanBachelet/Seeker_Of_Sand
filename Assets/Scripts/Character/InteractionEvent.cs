@@ -206,7 +206,8 @@ public class InteractionEvent : MonoBehaviour
                     if (nearest >= newDistance)
                     {
                         currentInteractibleObject = col[i].transform.gameObject;
-                        m_socleTransform = GameObject.Find("low_Socle").transform;
+                        GameObject socle = GameObject.Find("low_Socle");
+                       if(socle) m_socleTransform = socle.transform;
                         nearest = newDistance;
                     }
                 }

@@ -22,10 +22,13 @@ namespace GuerhoubaGames.UI
 
         private ArtefactsInfos previousClone;
 
+        private bool hasRecpetacle = false;
+
         #region Unity Function
 
         public void Start()
         {
+            m_characterArtefact = GameState.instance.playerGo.GetComponent<CharacterArtefact>();
             m_receptableUI.OnDropEvent += OnDropInput;
         }
 
@@ -51,24 +54,27 @@ namespace GuerhoubaGames.UI
             }
 
             indexArtecfactUpgradable = indexObject;
-            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[indexArtecfactUpgradable];
+            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[indexArtecfactUpgradable];   
             m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[indexArtecfactUpgradable]) ;
             ArtefactsInfos clone = m_characterArtefact.artefactsList[indexArtecfactUpgradable].Clone();
             Destroy(previousClone);
             previousClone = clone;
             previousClone.UpgradeTierFragment();
+            hasRecpetacle = true;
             m_resultImage.UpdateInteface(previousClone);
 
         }
 
         public void OnUpgradeFragment()
         {
+            if (!hasRecpetacle) return;
+
             BuyResult result = anvilBehavior.BuyUpgradeFragment();
             if (result != BuyResult.BUY) return;
 
 
             anvilBehavior.SetFragmentUpgrade();
-
+            OnDropInput(indexArtecfactUpgradable, CharacterObjectType.FRAGMENT);
         }
 
 

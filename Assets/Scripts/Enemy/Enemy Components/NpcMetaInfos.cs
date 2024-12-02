@@ -95,11 +95,6 @@ namespace Enemies
 
             if (behaviorTreeComponent)
             {
-                if(type==EnemyType.CHAMAN)
-                {
-
-                    Debug.Log("Test");
-                }
 
                 behaviorTreeComponent.isActivate = false;
                 

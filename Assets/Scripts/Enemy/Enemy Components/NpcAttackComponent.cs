@@ -95,6 +95,7 @@ namespace Enemies
         public int sequenceIndex = -1;
 
         public bool DebugSpecificItem;
+       [HideInInspector] public bool isStopRotationFirstFrame;
 
         #region MonoBehavior Functions
         public void Awake()
@@ -298,7 +299,7 @@ namespace Enemies
             isMvtAttackInit = false;
 
             m_showRaycastDebug = true;
-
+            isStopRotationFirstFrame = false;
 
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} is preparing to attack");
         }
@@ -503,8 +504,33 @@ namespace Enemies
 
                     if (currentAttackData.launchMoment == AttackLaunchMoment.AFTER_MVT)
                         currentAttackData.attackMovement.EndMovement += LaunchAttack;
+
+                       
                 }
 
+                if(!isStopRotationFirstFrame)
+                {
+
+                    AttackInfoData attackInfoData = new AttackInfoData();
+                    attackInfoData.attackIndex = currentAttackIndex;
+                    attackInfoData.scale = currentAttackData.GetScale();
+                    attackInfoData.duration = currentAttackData.prepationTime - currentAttackData.rotationTime;
+
+                    attackInfoData.target = m_mouvementComponent.targetData.baseTarget;
+                    attackInfoData.phase = AttackPhase.PREP;
+                    attackInfoData.areaType = currentAttackData.shapeType;
+
+                    if (currentAttackData.typeAttack == AttackType.RAYCAST_OBJ)
+                        attackInfoData.scale = new Vector3(currentAttackData.radiusRaycastExplosion, currentAttackData.radiusRaycastExplosion, currentAttackData.radiusRaycastExplosion);
+
+                    if (currentAttackData.postionToSpawnType == AttackNPCData.AttackPosition.Self)
+                        prepTargetPosition = transform.position;
+
+                    attackInfoData.positionAttack = prepTargetPosition;
+                    attackInfoData.isDelayValid = true;
+                    m_NPCAttackFeedbackComponent.SpawnFeedbacks(attackInfoData);
+                    isStopRotationFirstFrame = true;
+                }
 
             }
 

@@ -8,6 +8,7 @@ public class AnvilBehavior : InteractionInterface
 {
 
     private AnvilUIView m_anvilUIComponent;
+    private UI_Inventory m_uiInventory;
     private CristalInventory m_cristalInventory;
     [HideInInspector] public ArtefactsInfos currentArtefactReinforce;
 
@@ -23,6 +24,7 @@ public class AnvilBehavior : InteractionInterface
         if (GameState.m_uiManager) m_uiDispatcher = GameState.m_uiManager.GetComponent<UIDispatcher>();
 
         m_anvilUIComponent = m_uiDispatcher.anvilUIView;
+        m_uiInventory = m_uiDispatcher.uiInventory;
         m_anvilUIComponent.anvilBehavior = this;
     }
 
@@ -39,10 +41,15 @@ public class AnvilBehavior : InteractionInterface
     public override void OnInteractionStart(GameObject player)
     {
         m_anvilUIComponent.OpenUiAnvil();
+        m_uiInventory.ActivateInventoryInterface();
+        GameState.ChangeState();
     }
 
     public override void OnInteractionEnd(GameObject player)
     {
         m_anvilUIComponent.CloseUIAnvil();
+        m_uiInventory.DeactivateInventoryInterface();
+        GameState.ChangeState();
+
     }
 }

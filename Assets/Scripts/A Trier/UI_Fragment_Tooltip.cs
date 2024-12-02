@@ -16,12 +16,12 @@ public class UI_Fragment_Tooltip : MonoBehaviour
     [HideInInspector] public List<Image> fragmentTypeBackground = new List<Image>();
     [HideInInspector] public List<Image> fragmentRarity = new List<Image>();
     [HideInInspector] public List<TMPro.TMP_Text> fragmentName = new List<TMPro.TMP_Text>();
-    [HideInInspector] public List<ArtefactsInfos> fragmentInfo = new List<ArtefactsInfos>();
 
     public int currentFragmentNumber = 0;
 
     public Color[] colorOutlineByElement = new Color[5]; //Color by GameElement
 
+    private CharacterArtefact m_characterArtefact;
     // Start is called before the first frame update
     void Awake()
     {
@@ -33,41 +33,16 @@ public class UI_Fragment_Tooltip : MonoBehaviour
                 imageFragmentTooltip.Add(fragment_List[i].GetComponent<Image>());
             }
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
 
     }
 
     public void AddNewFragment(ArtefactsInfos artefactInfo)
     {
-        if (!fragment_List[currentFragmentNumber].activeSelf)
-        {
-            fragment_List[currentFragmentNumber].SetActive(true);
-        }
-        fragmentInfo.Add(artefactInfo);
+
         tooltipTrigger[currentFragmentNumber].header = artefactInfo.nameArtefact;
         tooltipTrigger[currentFragmentNumber].content = artefactInfo.description;
 
-
-        //if (artefactInfo.gameElement == GameElement.AIR)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[0];
-        //}
-        //else if (artefactInfo.gameElement == GameElement.WATER)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[1];
-        //}
-        //else if (artefactInfo.gameElement == GameElement.EARTH)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[2];
-        //}
-        //else if (artefactInfo.gameElement == GameElement.FIRE)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[3];
-        //}
         imageFragmentTooltip[currentFragmentNumber].sprite = artefactInfo.icon;
         SelectElement(fragment_List[currentFragmentNumber], artefactInfo);
         currentFragmentNumber += 1;
@@ -80,14 +55,9 @@ public class UI_Fragment_Tooltip : MonoBehaviour
             tooltipTrigger[i].header = tooltipTrigger[i+1 ].header;
             tooltipTrigger[i].content = tooltipTrigger[i + 1].content;
             imageFragmentTooltip[i].sprite = imageFragmentTooltip[i + 1].sprite;
-
         }
 
-        if (fragment_List[currentFragmentNumber].activeSelf)
-        {
-            fragmentInfo.RemoveAt(index);
-            fragment_List[currentFragmentNumber].SetActive(false);
-        }
+
 
         currentFragmentNumber--;
     }
@@ -98,44 +68,6 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         artefactElement.gameObject.SetActive(true);
         artefactElement.sprite = artefactInfo.icon;
         artefactElement.color = colorOutlineByElement[(int)artefactInfo.gameElement];
-        //if (artefactInfo.gameElement == GameElement.WATER)
-        //{
-        //    GameObject artefactElement = artefactObject.transform.GetChild(0).gameObject;
-        //    artefactElement.SetActive(true);
-        //    artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-        //    artefactObject.transform.GetChild(1).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(2).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(3).gameObject.SetActive(false);
-        //}
-        //else if (artefactInfo.gameElement == GameElement.AIR)
-        //{
-        //    GameObject artefactElement = artefactObject.transform.GetChild(1).gameObject;
-        //    artefactElement.SetActive(true);
-        //    artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-        //    artefactObject.transform.GetChild(0).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(2).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(3).gameObject.SetActive(false);
-        //
-        //}
-        //else if (artefactInfo.gameElement == GameElement.FIRE)
-        //{
-        //    GameObject artefactElement = artefactObject.transform.GetChild(2).gameObject;
-        //    artefactElement.SetActive(true);
-        //    artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-        //    artefactObject.transform.GetChild(0).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(1).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(3).gameObject.SetActive(false);
-        //
-        //}
-        //else if (artefactInfo.gameElement == GameElement.EARTH)
-        //{
-        //    GameObject artefactElement = artefactObject.transform.GetChild(3).gameObject;
-        //    artefactElement.SetActive(true);
-        //    artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-        //    artefactObject.transform.GetChild(0).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(1).gameObject.SetActive(false);
-        //    artefactObject.transform.GetChild(2).gameObject.SetActive(false);
-        //
-        //}
+        
     }
 }

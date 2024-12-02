@@ -85,10 +85,12 @@ public class ArtefactsInfos : ScriptableObject
     public bool UpgradeTierFragment()
     {
         if (!isUpgradeFeactureActive)
+        {
+            Debug.LogWarning("Tier Upgrade feature isn't active");
             return false;
-
+        }
         levelTierFragment++;
-        levelTierFragment =  (LevelTier)Mathf.Clamp((int)levelTierFragment, 0, spawnRatePerTier.Length);
+        levelTierFragment =  (LevelTier)Mathf.Clamp((int)levelTierFragment, 0, spawnRatePerTier.Length-1);
 
         return true;
     }

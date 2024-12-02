@@ -12,14 +12,15 @@ namespace GuerhoubaGames.UI
         [SerializeField] private Image m_nameImg;
         [SerializeField] private Image m_spriteImg;
         [SerializeField] private Image m_elementImg;
-        [SerializeField] private Image m_nameText;
+        [SerializeField] private TMPro.TMP_Text m_nameText;
+        public TooltipTrigger tooltipTrigger;
 
         public void UpdateInteface(ArtefactsInfos artefactsInfos)
         {
             FragmentUIRessources instanceResources = FragmentUIRessources.instance;
           
             int indexElement = (int)artefactsInfos.gameElement;
-            Debug.Assert(indexElement == 0, "Artefact "+ artefactsInfos.nameArtefact +  " doesn't have element");
+            Debug.Assert(indexElement != 0, "Artefact "+ artefactsInfos.nameArtefact +  " doesn't have element");
            
             // Adapt the element index for sprite array size;
             indexElement--;
@@ -28,6 +29,7 @@ namespace GuerhoubaGames.UI
             m_elementImg.sprite = instanceResources.elementSprite[(int)artefactsInfos.gameElement];
             m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
             m_spriteImg.sprite = artefactsInfos.icon;
+            m_nameText.text = artefactsInfos.nameArtefact;
         }
        
     }

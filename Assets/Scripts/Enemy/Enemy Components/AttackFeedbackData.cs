@@ -24,5 +24,6 @@ namespace Enemies
         public int attackIndex;
         public AttackPhase attackPhase;
         public Vector3 offsetSpawnPosition;
+        public bool isDelayed;
     }
 }
