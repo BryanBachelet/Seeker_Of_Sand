@@ -12,12 +12,12 @@ public class RandomPropsByElement : MonoBehaviour
     void Start()
     {
 
-        Transform[] gameObjectChild = transform.GetComponentsInChildren<Transform>();
-        rndLargeDecorElement = new GameObject[gameObjectChild.Length];
-        for(int i = 0; i < gameObjectChild.Length; i++)
-        {
-            rndLargeDecorElement[i] = gameObjectChild[i].gameObject;
-        }
+        //Transform[] gameObjectChild = transform.GetComponentsInChildren<Transform>();
+        //rndLargeDecorElement = new GameObject[gameObjectChild.Length];
+        //for(int i = 0; i < gameObjectChild.Length; i++)
+        //{
+        //    rndLargeDecorElement[i] = gameObjectChild[i].gameObject;
+        //}
         GenerateRandomLargeElement();
 
     }

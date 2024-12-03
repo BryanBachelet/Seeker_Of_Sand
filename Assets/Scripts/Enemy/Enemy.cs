@@ -116,7 +116,8 @@ namespace Enemies
             myAnimator.SetTrigger("TakeDamage");
             damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage, element);
+            Vector3 positionOnScreen = transform.position;
+            m_healthManager.CallDamageEvent(positionOnScreen, damage, element);
 
 
             if (m_healthSystem.health > 0) return;

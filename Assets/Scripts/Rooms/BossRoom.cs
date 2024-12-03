@@ -64,5 +64,6 @@ public class BossRoom : MonoBehaviour
         dayCyclecontroller.UpdateDepthOfField(true);
         DayCyclecontroller.m_nightCountGlobal++;
         enemyManager.gsm.UpdateParameter(0.1f, "Intensity");
+        enemyManager.m_mainInformationDisplay.DisplayMessage("Twilight sister eradicated");
     }
 }

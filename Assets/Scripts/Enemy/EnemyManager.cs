@@ -72,6 +72,8 @@ namespace Enemies
         [SerializeField] private Transform m_enemyHolder;
         [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
 
+        public ui_DisplayText m_mainInformationDisplay;
+
         public int countEnemySpawnMaximum;
 
         public Transform AstrePositionReference;

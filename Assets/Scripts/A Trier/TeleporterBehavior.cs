@@ -64,4 +64,9 @@ public class TeleporterBehavior : MonoBehaviour
         else { cameraFadeFunction.LaunchFadeOut(true, 1); cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay"); }
         nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
     }
+
+    public void ActivationDebugTeleportation()
+    {
+        this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
+    }
 }

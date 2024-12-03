@@ -2,7 +2,6 @@ using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 
 public enum ConditionsTrigger
 {
@@ -60,7 +59,7 @@ public class ArtefactsInfos : ScriptableObject
     // Reinforcement Variables
     [Header("ReInforce Feature Variables")]
     public bool isReinforceFeatureActivate = true;
-    [HideInInspector] public int additionialItemCount = 0;
+    [HideInInspector] public int additionialItemCount = 1;
     public int damageGainPerCount = 1;
 
     [Header("Upgrade Feature Variables")]
@@ -76,7 +75,11 @@ public class ArtefactsInfos : ScriptableObject
     public bool AddAdditionalFragment(ArtefactsInfos artefactInfos)
     {
         if (artefactInfos.nameArtefact != nameArtefact || !isReinforceFeatureActivate)
+        {
+            additionialItemCount = 1;
             return false;
+        }
+
 
         additionialItemCount++;
         return true;
@@ -185,8 +188,9 @@ public class ArtefactsInfos : ScriptableObject
 
            
         }
-       
+#if UNITY_EDITOR
         EditorUtility.SetDirty(this);
+#endif
     }
 
 }

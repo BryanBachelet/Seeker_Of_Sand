@@ -28,18 +28,22 @@ public class ObjectReward : MonoBehaviour
             {
                 charaprofil.stats.baseStat.healthMax += 15;
                 charaprofil.gameObject.GetComponent<HealthPlayerComponent>().AugmenteMaxHealth(15);
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Water bonus acquiered");
             }
             else if (element == GameElement.AIR)
             {
                 charaprofil.stats.baseStat.speed += 5;
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Aerial bonus acquiered");
             }
             else if (element == GameElement.FIRE)
             {
                 charaprofil.stats.baseStat.damage += 1;
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Fire bonus acquiered");
             }
             else if (element == GameElement.EARTH)
             {
                 charaprofil.stats.baseStat.armor += 1;
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Earth bonus acquiered");
             }
 
         }

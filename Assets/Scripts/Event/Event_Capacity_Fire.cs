@@ -2,7 +2,6 @@ using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Rendering.FilterWindow;
 
 public class Event_Capacity_Fire : MonoBehaviour
 {

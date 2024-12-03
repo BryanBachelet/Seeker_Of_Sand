@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,12 +13,14 @@ namespace GuerhoubaGames.UI
         [SerializeField] public Image m_currentHealthSlider;
         [SerializeField] private Image m_healthBufferSlider ;
         [SerializeField] public Image m_currentQuarterSlider;
+        [SerializeField] private TMP_Text m_healthText;
 
         [Header("Buffer Parameter")]
         public float bufferTime = 0.5f;
         private float m_lastLifeUpdateTime;
         private float m_currentLifeRatio;
         private float m_lastLifeRatio;
+
 
         public void Update()
         {
@@ -39,6 +43,12 @@ namespace GuerhoubaGames.UI
             m_healthBufferSlider.fillAmount = lifeRatio;
             m_currentQuarterSlider.fillAmount = quarterRatio;
 
+
+        }
+
+        public void UpdateLifeData(int currentHealth, int maxHealth)
+        {
+            m_healthText.text = currentHealth + "<size=60%>/<size=100%>" + maxHealth;
         }
     }
 }

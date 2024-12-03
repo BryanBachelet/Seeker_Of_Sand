@@ -7,6 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaTools.Gameplay;
+using TMPro;
 public struct AttackDamageInfo
 {
     public string attackName;
@@ -83,6 +84,7 @@ public class HealthPlayerComponent : MonoBehaviour
     // Start is called before the first frame update
 
     private CharacterProfile m_Profil;
+
     void Start()
     {
         InitializedHealthData();
@@ -183,6 +185,7 @@ public class HealthPlayerComponent : MonoBehaviour
         if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
         if (attackDamageInfo.bIsHeavy)
         {
             m_characterMouvement.SetKnockback(attackDamageInfo.position, 100);
@@ -233,6 +236,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
         m_CurrentHealth = m_MaxHealthQuantity; ;
         m_isLightInvulnerable = false;
     }
@@ -262,6 +266,7 @@ public class HealthPlayerComponent : MonoBehaviour
         m_CurrentHealth = Mathf.Clamp((indexQuarter ) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
         m_CurrentQuarter = Mathf.Clamp((indexQuarter), 0, 4);
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
     }
 
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.UI;
 using UnityEngine.UI;
 using GuerhoubaGames.GameEnum;
+using TMPro;
 public class UI_Fragment_Tooltip : MonoBehaviour
 {
     public List<GameObject> fragment_List = new List<GameObject>();
@@ -15,8 +16,9 @@ public class UI_Fragment_Tooltip : MonoBehaviour
     [HideInInspector] public List<Image> imageFragmentTooltip = new List<Image>();
     [HideInInspector] public List<Image> fragmentTypeBackground = new List<Image>();
     [HideInInspector] public List<Image> fragmentRarity = new List<Image>();
-    [HideInInspector] public List<TMPro.TMP_Text> fragmentName = new List<TMPro.TMP_Text>();
+    [HideInInspector] public List<TMP_Text> fragmentName = new List<TMPro.TMP_Text>();
     [HideInInspector] public List<ArtefactsInfos> fragmentInfo = new List<ArtefactsInfos>();
+    [HideInInspector] private List<TMP_Text> fragmentCount = new List<TMP_Text>();
 
     public int currentFragmentNumber = 0;
 
@@ -31,6 +33,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
             {
                 tooltipTrigger.Add(fragment_List[i].GetComponent<TooltipTrigger>());
                 imageFragmentTooltip.Add(fragment_List[i].GetComponent<Image>());
+                fragmentCount.Add(fragment_List[i].GetComponentInChildren<TMP_Text>());
             }
         }
     }
@@ -73,6 +76,10 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         currentFragmentNumber += 1;
     }
 
+    public void UpdateFragmentStack(int indexFragment, int stackNumber)
+    {
+        fragmentCount[indexFragment].text = "x<size=180%>" + stackNumber;
+    }
     public void RemoveFragment(int index)
     {
         for (int i = index; i < currentFragmentNumber-1; i++)

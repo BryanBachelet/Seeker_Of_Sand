@@ -113,7 +113,11 @@ public class CharacterArtefact : MonoBehaviour
         // Verify if the player doesn't already the artefact
         for (int i = 0; i < artefactsList.Count; i++)
         {
-            if (artefactsList[i].AddAdditionalFragment(artefacts)) return;        
+            if (artefactsList[i].AddAdditionalFragment(artefacts))
+            {
+                uiFragmentTooltip.UpdateFragmentStack(i, artefactsList[i].additionialItemCount +1);
+                return;
+            }
         }
 
         ArtefactsInfos clone = artefacts.Clone();
