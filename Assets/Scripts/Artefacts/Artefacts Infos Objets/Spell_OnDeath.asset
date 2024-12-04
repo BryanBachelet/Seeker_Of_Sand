@@ -12,16 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760a9665818b09741bdde9dd1c22f65e, type: 3}
   m_Name: Spell_OnDeath
   m_EditorClassIdentifier: 
-  spawnRate: 30
+  spawnRatePerTier:
+  - 0
+  - 0
+  - 0
   radius: 30
-  elementAffiliation: 2
+  gameElement: 0
   conditionsTrigger: 1
   entitiesTrigger: 0
   entitiesTargetSystem: 0
   m_artefactToSpawn: {fileID: 2364399404577619631, guid: bec411a6e90b091489f81b8d5bf9ad29,
     type: 3}
+  m_artefactProjectile: {fileID: 0}
   characterGo: {fileID: 0}
   icon: {fileID: 21300000, guid: acb51689de89774469213b5532b66d82, type: 3}
   description: <u>On death</u>, character have a chance to launch <u>your current
     spell</u>
   nameArtefact: 
+  isDebugActive: 0
+  activationCount: 0
+  maxProc: 10
+  damageArtefact: 1
+  isReinforceFeatureActivate: 1
+  additionialItemCount: 1
+  damageGainPerCount: 1
+  isUpgradeFeactureActive: 0
+  levelTierFragment: 0

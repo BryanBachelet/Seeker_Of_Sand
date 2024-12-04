@@ -171,7 +171,7 @@ namespace Enemies
             m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
-            Vector3 positionOnScreen = transform.position + new Vector3(0,20,0);
+            Vector3 positionOnScreen = transform.position + new Vector3(0,5,0);
             m_healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
             if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
 

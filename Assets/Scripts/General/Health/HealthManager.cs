@@ -49,7 +49,10 @@ public class HealthManager : MonoBehaviour
         if (m_serieController) m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
         Tool_DamageMeter.AddDamage(damage);
-
+        float cameraDistance = Vector3.Distance(m_cameraReference.transform.position, position);
+        if (m_textActiveCount % 2 == 0) { position += new Vector3(3, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0); }
+        else { position += new Vector3(-3, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0); } 
+        //position += new Vector3(0, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0);
 
         if (colorElementType == (int)GameElement.AIR)
         {
@@ -85,6 +88,7 @@ public class HealthManager : MonoBehaviour
     {
         m_textActiveCount--;
         m_activeText[m_textActiveCount] = null;
+
         m_inactiveText[m_damageFDMax - m_textActiveCount] = damageText;
     }
 
