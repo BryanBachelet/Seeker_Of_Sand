@@ -246,6 +246,9 @@ public class HealthPlayerComponent : MonoBehaviour
         m_MaxHealthQuantity += quantity;
         m_CurrentHealth += quantity;
         m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
+
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
         //InitializedHealthData();
     }
 

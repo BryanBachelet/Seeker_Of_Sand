@@ -156,6 +156,7 @@ namespace GuerhoubaGames.UI
             m_majorGoalSpriteDelay.fillAmount = 1;
             m_majorGoalProgress = 0;
             m_majorGoalAnimator.SetBool("MajorDisplay", true);
+
         }
 
 

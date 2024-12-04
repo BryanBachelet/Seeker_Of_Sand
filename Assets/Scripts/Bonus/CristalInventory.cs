@@ -51,7 +51,7 @@ public class CristalInventory : MonoBehaviour
         }
     }
 
-    public bool HasEnoughCristal(int value,GameElement element, string name)
+    public bool HasEnoughCristal(int value,GameElement   element, string name)
     {
         int indexCristal = (int)element;
         Debug.Log("Element :" + element.ToString());

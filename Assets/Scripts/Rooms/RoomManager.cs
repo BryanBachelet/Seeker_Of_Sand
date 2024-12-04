@@ -6,6 +6,10 @@ using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.AI;
+
+
+
 
 public class RoomManager : MonoBehaviour
 {
@@ -143,7 +147,8 @@ public class RoomManager : MonoBehaviour
         {
             if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
             {
-                
+
+               
                 roomInfoUI.ActiveMajorGoalInterface();
                 m_startRoomChallengeTime = DateTime.Now;
                 baseRoomType = currentRoomType;
@@ -221,6 +226,8 @@ public class RoomManager : MonoBehaviour
                     obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                     enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
                     obj.roomInfoUI = roomInfoUI;
+                    roomInfoUI.UpdateTextProgression(0, obj.m_enemiesCountConditionToWin);
+
                 }
 
                 break;
@@ -231,6 +238,7 @@ public class RoomManager : MonoBehaviour
                 //enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
                 enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                 enemyMaxSpawnInRoon = enemyToKillCount;
+                roomInfoUI.UpdateTextProgression(0, enemyToKillCount);
                 break;
             case RoomType.Boss:
                 DeactivateAltar();
