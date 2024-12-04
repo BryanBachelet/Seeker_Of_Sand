@@ -321,7 +321,7 @@ namespace Character
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
                 m_characterShoot.gsm.CanalisationParameterLaunch(1, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
-
+                MatchRotationAndDirection();
                 if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
                 //  cameraPlayer.BlockZoom(false);
                 //DisplayNewCurrentState(1);
@@ -969,6 +969,18 @@ namespace Character
             }
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
 
+
+            transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            m_avatarTransform.localRotation = Quaternion.identity;
+        }
+
+        private void MatchRotationAndDirection()
+        {
+            Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+
+            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
+            float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+        
 
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
             m_avatarTransform.localRotation = Quaternion.identity;

@@ -17,8 +17,8 @@ namespace Enemies
         public Vector3 positionAttack;
         public Transform target;
         public AreaType areaType;
- 
 
+        public bool isDelayValid;
         
     }
 
@@ -33,7 +33,8 @@ namespace Enemies
             {
                 AttackFeedbackData currFeedbackData = attackFeedbackDataArr[i];
 
-                if (currFeedbackData.attackIndex != attackInfoData.attackIndex || currFeedbackData.attackPhase != attackInfoData.phase) continue;
+
+                if (currFeedbackData.attackIndex != attackInfoData.attackIndex || currFeedbackData.attackPhase != attackInfoData.phase || attackInfoData.isDelayValid != currFeedbackData.isDelayed) continue;
 
                 if (currFeedbackData.feedbackType == FeedbackType.VISUAL) SpawnVisualFeedback(currFeedbackData,attackInfoData);
                 if (currFeedbackData.feedbackType == FeedbackType.SOUND) SpawnSoundFeedback(currFeedbackData,attackInfoData);

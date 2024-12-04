@@ -59,7 +59,7 @@ public class ArtefactsInfos : ScriptableObject
     // Reinforcement Variables
     [Header("ReInforce Feature Variables")]
     public bool isReinforceFeatureActivate = true;
-    [HideInInspector] public int additionialItemCount = 1;
+    [HideInInspector] public int additionialItemCount = 0;
     public int damageGainPerCount = 1;
 
     [Header("Upgrade Feature Variables")]
@@ -76,7 +76,6 @@ public class ArtefactsInfos : ScriptableObject
     {
         if (artefactInfos.nameArtefact != nameArtefact || !isReinforceFeatureActivate)
         {
-            additionialItemCount = 1;
             return false;
         }
 
@@ -88,9 +87,12 @@ public class ArtefactsInfos : ScriptableObject
     public bool UpgradeTierFragment()
     {
         if (!isUpgradeFeactureActive)
+        {
+            Debug.LogWarning("Tier Upgrade feature isn't active");
             return false;
-
+        }
         levelTierFragment++;
+        levelTierFragment = (LevelTier)Mathf.Clamp((int)levelTierFragment, 0, spawnRatePerTier.Length - 1);
 
         return true;
     }
@@ -177,19 +179,17 @@ public class ArtefactsInfos : ScriptableObject
 
     public void OnValidate()
     {
-        if(spawnRatePerTier.Length < 3)
-        {
-            float[] tempArray = spawnRatePerTier;
-            spawnRatePerTier = new float[3];
-            for (int i = 0; i < tempArray.Length; i++)
-            {
-                spawnRatePerTier[i] = tempArray[i];
-            }
+        //if(spawnRatePerTier.Length < 3)
+        //{
+        //    float[] tempArray = spawnRatePerTier;
+        //    spawnRatePerTier = new float[3];
+        //    for (int i = 0; i < tempArray.Length; i++)
+        //    {
+        //        spawnRatePerTier[i] = tempArray[i];
+        //    }
 
-           
-        }
 #if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
+    EditorUtility.SetDirty(this);
 #endif
     }
 
