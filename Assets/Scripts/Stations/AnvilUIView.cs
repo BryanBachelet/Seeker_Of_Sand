@@ -18,7 +18,7 @@ namespace GuerhoubaGames.UI
 
         private int indexArtecfactUpgradable;
         private CharacterArtefact m_characterArtefact;
-       [HideInInspector] public AnvilBehavior anvilBehavior;
+        [HideInInspector] public AnvilBehavior anvilBehavior;
 
         private ArtefactsInfos previousClone;
 
@@ -30,6 +30,8 @@ namespace GuerhoubaGames.UI
         {
             m_characterArtefact = GameState.instance.playerGo.GetComponent<CharacterArtefact>();
             m_receptableUI.OnDropEvent += OnDropInput;
+            m_receptableImage.ResetFragmentUIView();
+            m_resultImage.ResetFragmentUIView();
         }
 
         #endregion
@@ -53,16 +55,35 @@ namespace GuerhoubaGames.UI
                 return;
             }
 
+            // Check if fragment is already Tier 3;
+            if (!anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[indexArtecfactUpgradable]))
+            {
+                //TODO : Add Sound feedback for error of placement
+                return;
+            }
+
+            UpdateUpgradeUI(indexObject, characterObjectType);
+        }
+
+        private void UpdateUpgradeUI(int indexObject, CharacterObjectType characterObjectType, bool isUpdate = false)
+        {
+            // Check if fragment is already Tier 3;
+            if (!anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[indexArtecfactUpgradable]))
+            {
+                m_receptableImage.ResetFragmentUIView();
+                m_resultImage.ResetFragmentUIView();
+                return;
+            }
+
+            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[indexArtecfactUpgradable];
             indexArtecfactUpgradable = indexObject;
-            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[indexArtecfactUpgradable];   
-            m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[indexArtecfactUpgradable]) ;
+            m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[indexArtecfactUpgradable]);
             ArtefactsInfos clone = m_characterArtefact.artefactsList[indexArtecfactUpgradable].Clone();
             Destroy(previousClone);
             previousClone = clone;
             previousClone.UpgradeTierFragment();
             hasRecpetacle = true;
             m_resultImage.UpdateInteface(previousClone);
-
         }
 
         public void OnUpgradeFragment()
@@ -74,7 +95,7 @@ namespace GuerhoubaGames.UI
 
 
             anvilBehavior.SetFragmentUpgrade();
-            OnDropInput(indexArtecfactUpgradable, CharacterObjectType.FRAGMENT);
+            UpdateUpgradeUI(indexArtecfactUpgradable, CharacterObjectType.FRAGMENT, true);
         }
 
 

@@ -44,7 +44,13 @@ public class UI_Inventory : MonoBehaviour
     public List<CapsuleProfil> spellProfil = new List<CapsuleProfil>();
     #endregion
 
+    #region Profil variables
+    [SerializeField] private TMP_Text m_healthBonusText;
+    [SerializeField] private TMP_Text m_speedBonusText;
+    [SerializeField] private TMP_Text m_damageBonusText;
+    [SerializeField] private TMP_Text m_armorBonusText;
 
+    #endregion
     // Avoid the close and t
     private bool IsNextCallDelay;
     public void InitComponent()
@@ -100,6 +106,11 @@ public class UI_Inventory : MonoBehaviour
             spellUse[i].sprite = spellSprite[i];
             cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i] / 4)];
         }
+        CharacterStat stat = CharacterProfile.instance.stats;
+        m_healthBonusText.text = ": " + stat.baseStat.healthMax;
+        m_speedBonusText.text = ": " + stat.baseStat.speed;
+        m_damageBonusText.text = ": " + stat.baseStat.damage;
+        m_armorBonusText.text = ": " + stat.baseStat.armor;
 
     }
 
@@ -131,10 +142,6 @@ public class UI_Inventory : MonoBehaviour
     {
         fragmentUIViews[index].gameObject.SetActive(true);
         fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
-
-
-        fragmentUIViews[index].tooltipTrigger.name = m_fragmentToolTip.tooltipTrigger[index].name;
-        fragmentUIViews[index].tooltipTrigger.content = m_fragmentToolTip.tooltipTrigger[index].content;
 
     }
 

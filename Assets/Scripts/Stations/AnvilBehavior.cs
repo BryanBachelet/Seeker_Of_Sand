@@ -13,7 +13,13 @@ public class AnvilBehavior : InteractionInterface
     [HideInInspector] public ArtefactsInfos currentArtefactReinforce;
 
 
+    public int costT1 = 100;
+    public int costT2 = 150;
+
+    public bool isBuylessActive;
     private UIDispatcher m_uiDispatcher;
+
+
     public void Start()
     {
         InitComponent();
@@ -25,16 +31,30 @@ public class AnvilBehavior : InteractionInterface
 
         m_anvilUIComponent = m_uiDispatcher.anvilUIView;
         m_uiInventory = m_uiDispatcher.uiInventory;
+        m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
         m_anvilUIComponent.anvilBehavior = this;
     }
 
     public void SetFragmentUpgrade()
     {
         currentArtefactReinforce.UpgradeTierFragment();
+        m_uiInventory.ActualizeInventory();
     }
 
     public BuyResult BuyUpgradeFragment()
     {
+        if (isBuylessActive)
+            return BuyResult.BUY;
+
+        bool isT1 = currentArtefactReinforce.levelTierFragment == LevelTier.TIER_1 ? true : false;
+        int value = isT1 ? costT1 : costT2;
+        bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, currentArtefactReinforce.gameElement, currentArtefactReinforce.nameArtefact);
+        if (!hasEnoughCristal) return BuyResult.NOT_ENOUGH_MONEY;
+
+        m_cristalInventory.RemoveCristalCount((int)currentArtefactReinforce.gameElement, -value);
+        // TODO : Update Anvil Upgrade price;
+
+
         return BuyResult.BUY;
     }
 
@@ -51,5 +71,11 @@ public class AnvilBehavior : InteractionInterface
         m_uiInventory.DeactivateInventoryInterface();
         GameState.ChangeState();
 
+    }
+
+    public bool IsFrgmentCanBeUpgrade(ArtefactsInfos currentArtefactReinforce)
+    {
+
+        return currentArtefactReinforce.levelTierFragment != LevelTier.TIER_3;
     }
 }

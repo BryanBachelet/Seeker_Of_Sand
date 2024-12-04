@@ -53,6 +53,7 @@ public class HitEffectHighLight : MonoBehaviour
     public void ReceiveHit()
     {
         timeLast = Time.time;
+
         currentlyApplyEffect = true;
         currentEffectDuration = 0;
     }

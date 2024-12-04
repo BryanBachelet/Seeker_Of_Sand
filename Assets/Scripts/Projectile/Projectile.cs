@@ -258,7 +258,7 @@ public class Projectile : MonoBehaviour
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
 
-            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)m_characterProfil.stats.baseStat.damage);
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)

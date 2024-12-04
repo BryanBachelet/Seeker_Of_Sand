@@ -231,14 +231,14 @@ public class ProjectileExplosif : Projectile
                 if (enemyTouch != stickyEnemy)
                 {
                     
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, -1, (int)m_characterProfil.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, -1, (int)CharacterProfile.instance.stats.baseStat.damage);
                 }
             }
                
 
             m_characterShoot.ActiveOnHit(stickyEnemy.transform.position, EntitiesTrigger.Enemies, stickyEnemy.gameObject, (GameElement)elementIndex);
 
-            stickyEnemy.ReceiveDamage(spellProfil.name, damageStatData, stickyEnemy.transform.position - transform.position, m_power, -1, (int)m_characterProfil.stats.baseStat.damage);
+            stickyEnemy.ReceiveDamage(spellProfil.name, damageStatData, stickyEnemy.transform.position - transform.position, m_power, -1, (int)CharacterProfile.instance.stats.baseStat.damage);
             m_stickTransform = null;
         }
         vfxBase.gameObject.SetActive(false);

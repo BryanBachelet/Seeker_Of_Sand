@@ -44,6 +44,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         tooltipTrigger[currentFragmentNumber].content = artefactInfo.description;
 
         imageFragmentTooltip[currentFragmentNumber].sprite = artefactInfo.icon;
+        imageFragmentTooltip[currentFragmentNumber].gameObject.SetActive(true);
         SelectElement(fragment_List[currentFragmentNumber], artefactInfo);
         currentFragmentNumber += 1;
     }

@@ -71,19 +71,26 @@ public class Event_Capacity_Eclaire : MonoBehaviour
                     else
                     {
                         Vector3 position = Vector3.zero;
-                        if(i == 0)
+                        Vector3 direction = playerPosition.position - transform.position;
+                        direction.Normalize();
+                        if (i == 0 && attackEncourCount[i] <= 1)
                         {
-                            position = new Vector3(20 * attackEncourCount[i], 0, 0);
+                            //transform.LookAt(-new Vector3(playerPosition.position.x, this.transform.position.y, playerPosition.position.z));
+                        }
+                        if (i == 0)
+                        {
+                            position = new Vector3(direction.x * 20 * attackEncourCount[i], direction.y * 0, direction.z * 0);
                         }
                         else if (i == 1)
                         {
-                            position = new Vector3(-20 * attackEncourCount[i], 0, 0);
+                            position = new Vector3(direction.x * -20 * attackEncourCount[i], direction.y * 0, direction.z * 0);
                         }
                         else if(i == 2)
                         {
-                            position = new Vector3(0 , 0, 20 * attackEncourCount[i]);
+                            position = new Vector3(direction.x * 0, direction.y * 0, direction.z * 20 * attackEncourCount[i]);
                         }
-                        transform.LookAt(new Vector3(playerPosition.position.x, this.transform.position.y, playerPosition.position.z));
+
+
                         GameObject attackInstiate = Instantiate(attack[i], foundNewPosition(areaRef.altarAssociated.transform.position + offSetSign) + position, transform.rotation, transform);
                         GameObject vfx = Instantiate(shotVfx, areaRef.altarAssociated.transform.position + offSetSign, transform.rotation);
                         float speed = Vector3.Distance(vfx.transform.position, attackInstiate.transform.position) / tempsRealese[i];

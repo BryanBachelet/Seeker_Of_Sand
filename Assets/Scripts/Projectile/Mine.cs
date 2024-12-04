@@ -148,7 +148,7 @@ public class Mine : ProjectileExplosif
 
                 if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) continue;
                 DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-                enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power, (int)m_characterShoot.lastElement, (int)m_characterProfil.stats.baseStat.damage);
+                enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.instance.stats.baseStat.damage);
             }
             else if (enemies[i].tag == "Cristal")
             {

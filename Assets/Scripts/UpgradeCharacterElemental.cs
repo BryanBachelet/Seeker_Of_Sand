@@ -22,8 +22,6 @@ public class UpgradeCharacterElemental : InteractionInterface
 
     public override void OnInteractionStart(GameObject player)
     {
-        if (TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
-        {
             if (m_rewardTypologie)
             {
                 //m_rewardTypologie.ActivationDistribution();
@@ -31,7 +29,6 @@ public class UpgradeCharacterElemental : InteractionInterface
                 //m_meshCristal.SetActive(false);
 
             }
-        }
 
 
         //xpMvtScript.ActiveExperienceParticule(this.transform);

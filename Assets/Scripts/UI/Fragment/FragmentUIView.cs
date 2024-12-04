@@ -22,15 +22,31 @@ namespace GuerhoubaGames.UI
             int indexElement = (int)artefactsInfos.gameElement;
             Debug.Assert(indexElement != 0, "Artefact "+ artefactsInfos.nameArtefact +  " doesn't have element");
            
-            // Adapt the element index for sprite array size;
-            indexElement--;
 
             m_backgroundColorImg.sprite = instanceResources.backgroundSprite[(int)artefactsInfos.gameElement];
-            m_elementImg.sprite = instanceResources.elementSprite[(int)artefactsInfos.gameElement];
-            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
+            m_elementImg.sprite = instanceResources.elementSprite[(int)artefactsInfos.gameElement ];
+            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment +1 ];
             m_spriteImg.sprite = artefactsInfos.icon;
             m_nameText.text = artefactsInfos.nameArtefact;
+
+            tooltipTrigger.IsActive = true;
+            tooltipTrigger.header = artefactsInfos.nameArtefact;
+            tooltipTrigger.content = artefactsInfos.description;
         }
-       
+
+        public void ResetFragmentUIView()
+        {
+            FragmentUIRessources instanceResources = FragmentUIRessources.instance;
+
+
+            m_backgroundColorImg.sprite = instanceResources.backgroundSprite[0];
+            m_elementImg.sprite = instanceResources.elementSprite[0];
+            m_borderColorImg.sprite = instanceResources.raretySprite[0];
+            m_spriteImg.sprite = null;
+            m_nameText.text = "";
+
+            tooltipTrigger.IsActive = false;
+        }
+
     }
 }
