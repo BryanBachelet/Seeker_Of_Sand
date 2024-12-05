@@ -8,7 +8,6 @@ namespace GuerhoubaGames.UI
 {
     public class AnvilUIView : MonoBehaviour
     {
-
         [SerializeField] private GameObject m_panelAnvil;
 
         [Header("Upgrade Artefact Variables")]

@@ -7,6 +7,7 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.AI;
+using Render.Camera;
 
 
 
@@ -136,7 +137,7 @@ public class RoomManager : MonoBehaviour
         //if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
         //else
         m_enemyManager.isStopSpawn = true;
-
+        Camera.main.GetComponent<CameraBehavior>().ResetZoom();
         SetupRoomType();
         previewCamera.gameObject.SetActive(false);
     }
@@ -226,7 +227,7 @@ public class RoomManager : MonoBehaviour
                     obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                     enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
                     obj.roomInfoUI = roomInfoUI;
-                    roomInfoUI.UpdateTextProgression(0, obj.m_enemiesCountConditionToWin);
+                    roomInfoUI.UpdateTextProgression(obj.m_enemiesCountConditionToWin, obj.m_enemiesCountConditionToWin);
 
                 }
 
@@ -238,7 +239,7 @@ public class RoomManager : MonoBehaviour
                 //enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
                 enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                 enemyMaxSpawnInRoon = enemyToKillCount;
-                roomInfoUI.UpdateTextProgression(0, enemyToKillCount);
+                roomInfoUI.UpdateTextProgression(enemyToKillCount, enemyToKillCount);
                 break;
             case RoomType.Boss:
                 DeactivateAltar();
@@ -286,6 +287,7 @@ public class RoomManager : MonoBehaviour
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
         LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 
+        Camera.main.GetComponent<CameraBehavior>().isZoomActive = true;
     }
 
     #region Room Validation Functions

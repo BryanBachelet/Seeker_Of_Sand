@@ -11,8 +11,21 @@ public class PauseMenu : MonoBehaviour
     public GameObject fixeUIelement;
     public GameObject firstObjectToPick;
     [SerializeField] public TMP_Text m_textName;
+
+    private UIDispatcher m_uiDispatcher;
+    public void Awake()
+    {
+        
+    }
+
     public void CallPauseMenu()
     {
+        if(m_uiDispatcher ==null)
+            m_uiDispatcher = GameState.m_uiManager.GetComponent<UIDispatcher>();
+
+        if (m_uiDispatcher.IsAnythingIsOpen()) return;
+        if (m_uiDispatcher.CloseInventory()) return;
+
         UITools.instance.SetUIObjectSelect(firstObjectToPick);
         GameState.ChangeState();
         this.gameObject.SetActive(!this.gameObject.activeSelf);

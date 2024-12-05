@@ -12,11 +12,34 @@ public class UIDispatcher : MonoBehaviour
     public GuerhoubaGames.UI.CristalUI cristalUI;
     public GuerhoubaGames.UI.AnvilUIView anvilUIView;
     public PauseMenu pauseMenu;
-        public GameObject bandenoir;
+     public GameObject bandenoir;
     public void ActiveUIElement()
     {
         uiInventory.InitComponent();
         dragManager.StartDragManager();
     }
 
+
+    public bool IsAnythingIsOpen()
+    {
+     
+
+        bool anvilResult = false;
+        if(anvilUIView.anvilBehavior != null)
+        {
+            anvilResult = anvilUIView.anvilBehavior.isOpen;
+        }
+        return marchandUiView.isOpen || anvilResult;
+    }
+
+
+    public bool CloseInventory()
+    {
+        if (uiInventory.isOpen)
+        {
+            uiInventory.DeactivateInventoryInterface();
+            return true;
+        }
+        return false;
+    }
 }

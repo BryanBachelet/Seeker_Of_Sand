@@ -73,6 +73,7 @@ namespace Render.Camera
         // -- Test Camera Zoom ---- 
 
         [Header("Camera Zoom parameter")]
+        public bool isZoomActive;
         [SerializeField] private float m_maxDistance = 10;
         [SerializeField] private float m_minDistance = 2;
         [SerializeField] private Vector3 m_maxAngle;
@@ -243,6 +244,7 @@ namespace Render.Camera
 
         private void UpdateZoomValue(float sensibility)
         {
+            if (!isZoomActive) return;
             m_inputZoomValue = sensibility * m_zoomInputGamepad;
             if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
 
@@ -256,15 +258,24 @@ namespace Render.Camera
             else cameraMode = CameraMode.HIGH_VIEW;
         }
 
+
+        public void ResetZoom()
+        {
+            m_baseAngle = m_maxAngle;
+            m_distanceToTarget = m_maxDistance;
+            isZoomActive = false;
+            m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
+            m_currentLerpValue = 0;
+        }
+
         private void CameraZoom()
         {
+            if (!isZoomActive) return;
 
             if (IsGamepad())
             {
                 UpdateZoomValue(m_gamepadZoomSensibility);
             }
-
-
 
             m_prevSlopeAngle = m_slopeAngle;
             float angle = playerMove.GetSlope();
