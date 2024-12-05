@@ -118,7 +118,7 @@ public class UIEndScreen : MonoBehaviour
         float progress = (Time.time - time) / tempsDisplay;
         if (progress < 0.33f)
         {
-            m_nightCompletionFill[0].fillAmount = Mathf.Lerp(0, stat.roomCount / 7, progress / 0.33f);
+            m_nightCompletionFill[0].fillAmount = Mathf.Lerp(0, stat.roomCount / 7f, progress / 0.33f);
             //m_nightCompletionFill[1].fillAmount = 0;
             //m_nightCompletionFill[2].fillAmount = 0;
         }
@@ -126,7 +126,7 @@ public class UIEndScreen : MonoBehaviour
         {
             m_nightCompleted[0].SetActive(true);
             m_nightCompletionFill[0].fillAmount = 1;
-            m_nightCompletionFill[1].fillAmount = Mathf.Lerp(0, (stat.roomCount - 7) / 7, (progress - 0.33f) / 0.33f);
+            m_nightCompletionFill[1].fillAmount = Mathf.Lerp(0, (stat.roomCount - 7) / 7.0f, (progress - 0.33f) / 0.33f);
             //m_nightCompletionFill[2].fillAmount = 0;
         }
         if (stat.nightValidate > 1 && progress > 0.66f)
@@ -134,7 +134,7 @@ public class UIEndScreen : MonoBehaviour
             m_nightCompleted[1].SetActive(true);
            m_nightCompletionFill[0].fillAmount = 1;
            m_nightCompletionFill[1].fillAmount = 1;
-            m_nightCompletionFill[2].fillAmount = Mathf.Lerp(0, (stat.roomCount - 14) / 7, (progress - 0.66f) / 0.33f);
+            m_nightCompletionFill[2].fillAmount = Mathf.Lerp(0, (stat.roomCount - 14) / 7f, (progress - 0.66f) / 0.33f);
         }
         if (stat.nightValidate > 2 && progress >= 0.99f)
         {

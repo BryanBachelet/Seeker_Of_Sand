@@ -78,6 +78,8 @@ public class RoomManager : MonoBehaviour
     private Character.CharacterUpgrade m_characterUpgrade;
 
     static public int enemyMaxSpawnInRoon;
+
+    private NavMeshData m_navMesh;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -144,6 +146,9 @@ public class RoomManager : MonoBehaviour
 
     public void ActivateRoomAfterDistanceTP()
     {
+        NavMeshHit hit;
+        Vector3 playerPos = playerGO.transform.position;
+        if (!NavMesh.SamplePosition(playerPos, out hit, 10, NavMesh.AllAreas)) return;
         if (currentRoomType == RoomType.Enemy && !m_isDistanceActivationDone && m_isStartActivation)
         {
             if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
