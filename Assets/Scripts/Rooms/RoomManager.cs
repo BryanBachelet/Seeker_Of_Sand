@@ -31,6 +31,7 @@ public class RoomManager : MonoBehaviour
     public bool isTimingPassing;
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
+    [HideInInspector] public int terrainIndex;
 
     public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
