@@ -1,7 +1,9 @@
 using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
-using UnityEditor;
+using UnityEngine.Rendering.LookDev;
+using Unity.Collections;
+using Unity.VisualScripting;
 
 public enum ConditionsTrigger
 {
@@ -48,6 +50,11 @@ public class ArtefactsInfos : ScriptableObject
     public string nameArtefact;
     public bool isDebugActive = false;
 
+    [TextArea]
+    public string descriptionResult;
+
+
+
     [HideInInspector] public int activationCount;
 
     private int proc = 0;
@@ -79,8 +86,8 @@ public class ArtefactsInfos : ScriptableObject
             return false;
         }
 
-
         additionialItemCount++;
+        ResultString();
         return true;
     }
 
@@ -93,7 +100,7 @@ public class ArtefactsInfos : ScriptableObject
         }
         levelTierFragment++;
         levelTierFragment = (LevelTier)Mathf.Clamp((int)levelTierFragment, 0, spawnRatePerTier.Length - 1);
-
+        ResultString();
         return true;
     }
 
@@ -176,6 +183,38 @@ public class ArtefactsInfos : ScriptableObject
         return usable;
     }
 
+    public void ResultString()
+    {
+        string result = string.Empty;
+
+        int index = description.IndexOf("{");
+        if (index == -1)
+        {
+            descriptionResult = description;
+            return;
+
+        }
+        int index1 = description.IndexOf("}");
+        if (index1 == -1)
+        {
+            descriptionResult = description.Substring(0, index);
+            return;
+        }
+        result += description.Substring(0, index);
+
+        string substringCode = description.Substring(index+1, index1 -index -1); ;
+        if (substringCode == "p")
+            result +=  spawnRatePerTier[(int)levelTierFragment].ToString() ;
+
+        if (substringCode == "d")
+            result += (damageArtefact + damageGainPerCount * additionialItemCount).ToString();
+        result += description.Substring(index1+1);
+
+        descriptionResult = result;
+
+
+        return ;
+    }
 
     public void OnValidate()
     {
@@ -188,9 +227,9 @@ public class ArtefactsInfos : ScriptableObject
         //        spawnRatePerTier[i] = tempArray[i];
         //    }
 
-#if UNITY_EDITOR
-    EditorUtility.SetDirty(this);
-#endif
+
+        ResultString();
     }
+
 
 }

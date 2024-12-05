@@ -25,7 +25,7 @@ public class Event_Capacity_Eclaire : MonoBehaviour
 
     public List<GameObject> attackEnCour = new List<GameObject>();
     public int[] attackEncourCount = new int[3];
-
+    
     public bool playerHere = false;
     public Transform playerPosition;
     private Vector3 imprecision;
@@ -46,7 +46,7 @@ public class Event_Capacity_Eclaire : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         if (!playerHere) { return; }
         tempsEcoule = Time.time;
         attackCount = attackEnCour.Count;
@@ -94,10 +94,12 @@ public class Event_Capacity_Eclaire : MonoBehaviour
                         GameObject attackInstiate = Instantiate(attack[i], foundNewPosition(areaRef.altarAssociated.transform.position + offSetSign) + position, transform.rotation, transform);
                         GameObject vfx = Instantiate(shotVfx, areaRef.altarAssociated.transform.position + offSetSign, transform.rotation);
                         float speed = Vector3.Distance(vfx.transform.position, attackInstiate.transform.position) / tempsRealese[i];
+                        
                         SignAttack signAttack_Projectil = vfx.GetComponent<SignAttack>();
                         signAttack_Projectil.positionToGo = attackInstiate.transform.position;
                         signAttack_Projectil.speedMovement = speed;
                         //Debug.Log("Attack spawned : " + attackInstiate.name + " Life time is : " + tempsRealese[i] + " distance with player is : " + distance + " Speed will be : " + (distance / tempsRealese[i]));
+                       
                         AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
                         dataLife.lifeTimeVFX = tempsRealese[i];
                         dataLife.playerTarget = playerPosition;

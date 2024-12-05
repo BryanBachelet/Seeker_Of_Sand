@@ -31,7 +31,7 @@ namespace GuerhoubaGames.UI
 
             tooltipTrigger.IsActive = true;
             tooltipTrigger.header = artefactsInfos.nameArtefact;
-            tooltipTrigger.content = artefactsInfos.description;
+            tooltipTrigger.content = artefactsInfos.descriptionResult;
         }
 
         public void ResetFragmentUIView()

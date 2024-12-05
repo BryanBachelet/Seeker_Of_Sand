@@ -39,13 +39,21 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         }
 
 
+      
+    }
+
+    private void Start()
+    {
+        m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
+
     }
 
     public void AddNewFragment(ArtefactsInfos artefactInfo)
     {
 
         tooltipTrigger[currentFragmentNumber].header = artefactInfo.nameArtefact;
-        tooltipTrigger[currentFragmentNumber].content = artefactInfo.description;
+        tooltipTrigger[currentFragmentNumber].content = artefactInfo.descriptionResult;
+        tooltipTrigger[currentFragmentNumber].OnEnterData += UpdateDescription;
 
         imageFragmentTooltip[currentFragmentNumber].sprite = artefactInfo.icon;
         imageFragmentTooltip[currentFragmentNumber].gameObject.SetActive(true);
@@ -56,6 +64,11 @@ public class UI_Fragment_Tooltip : MonoBehaviour
     public void UpdateFragmentStack(int indexFragment, int stackNumber)
     {
         fragmentCount[indexFragment].text = "x<size=180%>" + stackNumber;
+    }
+
+    public void UpdateDescription(TooltipEventData data)
+    {
+        tooltipTrigger[data.index].content = m_characterArtefact.artefactsList[data.index].descriptionResult;
     }
     public void RemoveFragment(int index)
     {
