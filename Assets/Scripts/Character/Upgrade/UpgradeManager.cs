@@ -209,6 +209,16 @@ public class UpgradeManager : MonoBehaviour
         return upgradeObject[indexUpgrade];
     }
 
+    public void ValidateUpgrade(int index)
+    {
+        m_upgradeChoosingComponent.ChooseUpgrade(index);
+    }
+
+    public void ValidateSpell(int index)
+    {
+        m_chooseSpellManagerComponent.Choose(index);
+    }
+
     public int[] GetRandomIndex(int elementRange, int length)
     {
         List<int> indexArray = new List<int>();
