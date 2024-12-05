@@ -267,7 +267,8 @@ public class RoomManager : MonoBehaviour
 
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
         {
-             playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+            if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+            else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
             ActivateTeleporters();
             isTeleporterActive = true;
         }
