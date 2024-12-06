@@ -11,6 +11,8 @@ using UnityEngine.VFX;
 using SpellSystem;
 using GuerhoubaGames.Resources;
 using Klak.Motion;
+using SeekerOfSand.Tools;
+using static UnityEditor.Rendering.FilterWindow;
 
 namespace Character
 {
@@ -1017,12 +1019,12 @@ namespace Character
 
         public void ChangeVfxElement(int elementIndex)
         {
-            for (int i = 0; i < ((int)GameElement.EARTH); i++)
+            for (int i = 0; i < (GeneralTools.GetElementalArrayIndex(GameElement.EARTH)); i++)
             {
                 if (i == elementIndex)
                 {
-                    vfxElementSign[i-1].SetActive(true);
-                    lastElementToUse = vfxElementSign[i-1];
+                    vfxElementSign[i].SetActive(true);
+                    lastElementToUse = vfxElementSign[i];
                 }
                 else
                 {
