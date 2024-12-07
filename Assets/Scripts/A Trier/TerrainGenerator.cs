@@ -210,6 +210,7 @@ public class TerrainGenerator : MonoBehaviour
             }
             GameObject newTerrain;
             isHealthBossRoom = false;
+            int indexTerrain = -1;
             if (hasMerchantAppear)
             {
                 if (!roomTypeList.Contains(RoomType.Merchant))
@@ -217,7 +218,7 @@ public class TerrainGenerator : MonoBehaviour
 
                 indexRoomType = roomTypeList.IndexOf(RoomType.Merchant);
                 newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
-
+                indexTerrain = 0;
             }
             else
             {
@@ -226,18 +227,32 @@ public class TerrainGenerator : MonoBehaviour
                     if (player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
                     {
                         newTerrain = Instantiate(terrainPool[0], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                        indexTerrain = 0;
                     }
                     else
                     {
+
                         int randomTerrain = Random.Range(1, poolNumber);
+                        while (currentRoomManager.terrainIndex == randomTerrain)
+                        {
+                            randomTerrain = Random.Range(1, poolNumber);
+                        }
+
                         newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                        indexTerrain = randomTerrain;
                     }
 
                 }
                 else
                 {
                     int randomTerrain = Random.Range(1, poolNumber);
+                    while (currentRoomManager.terrainIndex == randomTerrain)
+                    {
+                        randomTerrain = Random.Range(1, poolNumber);
+                    }
+
                     newTerrain = Instantiate(terrainPool[randomTerrain], transform.position + new Vector3(positionNewTerrain, 500, 1500 * i), transform.rotation);
+                    indexTerrain = randomTerrain;
                 }
             }
 
@@ -249,6 +264,7 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.terrainGenerator = this;
             roomManager.currentRoomType = roomTypeList[indexRoomType];
             roomManager.healthReward = HealthReward.QUARTER;
+            roomManager.terrainIndex = indexTerrain;
 
             if (roomTypeList[indexRoomType] == RoomType.Merchant)
             {

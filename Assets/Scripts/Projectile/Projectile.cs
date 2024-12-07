@@ -4,6 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using UnityEngine.VFX;
+using SeekerOfSand.Tools;
 
 public struct ProjectileData
 {
@@ -253,7 +254,7 @@ public class Projectile : MonoBehaviour
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
+            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject,(GameElement)elementIndex);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 
 public class CristalInventory : MonoBehaviour
 {
@@ -53,13 +54,13 @@ public class CristalInventory : MonoBehaviour
 
     public bool HasEnoughCristal(int value,GameElement   element, string name)
     {
-        int indexCristal = (int)element;
+        int indexCristal = GeneralTools.GetElementalArrayIndex(element);
         Debug.Log("Element :" + element.ToString());
         if(element == GameElement.NONE)
         {
             Debug.LogError("This element is None " + name);
         }
-        return cristalCount[indexCristal - 1] >= value;
+        return cristalCount[indexCristal ] >= value;
     }
 
 }

@@ -1,7 +1,9 @@
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Rendering.FilterWindow;
 
 public class HealthManager : MonoBehaviour
 {
@@ -51,22 +53,22 @@ public class HealthManager : MonoBehaviour
         Tool_DamageMeter.AddDamage(damage);
         float cameraDistance = Vector3.Distance(m_cameraReference.transform.position, position);
         if (m_textActiveCount % 2 == 0) { position += new Vector3(3, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0); }
-        else { position += new Vector3(-3, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0); } 
+        else { position += new Vector3(-3, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0); }
         //position += new Vector3(0, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0);
-
-        if (colorElementType == (int)GameElement.AIR)
+          
+        if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.AIR))
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
         }
-        else if (colorElementType == (int)GameElement.FIRE)
+        else if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.FIRE))
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
         }
-        else if (colorElementType == (int)GameElement.WATER)
+        else if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.WATER))
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
         }
-        else if (colorElementType == (int)GameElement.EARTH)
+        else if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.EARTH))
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[4]);
         }

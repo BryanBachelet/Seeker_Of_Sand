@@ -1,4 +1,5 @@
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -74,7 +75,7 @@ public class TrainingArea : MonoBehaviour
 
     public void SelectElement(GameElement element)
     {
-        instantiatedArea = Instantiate(capacityGameObject[(int)element], this.transform);
+        instantiatedArea = Instantiate(capacityGameObject[GeneralTools.GetElementalArrayIndex(element)], this.transform);
         Debug.Log("Active area : [" + element.ToString() + "]");
     }
 }

@@ -178,6 +178,7 @@ namespace GuerhoubaGames.GameEnum
     }
 
     [System.Serializable]
+    [Flags]
     public enum GameElement
     {
         NONE = 0,
@@ -186,7 +187,21 @@ namespace GuerhoubaGames.GameEnum
         FIRE = 3,
         EARTH = 4,
 
+        /*
+        MIST = WATER | AIR,
+        STEAM = FIRE | WATER,
+        TEMPEST = FIRE | AIR,
+        SAND = EARTH | AIR,
+        MUD = EARTH | WATER,
+        LAVA =  EARTH | FIRE,
+
+        ERUPTION = FIRE | WATER | AIR,
+        SWAMP = EARTH | WATER |AIR,
+        OBSIDIAN = EARTH | FIRE | WATER,
+        ASH = EARTH | FIRE | AIR,
         
+        CHAOS =  EARTH | WATER | AIR|FIRE,
+        */
     }
 
     public enum BuffType

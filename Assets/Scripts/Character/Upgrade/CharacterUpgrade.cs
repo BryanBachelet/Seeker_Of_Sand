@@ -32,7 +32,7 @@ namespace Character
         //   private UpgradeUIDecal m_UpgradeUiDecal;
 
         // Useful Components
-       [HideInInspector] public UpgradeManager upgradeManager;
+        [HideInInspector] public UpgradeManager upgradeManager;
         private SpellManager m_spellManager;
         [HideInInspector] public Character.CharacterShoot m_characterShoot;
         [HideInInspector] public Character.CharacterSpellBook m_characterInventory;
@@ -57,16 +57,33 @@ namespace Character
 
                 if (!isUpgradeWindowOpen)
                 {
-                   ShowUpgradeWindow();
+                    ShowUpgradeWindow();
                     return;
                 }
                 if (isUpgradeWindowOpen)
-                {  
+                {
                     CloseUpgradeWindow();
                     return;
                 }
             }
         }
+
+        public void ChooseUpgradeInput(InputAction.CallbackContext ctx)
+        {
+            if (ctx.started)
+            {
+                if (isUpgradeWindowOpen)
+                {
+                    upgradeManager.ValidateUpgrade(int.Parse(ctx.control.name)-1);
+                }
+
+                if(isSpellUpgradeWindowOpen)
+                {
+                    upgradeManager.ValidateSpell(int.Parse(ctx.control.name) -1);
+                }
+            }
+        }
+
         #endregion
 
         #region Init Script
@@ -93,15 +110,16 @@ namespace Character
 
         public void ShowSpellChoiceInteface()
         {
-            if(upgradeManager)
+            if (upgradeManager)
             {
                 upgradeManager.OpenSpellChoiceUI(lastRoomElement);
+               
 
                 GameState.ChangeState();
                 isSpellUpgradeWindowOpen = true;
                 ChangeBaseInterfaceDisplay(false);
             }
-           
+
         }
 
         public void ApplySpellChoise(SpellSystem.SpellProfil capsule)
@@ -157,7 +175,7 @@ namespace Character
             upgradePoint--;
 
 
-            SpellSystem.SpellProfil spellProfil = m_characterShoot.spellProfils.ToArray()[upgradeChoose.indexSpellLink];
+            SpellSystem.SpellProfil spellProfil = m_characterInventory.GetSpellOfRotation(upgradeChoose.indexSpellLink);
             LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + spellProfil.name, isDebugActive);
             if (isDebugActive)
             {
@@ -175,8 +193,8 @@ namespace Character
             if (m_UiPlayerInfo)
             {
                 spellProfil.level++;
-                
-                if(m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil))
+
+                if (m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil))
                 {
 
                 }
@@ -216,22 +234,22 @@ namespace Character
             return;
             upgradePoint++;
             upgradePointTextDisplay.text = upgradePoint.ToString();
-            if(baseSpellIndex < spellUpgradeConfigs.Length && spellUpgradeConfigs[baseSpellIndex].levelToGainSpell <= experience.GetCurrentLevel())
+            if (baseSpellIndex < spellUpgradeConfigs.Length && spellUpgradeConfigs[baseSpellIndex].levelToGainSpell <= experience.GetCurrentLevel())
             {
                 ShowSpellChoiceInteface();
                 ChangeBaseInterfaceDisplay(false);
                 baseSpellIndex++;
-               
+
             }
 
         }
 
         public void GiveUpgradePoint(int upgradeNumber)
         {
-            upgradePoint+= upgradeNumber;
+            upgradePoint += upgradeNumber;
             //upgradePointTextDisplay.text = upgradePoint.ToString();
         }
-      
+
         public void ChangeBaseInterfaceDisplay(bool willBeAble)
         {
             baseGameInterfaceUI.SetActive(willBeAble);
