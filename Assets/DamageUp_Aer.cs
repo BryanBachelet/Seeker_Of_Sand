@@ -13,7 +13,7 @@ public class DamageUp_Aer : MonoBehaviour
     public void Start()
     {
         m_artefactData = GetComponent<ArtefactData>();
-        element = m_artefactData.element;
+        element = m_artefactData.elementIndex;
         radiusEffect = m_artefactData.radius;
         if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
         if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();

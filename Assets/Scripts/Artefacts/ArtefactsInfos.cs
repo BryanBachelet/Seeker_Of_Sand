@@ -157,7 +157,8 @@ public class ArtefactsInfos : ScriptableObject
         artefactData.characterGo = characterGo;
         artefactData.radius = radius;
         artefactData.nameArtefact = nameArtefact;
-        artefactData.element = (int)gameElement;
+        artefactData.elementIndex = (int)gameElement;
+        artefactData.element = gameElement;
         artefactData.damageToApply = damageArtefact + damageGainPerCount * additionialItemCount;
     }
 

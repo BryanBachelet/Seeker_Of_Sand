@@ -22,7 +22,8 @@ namespace Artefact
         [HideInInspector] public float radius;
         [HideInInspector] public CharacterObjectType objectType = CharacterObjectType.FRAGMENT;
         [HideInInspector] public string nameArtefact;
-        [HideInInspector] public int element;
+        [HideInInspector] public int elementIndex;
+        [HideInInspector] public GameElement element;
         [HideInInspector] public int damageToApply;
         public Action OnSpawn;
     }

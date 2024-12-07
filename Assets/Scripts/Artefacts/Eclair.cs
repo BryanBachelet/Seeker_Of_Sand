@@ -1,5 +1,7 @@
 using Character;
+using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -104,7 +106,8 @@ namespace Artefact
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
             DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
-            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0, (int)CharacterProfile.instance.stats.baseStat.damage);
+            int indexElement = GeneralTools.GetElementalArrayIndex(m_artefactData.element,true);
+            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, indexElement, (int)CharacterProfile.instance.stats.baseStat.damage);
         }
 
         private void DestroyObject()

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.Resources;
+using SeekerOfSand.Tools;
 
 namespace Artefact
 {
@@ -112,7 +113,7 @@ namespace Artefact
             data.piercingMax = piercing;
             data.characterShoot = m_characterShoot;
             data.nameFragment = m_artefactData.nameArtefact;
-            data.element = m_artefactData.element;
+            data.element = GeneralTools.GetElementalArrayIndex( m_artefactData.element);
             
             data.objectType = GuerhoubaGames.GameEnum.CharacterObjectType.FRAGMENT;
             instance.GetComponent<Projectile>().SetFragmentDirectProjectile(data);
