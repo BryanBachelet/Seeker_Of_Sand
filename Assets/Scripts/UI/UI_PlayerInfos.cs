@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using SpellSystem;
 using UnityEngine.VFX;
+using SeekerOfSand.Tools;
 namespace SeekerOfSand
 {
     namespace UI
@@ -77,10 +78,11 @@ namespace SeekerOfSand
                 if (spellprofil.level == 4)
                 {
                     tierUpEffect.SetActive(true);
+                    int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element,true);
                     for (int i = 0; i < vfxTierUp.Length; i++)
                     {
-                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
-                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
+                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[indexElement]);
+                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo1");
                     upgradeScreenAnimator.ResetTrigger("Reset");
