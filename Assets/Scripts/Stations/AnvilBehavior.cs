@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
+using SeekerOfSand.Tools;
 
 public class AnvilBehavior : InteractionInterface
 {
@@ -50,8 +51,8 @@ public class AnvilBehavior : InteractionInterface
         int value = isT1 ? costT1 : costT2;
         bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, currentArtefactReinforce.gameElement, currentArtefactReinforce.nameArtefact);
         if (!hasEnoughCristal) return BuyResult.NOT_ENOUGH_MONEY;
-
-        m_cristalInventory.RemoveCristalCount((int)currentArtefactReinforce.gameElement, -value);
+        int mabiteElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
+        m_cristalInventory.RemoveCristalCount(mabiteElement, -value);
         // TODO : Update Anvil Upgrade price;
 
 

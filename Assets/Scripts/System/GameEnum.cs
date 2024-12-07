@@ -187,6 +187,7 @@ namespace GuerhoubaGames.GameEnum
         FIRE = 4,
         EARTH = 8,
 
+
         MIST = WATER | AIR,
         STEAM = FIRE | WATER,
         TEMPEST = FIRE | AIR,
@@ -200,6 +201,7 @@ namespace GuerhoubaGames.GameEnum
         ASH = EARTH | FIRE | AIR,
         
         CHAOS =  EARTH | WATER | AIR|FIRE,
+
     }
 
     public enum BuffType

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
+using SeekerOfSand.Tools;
 
 public struct ItemData
 {
@@ -125,7 +126,8 @@ public class MarchandBehavior : InteractionInterface
         bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemSpellData[index].price, merchandItemData.itemSpellData[index].element, merchandItemData.spellData[index].name);
 
         if (!canPay || merchandItemData.itemSpellData[index].hasBeenBuy) return BuyResult.NOT_ENOUGH_MONEY;
-        m_cristalInventory.RemoveCristalCount((int)merchandItemData.itemSpellData[index].element, -merchandItemData.itemSpellData[index].price);
+        int mabiteElement = GeneralTools.GetElementalArrayIndex(merchandItemData.itemSpellData[index].element);
+        m_cristalInventory.RemoveCristalCount(mabiteElement, -merchandItemData.itemSpellData[index].price);
 
         merchandItemData.itemSpellData[index].hasBeenBuy = true;
         // Add Spell to the player inventory
@@ -144,7 +146,8 @@ public class MarchandBehavior : InteractionInterface
         bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[index].price, merchandItemData.itemFragmentData[index].element , merchandItemData.fragmentData[index].name);
 
         if (!canPay || merchandItemData.itemFragmentData[index].hasBeenBuy) return BuyResult.NOT_ENOUGH_MONEY;
-        m_cristalInventory.RemoveCristalCount((int)merchandItemData.itemFragmentData[index].element, -merchandItemData.itemFragmentData[index].price);
+        int mabiteElement = GeneralTools.GetElementalArrayIndex(merchandItemData.itemFragmentData[index].element);
+        m_cristalInventory.RemoveCristalCount(mabiteElement, -merchandItemData.itemFragmentData[index].price);
        
         merchandItemData.itemFragmentData[index].hasBeenBuy = true;
         m_fragmentManager.GiveArtefact(merchandItemData.itemFragmentData[index].index, GameState.s_playerGo);
