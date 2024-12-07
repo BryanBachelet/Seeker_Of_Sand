@@ -23,7 +23,8 @@ public class RewardTypologie : MonoBehaviour
     [SerializeField] private Material[] m_materialRewardTypeCristals = new Material[5];
     [ColorUsage(true, true)]
     public Color[] color_Elem_Portal;
-    public int element;
+    public int elementIndex;
+    public GameElement element;
     private ExperienceMouvement[] m_bones = new ExperienceMouvement[100];
     private ExperienceMouvement xpMovement;
 
@@ -96,9 +97,9 @@ public class RewardTypologie : MonoBehaviour
             default:
                 break;
         }
-        materialRewardColor.SetColor("_MainColor", color_Elem_Portal[element]);
-        materialRewardChange.SetColor("_Color_A", color_Elem_Portal[element]);
-        m_skinMeshRender.material.SetColor("_Color", color_Elem_Portal[element]);
+        materialRewardColor.SetColor("_MainColor", color_Elem_Portal[elementIndex]);
+        materialRewardChange.SetColor("_Color_A", color_Elem_Portal[elementIndex]);
+        m_skinMeshRender.material.SetColor("_Color", color_Elem_Portal[elementIndex]);
         for (int i = 0; i < rootBoneHolder.transform.childCount; i++)
         {
             m_bones[i] = rootBoneHolder.transform.GetChild(i).GetComponent<ExperienceMouvement>();
@@ -112,7 +113,7 @@ public class RewardTypologie : MonoBehaviour
             rewardDistribution.RewardValidate();
             Character.CharacterUpgrade characterUpgrade = other.GetComponent<Character.CharacterUpgrade>();
             other.GetComponent<RewardDistribution>().ActiveLootFB();
-            characterUpgrade.lastRoomElement = (GameElement)element;
+            characterUpgrade.lastRoomElement = element;
             switch (rewardType)
             {
                 case RewardType.UPGRADE:
@@ -131,7 +132,7 @@ public class RewardTypologie : MonoBehaviour
                     {
                         choseReward = GameObject.Find("Artefact-Choose-Trio").GetComponent<Chosereward>();
                     }
-                    choseReward.GiveArtefact((GameElement) element );
+                    choseReward.GiveArtefact(element);
                     GlobalSoundManager.PlayOneShot(56, Vector3.zero);
                     break;
                 case RewardType.HEAL:
