@@ -5,6 +5,7 @@ using GuerhoubaGames.UI;
 using UnityEngine.UI;
 using GuerhoubaGames.GameEnum;
 using TMPro;
+using SeekerOfSand.Tools;
 public class UI_Fragment_Tooltip : MonoBehaviour
 {
     public List<GameObject> fragment_List = new List<GameObject>();
@@ -89,7 +90,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
         Image artefactElement = artefactObject.transform.GetChild(0).gameObject.GetComponent<Image>();
         artefactElement.gameObject.SetActive(true);
         artefactElement.sprite = artefactInfo.icon;
-        artefactElement.color = colorOutlineByElement[(int)artefactInfo.gameElement];
+        artefactElement.color = colorOutlineByElement[GeneralTools.GetElementalArrayIndex( artefactInfo.gameElement,true)];
         
     }
 }

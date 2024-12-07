@@ -56,19 +56,19 @@ public class HealthManager : MonoBehaviour
         else { position += new Vector3(-3, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0); }
         //position += new Vector3(0, ((100 - cameraDistance) / 100) + 1 * m_textActiveCount, 0);
           
-        if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.AIR))
+        if (colorElementType == (int)GameElement.AIR)
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[1]);
         }
-        else if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.FIRE))
+        else if (colorElementType == (int)GameElement.FIRE)
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[2]);
         }
-        else if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.WATER))
+        else if (colorElementType == (int)GameElement.WATER)
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[3]);
         }
-        else if (colorElementType == GeneralTools.GetElementalArrayIndex(GameElement.EARTH))
+        else if (colorElementType == (int)GameElement.EARTH)
         {
             currentDamageFD.StartDamageFeeback(position, damage, elementDamageColor[4]);
         }

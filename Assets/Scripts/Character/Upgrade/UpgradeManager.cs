@@ -362,6 +362,12 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
+            if (indexOtherElement.Count == 0)
+            {
+                int indexSpell1 = UnityEngine.Random.Range(0, indexElement.Count);
+                return indexElement[indexSpell1];
+            }
+
             int indexSpell = UnityEngine.Random.Range(0, indexOtherElement.Count);
             return indexOtherElement[indexSpell];
         }

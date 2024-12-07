@@ -19,27 +19,30 @@ namespace SeekerOfSand.Tools
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static int GetElementalArrayIndex(GameElement element)
+        public static int GetElementalArrayIndex(GameElement element , bool isNoneAdd = false)
         {
 
+
             int indexElement = 0;
+            if(isNoneAdd)
+                indexElement = 1;
             switch (element)
             {
                 case GameElement.NONE:
-                    indexElement = -1;
+                    indexElement += -1;
                     Debug.LogWarning("This state is :" + element.ToString() );
                     break;
                 case GameElement.WATER:
-                    indexElement = 0;
+                    indexElement += 0;
                     break;
                 case GameElement.AIR:
-                    indexElement = 1;
+                    indexElement += 1;
                     break;
                 case GameElement.FIRE:
-                    indexElement = 2;
+                    indexElement += 2;
                     break;
                 case GameElement.EARTH:
-                    indexElement = 3;
+                    indexElement += 3;
                     break;
                 default:
                     indexElement = -1;
@@ -50,6 +53,7 @@ namespace SeekerOfSand.Tools
 
             return indexElement;
         }
+
 
         public static GameElement GetElementalFromIndex(int index)
         {

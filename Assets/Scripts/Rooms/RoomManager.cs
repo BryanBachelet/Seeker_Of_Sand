@@ -14,7 +14,7 @@ using Render.Camera;
 
 public class RoomManager : MonoBehaviour
 {
-    private const float distanceBeforeActivatingRooom = 30;
+    [SerializeField] private float distanceBeforeActivatingRooom = 30;
     public GameElement element = 0; 
 
 

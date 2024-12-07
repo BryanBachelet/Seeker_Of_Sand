@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.AI.Navigation;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -321,7 +322,7 @@ public class TerrainGenerator : MonoBehaviour
             TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
             tpFeedback.rewardToUse = (int)roomManager.rewardType;
             tpFeedback.ChangeRewardID(tpFeedback.rewardToUse, roomManager.m_materialPreviewTRT);
-            tpFeedback.ChangeColorVFX((int)roomManager.element);
+            tpFeedback.ChangeColorVFX(GeneralTools.GetElementalArrayIndex(roomManager.element, true));
         }
 
         currentRoomManager.SetupTeleporter(terrainInstantiated.Count);

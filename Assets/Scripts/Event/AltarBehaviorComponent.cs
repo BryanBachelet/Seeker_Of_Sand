@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.VFX;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 
 public class AltarBehaviorComponent : InteractionInterface
 {
@@ -446,11 +447,11 @@ public class AltarBehaviorComponent : InteractionInterface
         socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[GeneralTools.GetElementalArrayIndex(eventElementType,true)]);
             altarAllMesh[i].material.SetFloat("_SelfLitIntensity", intensity);
         }
-        eventLight.color = colorEvent[(int)eventElementType];
-        meshPointLight.material.SetColor("_MainColor", colorEvent[(int)eventElementType]);
+        eventLight.color = colorEvent[GeneralTools.GetElementalArrayIndex(eventElementType, true)];
+        meshPointLight.material.SetColor("_MainColor", colorEvent[GeneralTools.GetElementalArrayIndex(eventElementType, true)]);
     }
     #endregion
 

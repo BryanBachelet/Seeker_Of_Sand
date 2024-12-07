@@ -6,6 +6,7 @@ using TMPro;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.Resources;
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 
 public class MarchandUiView : MonoBehaviour
 {
@@ -176,7 +177,8 @@ public class MarchandUiView : MonoBehaviour
             else fragmentSpriteArray[index].color = noEnoughMoneyColor;
 
         }
-        cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[((int)itemData.element)-1];
+        int indexElement = GeneralTools.GetElementalArrayIndex(itemData.element);
+        cristalSpellSpriteArray[index].sprite = GameResources.instance.cristalIconArray[indexElement];
     }
 
     public void ActualizeFragmentInteface(int index)
@@ -198,7 +200,8 @@ public class MarchandUiView : MonoBehaviour
            else fragmentSpriteArray[index].color = noEnoughMoneyColor;
             fragmentSpriteArray[index].color = new Color(1, 1, 1, 1);
         }
-        cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[((int)itemData.element) -1];
+        int indexElement = GeneralTools.GetElementalArrayIndex(itemData.element);
+        cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[indexElement];
     }
 
     public void ActualizeDescriptionInterface(int index, CharacterObjectType type)
@@ -248,7 +251,8 @@ public class MarchandUiView : MonoBehaviour
 
     public void ChangeFragmentCadre(ArtefactsInfos fragmentData, int indexFragmentInShop)
     {
-        int elementIndex = (int)fragmentData.gameElement;
+        int elementIndex = GeneralTools.GetElementalArrayIndex(fragmentData.gameElement, true);
+
         fragmentBackground[indexFragmentInShop].sprite = backgroundElement[elementIndex];
         fragmentElementIcon[indexFragmentInShop].sprite = iconElement[elementIndex - 1];
         fragmentNameArray[indexFragmentInShop].text = fragmentData.nameArtefact;
