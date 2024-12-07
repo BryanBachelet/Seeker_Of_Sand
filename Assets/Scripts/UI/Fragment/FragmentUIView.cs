@@ -1,3 +1,4 @@
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,12 +20,12 @@ namespace GuerhoubaGames.UI
         {
             FragmentUIRessources instanceResources = FragmentUIRessources.instance;
           
-            int indexElement = (int)artefactsInfos.gameElement;
+            int indexElement = GeneralTools.GetElementalArrayIndex( artefactsInfos.gameElement,true);
             Debug.Assert(indexElement != 0, "Artefact "+ artefactsInfos.nameArtefact +  " doesn't have element");
            
 
-            m_backgroundColorImg.sprite = instanceResources.backgroundSprite[(int)artefactsInfos.gameElement];
-            m_elementImg.sprite = instanceResources.elementSprite[(int)artefactsInfos.gameElement ];
+            m_backgroundColorImg.sprite = instanceResources.backgroundSprite[indexElement];
+            m_elementImg.sprite = instanceResources.elementSprite[indexElement];
             m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment +1 ];
             m_spriteImg.sprite = artefactsInfos.icon;
             m_nameText.text = artefactsInfos.nameArtefact;
