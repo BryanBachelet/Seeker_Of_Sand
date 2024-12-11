@@ -26,7 +26,7 @@ namespace GuerhoubaGames.UI
 
             m_backgroundColorImg.sprite = instanceResources.backgroundSprite[indexElement];
             m_elementImg.sprite = instanceResources.elementSprite[indexElement];
-            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment +1 ];
+            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
             m_spriteImg.sprite = artefactsInfos.icon;
             m_nameText.text = artefactsInfos.nameArtefact;
 

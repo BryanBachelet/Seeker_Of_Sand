@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GuerhoubaGames.GameEnum;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+using UnityEditor;
+using System;
+using SeekerOfSand.Tools;
+using TMPro;
+using GuerhoubaGames.Resources;
 
 namespace GuerhoubaGames.UI
 {
@@ -14,6 +21,7 @@ namespace GuerhoubaGames.UI
         [SerializeField] public DragReceptacleUI m_receptableUI;
         [SerializeField] public FragmentUIView m_receptableImage;
         [SerializeField] public FragmentUIView m_resultImage;
+        public UIDispatcher dispatcher;
 
         private int indexArtecfactUpgradable;
         private CharacterArtefact m_characterArtefact;
@@ -23,6 +31,19 @@ namespace GuerhoubaGames.UI
 
         private bool hasRecpetacle = false;
 
+        public float tempsEcouleClic;
+        public float timeToValidate;
+        public Image uiButton;
+        public bool actionValidate = false;
+        public bool actionOnGoing = false;
+        public VisualEffect[] vfxReinforcement;
+        public Animator animator;
+
+        [GradientUsage(true)]
+        public Gradient[] colorByElement;
+
+        [SerializeField] private TMP_Text m_priceText;
+        [SerializeField] private Image m_elementImageCristal;
         #region Unity Function
 
         public void Start()
@@ -40,7 +61,35 @@ namespace GuerhoubaGames.UI
             m_panelAnvil.SetActive(true);
         }
 
+        public void Update()
+        {
+            if (!actionOnGoing) return;
+            else
+            {
+                tempsEcouleClic += Time.deltaTime;
+                if (tempsEcouleClic > timeToValidate)
+                {
+                    actionValidate = true;
+                    for (int i = 0; i < vfxReinforcement.Length; i++)
+                    {
+                        vfxReinforcement[i].SendEvent("Activation");
+                        
+                    }
 
+                    actionOnGoing = false;
+                }
+                else
+                {
+                    float progress = tempsEcouleClic / timeToValidate;
+                    uiButton.fillAmount = progress;
+                    for (int i = 0; i < vfxReinforcement.Length; i++)
+                    {
+                        vfxReinforcement[i].SetInt("Rate", (int)(progress * 100));
+
+                    }
+                }
+            }
+        }
         public void CloseUIAnvil()
         {
             m_panelAnvil.SetActive(false);
@@ -74,6 +123,8 @@ namespace GuerhoubaGames.UI
                 return;
             }
 
+
+
             anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[indexArtecfactUpgradable];
             indexArtecfactUpgradable = indexObject;
             m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[indexArtecfactUpgradable]);
@@ -83,20 +134,52 @@ namespace GuerhoubaGames.UI
             previousClone.UpgradeTierFragment();
             hasRecpetacle = true;
             m_resultImage.UpdateInteface(previousClone);
+            animator.SetBool("isAble", true);
+            int indexElementToUse = GeneralTools.GetElementalArrayIndex(m_characterArtefact.artefactsList[indexArtecfactUpgradable].gameElement);
+            m_priceText.text = "x" + anvilBehavior.BuyPrice();
+            m_elementImageCristal.sprite = GameResources.instance.cristalIconArray[indexElementToUse];
+            for (int i = 0; i < vfxReinforcement.Length; i++)
+            {
+                vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexElementToUse]);
+                
+                
+            }
         }
 
-        public void OnUpgradeFragment()
+        public void OnUpgradeFragment(Transform transform)
         {
             if (!hasRecpetacle) return;
 
             BuyResult result = anvilBehavior.BuyUpgradeFragment();
             if (result != BuyResult.BUY) return;
 
-
+            dispatcher.CreateObject(transform.gameObject);
             anvilBehavior.SetFragmentUpgrade();
             UpdateUpgradeUI(indexArtecfactUpgradable, CharacterObjectType.FRAGMENT, true);
+            animator.SetBool("isAble", false);
+
+            m_receptableImage.ResetFragmentUIView();
+            m_resultImage.ResetFragmentUIView();
+
+            //m_receptableImage.ResetFragmentUIView();
+            //m_resultImage.ResetFragmentUIView();
         }
 
 
+        public void OnClicButton()
+        {
+            if(!hasRecpetacle) { return; }
+            if (!actionOnGoing)
+            {
+                actionOnGoing = true;
+                tempsEcouleClic = 0;
+                for (int i = 0; i < vfxReinforcement.Length; i++)
+                {
+                    vfxReinforcement[i].Play();
+
+                }
+            }
+            else return;
+        }
     }
 }

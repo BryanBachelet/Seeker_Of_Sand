@@ -8,7 +8,7 @@ public class UI_Inventory : MonoBehaviour
 {
     public bool isOpen;
     public GameObject inventoryContainer;
-
+    public UIDispatcher dispatcher;
 
     private MarchandUiView m_marchandUiView;
     private CristalInventory m_cristalInventory;

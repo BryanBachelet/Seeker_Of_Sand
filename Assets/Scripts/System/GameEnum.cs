@@ -83,9 +83,10 @@ namespace GuerhoubaGames.GameEnum
 
     public enum LevelTier
     {
-        TIER_1 = 0,
-        TIER_2 = 1,
-        TIER_3 = 2,
+        TIER_0 = 0,
+        TIER_1 = 1,
+        TIER_2 = 2,
+        TIER_3 = 3,
     }
 
     public enum BuyResult

@@ -16,6 +16,7 @@ public class AnvilBehavior : InteractionInterface
 
     public int costT1 = 100;
     public int costT2 = 150;
+    public int costT3 = 200;
 
     public bool isBuylessActive;
     private UIDispatcher m_uiDispatcher;
@@ -46,9 +47,20 @@ public class AnvilBehavior : InteractionInterface
     {
         if (isBuylessActive)
             return BuyResult.BUY;
-
-        bool isT1 = currentArtefactReinforce.levelTierFragment == LevelTier.TIER_1 ? true : false;
-        int value = isT1 ? costT1 : costT2;
+        int indexPrice = (int)currentArtefactReinforce.levelTierFragment;
+        int value = 0;
+        switch (indexPrice)
+        {
+            case 0:
+                value = costT1;
+                break;
+            case 1:
+                value = costT2;
+                break;
+            case 2:
+                value = costT3;
+                break;
+        }
         bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, currentArtefactReinforce.gameElement, currentArtefactReinforce.nameArtefact);
         if (!hasEnoughCristal) return BuyResult.NOT_ENOUGH_MONEY;
         int mabiteElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
@@ -59,6 +71,24 @@ public class AnvilBehavior : InteractionInterface
         return BuyResult.BUY;
     }
 
+    public int BuyPrice()
+    {
+        int indexPrice = (int)currentArtefactReinforce.levelTierFragment;
+        int value = 0;
+        switch (indexPrice)
+        {
+            case 0:
+                value = costT1;
+                break;
+            case 1:
+                value = costT2;
+                break;
+            case 2:
+                value = costT3;
+                break;
+        }
+        return value;
+    }
     public override void OnInteractionStart(GameObject player)
     {
         m_anvilUIComponent.OpenUiAnvil();
