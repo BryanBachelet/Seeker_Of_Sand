@@ -1,9 +1,7 @@
 using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
-using UnityEngine.Rendering.LookDev;
-using Unity.Collections;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public enum ConditionsTrigger
 {
@@ -73,6 +71,12 @@ public class ArtefactsInfos : ScriptableObject
     public bool isUpgradeFeactureActive;
     public LevelTier levelTierFragment;
 
+    [Header("Merge Feature Variables")]
+    [SerializeField] private bool m_ActiveMergeFeature = true;
+    private bool m_HasBeenMergeOnce = false;
+    private List<GameObject> additionalEffectToSpawn = new List<GameObject>();
+    public int IdFamily = 0;
+
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
@@ -88,6 +92,27 @@ public class ArtefactsInfos : ScriptableObject
 
         additionialItemCount++;
         ResultString();
+        return true;
+    }
+
+    public bool MergeFragment(ArtefactsInfos artefactsInfos)
+    {
+        if (!m_ActiveMergeFeature || IdFamily != artefactsInfos.IdFamily)
+        {
+            return false;
+        }
+
+        // TODO : Change of name and description for the merge mechanics
+
+        // Change of element
+        gameElement = gameElement | artefactsInfos.gameElement;
+        // Add Additional Object to spanw
+        additionalEffectToSpawn.Add(artefactsInfos.m_artefactToSpawn);
+        // Change boolean 
+        m_HasBeenMergeOnce = true;
+
+
+
         return true;
     }
 
@@ -125,6 +150,15 @@ public class ArtefactsInfos : ScriptableObject
             SetupArtefactData(artefactData, objectPre);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
+
+            if (!m_HasBeenMergeOnce) return;
+            for (int i = 0; i < additionalEffectToSpawn.Count; i++)
+            {
+                GameObject objEffect = GamePullingSystem.SpawnObject(additionalEffectToSpawn[i], position, Quaternion.identity);
+                artefactData = objEffect.GetComponent<Artefact.ArtefactData>();
+                SetupArtefactData(artefactData, objectPre);
+                artefactData.OnSpawn?.Invoke();
+            }
         }
 
     }
@@ -147,6 +181,15 @@ public class ArtefactsInfos : ScriptableObject
             SetupArtefactData(artefactData, agent);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
+
+            if (!m_HasBeenMergeOnce) return;
+            for (int i = 0; i < additionalEffectToSpawn.Count; i++)
+            {
+                GameObject objEffect = GamePullingSystem.SpawnObject(additionalEffectToSpawn[i], position, Quaternion.identity);
+                artefactData = objEffect.GetComponent<Artefact.ArtefactData>();
+                SetupArtefactData(artefactData, agent);
+                artefactData.OnSpawn?.Invoke();
+            }
         }
     }
 

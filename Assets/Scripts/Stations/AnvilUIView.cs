@@ -10,27 +10,35 @@ namespace GuerhoubaGames.UI
     {
         [SerializeField] private GameObject m_panelAnvil;
 
-        [Header("Upgrade Artefact Variables")]
+        [Header("Upgrade Fragment Variables")]
         [SerializeField] public DragReceptacleUI m_receptableUI;
         [SerializeField] public FragmentUIView m_receptableImage;
-        [SerializeField] public FragmentUIView m_resultImage;
+        [SerializeField] public FragmentUIView m_resultUpgradeImage;
 
-        private int indexArtecfactUpgradable;
+        // Private variable Upgrade fragment
+        private bool m_hasRecpetacle = false;
+        private int m_indexArtecfactUpgradable;
+        private ArtefactsInfos m_upgradePreviousClone;
+
+        [Header("Merge Fragment Variables")]
+        [SerializeField] public DragReceptacleUI[] receptacleUIs;
+        [SerializeField] public FragmentUIView[] receptacleViews;
+        [SerializeField] public FragmentUIView resultMergeImage;
+
+        private ArtefactsInfos m_mergeFragmentClone;
+
         private CharacterArtefact m_characterArtefact;
         [HideInInspector] public AnvilBehavior anvilBehavior;
 
-        private ArtefactsInfos previousClone;
-
-        private bool hasRecpetacle = false;
 
         #region Unity Function
 
         public void Start()
         {
             m_characterArtefact = GameState.instance.playerGo.GetComponent<CharacterArtefact>();
-            m_receptableUI.OnDropEvent += OnDropInput;
+            m_receptableUI.OnDropEvent += OnDropInputUpgrade;
             m_receptableImage.ResetFragmentUIView();
-            m_resultImage.ResetFragmentUIView();
+            m_resultUpgradeImage.ResetFragmentUIView();
         }
 
         #endregion
@@ -46,57 +54,97 @@ namespace GuerhoubaGames.UI
             m_panelAnvil.SetActive(false);
         }
 
-        public void OnDropInput(int indexObject, CharacterObjectType characterObjectType)
+        #region Upgrade Fragment Functions
+        public void OnDropInputUpgrade(ReceptableData receptableData)
         {
-            if (characterObjectType != CharacterObjectType.FRAGMENT)
+            if (receptableData.objectType != CharacterObjectType.FRAGMENT)
             {
                 Debug.LogWarning(" Anvil UI: This object is not fragment. It be place here");
                 return;
             }
 
             // Check if fragment is already Tier 3;
-            if (!anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[indexArtecfactUpgradable]))
+            if (!anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable]))
             {
                 //TODO : Add Sound feedback for error of placement
                 return;
             }
 
-            UpdateUpgradeUI(indexObject, characterObjectType);
+            UpdateUpgradeUI(receptableData.indexObject, receptableData.objectType);
         }
 
         private void UpdateUpgradeUI(int indexObject, CharacterObjectType characterObjectType, bool isUpdate = false)
         {
             // Check if fragment is already Tier 3;
-            if (!anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[indexArtecfactUpgradable]))
+            if (isUpdate && !anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable]))
             {
                 m_receptableImage.ResetFragmentUIView();
-                m_resultImage.ResetFragmentUIView();
+                m_resultUpgradeImage.ResetFragmentUIView();
                 return;
             }
 
-            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[indexArtecfactUpgradable];
-            indexArtecfactUpgradable = indexObject;
-            m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[indexArtecfactUpgradable]);
-            ArtefactsInfos clone = m_characterArtefact.artefactsList[indexArtecfactUpgradable].Clone();
-            Destroy(previousClone);
-            previousClone = clone;
-            previousClone.UpgradeTierFragment();
-            hasRecpetacle = true;
-            m_resultImage.UpdateInteface(previousClone);
+            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable];
+            m_indexArtecfactUpgradable = indexObject;
+            m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable]);
+            ArtefactsInfos clone = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].Clone();
+            Destroy(m_upgradePreviousClone);
+            m_upgradePreviousClone = clone;
+            m_upgradePreviousClone.UpgradeTierFragment();
+            m_hasRecpetacle = true;
+            m_resultUpgradeImage.UpdateInteface(m_upgradePreviousClone);
         }
 
         public void OnUpgradeFragment()
         {
-            if (!hasRecpetacle) return;
+            if (!m_hasRecpetacle) return;
 
             BuyResult result = anvilBehavior.BuyUpgradeFragment();
             if (result != BuyResult.BUY) return;
 
 
             anvilBehavior.SetFragmentUpgrade();
-            UpdateUpgradeUI(indexArtecfactUpgradable, CharacterObjectType.FRAGMENT, true);
+            UpdateUpgradeUI(m_indexArtecfactUpgradable, CharacterObjectType.FRAGMENT, true);
+        }
+        #endregion
+
+        public void OnDropInputMerge(ReceptableData receptableData)
+        {
+            if (receptableData.objectType != CharacterObjectType.FRAGMENT)
+            {
+                Debug.LogWarning(" Anvil UI: This object is not fragment. It be place here");
+                return;
+            }
+
+            // TODO : Check if a fragment can be merge
+
+
+            UpdateUIMerge(receptableData);
+
         }
 
+        private void UpdateUIMerge(ReceptableData receptableData)
+        {
+            int currentFragmentToMergeIndex = receptableData.indexObject;
+            // Update Anvil Behavior
+            anvilBehavior.currentFragmentMergeArray[receptableData.indexReceptacle] = m_characterArtefact.artefactsList[currentFragmentToMergeIndex];
+            // Update UI
+            receptacleViews[receptableData.indexReceptacle].UpdateInteface(m_characterArtefact.artefactsList[currentFragmentToMergeIndex]);
+
+            // Check if there is at least two fragment are set 
+            // False : Do nothing
+            // True : Create a pre-visualize fragment 
+
+            //if (anvilBehavior.GetMergeFragmentCount() < 2) return;
+
+            //ArtefactsInfos clone = m_characterArtefact.artefactsList[currentFragmentToMergeIndex].Clone();
+
+        }
+
+
+        public void InputMergeFragment()
+        {
+
+        }
 
     }
 }

@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
+using UnityEditor.Timeline.Actions;
+using UnityEngine.UIElements;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
+using UnityEditor.Rendering.HighDefinition;
 
 public class AnvilBehavior : InteractionInterface
 {
@@ -12,6 +16,10 @@ public class AnvilBehavior : InteractionInterface
     private UI_Inventory m_uiInventory;
     private CristalInventory m_cristalInventory;
     [HideInInspector] public ArtefactsInfos currentArtefactReinforce;
+
+    [HideInInspector] public ArtefactsInfos[] currentFragmentMergeArray;
+    [HideInInspector] private int countOfFragmentSetup;
+    [HideInInspector] private ArtefactsInfos m_cloneMergeFragment;
 
 
     public int costT1 = 100;
@@ -36,6 +44,8 @@ public class AnvilBehavior : InteractionInterface
         m_anvilUIComponent.anvilBehavior = this;
     }
 
+
+    #region Upgrade Fragment Functions
     public void SetFragmentUpgrade()
     {
         currentArtefactReinforce.UpgradeTierFragment();
@@ -59,6 +69,80 @@ public class AnvilBehavior : InteractionInterface
         return BuyResult.BUY;
     }
 
+    public bool IsFrgmentCanBeUpgrade(ArtefactsInfos currentArtefactReinforce)
+    {
+
+        return currentArtefactReinforce.levelTierFragment != LevelTier.TIER_3;
+    }
+
+    #endregion
+
+
+    #region Merge Fragment Functions
+
+    public void ApplyMergeFragment()
+    {
+        currentFragmentMergeArray[0].MergeFragment(currentFragmentMergeArray[1]);
+        m_uiInventory.ActualizeInventory();
+    }
+
+    public int GetMergeFragmentCount()
+    {
+        int count = 4;
+        for (int i = 0; i < 4; i++)
+        {
+            if (currentFragmentMergeArray[i] == null)
+            {
+                count--;
+            }
+        }
+
+        return count;
+    }
+    public ArtefactsInfos[] GetMergeArtefactArray()
+    {
+
+        int countFragment = GetMergeFragmentCount();
+        ArtefactsInfos[] artefactsInfosToMerge = new ArtefactsInfos[countFragment];
+        int count = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            if (currentFragmentMergeArray[i] != null)
+            {
+                artefactsInfosToMerge[count] = currentFragmentMergeArray[i];
+            }
+        }
+
+        return artefactsInfosToMerge;
+    }
+
+    public ArtefactsInfos MergeFragmentClone()
+    {
+
+        int countFragment = GetMergeFragmentCount();
+        if (countFragment < 2) return null;
+
+
+        ArtefactsInfos[] artefactsInfosToMerge = GetMergeArtefactArray();
+
+        m_cloneMergeFragment = artefactsInfosToMerge[0].Clone();
+        for (int i = 1; i < artefactsInfosToMerge.Length; i++)
+        {
+            m_cloneMergeFragment.MergeFragment(artefactsInfosToMerge[i]);
+        }
+
+
+        return m_cloneMergeFragment;
+
+    }
+
+    public void MergeFragment()
+    {
+
+    }
+
+    #endregion
+
     public override void OnInteractionStart(GameObject player)
     {
         m_anvilUIComponent.OpenUiAnvil();
@@ -74,9 +158,5 @@ public class AnvilBehavior : InteractionInterface
 
     }
 
-    public bool IsFrgmentCanBeUpgrade(ArtefactsInfos currentArtefactReinforce)
-    {
 
-        return currentArtefactReinforce.levelTierFragment != LevelTier.TIER_3;
-    }
 }

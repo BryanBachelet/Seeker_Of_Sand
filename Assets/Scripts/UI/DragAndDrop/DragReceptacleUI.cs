@@ -6,14 +6,27 @@ using UnityEngine.EventSystems;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 
+public struct ReceptableData
+{
+    public CharacterObjectType objectType;
+    public int indexReceptacle;
+    public int indexObject;
+}
+
+
 public class DragReceptacleUI : MonoBehaviour, IDropHandler
 {
     public CharacterObjectType objectType;
-    public Action<int, CharacterObjectType> OnDropEvent;
+    public Action<ReceptableData> OnDropEvent;
+    public int indexReceptacle = -1;
 
     public void OnDrop(PointerEventData eventData)
     {
-        OnDropEvent?.Invoke(DragManager.instance.dragData.indexObj, objectType);
+        ReceptableData receptableData = new ReceptableData();
+        receptableData.indexObject = DragManager.instance.dragData.indexObj;
+        receptableData.objectType = objectType;
+        receptableData.indexReceptacle = indexReceptacle;
+        OnDropEvent?.Invoke(receptableData);
     }
 
  
