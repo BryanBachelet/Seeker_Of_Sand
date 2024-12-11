@@ -12,6 +12,7 @@ using TMPro;
 using SeekerOfSand.UI;
 using UnityEngine.InputSystem;
 using System.Runtime.Serialization.Formatters.Binary;
+using Render.Camera;
 
 namespace Enemies
 {
@@ -77,6 +78,8 @@ namespace Enemies
         public int countEnemySpawnMaximum;
 
         public Transform AstrePositionReference;
+
+        [SerializeField] private CameraBehavior m_cameraBehavior;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
@@ -714,6 +717,7 @@ namespace Enemies
         public void ActiveEvent(Transform target)
         {
             ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
+
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
@@ -873,6 +877,8 @@ namespace Enemies
             if (CanActiveSpawnPhase() != spawningPhase)
             {
                 ChangeSpawningPhase(!spawningPhase);
+                if(spawningPhase == true) { StartCoroutine(m_cameraBehavior.DeZoomCamera()); }
+                else { m_cameraBehavior.isZoomActive = true; }
             }
         }
 

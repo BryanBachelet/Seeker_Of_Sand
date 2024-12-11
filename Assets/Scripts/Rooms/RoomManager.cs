@@ -81,6 +81,7 @@ public class RoomManager : MonoBehaviour
     static public int enemyMaxSpawnInRoon;
 
     private NavMeshData m_navMesh;
+    private CameraBehavior m_cameraBehavior;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -103,6 +104,10 @@ public class RoomManager : MonoBehaviour
         {
             m_characterUpgrade = playerGO.GetComponent<Character.CharacterUpgrade>();
         }
+        if(m_cameraBehavior == null)
+        {
+            m_cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
+        }
 
 
 
@@ -124,7 +129,7 @@ public class RoomManager : MonoBehaviour
 
         if (isActiveStartRotation)
         {
-            Camera.main.GetComponent<Render.Camera.CameraBehavior>().SetupCamaraAnglge(spawnAngle);
+            m_cameraBehavior.SetupCamaraAnglge(spawnAngle);
         }
         currentCountOfEnemy = 0;
         m_isStartActivation = true;
@@ -140,7 +145,7 @@ public class RoomManager : MonoBehaviour
         //if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
         //else
         m_enemyManager.isStopSpawn = true;
-        Camera.main.GetComponent<CameraBehavior>().ResetZoom();
+        //m_cameraBehavior.ResetZoom();
         SetupRoomType();
         previewCamera.gameObject.SetActive(false);
     }
@@ -163,6 +168,7 @@ public class RoomManager : MonoBehaviour
                 {
                     m_enemyManager.OnDeathSimpleEvent += CountEnemy;
                     m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
+                    //m_cameraBehavior.isZoomActive = false;
                 }
                 m_isDistanceActivationDone = true;
 
@@ -294,7 +300,7 @@ public class RoomManager : MonoBehaviour
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
         LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 
-        Camera.main.GetComponent<CameraBehavior>().isZoomActive = true;
+        //m_cameraBehavior.isZoomActive = true;
     }
 
     #region Room Validation Functions
