@@ -14,10 +14,12 @@ public struct ReceptableData
 }
 
 
-public class DragReceptacleUI : MonoBehaviour, IDropHandler
+
+public class DragReceptacleUI : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
     public CharacterObjectType objectType;
     public Action<ReceptableData> OnDropEvent;
+    public Action<ReceptableData> OnCtrlClick;
     public int indexReceptacle = -1;
 
     public void OnDrop(PointerEventData eventData)
@@ -29,5 +31,17 @@ public class DragReceptacleUI : MonoBehaviour, IDropHandler
         OnDropEvent?.Invoke(receptableData);
     }
 
- 
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+
+        if (eventData.button == PointerEventData.InputButton.Left && Input.GetKey(KeyCode.LeftShift))
+        {
+            ReceptableData receptableData = new ReceptableData();
+            receptableData.indexObject =-1;
+            receptableData.objectType = objectType;
+            receptableData.indexReceptacle = indexReceptacle;
+            OnCtrlClick?.Invoke(receptableData);
+        }
+    }
 }

@@ -83,9 +83,10 @@ namespace GuerhoubaGames.GameEnum
 
     public enum LevelTier
     {
-        TIER_1 = 0,
-        TIER_2 = 1,
-        TIER_3 = 2,
+        TIER_0 = 0,
+        TIER_1 = 1,
+        TIER_2 = 2,
+        TIER_3 = 3,
     }
 
     public enum BuyResult
@@ -187,20 +188,19 @@ namespace GuerhoubaGames.GameEnum
         FIRE = 4,
         EARTH = 8,
 
+        MIST = WATER | AIR,   // 3
+        STEAM = FIRE | WATER, // 5
+        TEMPEST = FIRE | AIR, // 6
+        MUD = EARTH | WATER, //9
+        SAND = EARTH | AIR, // 10
+        LAVA =  EARTH | FIRE, // 12
 
-        MIST = WATER | AIR,
-        STEAM = FIRE | WATER,
-        TEMPEST = FIRE | AIR,
-        SAND = EARTH | AIR,
-        MUD = EARTH | WATER,
-        LAVA =  EARTH | FIRE,
-
-        ERUPTION = FIRE | WATER | AIR,
-        SWAMP = EARTH | WATER |AIR,
-        OBSIDIAN = EARTH | FIRE | WATER,
-        ASH = EARTH | FIRE | AIR,
+        ERUPTION = FIRE | WATER | AIR, // 7
+        SWAMP = EARTH | WATER |AIR, // 11
+        OBSIDIAN = EARTH | FIRE | WATER, // 13
+        ASH = EARTH | FIRE | AIR, // 14
         
-        CHAOS =  EARTH | WATER | AIR|FIRE,
+        CHAOS =  EARTH | WATER | AIR|FIRE, //15
 
     }
 

@@ -73,6 +73,27 @@ public class CharacterArtefact : MonoBehaviour
 
     }
 
+    private void UnSetupArtefact(ArtefactsInfos artefacts)
+    {
+        artefacts.isDebugActive = activeDebug;
+        switch (artefacts.conditionsTrigger)
+        {
+            case ConditionsTrigger.OnHit:
+                m_characterShoot.onHit -= artefacts.ActiveArtefactOnHit;
+                break;
+            case ConditionsTrigger.OnDeath:
+                m_enemyManager.OnDeathEvent -= artefacts.ActiveArtefactOnDeath;
+                break;
+            case ConditionsTrigger.Contact:
+                m_healthComponent.OnContactEvent -= artefacts.ActiveArtefactOnHit;
+                break;
+            default:
+                break;
+        }
+
+        artefacts.characterGo = gameObject;
+    }
+
 
     public ArtefactsInfos[] GetMostDamageArtefactInfo(int count)
     {
@@ -168,6 +189,8 @@ public class CharacterArtefact : MonoBehaviour
     {
         int indexTargetArtefact = artefactsList.IndexOf(artefactsInfos);
         uiFragmentTooltip.RemoveFragment(indexTargetArtefact);
+
+        UnSetupArtefact(artefactsInfos);
         artefactsList.Remove(artefactsInfos);
     }
 

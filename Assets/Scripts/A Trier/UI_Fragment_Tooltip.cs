@@ -53,7 +53,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
     {
 
         tooltipTrigger[currentFragmentNumber].header = artefactInfo.nameArtefact;
-        tooltipTrigger[currentFragmentNumber].content = artefactInfo.descriptionResult;
+        tooltipTrigger[currentFragmentNumber].content = artefactInfo.description;
         tooltipTrigger[currentFragmentNumber].OnEnterData += UpdateDescription;
 
         imageFragmentTooltip[currentFragmentNumber].sprite = artefactInfo.icon;
@@ -69,10 +69,12 @@ public class UI_Fragment_Tooltip : MonoBehaviour
 
     public void UpdateDescription(TooltipEventData data)
     {
-        tooltipTrigger[data.index].content = m_characterArtefact.artefactsList[data.index].descriptionResult;
+        tooltipTrigger[data.index].content = m_characterArtefact.artefactsList[data.index].description;
     }
     public void RemoveFragment(int index)
     {
+        imageFragmentTooltip[currentFragmentNumber-1].gameObject.SetActive(false);
+
         for (int i = index; i < currentFragmentNumber-1; i++)
         {
             tooltipTrigger[i].header = tooltipTrigger[i+1 ].header;
@@ -80,7 +82,7 @@ public class UI_Fragment_Tooltip : MonoBehaviour
             imageFragmentTooltip[i].sprite = imageFragmentTooltip[i + 1].sprite;
         }
 
-
+      
 
         currentFragmentNumber--;
     }

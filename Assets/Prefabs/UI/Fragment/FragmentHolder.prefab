@@ -215,7 +215,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 13925dd274ba77f4b95e74d683557887, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 169310b26c6116b4f857a3f1bfda066e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -292,8 +292,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Water Bottle
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0fe4544b965a80540a8304ecca8cbde1, type: 2}
-  m_sharedMaterial: {fileID: 2168216087957126795, guid: 0fe4544b965a80540a8304ecca8cbde1,
+  m_fontAsset: {fileID: 11400000, guid: 88c9fdbef3e955e4cb9428fdf98e0d4c, type: 2}
+  m_sharedMaterial: {fileID: 2168216087957126795, guid: 88c9fdbef3e955e4cb9428fdf98e0d4c,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 2878074675512207797}
   - component: {fileID: 1712411041283825512}
   - component: {fileID: 7482955396170082037}
+  - component: {fileID: 3831228572647058043}
   m_Layer: 5
   m_Name: FragmentHolder
   m_TagString: Untagged
@@ -442,6 +443,7 @@ MonoBehaviour:
   content: 
   tooltipEventData:
     index: 0
+  IsActive: 0
 --- !u!222 &1712411041283825512
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -480,6 +482,66 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3831228572647058043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310759746948393379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d40df2f7d85774cb78a62a5a786779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 0
+  timeToMoveOn: 1
+  dispatcher: {fileID: 0}
+  positionStart: {x: 0, y: 0, z: 0}
+  positionEnd: {x: 0, y: 0, z: 0}
+  activeMovement: 0
+  scale:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.77
+      inSlope: 2.4680579
+      outSlope: 2.4680579
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.19290672
+      value: 1.246105
+      inSlope: -1.2420025
+      outSlope: -0.007031818
+      tangentMode: 65
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.019310364
+    - serializedVersion: 3
+      time: 0.4104795
+      value: 1.244575
+      inSlope: -2.803962
+      outSlope: -2.803962
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.1639011
+      outWeight: 0.027980044
+    - serializedVersion: 3
+      time: 1
+      value: 0.77
+      inSlope: -0.8050187
+      outSlope: -0.8050187
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8373232488005768876
 GameObject:
   m_ObjectHideFlags: 0

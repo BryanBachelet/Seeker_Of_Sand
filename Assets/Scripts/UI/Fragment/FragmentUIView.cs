@@ -1,3 +1,4 @@
+using GuerhoubaGames.GameEnum;
 using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,20 +20,28 @@ namespace GuerhoubaGames.UI
         public void UpdateInteface(ArtefactsInfos artefactsInfos)
         {
             FragmentUIRessources instanceResources = FragmentUIRessources.instance;
-          
-            int indexElement = GeneralTools.GetElementalArrayIndex( artefactsInfos.gameElement,true);
-            Debug.Assert(indexElement != 0, "Artefact "+ artefactsInfos.nameArtefact +  " doesn't have element");
-           
+
+            // Index that point the base element (Water,Air,Fire,Earth)
+            int indexBaseElement = GeneralTools.GetElementalArrayIndex(artefactsInfos.gameElement, true);
+            int indexElement = (int)artefactsInfos.gameElement;
+            if (indexBaseElement <= 0)
+            {
+                GameElement firstElement = GeneralTools.GetFirstBaseElement(artefactsInfos.gameElement);
+                indexBaseElement = GeneralTools.GetElementalArrayIndex(firstElement, true);
+            }
+
+
+            //Debug.Assert(indexBaseElement != 0, "Artefact " + artefactsInfos.nameArtefact + " doesn't have element");
 
             m_backgroundColorImg.sprite = instanceResources.backgroundSprite[indexElement];
-            m_elementImg.sprite = instanceResources.elementSprite[indexElement];
-            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment +1 ];
+            m_elementImg.sprite = instanceResources.elementSprite[indexBaseElement];
+            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
             m_spriteImg.sprite = artefactsInfos.icon;
             m_nameText.text = artefactsInfos.nameArtefact;
 
-            tooltipTrigger.IsActive = true;
             tooltipTrigger.header = artefactsInfos.nameArtefact;
-            tooltipTrigger.content = artefactsInfos.descriptionResult;
+            tooltipTrigger.content = artefactsInfos.description;
+            tooltipTrigger.IsActive = true;
         }
 
         public void ResetFragmentUIView()
@@ -47,6 +56,7 @@ namespace GuerhoubaGames.UI
             m_nameText.text = "";
 
             tooltipTrigger.IsActive = false;
+            tooltipTrigger.HideTooltip();
         }
 
     }

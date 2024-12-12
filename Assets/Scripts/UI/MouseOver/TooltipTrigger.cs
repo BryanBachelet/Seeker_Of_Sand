@@ -52,6 +52,11 @@ namespace GuerhoubaGames.UI
             TooltipManager.Hide();
         }
 
+        public void HideTooltip()
+        {
+            if (m_coroutine != null)  StopCoroutine(m_coroutine);
+            TooltipManager.Hide();
+        }
 
         public void OnPointerExit(PointerEventData eventData)
         {
@@ -83,10 +88,6 @@ namespace GuerhoubaGames.UI
             }
 
         }
-
-
-
-
 
         public void OnPointerMove(PointerEventData eventData)
         {

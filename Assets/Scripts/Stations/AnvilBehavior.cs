@@ -1,4 +1,6 @@
 using GuerhoubaGames.GameEnum;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
@@ -16,9 +18,9 @@ public class AnvilBehavior : InteractionInterface
     [HideInInspector] private int countOfFragmentSetup;
     [HideInInspector] private ArtefactsInfos m_cloneMergeFragment;
 
-
     public int costT1 = 100;
     public int costT2 = 150;
+    public int costT3 = 200;
 
     public bool isBuylessActive;
     private UIDispatcher m_uiDispatcher;
@@ -38,8 +40,8 @@ public class AnvilBehavior : InteractionInterface
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
         m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
         m_anvilUIComponent.anvilBehavior = this;
+        currentFragmentMergeArray = new ArtefactsInfos[4];
     }
-
 
     #region Upgrade Fragment Functions
     public void SetFragmentUpgrade()
@@ -52,24 +54,65 @@ public class AnvilBehavior : InteractionInterface
     {
         if (isBuylessActive)
             return BuyResult.BUY;
-
-        bool isT1 = currentArtefactReinforce.levelTierFragment == LevelTier.TIER_1 ? true : false;
-        int value = isT1 ? costT1 : costT2;
+        int indexPrice = (int)currentArtefactReinforce.levelTierFragment;
+        int value = 0;
+        switch (indexPrice)
+        {
+            case 0:
+                value = costT1;
+                break;
+            case 1:
+                value = costT2;
+                break;
+            case 2:
+                value = costT3;
+                break;
+        }
         bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, currentArtefactReinforce.gameElement, currentArtefactReinforce.nameArtefact);
         if (!hasEnoughCristal) return BuyResult.NOT_ENOUGH_MONEY;
-        int fragmentElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
-        m_cristalInventory.RemoveCristalCount(fragmentElement, -value);
+        int mabiteElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
+        m_cristalInventory.RemoveCristalCount(mabiteElement, -value);
         // TODO : Update Anvil Upgrade price;
 
 
         return BuyResult.BUY;
     }
 
+    public int BuyPrice()
+    {
+        int indexPrice = (int)currentArtefactReinforce.levelTierFragment;
+        int value = 0;
+        switch (indexPrice)
+        {
+            case 0:
+                value = costT1;
+                break;
+            case 1:
+                value = costT2;
+                break;
+            case 2:
+                value = costT3;
+                break;
+        }
+        return value;
+    }
+    public override void OnInteractionStart(GameObject player)
+    {
+        m_anvilUIComponent.OpenUiAnvil();
+        m_uiInventory.ActivateInventoryInterface();
+        GameState.ChangeState();
+    }
 
+    public override void OnInteractionEnd(GameObject player)
+    {
+        m_anvilUIComponent.CloseUIAnvil();
+        m_uiInventory.DeactivateInventoryInterface();
+        GameState.ChangeState();
+
+    }
 
     public bool IsFrgmentCanBeUpgrade(ArtefactsInfos currentArtefactReinforce)
     {
-
         return currentArtefactReinforce.levelTierFragment != LevelTier.TIER_3;
     }
 
@@ -111,6 +154,7 @@ public class AnvilBehavior : InteractionInterface
             if (currentFragmentMergeArray[i] != null)
             {
                 artefactsInfosToMerge[count] = currentFragmentMergeArray[i];
+                count++;
             }
         }
 
@@ -126,12 +170,20 @@ public class AnvilBehavior : InteractionInterface
         // Check if fragments dont have the same elements and are interresting to merge 
         ArtefactsInfos[] fragmentInfosToMerge = GetMergeArtefactArray();
         GameElement stateOfMerge = GameElement.NONE;
+        int idFamily = fragmentInfosToMerge[0].IdFamily;
         for (int i = 0; i < fragmentInfosToMerge.Length; i++)
         {
+            if(idFamily != fragmentInfosToMerge[i].IdFamily)
+            {
+                return false;
+            }
+
             if (GeneralTools.IsThisElementPresent(stateOfMerge, fragmentInfosToMerge[i].gameElement))
             {
                 return false;
             }
+
+
 
             stateOfMerge = stateOfMerge | fragmentInfosToMerge[i].gameElement;
         }
@@ -181,22 +233,13 @@ public class AnvilBehavior : InteractionInterface
 
     }
 
+    public void ClearAnvil()
+    {
+        currentArtefactReinforce = null;
+        currentFragmentMergeArray = new ArtefactsInfos[4];
+        m_cloneMergeFragment = null;
+    }
+
     #endregion
-
-    public override void OnInteractionStart(GameObject player)
-    {
-        m_anvilUIComponent.OpenUiAnvil();
-        m_uiInventory.ActivateInventoryInterface();
-        GameState.ChangeState();
-    }
-
-    public override void OnInteractionEnd(GameObject player)
-    {
-        m_anvilUIComponent.CloseUIAnvil();
-        m_uiInventory.DeactivateInventoryInterface();
-        GameState.ChangeState();
-
-    }
-
 
 }

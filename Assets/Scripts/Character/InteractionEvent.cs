@@ -405,7 +405,7 @@ public class InteractionEvent : MonoBehaviour
 
                         NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
                         m_lastHintAnimator.SetBool("InteractionOn", true);
-                        txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.descriptionResult;
+                        txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
                         m_lastArtefactAnimator.SetBool("PlayerProxi", true);
 
                     }

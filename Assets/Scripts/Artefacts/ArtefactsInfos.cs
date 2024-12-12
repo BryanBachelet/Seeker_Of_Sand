@@ -2,6 +2,7 @@ using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
 using System.Collections.Generic;
+using SeekerOfSand.Tools;
 
 public enum ConditionsTrigger
 {
@@ -44,13 +45,21 @@ public class ArtefactsInfos : ScriptableObject
     [HideInInspector] public GameObject characterGo;
     public Sprite icon;
     [TextArea]
-    public string description;
+    public string baseDescription;
     public string nameArtefact;
     public bool isDebugActive = false;
 
     [TextArea]
     public string descriptionResult;
 
+    public string description
+    {
+        get
+        {
+            ResultString();
+            return descriptionResult;
+        }
+    }
 
 
     [HideInInspector] public int activationCount;
@@ -133,7 +142,8 @@ public class ArtefactsInfos : ScriptableObject
     {
 
         if (entitiesTrigger != tag) return;
-        if (element != gameElement && element != GameElement.NONE) return;
+
+        if (GeneralTools.IsThisElementPresent(gameElement, element) && element != GameElement.NONE) return;
 
 
         float change = Random.Range(0, 100.0f);
@@ -231,45 +241,70 @@ public class ArtefactsInfos : ScriptableObject
     {
         string result = string.Empty;
 
-        int index = description.IndexOf("{");
-        if (index == -1)
-        {
-            descriptionResult = description;
-            return;
+        int countBracket = baseDescription.Split("{").Length-1;
+        int indexEndString = 0;
 
-        }
-        int index1 = description.IndexOf("}");
-        if (index1 == -1)
+        if (countBracket <= 0)
         {
-            descriptionResult = description.Substring(0, index);
+            descriptionResult = baseDescription;
             return;
         }
-        result += description.Substring(0, index);
+        int indexStart = baseDescription.IndexOf("{");
 
-        string substringCode = description.Substring(index+1, index1 -index -1); ;
-        if (substringCode == "p")
-            result +=  spawnRatePerTier[(int)levelTierFragment].ToString() ;
 
-        if (substringCode == "d")
-            result += (damageArtefact + damageGainPerCount * additionialItemCount).ToString();
-        result += description.Substring(index1+1);
+        for (int i = 0; i < countBracket; i++)
+        {
 
+
+            int indexStartProperty = baseDescription.IndexOf("{", indexEndString);
+            if (indexStartProperty == -1)
+            {
+
+                descriptionResult = baseDescription;
+                return;
+
+            }
+            int indexEndProperty = baseDescription.IndexOf("}", indexEndString +1);
+            if (indexEndProperty == -1)
+            {
+                Debug.LogError("Artefact string missing }");
+                descriptionResult = baseDescription.Substring(0, indexStartProperty);
+                return;
+            }
+
+            if (indexEndProperty - indexStartProperty < 0)
+            {
+                Debug.LogError("Artefact string missing {");
+                descriptionResult = baseDescription;
+                return;
+            }
+
+            result += baseDescription.Substring(indexEndString, indexStartProperty -indexEndString);
+            indexEndString = indexEndProperty+1;
+            string substringCode = baseDescription.Substring(indexStartProperty + 1, indexEndProperty - indexStartProperty - 1); 
+            if (substringCode == "probability")
+            {
+                result += spawnRatePerTier[(int)levelTierFragment].ToString();
+
+                continue;
+            }
+
+            if (substringCode == "damage")
+            {
+                result += (damageArtefact + damageGainPerCount * additionialItemCount).ToString();
+                continue;
+            }
+
+          
+
+        }
+        result += baseDescription.Substring(indexEndString);
         descriptionResult = result;
-
-
-        return ;
+        return;
     }
 
     public void OnValidate()
     {
-        //if(spawnRatePerTier.Length < 3)
-        //{
-        //    float[] tempArray = spawnRatePerTier;
-        //    spawnRatePerTier = new float[3];
-        //    for (int i = 0; i < tempArray.Length; i++)
-        //    {
-        //        spawnRatePerTier[i] = tempArray[i];
-        //    }
 
 
         ResultString();

@@ -35,7 +35,7 @@ public class FragmentUIInfo : MonoBehaviour
         }
 
         string headerText = m_characterArtefact.artefactsList[eventData.index].nameArtefact;
-        string contextText = m_characterArtefact.artefactsList[eventData.index].descriptionResult;
+        string contextText = m_characterArtefact.artefactsList[eventData.index].description;
 
         m_spellTooltipArray[eventData.index].content = contextText;
         m_spellTooltipArray[eventData.index].header = headerText;

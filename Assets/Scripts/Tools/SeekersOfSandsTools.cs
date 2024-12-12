@@ -45,7 +45,7 @@ namespace SeekerOfSand.Tools
                     break;
                 default:
                     indexElement = -1;
-                    Debug.LogError("This state is not handle by function :" + element.ToString() );
+                    Debug.LogWarning("This state is not handle by function :" + element.ToString() );
                     break;
             }
            
@@ -75,9 +75,21 @@ namespace SeekerOfSand.Tools
 
         public static bool IsThisElementPresent( GameElement objEnum, GameElement specificElement )
         {
-            return ((int)objEnum & (1 << (int)specificElement)) > 0;
+            int indexSpecifixElement = (int)specificElement;
+            return ((int)objEnum & indexSpecifixElement) > 0;
         }
 
+
+        //Temp, will need better sytem
+        public static GameElement GetFirstBaseElement(GameElement objEnum)
+        {
+            if(IsThisElementPresent(objEnum,GameElement.WATER)) return GameElement.WATER;
+            if(IsThisElementPresent(objEnum,GameElement.AIR)) return GameElement.AIR;
+            if(IsThisElementPresent(objEnum,GameElement.FIRE)) return GameElement.FIRE;
+            if(IsThisElementPresent(objEnum,GameElement.EARTH)) return GameElement.EARTH;
+
+            return GameElement.NONE;
+        }
        
 
         #endregion

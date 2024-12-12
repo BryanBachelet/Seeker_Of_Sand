@@ -1,8 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GuerhoubaGames.GameEnum;
+using UnityEngine.VFX;
+using SeekerOfSand.Tools;
+using TMPro;
+using GuerhoubaGames.Resources;
 
 namespace GuerhoubaGames.UI
 {
@@ -27,18 +29,41 @@ namespace GuerhoubaGames.UI
 
         private ArtefactsInfos m_mergeFragmentClone;
 
+        [SerializeField] public FragmentUIView m_resultImage;
+        public UIDispatcher dispatcher;
+
         private CharacterArtefact m_characterArtefact;
         [HideInInspector] public AnvilBehavior anvilBehavior;
 
 
+        public float tempsEcouleClic;
+        public float timeToValidate;
+        public Image uiButton;
+        public bool actionValidate = false;
+        public bool actionOnGoing = false;
+        public VisualEffect[] vfxReinforcement;
+        public Animator animator;
+
+        [GradientUsage(true)]
+        public Gradient[] colorByElement;
+
+        [SerializeField] private TMP_Text m_priceText;
+        [SerializeField] private Image m_elementImageCristal;
         #region Unity Function
 
         public void Start()
         {
             m_characterArtefact = GameState.instance.playerGo.GetComponent<CharacterArtefact>();
             m_receptableUI.OnDropEvent += OnDropInputUpgrade;
+
+            for (int i = 0; i < receptacleUIs.Length; i++)
+            {
+                receptacleUIs[i].OnDropEvent += OnDropInputMerge;
+                receptacleUIs[i].OnCtrlClick += CleanMergeFragment;
+            }
             m_receptableImage.ResetFragmentUIView();
             m_resultUpgradeImage.ResetFragmentUIView();
+            CleanMergeInterface();
         }
 
         #endregion
@@ -48,10 +73,57 @@ namespace GuerhoubaGames.UI
             m_panelAnvil.SetActive(true);
         }
 
+        public void Update()
+        {
+            if (!actionOnGoing) return;
+            else
+            {
+                tempsEcouleClic += Time.deltaTime;
+                if (tempsEcouleClic > timeToValidate)
+                {
+                    actionValidate = true;
+                    for (int i = 0; i < vfxReinforcement.Length; i++)
+                    {
+                        vfxReinforcement[i].SendEvent("Activation");
 
+                    }
+
+                    actionOnGoing = false;
+                }
+                else
+                {
+                    float progress = tempsEcouleClic / timeToValidate;
+                    uiButton.fillAmount = progress;
+                    for (int i = 0; i < vfxReinforcement.Length; i++)
+                    {
+                        vfxReinforcement[i].SetInt("Rate", (int)(progress * 100));
+
+                    }
+                }
+            }
+        }
         public void CloseUIAnvil()
         {
+            CleanMergeInterface();
+            anvilBehavior.ClearAnvil();
             m_panelAnvil.SetActive(false);
+        }
+
+        // Add this behavior for all actions of the anvil
+        public void OnClicButton()
+        {
+            if (!m_hasRecpetacle) { return; }
+            if (!actionOnGoing)
+            {
+                actionOnGoing = true;
+                tempsEcouleClic = 0;
+                for (int i = 0; i < vfxReinforcement.Length; i++)
+                {
+                    vfxReinforcement[i].Play();
+
+                }
+            }
+            else return;
         }
 
         #region Upgrade Fragment Functions
@@ -83,6 +155,8 @@ namespace GuerhoubaGames.UI
                 return;
             }
 
+
+
             anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable];
             m_indexArtecfactUpgradable = indexObject;
             m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable]);
@@ -91,22 +165,39 @@ namespace GuerhoubaGames.UI
             m_upgradePreviousClone = clone;
             m_upgradePreviousClone.UpgradeTierFragment();
             m_hasRecpetacle = true;
-            m_resultUpgradeImage.UpdateInteface(m_upgradePreviousClone);
+            m_resultImage.UpdateInteface(m_upgradePreviousClone);
+            animator.SetBool("isAble", true);
+            int indexElementToUse = GeneralTools.GetElementalArrayIndex(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].gameElement);
+            m_priceText.text = "x" + anvilBehavior.BuyPrice();
+            m_elementImageCristal.sprite = GameResources.instance.cristalIconArray[indexElementToUse];
+            for (int i = 0; i < vfxReinforcement.Length; i++)
+            {
+                vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexElementToUse]);
+
+
+            }
+
         }
 
-        public void OnUpgradeFragment()
+        public void OnUpgradeFragment(Transform transform)
         {
             if (!m_hasRecpetacle) return;
 
             BuyResult result = anvilBehavior.BuyUpgradeFragment();
             if (result != BuyResult.BUY) return;
 
-
+            dispatcher.CreateObject(transform.gameObject);
             anvilBehavior.SetFragmentUpgrade();
             UpdateUpgradeUI(m_indexArtecfactUpgradable, CharacterObjectType.FRAGMENT, true);
+            animator.SetBool("isAble", false);
+
+            m_receptableImage.ResetFragmentUIView();
+            m_resultImage.ResetFragmentUIView();
+
         }
         #endregion
 
+        #region Merge Functions
         public void OnDropInputMerge(ReceptableData receptableData)
         {
             if (receptableData.objectType != CharacterObjectType.FRAGMENT)
@@ -131,9 +222,10 @@ namespace GuerhoubaGames.UI
             int currentFragmentToMergeIndex = receptableData.indexObject;
             // Update Anvil Behavior
             anvilBehavior.currentFragmentMergeArray[receptableData.indexReceptacle] = m_characterArtefact.artefactsList[currentFragmentToMergeIndex];
-            
+
             // Update UI
             receptacleViews[receptableData.indexReceptacle].UpdateInteface(m_characterArtefact.artefactsList[currentFragmentToMergeIndex]);
+            if (!anvilBehavior.CanFragmentBeMerge()) return;
             m_mergeFragmentClone = anvilBehavior.MergeFragmentClone();
             resultMergeImage.UpdateInteface(m_mergeFragmentClone);
 
@@ -152,7 +244,7 @@ namespace GuerhoubaGames.UI
 
         public void InputMergeFragment()
         {
-            if(!anvilBehavior.CanFragmentBeMerge())
+            if (!anvilBehavior.CanFragmentBeMerge())
             {
                 return;
             }
@@ -163,8 +255,30 @@ namespace GuerhoubaGames.UI
 
             anvilBehavior.MergeFragment();
             CleanMergeInterface();
+            anvilBehavior.ClearAnvil();
 
         }
+
+        public void CleanMergeFragment(ReceptableData data)
+        {
+
+            anvilBehavior.currentFragmentMergeArray[data.indexReceptacle] = null;
+            receptacleViews[data.indexReceptacle].ResetFragmentUIView();
+
+            if (!anvilBehavior.CanFragmentBeMerge())
+            {
+                m_mergeFragmentClone = null;
+                resultMergeImage.ResetFragmentUIView();
+                return;
+            }
+            m_mergeFragmentClone = anvilBehavior.MergeFragmentClone();
+            resultMergeImage.UpdateInteface(m_mergeFragmentClone);
+
+        }
+
+        #endregion
+
+
 
     }
 }
