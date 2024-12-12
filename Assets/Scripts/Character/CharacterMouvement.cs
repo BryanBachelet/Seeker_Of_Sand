@@ -351,7 +351,7 @@ namespace Character
                 combatState = state;
 
             bookSmoothFollow.ChangeForBook(combatState);
-            if (!combatState) cameraPlayer.BlockZoom(false);
+            //if (!combatState) cameraPlayer.BlockZoom(false);
         }
 
         public void Update()

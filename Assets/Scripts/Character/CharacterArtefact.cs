@@ -164,4 +164,11 @@ public class CharacterArtefact : MonoBehaviour
     }
 
 
+    public void RemoveArtefact(ArtefactsInfos artefactsInfos)
+    {
+        int indexTargetArtefact = artefactsList.IndexOf(artefactsInfos);
+        uiFragmentTooltip.RemoveFragment(indexTargetArtefact);
+        artefactsList.Remove(artefactsInfos);
+    }
+
 }

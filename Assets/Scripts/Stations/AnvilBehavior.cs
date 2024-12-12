@@ -1,13 +1,7 @@
 using GuerhoubaGames.GameEnum;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
-using UnityEditor.Timeline.Actions;
-using UnityEngine.UIElements;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
-using UnityEditor.Rendering.HighDefinition;
 
 public class AnvilBehavior : InteractionInterface
 {
@@ -15,6 +9,7 @@ public class AnvilBehavior : InteractionInterface
     private AnvilUIView m_anvilUIComponent;
     private UI_Inventory m_uiInventory;
     private CristalInventory m_cristalInventory;
+    private CharacterArtefact m_characterArtefact;
     [HideInInspector] public ArtefactsInfos currentArtefactReinforce;
 
     [HideInInspector] public ArtefactsInfos[] currentFragmentMergeArray;
@@ -41,6 +36,7 @@ public class AnvilBehavior : InteractionInterface
         m_anvilUIComponent = m_uiDispatcher.anvilUIView;
         m_uiInventory = m_uiDispatcher.uiInventory;
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
+        m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
         m_anvilUIComponent.anvilBehavior = this;
     }
 
@@ -61,13 +57,15 @@ public class AnvilBehavior : InteractionInterface
         int value = isT1 ? costT1 : costT2;
         bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, currentArtefactReinforce.gameElement, currentArtefactReinforce.nameArtefact);
         if (!hasEnoughCristal) return BuyResult.NOT_ENOUGH_MONEY;
-        int mabiteElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
-        m_cristalInventory.RemoveCristalCount(mabiteElement, -value);
+        int fragmentElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
+        m_cristalInventory.RemoveCristalCount(fragmentElement, -value);
         // TODO : Update Anvil Upgrade price;
 
 
         return BuyResult.BUY;
     }
+
+
 
     public bool IsFrgmentCanBeUpgrade(ArtefactsInfos currentArtefactReinforce)
     {
@@ -75,15 +73,18 @@ public class AnvilBehavior : InteractionInterface
         return currentArtefactReinforce.levelTierFragment != LevelTier.TIER_3;
     }
 
+
     #endregion
 
 
     #region Merge Fragment Functions
 
-    public void ApplyMergeFragment()
+    public BuyResult BuyMergeFragment()
     {
-        currentFragmentMergeArray[0].MergeFragment(currentFragmentMergeArray[1]);
-        m_uiInventory.ActualizeInventory();
+        if (isBuylessActive)
+            return BuyResult.BUY;
+
+        return BuyResult.BUY;
     }
 
     public int GetMergeFragmentCount()
@@ -116,11 +117,35 @@ public class AnvilBehavior : InteractionInterface
         return artefactsInfosToMerge;
     }
 
+    public bool CanFragmentBeMerge()
+    {
+        int countFragment = GetMergeFragmentCount();
+        if (countFragment < 2) return false;
+
+
+        // Check if fragments dont have the same elements and are interresting to merge 
+        ArtefactsInfos[] fragmentInfosToMerge = GetMergeArtefactArray();
+        GameElement stateOfMerge = GameElement.NONE;
+        for (int i = 0; i < fragmentInfosToMerge.Length; i++)
+        {
+            if (GeneralTools.IsThisElementPresent(stateOfMerge, fragmentInfosToMerge[i].gameElement))
+            {
+                return false;
+            }
+
+            stateOfMerge = stateOfMerge | fragmentInfosToMerge[i].gameElement;
+        }
+
+
+        return true;
+
+    }
+
+
     public ArtefactsInfos MergeFragmentClone()
     {
 
-        int countFragment = GetMergeFragmentCount();
-        if (countFragment < 2) return null;
+        if (!CanFragmentBeMerge()) return null;
 
 
         ArtefactsInfos[] artefactsInfosToMerge = GetMergeArtefactArray();
@@ -138,6 +163,21 @@ public class AnvilBehavior : InteractionInterface
 
     public void MergeFragment()
     {
+        int countFragment = GetMergeFragmentCount();
+        if (countFragment < 2) return;
+
+        ArtefactsInfos[] artefactsInfosToMerge = GetMergeArtefactArray();
+
+
+        for (int i = 1; i < artefactsInfosToMerge.Length; i++)
+        {
+            artefactsInfosToMerge[0].MergeFragment(artefactsInfosToMerge[i]);
+
+            // TODO : Verify artefact quantity to remove the best quantity
+            m_characterArtefact.RemoveArtefact(artefactsInfosToMerge[i]);
+        }
+
+        m_uiInventory.ActualizeInventory();
 
     }
 

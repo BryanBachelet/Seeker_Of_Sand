@@ -116,7 +116,11 @@ namespace GuerhoubaGames.UI
             }
 
             // TODO : Check if a fragment can be merge
-
+            if (m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].gameElement == GameElement.CHAOS)
+            {
+                //TODO : Add Sound feedback for error of placement
+                return;
+            }
 
             UpdateUIMerge(receptableData);
 
@@ -127,22 +131,38 @@ namespace GuerhoubaGames.UI
             int currentFragmentToMergeIndex = receptableData.indexObject;
             // Update Anvil Behavior
             anvilBehavior.currentFragmentMergeArray[receptableData.indexReceptacle] = m_characterArtefact.artefactsList[currentFragmentToMergeIndex];
+            
             // Update UI
             receptacleViews[receptableData.indexReceptacle].UpdateInteface(m_characterArtefact.artefactsList[currentFragmentToMergeIndex]);
+            m_mergeFragmentClone = anvilBehavior.MergeFragmentClone();
+            resultMergeImage.UpdateInteface(m_mergeFragmentClone);
 
-            // Check if there is at least two fragment are set 
-            // False : Do nothing
-            // True : Create a pre-visualize fragment 
+        }
 
-            //if (anvilBehavior.GetMergeFragmentCount() < 2) return;
+        private void CleanMergeInterface()
+        {
+            for (int i = 0; i < receptacleViews.Length; i++)
+            {
+                receptacleViews[i].ResetFragmentUIView();
+            }
 
-            //ArtefactsInfos clone = m_characterArtefact.artefactsList[currentFragmentToMergeIndex].Clone();
-
+            resultMergeImage.ResetFragmentUIView();
         }
 
 
         public void InputMergeFragment()
         {
+            if(!anvilBehavior.CanFragmentBeMerge())
+            {
+                return;
+            }
+
+            BuyResult result = anvilBehavior.BuyMergeFragment();
+            if (result != BuyResult.BUY) return;
+
+
+            anvilBehavior.MergeFragment();
+            CleanMergeInterface();
 
         }
 

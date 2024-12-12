@@ -12,7 +12,6 @@ using SpellSystem;
 using GuerhoubaGames.Resources;
 using Klak.Motion;
 using SeekerOfSand.Tools;
-using static UnityEditor.Rendering.FilterWindow;
 
 namespace Character
 {
@@ -950,7 +949,7 @@ namespace Character
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(m_currentIndexCapsule);
 
 
-            if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
+            //if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
 
         private void EndShoot()
@@ -1235,7 +1234,7 @@ namespace Character
             if (!m_CharacterMouvement.activeCombatModeConstant)
                 m_CharacterMouvement.SetCombatMode(false);
 
-            m_cameraBehavior.BlockZoom(false);
+            //m_cameraBehavior.BlockZoom(false);
 
 
             float totalShootTime = time;
@@ -1313,7 +1312,7 @@ namespace Character
 
             // m_isCasting = false;
             if (!m_shootInput) m_shootInputActive = false;
-            m_cameraBehavior.BlockZoom(false);
+            //m_cameraBehavior.BlockZoom(false);
 
             m_lastTimeShot = Mathf.Infinity;
             avatarTransform.localRotation = Quaternion.identity;
