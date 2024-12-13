@@ -19,10 +19,16 @@ namespace SpellSystem
         public AreaData areaData;
 
         public Action OnSpawn;
+        public Action OnRelaunch;
 
         public void ResetOnSpawn()
         {
             OnSpawn?.Invoke();
+        }
+
+        public void RelaunchArea()
+        {
+            OnRelaunch?.Invoke();
         }
     }
 

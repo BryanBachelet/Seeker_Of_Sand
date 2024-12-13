@@ -220,7 +220,7 @@ public class MarchandUiView : MonoBehaviour
                 break;
             case CharacterObjectType.FRAGMENT:
                 if (merchandItemData.itemFragmentData[index].hasBeenBuy) return;
-                description = merchandItemData.fragmentData[index].description;
+                description = merchandItemData.fragmentData[index].baseDescription;
                 name = merchandItemData.fragmentData[index].name;
                 image = merchandItemData.fragmentData[index].icon; ;
                 break;
