@@ -44,5 +44,10 @@ namespace GuerhoubaGames.VFX
             }
         }
 
+        public void ResetTimer()
+        {
+                
+        }
+
     }
 }

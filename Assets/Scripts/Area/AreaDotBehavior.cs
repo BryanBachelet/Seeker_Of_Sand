@@ -50,6 +50,7 @@ namespace SpellSystem
             m_DotMeta = GetComponent<DOTMeta>();
           
             m_areaMeta.OnSpawn += InitComponent;
+            m_areaMeta.OnRelaunch += RelaunchComponent;
         }
 
 
@@ -88,6 +89,11 @@ namespace SpellSystem
                 m_hitMaxCount = (int)(profil.GetFloatStat(StatType.LifeTimeSummon) / m_hitFrequencyTime);
                 m_summonMeta.OnSpecialSkill += ApplyAreaDamage;
             }
+        }
+
+        public void RelaunchComponent()
+        {
+            m_hitCount = 0;  
         }
 
         public void UpdateArea()
