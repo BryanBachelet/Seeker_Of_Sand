@@ -233,6 +233,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChooseUpgrade"",
+                    ""type"": ""Button"",
+                    ""id"": ""bffe9196-9313-4091-a215-43dae9cb5312"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -915,6 +924,50 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f71eb569-776d-4822-9782-2aee4371902c"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6233a261-8a94-47df-a095-411309663148"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ChooseUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""162401d0-75f1-4a17-8196-7141732f8d5d"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChooseUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1cc8fad9-0c2f-48c6-be99-7f297f42d476"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChooseUpgrade"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -2549,6 +2602,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
         m_Player_RecapDamage = m_Player.FindAction("RecapDamage", throwIfNotFound: true);
         m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
+        m_Player_ChooseUpgrade = m_Player.FindAction("ChooseUpgrade", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -2681,6 +2735,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_OpenInventory;
     private readonly InputAction m_Player_RecapDamage;
     private readonly InputAction m_Player_Cancel;
+    private readonly InputAction m_Player_ChooseUpgrade;
     public struct PlayerActions
     {
         private @GameInput m_Wrapper;
@@ -2708,6 +2763,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
         public InputAction @RecapDamage => m_Wrapper.m_Player_RecapDamage;
         public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
+        public InputAction @ChooseUpgrade => m_Wrapper.m_Player_ChooseUpgrade;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2786,6 +2842,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Cancel.started += instance.OnCancel;
             @Cancel.performed += instance.OnCancel;
             @Cancel.canceled += instance.OnCancel;
+            @ChooseUpgrade.started += instance.OnChooseUpgrade;
+            @ChooseUpgrade.performed += instance.OnChooseUpgrade;
+            @ChooseUpgrade.canceled += instance.OnChooseUpgrade;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -2859,6 +2918,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Cancel.started -= instance.OnCancel;
             @Cancel.performed -= instance.OnCancel;
             @Cancel.canceled -= instance.OnCancel;
+            @ChooseUpgrade.started -= instance.OnChooseUpgrade;
+            @ChooseUpgrade.performed -= instance.OnChooseUpgrade;
+            @ChooseUpgrade.canceled -= instance.OnChooseUpgrade;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -3418,6 +3480,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnRecapDamage(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
+        void OnChooseUpgrade(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

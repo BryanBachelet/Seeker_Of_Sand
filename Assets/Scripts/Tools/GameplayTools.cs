@@ -98,9 +98,16 @@ namespace GuerhoubaTools.Gameplay
         }
 
 
+        public static float RandomThreshold(float baseNumber, float range)
+        {
+            return UnityEngine.Random.Range(baseNumber - range, baseNumber + range);
+        }
+
+
 
     }
 
 
 
 }
+

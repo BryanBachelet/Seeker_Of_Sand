@@ -206,7 +206,8 @@ public class InteractionEvent : MonoBehaviour
                     if (nearest >= newDistance)
                     {
                         currentInteractibleObject = col[i].transform.gameObject;
-                        m_socleTransform = GameObject.Find("low_Socle").transform;
+                        GameObject socle = GameObject.Find("low_Socle");
+                       if(socle) m_socleTransform = socle.transform;
                         nearest = newDistance;
                     }
                 }
@@ -250,6 +251,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
+     
 
             if (currentInteractionInterface != null)
             {
@@ -403,7 +405,7 @@ public class InteractionEvent : MonoBehaviour
 
                         NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
                         m_lastHintAnimator.SetBool("InteractionOn", true);
-                        txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
+                        txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.descriptionResult;
                         m_lastArtefactAnimator.SetBool("PlayerProxi", true);
 
                     }

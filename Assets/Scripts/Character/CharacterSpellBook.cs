@@ -13,6 +13,7 @@ namespace Character
         [SerializeField] public SpellSystem.SpellProfil[] m_spellsRotationArray = new SpellSystem.SpellProfil[4];
         UI_Inventory ui_inventory;
 
+        public int m_currentSpellInRotationCount;
         //  Need to create copy from the spell place
 
         public void Start()
@@ -35,9 +36,9 @@ namespace Character
 
         public GameElement[] GetElementSpellInRotation()
         {
-            GameElement[] gameElements = new GameElement[4];
+            GameElement[] gameElements = new GameElement[m_currentSpellInRotationCount];
 
-            for (int i = 0; i < m_spellsRotationArray.Length; i++)
+            for (int i = 0; i < gameElements.Length; i++)
             {
                 if (m_spellsRotationArray[i] != null)
                     gameElements[i] = m_spellsRotationArray[i].tagData.element;

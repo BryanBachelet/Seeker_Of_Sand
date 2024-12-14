@@ -209,6 +209,16 @@ public class UpgradeManager : MonoBehaviour
         return upgradeObject[indexUpgrade];
     }
 
+    public void ValidateUpgrade(int index)
+    {
+        m_upgradeChoosingComponent.ChooseUpgrade(index);
+    }
+
+    public void ValidateSpell(int index)
+    {
+        m_chooseSpellManagerComponent.Choose(index);
+    }
+
     public int[] GetRandomIndex(int elementRange, int length)
     {
         List<int> indexArray = new List<int>();
@@ -276,6 +286,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!spellChoiceUI) return;
 
+        //GlobalSoundManager.PlayOneShot(30, Vector3.zero);
 
         if (book_Animator != null) book_Animator.SetBool("BookOpen", false);
         float time = Time.time;
@@ -315,6 +326,11 @@ public class UpgradeManager : MonoBehaviour
 
     private int GenerateSpellIndex(GameElement element)
     {
+        if (element == GameElement.NONE)
+        {
+            Debug.LogWarning("The room has not element");
+        }
+
         GameElement[] elements = m_characterUpgradeComponent.m_characterInventory.GetElementSpellInRotation();
         bool isOwnElement = false;
 
@@ -322,7 +338,7 @@ public class UpgradeManager : MonoBehaviour
         List<int> indexOtherElement = new List<int>();
         for (int i = 0; i < elements.Length; i++)
         {
-            if (element == GameElement.NONE) continue;
+            if (elements[i] == GameElement.NONE) continue;
 
             if (element == elements[i])
             {
@@ -346,6 +362,12 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
+            if (indexOtherElement.Count == 0)
+            {
+                int indexSpell1 = UnityEngine.Random.Range(0, indexElement.Count);
+                return indexElement[indexSpell1];
+            }
+
             int indexSpell = UnityEngine.Random.Range(0, indexOtherElement.Count);
             return indexOtherElement[indexSpell];
         }

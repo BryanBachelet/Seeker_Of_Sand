@@ -123,12 +123,22 @@ public struct EndInfoStats
 
     private float ReadFloat(string line)
     {
-        string lineData = line.Split("=")[1];
+        string[] splitArray = line.Split("=");
+        if(splitArray.Length <2)
+        {
+            return 0;
+        }
+        string lineData = splitArray[1];
         return float.Parse(lineData);
     }
     private int ReadInt(string line)
     {
-        string lineData = line.Split("=")[1];
+        string[] splitArray = line.Split("=");
+        if (splitArray.Length < 2)
+        {
+            return 0;
+        }
+        string lineData = splitArray[1];
         return int.Parse(lineData);
     }
 

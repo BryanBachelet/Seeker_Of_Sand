@@ -12,6 +12,7 @@ using TMPro;
 using SeekerOfSand.UI;
 using UnityEngine.InputSystem;
 using System.Runtime.Serialization.Formatters.Binary;
+using Render.Camera;
 
 namespace Enemies
 {
@@ -72,7 +73,13 @@ namespace Enemies
         [SerializeField] private Transform m_enemyHolder;
         [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
 
+        public ui_DisplayText m_mainInformationDisplay;
+
         public int countEnemySpawnMaximum;
+
+        public Transform AstrePositionReference;
+
+        [SerializeField] private CameraBehavior m_cameraBehavior;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
@@ -169,6 +176,7 @@ namespace Enemies
         private EnemiesPullingSystem m_pullingSystem;
 
         public GameObject m_uiManagerGameObject;
+        public UIDispatcher uiDispatcher;
         private UI_EventManager m_UiEventManager;
 
         private AltarBehaviorComponent lastAltarActivated;
@@ -211,6 +219,7 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<EnemiesPullingSystem>();
 
+            uiDispatcher = m_uiManagerGameObject.GetComponent<UIDispatcher>();
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -260,7 +269,7 @@ namespace Enemies
             if (spawningPhase)
             {
 
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(m_timeOfGame / 60);
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static);
                 SpawnCooldown();
             }
 
@@ -683,8 +692,18 @@ namespace Enemies
             }
             else
             {
-                bool canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                bool canSpawn = false;
+                if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 2)
+                {
+                    canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 2); 
+                }
+                else
+                {
+                    canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                }
                 return canSpawn;
+
+
             }
         }
 
@@ -698,6 +717,7 @@ namespace Enemies
         public void ActiveEvent(Transform target)
         {
             ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
+
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
@@ -857,6 +877,8 @@ namespace Enemies
             if (CanActiveSpawnPhase() != spawningPhase)
             {
                 ChangeSpawningPhase(!spawningPhase);
+                if(spawningPhase == true) { StartCoroutine(m_cameraBehavior.DeZoomCamera()); }
+                else { m_cameraBehavior.isZoomActive = true; }
             }
         }
 
@@ -955,7 +977,7 @@ namespace Enemies
                 debugdata = debugdata + " , " + dataTransformed[i];
 
             }
-            m_MaxUnitControl = tempAnimationCurve;
+            //m_MaxUnitControl = tempAnimationCurve;
             //Debug.Log(debugdata);
 
         }

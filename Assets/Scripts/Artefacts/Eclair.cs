@@ -1,5 +1,7 @@
 using Character;
+using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +10,6 @@ namespace Artefact
 {
     public class Eclair : MonoBehaviour
     {
-        public int m_damage;
         private ArtefactData m_artefactData;
         [Header("Around Parameter")]
         private float radiusEffect;
@@ -26,6 +27,7 @@ namespace Artefact
         {
             m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             radiusEffect = m_artefactData.radius;
+
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.ClosestEnemyAround) ClosestTarget();
@@ -33,10 +35,14 @@ namespace Artefact
         }
         public void Start()
         {
-            m_hasBeenInit = true;
-            m_artefactData = GetComponent<ArtefactData>();
-            m_pullingMetaData = GetComponent<PullingMetaData>();
-            m_artefactData.OnSpawn += InitArtefact;
+            if (!m_hasBeenInit)
+            {
+                m_artefactData = GetComponent<ArtefactData>();
+                m_pullingMetaData = GetComponent<PullingMetaData>();
+                m_artefactData.OnSpawn += InitArtefact;
+                m_hasBeenInit = true;
+            }
+
             if (hasSound) GlobalSoundManager.PlayOneShot(indexSound, transform.position);
         }
 
@@ -55,7 +61,7 @@ namespace Artefact
 
             if (enemies.Length == 0)
             {
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
 
@@ -71,7 +77,7 @@ namespace Artefact
 
             if (enemies.Length == 0)
             {
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
 
@@ -88,7 +94,7 @@ namespace Artefact
             }
             if (indexEnemy == -1)
             {
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
 
@@ -99,8 +105,25 @@ namespace Artefact
 
         private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
         {
-            DamageStatData damageStatData = new DamageStatData(m_damage, m_artefactData.objectType);
-            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, 0);
+            DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
+            int indexElement = GeneralTools.GetElementalArrayIndex(m_artefactData.element,true);
+            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, indexElement, (int)CharacterProfile.instance.stats.baseStat.damage);
         }
+
+        private void DestroyObject()
+        {
+            PullingMetaData pullingMetaData = GetComponent<PullingMetaData>();
+            if (GamePullingSystem.instance != null && pullingMetaData != null)
+            {
+                GamePullingSystem.instance.ResetObject(this.gameObject, pullingMetaData.id);
+            }
+            else
+            {
+
+                Destroy(this.gameObject);
+            }
+        }
+
+
     }
 }

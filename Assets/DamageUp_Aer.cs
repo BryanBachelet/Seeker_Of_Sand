@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class DamageUp_Aer : MonoBehaviour
 {
-    public int m_damage;
     private ArtefactData m_artefactData;
     [HideInInspector] public int element;
     [Header("Around Parameter")]
@@ -14,7 +13,7 @@ public class DamageUp_Aer : MonoBehaviour
     public void Start()
     {
         m_artefactData = GetComponent<ArtefactData>();
-        element = m_artefactData.element;
+        element = m_artefactData.elementIndex;
         radiusEffect = m_artefactData.radius;
         if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
         if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
@@ -80,7 +79,7 @@ public class DamageUp_Aer : MonoBehaviour
 
     private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
     {
-        DamageStatData damageStatData = new DamageStatData(m_damage, m_artefactData.objectType);
-        if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, element);
+        DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
+        if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, element, (int)CharacterProfile.instance.stats.baseStat.damage);
     }
 }

@@ -52,7 +52,8 @@ namespace GuerhoubaGames.UI
                     imageToDrag.sprite = characterShoot.GetSpellSprite()[index];
                     break;
                 case CharacterObjectType.FRAGMENT:
-                    imageToDrag.sprite = m_fragmentToolTip.imageFragmentTooltip[index].sprite;
+                    CharacterArtefact characterArtefact = m_playerGO.GetComponent<CharacterArtefact>();
+                    imageToDrag.sprite = characterArtefact.artefactsList[index].icon;
                     break;
                 default:
                     break;

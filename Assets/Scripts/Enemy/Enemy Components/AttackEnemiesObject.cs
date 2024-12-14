@@ -9,5 +9,6 @@ namespace Enemies
     public class AttackEnemiesObject : ScriptableObject
     {
         public AttackNPCData data;
+        [HideInInspector] public float tempCooldoown;
     }
 }

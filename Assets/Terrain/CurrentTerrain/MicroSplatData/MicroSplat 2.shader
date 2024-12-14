@@ -263,6 +263,8 @@ Shader "Terrain_Mid"
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -271,6 +273,7 @@ Shader "Terrain_Mid"
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -6071,6 +6074,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -6079,6 +6084,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -11707,6 +11713,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -11715,6 +11723,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -17413,6 +17422,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -17421,6 +17432,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -23091,6 +23103,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -23099,6 +23113,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -28723,6 +28738,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -28731,6 +28748,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -34351,6 +34369,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -34359,6 +34379,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -40008,6 +40029,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -40016,6 +40039,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -45695,6 +45719,8 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -45703,6 +45729,7 @@ void Frag(  VertexToPixel v2f
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -51345,6 +51372,8 @@ float3 GetTessFactors ()
       #define _PERTEXUVSCALEOFFSET 1
       #define _PERTEXUVROTATION 1
       #define _PERTEXFUZZYSHADE 1
+      #define _PERTEXHEIGHTOFFSET 1
+      #define _PERTEXHEIGHTCONTRAST 1
       #define _PERTEXSATURATION 1
       #define _PERTEXTINT 1
       #define _PERTEXBRIGHTNESS 1
@@ -51353,6 +51382,7 @@ float3 GetTessFactors ()
       #define _PERTEXAOSTR 1
       #define _PERTEXNORMSTR 1
       #define _PERTEXSMOOTHSTR 1
+      #define _PERTEXMETALLIC 1
       #define _PERTEXCURVEWEIGHT 1
       #define _BRANCHSAMPLES 1
       #define _BRANCHSAMPLESAGR 1
@@ -56882,7 +56912,7 @@ float3 GetTessFactors ()
       
       
    }
-   Dependency "BaseMapShader" =  "Hidden/Terrain_Mid_Base-891797342"
-   Fallback "Hidden/Terrain_Mid_Base-891797342"
+   Dependency "BaseMapShader" =  "Hidden/Terrain_Mid_Base1930371650"
+   Fallback "Hidden/Terrain_Mid_Base1930371650"
    CustomEditor "MicroSplatShaderGUI"
 }

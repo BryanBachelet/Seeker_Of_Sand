@@ -7,6 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaTools.Gameplay;
+using TMPro;
 public struct AttackDamageInfo
 {
     public string attackName;
@@ -81,10 +82,16 @@ public class HealthPlayerComponent : MonoBehaviour
 
     public HitEffectHighLight m_HitEffectHighLight;
     // Start is called before the first frame update
+
+    private CharacterProfile m_Profil;
+
     void Start()
     {
         InitializedHealthData();
+
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        m_Profil = this.GetComponent<CharacterProfile>();
+        AugmenteMaxHealth((int)m_Profil.stats.baseStat.healthMax);
         m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out colorAdjustments);
@@ -120,11 +127,11 @@ public class HealthPlayerComponent : MonoBehaviour
         {
             if (Time.time - m_timeLastHit < timeVignetteFeedbackActive)
             {
-                vignette.opacity.value = evolutionVignetteOverTime.Evaluate(Time.time - m_timeLastHit);
+                vignette.intensity.value = evolutionVignetteOverTime.Evaluate(Time.time - m_timeLastHit);
             }
             else
             {
-                vignette.opacity.value = 0;
+                vignette.intensity.value = 0;
                 m_isFeedbackHitActive = false;
             }
         }
@@ -158,11 +165,12 @@ public class HealthPlayerComponent : MonoBehaviour
 
         GlobalSoundManager.PlayOneShot(29, transform.position);
         m_isFeedbackHitActive = true;
-        if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
+        if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); m_timeLastHit = Time.time; }
         StartInvulnerability(attackDamageInfo.bIsHeavy);
 
         vignette.intensity.value = 0.35f;
-        if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - attackDamageInfo.damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
+        int damage = attackDamageInfo.damage - m_Profil.stats.baseStat.armor;
+        if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
         {
             ActiveSlowEffect(1.5f, m_CurrentQuarter);
             m_CurrentQuarter -= 1;
@@ -171,12 +179,13 @@ public class HealthPlayerComponent : MonoBehaviour
         }
         else
         {
-            m_CurrentHealth -= attackDamageInfo.damage;
+            m_CurrentHealth -= damage;
         }
 
         if (OnDamage != null) OnDamage.Invoke(attackDamageInfo);
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
         if (attackDamageInfo.bIsHeavy)
         {
             m_characterMouvement.SetKnockback(attackDamageInfo.position, 100);
@@ -227,6 +236,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
         m_CurrentHealth = m_MaxHealthQuantity; ;
         m_isLightInvulnerable = false;
     }
@@ -235,17 +245,31 @@ public class HealthPlayerComponent : MonoBehaviour
     {
         m_MaxHealthQuantity += quantity;
         m_CurrentHealth += quantity;
-        InitializedHealthData();
+        m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
+
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
+        //InitializedHealthData();
     }
 
     public void RestoreQuarter()
     {
         if (m_QuarterHealthQuantity == 0 || m_QuarterNumber == 0) return;
 
-        int indexQuarter = (int)(m_CurrentHealth) / (int)(m_QuarterHealthQuantity);
-        m_CurrentHealth = Mathf.Clamp((indexQuarter + 1) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
-        m_CurrentQuarter = Mathf.Clamp((indexQuarter + 1), 0, 4);
+        int indexQuarter = 4;
+        if (m_CurrentHealth % m_QuarterHealthQuantity == 0)
+        {
+            indexQuarter = (int)m_CurrentHealth / (int)m_QuarterHealthQuantity;
+        }
+        else
+        {
+            indexQuarter = Mathf.RoundToInt((m_CurrentHealth) / (m_QuarterHealthQuantity) + 0.5f);
+        }
+        
+        m_CurrentHealth = Mathf.Clamp((indexQuarter ) * m_QuarterHealthQuantity, 0, m_MaxHealthQuantity);
+        m_CurrentQuarter = Mathf.Clamp((indexQuarter), 0, 4);
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
     }
 
 
@@ -256,6 +280,7 @@ public class HealthPlayerComponent : MonoBehaviour
         m_CurrentHealth = m_MaxHealthQuantity;
         m_CurrentQuarter = 4;
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
     }
 
 

@@ -73,6 +73,7 @@ namespace Render.Camera
         // -- Test Camera Zoom ---- 
 
         [Header("Camera Zoom parameter")]
+        public bool isZoomActive;
         [SerializeField] private float m_maxDistance = 10;
         [SerializeField] private float m_minDistance = 2;
         [SerializeField] private Vector3 m_maxAngle;
@@ -113,6 +114,8 @@ namespace Render.Camera
         [SerializeField] private float m_gamepadSensibility = 1.0f;
         [SerializeField] private float m_maxAngularSpeed = 360;
 
+        [SerializeField] private float m_sensibility = 0.8f;
+        [SerializeField] private float m_angleSpeed = 1f;
         // ------------------------------
 
 
@@ -243,7 +246,8 @@ namespace Render.Camera
 
         private void UpdateZoomValue(float sensibility)
         {
-            m_inputZoomValue = sensibility * m_zoomInputGamepad;
+            if (!isZoomActive) return;
+            m_inputZoomValue = (sensibility * m_zoomInputGamepad) * m_angleSpeed;
             if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
 
             if (m_isDezoomingAutomatily) return;
@@ -256,15 +260,24 @@ namespace Render.Camera
             else cameraMode = CameraMode.HIGH_VIEW;
         }
 
+
+        public void ResetZoom()
+        {
+            m_baseAngle = m_maxAngle;
+            m_distanceToTarget = m_maxDistance;
+            //isZoomActive = false;
+            m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
+            m_currentLerpValue = 0;
+        }
+
         private void CameraZoom()
         {
+            if (!isZoomActive) return;
 
             if (IsGamepad())
             {
                 UpdateZoomValue(m_gamepadZoomSensibility);
             }
-
-
 
             m_prevSlopeAngle = m_slopeAngle;
             float angle = playerMove.GetSlope();
@@ -317,7 +330,7 @@ namespace Render.Camera
             return Vector3.SignedAngle(rotTest * Vector3.forward, direction, Vector3.right);
         }
 
-        IEnumerator DeZoomCamera()
+        public IEnumerator DeZoomCamera()
         {
 
             // Setup a bool 
@@ -330,6 +343,7 @@ namespace Render.Camera
                 yield return Time.deltaTime;
             }
             m_isDezoomingAutomatily = false;
+            isZoomActive = false;
             //Reset bool
 
         }
@@ -419,11 +433,11 @@ namespace Render.Camera
 
                 if (!IsGamepad())
                 {
-                    m_mouseDeltaValue = value * m_mouseSensibility * ctx.ReadValue<float>();
+                    m_mouseDeltaValue = value * (m_mouseSensibility * m_sensibility) * ctx.ReadValue<float>();
                 }
                 else
                 {
-                    m_mouseDeltaValue = value * m_gamepadSensibility * ctx.ReadValue<float>();
+                    m_mouseDeltaValue = value * (m_gamepadSensibility * m_sensibility) * ctx.ReadValue<float>();
                     //Debug.Log("Is gamepad ");
 
                 }
@@ -441,6 +455,7 @@ namespace Render.Camera
 
         }
 
+        
         public void RotationMouseInput(InputAction.CallbackContext ctx)
         {
             if (ctx.performed && m_mouseInputActivate)
@@ -660,7 +675,15 @@ namespace Render.Camera
             transform.rotation = Quaternion.Euler(m_finalRotation);
         }
 
+        public void UpdateSettingRotationSpeed(float sensibility)
+        {
+            m_sensibility = sensibility;
+        }
 
+        public void UpdateSettingAngleSpeed(float angleSpeed)
+        {
+            m_angleSpeed = angleSpeed;
+        }
         public void OnDrawGizmosSelected()
         {
             Gizmos.DrawRay(hitPoint, normalDebug * 100);

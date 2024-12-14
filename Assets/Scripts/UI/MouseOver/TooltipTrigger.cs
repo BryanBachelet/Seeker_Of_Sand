@@ -27,6 +27,8 @@ namespace GuerhoubaGames.UI
         private IEnumerator m_coroutine;
         private RectTransform m_rectTransform;
 
+        public bool IsActive;
+
         public void Start()
         {
 
@@ -35,6 +37,8 @@ namespace GuerhoubaGames.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (!IsActive) return;
+
             if (OnEnter != null) OnEnter.Invoke();
             if (OnEnterData != null) OnEnterData.Invoke(tooltipEventData);
             m_coroutine = DelayCall(delay);
@@ -51,6 +55,8 @@ namespace GuerhoubaGames.UI
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (!IsActive || m_coroutine == null) return;
+
             StopCoroutine(m_coroutine);
             TooltipManager.Hide();
         }
@@ -84,6 +90,8 @@ namespace GuerhoubaGames.UI
 
         public void OnPointerMove(PointerEventData eventData)
         {
+            if (!IsActive) return;
+
             TooltipPositionData positionData = CreatePositionData();
             TooltipManager.SetTooltipPosition(positionData);
         }

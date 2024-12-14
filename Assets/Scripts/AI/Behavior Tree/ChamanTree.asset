@@ -15,7 +15,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 983b59092286f1744bf3c1c8c16d377e
-  position: {x: -60, y: 43}
+  position: {x: -76, y: -80}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -24,7 +24,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   description: 
   debugTest: 0
-  child: {fileID: 3081783115986495459}
+  child: {fileID: -775808222602319768}
 --- !u!114 &-4668390444382942211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +135,33 @@ MonoBehaviour:
   indexAttack: 1
   sequenceIndex: 0
   activeDebug: 0
+--- !u!114 &-775808222602319768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7db9ee69f758ec47b1b299b37a5654a, type: 3}
+  m_Name: SequenceNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 49cc641a3360677458689c4cead78c4f
+  position: {x: -210, y: 49}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  debugTest: 0
+  children:
+  - {fileID: 8396837473259613921}
+  - {fileID: 3081783115986495459}
 --- !u!114 &-416102622538462825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,6 +273,8 @@ MonoBehaviour:
   - {fileID: 1059532999894563990}
   - {fileID: -4077887787872587247}
   - {fileID: -1847149919375220138}
+  - {fileID: 8396837473259613921}
+  - {fileID: -775808222602319768}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -344,7 +373,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: b67b57f3013d3e04981d359e6a349db8
-  position: {x: -60, y: 185}
+  position: {x: -60, y: 181.5}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}
@@ -430,3 +459,28 @@ MonoBehaviour:
   description: 
   debugTest: 0
   stopDistance: 60
+--- !u!114 &8396837473259613921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ded15832379dd8429d3c3b765a57c7d, type: 3}
+  m_Name: WaitNode
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 5db0d5d6ab3398c4aa6ac35d31a31bbe
+  position: {x: -285, y: 182}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+    moveToObject: {fileID: 0}
+    IsSpecialCapacityCall: 0
+    indexSpecialCapacityCall: 0
+  agent: {fileID: 0}
+  description: 
+  debugTest: 0
+  duration: 2

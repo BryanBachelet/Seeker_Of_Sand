@@ -8,7 +8,7 @@ public class UI_Inventory : MonoBehaviour
 {
     public bool isOpen;
     public GameObject inventoryContainer;
-
+    public UIDispatcher dispatcher;
 
     private MarchandUiView m_marchandUiView;
     private CristalInventory m_cristalInventory;
@@ -23,6 +23,7 @@ public class UI_Inventory : MonoBehaviour
 
     private Character.CharacterSpellBook m_characterSpellBool;
     private Character.CharacterShoot m_characterShoot;
+    private CharacterArtefact m_characterArtefact;
     private UI_Fragment_Tooltip m_fragmentToolTip;
 
     #region Resources variables
@@ -33,27 +34,25 @@ public class UI_Inventory : MonoBehaviour
 
     #region Objects variables
 
-    public List<Image> fragmentHold = new List<Image>();
-    public List<Image> fragmentTypeBackground = new List<Image>();
-    public List<Image> fragmentRarityTier = new List<Image>();
-    public List<TMP_Text> fragmentName = new List<TMP_Text>();
-    public List<Image> fragmentElement = new List<Image>();
-    public List<Image> bandeauFragmentName = new List<Image>();
-    public List<ArtefactsInfos> fragmentInfo = new List<ArtefactsInfos>();
-    public List<TooltipTrigger> tooltipFragment = new List<TooltipTrigger>();
-    public List<Image> spellNotUsedHold = new List<Image>();
-    public List<CapsuleProfil> spellNotUsedProfil = new List<CapsuleProfil>();
-
-    public Sprite[] backgroundElement = new Sprite[4];
-    public Sprite[] rarityCadre = new Sprite[3];
-    public Sprite[] iconElement = new Sprite[4];
+    public FragmentUIView[] fragmentUIViews = new FragmentUIView[0];
     #endregion
 
     #region Spell variables
     public List<Image> spellUse = new List<Image>();
+    public List<Image> cadreSpellUse = new List<Image>();
+    [SerializeField] private Sprite[] spell_rarityCadre = new Sprite[4];
     public List<CapsuleProfil> spellProfil = new List<CapsuleProfil>();
     #endregion
 
+    #region Profil variables
+    [SerializeField] private TMP_Text m_healthBonusText;
+    [SerializeField] private TMP_Text m_speedBonusText;
+    [SerializeField] private TMP_Text m_damageBonusText;
+    [SerializeField] private TMP_Text m_armorBonusText;
+
+    #endregion
+    // Avoid the close and t
+    private bool IsNextCallDelay;
     public void InitComponent()
     {
         if (m_marchandUiView != null) return;
@@ -62,6 +61,7 @@ public class UI_Inventory : MonoBehaviour
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
         m_characterSpellBool = GameState.s_playerGo.GetComponent<Character.CharacterSpellBook>();
         m_characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
+        m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
         m_fragmentToolTip = GameState.m_uiManager.GetComponent<UI_Fragment_Tooltip>();
     }
 
@@ -74,13 +74,14 @@ public class UI_Inventory : MonoBehaviour
         m_characterShoot.hasShootBlock = true;
     }
 
-    public void DeactivateInventoryInterface()
+    public void DeactivateInventoryInterface(bool delayNextInput = false)
     {
         if (!isOpen) return;
 
         isOpen = false;
         inventoryContainer.SetActive(isOpen);
         m_characterShoot.hasShootBlock = false;
+        IsNextCallDelay = delayNextInput;
     }
 
 
@@ -99,15 +100,27 @@ public class UI_Inventory : MonoBehaviour
         }
 
         Sprite[] spellSprite = m_characterShoot.GetSpellSprite();
+        int[] spellLevel = m_characterShoot.GetSpellLevel();
         for (int i = 0; i < spellSprite.Length && i < 4; i++)
         {
             spellUse[i].sprite = spellSprite[i];
+            cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i] / 4)];
         }
+        CharacterStat stat = CharacterProfile.instance.stats;
+        m_healthBonusText.text = ": " + stat.baseStat.healthMax;
+        m_speedBonusText.text = ": " + stat.baseStat.speed;
+        m_damageBonusText.text = ": " + stat.baseStat.damage;
+        m_armorBonusText.text = ": " + stat.baseStat.armor;
+
     }
 
     public void OpenInventory()
     {
-
+        if (IsNextCallDelay)
+        {
+            IsNextCallDelay = false;
+            return;
+        }
         if (!inventoryContainer.activeSelf)
         {
             ActualizeInventory();
@@ -127,42 +140,9 @@ public class UI_Inventory : MonoBehaviour
 
     public void SetupFragmentImage(UI_Fragment_Tooltip fragmentInfo, int index)
     {
-        fragmentHold[index].sprite = m_fragmentToolTip.imageFragmentTooltip[index].sprite;
-        tooltipFragment[index].name = m_fragmentToolTip.tooltipTrigger[index].name;
-        tooltipFragment[index].content = m_fragmentToolTip.tooltipTrigger[index].content;
-        int GameElementIndex = (int)fragmentInfo.fragmentInfo[index].gameElement;
-        fragmentTypeBackground[index].sprite = backgroundElement[GameElementIndex];
-        fragmentElement[index].sprite = iconElement[GameElementIndex];
-       //if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.WATER)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[0];
-       //    fragmentElement[index].sprite = iconElement[0];
-       //}
-       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.AIR)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[1];
-       //    fragmentElement[index].sprite = iconElement[1];
-       //}
-       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.FIRE)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[2];
-       //    fragmentElement[index].sprite = iconElement[2];
-       //}
-       //else if (fragmentInfo.fragmentInfo[index].gameElement == GuerhoubaGames.GameEnum.GameElement.EARTH)
-       //{
-       //    fragmentTypeBackground[index].sprite = backgroundElement[3];
-       //    fragmentElement[index].sprite = iconElement[3];
-       //}
-        fragmentRarityTier[index].sprite = rarityCadre[0];
-        fragmentName[index].text = fragmentInfo.fragmentInfo[index].nameArtefact;
-        fragmentHold[index].gameObject.SetActive(true);
-        fragmentTypeBackground[index].gameObject.SetActive(true);
-        fragmentRarityTier[index].gameObject.SetActive(true);
-        fragmentName[index].gameObject.SetActive(true);
-        fragmentElement[index].gameObject.SetActive(true);
-        bandeauFragmentName[index].gameObject.SetActive(true);
-        //if(fragmentInfo.)
-        //fragmentTypeBackground[index].sprite
+        fragmentUIViews[index].gameObject.SetActive(true);
+        fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
+
     }
 
 
@@ -220,7 +200,7 @@ public class UI_Inventory : MonoBehaviour
 
     public void UpdateTradeDisplay()
     {
-        for(int i = 0; i < m_cristalInventory.cristalCount.Length; i++)
+        for (int i = 0; i < m_cristalInventory.cristalCount.Length; i++)
         {
             if (m_panierTrade[i] == 0)
             {

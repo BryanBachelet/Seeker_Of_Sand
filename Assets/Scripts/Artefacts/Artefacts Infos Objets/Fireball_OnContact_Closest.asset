@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760a9665818b09741bdde9dd1c22f65e, type: 3}
   m_Name: Fireball_OnContact_Closest
   m_EditorClassIdentifier: 
-  spawnRate: 30
+  spawnRatePerTier:
+  - 10
+  - 20
+  - 35
   radius: 30
   gameElement: 2
   conditionsTrigger: 2
@@ -20,9 +23,20 @@ MonoBehaviour:
   entitiesTargetSystem: 1
   m_artefactToSpawn: {fileID: 8999001311434822968, guid: 8b9adfaae154d724ea91d4ea26e83668,
     type: 3}
+  m_artefactProjectile: {fileID: 0}
   characterGo: {fileID: 0}
   icon: {fileID: 21300000, guid: acb51689de89774469213b5532b66d82, type: 3}
   description: <u>On contact</u>, character have a chance to launch a <#E35546>Fire
     ball <#16130D> on <u>another enemy around</u>
   nameArtefact: 
   isDebugActive: 0
+  descriptionResult: <u>On contact</u>, character have a chance to launch a <#E35546>Fire
+    ball <#16130D> on <u>another enemy around</u>
+  activationCount: 0
+  maxProc: 10
+  damageArtefact: 1
+  isReinforceFeatureActivate: 1
+  additionialItemCount: 0
+  damageGainPerCount: 1
+  isUpgradeFeactureActive: 0
+  levelTierFragment: 0

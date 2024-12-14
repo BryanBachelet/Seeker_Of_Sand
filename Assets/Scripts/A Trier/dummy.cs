@@ -140,7 +140,8 @@ public class dummy : MonoBehaviour
     public void ReceiveDamage(float damage, Vector3 direction, float power, int element)
     {
         // VfX feedback
-        m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f, damage, element);
+        Vector3 positionOnScreen = transform.position;
+        m_healthManager.CallDamageEvent(positionOnScreen, damage, element);
         Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
         //m_entityAnimator.SetTrigger("TakeDamage");
         GlobalSoundManager.PlayOneShot(12, transform.position);

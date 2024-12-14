@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaTools;
 using GuerhoubaGames.Resources;
+using SeekerOfSand.Tools;
 
 public class CharacterArtefact : MonoBehaviour
 {
@@ -109,7 +110,19 @@ public class CharacterArtefact : MonoBehaviour
 
     public void AddArtefact(ArtefactsInfos artefacts)
     {
+        
+        // Verify if the player doesn't already the artefact
+        for (int i = 0; i < artefactsList.Count; i++)
+        {
+            if (artefactsList[i].AddAdditionalFragment(artefacts))
+            {
+                uiFragmentTooltip.UpdateFragmentStack(i, artefactsList[i].additionialItemCount +1);
+                return;
+            }
+        }
+
         ArtefactsInfos clone = artefacts.Clone();
+
         artefactsList.Add(clone);
 
         CreatePull(clone);
@@ -139,7 +152,7 @@ public class CharacterArtefact : MonoBehaviour
 
     public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
     {
-        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefacts.gameElement], transform.position, transform.rotation);
+        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
         newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
         artefactAround_List.Add(newArtefactAround);
 

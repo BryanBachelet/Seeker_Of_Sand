@@ -76,7 +76,7 @@ namespace Enemies
         {
             attackComponent.ResetComponent();
 
-           
+            transform.rotation = Quaternion.identity;
             if(behaviorTreeComponent.isFirstSpawn)
             {
                 behaviorTreeComponent.Init();
@@ -95,11 +95,6 @@ namespace Enemies
 
             if (behaviorTreeComponent)
             {
-                if(type==EnemyType.CHAMAN)
-                {
-
-                    Debug.Log("Test");
-                }
 
                 behaviorTreeComponent.isActivate = false;
                 

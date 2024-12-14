@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class RandomPropsByElement : MonoBehaviour
 {
-    public GameObject[] rndLargeDecorElement;
+    [SerializeField] private GameObject[] rndLargeDecorElement;
     [Range(0,100)]
     public int probability = 25; //Probability
 
-    public Vector3 rotation;
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        //Transform[] gameObjectChild = transform.GetComponentsInChildren<Transform>();
+        //rndLargeDecorElement = new GameObject[gameObjectChild.Length];
+        //for(int i = 0; i < gameObjectChild.Length; i++)
+        //{
+        //    rndLargeDecorElement[i] = gameObjectChild[i].gameObject;
+        //}
+        GenerateRandomLargeElement();
+
     }
 
     // Update is called once per frame
@@ -43,6 +50,6 @@ public class RandomPropsByElement : MonoBehaviour
 
     private void OnEnable()
     {
-        GenerateRandomLargeElement();
+
     }
 }

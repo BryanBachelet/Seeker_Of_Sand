@@ -35,9 +35,9 @@ public class Mine : ProjectileExplosif
         }
     }
 
-    public override void SetProjectile(ProjectileData data)
+    public override void SetProjectile(ProjectileData data, CharacterProfile charaProfil)
     {
-        base.SetProjectile(data);
+        base.SetProjectile(data, charaProfil);
 
         if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
         {
@@ -148,7 +148,7 @@ public class Mine : ProjectileExplosif
 
                 if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) continue;
                 DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-                enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power, (int)m_characterShoot.lastElement);
+                enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.instance.stats.baseStat.damage);
             }
             else if (enemies[i].tag == "Cristal")
             {

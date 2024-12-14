@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using System;
+
+[System.Serializable]
+public class CustomArrayName : PropertyAttribute
+{
+    public readonly string nametest;
+    public CustomArrayName(string names) { nametest = names; }
+}
+
+
 namespace Artefact
 {
     public class ArtefactData : MonoBehaviour
@@ -13,7 +22,9 @@ namespace Artefact
         [HideInInspector] public float radius;
         [HideInInspector] public CharacterObjectType objectType = CharacterObjectType.FRAGMENT;
         [HideInInspector] public string nameArtefact;
-        [HideInInspector] public int element;
+        [HideInInspector] public int elementIndex;
+        [HideInInspector] public GameElement element;
+        [HideInInspector] public int damageToApply;
         public Action OnSpawn;
     }
 }

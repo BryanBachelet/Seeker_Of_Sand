@@ -31,6 +31,7 @@ public class DamageHealthFD : MonoBehaviour
         m_active = true;
 
         gameObject.SetActive(true);
+        m_animation.SetTrigger("SendDamage");
         gameObject.transform.position = position;
         gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
         m_text.text = damage.ToString("F0");
@@ -56,6 +57,7 @@ public class DamageHealthFD : MonoBehaviour
         m_animationTimer = 0;
 
         gameObject.SetActive(false);
+        m_animation.ResetTrigger("SendDamage");
         gameObject.transform.position = m_startPosition;
 
         healthManager.FinishDamageEvent(this);

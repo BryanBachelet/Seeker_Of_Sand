@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760a9665818b09741bdde9dd1c22f65e, type: 3}
   m_Name: Fire_Veil
   m_EditorClassIdentifier: 
-  spawnRate: 10
+  spawnRatePerTier:
+  - 5
+  - 10
+  - 23
+  - 40
   radius: 30
-  gameElement: 3
+  gameElement: 4
   conditionsTrigger: 2
   entitiesTrigger: 0
   entitiesTargetSystem: 0
@@ -24,9 +28,19 @@ MonoBehaviour:
     type: 3}
   characterGo: {fileID: 0}
   icon: {fileID: 21300000, guid: 60e25db72ad0a29418806706e3970c7d, type: 3}
-  description: <b><#2f92ff>On-Contact<#FFFFFF></b> <b>of an enemy</b> + 10<u>% chance
-    to</u> <i>create</i> Fireball</i> on <b>Enemy Hit </b>
+  description: <b><#2f92ff>On-Contact<#FFFFFF></b> <b>of an enemy</b> + {p}<u>% chance
+    to</u> <i>create</i> Fireball</i> on <b>Enemy Hit </b> <br><size=80%><color=#BABABA>(Stack
+    increase damage) <br>(Upgrade increase probability)
   nameArtefact: Fire Veil
   isDebugActive: 0
+  descriptionResult: <b><#2f92ff>On-Contact<#FFFFFF></b> <b>of an enemy</b> + 5<u>%
+    chance to</u> <i>create</i> Fireball</i> on <b>Enemy Hit </b> <br><size=80%><color=#BABABA>(Stack
+    increase damage) <br>(Upgrade increase probability)
   activationCount: 0
   maxProc: 10
+  damageArtefact: 1
+  isReinforceFeatureActivate: 1
+  additionialItemCount: 0
+  damageGainPerCount: 1
+  isUpgradeFeactureActive: 1
+  levelTierFragment: 0

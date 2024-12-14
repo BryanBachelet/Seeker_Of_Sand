@@ -6,6 +6,7 @@ using SpellSystem;
 using TMPro;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 
 public class ChooseSpellManager : MonoBehaviour
 {
@@ -177,7 +178,7 @@ public class ChooseSpellManager : MonoBehaviour
             newSpell[i].tagData.element = spellManager.spellProfils[randomSpellToChoose[i]].tagData.element;
             nextSpellName[i] = newSpell[i].name;
             textObject[i].text = nextSpellName[i];
-            int indexVFX = (int)newSpell[i].tagData.element - 1;
+            int indexVFX = (int)GeneralTools.GetElementalArrayIndex( newSpell[i].tagData.element);
             indexVFX = Mathf.Clamp(indexVFX, 0, 100);
             GameObject lastVFx = Instantiate(vfxChooseSpell[indexVFX], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
@@ -219,6 +220,7 @@ public class ChooseSpellManager : MonoBehaviour
     public void Choose(int indexChoice)
     {
         ActivateChoiceAnimation();
+        GlobalSoundManager.PlayOneShot(31, Vector3.zero);
         for (int i = 0; i < vfxHolder.Length; i++)
         {
             if (i != indexChoice)
@@ -256,6 +258,7 @@ public class ChooseSpellManager : MonoBehaviour
         }
         spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
         iconSpell.sprite = newSpell[spellIndex].spell_Icon;
+        GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         //description.text = popup.des
     }
 

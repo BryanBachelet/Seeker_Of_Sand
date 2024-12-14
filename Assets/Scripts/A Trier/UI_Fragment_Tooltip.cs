@@ -4,6 +4,8 @@ using UnityEngine;
 using GuerhoubaGames.UI;
 using UnityEngine.UI;
 using GuerhoubaGames.GameEnum;
+using TMPro;
+using SeekerOfSand.Tools;
 public class UI_Fragment_Tooltip : MonoBehaviour
 {
     public List<GameObject> fragment_List = new List<GameObject>();
@@ -15,10 +17,15 @@ public class UI_Fragment_Tooltip : MonoBehaviour
     [HideInInspector] public List<Image> imageFragmentTooltip = new List<Image>();
     [HideInInspector] public List<Image> fragmentTypeBackground = new List<Image>();
     [HideInInspector] public List<Image> fragmentRarity = new List<Image>();
-    [HideInInspector] public List<TMPro.TMP_Text> fragmentName = new List<TMPro.TMP_Text>();
+    [HideInInspector] public List<TMP_Text> fragmentName = new List<TMPro.TMP_Text>();
     [HideInInspector] public List<ArtefactsInfos> fragmentInfo = new List<ArtefactsInfos>();
+    [HideInInspector] private List<TMP_Text> fragmentCount = new List<TMP_Text>();
 
     public int currentFragmentNumber = 0;
+
+    public Color[] colorOutlineByElement = new Color[5]; //Color by GameElement
+
+    private CharacterArtefact m_characterArtefact;
     // Start is called before the first frame update
     void Awake()
     {
@@ -28,48 +35,42 @@ public class UI_Fragment_Tooltip : MonoBehaviour
             {
                 tooltipTrigger.Add(fragment_List[i].GetComponent<TooltipTrigger>());
                 imageFragmentTooltip.Add(fragment_List[i].GetComponent<Image>());
+                fragmentCount.Add(fragment_List[i].GetComponentInChildren<TMP_Text>());
             }
         }
+
+
+      
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
+        m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
 
     }
 
     public void AddNewFragment(ArtefactsInfos artefactInfo)
     {
-        if (!fragment_List[currentFragmentNumber].activeSelf)
-        {
-            fragment_List[currentFragmentNumber].SetActive(true);
-        }
-        fragmentInfo.Add(artefactInfo);
+
         tooltipTrigger[currentFragmentNumber].header = artefactInfo.nameArtefact;
-        tooltipTrigger[currentFragmentNumber].content = artefactInfo.description;
+        tooltipTrigger[currentFragmentNumber].content = artefactInfo.descriptionResult;
+        tooltipTrigger[currentFragmentNumber].OnEnterData += UpdateDescription;
 
-
-        //if (artefactInfo.gameElement == GameElement.AIR)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[0];
-        //}
-        //else if (artefactInfo.gameElement == GameElement.WATER)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[1];
-        //}
-        //else if (artefactInfo.gameElement == GameElement.EARTH)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[2];
-        //}
-        //else if (artefactInfo.gameElement == GameElement.FIRE)
-        //{
-        //    imageFragmentTooltip[currentFragmentNumber].sprite = spriteType[3];
-        //}
         imageFragmentTooltip[currentFragmentNumber].sprite = artefactInfo.icon;
+        imageFragmentTooltip[currentFragmentNumber].gameObject.SetActive(true);
         SelectElement(fragment_List[currentFragmentNumber], artefactInfo);
         currentFragmentNumber += 1;
     }
 
+    public void UpdateFragmentStack(int indexFragment, int stackNumber)
+    {
+        fragmentCount[indexFragment].text = "x<size=180%>" + stackNumber;
+    }
+
+    public void UpdateDescription(TooltipEventData data)
+    {
+        tooltipTrigger[data.index].content = m_characterArtefact.artefactsList[data.index].descriptionResult;
+    }
     public void RemoveFragment(int index)
     {
         for (int i = index; i < currentFragmentNumber-1; i++)
@@ -77,59 +78,19 @@ public class UI_Fragment_Tooltip : MonoBehaviour
             tooltipTrigger[i].header = tooltipTrigger[i+1 ].header;
             tooltipTrigger[i].content = tooltipTrigger[i + 1].content;
             imageFragmentTooltip[i].sprite = imageFragmentTooltip[i + 1].sprite;
-
         }
 
-        if (fragment_List[currentFragmentNumber].activeSelf)
-        {
-            fragmentInfo.RemoveAt(index);
-            fragment_List[currentFragmentNumber].SetActive(false);
-        }
+
 
         currentFragmentNumber--;
     }
 
     public void SelectElement(GameObject artefactObject, ArtefactsInfos artefactInfo)
     {
-
-        if(artefactInfo.gameElement == GameElement.WATER)
-        {
-            GameObject artefactElement = artefactObject.transform.GetChild(0).gameObject;
-            artefactElement.SetActive(true);
-            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-            artefactObject.transform.GetChild(1).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(2).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(3).gameObject.SetActive(false);
-        }
-        else if (artefactInfo.gameElement == GameElement.AIR)
-        {
-            GameObject artefactElement = artefactObject.transform.GetChild(1).gameObject;
-            artefactElement.SetActive(true);
-            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-            artefactObject.transform.GetChild(0).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(2).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(3).gameObject.SetActive(false);
-
-        }
-        else if (artefactInfo.gameElement == GameElement.FIRE)
-        {
-            GameObject artefactElement = artefactObject.transform.GetChild(2).gameObject;
-            artefactElement.SetActive(true);
-            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-            artefactObject.transform.GetChild(0).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(1).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(3).gameObject.SetActive(false);
-
-        }
-        else if (artefactInfo.gameElement == GameElement.EARTH)
-        {
-            GameObject artefactElement = artefactObject.transform.GetChild(3).gameObject;
-            artefactElement.SetActive(true);
-            artefactElement.GetComponent<Image>().sprite = artefactInfo.icon;
-            artefactObject.transform.GetChild(0).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(1).gameObject.SetActive(false);
-            artefactObject.transform.GetChild(2).gameObject.SetActive(false);
-
-        }
+        Image artefactElement = artefactObject.transform.GetChild(0).gameObject.GetComponent<Image>();
+        artefactElement.gameObject.SetActive(true);
+        artefactElement.sprite = artefactInfo.icon;
+        artefactElement.color = colorOutlineByElement[GeneralTools.GetElementalArrayIndex( artefactInfo.gameElement,true)];
+        
     }
 }

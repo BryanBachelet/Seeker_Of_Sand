@@ -6,10 +6,15 @@ using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.AI;
+using Render.Camera;
+
+
+
 
 public class RoomManager : MonoBehaviour
 {
-    private const float distanceBeforeActivatingRooom = 30;
+    [SerializeField] private float distanceBeforeActivatingRooom = 30;
     public GameElement element = 0; 
 
 
@@ -26,15 +31,15 @@ public class RoomManager : MonoBehaviour
     public bool isTimingPassing;
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
+    [HideInInspector] public int terrainIndex;
 
     public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
 
-    public Enemies.EnemyManager m_enemyManager;
+    [HideInInspector] public Enemies.EnemyManager m_enemyManager;
     public bool isRoomHasBeenValidate = true;
     private bool isTeleporterActive = true;
-    [SerializeField] private Chosereward choserewardRef;
-    public TerrainGenerator terrainGenerator;
+    [HideInInspector] public TerrainGenerator terrainGenerator;
 
     [HideInInspector] public RoomInfoUI roomInfoUI;
 
@@ -59,8 +64,8 @@ public class RoomManager : MonoBehaviour
     private GameObject playerGO;
 
     private bool rewardGenerated = false;
-    public TerrainDropGeneration dropGenerator;
-    public BossRoom bossRoom;
+    [HideInInspector] public TerrainDropGeneration dropGenerator;
+    [HideInInspector] public BossRoom bossRoom;
     public bool isRoomHasBeenDeactivated;
 
     private DateTime m_startRoomChallengeTime;
@@ -74,6 +79,9 @@ public class RoomManager : MonoBehaviour
     private Character.CharacterUpgrade m_characterUpgrade;
 
     static public int enemyMaxSpawnInRoon;
+
+    private NavMeshData m_navMesh;
+    private CameraBehavior m_cameraBehavior;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -96,6 +104,10 @@ public class RoomManager : MonoBehaviour
         {
             m_characterUpgrade = playerGO.GetComponent<Character.CharacterUpgrade>();
         }
+        if(m_cameraBehavior == null)
+        {
+            m_cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
+        }
 
 
 
@@ -117,7 +129,7 @@ public class RoomManager : MonoBehaviour
 
         if (isActiveStartRotation)
         {
-            Camera.main.GetComponent<Render.Camera.CameraBehavior>().SetupCamaraAnglge(spawnAngle);
+            m_cameraBehavior.SetupCamaraAnglge(spawnAngle);
         }
         currentCountOfEnemy = 0;
         m_isStartActivation = true;
@@ -133,18 +145,22 @@ public class RoomManager : MonoBehaviour
         //if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
         //else
         m_enemyManager.isStopSpawn = true;
-
+        //m_cameraBehavior.ResetZoom();
         SetupRoomType();
         previewCamera.gameObject.SetActive(false);
     }
 
     public void ActivateRoomAfterDistanceTP()
     {
+        NavMeshHit hit;
+        Vector3 playerPos = playerGO.transform.position;
+        if (!NavMesh.SamplePosition(playerPos, out hit, 10, NavMesh.AllAreas)) return;
         if (currentRoomType == RoomType.Enemy && !m_isDistanceActivationDone && m_isStartActivation)
         {
             if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
             {
-                
+
+               
                 roomInfoUI.ActiveMajorGoalInterface();
                 m_startRoomChallengeTime = DateTime.Now;
                 baseRoomType = currentRoomType;
@@ -152,6 +168,7 @@ public class RoomManager : MonoBehaviour
                 {
                     m_enemyManager.OnDeathSimpleEvent += CountEnemy;
                     m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
+                    //m_cameraBehavior.isZoomActive = false;
                 }
                 m_isDistanceActivationDone = true;
 
@@ -217,20 +234,24 @@ public class RoomManager : MonoBehaviour
                 if (obj != null)
                 {
                     obj.ResetAltar();
-                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
-                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                    //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
+                    obj.eventElementType = element;
+                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                     enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
                     obj.roomInfoUI = roomInfoUI;
+                    roomInfoUI.UpdateTextProgression(obj.m_enemiesCountConditionToWin, obj.m_enemiesCountConditionToWin);
+
                 }
 
                 break;
             case RoomType.Enemy:
                 DeactivateAltar();
 
-                int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
-                enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
-                enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count);
+                //int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
+                //enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
+                enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
                 enemyMaxSpawnInRoon = enemyToKillCount;
+                roomInfoUI.UpdateTextProgression(enemyToKillCount, enemyToKillCount);
                 break;
             case RoomType.Boss:
                 DeactivateAltar();
@@ -253,7 +274,8 @@ public class RoomManager : MonoBehaviour
 
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
         {
-             playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+            if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+            else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
             ActivateTeleporters();
             isTeleporterActive = true;
         }
@@ -278,6 +300,7 @@ public class RoomManager : MonoBehaviour
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
         LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 
+        //m_cameraBehavior.isZoomActive = true;
     }
 
     #region Room Validation Functions

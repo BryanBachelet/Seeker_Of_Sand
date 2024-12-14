@@ -671,23 +671,28 @@ MonoBehaviour:
     rayLayerMask:
       serializedVersion: 2
       m_Bits: 0
+    radiusRaycastExplosion: 0
     indexCollider: 0
     indexProjectileGO: 0
     indexDecals: 0
   isGeneralAttackCooldownActive: 0
   baseCooldownAttack: 0
   attackCooldownReduction: 0
+  attackRandomThresholdValue: 0.5
   currentAttackState: 0
   isActiveDebug: 1
   raycastOffset: {x: 0, y: 0, z: 0}
   raycastHitPoint: {x: 0, y: 0, z: 0}
   isRaycastDebug: 0
+  frameCount: 10
+  firstPositionTarget: {x: 0, y: 0, z: 0}
   lagRaycastTargetTime: 0.5
   speedRaycast: 0
   variantePrecision: 0
   rangeVariante: 1
   isInAttackSequence: 0
   sequenceIndex: -1
+  DebugSpecificItem: 0
 --- !u!114 &4841692019479195601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -792,6 +797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   behaviorTree: {fileID: 11400000, guid: c5a2ddf53cd88934e8ffb58fb3fa64ee, type: 2}
   isActivate: 0
+  isFirstSpawn: 1
 --- !u!114 &8484841291473713859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5915,7 +5921,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: dd5bbb06227c18d4382e385db41510ba, type: 2}
+      objectReference: {fileID: 9100000, guid: f387112532a44f24d91ca5258be44c1a, type: 2}
     - target: {fileID: 7822865740799285458, guid: ef53d2138862a7f4a882dbcc668fdf83,
         type: 3}
       propertyPath: m_UpdateMode

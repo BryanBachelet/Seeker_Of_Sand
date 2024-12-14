@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.Resources;
+using SeekerOfSand.Tools;
 
 namespace Artefact
 {
     public class Ar_Fireball : MonoBehaviour
     {
-        public int m_damage;
         public float lifeTimeProjectile;
         public float speed;
         public int piercing;
@@ -36,9 +36,12 @@ namespace Artefact
         {
             m_characterShoot = m_artefactData.characterGo.GetComponent<Character.CharacterShoot>();
             radiusEffect = m_artefactData.radius;
+
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyHit) OnDirectTarget();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.EnemyRandomAround) AroundTargetRandom();
             if (m_artefactData.entitiesTargetSystem == EntitiesTargetSystem.ClosestEnemyAround) ClosestTarget();
+
+         
         }
 
 
@@ -104,13 +107,13 @@ namespace Artefact
             GameObject instance = GamePullingSystem.SpawnObject(fireBallGO, m_artefactData.characterGo.transform.position + posOffset , rot);
             ProjectileData data = new ProjectileData();
             data.direction = direction;
-            data.damage = m_damage;
+            data.damage = m_artefactData.damageToApply;
             data.life = lifeTimeProjectile;
             data.speed = speed;
             data.piercingMax = piercing;
             data.characterShoot = m_characterShoot;
             data.nameFragment = m_artefactData.nameArtefact;
-            data.element = m_artefactData.element;
+            data.element = GeneralTools.GetElementalArrayIndex( m_artefactData.element);
             
             data.objectType = GuerhoubaGames.GameEnum.CharacterObjectType.FRAGMENT;
             instance.GetComponent<Projectile>().SetFragmentDirectProjectile(data);

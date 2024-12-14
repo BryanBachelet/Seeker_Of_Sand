@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760a9665818b09741bdde9dd1c22f65e, type: 3}
   m_Name: Eclair_OnContact_Around
   m_EditorClassIdentifier: 
-  spawnRate: 30
+  spawnRatePerTier:
+  - 0
+  - 0
+  - 0
   radius: 30
   gameElement: 1
   conditionsTrigger: 2
@@ -20,9 +23,18 @@ MonoBehaviour:
   entitiesTargetSystem: 2
   m_artefactToSpawn: {fileID: 8999001311434822968, guid: 1230b915c5f039a4c8a7b2e88643a36a,
     type: 3}
+  m_artefactProjectile: {fileID: 0}
   characterGo: {fileID: 0}
   icon: {fileID: 21300000, guid: acb51689de89774469213b5532b66d82, type: 3}
   description: <u>On contact</u>, character have a chance to launch a <#D045E2>lighting
     strike <#16130D>on <u>another enemy around</u>
   nameArtefact: 
   isDebugActive: 0
+  activationCount: 0
+  maxProc: 10
+  damageArtefact: 1
+  isReinforceFeatureActivate: 1
+  additionialItemCount: 1
+  damageGainPerCount: 1
+  isUpgradeFeactureActive: 0
+  levelTierFragment: 0

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SpellSystem;
+using UnityEngine.VFX;
+using SeekerOfSand.Tools;
 namespace SeekerOfSand
 {
     namespace UI
@@ -36,10 +39,22 @@ namespace SeekerOfSand
             private float lastFillAmount = 0;
             private Color lastColor;
             private Sprite lastSprite;
+
+            public Animator upgradeScreenAnimator;
+            public GameObject tierUpEffect;
+            public Animator tierUpAnimation;
+            public VisualEffect[] vfxTierUp = new VisualEffect[4];
+            [GradientUsage(true)]
+            public Gradient[] gradient1vfx = new Gradient[4];
+            [GradientUsage(true)]
+            public Gradient[] gradient2vfx = new Gradient[4];
+            public MeshRenderer imgSpriteSpell;
+            private Material matSpell;
             void Start()
             {
                 m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
                 canalisationBarDisplay = m_canalisationBar.transform.parent.GetComponent<Animator>();
+                matSpell = imgSpriteSpell.material;
                 //InitStackingObjects();
                 m_level = 0;
             }
@@ -57,8 +72,61 @@ namespace SeekerOfSand
                 m_stackingText[index].text = value.ToString();
             }
 
-            public void UpdateLevelSpell(int index, int value)
+            public bool UpdateLevelSpell(int index, SpellProfil spellprofil)
             {
+                imgSpriteSpell.material = spellprofil.matToUse;
+                if (spellprofil.level == 4)
+                {
+                    tierUpEffect.SetActive(true);
+                    int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element,true);
+                    for (int i = 0; i < vfxTierUp.Length; i++)
+                    {
+                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[indexElement]);
+                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
+                    }
+                    tierUpAnimation.SetTrigger("UpgradeTo1");
+                    upgradeScreenAnimator.ResetTrigger("Reset");
+                    upgradeScreenAnimator.SetTrigger("TierUpActivation");
+                    GlobalSoundManager.PlayOneShot(59, Vector3.zero);
+                    return true;
+                }
+                else if (spellprofil.level == 8)
+                {
+                    tierUpEffect.SetActive(true);
+                    for (int i = 0; i < vfxTierUp.Length; i++)
+                    {
+                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
+                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
+                    }
+                    tierUpAnimation.SetTrigger("UpgradeTo2");
+                    upgradeScreenAnimator.ResetTrigger("Reset");
+                    upgradeScreenAnimator.SetTrigger("TierUpActivation");
+                    GlobalSoundManager.PlayOneShot(59, Vector3.zero);
+                    return true;
+                }
+                else if (spellprofil.level == 12)
+                {
+                    tierUpEffect.SetActive(true);
+                    for (int i = 0; i < vfxTierUp.Length; i++)
+                    {
+                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
+                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
+                    }
+                    tierUpAnimation.SetTrigger("UpgradeTo3");
+                    upgradeScreenAnimator.ResetTrigger("Reset");
+                    upgradeScreenAnimator.SetTrigger("TierUpActivation");
+                    GlobalSoundManager.PlayOneShot(59, Vector3.zero);
+                    return true;
+                }
+                else
+                {
+                    tierUpAnimation.ResetTrigger("UpgradeTo1");
+                    tierUpAnimation.ResetTrigger("UpgradeTo2");
+                    tierUpAnimation.ResetTrigger("UpgradeTo3");
+                    upgradeScreenAnimator.SetTrigger("Reset");
+                    upgradeScreenAnimator.ResetTrigger("TierUpActivation");
+                    return false;
+                }
                 //m_levelText[index].text = value.ToString();
             }
             public void UpdateStackingObjects(int[] value)

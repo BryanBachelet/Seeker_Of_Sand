@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
+using SeekerOfSand.Tools;
 
 public class RewardDistribution : MonoBehaviour
 {
@@ -26,7 +27,8 @@ public class RewardDistribution : MonoBehaviour
         rewardTypopologie.rewardType = rewardType;
         rewardTypopologie.healthReward = healthReward;
         rewardTypopologie.rewardDistribution = this;
-        rewardTypopologie.element = (int)roomElementColor;
+        rewardTypopologie.elementIndex = GeneralTools.GetElementalArrayIndex( roomElementColor,true);
+        rewardTypopologie.element = roomElementColor;
         isRewardSend = false;
     }
 

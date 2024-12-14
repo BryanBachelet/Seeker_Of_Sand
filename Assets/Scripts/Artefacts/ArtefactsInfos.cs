@@ -1,7 +1,10 @@
 using GuerhoubaGames.GameEnum;
 using UnityEngine;
 using GuerhoubaGames.Resources;
-using UnityEditor;
+using UnityEngine.Rendering.LookDev;
+using Unity.Collections;
+using Unity.VisualScripting;
+
 public enum ConditionsTrigger
 {
     OnHit,
@@ -28,8 +31,10 @@ public enum EntitiesTargetSystem
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Artefacts Info", order = 1)]
 public class ArtefactsInfos : ScriptableObject
 {
+    [CustomArrayName("Tier")]
     [Range(0, 100)]
-    public float spawnRate = 5;
+    public float[] spawnRatePerTier;
+
     public float radius = 30;
     public GameElement gameElement;
     public ConditionsTrigger conditionsTrigger;
@@ -45,19 +50,58 @@ public class ArtefactsInfos : ScriptableObject
     public string nameArtefact;
     public bool isDebugActive = false;
 
+    [TextArea]
+    public string descriptionResult;
+
+
+
     [HideInInspector] public int activationCount;
 
     private int proc = 0;
     public int maxProc = 10;
     private float lastTimeRefresh = 0;
 
+    public int damageArtefact = 1;
 
+    // Reinforcement Variables
+    [Header("ReInforce Feature Variables")]
+    public bool isReinforceFeatureActivate = true;
+    [HideInInspector] public int additionialItemCount = 0;
+    public int damageGainPerCount = 1;
 
+    [Header("Upgrade Feature Variables")]
+    public bool isUpgradeFeactureActive;
+    public LevelTier levelTierFragment;
 
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
         return clone;
+    }
+
+    public bool AddAdditionalFragment(ArtefactsInfos artefactInfos)
+    {
+        if (artefactInfos.nameArtefact != nameArtefact || !isReinforceFeatureActivate)
+        {
+            return false;
+        }
+
+        additionialItemCount++;
+        ResultString();
+        return true;
+    }
+
+    public bool UpgradeTierFragment()
+    {
+        if (!isUpgradeFeactureActive)
+        {
+            Debug.LogWarning("Tier Upgrade feature isn't active");
+            return false;
+        }
+        levelTierFragment++;
+        levelTierFragment = (LevelTier)Mathf.Clamp((int)levelTierFragment, 0, spawnRatePerTier.Length - 1);
+        ResultString();
+        return true;
     }
 
     public void ActiveArtefactOnHit(Vector3 position, EntitiesTrigger tag, GameObject objectPre, GameElement element)
@@ -68,11 +112,12 @@ public class ArtefactsInfos : ScriptableObject
 
 
         float change = Random.Range(0, 100.0f);
-        if (change < spawnRate)
+        float spawnRateValue = spawnRatePerTier[(int)levelTierFragment];
+        if (change < spawnRateValue)
         {
             if (isDebugActive)
-            { 
-                Debug.Log("Artefact active OnHit"); 
+            {
+                Debug.Log("Artefact active OnHit");
             }
             if (!CanApplyOnHit()) return;
             GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
@@ -86,32 +131,35 @@ public class ArtefactsInfos : ScriptableObject
 
     public void ActiveArtefactOnDeath(Vector3 position, EntitiesTrigger tag, GameObject agent, float distance)
     {
-        if(isDebugActive) Debug.Log("Artefact not in range");
+        if (isDebugActive) Debug.Log("Artefact not in range");
 
         if (entitiesTrigger != tag || distance > radius) return;
 
-        if (isDebugActive) Debug.Log ("Artefact in range");
+        if (isDebugActive) Debug.Log("Artefact in range");
 
         float change = Random.Range(0, 100);
-        if (change < spawnRate)
+        float spawnRateValue = spawnRatePerTier[(int)levelTierFragment];
+        if (change < spawnRateValue)
         {
             if (isDebugActive) Debug.Log("Artefact in launch");
             GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
             Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
-            SetupArtefactData(artefactData,agent);
+            SetupArtefactData(artefactData, agent);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
         }
     }
 
-    public void SetupArtefactData(Artefact.ArtefactData artefactData , GameObject agent)
+    public void SetupArtefactData(Artefact.ArtefactData artefactData, GameObject agent)
     {
         artefactData.agent = agent;
         artefactData.entitiesTargetSystem = entitiesTargetSystem;
         artefactData.characterGo = characterGo;
         artefactData.radius = radius;
         artefactData.nameArtefact = nameArtefact;
-        artefactData.element = (int)gameElement;
+        artefactData.elementIndex = (int)gameElement;
+        artefactData.element = gameElement;
+        artefactData.damageToApply = damageArtefact + damageGainPerCount * additionialItemCount;
     }
 
     public bool CanApplyOnHit()
@@ -135,4 +183,54 @@ public class ArtefactsInfos : ScriptableObject
 
         return usable;
     }
+
+    public void ResultString()
+    {
+        string result = string.Empty;
+
+        int index = description.IndexOf("{");
+        if (index == -1)
+        {
+            descriptionResult = description;
+            return;
+
+        }
+        int index1 = description.IndexOf("}");
+        if (index1 == -1)
+        {
+            descriptionResult = description.Substring(0, index);
+            return;
+        }
+        result += description.Substring(0, index);
+
+        string substringCode = description.Substring(index+1, index1 -index -1); ;
+        if (substringCode == "p")
+            result +=  spawnRatePerTier[(int)levelTierFragment].ToString() ;
+
+        if (substringCode == "d")
+            result += (damageArtefact + damageGainPerCount * additionialItemCount).ToString();
+        result += description.Substring(index1+1);
+
+        descriptionResult = result;
+
+
+        return ;
+    }
+
+    public void OnValidate()
+    {
+        //if(spawnRatePerTier.Length < 3)
+        //{
+        //    float[] tempArray = spawnRatePerTier;
+        //    spawnRatePerTier = new float[3];
+        //    for (int i = 0; i < tempArray.Length; i++)
+        //    {
+        //        spawnRatePerTier[i] = tempArray[i];
+        //    }
+
+
+        ResultString();
+    }
+
+
 }

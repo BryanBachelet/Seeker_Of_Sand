@@ -18,8 +18,13 @@ public class ManageIntroGameMenu : MonoBehaviour
     public LensFlareDataSRP lensFlaresun;
 
     [SerializeField] private TMP_Text m_textName;
+
     public void Start()
     {
+        // Set Resolution
+        Screen.SetResolution(1920, 1080, true);
+
+
         if (lensFlaresun)
         {
             lensFlaresun.elements[0].localIntensity = 0;
@@ -28,7 +33,8 @@ public class ManageIntroGameMenu : MonoBehaviour
             lensFlaresun.elements[3].localIntensity = 0;
 
         }
-        StartCoroutine(ActiveMenuDelay(5.1f));
+        GlobalSoundManager.PlayOneShot(0, transform.position);
+        StartCoroutine(ActiveMenuDelay(10f));
     }
     public void Update()
     {

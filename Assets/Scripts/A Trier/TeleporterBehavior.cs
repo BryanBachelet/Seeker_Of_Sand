@@ -36,7 +36,7 @@ public class TeleporterBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void GetTeleportorData(Teleporter tpObject)
@@ -53,10 +53,28 @@ public class TeleporterBehavior : MonoBehaviour
 
         this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
         apparitionVFX.Play();
-        cameraFadeFunction.fadeOutActivation = true;
-        if(isTimePassing) dayController.UpdateTimeByStep();
+        if (isTimePassing) dayController.UpdateTimeByStep();
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
+        if (dayController.newDay)
+        {
+            cameraFadeFunction.LaunchFadeOut(true, 0.25f);
+            GlobalSoundManager.PlayOneShot(34, this.gameObject.transform.position);
+            StartCoroutine(LaunchNewDay());
+        }
+        else { cameraFadeFunction.LaunchFadeOut(true, 1); nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom(); }
 
+
+    }
+
+    public IEnumerator LaunchNewDay()
+    {
+        cameraFadeFunction.dayTextAnimator.SetTrigger("NewDay");
+        yield return new WaitForSeconds(3f);
         nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
+        cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay");
+    }
+    public void ActivationDebugTeleportation()
+    {
+        this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
     }
 }

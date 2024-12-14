@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760a9665818b09741bdde9dd1c22f65e, type: 3}
   m_Name: Fire_Skull
   m_EditorClassIdentifier: 
-  spawnRate: 25
+  spawnRatePerTier:
+  - 5
+  - 10
+  - 23
+  - 40
   radius: 30
-  gameElement: 3
+  gameElement: 4
   conditionsTrigger: 1
   entitiesTrigger: 0
   entitiesTargetSystem: 1
@@ -24,9 +28,19 @@ MonoBehaviour:
     type: 3}
   characterGo: {fileID: 0}
   icon: {fileID: 21300000, guid: 58ab57ce344e3ef4fa389c1bbbb8d2a8, type: 3}
-  description: <b><#ff2fc3>On-Death<#FFFFFF></b> <b>of an enemy</b> + 10<u>% chance
-    to</u> <i>create</i> Fireball</i> on <b>Closest Enemy </b>
+  description: <b><#ff2fc3>On-Death<#FFFFFF></b> <b>of an enemy</b> + {p}<u>% chance
+    to</u> <i>create</i> Fireball</i> on <b>Closest Enemy </b> <br><size=80%><color=#BABABA>(Stack
+    increase damage) <br>(Upgrade increase probability)
   nameArtefact: Fire Skull
   isDebugActive: 0
+  descriptionResult: <b><#ff2fc3>On-Death<#FFFFFF></b> <b>of an enemy</b> + 5<u>%
+    chance to</u> <i>create</i> Fireball</i> on <b>Closest Enemy </b> <br><size=80%><color=#BABABA>(Stack
+    increase damage) <br>(Upgrade increase probability)
   activationCount: 0
   maxProc: 10
+  damageArtefact: 1
+  isReinforceFeatureActivate: 1
+  additionialItemCount: 0
+  damageGainPerCount: 1
+  isUpgradeFeactureActive: 1
+  levelTierFragment: 0

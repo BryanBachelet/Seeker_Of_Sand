@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 760a9665818b09741bdde9dd1c22f65e, type: 3}
   m_Name: Fire_String
   m_EditorClassIdentifier: 
-  spawnRate: 100
+  spawnRatePerTier:
+  - 100
+  - 100
+  - 100
+  - 100
   radius: 30
-  gameElement: 3
+  gameElement: 4
   conditionsTrigger: 0
   entitiesTrigger: 0
   entitiesTargetSystem: 0
@@ -23,8 +27,17 @@ MonoBehaviour:
   m_artefactProjectile: {fileID: 0}
   characterGo: {fileID: 0}
   icon: {fileID: 21300000, guid: 86712c86ba3172e46aee9c22c4c01b9e, type: 3}
-  description: '   <u>Increase</u> <i>Damage by 1</i> Of fire</i> on <b>Spell</b>'
+  description: '   <u>Increase</u> <i>Damage by {d}</i> Of fire</i> on <b>Spell</b>
+    <br><size=80%><color=#BABABA>(Stack increase damage) <br>(Upgrade increase probability)'
   nameArtefact: Fire String
   isDebugActive: 0
+  descriptionResult: '   <u>Increase</u> <i>Damage by 1</i> Of fire</i> on <b>Spell</b>
+    <br><size=80%><color=#BABABA>(Stack increase damage) <br>(Upgrade increase probability)'
   activationCount: 0
   maxProc: 100
+  damageArtefact: 1
+  isReinforceFeatureActivate: 1
+  additionialItemCount: 0
+  damageGainPerCount: 1
+  isUpgradeFeactureActive: 1
+  levelTierFragment: 0

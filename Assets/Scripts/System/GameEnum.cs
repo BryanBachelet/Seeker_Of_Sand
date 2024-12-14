@@ -81,6 +81,22 @@ namespace GuerhoubaGames.GameEnum
         NONE = 3,
     }
 
+    public enum LevelTier
+    {
+        TIER_0 = 0,
+        TIER_1 = 1,
+        TIER_2 = 2,
+        TIER_3 = 3,
+    }
+
+    public enum BuyResult
+    {
+        BUY = 0,
+        NOT_ENOUGH_MONEY = 1
+    }
+
+
+
     public enum StatType
     {
         Damage = 1001,
@@ -140,6 +156,7 @@ namespace GuerhoubaGames.GameEnum
     }
 
 
+
     // Tag Spell
     // For each tag the value None need to be in higher case : NONE
     // and need to be add index zero 
@@ -162,13 +179,30 @@ namespace GuerhoubaGames.GameEnum
     }
 
     [System.Serializable]
+    [Flags]
     public enum GameElement
     {
         NONE = 0,
         WATER = 1,
         AIR = 2,
-        FIRE = 3,
-        EARTH = 4,
+        FIRE = 4,
+        EARTH = 8,
+
+
+        MIST = WATER | AIR,
+        STEAM = FIRE | WATER,
+        TEMPEST = FIRE | AIR,
+        SAND = EARTH | AIR,
+        MUD = EARTH | WATER,
+        LAVA =  EARTH | FIRE,
+
+        ERUPTION = FIRE | WATER | AIR,
+        SWAMP = EARTH | WATER |AIR,
+        OBSIDIAN = EARTH | FIRE | WATER,
+        ASH = EARTH | FIRE | AIR,
+        
+        CHAOS =  EARTH | WATER | AIR|FIRE,
+
     }
 
     public enum BuffType

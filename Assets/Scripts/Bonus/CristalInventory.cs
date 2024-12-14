@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 
 public class CristalInventory : MonoBehaviour
 {
@@ -39,8 +40,8 @@ public class CristalInventory : MonoBehaviour
     
     public void RemoveCristalCount(int cristalType, int cristalNumberAdd)
     {
-        cristalCount[cristalType-1] += cristalNumberAdd;
-        m_cristalUI.UpdateUICristal(cristalCount[cristalType-1], cristalType);
+        cristalCount[cristalType] += cristalNumberAdd;
+        m_cristalUI.UpdateUICristal(cristalCount[cristalType], cristalType);
         hasEnoughCristalToSpawn = false;
         for (int i = 0; i < cristalCount.Length; i++)
         {
@@ -51,15 +52,15 @@ public class CristalInventory : MonoBehaviour
         }
     }
 
-    public bool HasEnoughCristal(int value,GameElement element, string name)
+    public bool HasEnoughCristal(int value,GameElement   element, string name)
     {
-        int indexCristal = (int)element;
+        int indexCristal = GeneralTools.GetElementalArrayIndex(element);
         Debug.Log("Element :" + element.ToString());
         if(element == GameElement.NONE)
         {
             Debug.LogError("This element is None " + name);
         }
-        return cristalCount[indexCristal - 1] >= value;
+        return cristalCount[indexCristal ] >= value;
     }
 
 }
