@@ -1,3 +1,5 @@
+using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -62,17 +64,36 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
         hdrGradient.SetKeys(colorKeys, alphaKeys);
     }
 
-    public void ChangeFill(int indexFillToChange)
+    public void ChangeFill(int indexFillToChange, GameElement element)
     {
         if (isUsed[indexFillToChange] == true) return;
         isUsed[indexFillToChange] = true;
-        img_Fill[indexFillToChange].material.SetColor("_Color1", ColorElement[indexFillToChange]);
+        GameElement baseElement = GeneralTools.GetFirstBaseElement(element);
+        img_Fill[indexFillToChange].material.SetColor("_Color1", ColorElement[GeneralTools.GetElementalArrayIndex(baseElement)]);
         img_Fill[indexFillToChange].material.SetFloat("_ColorNumber", 1);
-        ColorList.Add(ColorElement[indexFillToChange]);
+        ColorList.Add(ColorElement[GeneralTools.GetElementalArrayIndex(baseElement)]);
         animatorFill[indexFillToChange].SetBool("Activation", true);
         ChangeMultipleFill();
     }
 
+
+    public void ReceiveElement(GameElement element)
+    {
+
+    }
+
+    public void RemoveFill(int indexToRemove)
+    {
+        ColorList.Remove(ColorList[indexToRemove]);
+        img_Fill[indexToRemove].material.SetColor("_Color1", Color.black);
+        img_Fill[indexToRemove].material.SetColor("_Color2", Color.black);
+        img_Fill[indexToRemove].material.SetColor("_Color3", Color.black);
+        img_Fill[indexToRemove].material.SetColor("_Color4", Color.black);
+        img_Fill[indexToRemove].material.SetFloat("_ColorNumber", 0);
+        animatorFill[indexToRemove].SetBool("Activation", false);
+        isUsed[indexToRemove] = false;
+        ChangeMultipleFill();
+    }
     public void ResetFill()
     {
         ColorList.Clear();
@@ -91,7 +112,12 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
     public void ChangeMultipleFill()
     {
         int colorCount = ColorList.Count;
-        if (colorCount < 2) { return; }
+        if (colorCount < 2)
+        {
+            img_Fill[4].material.SetFloat("_ColorNumber", 0);
+            animatorFill[4].SetBool("Activation", false); 
+            return; 
+        }
         GenerateGradient();
         if (colorCount == 2)
         {

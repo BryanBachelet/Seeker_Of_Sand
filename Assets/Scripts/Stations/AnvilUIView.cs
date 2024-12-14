@@ -51,6 +51,8 @@ namespace GuerhoubaGames.UI
         [SerializeField] private Image m_elementImageCristal;
         #region Unity Function
 
+
+        public FragmentFusionUiDispatcher fragmentFusionManager;
         public void Start()
         {
             m_characterArtefact = GameState.instance.playerGo.GetComponent<CharacterArtefact>();
@@ -222,7 +224,7 @@ namespace GuerhoubaGames.UI
             int currentFragmentToMergeIndex = receptableData.indexObject;
             // Update Anvil Behavior
             anvilBehavior.currentFragmentMergeArray[receptableData.indexReceptacle] = m_characterArtefact.artefactsList[currentFragmentToMergeIndex];
-
+            fragmentFusionManager.ChangeFill(receptableData.indexReceptacle, m_characterArtefact.artefactsList[currentFragmentToMergeIndex].gameElement);
             // Update UI
             receptacleViews[receptableData.indexReceptacle].UpdateInteface(m_characterArtefact.artefactsList[currentFragmentToMergeIndex]);
             if (!anvilBehavior.CanFragmentBeMerge()) return;
@@ -239,6 +241,7 @@ namespace GuerhoubaGames.UI
             }
 
             resultMergeImage.ResetFragmentUIView();
+            fragmentFusionManager.ResetFill();
         }
 
 
@@ -264,7 +267,7 @@ namespace GuerhoubaGames.UI
 
             anvilBehavior.currentFragmentMergeArray[data.indexReceptacle] = null;
             receptacleViews[data.indexReceptacle].ResetFragmentUIView();
-
+            fragmentFusionManager.RemoveFill(data.indexReceptacle);
             if (!anvilBehavior.CanFragmentBeMerge())
             {
                 m_mergeFragmentClone = null;
