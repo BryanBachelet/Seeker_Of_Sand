@@ -4,6 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
+using UnityEngine.Rendering;
+
+public struct AnvilInfos
+{
+    public ArtefactsInfos[] artefactsInfosToMerge;
+    public int[] indexArtefact;
+    public int[] indexReceptacle;
+
+}
 
 public class AnvilBehavior : InteractionInterface
 {
@@ -15,6 +24,7 @@ public class AnvilBehavior : InteractionInterface
     [HideInInspector] public ArtefactsInfos currentArtefactReinforce;
 
     [HideInInspector] public ArtefactsInfos[] currentFragmentMergeArray;
+    [HideInInspector] public int[] indexCurrentFragmentMergeArray;
     [HideInInspector] private int countOfFragmentSetup;
     [HideInInspector] private ArtefactsInfos m_cloneMergeFragment;
 
@@ -41,6 +51,7 @@ public class AnvilBehavior : InteractionInterface
         m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
         m_anvilUIComponent.anvilBehavior = this;
         currentFragmentMergeArray = new ArtefactsInfos[4];
+        indexCurrentFragmentMergeArray = new int[] { -1, -1, -1, -1 };
     }
 
     #region Upgrade Fragment Functions
@@ -130,6 +141,42 @@ public class AnvilBehavior : InteractionInterface
         return BuyResult.BUY;
     }
 
+
+
+
+    public void LockFragment(int indexFragment, int indexReceptacle)
+    {
+        if (GetMergeFragmentCount() == 0)
+        {
+            m_uiInventory.SetFragmentConditionnalUse(m_characterArtefact.artefactsList[indexFragment].idFamily);
+        }
+
+        currentFragmentMergeArray[indexReceptacle] = m_characterArtefact.artefactsList[indexFragment];
+        indexCurrentFragmentMergeArray[indexReceptacle] = indexFragment;
+        m_uiInventory.fragmentUIViews[indexFragment].ActiveModeRestreint(true);
+        m_uiInventory.fragmentUIViews[indexFragment].GetComponent<DragObjectUI>().isLock = true;
+    }
+
+    public bool UnlockFragment(int indexFragment, int indexReceptacle)
+    {
+        bool isAlreadyEmpty = currentFragmentMergeArray[indexReceptacle] == null;
+
+        if (isAlreadyEmpty) return false;
+
+        currentFragmentMergeArray[indexReceptacle] = null;
+        indexCurrentFragmentMergeArray[indexReceptacle] = -1;
+
+        m_uiInventory.fragmentUIViews[indexFragment].ActiveModeRestreint(false);
+        m_uiInventory.fragmentUIViews[indexFragment].GetComponent<DragObjectUI>().isLock = false;
+
+        if (GetMergeFragmentCount() == 0)
+        {
+            m_uiInventory.RemoveFragmentConditionalUse();
+        }
+
+        return true;
+             
+    }
     public int GetMergeFragmentCount()
     {
         int count = 4;
@@ -143,23 +190,30 @@ public class AnvilBehavior : InteractionInterface
 
         return count;
     }
-    public ArtefactsInfos[] GetMergeArtefactArray()
+
+    public AnvilInfos GetMergeArtefactArray()
     {
 
+        AnvilInfos anvilInfos = new AnvilInfos();
         int countFragment = GetMergeFragmentCount();
-        ArtefactsInfos[] artefactsInfosToMerge = new ArtefactsInfos[countFragment];
+        anvilInfos.artefactsInfosToMerge = new ArtefactsInfos[countFragment];
+        anvilInfos.indexArtefact = new int[countFragment];
+        anvilInfos.indexReceptacle = new int[countFragment];
         int count = 0;
         for (int i = 0; i < 4; i++)
         {
             if (currentFragmentMergeArray[i] != null)
             {
-                artefactsInfosToMerge[count] = currentFragmentMergeArray[i];
+                anvilInfos.artefactsInfosToMerge[count] = currentFragmentMergeArray[i];
+                anvilInfos.indexArtefact[count] = indexCurrentFragmentMergeArray[i];
+                anvilInfos.indexReceptacle[count] = i;
                 count++;
             }
         }
 
-        return artefactsInfosToMerge;
+        return anvilInfos;
     }
+
 
     public bool CanFragmentBeMerge()
     {
@@ -168,12 +222,12 @@ public class AnvilBehavior : InteractionInterface
 
 
         // Check if fragments dont have the same elements and are interresting to merge 
-        ArtefactsInfos[] fragmentInfosToMerge = GetMergeArtefactArray();
+        ArtefactsInfos[] fragmentInfosToMerge = GetMergeArtefactArray().artefactsInfosToMerge;
         GameElement stateOfMerge = GameElement.NONE;
-        int idFamily = fragmentInfosToMerge[0].IdFamily;
+        int idFamily = fragmentInfosToMerge[0].idFamily;
         for (int i = 0; i < fragmentInfosToMerge.Length; i++)
         {
-            if(idFamily != fragmentInfosToMerge[i].IdFamily)
+            if (idFamily != fragmentInfosToMerge[i].idFamily)
             {
                 return false;
             }
@@ -200,7 +254,7 @@ public class AnvilBehavior : InteractionInterface
         if (!CanFragmentBeMerge()) return null;
 
 
-        ArtefactsInfos[] artefactsInfosToMerge = GetMergeArtefactArray();
+        ArtefactsInfos[] artefactsInfosToMerge = GetMergeArtefactArray().artefactsInfosToMerge;
 
         m_cloneMergeFragment = artefactsInfosToMerge[0].Clone();
         for (int i = 1; i < artefactsInfosToMerge.Length; i++)
@@ -208,7 +262,10 @@ public class AnvilBehavior : InteractionInterface
             m_cloneMergeFragment.MergeFragment(artefactsInfosToMerge[i]);
         }
 
+        string currentName = m_cloneMergeFragment.nameArtefact;
+        string sufixName = currentName.Substring(currentName.IndexOf(" "), currentName.Length - currentName.IndexOf(" "));
 
+        m_cloneMergeFragment.nameArtefact = FragmentUIRessources.instance.prefixElementNamesArray[(int)m_cloneMergeFragment.gameElement] + sufixName;
         return m_cloneMergeFragment;
 
     }
@@ -218,25 +275,40 @@ public class AnvilBehavior : InteractionInterface
         int countFragment = GetMergeFragmentCount();
         if (countFragment < 2) return;
 
-        ArtefactsInfos[] artefactsInfosToMerge = GetMergeArtefactArray();
+        AnvilInfos anvilInfo = GetMergeArtefactArray();
 
-
-        for (int i = 1; i < artefactsInfosToMerge.Length; i++)
+        for (int i = 1; i < anvilInfo.artefactsInfosToMerge.Length; i++)
         {
-            artefactsInfosToMerge[0].MergeFragment(artefactsInfosToMerge[i]);
+            anvilInfo.artefactsInfosToMerge[0].MergeFragment(anvilInfo.artefactsInfosToMerge[i]);
 
+            UnlockFragment(anvilInfo.indexArtefact[i], anvilInfo.indexReceptacle[i]);
             // TODO : Verify artefact quantity to remove the best quantity
-            m_characterArtefact.RemoveArtefact(artefactsInfosToMerge[i]);
+            m_characterArtefact.RemoveArtefact(anvilInfo.artefactsInfosToMerge[i]);
         }
 
+
+        string currentName = anvilInfo.artefactsInfosToMerge[0].nameArtefact;
+        string sufixName = currentName.Substring(currentName.IndexOf(" "), currentName.Length - currentName.IndexOf(" "));
+
+        anvilInfo.artefactsInfosToMerge[0].nameArtefact = FragmentUIRessources.instance.prefixElementNamesArray[(int)m_cloneMergeFragment.gameElement] + sufixName;
+
         m_uiInventory.ActualizeInventory();
+        m_uiInventory.RemoveFragmentConditionalUse();
 
     }
 
     public void ClearAnvil()
     {
+        AnvilInfos anvilInfo = GetMergeArtefactArray();
+        for (int i = 0; i < anvilInfo.artefactsInfosToMerge.Length; i++)
+        {
+
+            UnlockFragment(anvilInfo.indexArtefact[i], anvilInfo.indexReceptacle[i]);
+        }
+
         currentArtefactReinforce = null;
         currentFragmentMergeArray = new ArtefactsInfos[4];
+        indexCurrentFragmentMergeArray = new int[] { -1, -1, -1, -1 };
         m_cloneMergeFragment = null;
     }
 

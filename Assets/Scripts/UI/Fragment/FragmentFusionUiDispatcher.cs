@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 public class FragmentFusionUiDispatcher : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
     private bool[] isUsed = new bool[5];
 
     public Material matToCopy;
+
+    private List<int> indexColorReceptacle =new List<int>();
     // Start is called before the first frame update
     void Awake()
     {
@@ -72,6 +75,7 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
         img_Fill[indexFillToChange].material.SetColor("_Color1", ColorElement[GeneralTools.GetElementalArrayIndex(baseElement)]);
         img_Fill[indexFillToChange].material.SetFloat("_ColorNumber", 1);
         ColorList.Add(ColorElement[GeneralTools.GetElementalArrayIndex(baseElement)]);
+        indexColorReceptacle.Add(indexFillToChange);
         animatorFill[indexFillToChange].SetBool("Activation", true);
         ChangeMultipleFill();
     }
@@ -84,7 +88,7 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
 
     public void RemoveFill(int indexToRemove)
     {
-        ColorList.Remove(ColorList[indexToRemove]);
+        ColorList.RemoveAt(indexColorReceptacle.IndexOf(indexToRemove));
         img_Fill[indexToRemove].material.SetColor("_Color1", Color.black);
         img_Fill[indexToRemove].material.SetColor("_Color2", Color.black);
         img_Fill[indexToRemove].material.SetColor("_Color3", Color.black);

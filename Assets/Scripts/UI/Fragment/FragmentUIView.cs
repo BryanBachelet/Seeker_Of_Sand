@@ -17,6 +17,29 @@ namespace GuerhoubaGames.UI
         [SerializeField] private TMPro.TMP_Text m_nameText;
         public TooltipTrigger tooltipTrigger;
 
+        [Header("Lock Variables")]
+        public Color greyLockColor;
+
+        public void ActiveModeRestreint(bool isLock)
+        {
+            if (isLock)
+            {
+                m_backgroundColorImg.color = greyLockColor;
+                m_borderColorImg.color = greyLockColor;
+                m_spriteImg.color = greyLockColor;
+                m_nameImg.color = greyLockColor;
+                m_elementImg.color = greyLockColor;
+            }
+            else
+            {
+                m_backgroundColorImg.color = Color.white;
+                m_borderColorImg.color = Color.white;
+                m_spriteImg.color = Color.white;
+                m_nameImg.color = Color.white; 
+                m_elementImg.color = Color.white;
+            }
+        }
+
         public void UpdateInteface(ArtefactsInfos artefactsInfos)
         {
             FragmentUIRessources instanceResources = FragmentUIRessources.instance;

@@ -21,11 +21,13 @@ public class DragReceptacleUI : MonoBehaviour, IDropHandler, IPointerClickHandle
     public Action<ReceptableData> OnDropEvent;
     public Action<ReceptableData> OnCtrlClick;
     public int indexReceptacle = -1;
+    private int currentIndexObject;
 
     public void OnDrop(PointerEventData eventData)
     {
         ReceptableData receptableData = new ReceptableData();
         receptableData.indexObject = DragManager.instance.dragData.indexObj;
+        currentIndexObject = DragManager.instance.dragData.indexObj;
         receptableData.objectType = objectType;
         receptableData.indexReceptacle = indexReceptacle;
         OnDropEvent?.Invoke(receptableData);
@@ -38,7 +40,7 @@ public class DragReceptacleUI : MonoBehaviour, IDropHandler, IPointerClickHandle
         if (eventData.button == PointerEventData.InputButton.Left && Input.GetKey(KeyCode.LeftShift))
         {
             ReceptableData receptableData = new ReceptableData();
-            receptableData.indexObject =-1;
+            receptableData.indexObject = currentIndexObject;
             receptableData.objectType = objectType;
             receptableData.indexReceptacle = indexReceptacle;
             OnCtrlClick?.Invoke(receptableData);
