@@ -22,6 +22,7 @@ public class CharacterChainEffect : MonoBehaviour
             {
                 chainEffectsList[i].Reset();
                 chainEffectsList.RemoveAt(i);
+                i--;
             }
         }
     }

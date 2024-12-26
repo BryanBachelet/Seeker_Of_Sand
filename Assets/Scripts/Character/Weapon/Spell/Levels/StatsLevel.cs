@@ -21,6 +21,8 @@ namespace SpellSystem
         public List<StatDataLevel> statDatas = new List<StatDataLevel>();
         private StatType[] statTypes = new StatType[0];
 
+        public CustomStatBehavior customStatBehavior;
+
         public void SetupStatLevel()
         {
             statTypes = new StatType[statDatas.Count];
@@ -79,7 +81,10 @@ namespace SpellSystem
                 }
             }
 
-
+            if (customStatBehavior != null)
+            {
+                customStatBehavior.Apply(spellProfil);
+            }
         }
 
         public StatsLevel()

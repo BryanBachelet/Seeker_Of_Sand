@@ -377,6 +377,7 @@ GameObject:
   - component: {fileID: 2151243217804933515}
   - component: {fileID: 899743071894539468}
   - component: {fileID: 4414201174725831263}
+  - component: {fileID: -9108386492925121007}
   m_Layer: 15
   m_Name: Feu_Projectile phoenix 1
   m_TagString: Projectile
@@ -392,7 +393,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1815569696630512008}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 9.214058, y: 4.2454, z: 13.396144}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
@@ -403,7 +404,7 @@ Transform:
   - {fileID: 4351553709760603131}
   - {fileID: 2362606395742701499}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &5107553332429896559
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -499,6 +500,7 @@ MonoBehaviour:
   m_piercingMax: 0
   m_deltaTimeMove: 1
   isDebugInstance: 0
+  vFXObject: {fileID: 7395236191464785007}
 --- !u!114 &4414201174725831263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -514,6 +516,18 @@ MonoBehaviour:
   isActive: 0
   id: -1
   bIsExtraSpawn: 0
+--- !u!114 &-9108386492925121007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815569696630512008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86f4f4dd529826641bd8b22565615a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5790641189764642615
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,6 +1023,12 @@ PrefabInstance:
 --- !u!4 &2362606395742701499 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6670382947011034853, guid: 2b775f4266498804a9ee189f3f3b7a84,
+    type: 3}
+  m_PrefabInstance: {fileID: 8960012670265014622}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7395236191464785007 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1943712460548226353, guid: 2b775f4266498804a9ee189f3f3b7a84,
     type: 3}
   m_PrefabInstance: {fileID: 8960012670265014622}
   m_PrefabAsset: {fileID: 0}

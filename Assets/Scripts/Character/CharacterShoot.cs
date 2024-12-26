@@ -402,7 +402,7 @@ namespace Character
             {
                 if (spellIndexGeneral[i] == -1) continue;
 
-                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone());
+                m_characterSpellBook.AddSpell(m_spellManger.spellProfils[spellIndexGeneral[i]].Clone(true));
 
                 spellIndexSpecific.Add(i);
                 CreatePullObject(m_characterSpellBook.GetSpecificSpell(m_characterSpellBook.GetSpellCount() - 1));
@@ -808,6 +808,7 @@ namespace Character
 
                 Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
+               
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
                     position = m_characterAim.lastRawPosition + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
@@ -1465,7 +1466,7 @@ namespace Character
             int prevIndex = m_characterSpellBook.GetSpellCount();
             spellIndexGeneral.Add(index);
 
-            SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone();
+            SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone(true);
             m_characterSpellBook.AddSpell(clone);
             m_dropInventory.AddNewItem(index);
 

@@ -260,6 +260,7 @@ namespace SpellSystem
         public string description;
         public Sprite spell_Icon;
         public GameObject objectToSpawn;
+        public Vector3 angleRotation;
         public GameObject VFX;
         public Material matToUse;
         public Texture previewDecal_mat;
@@ -284,7 +285,8 @@ namespace SpellSystem
 
 
 
-        public SpellProfil Clone()
+
+        public SpellProfil Clone(bool isSetup = false)
         {
             SpellProfil spellProfil = Instantiate(this);
 
@@ -295,8 +297,12 @@ namespace SpellSystem
                 spellProfil.statTypes[i] = spellProfil.statDatas[i].stat;
             }
 
-            SetupSpell();
-            return spellProfil;
+            if (isSetup)
+            {
+
+                spellProfil.SetupSpell();
+            }
+                return spellProfil;
         }
 
         public void SetupSpell()
@@ -306,7 +312,7 @@ namespace SpellSystem
 
             for (int i = 0; i < spellLevel; i++)
             {
-                    GainLevel(i);
+                GainLevel(i);
             }
 
             hasBeenSetup = true;
@@ -319,7 +325,7 @@ namespace SpellSystem
             List<ChainEffect> chainEffectsList = new List<ChainEffect>();
             if (levelSpells == null) return chainEffectsList.ToArray();
 
-            for (int i = 0; i < spellLevel; i++)
+            for (int i = 0; i < spellLevel  && i < levelSpells.Length; i++)
             {
                 if (levelSpells[i] == null) continue;
 
@@ -328,7 +334,7 @@ namespace SpellSystem
                     chainEffectsList.Add((ChainEffect)levelSpells[i]);
                 }
             }
-                return chainEffectsList.ToArray();
+            return chainEffectsList.ToArray();
         }
 
         public BehaviorLevel[] GetBehaviorsLevels()
@@ -336,7 +342,7 @@ namespace SpellSystem
             List<BehaviorLevel> behaviorList = new List<BehaviorLevel>();
             if (levelSpells == null) return behaviorList.ToArray();
 
-            for (int i = 0; i < spellLevel; i++)
+            for (int i = 0; i < spellLevel && i < levelSpells.Length; i++)
             {
                 if (levelSpells[i] == null) continue;
 
@@ -395,7 +401,7 @@ namespace SpellSystem
 
             if (levelSpells == null || levelSpells.Length <= index || levelSpells[index] == null)
             {
-               // spellLevel++;
+                // spellLevel++;
                 spellExpNextLevel = spellExp + spellExpCountPerLevel;
                 return;
             }
@@ -414,7 +420,7 @@ namespace SpellSystem
 
             }
 
-           // spellLevel++;
+            // spellLevel++;
             spellExpNextLevel = spellExp + spellExpCountPerLevel;
 
         }

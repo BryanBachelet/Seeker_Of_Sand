@@ -76,6 +76,8 @@ public class Projectile : MonoBehaviour
 
     public bool isDebugInstance;
 
+    public GameObject vFXObject;
+
     void Update()
     {
         if (!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
@@ -129,6 +131,7 @@ public class Projectile : MonoBehaviour
         m_collider = this.GetComponent<Collider>();
         objectType = data.objectType;
 
+        if(vFXObject != null) vFXObject.transform.rotation *= Quaternion.Euler(spellProfil.angleRotation);
         damageSourceName = spellProfil.name;
         elementIndex = (int)spellProfil.tagData.element;
         if (objectType == CharacterObjectType.FRAGMENT)
@@ -260,8 +263,7 @@ public class Projectile : MonoBehaviour
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-
-                enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -336,12 +338,16 @@ public class Projectile : MonoBehaviour
 
     public void SetSlopeRotation(Vector3 hitNormal)
     {
-        Vector3 axis = Vector3.Cross(transform.right, hitNormal);
         Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-        float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transform.right);
+        Vector3 transformedRight = Quaternion.Euler(0, 0, -transform.eulerAngles.z) * transform.right;
+        Vector3 axis = Vector3.Cross(transformedRight, hitNormal);
+
+        float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transformedRight);
+        
         if (Mathf.Abs(angle) > maxSlopeAngle)
             return;
-        transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
+
+        transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 
 }
