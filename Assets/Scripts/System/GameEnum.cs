@@ -11,6 +11,13 @@ namespace GuerhoubaGames.GameEnum
         FRAGMENT = 1,
     }
 
+    public enum SpellLevelType
+    {
+        STATS = 0,
+        BEHAVIOR = 1,
+        CHAIN_EFFECT = 2,
+    }
+
 
 
     public enum RoomType
@@ -228,6 +235,7 @@ namespace GuerhoubaGames.GameEnum
         LINE = 1,
         CURVE = 2,
         SPECIAL =3,
+        RANDOM =4,
         
     }
 

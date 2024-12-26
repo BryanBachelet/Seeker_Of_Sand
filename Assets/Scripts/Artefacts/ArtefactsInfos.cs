@@ -241,7 +241,19 @@ public class ArtefactsInfos : ScriptableObject
     {
         string result = string.Empty;
 
-        int countBracket = baseDescription.Split("{").Length-1;
+        if (baseDescription == null)
+        {
+            descriptionResult = baseDescription;
+            return;
+        }
+            string[] bracketArray = baseDescription.Split("{");
+        if (bracketArray == null)
+        {
+            descriptionResult = baseDescription;
+            return;
+        }
+
+        int countBracket = bracketArray.Length-1;
         int indexEndString = 0;
 
         if (countBracket <= 0)

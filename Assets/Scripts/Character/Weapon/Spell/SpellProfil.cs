@@ -116,6 +116,55 @@ public struct TagData
         }
     }
 
+    public void SetIndexTagValue(SpellTagOrder spellTagOrder, int value)
+    {
+        switch (spellTagOrder)
+        {
+            case SpellTagOrder.GameElement:
+                element = (GameElement)value;
+                break;
+            case SpellTagOrder.BuffType:
+                type = (BuffType)value;
+                break;
+            case SpellTagOrder.SpellNature:
+                spellNatureType = (SpellNature)value;
+                break;
+            case SpellTagOrder.SpellNature1:
+                spellNatureType1 = (SpellNature)value;
+                break;
+            case SpellTagOrder.SpellProjectileTrajectory:
+                spellProjectileTrajectory = (SpellProjectileTrajectory)value;
+                break;
+            case SpellTagOrder.CanalisationType:
+                canalisationType = (CanalisationType)value;
+                break;
+            case SpellTagOrder.SpellMovementBehavior:
+                spellMovementBehavior = (SpellMovementBehavior)value;
+                break;
+            case SpellTagOrder.DamageTrigger:
+                damageTriggerType = (DamageTrigger)value;
+                break;
+            case SpellTagOrder.SpellParticualarity:
+                spellParticualarity = (SpellParticualarity)value;
+                break;
+            case SpellTagOrder.SpellParticualarity1:
+                spellParticualarity1 = (SpellParticualarity)value;
+                break;
+            case SpellTagOrder.SpellParticualarity2:
+                spellParticualarity2 = (SpellParticualarity)value;
+                break;
+            case SpellTagOrder.MouvementBehavior:
+                mouvementBehaviorType = (MouvementBehavior)value;
+                break;
+            case SpellTagOrder.UpgradeSensitivity:
+                upgradeSensitivityType = (UpgradeSensitivity)value;
+                break;
+            default:
+
+                break;
+        }
+    }
+
     public int[] GetValidTag()
     {
         int tagCount = System.Enum.GetNames(typeof(SpellTagOrder)).Length;
@@ -139,17 +188,16 @@ public struct TagData
         return (value == spellNatureType) || (value == spellNatureType1) || (value == spellNatureType2);
     }
 
-
     public string[] GetUIInfosValue()
     {
         string[] tagString = new string[5];
 
-        SpellTagOrder[] spellTagOrdersArray = { SpellTagOrder.GameElement, SpellTagOrder.SpellNature, SpellTagOrder.SpellNature1, SpellTagOrder.SpellParticualarity , SpellTagOrder.SpellMovementBehavior } ;
+        SpellTagOrder[] spellTagOrdersArray = { SpellTagOrder.GameElement, SpellTagOrder.SpellNature, SpellTagOrder.SpellNature1, SpellTagOrder.SpellParticualarity, SpellTagOrder.SpellMovementBehavior };
         int diffIndex = 0;
         for (int i = 0; i < spellTagOrdersArray.Length; i++)
         {
             string value = GetValueTag(spellTagOrdersArray[i]);
-            if(value == "NONE")
+            if (value == "NONE")
             {
                 diffIndex++;
                 continue;
@@ -157,11 +205,25 @@ public struct TagData
             value = CultureInfo.CurrentCulture.TextInfo.ToLower(value);
             value = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value); ;
             tagString[i] = "";
-            tagString[i- diffIndex] = value;
+            tagString[i - diffIndex] = value;
         }
 
         return tagString;
     }
+
+    public void ChangeTag(TagData tagData)
+    {
+        int[] indexValueArray = tagData.GetValidTag();
+
+        for (int i = 0; i < indexValueArray.Length; i++)
+        {
+            if (indexValueArray[i] != 0)
+            {
+                SetIndexTagValue((SpellTagOrder)i, indexValueArray[i]);
+            }
+        }
+    }
+
 }
 
 
@@ -171,7 +233,7 @@ namespace SpellSystem
 
 
     [System.Serializable]
-    public struct StatData
+    public class StatData
     {
         public StatType stat;
         public ValueType valueType;
@@ -181,6 +243,13 @@ namespace SpellSystem
         public bool val_bool;
         public bool isVisible;
     }
+
+    [System.Serializable]
+    public class StatDataLevel : StatData
+    {
+        public float multiply;
+    }
+
 
     [CreateAssetMenu(fileName = "Spell Profil", menuName = "Spell/Spell Profil")]
     public class SpellProfil : ScriptableObject
@@ -196,13 +265,24 @@ namespace SpellSystem
         public Texture previewDecal_mat;
         public Texture previewDecalEnd_mat;
 
-        [HideInInspector] public int level;
+        public int spellLevel;
+        [HideInInspector] public int spellExp;
+        private int spellExpNextLevel = 4;
+        private int spellExpCountPerLevel = 4;
+
+        private bool hasBeenSetup;
+        [Header("Level Spell ")]
+        public LevelSpell[] levelSpells;
+
         [Header("Tag Parameters")]
         public TagData tagData;
+
 
         [Space]
         public List<StatData> statDatas = new List<StatData>();
         private StatType[] statTypes = new StatType[0];
+
+
 
         public SpellProfil Clone()
         {
@@ -215,8 +295,141 @@ namespace SpellSystem
                 spellProfil.statTypes[i] = spellProfil.statDatas[i].stat;
             }
 
+            SetupSpell();
             return spellProfil;
         }
+
+        public void SetupSpell()
+        {
+            if (hasBeenSetup) return;
+            LevelSpell.SetupLevelEffect(levelSpells);
+
+            for (int i = 0; i < spellLevel; i++)
+            {
+                    GainLevel(i);
+            }
+
+            hasBeenSetup = true;
+        }
+
+        #region Levels Functions
+
+        public ChainEffect[] GetChainEffects()
+        {
+            List<ChainEffect> chainEffectsList = new List<ChainEffect>();
+            if (levelSpells == null) return chainEffectsList.ToArray();
+
+            for (int i = 0; i < spellLevel; i++)
+            {
+                if (levelSpells[i] == null) continue;
+
+                if (levelSpells[i].LevelType == SpellLevelType.CHAIN_EFFECT)
+                {
+                    chainEffectsList.Add((ChainEffect)levelSpells[i]);
+                }
+            }
+                return chainEffectsList.ToArray();
+        }
+
+        public BehaviorLevel[] GetBehaviorsLevels()
+        {
+            List<BehaviorLevel> behaviorList = new List<BehaviorLevel>();
+            if (levelSpells == null) return behaviorList.ToArray();
+
+            for (int i = 0; i < spellLevel; i++)
+            {
+                if (levelSpells[i] == null) continue;
+
+                if (levelSpells[i].LevelType == SpellLevelType.BEHAVIOR)
+                {
+                    behaviorList.Add((BehaviorLevel)levelSpells[i]);
+                }
+            }
+            return behaviorList.ToArray();
+        }
+
+        public bool CanGainLevel()
+        {
+            if (spellLevel == 3) return false;
+
+            return true;
+        }
+
+        public void GainLevel()
+        {
+            if (spellLevel == 3) return;
+
+
+
+            if (levelSpells == null || levelSpells.Length <= spellLevel || levelSpells[spellLevel] == null)
+            {
+                spellLevel++;
+                spellExpNextLevel = spellExp + spellExpCountPerLevel;
+                return;
+            }
+            if (levelSpells[spellLevel].isPermanent)
+            {
+                if (levelSpells[spellLevel].LevelType == SpellLevelType.STATS)
+                {
+                    StatsLevel statsLevel = (StatsLevel)(levelSpells[spellLevel]);
+                    statsLevel.Apply(this);
+                }
+                if (levelSpells[spellLevel].LevelType == SpellLevelType.BEHAVIOR)
+                {
+                    BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[spellLevel]);
+                    statsLevel.OnUpgradeGain();
+                }
+
+            }
+
+            spellLevel++;
+            spellExpNextLevel = spellExp + spellExpCountPerLevel;
+
+        }
+
+        public void GainLevel(int index)
+        {
+            if (index == 3) return;
+
+
+
+            if (levelSpells == null || levelSpells.Length <= index || levelSpells[index] == null)
+            {
+               // spellLevel++;
+                spellExpNextLevel = spellExp + spellExpCountPerLevel;
+                return;
+            }
+            if (levelSpells[index].isPermanent)
+            {
+                if (levelSpells[index].LevelType == SpellLevelType.STATS)
+                {
+                    StatsLevel statsLevel = (StatsLevel)(levelSpells[index]);
+                    statsLevel.Apply(this);
+                }
+                if (levelSpells[index].LevelType == SpellLevelType.BEHAVIOR)
+                {
+                    BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[index]);
+                    statsLevel.OnUpgradeGain();
+                }
+
+            }
+
+           // spellLevel++;
+            spellExpNextLevel = spellExp + spellExpCountPerLevel;
+
+        }
+
+        public bool AddSpellExpPoint(int points)
+        {
+            spellExp += points;
+
+            bool isLevelUp = spellExp >= spellExpNextLevel;
+
+
+            return isLevelUp;
+        }
+
+        #endregion
 
         private bool IsStatBool(StatType statsType)
         {
@@ -324,7 +537,7 @@ namespace SpellSystem
             return "";
         }
 
-        public void AddToIntStats(StatType statsType, int val)
+        public void AddToIntStats(StatType statsType, int val, float multiplier = 1)
         {
             if (!IsStatInt(statsType))
             {
@@ -338,13 +551,15 @@ namespace SpellSystem
                 {
                     StatData statData = statDatas[i];
                     statData.val_int += val;
+                    if (multiplier != 0) statData.val_int = (int)(statData.val_int * multiplier);
                     statDatas[i] = statData;
                     return;
                 }
             }
         }
-        public void AddToFloatStats(StatType statsType, float val)
+        public void AddToFloatStats(StatType statsType, float val, float multiplier = 1)
         {
+
             if (!IsStatFloat(statsType))
             {
                 Debug.LogError("This stats isn't an float");
@@ -357,6 +572,7 @@ namespace SpellSystem
                 {
                     StatData statData = statDatas[i];
                     statData.val_float += val;
+                    if (multiplier != 0) statData.val_float *= multiplier;
                     statDatas[i] = statData;
                     return;
                 }

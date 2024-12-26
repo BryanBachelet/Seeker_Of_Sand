@@ -31,8 +31,8 @@ public struct ProjectileData
 
 public class Projectile : MonoBehaviour
 {
-    private const int m_timeBeforeDestruction = 3;
-    private const float m_timeStartSizeShrinking = 0.75f;
+    protected const int m_timeBeforeDestruction = 3;
+    protected const float m_timeStartSizeShrinking = 0.75f;
     private const int maxSlopeAngle = 90;
     protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
@@ -61,10 +61,10 @@ public class Projectile : MonoBehaviour
     private float spawnTime;
     private bool checkSpawnTime = false;
     [SerializeField] private float m_deltaTimeMove = 0.0f;
-    private bool willDestroy = false;
+    protected bool willDestroy = false;
     protected Collider m_collider;
     protected CharacterObjectType objectType;
-    private Vector3 m_initialScale;
+    protected Vector3 m_initialScale;
 
     protected bool isStartToMove = false;
 
@@ -218,7 +218,7 @@ public class Projectile : MonoBehaviour
         if (visual != null) visual.Reinit();
     }
 
-    protected virtual void ActiveDeath()
+    public virtual void ActiveDeath()
     {
         if(isDebugInstance)
         {
@@ -244,6 +244,8 @@ public class Projectile : MonoBehaviour
     public virtual void CollisionEvent(Collider other)
     {
 
+        if (!this.enabled) return;
+
         if (other.gameObject.tag == "DecorDes")
         {
             other.GetComponent<DestructibleObject>().SetupDestruction(m_power, other.transform.position - transform.position);
@@ -267,6 +269,7 @@ public class Projectile : MonoBehaviour
 
                 //Destroy(this.gameObject);
                 m_lifeTimer = m_lifeTime;
+                m_collider.enabled = false;
                 //willDestroy = true;
             }
         }

@@ -72,10 +72,10 @@ namespace SeekerOfSand
                 m_stackingText[index].text = value.ToString();
             }
 
-            public bool UpdateLevelSpell(int index, SpellProfil spellprofil)
+            public void UpdateLevelSpell(int index, SpellProfil spellprofil)
             {
                 imgSpriteSpell.material = spellprofil.matToUse;
-                if (spellprofil.level == 4)
+                if (spellprofil.spellLevel == 1)
                 {
                     tierUpEffect.SetActive(true);
                     int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element,true);
@@ -88,9 +88,9 @@ namespace SeekerOfSand
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
-                    return true;
+                    
                 }
-                else if (spellprofil.level == 8)
+                else if (spellprofil.spellLevel == 2)
                 {
                     tierUpEffect.SetActive(true);
                     for (int i = 0; i < vfxTierUp.Length; i++)
@@ -102,9 +102,9 @@ namespace SeekerOfSand
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
-                    return true;
+                    
                 }
-                else if (spellprofil.level == 12)
+                else if (spellprofil.spellLevel == 3)
                 {
                     tierUpEffect.SetActive(true);
                     for (int i = 0; i < vfxTierUp.Length; i++)
@@ -116,7 +116,7 @@ namespace SeekerOfSand
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
-                    return true;
+                    
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace SeekerOfSand
                     tierUpAnimation.ResetTrigger("UpgradeTo3");
                     upgradeScreenAnimator.SetTrigger("Reset");
                     upgradeScreenAnimator.ResetTrigger("TierUpActivation");
-                    return false;
+                    
                 }
                 //m_levelText[index].text = value.ToString();
             }
