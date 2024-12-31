@@ -93,11 +93,15 @@ public class UI_Inventory : MonoBehaviour
             tmpText_CurrentCristal[i].text = "" + m_cristalInventory.cristalCount[i];
         }
         List<GameObject> tempFragment = m_fragmentToolTip.fragment_List;
-        for (int i = 0; i < m_fragmentToolTip.currentFragmentNumber; i++)
+        for (int i = 0; i < tempFragment.Count; i++)
         {
-            SetupFragmentImage(m_fragmentToolTip, i);
+            if (i < m_fragmentToolTip.currentFragmentNumber) 
+                SetupFragmentImage(m_fragmentToolTip, i);
+            if (i >= m_fragmentToolTip.currentFragmentNumber)
+                ClearFragmentImage(m_fragmentToolTip, i);
 
         }
+
 
         Sprite[] spellSprite = m_characterShoot.GetSpellSprite();
         int[] spellLevel = m_characterShoot.GetSpellLevel();
@@ -143,6 +147,12 @@ public class UI_Inventory : MonoBehaviour
         fragmentUIViews[index].gameObject.SetActive(true);
         fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
 
+    }
+
+    public void ClearFragmentImage(UI_Fragment_Tooltip fragmentInfo, int index)
+    {
+        fragmentUIViews[index].gameObject.SetActive(false);
+        fragmentUIViews[index].ResetFragmentUIView();
     }
 
 

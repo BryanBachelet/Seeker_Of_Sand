@@ -36,5 +36,10 @@ namespace GuerhoubaGames.UI
             Debug.Log("On Pointer Down " + gameObject.name);
         }
 
+        public void OnDisable()
+        {
+            DragManager.instance.DeactiveDragDrop();
+        }
+
     }
 }
