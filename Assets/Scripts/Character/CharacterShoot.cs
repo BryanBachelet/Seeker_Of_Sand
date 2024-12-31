@@ -12,6 +12,7 @@ using SpellSystem;
 using GuerhoubaGames.Resources;
 using Klak.Motion;
 using SeekerOfSand.Tools;
+using System;
 
 namespace Character
 {
@@ -221,7 +222,9 @@ namespace Character
             currentSpellProfil = spellProfils[m_currentIndexCapsule];
             m_canShoot = true;
             m_activeSpellLoad = true;
-            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
+            int maxStack = GetMaxStack(spellProfil);
+            //m_uiPlayerInfos.ActiveSpellCanalisationUIv2(maxStack, icon_Sprite[m_currentRotationIndex]);
             m_deltaTimeFrame = Time.deltaTime;
             m_totalCanalisationDuration = currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime + m_deltaTimeFrame;
 
@@ -513,6 +516,7 @@ namespace Character
             hasStartShoot = true;
             currentPreviewDecalTexture = currentSpellProfil.previewDecal_mat;
             currentPreviewDecalEndTexture = currentSpellProfil.previewDecalEnd_mat;
+
             ChangeDecalTexture(currentSpellProfil.tagData.element);
             gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
             //m_totalCanalisationDuration = currentSpellProfil.spellCanalisation + baseCanalisationTime + m_deltaTimeFrame;
@@ -542,8 +546,9 @@ namespace Character
         public void ActivateCanalisation()
         {
             m_spellTimer = 0.0f;
-            //gsm.CanalisationParameterLaunch(0.1f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
-            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
+            int maxStack = GetMaxStack(spellProfil);
+            //m_uiPlayerInfos.ActiveSpellCanalisationUIv2(maxStack, icon_Sprite[m_currentRotationIndex]);
             UpdateCanalisationBar(m_totalCanalisationDuration);
             m_activeSpellLoad = true;
             hasCanalise = false;
@@ -641,6 +646,7 @@ namespace Character
             if (currentShotNumber == 0 && !m_hasBeenLoad)
             {
                 StartShoot();
+
                 m_CharacterAnimator.SetTrigger("Shot" + m_currentIndexCapsule);
                 return;
             }
@@ -838,9 +844,9 @@ namespace Character
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / spellProfil.GetIntStat(StatType.ShootNumber));
             if (m_canalisationType == CanalisationBarType.ByPart)
             {
-                m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
-                m_characterAim.vfxCast.SetFloat("Progress", ratio);
-                m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
+                m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, spellProfil.GetIntStat(StatType.ShootNumber));
+                //m_characterAim.vfxCast.SetFloat("Progress", ratio);
+                //m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             }
             if (m_currentStack[m_currentRotationIndex] <= 0)
             {
@@ -959,7 +965,7 @@ namespace Character
             m_currentType = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.type;
             m_canEndShot = false;
             SpellSystem.SpellProfil stats = GetCurrentWeaponStat(m_currentIndexCapsule);
-
+            m_uiPlayerInfos.ActiveSpellCanalisationUIv2(GetMaxStack(stats), icon_Sprite[m_currentRotationIndex]);
 
             //if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
@@ -972,6 +978,8 @@ namespace Character
             currentShotNumber = 0;
             //gsm.CanalisationParameterStop();
             ChangeDecalTexture(GameElement.NONE);
+            m_characterAim.vfxCast.SendEvent("EndShoot");
+            m_characterAim.vfxCastEnd.SendEvent("EndShoot");
             m_characterAim.vfxCast.SetFloat("Progress", 0);
             m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
             m_spellTimer = 0.0f;
@@ -983,6 +991,9 @@ namespace Character
             if (!m_activeSpellLoad)
             {
                 m_currentIndexCapsule = ChangeProjecileIndex();
+
+                int maxStack = GetMaxStack(spellProfils[m_currentRotationIndex]);
+                m_uiPlayerInfos.ActiveSpellCanalisationUIv2(maxStack, icon_Sprite[m_currentRotationIndex]);
                 ChangeVfxOnUI(m_currentIndexCapsule);
             }
 
@@ -1012,13 +1023,15 @@ namespace Character
 
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / GetMaxStack(currentSpellProfil));
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
-            m_characterAim.vfxCast.SetFloat("Progress", ratio);
-            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
+           //m_characterAim.vfxCast.SetFloat("Progress", ratio);
+           //m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             m_uiPlayerInfos.DeactiveSpellCanalisation();
 
             m_deltaTimeFrame = UnityEngine.Time.deltaTime;
             m_totalCanalisationDuration = currentSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime + m_deltaTimeFrame;
-            m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+            SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
+
+
             if (m_canalisationType == CanalisationBarType.ByPart)
                 m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
 
@@ -1136,8 +1149,8 @@ namespace Character
             }
 
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
-            m_characterAim.vfxCast.SetFloat("Progress", ratio);
-            m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
+            //m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            //m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
         }
 
         #endregion
@@ -1157,10 +1170,15 @@ namespace Character
                 if (m_currentStack[i] != maxStack) m_stackingClock[i].ActiaveClock();
 
                 inputTest = true;
+                if (i == m_currentRotationIndex)
+                {
+                    m_uiPlayerInfos.CalculateRatio(m_currentStack[i], maxStack, m_stackingClock[i].GetRatio());
+                }
+
                 if (inputTest && m_stackingClock[i].UpdateTimer())
                 {
                     m_currentStack[i] += spellProfils[index].GetIntStat(StatType.GainPerStack);
-                    if (i == m_currentRotationIndex) m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+
                     m_currentStack[i] = Mathf.Clamp(m_currentStack[i], 0, maxStack);
                     spellProfils[index] = spellProfil;
                     //m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
@@ -1248,7 +1266,8 @@ namespace Character
                 m_CharacterMouvement.SetCombatMode(false);
 
             //m_cameraBehavior.BlockZoom(false);
-
+            SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
+            int maxStack = GetMaxStack(spellProfil);
 
             float totalShootTime = time;
             if (m_reloadTimer > totalShootTime)
@@ -1257,7 +1276,7 @@ namespace Character
                 m_isReloading = false;
                 m_canShoot = true;
                 IsRealoadingSpellRotation = false;
-                m_uiPlayerInfos.ActiveSpellCanalisationUI(m_currentStack[m_currentRotationIndex], icon_Sprite[m_currentRotationIndex]);
+                //m_uiPlayerInfos.ActiveSpellCanalisationUIv2(maxStack, icon_Sprite[m_currentRotationIndex]);
                 ActiveIcon();
                 AddSpellStack();
 
@@ -1569,8 +1588,10 @@ namespace Character
         public void ChangeDecalTexture(GameElement element)
         {
             //currentPreviewDecalTexture = m_initialPreviewDecal;
+            m_characterAim.vfxCast.SendEvent("InitShot");
             m_characterAim.vfxCast.SetTexture("Symbol", currentPreviewDecalTexture);
             m_characterAim.vfxCast.SetGradient("Gradient 1", SetDecalColor(element));
+            m_characterAim.vfxCastEnd.SendEvent("InitShot");
             m_characterAim.vfxCastEnd.SetTexture("Symbol", currentPreviewDecalEndTexture);
             m_characterAim.vfxCastEnd.SetGradient("Gradient 1", SetDecalColor(element));
         }
