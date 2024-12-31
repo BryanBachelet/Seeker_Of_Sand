@@ -74,6 +74,30 @@ public class UI_Inventory : MonoBehaviour
         m_characterShoot.hasShootBlock = true;
     }
 
+    public void SetFragmentConditionnalUse(int idFamilyUse)
+    {
+        for (int i = 0; i < m_characterArtefact.artefactsList.Count; i++)
+        {
+            if (m_characterArtefact.artefactsList[i].idFamily != idFamilyUse)
+            {
+                fragmentUIViews[i].ActiveModeRestreint(true);
+                fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = true;
+            }
+        }
+
+    }
+
+    public void RemoveFragmentConditionalUse()
+    {
+        for (int i = 0; i < m_characterArtefact.artefactsList.Count; i++)
+        {
+                fragmentUIViews[i].ActiveModeRestreint(false);
+                fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = false; 
+        }
+
+    }
+
+
     public void DeactivateInventoryInterface(bool delayNextInput = false)
     {
         if (!isOpen) return;

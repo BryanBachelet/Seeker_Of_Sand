@@ -84,7 +84,7 @@ public class ArtefactsInfos : ScriptableObject
     [SerializeField] private bool m_ActiveMergeFeature = true;
     private bool m_HasBeenMergeOnce = false;
     private List<GameObject> additionalEffectToSpawn = new List<GameObject>();
-    public int IdFamily = 0;
+    public int idFamily = 0;
 
     public ArtefactsInfos Clone()
     {
@@ -106,7 +106,7 @@ public class ArtefactsInfos : ScriptableObject
 
     public bool MergeFragment(ArtefactsInfos artefactsInfos)
     {
-        if (!m_ActiveMergeFeature || IdFamily != artefactsInfos.IdFamily)
+        if (!m_ActiveMergeFeature || idFamily != artefactsInfos.idFamily)
         {
             return false;
         }
@@ -241,7 +241,19 @@ public class ArtefactsInfos : ScriptableObject
     {
         string result = string.Empty;
 
-        int countBracket = baseDescription.Split("{").Length-1;
+        if (baseDescription == null)
+        {
+            descriptionResult = baseDescription;
+            return;
+        }
+            string[] bracketArray = baseDescription.Split("{");
+        if (bracketArray == null)
+        {
+            descriptionResult = baseDescription;
+            return;
+        }
+
+        int countBracket = bracketArray.Length-1;
         int indexEndString = 0;
 
         if (countBracket <= 0)

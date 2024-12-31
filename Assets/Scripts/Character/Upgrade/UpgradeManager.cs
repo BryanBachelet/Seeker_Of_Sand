@@ -107,21 +107,21 @@ public class UpgradeManager : MonoBehaviour
     public UpgradeObject[] GetRandomUpgradesToSpecificSpell(int spellIndex, int indexSpellEquip, GameElement roomElement)
     {
         UpgradeObject[] upgradeGenerate = new UpgradeObject[upgradeGenerateCount];
-        int level = m_characterUpgradeComponent.m_characterShoot.spellProfils[indexSpellEquip].level;
-        if (level >= 12)
+        int expSpell = m_characterUpgradeComponent.m_characterShoot.spellProfils[indexSpellEquip].spellExp;
+        if (expSpell >= 12)
         {
             progressRang.fillAmount = 1;
             progressNextRang.fillAmount = 1;
         }
         else
         {
-            int Tier = level / 4;
-            float fillAmountPR = ((float)(level - (float)(Tier * 4)) / 4);
-            float fillAmoutPNR = (float)((float)(level + 1 - (float)(Tier * 4)) / 4);
+            int Tier = expSpell / 4;
+            float fillAmountPR = ((float)(expSpell - (float)(Tier * 4)) / 4);
+            float fillAmoutPNR = (float)((float)(expSpell + 1 - (float)(Tier * 4)) / 4);
             progressRang.fillAmount = fillAmountPR;
             progressNextRang.fillAmount = fillAmoutPNR;
         }
-        levelCurrentSpell.text = "Lv. " + level;
+        levelCurrentSpell.text = "Lv. " + expSpell;
 
         for (int i = 0; i < upgradeGenerate.Length; i++)
         {

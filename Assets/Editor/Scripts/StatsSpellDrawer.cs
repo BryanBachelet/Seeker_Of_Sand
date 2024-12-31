@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using SpellSystem;
+using Unity.VisualScripting;
 
 [CustomPropertyDrawer(typeof(StatData))]
 public class StatsSpellDrawer : PropertyDrawer
@@ -9,11 +10,21 @@ public class StatsSpellDrawer : PropertyDrawer
     {
 
         label = EditorGUI.BeginProperty(position, label, property);
+        BaseDisplay(position, property,label);
+        EditorGUI.EndProperty();
+
+
+        // base.OnGUI(position, property, label);
+    }
+
+
+    public void BaseDisplay(Rect position, SerializedProperty property, GUIContent label)
+    {
         EditorGUI.PrefixLabel(position, label);
         position.width *= 0.5f;
         position.height = 18.0f;
         EditorGUI.PropertyField(position, property.FindPropertyRelative("stat"), GUIContent.none);
-        
+
         position.width -= 10;
         position.x += position.width + 20;
         position.width *= 2f;
@@ -37,13 +48,44 @@ public class StatsSpellDrawer : PropertyDrawer
         position.x += 10;
         EditorGUI.PropertyField(position, property.FindPropertyRelative("isVisible"), GUIContent.none);
         position.width += 10;
-        EditorGUI.EndProperty();
-       
-        // base.OnGUI(position, property, label);
+
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         return 20.0f;
+    }
+}
+
+
+[CustomPropertyDrawer(typeof(StatDataLevel))]
+public class StatsSpellLevelDrawer : StatsSpellDrawer
+{
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        Rect basePosition = position;
+
+        GUIContent label2 = new GUIContent();
+
+        BaseDisplay(position, property, label);
+        label2.text = "Multiplier";
+        basePosition.y += 20;
+        basePosition.width *= 0.5f;
+        basePosition.height = 18.0f;
+
+        label = EditorGUI.BeginProperty(basePosition, label, property);
+        EditorGUI.PrefixLabel(basePosition, label2);
+        basePosition.width -= 10;
+        basePosition.x += basePosition.width + 20;
+        basePosition.width *= 2f;
+        basePosition.width *= 0.4f;
+        EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("multiply"), GUIContent.none);
+        EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return 50.0f;
     }
 }

@@ -13,6 +13,8 @@ public class TerrainGenerator : MonoBehaviour
     private const int maxPlayerSpell = 4;
     public Transform lastTerrainPlay;
 
+
+    public RewardType rewardFirstRoom;
     public GameObject teleporterPrefab;
     public LayerMask groundLayer;
     public List<GameObject> terrainPool = new List<GameObject>();
@@ -118,7 +120,7 @@ public class TerrainGenerator : MonoBehaviour
         staticRoomManager = currentRoomManager;
         currentRoomManager.RetriveComponent();
         currentRoomManager.currentRoomType = RoomType.Free;
-        currentRoomManager.rewardType = RewardType.SPELL;
+        currentRoomManager.rewardType = rewardFirstRoom;
         currentRoomManager.isRoomHasBeenDeactivated = true;
 
         currentRoomManager.roomInfoUI = roomInfoUI;

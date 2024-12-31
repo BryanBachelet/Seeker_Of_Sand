@@ -31,8 +31,8 @@ public struct ProjectileData
 
 public class Projectile : MonoBehaviour
 {
-    private const int m_timeBeforeDestruction = 3;
-    private const float m_timeStartSizeShrinking = 0.75f;
+    protected const int m_timeBeforeDestruction = 3;
+    protected const float m_timeStartSizeShrinking = 0.75f;
     private const int maxSlopeAngle = 90;
     protected Vector3 m_direction;
     [SerializeField] protected float m_speed;
@@ -61,10 +61,10 @@ public class Projectile : MonoBehaviour
     private float spawnTime;
     private bool checkSpawnTime = false;
     [SerializeField] private float m_deltaTimeMove = 0.0f;
-    private bool willDestroy = false;
+    protected bool willDestroy = false;
     protected Collider m_collider;
     protected CharacterObjectType objectType;
-    private Vector3 m_initialScale;
+    protected Vector3 m_initialScale;
 
     protected bool isStartToMove = false;
 
@@ -75,6 +75,8 @@ public class Projectile : MonoBehaviour
     protected int elementIndex;
 
     public bool isDebugInstance;
+
+    public GameObject vFXObject;
 
     void Update()
     {
@@ -129,6 +131,7 @@ public class Projectile : MonoBehaviour
         m_collider = this.GetComponent<Collider>();
         objectType = data.objectType;
 
+        if(vFXObject != null) vFXObject.transform.rotation *= Quaternion.Euler(spellProfil.angleRotation);
         damageSourceName = spellProfil.name;
         elementIndex = (int)spellProfil.tagData.element;
         if (objectType == CharacterObjectType.FRAGMENT)
@@ -218,7 +221,7 @@ public class Projectile : MonoBehaviour
         if (visual != null) visual.Reinit();
     }
 
-    protected virtual void ActiveDeath()
+    public virtual void ActiveDeath()
     {
         if(isDebugInstance)
         {
@@ -244,6 +247,8 @@ public class Projectile : MonoBehaviour
     public virtual void CollisionEvent(Collider other)
     {
 
+        if (!this.enabled) return;
+
         if (other.gameObject.tag == "DecorDes")
         {
             other.GetComponent<DestructibleObject>().SetupDestruction(m_power, other.transform.position - transform.position);
@@ -258,8 +263,7 @@ public class Projectile : MonoBehaviour
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
             DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-
-                enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -267,6 +271,7 @@ public class Projectile : MonoBehaviour
 
                 //Destroy(this.gameObject);
                 m_lifeTimer = m_lifeTime;
+                m_collider.enabled = false;
                 //willDestroy = true;
             }
         }
@@ -333,12 +338,16 @@ public class Projectile : MonoBehaviour
 
     public void SetSlopeRotation(Vector3 hitNormal)
     {
-        Vector3 axis = Vector3.Cross(transform.right, hitNormal);
         Quaternion rotTest = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-        float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transform.right);
+        Vector3 transformedRight = Quaternion.Euler(0, 0, -transform.eulerAngles.z) * transform.right;
+        Vector3 axis = Vector3.Cross(transformedRight, hitNormal);
+
+        float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transformedRight);
+        
         if (Mathf.Abs(angle) > maxSlopeAngle)
             return;
-        transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, 0);
+
+        transform.rotation = Quaternion.Euler(angle, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 
 }

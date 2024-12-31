@@ -26,7 +26,7 @@ namespace Render.Camera
         const int maxDirection = 8;
         const float angleValue = 360.0f / maxDirection;
         private int indexDirection = 0;
-
+        private float modifyTargetDistance;
 
         // Oriented Camera Variable 
         [Header("Oriented Camera Parameter")]
@@ -608,22 +608,27 @@ namespace Render.Camera
         private void CheckCameraTerrain()
         {
             RaycastHit hit = new RaycastHit();
+            RaycastHit hit2 = new RaycastHit();
 
-            Vector3 direction = transform.position - m_targetTransform.position;
-            if (Physics.Raycast(m_targetTransform.position, direction, out hit, direction.magnitude + 5f, maskGround))
+            Vector3 direction = (transform.position+ Vector3.down) - m_targetTransform.position;
+            Vector3 dir2 = (m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down) - m_targetTransform.position;
+
+            bool hasHit2 =    Physics.Raycast(m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down, -dir2, out hit2, m_distanceToTarget + 5f, maskGround);
+            bool hasHit = Physics.Raycast(m_targetTransform.position, direction, out hit, m_distanceToTarget + 5f, maskGround);
+            if (hasHit && (hit2.point -hit.point).magnitude >0.5f /*|| hasHit && !hasHit2*/)
             {
 
-                m_prevAngle = m_currentAngle;
-                m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+                //m_prevAngle = m_currentAngle;
+                //m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
 
-                m_currentAngle += 1 * 60 * Time.deltaTime;
+                //m_currentAngle += 1 * 60 * Time.deltaTime;
 
-                m_nextAngle = m_currentAngle;
-                m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
-                m_lerpTimer = 0.1f;
-
+                //m_nextAngle = m_currentAngle;
+                //m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
+                //m_lerpTimer = 0.1f;
+                modifyTargetDistance = ( m_targetTransform.position - hit.point).magnitude;
                 SetCameraRotation();
-                SetCameraPosition();
+                SetCameraPosition(true);
             }
         }
 
@@ -643,12 +648,17 @@ namespace Render.Camera
                 m_finalRotation += cameraEffects[i].GetEffectRot();
             }
         }
-        private void SetCameraPosition()
+        private void SetCameraPosition(bool IsDistanceTargetModify = false)
         {
             if (!m_isOrientedCamera)
             {
                 m_finalPosition = m_targetTransform.position;
-                m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * m_distanceToTarget;
+                float distance = m_distanceToTarget;
+                if(IsDistanceTargetModify)
+                {
+                    distance = modifyTargetDistance;
+                }
+                m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * distance;
                 if (cameraMode == CameraMode.THIRD_VIEW) m_finalPosition += m_baseOffset;
             }
             else
