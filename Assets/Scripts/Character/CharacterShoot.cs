@@ -995,7 +995,7 @@ namespace Character
 
 
 
-            m_uiPlayerInfos.ActiveSpellCanalisationUIv2(GetMaxStack(stats), icon_Sprite[m_currentRotationIndex]);
+            m_uiPlayerInfos.ActiveSpellCanalisationUIv2(GetMaxStack(currentCloneSpellProfil), icon_Sprite[m_currentRotationIndex]);
 
             //if (m_CharacterMouvement.combatState) m_cameraBehavior.BlockZoom(true);
         }
