@@ -90,7 +90,19 @@ namespace SeekerOfSand.Tools
 
             return GameElement.NONE;
         }
-       
+
+        public static GameElement[] GetBaseElementsArray(GameElement objEnum)
+        {
+           List<GameElement > list = new List<GameElement>();
+            if (IsThisElementPresent(objEnum, GameElement.WATER)) list.Add(GameElement.WATER);
+            if (IsThisElementPresent(objEnum, GameElement.AIR)) list.Add(GameElement.AIR);
+            if (IsThisElementPresent(objEnum, GameElement.FIRE)) list.Add(GameElement.FIRE);
+            if (IsThisElementPresent(objEnum, GameElement.EARTH)) list.Add(GameElement.EARTH);
+
+            return list.ToArray();
+        }
+
+
 
         #endregion
     }
