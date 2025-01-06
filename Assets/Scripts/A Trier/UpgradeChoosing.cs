@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
+using SpellSystem;
+using Unity.VisualScripting;
 
 
 public class UpgradeChoosing : MonoBehaviour
@@ -14,9 +16,17 @@ public class UpgradeChoosing : MonoBehaviour
     [Header("UI Object")]
     public Image[] spellInBar = new Image[4];
     public Image spellUpgradeFocus;
+    public Image spellCurrentTierFocus;
+    public Image spellNextTierFocus;
+    public Image cadreCurrentTier;
+    public Image cadreNextTier;
     public Image[] spellChoseUpgrade = new Image[3];
+    private GuerhoubaGames.UI.TooltipTrigger tooltipCurrentTier;
+    private GuerhoubaGames.UI.TooltipTrigger tooltipNextTier;
     public TMPro.TMP_Text upgradePointText;
     public TMPro.TMP_Text[] upgradeSelectable = new TMPro.TMP_Text[3];
+
+    public Sprite[] spellTier = new Sprite[4];
 
     public EventSystem eventSystem;
     private UpgradeLevelingData m_upgradeLevelingData;
@@ -64,6 +74,8 @@ public class UpgradeChoosing : MonoBehaviour
         {
             uiUpgradeButton[i].OnEnter += SetModifySpellStat;
         }
+        tooltipCurrentTier = cadreCurrentTier.GetComponent<GuerhoubaGames.UI.TooltipTrigger>();
+        tooltipNextTier = cadreNextTier.GetComponent<GuerhoubaGames.UI.TooltipTrigger>();
     }
 
     public void OpenUpgradeUI()
@@ -83,7 +95,7 @@ public class UpgradeChoosing : MonoBehaviour
         SetBaseSpellStat(0);
 
         upgradePointText.text = m_upgradeLevelingData.upgradePoint.ToString();
-        spellUpgradeFocus.sprite = m_upgradeLevelingData.iconSpell[m_upgradeLevelingData.indexSpellFocus];
+
         for (int i = 0; i < 3; i++)
         {
             upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).name;
@@ -169,6 +181,7 @@ public class UpgradeChoosing : MonoBehaviour
             SpellSystem.StatData statData = spellProfil.statDatas[i];
             if(statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
         }
+        ChangeTierCadre(spellProfil);
         upgradeTextStatBase[0].text = textStatUpgrade;
     }
 
@@ -177,6 +190,7 @@ public class UpgradeChoosing : MonoBehaviour
         int indexSpell = m_upgradeLevelingData.upgradeChoose[index].indexSpellLink;
 
         SpellSystem.SpellProfil spellProfil = m_upgradeLevelingData.spellState[indexSpell];
+
         UpgradeObject stats = m_upgradeLevelingData.upgradeChoose[index];
 
         GlobalSoundManager.PlayOneShot(58, Vector3.zero);
@@ -196,7 +210,55 @@ public class UpgradeChoosing : MonoBehaviour
        
     }
 
+    public void ChangeTierCadre(SpellProfil data)
+    {
+        Sprite spellFocus = data.spell_Icon;
+        spellUpgradeFocus.sprite = spellFocus;
+        spellCurrentTierFocus.sprite = spellFocus;
+        spellNextTierFocus.sprite = spellFocus;
+        int currentTier = data.spellLevel % 4;
+        if (currentTier >= 3)
+        {
+            cadreCurrentTier.sprite = spellTier[currentTier];
+            cadreNextTier.sprite = spellTier[currentTier];
 
+
+        }
+        else
+        {
+            cadreCurrentTier.sprite = spellTier[currentTier];
+            cadreNextTier.sprite = spellTier[currentTier +1];
+
+        }
+
+
+
+        if(tooltipCurrentTier == null) { tooltipCurrentTier = spellCurrentTierFocus.GetComponent<GuerhoubaGames.UI.TooltipTrigger>(); }
+        if (tooltipNextTier == null) { tooltipNextTier = spellNextTierFocus.GetComponent<GuerhoubaGames.UI.TooltipTrigger>(); }
+
+        if (currentTier == 0)
+        {
+            if (data.levelSpells[currentTier] == null || data.levelSpells[currentTier+1] == null) return;
+
+            tooltipCurrentTier.content = "No additional effect yet";
+            tooltipNextTier.content = data.levelSpells[currentTier].description;
+        }
+        else if (currentTier > 0 && currentTier < 3)
+        {
+            if (data.levelSpells[currentTier-1] == null || data.levelSpells[currentTier] == null) return;
+
+            tooltipCurrentTier.content = data.levelSpells[currentTier-1].description;
+            tooltipNextTier.content = data.levelSpells[currentTier].description;
+        }
+        else if(currentTier >= 3)
+        {
+            if (data.levelSpells[2] == null) return;
+
+            tooltipCurrentTier.content = data.levelSpells[2].description;
+            tooltipNextTier.content = "Already max. No more additional effect";
+        }
+
+    }
     public void Update()
     {
 

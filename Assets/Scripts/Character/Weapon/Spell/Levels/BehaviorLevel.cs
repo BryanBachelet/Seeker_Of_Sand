@@ -19,6 +19,7 @@ namespace SpellSystem
     [CreateAssetMenu(fileName = "Behavior Level", menuName = "Spell/Behavior Level")]
     public class BehaviorLevel : LevelSpell
     {
+
         public BehaviorLevel()
         {
             LevelType = SpellLevelType.BEHAVIOR;

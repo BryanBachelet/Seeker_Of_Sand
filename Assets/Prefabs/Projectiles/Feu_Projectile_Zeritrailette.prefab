@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2559288265495686829}
@@ -131,8 +131,11 @@ MonoBehaviour:
   m_power: 100
   m_damage: 1
   m_indexSFX: 17
+  m_characterProfil: {fileID: 0}
   m_piercingMax: 0
   m_deltaTimeMove: 0
+  isDebugInstance: 0
+  vFXObject: {fileID: 0}
 --- !u!114 &-6831854356741464460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -639,6 +642,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 1b0d2099af9e0814b98038ce3a595a80, type: 2}
+    - target: {fileID: 7813860776056284807, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813860776056284807, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_Parameters.generateLightingData
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7813860776215824584, guid: 48c0bc741f0443345b961978ca2318bc,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size

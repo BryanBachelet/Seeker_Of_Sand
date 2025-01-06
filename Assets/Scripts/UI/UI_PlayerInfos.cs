@@ -42,6 +42,7 @@ namespace SeekerOfSand
             private Sprite lastSprite;
 
             public Animator upgradeScreenAnimator;
+            public TMP_Text textTier;
             public GameObject tierUpEffect;
             public Animator tierUpAnimation;
             public VisualEffect[] vfxTierUp = new VisualEffect[4];
@@ -86,8 +87,13 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo1");
+                    if (spellprofil.levelSpells[0] != null)
+                    {
+                        textTier.text = spellprofil.levelSpells[0].description;
+                    }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
+
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     
                 }
@@ -100,6 +106,10 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo2");
+                    if (spellprofil.levelSpells[1] != null)
+                    {
+                        textTier.text = spellprofil.levelSpells[1].description;
+                    }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
@@ -114,6 +124,7 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo3");
+                    if (spellprofil.levelSpells[2] != null) { textTier.text = spellprofil.levelSpells[2].description; }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);

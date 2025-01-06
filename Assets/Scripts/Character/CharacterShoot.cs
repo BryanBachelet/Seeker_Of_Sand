@@ -768,6 +768,16 @@ namespace Character
 
             }
 
+
+            if (areaInstance)
+            {
+
+                SpellSystem.AreaMeta areaMetaComponent = areaInstance.GetComponent<SpellSystem.AreaMeta>();
+                areaMetaComponent.RelaunchArea();
+                return false;
+                    
+            }
+
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);

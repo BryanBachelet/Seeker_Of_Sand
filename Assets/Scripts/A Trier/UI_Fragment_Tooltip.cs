@@ -89,10 +89,14 @@ public class UI_Fragment_Tooltip : MonoBehaviour
 
     public void SelectElement(GameObject artefactObject, ArtefactsInfos artefactInfo)
     {
-        Image artefactElement = artefactObject.transform.GetChild(0).gameObject.GetComponent<Image>();
-        artefactElement.gameObject.SetActive(true);
-        artefactElement.sprite = artefactInfo.icon;
-        artefactElement.color = colorOutlineByElement[GeneralTools.GetElementalArrayIndex( artefactInfo.gameElement,true)];
+        artefactObject.transform.GetChild(0).gameObject.SetActive(true);
+        artefactObject.GetComponentInChildren<Image>().sprite = artefactInfo.icon;
+        FragmentDisplay_Elemental artefactElement = artefactObject.GetComponentInChildren<FragmentDisplay_Elemental>();
+        artefactElement.ChangeFragmentDisplay(artefactInfo);
+
+
+        //artefactElement.sprite = artefactInfo.icon;
+        //artefactElement.color = colorOutlineByElement[GeneralTools.GetElementalArrayIndex( artefactInfo.gameElement,true)];
         
     }
 }
