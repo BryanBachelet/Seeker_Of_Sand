@@ -316,12 +316,12 @@ public class Projectile : MonoBehaviour
         }
         else if (other.gameObject.tag == "Dummy")
         {
-            dummy enemyTouch = other.GetComponent<dummy>();
+            Dummy_Behavior enemyTouch = other.GetComponent<Dummy_Behavior>();
 
             m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
-            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power, -1);
 
-            enemyTouch.currentHP -= m_damage;
+            DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
+            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -330,6 +330,7 @@ public class Projectile : MonoBehaviour
                 //Destroy(this.gameObject);
                 //willDestroy = true;
                 m_lifeTimer = m_lifeTime;
+                ApplyExplosion();
             }
         }
         else return;
@@ -343,11 +344,10 @@ public class Projectile : MonoBehaviour
         // Active Explosion
         if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
         {
-            float sizeArea = spellProfil.GetFloatStat(StatType.SizeExplosion);
+            float sizeArea = spellProfil.GetIntStat(StatType.SizeExplosion);
             Collider[] collider = new Collider[0];
             collider = Physics.OverlapSphere(transform.position, sizeArea, GameLayer.instance.enemisLayerMask);
             GameObject instance  = GamePullingSystem.SpawnObject(vFXExplosion, transform.position, Quaternion.identity);
-            instance.transform.localScale *= 2;
             for (int i = 0; i < collider.Length; i++)
             {
                 NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
@@ -356,7 +356,16 @@ public class Projectile : MonoBehaviour
 
                 m_characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, (GameElement)elementIndex);
                 DamageStatData damageStatData = new DamageStatData(spellProfil.GetIntStat(StatType.DamageAdditionel), objectType);
-                npcHealthComponent.ReceiveDamage(spellProfil.name, damageStatData, direction, 10, (int)sizeArea, (int)CharacterProfile.instance.stats.baseStat.damage);
+                if(collider[i].tag == "Dummy")
+                {
+                    Dummy_Behavior enemyTouch = collider[i].GetComponent<Dummy_Behavior>();
+                    enemyTouch.ReceiveDamage(damageSourceName, damageStatData, collider[i].transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+                }
+                else
+                {
+                    npcHealthComponent.ReceiveDamage(spellProfil.name, damageStatData, direction, 10, (int)sizeArea, (int)CharacterProfile.instance.stats.baseStat.damage);
+                }
+                
             }
         }
     }

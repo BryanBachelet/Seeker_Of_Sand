@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using GuerhoubaGames.GameEnum;
 using System.Globalization;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public struct TagData
@@ -302,7 +303,7 @@ namespace SpellSystem
 
                 spellProfil.SetupSpell();
             }
-                return spellProfil;
+            return spellProfil;
         }
 
         public void SetupSpell()
@@ -325,7 +326,7 @@ namespace SpellSystem
             List<ChainEffect> chainEffectsList = new List<ChainEffect>();
             if (levelSpells == null) return chainEffectsList.ToArray();
 
-            for (int i = 0; i < spellLevel  && i < levelSpells.Length; i++)
+            for (int i = 0; i < spellLevel && i < levelSpells.Length; i++)
             {
                 if (levelSpells[i] == null) continue;
 
@@ -680,7 +681,6 @@ namespace SpellSystem
 
 
         #region Stats setup Functions
-#if UNITY_EDITOR
         public void UpdateStatistics()
         {
 
@@ -698,6 +698,13 @@ namespace SpellSystem
             ManageStat(StatType.StackDuration, true);
             ManageStat(StatType.GainPerStack, true);
             ManageStat(StatType.Range, true);
+
+            statTypes = new StatType[statDatas.Count];
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                statTypes[i] = statDatas[i].stat;
+            }
+
 
         }
 
@@ -722,12 +729,11 @@ namespace SpellSystem
                 statData.stat = statToCheck;
                 statData.isVisible = isVisible;
                 statDatas.Add(statData);
-
-
             }
 
             return;
         }
+
 
         private void SetupSpellMouvement()
         {
@@ -832,7 +838,6 @@ namespace SpellSystem
         }
 
 
-#endif
         #endregion
     }
 }
