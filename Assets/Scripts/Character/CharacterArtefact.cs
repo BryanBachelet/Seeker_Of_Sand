@@ -178,6 +178,11 @@ public class CharacterArtefact : MonoBehaviour
         artefactAround_List.Add(newArtefactAround);
 
     }
+
+    public void RemoveFragment(int indexFragmentAround)
+    {
+        artefactAround_List.RemoveAt(indexFragmentAround);
+    }
     public void RemoveArtefact(int index)
     {
         artefactsList.RemoveAt(index);
@@ -189,6 +194,7 @@ public class CharacterArtefact : MonoBehaviour
     {
         int indexTargetArtefact = artefactsList.IndexOf(artefactsInfos);
         uiFragmentTooltip.RemoveFragment(indexTargetArtefact);
+        RemoveFragment(indexTargetArtefact);
 
         UnSetupArtefact(artefactsInfos);
         artefactsList.Remove(artefactsInfos);

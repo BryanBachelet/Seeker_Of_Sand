@@ -264,6 +264,7 @@ namespace GuerhoubaGames.UI
             anvilBehavior.MergeFragment();
             CleanMergeInterface();
             anvilBehavior.ClearAnvil();
+            //m_characterArtefact.SelectElement(fragment_List[currentFragmentNumber], artefactInfo);
 
         }
 
