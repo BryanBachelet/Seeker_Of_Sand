@@ -230,7 +230,6 @@ namespace Character
             m_totalCanalisationDuration = currentCloneSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime + m_deltaTimeFrame;
 
             m_aimModeState = AimMode.FullControl;
-
             if (m_canalisationType == CanalisationBarType.ByPart)
                 m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
         }
@@ -409,6 +408,7 @@ namespace Character
                 spellIndexSpecific.Add(i);
                 CreatePullObject(m_characterSpellBook.GetSpecificSpell(m_characterSpellBook.GetSpellCount() - 1));
                 SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
+               
             }
 
 
@@ -431,6 +431,7 @@ namespace Character
                     spellProfils.Add(m_characterSpellBook.GetSpecificSpell(i));
                     m_characterSpellBook.m_spellsRotationArray[i] = (m_characterSpellBook.GetSpecificSpell(i));
                     m_characterSpellBook.m_currentSpellInRotationCount++;
+                    icon_Sprite[i].transform.parent.gameObject.SetActive(true);
                 }
             }
             m_currentIndexCapsule = spellEquip[0];
@@ -438,6 +439,7 @@ namespace Character
             maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
 
+            RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
         }
 
         private void GenerateNewBuild()

@@ -277,6 +277,7 @@ namespace GuerhoubaGames.GameEnum
         Piercing = 3,
         Bouncing = 4,
         Physics = 5,
+        InfPiercing =6,
     }
 
     public enum MouvementBehavior
