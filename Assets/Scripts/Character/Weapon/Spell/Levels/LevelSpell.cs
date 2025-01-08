@@ -10,7 +10,8 @@ namespace SpellSystem
     {
         public SpellLevelType LevelType;
         public bool isPermanent;
-
+        [Header("Description")]
+        public string description;
         public static void SetupLevelEffect(LevelSpell[] levelSpells)
         {
             for (int i = 0; i < levelSpells.Length; i++)

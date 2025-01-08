@@ -15,6 +15,9 @@ namespace SpellSystem
         public AnimationCurve directionCurve;
         public float timeOfRotate = 1;
         public float autoGuideSpeed = 50;
+
+        [Range(0.1f, 10)]
+        public float sizeMultiplier = 1;
         public override void OnProjectileShoot(ProjectileShootData projectileEffectData)
         {
             countBeforeEffect++;
@@ -24,6 +27,8 @@ namespace SpellSystem
             GameObject instance = GamePullingSystem.SpawnObject(projectileEffectData.profil.objectToSpawn,
                 projectileEffectData.position, projectileEffectData.rotation * Quaternion.Euler(-135f, 0, Random.Range(-45f, -135f)));
 
+            Vector3 currentScale = instance.transform.localScale;
+            instance.transform.localScale = currentScale * sizeMultiplier;
             // Add script auto guide 
             Projectile baseProjectileBehavior = instance.GetComponent<Projectile>();
             baseProjectileBehavior.enabled = false;

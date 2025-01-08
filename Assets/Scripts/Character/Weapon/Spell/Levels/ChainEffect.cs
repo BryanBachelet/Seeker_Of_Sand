@@ -14,6 +14,7 @@ namespace SpellSystem
     [CreateAssetMenu(fileName = "Chain Effect Level", menuName = "Spell/Chain Effect Level")]
     public class ChainEffect : LevelSpell
     {
+
         public int countSpell = 1;
         public bool isUseOnThisSpell = false;
         private int useCount;

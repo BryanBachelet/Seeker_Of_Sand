@@ -6,6 +6,7 @@ using TMPro;
 using SpellSystem;
 using UnityEngine.VFX;
 using SeekerOfSand.Tools;
+using System.Threading.Tasks;
 namespace SeekerOfSand
 {
     namespace UI
@@ -41,6 +42,7 @@ namespace SeekerOfSand
             private Sprite lastSprite;
 
             public Animator upgradeScreenAnimator;
+            public TMP_Text textTier;
             public GameObject tierUpEffect;
             public Animator tierUpAnimation;
             public VisualEffect[] vfxTierUp = new VisualEffect[4];
@@ -78,15 +80,20 @@ namespace SeekerOfSand
                 if (spellprofil.spellLevel == 1)
                 {
                     tierUpEffect.SetActive(true);
-                    int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element,true);
+                    int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element, true);
                     for (int i = 0; i < vfxTierUp.Length; i++)
                     {
                         vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[indexElement]);
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo1");
+                    if (spellprofil.levelSpells[0] != null)
+                    {
+                        textTier.text = spellprofil.levelSpells[0].description;
+                    }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
+
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     
                 }
@@ -99,6 +106,10 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo2");
+                    if (spellprofil.levelSpells[1] != null)
+                    {
+                        textTier.text = spellprofil.levelSpells[1].description;
+                    }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
@@ -113,6 +124,7 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo3");
+                    if (spellprofil.levelSpells[2] != null) { textTier.text = spellprofil.levelSpells[2].description; }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
@@ -139,18 +151,21 @@ namespace SeekerOfSand
             #endregion
             private void Update()
             {
-                if(bufferFill)
+                
+                return;
+                if (bufferFill)
                 {
                     lastFillAmount = Mathf.Lerp(lastFillAmount, newFillAmount, 0.75f);
 
                     if (lastFillAmount - newFillAmount < 0.01f)
                     {
                         lastFillAmount = newFillAmount;
-                        bufferFill = false;
+                        //bufferFill = false;
                         lastColor = GetRandomColorByPixel(lastSprite);
                     }
-                    m_canalisationBar.fillAmount = lastFillAmount;
                     m_canalisationBar.color = lastColor;
+                    m_canalisationBar.fillAmount = lastFillAmount;
+
                 }
             }
             #region Spell Canalisation
@@ -161,9 +176,29 @@ namespace SeekerOfSand
                 lastSprite = spell.sprite;
                 m_canalisationSpell.sprite = lastSprite;
                 canalisationBarDisplay.SetBool("Canalisation", true);
-                if (stack < 8 && stack >0 )
+                if (stack < 8 && stack > 0)
                 {
                     m_canalisationBarSegment.sprite = canalisationBarreSprites[stack - 1];
+                }
+                else
+                {
+                    m_canalisationBarSegment.sprite = canalisationBarreSprites[6];
+                }
+            }
+
+
+            public void ActiveSpellCanalisationUIv2(int maxStack, Image spell)
+            {
+                m_canalisationBar.gameObject.SetActive(true);
+                m_canalisationBar.transform.parent.gameObject.SetActive(true);
+                lastSprite = spell.sprite;
+                m_canalisationSpell.sprite = lastSprite;
+                lastColor = GetRandomColorByPixel(lastSprite);
+                m_canalisationBar.color = lastColor;
+                canalisationBarDisplay.SetBool("Canalisation", true);
+                if (maxStack < 8 && maxStack > 0)
+                {
+                    m_canalisationBarSegment.sprite = canalisationBarreSprites[maxStack -1];
                 }
                 else
                 {
@@ -174,7 +209,7 @@ namespace SeekerOfSand
             public void UpdateSpellCanalisationUI(float value, int stack)
             {
                 newFillAmount = value;
-                if(newFillAmount != lastFillAmount) { bufferFill = true;  }
+                if (newFillAmount != lastFillAmount) { bufferFill = true; }
                 //m_canalisationBar.fillAmount = value;
             }
             public void DeactiveSpellCanalisation()
@@ -182,13 +217,21 @@ namespace SeekerOfSand
                 //m_canalisationBar.gameObject.SetActive(false);
                 m_canalisationBar.transform.parent.gameObject.SetActive(false);
                 canalisationBarDisplay.SetBool("Canalisation", false);
-                lastColor = new Vector4(0.25f,0.25f,0.25f,1);
+                lastColor = new Vector4(0.25f, 0.25f, 0.25f, 1);
             }
 
             public void AddLevelTaken()
             {
                 m_level += 1;
                 levelTaken.text = "" + m_level;
+            }
+
+            public void CalculateRatio(int currentStack, int maxStack, float stackTimerRatio)
+            {
+                float step = 1 / (float)maxStack;
+                float ratio = (currentStack * step) + (stackTimerRatio * step);
+                m_canalisationBar.fillAmount = ratio;
+                Debug.Log(ratio);
             }
 
             public void MinusLevelTaken()
@@ -211,7 +254,7 @@ namespace SeekerOfSand
             {
                 float widht = sprite.rect.width;
                 float height = sprite.rect.height;
-                Vector2 rndPosition = new Vector2(widht/2, height/2);
+                Vector2 rndPosition = new Vector2(widht / 2, height / 2);
                 Color colorByPixel = sprite.texture.GetPixel((int)rndPosition.x, (int)rndPosition.y);
 
                 return colorByPixel;
