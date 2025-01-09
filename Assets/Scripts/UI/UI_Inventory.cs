@@ -170,6 +170,7 @@ public class UI_Inventory : MonoBehaviour
     {
         fragmentUIViews[index].gameObject.SetActive(true);
         fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
+        m_characterArtefact.uiFragmentTooltip.SelectElement(m_fragmentToolTip.fragment_List[index], m_characterArtefact.artefactsList[index]);
 
     }
 

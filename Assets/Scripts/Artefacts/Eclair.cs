@@ -1,4 +1,5 @@
 using Character;
+using GuerhoubaGames;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using SeekerOfSand.Tools;
@@ -51,7 +52,7 @@ namespace Artefact
         {
             if (!m_artefactData.agent) return;
 
-            Enemies.NpcHealthComponent healthComponent = m_artefactData.agent.GetComponent<Enemies.NpcHealthComponent>();
+            IDamageReceiver healthComponent = m_artefactData.agent.GetComponent<IDamageReceiver>();
             ApplyEffect(healthComponent);
         }
 
@@ -67,7 +68,7 @@ namespace Artefact
 
             int indexEnemy = Random.Range(0, enemies.Length);
 
-            Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
+            IDamageReceiver healthComponent = enemies[indexEnemy].GetComponent<IDamageReceiver>();
             ApplyEffect(healthComponent);
         }
 
@@ -99,15 +100,15 @@ namespace Artefact
             }
 
 
-            Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
+            IDamageReceiver healthComponent = enemies[indexEnemy].GetComponent<IDamageReceiver>();
             ApplyEffect(healthComponent);
         }
 
-        private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
+        private void ApplyEffect(IDamageReceiver targetHealthComponent)
         {
             DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
             int indexElement = GeneralTools.GetElementalArrayIndex(m_artefactData.element,true);
-            if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, indexElement, (int)CharacterProfile.instance.stats.baseStat.damage);
+            if (targetHealthComponent !=null) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, indexElement, (int)CharacterProfile.instance.stats.baseStat.damage);
         }
 
         private void DestroyObject()

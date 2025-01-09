@@ -5,6 +5,7 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using Enemies;
 using System;
+using GuerhoubaGames;
 
 namespace SpellSystem
 {
@@ -31,18 +32,20 @@ namespace SpellSystem
         public bool asPreviewDecal;
         public Texture2D previewDecal;
         private SpellProfil profil;
-       
-       
+
+        private DamageCalculComponent m_damageCalculComponent;
+
 
         public void Awake()
         {
             m_areaMeta = GetComponent<AreaMeta>();
             m_areaMeta.OnSpawn += InitAreaData;
+            m_damageCalculComponent = GetComponent<DamageCalculComponent>();
         }
 
         public void InitAreaData()
         {
-             profil = m_areaMeta.areaData.spellProfil;
+            profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
@@ -71,7 +74,7 @@ namespace SpellSystem
         {
             Collider[] collider = new Collider[0];
 
-            
+
             if (areaType == AreaType.CIRCLE) collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask);
             if (areaType == AreaType.RECT)
             {
@@ -88,12 +91,16 @@ namespace SpellSystem
 
             for (int i = 0; i < collider.Length; i++)
             {
-                NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
+                IDamageReceiver npcHealthComponent = collider[i].GetComponent<IDamageReceiver>();
                 Vector3 direction = collider[i].transform.position - transform.position;
+                m_damageCalculComponent.damageStats.AddDamage(m_damage, m_element, DamageType.TEMPORAIRE);
+                DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage(m_element, m_areaMeta.areaData.objectType, collider[i].gameObject, m_areaMeta.areaData.spellProfil);
 
-                m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, m_element);
-                DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
-                npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                for (int j = 0; j < damageStatDatas.Length; j++)
+                {
+                    npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                }
+               
             }
         }
 
@@ -133,14 +140,14 @@ namespace SpellSystem
             }
             if (areaType == AreaType.RECT)
             {
-                Gizmos.matrix =  transform.localToWorldMatrix;
+                Gizmos.matrix = transform.localToWorldMatrix;
                 Vector3 halfArea = new Vector3(
                     (baseSize.x * Convert.ToInt32(!Xsize)) + m_sizeArea * Convert.ToInt32(Xsize),
-                    (baseSize.y* Convert.ToInt32(!Ysize)) +  m_sizeArea * Convert.ToInt32(Ysize),
+                    (baseSize.y * Convert.ToInt32(!Ysize)) + m_sizeArea * Convert.ToInt32(Ysize),
                     (baseSize.z * Convert.ToInt32(!Zsize)) + m_sizeArea * Convert.ToInt32(Zsize)
                     );
 
-                Vector3 position = Vector3.forward *( halfArea.z /2.0f);
+                Vector3 position = Vector3.forward * (halfArea.z / 2.0f);
                 Gizmos.DrawCube(position, halfArea);
             }
         }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 22144581197326238}
   - component: {fileID: 5773060180119421702}
   - component: {fileID: -7153980726677490353}
+  - component: {fileID: 5167933323332581662}
   m_Layer: 0
   m_Name: Rotating_Blade_Object
   m_TagString: Untagged
@@ -95,6 +96,23 @@ MonoBehaviour:
   isActive: 0
   id: -1
   bIsExtraSpawn: 0
+--- !u!114 &5167933323332581662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7659398128959048071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1001 &529684738303795207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -105,13 +123,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
       propertyPath: m_PropertySheet.m_Int.m_Array.Array.data[1].m_Value
-      value: 2
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Name
+      value: Duration
       objectReference: {fileID: 0}
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
@@ -121,6 +149,16 @@ PrefabInstance:
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Value
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Overridden
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
@@ -259,18 +297,38 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
-      propertyPath: m_PropertySheet.m_Int.m_Array.Array.data[1].m_Value
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
+      propertyPath: m_PropertySheet.m_Int.m_Array.Array.data[1].m_Value
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Name
+      value: Duration
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
-      value: 0.5
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Value
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1075185854892136088, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Overridden
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5736251915877674060, guid: 92c4a5bb513f13b448e342c3c9a2dd97,
         type: 3}

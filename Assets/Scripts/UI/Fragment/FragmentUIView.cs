@@ -62,7 +62,7 @@ namespace GuerhoubaGames.UI
             m_spriteImg.sprite = artefactsInfos.icon;
             m_nameText.text = artefactsInfos.nameArtefact;
 
-            tooltipTrigger.header = artefactsInfos.nameArtefact;
+            tooltipTrigger.header = "<u>"+artefactsInfos.nameArtefact+ "</u>" + "<br><#A6A6A6>Quantity: " + (artefactsInfos.additionialItemCount+1) + "<#FFFFFF>";
             tooltipTrigger.content = artefactsInfos.description;
             tooltipTrigger.IsActive = true;
         }

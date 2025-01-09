@@ -1,9 +1,10 @@
+using GuerhoubaGames;
 using GuerhoubaGames.Resources;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dummy_Behavior : MonoBehaviour
+public class Dummy_Behavior : MonoBehaviour ,IDamageReceiver
 {
     private HealthSystem m_healthSystem;
 

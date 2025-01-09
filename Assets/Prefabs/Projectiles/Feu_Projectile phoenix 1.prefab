@@ -378,6 +378,8 @@ GameObject:
   - component: {fileID: 899743071894539468}
   - component: {fileID: 4414201174725831263}
   - component: {fileID: -9108386492925121007}
+  - component: {fileID: 8320448980484826754}
+  - component: {fileID: 6654605771965183990}
   m_Layer: 15
   m_Name: Feu_Projectile phoenix 1
   m_TagString: Projectile
@@ -501,6 +503,8 @@ MonoBehaviour:
   m_deltaTimeMove: 1
   isDebugInstance: 0
   vFXObject: {fileID: 7395236191464785007}
+  vFXExplosion: {fileID: 0}
+  activeRetunrMovement: 0
 --- !u!114 &4414201174725831263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -528,6 +532,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86f4f4dd529826641bd8b22565615a87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8320448980484826754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815569696630512008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
+--- !u!114 &6654605771965183990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815569696630512008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1 &5790641189764642615
 GameObject:
   m_ObjectHideFlags: 0

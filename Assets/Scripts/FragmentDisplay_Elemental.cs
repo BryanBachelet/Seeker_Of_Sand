@@ -42,12 +42,18 @@ public class FragmentDisplay_Elemental : MonoBehaviour
         if(imageFragment == null) { imageFragment = this.GetComponent<Image>(); }
         imageFragment.sprite = artefactInfo.icon;
         GameElement baseElement = GeneralTools.GetFirstBaseElement(artefactInfo.gameElement);
+        GameElement[] baseElements = GeneralTools.GetBaseElementsArray(artefactInfo.gameElement);
         if (mat == null) mat = new Material(myMat); imageFragment.material = mat;
 
         mat.SetTexture("_Alpha", artefactInfo.icon.texture);
-        mat.SetColor("_Color1", ColorElement[GeneralTools.GetElementalArrayIndex(baseElement)]);
-        mat.SetFloat("_ColorNumber", 1);
-        ColorList.Add(ColorElement[GeneralTools.GetElementalArrayIndex(baseElement)]);
+        for(int i = 0; i < baseElements.Length; i++)
+        {
+            mat.SetColor("_Color" + (i+1), ColorElement[GeneralTools.GetElementalArrayIndex(baseElements[i])]);
+            ColorList.Add(ColorElement[GeneralTools.GetElementalArrayIndex(baseElements[i])]);
+        }
+
+        mat.SetFloat("_ColorNumber", baseElements.Length);
+
 
     }
     public void RemoveFill(int indexToRemove)

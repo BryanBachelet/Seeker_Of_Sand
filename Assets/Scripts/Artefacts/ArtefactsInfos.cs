@@ -3,12 +3,14 @@ using UnityEngine;
 using GuerhoubaGames.Resources;
 using System.Collections.Generic;
 using SeekerOfSand.Tools;
+using GuerhoubaGames;
 
 public enum ConditionsTrigger
 {
     OnHit,
     OnDeath,
     Contact,
+    StatGeneral,
 }
 
 public enum EntitiesTrigger
@@ -70,6 +72,10 @@ public class ArtefactsInfos : ScriptableObject
 
     public int damageArtefact = 1;
 
+
+    [Header("StatGeneral Features")]
+    public DamageType damageTypeBonus;
+
     // Reinforcement Variables
     [Header("ReInforce Feature Variables")]
     public bool isReinforceFeatureActivate = true;
@@ -86,10 +92,25 @@ public class ArtefactsInfos : ScriptableObject
     private List<GameObject> additionalEffectToSpawn = new List<GameObject>();
     public int idFamily = 0;
 
+    [HideInInspector]
+    public int damageToApply
+    {
+        get { return damageArtefact + damageGainPerCount * additionialItemCount; } 
+    }
+
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
         return clone;
+    }
+
+    public bool IsSameFragment(ArtefactsInfos artefactInfos)
+    {
+        if (artefactInfos.nameArtefact != nameArtefact || !isReinforceFeatureActivate)
+        {
+            return false;
+        }
+        return true;
     }
 
     public bool AddAdditionalFragment(ArtefactsInfos artefactInfos)
@@ -143,7 +164,7 @@ public class ArtefactsInfos : ScriptableObject
 
         if (entitiesTrigger != tag) return;
 
-        if (GeneralTools.IsThisElementPresent(gameElement, element) && element != GameElement.NONE) return;
+        if (!GeneralTools.IsThisElementPresent(gameElement, element) || element == GameElement.NONE) return;
 
 
         float change = Random.Range(0, 100.0f);
@@ -212,7 +233,7 @@ public class ArtefactsInfos : ScriptableObject
         artefactData.nameArtefact = nameArtefact;
         artefactData.elementIndex = (int)gameElement;
         artefactData.element = gameElement;
-        artefactData.damageToApply = damageArtefact + damageGainPerCount * additionialItemCount;
+        artefactData.damageToApply = damageToApply;
     }
 
     public bool CanApplyOnHit()

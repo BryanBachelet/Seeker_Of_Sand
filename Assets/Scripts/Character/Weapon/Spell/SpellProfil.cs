@@ -276,8 +276,15 @@ namespace SpellSystem
         [Header("Level Spell ")]
         public LevelSpell[] levelSpells;
 
+
+        [Header("Effect Proc")]
+        public bool OnContact = false;
+        public bool OnDeath = false;
+        public bool OnHit = true;
+
         [Header("Tag Parameters")]
         public TagData tagData;
+
 
 
         [Space]

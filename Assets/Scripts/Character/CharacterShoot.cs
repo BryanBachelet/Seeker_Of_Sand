@@ -13,6 +13,7 @@ using GuerhoubaGames.Resources;
 using Klak.Motion;
 using SeekerOfSand.Tools;
 using Unity.VisualScripting;
+using GuerhoubaGames;
 
 namespace Character
 {
@@ -408,7 +409,7 @@ namespace Character
                 spellIndexSpecific.Add(i);
                 CreatePullObject(m_characterSpellBook.GetSpecificSpell(m_characterSpellBook.GetSpellCount() - 1));
                 SpellManager.RemoveSpecificSpellFromSpellPool(spellIndexGeneral[i]);
-               
+
             }
 
 
@@ -770,19 +771,13 @@ namespace Character
 
             }
 
-
-            if (areaInstance)
-            {
-
-                SpellSystem.AreaMeta areaMetaComponent = areaInstance.GetComponent<SpellSystem.AreaMeta>();
-                areaMetaComponent.RelaunchArea();
-                return false;
-                    
-            }
-
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
+
+            DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
+            damageCalculComponent.Init(GetComponent<CharacterDamageComponent>(), this,spellProfil);
+
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 SpellSystem.DOTData dataDot = new SpellSystem.DOTData();
@@ -824,7 +819,7 @@ namespace Character
 
                 Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
-               
+
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
                     position = m_characterAim.lastRawPosition + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
@@ -833,18 +828,21 @@ namespace Character
 
                 if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.RANDOM)
                 {
-                    rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(Random.Range(0,360), transformUsed.up);
+                    rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(Random.Range(0, 360), transformUsed.up);
 
                 }
 
-                    GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
+                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
+                DamageCalculComponent damageCalculComponent = projectileCreate.GetComponent<DamageCalculComponent>();
+
+                damageCalculComponent.Init(GetComponent<CharacterDamageComponent>(), this, spellProfil);
                 if (projectileCreate.GetComponent<Projectile>())
                 {
                     ProjectileData data = FillProjectileData(spellProfil, 0, angle, transformUsed);
                     projectileCreate.GetComponent<Projectile>().SetProjectile(data, this.m_chracterProfil);
-                    data.characterShoot =this;
+                    data.characterShoot = this;
                     foreach (BehaviorLevel behaviorLevel in behaviorLevels)
                     {
                         ProjectileShootData projectileShootData = new ProjectileShootData();
@@ -902,6 +900,10 @@ namespace Character
             Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             GameObject areaInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
+
+
+            DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
+            damageCalculComponent.Init(GetComponent<CharacterDamageComponent>(), this, spellProfil);
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, position);
             SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
@@ -1065,8 +1067,8 @@ namespace Character
 
             float ratio = (float)(m_currentStack[m_currentRotationIndex] / GetMaxStack(currentCloneSpellProfil));
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
-           //m_characterAim.vfxCast.SetFloat("Progress", ratio);
-           //m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
+            //m_characterAim.vfxCast.SetFloat("Progress", ratio);
+            //m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
             m_uiPlayerInfos.DeactiveSpellCanalisation();
 
             m_deltaTimeFrame = UnityEngine.Time.deltaTime;

@@ -10,6 +10,7 @@ using Enemies;
 using SpellSystem;
 using UnityEngine.Profiling;
 using UnityEditor.Purchasing;
+using GuerhoubaGames;
 
 public struct ProjectileData
 {
@@ -83,6 +84,7 @@ public class Projectile : MonoBehaviour
 
     public GameObject vFXObject;
     public GameObject vFXExplosion;
+    private DamageCalculComponent m_damageCalculComponent;
 
     void Update()
     {
@@ -140,6 +142,8 @@ public class Projectile : MonoBehaviour
         if (vFXObject != null) vFXObject.transform.rotation *= Quaternion.Euler(spellProfil.angleRotation);
         damageSourceName = spellProfil.name;
         elementIndex = (int)spellProfil.tagData.element;
+
+        m_damageCalculComponent = GetComponent<DamageCalculComponent>();
         if (objectType == CharacterObjectType.FRAGMENT)
         {
             damageSourceName = data.nameFragment;
@@ -162,7 +166,7 @@ public class Projectile : MonoBehaviour
         m_initialScale = transform.localScale;
 
         damageSourceName = "NoName";
-
+        m_damageCalculComponent = GetComponent<DamageCalculComponent>();
         if (objectType == CharacterObjectType.FRAGMENT)
         {
             damageSourceName = data.nameFragment;
@@ -266,12 +270,15 @@ public class Projectile : MonoBehaviour
         {
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
+            m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
+            DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType,enemyTouch.gameObject,spellProfil);
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
-            DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+            for (int i = 0; i < damageStatDatas.Length; i++)
+            {
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+            }
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -318,10 +325,15 @@ public class Projectile : MonoBehaviour
         {
             Dummy_Behavior enemyTouch = other.GetComponent<Dummy_Behavior>();
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
 
-            DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+            m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
+            DamageStatData[] damageStatDatas =  m_damageCalculComponent.CalculDamage((GameElement)elementIndex,objectType, enemyTouch.gameObject, spellProfil);
+
+            for (int i = 0; i < damageStatDatas.Length; i++)
+            {
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+            }
+           
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -342,7 +354,7 @@ public class Projectile : MonoBehaviour
     protected void ApplyExplosion()
     {
         // Active Explosion
-        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+        if (objectType == CharacterObjectType.SPELL && spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
         {
             float sizeArea = spellProfil.GetIntStat(StatType.SizeExplosion);
             Collider[] collider = new Collider[0];
