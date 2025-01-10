@@ -4,6 +4,7 @@ using UnityEngine;
 using GuerhoubaTools;
 using GuerhoubaGames.Resources;
 using SeekerOfSand.Tools;
+using GuerhoubaGames.GameEnum;
 
 public class CharacterArtefact : MonoBehaviour
 {
@@ -149,7 +150,7 @@ public class CharacterArtefact : MonoBehaviour
         CreatePull(clone);
 
         LogSystem.LogMsg("Artefact add  is " + clone.name);
-        GenerateNewArtefactAround(clone);
+        GenerateNewArtefactAround(clone.gameElement);
         SetupArtefact(clone);
         uiFragmentTooltip.AddNewFragment(clone);
     }
@@ -171,17 +172,20 @@ public class CharacterArtefact : MonoBehaviour
 
     }
 
-    public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
+    public void GenerateNewArtefactAround(GameElement gameElement)
     {
-        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
+        //GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
+        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[1], transform.position, transform.rotation);
+        newArtefactAround.GetComponent<fragmentMiniElemental>().SelectElement(gameElement);
         newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
         artefactAround_List.Add(newArtefactAround);
-
     }
 
     public void RemoveFragment(int indexFragmentAround)
     {
-        artefactAround_List.RemoveAt(indexFragmentAround);
+        GameObject fragmentToRemove = artefactAround_List[indexFragmentAround];
+        artefactAround_List.Remove(fragmentToRemove);
+        Destroy(fragmentToRemove);
     }
     public void RemoveArtefact(int index)
     {

@@ -5,6 +5,7 @@ using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 using UnityEngine.Rendering;
+using System;
 
 public struct AnvilInfos
 {
@@ -291,7 +292,7 @@ public class AnvilBehavior : InteractionInterface
         string sufixName = currentName.Substring(currentName.IndexOf(" "), currentName.Length - currentName.IndexOf(" "));
 
         anvilInfo.artefactsInfosToMerge[0].nameArtefact = FragmentUIRessources.instance.prefixElementNamesArray[(int)m_cloneMergeFragment.gameElement] + sufixName;
-
+        m_uiInventory.m_characterArtefact.GenerateNewArtefactAround(m_cloneMergeFragment.gameElement);
         m_uiInventory.ActualizeInventory();
         m_uiInventory.RemoveFragmentConditionalUse();
 

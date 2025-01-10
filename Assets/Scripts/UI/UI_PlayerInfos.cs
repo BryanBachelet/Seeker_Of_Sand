@@ -231,7 +231,6 @@ namespace SeekerOfSand
                 float step = 1 / (float)maxStack;
                 float ratio = (currentStack * step) + (stackTimerRatio * step);
                 m_canalisationBar.fillAmount = ratio;
-                Debug.Log(ratio);
             }
 
             public void MinusLevelTaken()

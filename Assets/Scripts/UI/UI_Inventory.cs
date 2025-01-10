@@ -23,7 +23,7 @@ public class UI_Inventory : MonoBehaviour
 
     private Character.CharacterSpellBook m_characterSpellBool;
     private Character.CharacterShoot m_characterShoot;
-    private CharacterArtefact m_characterArtefact;
+    [HideInInspector] public CharacterArtefact m_characterArtefact;
     private UI_Fragment_Tooltip m_fragmentToolTip;
 
     #region Resources variables
@@ -171,6 +171,7 @@ public class UI_Inventory : MonoBehaviour
         fragmentUIViews[index].gameObject.SetActive(true);
         fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
         m_characterArtefact.uiFragmentTooltip.SelectElement(m_fragmentToolTip.fragment_List[index], m_characterArtefact.artefactsList[index]);
+
 
     }
 

@@ -46,7 +46,8 @@ public class FragmentDisplay_Elemental : MonoBehaviour
         if (mat == null) mat = new Material(myMat); imageFragment.material = mat;
 
         mat.SetTexture("_Alpha", artefactInfo.icon.texture);
-        for(int i = 0; i < baseElements.Length; i++)
+        ColorList.Clear();
+        for (int i = 0; i < baseElements.Length; i++)
         {
             mat.SetColor("_Color" + (i+1), ColorElement[GeneralTools.GetElementalArrayIndex(baseElements[i])]);
             ColorList.Add(ColorElement[GeneralTools.GetElementalArrayIndex(baseElements[i])]);
