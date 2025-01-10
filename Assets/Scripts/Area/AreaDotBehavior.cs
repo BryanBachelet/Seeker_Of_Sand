@@ -67,10 +67,10 @@ namespace SpellSystem
         public void InitComponent()
         {
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
-            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            profil = m_areaMeta.areaData.spellProfil;
+            if (profil.tagData.EqualsSpellNature(SpellNature.SUMMON))
                 m_summonMeta = GetComponent<SummonsMeta>();
 
-            profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
@@ -78,16 +78,16 @@ namespace SpellSystem
             if (profil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
-                m_hitMaxCount = m_DotMeta.dotData.currentHitCount;
+                m_hitMaxCount = m_DotMeta.dotData.currentMaxHitCount;
             }
 
             if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
-                m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
+                m_sizeArea = profil.GetFloatStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
             }
 
-            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            if (profil.tagData.EqualsSpellNature(SpellNature.SUMMON))
             {
                 m_hitMaxCount = (int)(profil.GetFloatStat(StatType.LifeTimeSummon) / m_hitFrequencyTime);
                 m_summonMeta.OnSpecialSkill += ApplyAreaDamage;

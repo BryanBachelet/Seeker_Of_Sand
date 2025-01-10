@@ -18,21 +18,21 @@ namespace SpellSystem
 
         [Range(0.1f, 10)]
         public float sizeMultiplier = 1;
-        public override void OnProjectileShoot(ProjectileShootData projectileEffectData)
+        public override void OnProjectileShoot(ProjectileShootData projectileEffectData, GameObject lastProjectilSpawn)
         {
             countBeforeEffect++;
             if (countBeforeEffect < projectileCountBeforeEffect) return;
 
             countBeforeEffect = 0;
-            GameObject instance = GamePullingSystem.SpawnObject(projectileEffectData.profil.objectToSpawn,
+            GameObject instanceSpawn = GamePullingSystem.SpawnObject(projectileEffectData.profil.objectToSpawn,
                 projectileEffectData.position, projectileEffectData.rotation * Quaternion.Euler(-135f, 0, Random.Range(-45f, -135f)));
 
-            Vector3 currentScale = instance.transform.localScale;
-            instance.transform.localScale = currentScale * sizeMultiplier;
+            Vector3 currentScale = instanceSpawn.transform.localScale;
+            instanceSpawn.transform.localScale = currentScale * sizeMultiplier;
             // Add script auto guide 
-            Projectile baseProjectileBehavior = instance.GetComponent<Projectile>();
+            Projectile baseProjectileBehavior = instanceSpawn.GetComponent<Projectile>();
             baseProjectileBehavior.enabled = false;
-            ProjectileAutoTarget projectileAutoTarget = instance.AddComponent<ProjectileAutoTarget>();
+            ProjectileAutoTarget projectileAutoTarget = instanceSpawn.AddComponent<ProjectileAutoTarget>();
 
             projectileAutoTarget.SetProjectile(projectileEffectData.projectileData, null);
             projectileAutoTarget.isTemporary = true;

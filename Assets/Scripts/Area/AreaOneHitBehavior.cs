@@ -6,6 +6,7 @@ using GuerhoubaGames.Resources;
 using Enemies;
 using System;
 using GuerhoubaGames;
+using TMPro;
 
 namespace SpellSystem
 {
@@ -24,6 +25,8 @@ namespace SpellSystem
         private int m_damage = 0;
         private GameElement m_element;
 
+        private bool isDestroing;
+
         [Header("Debug Paraemters")]
         public bool isDebugActive;
         public Color color;
@@ -34,6 +37,7 @@ namespace SpellSystem
         private SpellProfil profil;
 
         private DamageCalculComponent m_damageCalculComponent;
+        public GameObject ObjectToSpawnAtDeath;
 
 
         public void Awake()
@@ -49,19 +53,45 @@ namespace SpellSystem
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
-
-            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+           
+;            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
             }
+
+            transform.localScale += Vector3.one * .1f * (int)(m_sizeArea / 10);
         }
 
         void Update()
         {
+            if (isDestroing) return;
             if (m_timerBeforeHit > timeBeforeHit)
             {
                 ApplyAreaDamage();
+
+
+                if (ObjectToSpawnAtDeath != null)
+                {
+
+                    GameObject instance = GamePullingSystem.SpawnObject(ObjectToSpawnAtDeath, transform.position, transform.rotation);
+                    DOTMeta dotMeta = instance.GetComponent<DOTMeta>();
+                    if (dotMeta)
+                    {
+                        dotMeta.dotData.characterShoot = m_areaMeta.areaData.characterShoot;
+                        dotMeta.dotData.currentMaxHitCount = profil.GetIntStat(StatType.HitNumber);
+                        dotMeta.dotData.spellProfil = profil;
+
+                    }
+                    AreaMeta areaMeta = instance.GetComponent<AreaMeta>();
+                    if (areaMeta)
+                    {
+                        areaMeta.areaData = m_areaMeta.areaData;
+                        areaMeta.OnSpawn?.Invoke();
+                    }
+                   
+                }
+                isDestroing = true;
                 ActiveDeath();
             }
             else
@@ -100,13 +130,15 @@ namespace SpellSystem
                 {
                     npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
                 }
-               
+
             }
         }
 
         protected virtual void ResetArea()
         {
             m_timerBeforeHit = 0.0f;
+            isDestroing = false;
+            transform.localScale -= Vector3.one *.2f * (int)(m_sizeArea / 10);
         }
 
 
@@ -133,10 +165,10 @@ namespace SpellSystem
         {
             if (!isDebugActive) return;
 
-            Gizmos.color = new Color(color.r, color.g, color.b, transparency);
+            Gizmos.color = new Color(color.r, color.g, color.b, color.a);
             if (areaType == AreaType.CIRCLE)
             {
-                Gizmos.DrawSphere(transform.position, m_sizeArea);
+                Gizmos.DrawWireSphere(transform.position, m_sizeArea);
             }
             if (areaType == AreaType.RECT)
             {

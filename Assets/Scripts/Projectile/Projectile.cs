@@ -356,7 +356,7 @@ public class Projectile : MonoBehaviour
         // Active Explosion
         if (objectType == CharacterObjectType.SPELL && spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
         {
-            float sizeArea = spellProfil.GetIntStat(StatType.SizeExplosion);
+            float sizeArea = spellProfil.GetFloatStat(StatType.SizeExplosion);
             Collider[] collider = new Collider[0];
             collider = Physics.OverlapSphere(transform.position, sizeArea, GameLayer.instance.enemisLayerMask);
             GameObject instance  = GamePullingSystem.SpawnObject(vFXExplosion, transform.position, Quaternion.identity);

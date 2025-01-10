@@ -84,6 +84,9 @@ public struct TagData
             case SpellTagOrder.SpellNature1:
                 return (int)spellNatureType1;
                 break;
+            case SpellTagOrder.SpellNature2:
+                return (int)spellNatureType2;
+                break;
             case SpellTagOrder.SpellProjectileTrajectory:
                 return (int)spellProjectileTrajectory;
                 break;
@@ -132,6 +135,9 @@ public struct TagData
                 break;
             case SpellTagOrder.SpellNature1:
                 spellNatureType1 = (SpellNature)value;
+                break;
+            case SpellTagOrder.SpellNature2:
+                spellNatureType2 = (SpellNature)value;
                 break;
             case SpellTagOrder.SpellProjectileTrajectory:
                 spellProjectileTrajectory = (SpellProjectileTrajectory)value;
@@ -399,6 +405,18 @@ namespace SpellSystem
             spellLevel++;
             spellExpNextLevel = spellExp + spellExpCountPerLevel;
 
+        }
+
+        public float GetSize()
+        {
+            if (!HasStats(StatType.Size))
+                return 1;
+
+            if (tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+            {
+                return GetFloatStat(StatType.SizeExplosion);
+            }
+            return GetFloatStat(StatType.Size);
         }
 
         public void GainLevel(int index)

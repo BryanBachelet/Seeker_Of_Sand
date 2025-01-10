@@ -64,6 +64,7 @@ namespace GuerhoubaGames
         [HideInInspector] private DamageCalculData m_earthDamage;
 
         [HideInInspector] public int damageBonusGeneral;
+        [HideInInspector] public int damageTemporaireGeneral;
         [HideInInspector] public float generalModificator;
 
         [HideInInspector] public bool OnDeath;
@@ -124,6 +125,7 @@ namespace GuerhoubaGames
 
             a.generalModificator += b.generalModificator;
             a.damageBonusGeneral += b.damageBonusGeneral;
+            a.damageTemporaireGeneral += b.damageTemporaireGeneral;
 
             a.OnContact = a.OnContact || b.OnContact;
             a.OnDeath = a.OnDeath || b.OnDeath;
@@ -144,6 +146,15 @@ namespace GuerhoubaGames
             }
 
             return damageCalc.ToArray();
+        }
+
+        public void ResetTempDamage()
+        {
+            for (int i = 0; i < m_damageCalculDatas.Length; i++)
+            {
+                m_damageCalculDatas[i].tempDamage = 0;
+            }
+            damageTemporaireGeneral = 0;
         }
     }
 
@@ -182,7 +193,7 @@ namespace GuerhoubaGames
             for (int i = 0; i < damageCalculDataArray.Length; i++)
             {
                 allElement = allElement | damageCalculDataArray[i].element;
-                int totalDamage = damageCalculDataArray[i].damage + damageCalculDataArray[i].tempDamage + damageCalculDataArray[i].bonusDamage + damageStats.damageBonusGeneral;
+                int totalDamage = damageCalculDataArray[i].damage + damageCalculDataArray[i].tempDamage + damageCalculDataArray[i].bonusDamage + damageStats.damageBonusGeneral + damageStats.damageTemporaireGeneral;
                 totalDamage = Mathf.RoundToInt(totalDamage *  (1.0f + damageCalculDataArray[i].modificator + damageStats.generalModificator));
                 damageStatDatas[i] = new DamageStatData(totalDamage, typeObj);
                 damageStatDatas[i].element = damageCalculDataArray[i].element;

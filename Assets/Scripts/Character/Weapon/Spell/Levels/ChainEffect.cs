@@ -19,6 +19,7 @@ namespace SpellSystem
         public bool isUseOnThisSpell = false;
         private int useCount;
         [HideInInspector] public bool hasBeenAdd;
+        [HideInInspector] public SpellProfil launchSpellProfil;
         public ChainEffect()
         {
             LevelType = SpellLevelType.CHAIN_EFFECT;
@@ -47,7 +48,7 @@ namespace SpellSystem
             useCount = 0;
         }
 
-        public void Apply(SpellProfil spell)
+        public void Apply(GameObject player, SpellProfil spell)
         {
 
             if (hasBeenAdd)
@@ -77,7 +78,7 @@ namespace SpellSystem
                 if (levelSpells[i].LevelType == SpellLevelType.BEHAVIOR)
                 {
                     BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[i]);
-                    //statsLevel.OnUpgradeGain();
+                    statsLevel.OnEffectChain(player, spell,launchSpellProfil);
                 }
             }
 

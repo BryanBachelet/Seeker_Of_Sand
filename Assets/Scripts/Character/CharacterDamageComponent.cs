@@ -15,5 +15,10 @@ namespace Character
         {
             m_damageStats.AddDamage(damage, element, damageType);
         }
+
+        public void ResetDamage()
+        {
+            m_damageStats.ResetTempDamage();
+        }
     }
 }

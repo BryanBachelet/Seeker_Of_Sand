@@ -12,7 +12,6 @@ using SpellSystem;
 using GuerhoubaGames.Resources;
 using Klak.Motion;
 using SeekerOfSand.Tools;
-using Unity.VisualScripting;
 using GuerhoubaGames;
 
 namespace Character
@@ -183,6 +182,7 @@ namespace Character
         private CharacterSummonManager m_characterSummmonManager;
 
         private SmoothFollow bookSmoothFollow;
+        private CharacterDamageComponent m_characterDamageComponent;
 
         #region Unity Functions
 
@@ -375,6 +375,7 @@ namespace Character
             m_uiPlayerInfos = uiManager.GetComponent<UI_PlayerInfos>();
             m_CharacterAnimator = avatarTransform.GetComponent<Animator>();
             m_BookAnimator = bookTransform.GetComponent<Animator>();
+            m_characterDamageComponent = GetComponent<CharacterDamageComponent>();
             m_clockImage = m_uiPlayerInfos.ReturnClock();
             m_textStack = m_uiPlayerInfos.ReturnStack();
             if (m_BookAnimator.GetComponent<SmoothFollow>()) m_BookAnimator.GetComponent<SmoothFollow>();
@@ -760,7 +761,14 @@ namespace Character
         public bool ShootAttackDot(int capsuleIndex)
         {
             SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
-
+            BehaviorLevel[] behaviorLevels;
+            {
+                BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
+                BehaviorLevel[] behaviorLevels2 = m_characterChainEffect.GetAllBehaviorLevel();
+                behaviorLevels = new BehaviorLevel[behaviorLevels1.Length + behaviorLevels2.Length];
+                behaviorLevels1.CopyTo(behaviorLevels, 0);
+                behaviorLevels2.CopyTo(behaviorLevels, behaviorLevels1.Length);
+            }
 
             if (areaInstance)
             {
@@ -776,14 +784,14 @@ namespace Character
             areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
-            damageCalculComponent.Init(GetComponent<CharacterDamageComponent>(), this,spellProfil);
+            damageCalculComponent.Init(m_characterDamageComponent, this,spellProfil);
 
             if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 SpellSystem.DOTData dataDot = new SpellSystem.DOTData();
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
-                dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
+                dataDot.currentMaxHitCount = m_currentStack[m_currentRotationIndex];
                 SpellSystem.DOTMeta dOTMeta = areaInstance.GetComponent<SpellSystem.DOTMeta>();
                 dOTMeta.dotData = dataDot;
                 dOTMeta.ResetOnSpawn();
@@ -793,6 +801,17 @@ namespace Character
             SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
             areaMeta.areaData = data;
             areaMeta.ResetOnSpawn();
+
+            foreach (BehaviorLevel behaviorLevel in behaviorLevels)
+            {
+                ProjectileShootData projectileShootData = new ProjectileShootData();
+                projectileShootData.position = areaInstance.transform.position;
+                projectileShootData.rotation = rot;
+                projectileShootData.profil = spellProfil;
+                //projectileShootData.projectileData = data;
+
+                behaviorLevel.OnProjectileShoot(projectileShootData, areaInstance);
+            }
 
             return false;
         }
@@ -808,7 +827,16 @@ namespace Character
 
 
             SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
-            BehaviorLevel[] behaviorLevels = spellProfil.GetBehaviorsLevels();
+            BehaviorLevel[] behaviorLevels;
+            {
+                BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
+                BehaviorLevel[] behaviorLevels2 = m_characterChainEffect.GetAllBehaviorLevel();
+                behaviorLevels = new BehaviorLevel[behaviorLevels1.Length + behaviorLevels2.Length];
+                behaviorLevels1.CopyTo(behaviorLevels, 0);
+                behaviorLevels2.CopyTo(behaviorLevels, behaviorLevels1.Length);
+            }
+
+           
             float angle = GetShootAngle(spellProfil);
             int mod = GetStartIndexProjectile(spellProfil);
 
@@ -828,7 +856,7 @@ namespace Character
 
                 if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.RANDOM)
                 {
-                    rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(Random.Range(0, 360), transformUsed.up);
+                    rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(UnityEngine.Random.Range(0, 360), transformUsed.up);
 
                 }
 
@@ -837,7 +865,7 @@ namespace Character
 
                 DamageCalculComponent damageCalculComponent = projectileCreate.GetComponent<DamageCalculComponent>();
 
-                damageCalculComponent.Init(GetComponent<CharacterDamageComponent>(), this, spellProfil);
+                damageCalculComponent.Init(m_characterDamageComponent, this, spellProfil);
                 if (projectileCreate.GetComponent<Projectile>())
                 {
                     ProjectileData data = FillProjectileData(spellProfil, 0, angle, transformUsed);
@@ -851,7 +879,20 @@ namespace Character
                         projectileShootData.profil = spellProfil;
                         projectileShootData.projectileData = data;
 
-                        behaviorLevel.OnProjectileShoot(projectileShootData);
+                        behaviorLevel.OnProjectileShoot(projectileShootData,projectileCreate);
+                    }
+                }
+                else
+                {
+                    foreach (BehaviorLevel behaviorLevel in behaviorLevels)
+                    {
+                        ProjectileShootData projectileShootData = new ProjectileShootData();
+                        projectileShootData.position = position;
+                        projectileShootData.rotation = rot;
+                        projectileShootData.profil = spellProfil;
+                        //projectileShootData.projectileData = data;
+
+                        behaviorLevel.OnProjectileShoot(projectileShootData, projectileCreate);
                     }
                 }
 
@@ -903,7 +944,7 @@ namespace Character
 
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
-            damageCalculComponent.Init(GetComponent<CharacterDamageComponent>(), this, spellProfil);
+            damageCalculComponent.Init(m_characterDamageComponent, this, spellProfil);
 
             SpellSystem.AreaData data = FillAreaData(spellProfil, position);
             SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
@@ -963,7 +1004,7 @@ namespace Character
                 SpellSystem.DOTData dataDot = new SpellSystem.DOTData();
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
-                dataDot.currentHitCount = m_currentStack[m_currentRotationIndex];
+                dataDot.currentMaxHitCount = m_currentStack[m_currentRotationIndex];
                 SpellSystem.DOTMeta dOTMeta = summonInstance.GetComponent<SpellSystem.DOTMeta>();
                 dOTMeta.dotData = dataDot;
                 dOTMeta.ResetOnSpawn();
@@ -1002,7 +1043,7 @@ namespace Character
             ChainEffect[] chainEffectArray = currentCloneSpellProfil.GetChainEffects();
             for (int i = 0; i < chainEffectArray.Length; i++)
             {
-                m_characterChainEffect.AddChainEffect(chainEffectArray[i]);
+                m_characterChainEffect.AddChainEffect(chainEffectArray[i],currentCloneSpellProfil);
             }
 
             m_characterChainEffect.ApplyChainEffect(currentCloneSpellProfil);
@@ -1031,7 +1072,7 @@ namespace Character
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
             areaInstance = null;
-
+            m_characterDamageComponent.ResetDamage();
             if (!m_activeSpellLoad)
             {
                 m_currentIndexCapsule = ChangeProjecileIndex();
