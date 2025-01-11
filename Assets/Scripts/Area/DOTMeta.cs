@@ -9,7 +9,7 @@ namespace SpellSystem
     {
         public Character.CharacterShoot characterShoot;
         public SpellProfil spellProfil;
-        public int currentHitCount;
+        public int currentMaxHitCount;
     }
 
 

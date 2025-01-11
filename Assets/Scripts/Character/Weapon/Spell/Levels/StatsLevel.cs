@@ -52,6 +52,7 @@ namespace SpellSystem
         {
 
             spellProfil.tagData.ChangeTag(tagDataToChange);
+            spellProfil.UpdateStatistics();
 
             for (int i = 0; i < statTypes.Length; i++)
             {

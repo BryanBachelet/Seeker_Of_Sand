@@ -3,6 +3,7 @@ using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class fragmentMiniElemental : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class fragmentMiniElemental : MonoBehaviour
 
     private float tempsEcouleSwapColor = 0;
     private int currentColorUse = 0;
+
+    [HideInInspector] public ArtefactsInfos m_artefactInfo;
+    [SerializeField] private VisualEffect m_vfxActivation;
     // Start is called before the first frame update
     void Start()
     {
@@ -77,7 +81,6 @@ public class fragmentMiniElemental : MonoBehaviour
             materialGlassUse.SetColor("_Color", glassColor);
             materialNoiseUse.SetColor("_Color", noiseColor);
         }
-        Debug.Log("Elements are setup");
     }
 
     public void SelectElement(GameElement elementToUse)
@@ -104,5 +107,6 @@ public class fragmentMiniElemental : MonoBehaviour
         {
             noise_Mesh[j].material = materialNoiseUse;
         }
+        m_artefactInfo.effectActivation = m_vfxActivation;
     }
 }

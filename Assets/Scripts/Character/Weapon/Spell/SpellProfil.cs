@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using GuerhoubaGames.GameEnum;
 using System.Globalization;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public struct TagData
@@ -83,6 +84,9 @@ public struct TagData
             case SpellTagOrder.SpellNature1:
                 return (int)spellNatureType1;
                 break;
+            case SpellTagOrder.SpellNature2:
+                return (int)spellNatureType2;
+                break;
             case SpellTagOrder.SpellProjectileTrajectory:
                 return (int)spellProjectileTrajectory;
                 break;
@@ -131,6 +135,9 @@ public struct TagData
                 break;
             case SpellTagOrder.SpellNature1:
                 spellNatureType1 = (SpellNature)value;
+                break;
+            case SpellTagOrder.SpellNature2:
+                spellNatureType2 = (SpellNature)value;
                 break;
             case SpellTagOrder.SpellProjectileTrajectory:
                 spellProjectileTrajectory = (SpellProjectileTrajectory)value;
@@ -275,8 +282,15 @@ namespace SpellSystem
         [Header("Level Spell ")]
         public LevelSpell[] levelSpells;
 
+
+        [Header("Effect Proc")]
+        public bool OnContact = false;
+        public bool OnDeath = false;
+        public bool OnHit = true;
+
         [Header("Tag Parameters")]
         public TagData tagData;
+
 
 
         [Space]
@@ -302,7 +316,7 @@ namespace SpellSystem
 
                 spellProfil.SetupSpell();
             }
-                return spellProfil;
+            return spellProfil;
         }
 
         public void SetupSpell()
@@ -325,7 +339,7 @@ namespace SpellSystem
             List<ChainEffect> chainEffectsList = new List<ChainEffect>();
             if (levelSpells == null) return chainEffectsList.ToArray();
 
-            for (int i = 0; i < spellLevel  && i < levelSpells.Length; i++)
+            for (int i = 0; i < spellLevel && i < levelSpells.Length; i++)
             {
                 if (levelSpells[i] == null) continue;
 
@@ -391,6 +405,18 @@ namespace SpellSystem
             spellLevel++;
             spellExpNextLevel = spellExp + spellExpCountPerLevel;
 
+        }
+
+        public float GetSize()
+        {
+            if (!HasStats(StatType.Size))
+                return 1;
+
+            if (tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+            {
+                return GetFloatStat(StatType.SizeExplosion);
+            }
+            return GetFloatStat(StatType.Size);
         }
 
         public void GainLevel(int index)
@@ -680,7 +706,6 @@ namespace SpellSystem
 
 
         #region Stats setup Functions
-#if UNITY_EDITOR
         public void UpdateStatistics()
         {
 
@@ -698,6 +723,13 @@ namespace SpellSystem
             ManageStat(StatType.StackDuration, true);
             ManageStat(StatType.GainPerStack, true);
             ManageStat(StatType.Range, true);
+
+            statTypes = new StatType[statDatas.Count];
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                statTypes[i] = statDatas[i].stat;
+            }
+
 
         }
 
@@ -722,12 +754,11 @@ namespace SpellSystem
                 statData.stat = statToCheck;
                 statData.isVisible = isVisible;
                 statDatas.Add(statData);
-
-
             }
 
             return;
         }
+
 
         private void SetupSpellMouvement()
         {
@@ -832,7 +863,6 @@ namespace SpellSystem
         }
 
 
-#endif
         #endregion
     }
 }

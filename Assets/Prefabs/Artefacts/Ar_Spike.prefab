@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8999001311434822971}
   - component: {fileID: 2002973411741830683}
   - component: {fileID: -3596386856690372084}
+  - component: {fileID: 8820335695035501721}
   m_Layer: 0
   m_Name: Ar_Spike
   m_TagString: Untagged
@@ -54,7 +55,9 @@ MonoBehaviour:
   radius: 0
   objectType: 1
   nameArtefact: 
+  elementIndex: 0
   element: 0
+  damageToApply: 0
 --- !u!114 &8999001311434822971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,10 +70,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad4fcafa87f5edf4aa3705832d12f384, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_damage: 5
   enemyMask:
     serializedVersion: 2
     m_Bits: 64
+  hasSound: 0
+  indexSound: 0
 --- !u!114 &2002973411741830683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,6 +105,23 @@ MonoBehaviour:
   isActive: 0
   id: -1
   bIsExtraSpawn: 0
+--- !u!114 &8820335695035501721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999001311434822968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1001 &8636994512787704645
 PrefabInstance:
   m_ObjectHideFlags: 0

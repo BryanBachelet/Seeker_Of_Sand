@@ -19,11 +19,20 @@ MonoBehaviour:
   spell_Icon: {fileID: 21300000, guid: 783a1ee3f95ff5543be0247b2e25ae5e, type: 3}
   objectToSpawn: {fileID: 2871441998165377572, guid: dee08643d52c0da458710f51eab13d6b,
     type: 3}
+  angleRotation: {x: 0, y: 0, z: 0}
   VFX: {fileID: 3258966444288658613, guid: 2469fee97cec8524c96cdfe23600dac2, type: 3}
   matToUse: {fileID: 2100000, guid: 3a4814a0dd94fa04d809e2404bb299f0, type: 2}
   previewDecal_mat: {fileID: 2800000, guid: 3e76e1fc5d63c9f4693d1e090c91766c, type: 3}
   previewDecalEnd_mat: {fileID: 2800000, guid: ebcefdef33a6fe64da0cabbf63dcf537, type: 3}
-  level: 0
+  spellLevel: 3
+  spellExp: 0
+  levelSpells:
+  - {fileID: 11400000, guid: 2aaf214631efe38468fc7a58b507a9dd, type: 2}
+  - {fileID: 11400000, guid: 22b4cb0bf5601d14d9ee17b84c340b74, type: 2}
+  - {fileID: 11400000, guid: 29d8b13770342024c88a2fcb8e8db0a0, type: 2}
+  OnContact: 0
+  OnDeath: 0
+  OnHit: 1
   tagData:
     element: 4
     type: 1
@@ -61,13 +70,6 @@ MonoBehaviour:
     val_string: 
     val_bool: 0
     isVisible: 0
-  - stat: 1011
-    valueType: 0
-    val_int: 15
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
   - stat: 1010
     valueType: 0
     val_int: 4
@@ -152,3 +154,17 @@ MonoBehaviour:
     val_string: 
     val_bool: 0
     isVisible: 0
+  - stat: 1017
+    valueType: 0
+    val_int: 0
+    val_float: 0
+    val_string: 
+    val_bool: 0
+    isVisible: 1
+  - stat: 2027
+    valueType: 0
+    val_int: 0
+    val_float: 15
+    val_string: 
+    val_bool: 0
+    isVisible: 1

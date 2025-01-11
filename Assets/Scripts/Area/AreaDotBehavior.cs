@@ -4,6 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.VFX;
 using Enemies;
+using GuerhoubaGames;
 
 namespace SpellSystem
 {
@@ -41,6 +42,8 @@ namespace SpellSystem
         [Range(0, 1)] public float transparency = 0.5f;
         private SpellProfil profil;
 
+        private DamageCalculComponent m_damageCalculComponent;
+
         #region Unity Functions
         // Start is called before the first frame update
 
@@ -64,27 +67,27 @@ namespace SpellSystem
         public void InitComponent()
         {
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
-            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            profil = m_areaMeta.areaData.spellProfil;
+            if (profil.tagData.EqualsSpellNature(SpellNature.SUMMON))
                 m_summonMeta = GetComponent<SummonsMeta>();
 
-            profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
-
+            m_damageCalculComponent = GetComponent<DamageCalculComponent>();
             if (profil.tagData.EqualsSpellNature(SpellNature.DOT))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
-                m_hitMaxCount = m_DotMeta.dotData.currentHitCount;
+                m_hitMaxCount = m_DotMeta.dotData.currentMaxHitCount;
             }
 
             if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
-                m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
+                m_sizeArea = profil.GetFloatStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
             }
 
-            if (m_DotMeta.dotData.spellProfil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            if (profil.tagData.EqualsSpellNature(SpellNature.SUMMON))
             {
                 m_hitMaxCount = (int)(profil.GetFloatStat(StatType.LifeTimeSummon) / m_hitFrequencyTime);
                 m_summonMeta.OnSpecialSkill += ApplyAreaDamage;
@@ -151,14 +154,18 @@ namespace SpellSystem
             {
                 for (int i = 0; i < collider.Length ; i++)
                 {
-                    NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
+                    IDamageReceiver npcHealthComponent = collider[i].GetComponent<IDamageReceiver>();
                     Vector3 direction = collider[i].transform.position - transform.position;
-                    if (npcHealthComponent)
+                    if (npcHealthComponent != null)
                     {
-                        m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, m_element);
-                        DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
-                        npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element, (int)CharacterProfile.instance.stats.baseStat.damage);
-                        if(m_DotMeta.OnDamage != null) m_DotMeta.OnDamage.Invoke(npcHealthComponent.transform.position);
+                        m_damageCalculComponent.damageStats.AddDamage(m_damage, m_element, DamageType.TEMPORAIRE);
+                        DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage(m_element, m_areaMeta.areaData.objectType, collider[i].gameObject, m_areaMeta.areaData.spellProfil);
+
+                        for (int j = 0; j < damageStatDatas.Length; j++)
+                        {
+                            npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                        }
+                        if (m_DotMeta.OnDamage != null) m_DotMeta.OnDamage.Invoke(collider[i].transform.position);
                     }
                 }
             }
@@ -171,14 +178,18 @@ namespace SpellSystem
                 for (int i = 0;  i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
                 {
                     int index = Random.Range(0, colliderDraw.Count);
-                    NpcHealthComponent npcHealthComponent = colliderDraw[index].GetComponent<NpcHealthComponent>();
+                    IDamageReceiver npcHealthComponent = colliderDraw[index].GetComponent<IDamageReceiver>();
                     Vector3 direction = colliderDraw[index].transform.position - transform.position;
-                    if (npcHealthComponent)
+                    if (npcHealthComponent != null)
                     {
-                        m_areaMeta.areaData.characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, m_element);
-                        DamageStatData damageStatData = new DamageStatData(m_damage, m_areaMeta.areaData.objectType);
-                        npcHealthComponent.ReceiveDamage(profil.name, damageStatData, direction, 10, (int)m_element, (int)CharacterProfile.instance.stats.baseStat.damage);
-                        m_DotMeta.OnDamage.Invoke(npcHealthComponent.transform.position);
+                        m_damageCalculComponent.damageStats.AddDamage(m_damage, m_element, DamageType.TEMPORAIRE);
+                        DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage(m_element, m_areaMeta.areaData.objectType, colliderDraw[index].gameObject, m_areaMeta.areaData.spellProfil);
+
+                        for (int j = 0; j < damageStatDatas.Length; j++)
+                        {
+                            npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                        }
+                        m_DotMeta.OnDamage.Invoke(colliderDraw[index].transform.position);
                     }
 
                     colliderDraw.RemoveAt(index);

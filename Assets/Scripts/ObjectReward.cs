@@ -1,3 +1,4 @@
+using Character;
 using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ public class ObjectReward : MonoBehaviour
             }
             else if (element == GameElement.FIRE)
             {
-                charaprofil.stats.baseStat.damage += 1;
+                other.gameObject.GetComponent<CharacterDamageComponent>().m_damageStats.damageBonusGeneral += 1;
                 TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Fire bonus acquiered");
             }
             else if (element == GameElement.EARTH)

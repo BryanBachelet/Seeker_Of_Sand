@@ -26,7 +26,7 @@ namespace SpellSystem
         }
 
 
-        public virtual void OnGain()
+        public virtual void OnGain(SpellProfil profil)
         {
 
         }
@@ -36,12 +36,17 @@ namespace SpellSystem
 
         }
 
-        public virtual void OnProjectileShoot(ProjectileShootData profil)
+        public virtual void OnProjectileShoot(ProjectileShootData profil, GameObject instance)
         {
 
         }
 
         public virtual void OnUpgradeGain()
+        {
+
+        }
+
+        public virtual void OnEffectChain(GameObject player, SpellProfil spellProfil,SpellProfil ownerProfil)
         {
 
         }

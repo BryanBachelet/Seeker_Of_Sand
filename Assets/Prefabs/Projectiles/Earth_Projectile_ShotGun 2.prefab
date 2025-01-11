@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 270100141013101791}
   - component: {fileID: 4699169198623787950}
   - component: {fileID: 2087539066442421840}
+  - component: {fileID: 8021907651272407966}
   m_Layer: 15
   m_Name: Earth_Projectile_ShotGun 2
   m_TagString: Projectile
@@ -131,8 +132,13 @@ MonoBehaviour:
   m_power: 100
   m_damage: 1
   m_indexSFX: 23
+  m_characterProfil: {fileID: 0}
   m_piercingMax: 0
   m_deltaTimeMove: 0.15
+  isDebugInstance: 0
+  vFXObject: {fileID: 0}
+  vFXExplosion: {fileID: 659503455244116027, guid: e87a86a5e843b594b9a412e885f4f4f6,
+    type: 3}
 --- !u!114 &2087539066442421840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +154,23 @@ MonoBehaviour:
   isActive: 0
   id: -1
   bIsExtraSpawn: 0
+--- !u!114 &8021907651272407966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529003561376632028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1 &758083882314330773
 GameObject:
   m_ObjectHideFlags: 0

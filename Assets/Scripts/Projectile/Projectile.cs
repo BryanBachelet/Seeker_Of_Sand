@@ -5,6 +5,12 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using UnityEngine.VFX;
 using SeekerOfSand.Tools;
+using Mono.Cecil;
+using Enemies;
+using SpellSystem;
+using UnityEngine.Profiling;
+using UnityEditor.Purchasing;
+using GuerhoubaGames;
 
 public struct ProjectileData
 {
@@ -68,8 +74,8 @@ public class Projectile : MonoBehaviour
 
     protected bool isStartToMove = false;
 
-    private Vector3 normalHit;
-    private Vector3 hitPoint;
+    protected Vector3 normalHit;
+    protected Vector3 hitPoint;
 
     protected string damageSourceName;
     protected int elementIndex;
@@ -77,6 +83,8 @@ public class Projectile : MonoBehaviour
     public bool isDebugInstance;
 
     public GameObject vFXObject;
+    public GameObject vFXExplosion;
+    private DamageCalculComponent m_damageCalculComponent;
 
     void Update()
     {
@@ -131,9 +139,11 @@ public class Projectile : MonoBehaviour
         m_collider = this.GetComponent<Collider>();
         objectType = data.objectType;
 
-        if(vFXObject != null) vFXObject.transform.rotation *= Quaternion.Euler(spellProfil.angleRotation);
+        if (vFXObject != null) vFXObject.transform.rotation *= Quaternion.Euler(spellProfil.angleRotation);
         damageSourceName = spellProfil.name;
         elementIndex = (int)spellProfil.tagData.element;
+
+        m_damageCalculComponent = GetComponent<DamageCalculComponent>();
         if (objectType == CharacterObjectType.FRAGMENT)
         {
             damageSourceName = data.nameFragment;
@@ -156,7 +166,7 @@ public class Projectile : MonoBehaviour
         m_initialScale = transform.localScale;
 
         damageSourceName = "NoName";
-
+        m_damageCalculComponent = GetComponent<DamageCalculComponent>();
         if (objectType == CharacterObjectType.FRAGMENT)
         {
             damageSourceName = data.nameFragment;
@@ -191,9 +201,10 @@ public class Projectile : MonoBehaviour
             ActiveDeath();
             return;
         }
-        if (m_lifeTimer > m_lifeTime)
+        if (m_lifeTimer > m_lifeTime && !willDestroy )
         {
             willDestroy = true;
+            ApplyExplosion();
         }
         if (m_lifeTimer > m_lifeTime - m_timeStartSizeShrinking)
         {
@@ -210,7 +221,7 @@ public class Projectile : MonoBehaviour
     {
         m_lifeTimer = 0.0f;
         willDestroy = false;
-      if(m_collider)  m_collider.enabled = true;
+        if (m_collider) m_collider.enabled = true;
         checkSpawnTime = false;
         piercingCount = 0;
         m_travelTimer = 0.0f;
@@ -218,12 +229,13 @@ public class Projectile : MonoBehaviour
         isStartToMove = false;
         VisualEffect visual = GetComponent<VisualEffect>();
 
+        if (vFXObject != null) vFXObject.transform.rotation = Quaternion.Inverse( Quaternion.Euler(spellProfil.angleRotation));
         if (visual != null) visual.Reinit();
     }
 
     public virtual void ActiveDeath()
     {
-        if(isDebugInstance)
+        if (isDebugInstance)
         {
             Debug.Log("Stop Execution");
         }
@@ -258,12 +270,15 @@ public class Projectile : MonoBehaviour
         {
             Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
 
+            m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
+            DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType,enemyTouch.gameObject,spellProfil);
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject,(GameElement)elementIndex);
             if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
-            DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-            enemyTouch.ReceiveDamage(damageSourceName, damageStatData, other.transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+            for (int i = 0; i < damageStatDatas.Length; i++)
+            {
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+            }
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -285,6 +300,8 @@ public class Projectile : MonoBehaviour
                 //Destroy(this.gameObject);
                 m_lifeTimer = m_lifeTime + m_timeBeforeDestruction;
                 //willDestroy = true;
+
+                ApplyExplosion();
             }
         }
         else if (other.gameObject.tag == "DPSCheck")
@@ -306,12 +323,17 @@ public class Projectile : MonoBehaviour
         }
         else if (other.gameObject.tag == "Dummy")
         {
-            dummy enemyTouch = other.GetComponent<dummy>();
+            Dummy_Behavior enemyTouch = other.GetComponent<Dummy_Behavior>();
 
-            m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, (GameElement)elementIndex);
-            enemyTouch.ReceiveDamage(m_damage, other.transform.position - transform.position, m_power, -1);
 
-            enemyTouch.currentHP -= m_damage;
+            m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
+            DamageStatData[] damageStatDatas =  m_damageCalculComponent.CalculDamage((GameElement)elementIndex,objectType, enemyTouch.gameObject, spellProfil);
+
+            for (int i = 0; i < damageStatDatas.Length; i++)
+            {
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+            }
+           
 
             PiercingUpdate();
             if (piercingCount >= m_piercingMax)
@@ -320,6 +342,7 @@ public class Projectile : MonoBehaviour
                 //Destroy(this.gameObject);
                 //willDestroy = true;
                 m_lifeTimer = m_lifeTime;
+                ApplyExplosion();
             }
         }
         else return;
@@ -328,9 +351,41 @@ public class Projectile : MonoBehaviour
 
     }
 
+    protected void ApplyExplosion()
+    {
+        // Active Explosion
+        if (objectType == CharacterObjectType.SPELL && spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+        {
+            float sizeArea = spellProfil.GetFloatStat(StatType.SizeExplosion);
+            Collider[] collider = new Collider[0];
+            collider = Physics.OverlapSphere(transform.position, sizeArea, GameLayer.instance.enemisLayerMask);
+            GameObject instance  = GamePullingSystem.SpawnObject(vFXExplosion, transform.position, Quaternion.identity);
+            for (int i = 0; i < collider.Length; i++)
+            {
+                NpcHealthComponent npcHealthComponent = collider[i].GetComponent<NpcHealthComponent>();
+                Vector3 direction = collider[i].transform.position - transform.position;
+
+
+                m_characterShoot.ActiveOnHit(collider[i].transform.position, EntitiesTrigger.Enemies, collider[i].gameObject, (GameElement)elementIndex);
+                DamageStatData damageStatData = new DamageStatData(spellProfil.GetIntStat(StatType.DamageAdditionel), objectType);
+                if(collider[i].tag == "Dummy")
+                {
+                    Dummy_Behavior enemyTouch = collider[i].GetComponent<Dummy_Behavior>();
+                    enemyTouch.ReceiveDamage(damageSourceName, damageStatData, collider[i].transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+                }
+                else
+                {
+                    npcHealthComponent.ReceiveDamage(spellProfil.name, damageStatData, direction, 10, (int)sizeArea, (int)CharacterProfile.instance.stats.baseStat.damage);
+                }
+                
+            }
+        }
+    }
+
     protected virtual void PiercingUpdate()
     {
-        piercingCount++;
+        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Piercing))
+            piercingCount++;
     }
     protected virtual void UpdateTravelTime()
     {
@@ -343,7 +398,7 @@ public class Projectile : MonoBehaviour
         Vector3 axis = Vector3.Cross(transformedRight, hitNormal);
 
         float angle = Vector3.SignedAngle(rotTest * Vector3.forward, axis, transformedRight);
-        
+
         if (Mathf.Abs(angle) > maxSlopeAngle)
             return;
 

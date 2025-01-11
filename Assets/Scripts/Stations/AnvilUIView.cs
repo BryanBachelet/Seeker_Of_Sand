@@ -178,8 +178,6 @@ namespace GuerhoubaGames.UI
             for (int i = 0; i < vfxReinforcement.Length; i++)
             {
                 vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexElementToUse]);
-
-
             }
 
         }
@@ -198,6 +196,8 @@ namespace GuerhoubaGames.UI
 
             m_receptableImage.ResetFragmentUIView();
             m_resultImage.ResetFragmentUIView();
+
+
 
         }
         #endregion
