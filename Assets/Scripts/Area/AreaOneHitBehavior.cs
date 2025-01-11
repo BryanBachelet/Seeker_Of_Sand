@@ -56,7 +56,7 @@ namespace SpellSystem
            
 ;            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
-                m_sizeArea = profil.GetIntStat(StatType.SizeExplosion);
+                m_sizeArea = profil.GetFloatStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
             }
 

@@ -8,13 +8,14 @@ namespace SpellSystem
     {
         public float damagePerStats =.1f ;
 
-        public override void OnProjectileShoot(ProjectileShootData projectileEffectData, GameObject instance)
+        public override void ActiveInstanceBehavior(GameObject instance, SpellProfil spellProfil)
         {
+       
             DamageCalculComponent DamageComponent = instance.GetComponent<DamageCalculComponent>();
 
             if (DamageComponent != null)
             {
-                DamageComponent.damageStats.damageTemporaireGeneral = (int)(damagePerStats * (projectileEffectData.profil.GetSize()));
+                DamageComponent.damageStats.damageTemporaireGeneral = (int)(damagePerStats * (spellProfil.GetSize()));
             }
 
 

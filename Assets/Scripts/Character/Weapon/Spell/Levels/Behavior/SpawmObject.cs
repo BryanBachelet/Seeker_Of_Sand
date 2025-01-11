@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SpellSystem
 {
     [CreateAssetMenu(fileName = "Spawn Object Behavior", menuName = "Spell/CustomBehavior/Spawn Object Behavior")]
-    public class SpawmObject : CustomStatBehavior
+    public class SpawmObject : BehaviorLevel
     {
         public GameObject objectToSpawn;
         public bool isArea = true;

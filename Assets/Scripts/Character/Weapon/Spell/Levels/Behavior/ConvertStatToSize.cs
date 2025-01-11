@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SpellSystem
 {
     [CreateAssetMenu(fileName = "Convet Stats  Behavior", menuName = "Spell/CustomBehavior/Convet Stats ")]
-    public class ConvertStatToSize : CustomStatBehavior
+    public class ConvertStatToSize : BehaviorLevel
     {
         public override void Apply(SpellProfil spellProfil)
         {

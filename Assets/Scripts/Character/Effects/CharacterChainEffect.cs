@@ -24,7 +24,7 @@ public class CharacterChainEffect : MonoBehaviour
         {
             for (int j = 0; j < chainEffectsList[i].levelSpells.Length; j++)
             {
-                if (chainEffectsList[i].levelSpells[j].LevelType == SpellLevelType.BEHAVIOR)
+                if (chainEffectsList[i].levelSpells[j].LevelType == SpellLevelType.BEHAVIOR && !chainEffectsList[i].hasBeenAdd)
                 {
                     behaviorLevels.Add( (BehaviorLevel)chainEffectsList[i].levelSpells[j]);
                 }
@@ -34,11 +34,11 @@ public class CharacterChainEffect : MonoBehaviour
         return behaviorLevels.ToArray();
     }
 
-    public void ApplyChainEffect(SpellSystem.SpellProfil spellTarget)
+    public void ApplyChainEffect(SpellSystem.SpellProfil spellTarget,bool afterShot)
     {
         for (int i = 0; i < chainEffectsList.Count; i++)
         {
-            chainEffectsList[i].Apply(gameObject,spellTarget);
+            chainEffectsList[i].Apply(gameObject,spellTarget, afterShot);
             if (chainEffectsList[i].IsFinish())
             {
                 chainEffectsList[i].Reset();
