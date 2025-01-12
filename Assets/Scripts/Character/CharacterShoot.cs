@@ -781,7 +781,9 @@ namespace Character
 
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
+            Vector3 directoinInstance =  m_characterAim.lastRawPosition - transformUsed.position;
+            Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
+            areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, instancePosition, rot);
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
             damageCalculComponent.Init(m_characterDamageComponent, this,spellProfil);
@@ -937,15 +939,16 @@ namespace Character
             }
 
             Transform transformUsed = transform;
-            Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
+            Vector3 directoinInstance = m_characterAim.lastRawPosition - transformUsed.position;
+            Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject areaInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
+            GameObject areaInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, instancePosition, rot);
 
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
             damageCalculComponent.Init(m_characterDamageComponent, this, spellProfil);
 
-            SpellSystem.AreaData data = FillAreaData(spellProfil, position);
+            SpellSystem.AreaData data = FillAreaData(spellProfil, instancePosition);
             SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
             areaMeta.areaData = data;
             areaMeta.ResetOnSpawn();

@@ -39,6 +39,8 @@ namespace SpellSystem
         private DamageCalculComponent m_damageCalculComponent;
         public GameObject ObjectToSpawnAtDeath;
 
+        public float sizeGain = 0.1f;
+
 
         public void Awake()
         {
@@ -60,7 +62,7 @@ namespace SpellSystem
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
             }
 
-            transform.localScale += Vector3.one * .1f * (int)(m_sizeArea / 10);
+            transform.localScale += Vector3.one * sizeGain * (int)(m_sizeArea / 10);
         }
 
         void Update()
@@ -138,7 +140,7 @@ namespace SpellSystem
         {
             m_timerBeforeHit = 0.0f;
             isDestroing = false;
-            transform.localScale -= Vector3.one *.2f * (int)(m_sizeArea / 10);
+            transform.localScale -= Vector3.one * sizeGain * (int)(m_sizeArea / 10);
         }
 
 

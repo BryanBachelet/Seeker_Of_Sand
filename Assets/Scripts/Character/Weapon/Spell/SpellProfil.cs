@@ -771,6 +771,13 @@ namespace SpellSystem
 
             testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Fix;
             ManageStat(StatType.OffsetDistance, testResult);
+
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Direction;
+            ManageStat(StatType.DirectionSpeed, testResult);
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse;
+            ManageStat(StatType.DirectionSpeed, testResult);
         }
 
         private void SetupMovementType()
