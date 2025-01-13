@@ -19,7 +19,7 @@ namespace SpellSystem
         private float m_hitFrequencyTime = 0.0f;
         private float m_hitFrequencyTimer = 0.0f;
         private int m_hitMaxCount = 0;
-        private int m_hitCount = 0;
+        public int hitCount = 0;
         private float m_sizeArea = 1.0f;
         private int m_damage = 0;
         private GameElement m_element;
@@ -96,7 +96,7 @@ namespace SpellSystem
 
         public void RelaunchComponent()
         {
-            m_hitCount = 0;  
+            hitCount = 0;  
         }
 
         public void UpdateArea()
@@ -115,7 +115,7 @@ namespace SpellSystem
             }
 
             if (!canHit) return;
-            if (m_hitCount == m_hitMaxCount)
+            if (hitCount == m_hitMaxCount)
             {
                 Destroy(this.gameObject);
             }
@@ -123,7 +123,7 @@ namespace SpellSystem
             if (m_hitFrequencyTimer > m_hitFrequencyTime)
             {
                 ApplyAreaDamage();
-                m_hitCount++;
+                hitCount++;
                 m_hitFrequencyTimer = 0.0f;
             }
             else
@@ -163,7 +163,7 @@ namespace SpellSystem
 
                         for (int j = 0; j < damageStatDatas.Length; j++)
                         {
-                            npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                            npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[j].element, (int)CharacterProfile.instance.stats.baseStat.damage);
                         }
                         if (m_DotMeta.OnDamage != null) m_DotMeta.OnDamage.Invoke(collider[i].transform.position);
                     }

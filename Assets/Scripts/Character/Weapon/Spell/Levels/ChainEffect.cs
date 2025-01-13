@@ -20,6 +20,7 @@ namespace SpellSystem
         private int useCount;
         [HideInInspector] public bool hasBeenAdd;
         [HideInInspector] public SpellProfil launchSpellProfil;
+        public bool consumeEffectAfterShot;
         public ChainEffect()
         {
             LevelType = SpellLevelType.CHAIN_EFFECT;
@@ -39,7 +40,7 @@ namespace SpellSystem
                     statsLevel.SetupStatLevel();
                 }
 
-               
+
             }
         }
 
@@ -48,8 +49,10 @@ namespace SpellSystem
             useCount = 0;
         }
 
-        public void Apply(GameObject player, SpellProfil spell)
+        public void Apply(GameObject player, SpellProfil spell, bool afterShot)
         {
+
+            if (afterShot != consumeEffectAfterShot) return;
 
             if (hasBeenAdd)
             {
@@ -78,7 +81,7 @@ namespace SpellSystem
                 if (levelSpells[i].LevelType == SpellLevelType.BEHAVIOR)
                 {
                     BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[i]);
-                    statsLevel.OnEffectChain(player, spell,launchSpellProfil);
+                    statsLevel.OnEffectChain(player, spell, launchSpellProfil);
                 }
             }
 

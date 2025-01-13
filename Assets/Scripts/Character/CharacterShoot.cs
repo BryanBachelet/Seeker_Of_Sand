@@ -764,7 +764,7 @@ namespace Character
             BehaviorLevel[] behaviorLevels;
             {
                 BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
-                BehaviorLevel[] behaviorLevels2 = m_characterChainEffect.GetAllBehaviorLevel();
+                    BehaviorLevel[] behaviorLevels2 = m_characterChainEffect.GetAllBehaviorLevel();
                 behaviorLevels = new BehaviorLevel[behaviorLevels1.Length + behaviorLevels2.Length];
                 behaviorLevels1.CopyTo(behaviorLevels, 0);
                 behaviorLevels2.CopyTo(behaviorLevels, behaviorLevels1.Length);
@@ -804,13 +804,8 @@ namespace Character
 
             foreach (BehaviorLevel behaviorLevel in behaviorLevels)
             {
-                ProjectileShootData projectileShootData = new ProjectileShootData();
-                projectileShootData.position = areaInstance.transform.position;
-                projectileShootData.rotation = rot;
-                projectileShootData.profil = spellProfil;
-                //projectileShootData.projectileData = data;
 
-                behaviorLevel.OnProjectileShoot(projectileShootData, areaInstance);
+                behaviorLevel.ActiveInstanceBehavior( areaInstance,  spellProfil);
             }
 
             return false;
@@ -826,7 +821,7 @@ namespace Character
             }
 
 
-            SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
+                SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
             BehaviorLevel[] behaviorLevels;
             {
                 BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
@@ -880,19 +875,14 @@ namespace Character
                         projectileShootData.projectileData = data;
 
                         behaviorLevel.OnProjectileShoot(projectileShootData,projectileCreate);
+                        behaviorLevel.ActiveInstanceBehavior(projectileCreate, spellProfil);
                     }
                 }
                 else
                 {
                     foreach (BehaviorLevel behaviorLevel in behaviorLevels)
                     {
-                        ProjectileShootData projectileShootData = new ProjectileShootData();
-                        projectileShootData.position = position;
-                        projectileShootData.rotation = rot;
-                        projectileShootData.profil = spellProfil;
-                        //projectileShootData.projectileData = data;
-
-                        behaviorLevel.OnProjectileShoot(projectileShootData, projectileCreate);
+                        behaviorLevel.ActiveInstanceBehavior(projectileCreate, spellProfil);
                     }
                 }
 
@@ -937,6 +927,15 @@ namespace Character
         {
             SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
 
+            BehaviorLevel[] behaviorLevels;
+            {
+                BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
+                BehaviorLevel[] behaviorLevels2 = m_characterChainEffect.GetAllBehaviorLevel();
+                behaviorLevels = new BehaviorLevel[behaviorLevels1.Length + behaviorLevels2.Length];
+                behaviorLevels1.CopyTo(behaviorLevels, 0);
+                behaviorLevels2.CopyTo(behaviorLevels, behaviorLevels1.Length);
+            }
+
             Transform transformUsed = transform;
             Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
@@ -953,6 +952,11 @@ namespace Character
 
             m_currentStack[m_currentRotationIndex]--;
 
+            foreach (BehaviorLevel behaviorLevel in behaviorLevels)
+            {
+                behaviorLevel.ActiveInstanceBehavior(areaInstance, spellProfil);
+            }
+
             if (m_currentStack[m_currentRotationIndex] <= 0)
                 return false;
             else
@@ -962,6 +966,16 @@ namespace Character
         private bool ShootSummon(int capsuleIndex)
         {
             SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
+
+            BehaviorLevel[] behaviorLevels;
+            {
+                BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
+                BehaviorLevel[] behaviorLevels2 = m_characterChainEffect.GetAllBehaviorLevel();
+                behaviorLevels = new BehaviorLevel[behaviorLevels1.Length + behaviorLevels2.Length];
+                behaviorLevels1.CopyTo(behaviorLevels, 0);
+                behaviorLevels2.CopyTo(behaviorLevels, behaviorLevels1.Length);
+            }
+
 
             //Check if we have the max summon
             if (m_characterSummmonManager.m_summonSpellDictionnary.ContainsKey(spellProfil.id))
@@ -1024,6 +1038,10 @@ namespace Character
                 m_characterSummmonManager.m_summonSpellDictionnary[spellProfil.id] = summonList;
             }
 
+            foreach (BehaviorLevel behaviorLevel in behaviorLevels)
+            {
+                behaviorLevel.ActiveInstanceBehavior(areaInstance, spellProfil);
+            }
 
 
             return true;
@@ -1046,7 +1064,7 @@ namespace Character
                 m_characterChainEffect.AddChainEffect(chainEffectArray[i],currentCloneSpellProfil);
             }
 
-            m_characterChainEffect.ApplyChainEffect(currentCloneSpellProfil);
+            m_characterChainEffect.ApplyChainEffect(currentCloneSpellProfil,false);
 
 
 
@@ -1081,6 +1099,9 @@ namespace Character
                 m_uiPlayerInfos.ActiveSpellCanalisationUIv2(maxStack, icon_Sprite[m_currentRotationIndex]);
                 ChangeVfxOnUI(m_currentIndexCapsule);
             }
+
+            // Chain Effect
+            m_characterChainEffect.ApplyChainEffect(currentCloneSpellProfil, true);
 
 
 

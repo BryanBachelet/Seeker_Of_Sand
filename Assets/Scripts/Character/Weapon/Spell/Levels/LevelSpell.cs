@@ -9,6 +9,9 @@ namespace SpellSystem
     public  class LevelSpell : ScriptableObject
     {
         public SpellLevelType LevelType;
+        /// <summary>
+        /// Allow add stats permanently to a spell
+        /// </summary>
         public bool isPermanent;
         [Header("Description")]
         public string description;

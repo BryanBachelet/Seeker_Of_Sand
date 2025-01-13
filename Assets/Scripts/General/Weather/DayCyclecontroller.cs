@@ -104,7 +104,7 @@ public class DayCyclecontroller : MonoBehaviour
     void Update()
     {
         //choosingArtefactStart = choosingArtefactDisplay;
-
+        m_nightCountGlobal = m_nightCount;
         if (menuMovement)
         {
             staticTimeOfTheDay = m_timeOfDay;

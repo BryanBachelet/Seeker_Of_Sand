@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5773060180119421702}
   - component: {fileID: -7153980726677490353}
   - component: {fileID: 5167933323332581662}
+  - component: {fileID: -471906141096257553}
   m_Layer: 0
   m_Name: Rotating_Blade_Object
   m_TagString: Untagged
@@ -62,6 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790aad17fcd99e54aa95ab36d87e7608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitCount: 0
   isLimitTarget: 0
   indexSFX: 0
   damageDelay: 0
@@ -109,10 +111,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageStats:
+    damageBonusGeneral: 0
+    damageTemporaireGeneral: 0
     generalModificator: 0
     OnDeath: 0
     OnContact: 0
     OnHit: 0
+--- !u!114 &-471906141096257553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7659398128959048071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0254369af44e84d846f49efcbeeb97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  isTemporary: 0
 --- !u!1001 &529684738303795207
 PrefabInstance:
   m_ObjectHideFlags: 0

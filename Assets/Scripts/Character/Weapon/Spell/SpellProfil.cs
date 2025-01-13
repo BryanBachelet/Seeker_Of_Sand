@@ -397,7 +397,7 @@ namespace SpellSystem
                 if (levelSpells[spellLevel].LevelType == SpellLevelType.BEHAVIOR)
                 {
                     BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[spellLevel]);
-                    statsLevel.OnUpgradeGain();
+                    statsLevel.OnGain(this);
                 }
 
             }
@@ -441,7 +441,7 @@ namespace SpellSystem
                 if (levelSpells[index].LevelType == SpellLevelType.BEHAVIOR)
                 {
                     BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[index]);
-                    statsLevel.OnUpgradeGain();
+                    statsLevel.OnGain(this);
                 }
 
             }

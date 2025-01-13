@@ -8,12 +8,15 @@ namespace GuerhoubaGames.UI
     {
         public Vector2 basePosition;
         public Vector2 offset;
+        public Vector2 additionnalOffset;
     }
 
     public struct TooltipDisplayData
     {
-       public string content;
-       public string header;
+        public string content;
+        public string header;
+        public Sprite contentImage;
+        public bool asImageInData;
     }
 
     public class TooltipManager : MonoBehaviour
@@ -25,7 +28,7 @@ namespace GuerhoubaGames.UI
         {
             current = this;
         }
-     
+
         public static void SetTooltipPosition(TooltipPositionData positionData)
         {
             current.tooltip.SetPosition(positionData);
@@ -41,7 +44,7 @@ namespace GuerhoubaGames.UI
             current.tooltip.gameObject.SetActive(false);
         }
 
-        
+
 
     }
 

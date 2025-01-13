@@ -11,6 +11,7 @@ namespace SpellSystem
     [CreateAssetMenu(fileName = "Spell Stats Level", menuName = "Spell/Spell Stats Level")]
     public class StatsLevel : LevelSpell
     {
+
         [Header("Tag to Change")]
         public TagData tagDataToChange;
 
@@ -19,7 +20,7 @@ namespace SpellSystem
         public List<StatDataLevel> statDatas = new List<StatDataLevel>();
         private StatType[] statTypes = new StatType[0];
 
-        public CustomStatBehavior customStatBehavior;
+        public BehaviorLevel customStatBehavior;
 
         public void SetupStatLevel()
         {

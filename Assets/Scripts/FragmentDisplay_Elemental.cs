@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Rendering.FilterWindow;
 
 public class FragmentDisplay_Elemental : MonoBehaviour
 {
@@ -20,6 +19,7 @@ public class FragmentDisplay_Elemental : MonoBehaviour
     public Material myMat;
     public Material mat;
     // Start is called before the first frame update
+    [SerializeField] private FragmentCornerElemental fragmentCornerElemental;
     private void OnEnable()
     {
         imageFragment = this.GetComponent<Image>();
@@ -54,7 +54,6 @@ public class FragmentDisplay_Elemental : MonoBehaviour
         }
 
         mat.SetFloat("_ColorNumber", baseElements.Length);
-
 
     }
     public void RemoveFill(int indexToRemove)

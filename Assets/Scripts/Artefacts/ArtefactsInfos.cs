@@ -166,7 +166,9 @@ public class ArtefactsInfos : ScriptableObject
 
         if (entitiesTrigger != tag) return;
 
-        if (!GeneralTools.IsThisElementPresent(gameElement, element) || element == GameElement.NONE) return;
+         if(conditionsTrigger == ConditionsTrigger.OnHit) 
+            if (!GeneralTools.IsThisElementPresent(gameElement, element) || element == GameElement.NONE) 
+                return;
 
 
         float change = Random.Range(0, 100.0f);

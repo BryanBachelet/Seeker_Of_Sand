@@ -12,10 +12,11 @@ public class ProjectilePhoenix : Projectile
     public override void SetProjectile(ProjectileData data, CharacterProfile charaProfil)
     {
         base.SetProjectile(data, charaProfil);
-        if(spellProfil.spellLevel == 3)
+        if (spellProfil.spellLevel == 3)
         {
             activeRetunrMovement = true;
-        }else
+        }
+        else
         {
             activeRetunrMovement = false;
         }
@@ -28,7 +29,7 @@ public class ProjectilePhoenix : Projectile
     }
     protected override void Move()
     {
-       
+
         if (activeRetunrMovement)
         {
             if (Physics.Raycast(transform.position, m_direction.normalized, m_speed * Time.deltaTime, m_layer))
@@ -46,10 +47,11 @@ public class ProjectilePhoenix : Projectile
 
 
             }
-            transform.position += ratioDirection* transform.forward*2.0f * m_speed * Time.deltaTime;
+            transform.position += ratioDirection * transform.forward * 2.0f * m_speed * Time.deltaTime;
         }
         else
-        { base.Move(); 
+        {
+            base.Move();
         }
     }
 
@@ -58,17 +60,19 @@ public class ProjectilePhoenix : Projectile
     {
         base.Duration();
 
-        if(m_lifeTimer> m_lifeTime / 2.0f)
+        if (m_lifeTimer > m_lifeTime / 2.0f)
         {
             ratioDirection = -1;
         }
-            
+
     }
 
 
     protected override void PiercingUpdate()
     {
-        if(isStartToMove)
+        if (objectType == CharacterObjectType.FRAGMENT) return;
+
+        if (isStartToMove)
         {
             if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Piercing))
                 piercingCount++;
