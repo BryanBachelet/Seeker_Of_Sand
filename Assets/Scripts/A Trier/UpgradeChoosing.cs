@@ -216,7 +216,7 @@ public class UpgradeChoosing : MonoBehaviour
         spellUpgradeFocus.sprite = spellFocus;
         spellCurrentTierFocus.sprite = spellFocus;
         spellNextTierFocus.sprite = spellFocus;
-        int currentTier = data.spellLevel % 4;
+        int currentTier = data.currentSpellTier % 4;
         if (currentTier >= 3)
         {
             cadreCurrentTier.sprite = spellTier[currentTier];
@@ -238,23 +238,23 @@ public class UpgradeChoosing : MonoBehaviour
 
         if (currentTier == 0)
         {
-            if (data.levelSpells[currentTier] == null || data.levelSpells[currentTier+1] == null) return;
+            if (data.levelSpellsProfiles[currentTier] == null || data.levelSpellsProfiles[currentTier+1] == null) return;
 
             tooltipCurrentTier.content = "No additional effect yet";
-            tooltipNextTier.content = data.levelSpells[currentTier].description;
+            tooltipNextTier.content = data.levelSpellsProfiles[currentTier].description;
         }
         else if (currentTier > 0 && currentTier < 3)
         {
-            if (data.levelSpells[currentTier-1] == null || data.levelSpells[currentTier] == null) return;
+            if (data.levelSpellsProfiles[currentTier-1] == null || data.levelSpellsProfiles[currentTier] == null) return;
 
-            tooltipCurrentTier.content = data.levelSpells[currentTier-1].description;
-            tooltipNextTier.content = data.levelSpells[currentTier].description;
+            tooltipCurrentTier.content = data.levelSpellsProfiles[currentTier-1].description;
+            tooltipNextTier.content = data.levelSpellsProfiles[currentTier].description;
         }
         else if(currentTier >= 3)
         {
-            if (data.levelSpells[2] == null) return;
+            if (data.levelSpellsProfiles[2] == null) return;
 
-            tooltipCurrentTier.content = data.levelSpells[2].description;
+            tooltipCurrentTier.content = data.levelSpellsProfiles[2].description;
             tooltipNextTier.content = "Already max. No more additional effect";
         }
 

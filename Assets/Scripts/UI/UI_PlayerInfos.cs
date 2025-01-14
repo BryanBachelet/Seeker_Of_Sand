@@ -77,7 +77,7 @@ namespace SeekerOfSand
             public void UpdateLevelSpell(int index, SpellProfil spellprofil)
             {
                 imgSpriteSpell.material = spellprofil.matToUse;
-                if (spellprofil.spellLevel == 1)
+                if (spellprofil.currentSpellTier == 1)
                 {
                     tierUpEffect.SetActive(true);
                     int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element, true);
@@ -87,9 +87,9 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo1");
-                    if (spellprofil.levelSpells[0] != null)
+                    if (spellprofil.levelSpellsProfiles[0] != null)
                     {
-                        textTier.text = spellprofil.levelSpells[0].description;
+                        textTier.text = spellprofil.levelSpellsProfiles[0].description;
                     }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
@@ -97,7 +97,7 @@ namespace SeekerOfSand
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     
                 }
-                else if (spellprofil.spellLevel == 2)
+                else if (spellprofil.currentSpellTier == 2)
                 {
                     tierUpEffect.SetActive(true);
                     for (int i = 0; i < vfxTierUp.Length; i++)
@@ -106,16 +106,16 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo2");
-                    if (spellprofil.levelSpells[1] != null)
+                    if (spellprofil.levelSpellsProfiles[1] != null)
                     {
-                        textTier.text = spellprofil.levelSpells[1].description;
+                        textTier.text = spellprofil.levelSpellsProfiles[1].description;
                     }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);
                     
                 }
-                else if (spellprofil.spellLevel == 3)
+                else if (spellprofil.currentSpellTier == 3)
                 {
                     tierUpEffect.SetActive(true);
                     for (int i = 0; i < vfxTierUp.Length; i++)
@@ -124,7 +124,7 @@ namespace SeekerOfSand
                         vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
                     }
                     tierUpAnimation.SetTrigger("UpgradeTo3");
-                    if (spellprofil.levelSpells[2] != null) { textTier.text = spellprofil.levelSpells[2].description; }
+                    if (spellprofil.levelSpellsProfiles[2] != null) { textTier.text = spellprofil.levelSpellsProfiles[2].description; }
                     upgradeScreenAnimator.ResetTrigger("Reset");
                     upgradeScreenAnimator.SetTrigger("TierUpActivation");
                     GlobalSoundManager.PlayOneShot(59, Vector3.zero);

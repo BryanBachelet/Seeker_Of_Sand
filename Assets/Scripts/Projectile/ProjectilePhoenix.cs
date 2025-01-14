@@ -12,7 +12,7 @@ public class ProjectilePhoenix : Projectile
     public override void SetProjectile(ProjectileData data, CharacterProfile charaProfil)
     {
         base.SetProjectile(data, charaProfil);
-        if (spellProfil.spellLevel == 3)
+        if (spellProfil.currentSpellTier == 3)
         {
             activeRetunrMovement = true;
         }

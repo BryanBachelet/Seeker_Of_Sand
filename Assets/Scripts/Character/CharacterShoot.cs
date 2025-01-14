@@ -1512,7 +1512,7 @@ namespace Character
             {
                 if (spellEquip[i] == -1) continue;
                 int index = spellEquip[i];
-                levelArray[i] = m_characterSpellBook.GetAllSpells()[index].spellLevel;
+                levelArray[i] = m_characterSpellBook.GetAllSpells()[index].currentSpellTier;
             }
 
             return levelArray;
@@ -1541,7 +1541,7 @@ namespace Character
                 if (spellEquip[i] == -1) continue;
 
                 int index = spellEquip[i];
-                spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].spellLevel];
+                spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].currentSpellTier];
 
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }

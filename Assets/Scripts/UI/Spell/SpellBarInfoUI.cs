@@ -31,7 +31,7 @@ public class SpellBarInfoUI : MonoBehaviour
         }
         int capsuleIndex = m_characterShoot.spellEquip[eventData.index];
         string headerText = m_characterShoot.spellProfils[capsuleIndex].name;
-        string contextText = "Level : " + m_characterShoot.spellProfils[capsuleIndex].spellLevel + "\n" + m_characterShoot.spellProfils[capsuleIndex].description + "\n"+ m_characterShoot.spellProfils[capsuleIndex].DebugStat();
+        string contextText = "Level : " + m_characterShoot.spellProfils[capsuleIndex].currentSpellTier + "\n" + m_characterShoot.spellProfils[capsuleIndex].description + "\n"+ m_characterShoot.spellProfils[capsuleIndex].DebugStat();
 
         m_spellTooltipArray[eventData.index].content = contextText;
         m_spellTooltipArray[eventData.index].header = headerText;

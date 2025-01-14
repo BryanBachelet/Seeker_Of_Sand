@@ -271,9 +271,9 @@ public class ChooseSpellManager : MonoBehaviour
         spellTier1Image.sprite = spriteSpell;
         spellTier2Image.sprite = spriteSpell;
         spellTier3Image.sprite = spriteSpell;
-        for (int i = 0; i < newSpell[spellIndex].levelSpells.Length; i++)
+        for (int i = 0; i < newSpell[spellIndex].levelSpellsProfiles.Length; i++)
         {
-            tooltipNextTier[i].content = newSpell[spellIndex].levelSpells[i].description;
+            tooltipNextTier[i].content = newSpell[spellIndex].levelSpellsProfiles[i].description;
         }
 
 
