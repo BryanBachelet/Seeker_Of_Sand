@@ -5,6 +5,7 @@ using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 using UnityEngine.Rendering;
+using System;
 
 public struct AnvilInfos
 {
@@ -58,6 +59,8 @@ public class AnvilBehavior : InteractionInterface
     public void SetFragmentUpgrade()
     {
         currentArtefactReinforce.UpgradeTierFragment();
+        m_characterArtefact.RemoveSpecificFragment(currentArtefactReinforce);
+        m_characterArtefact.GenerateNewArtefactAround(currentArtefactReinforce);
         m_uiInventory.ActualizeInventory();
     }
 
@@ -277,8 +280,13 @@ public class AnvilBehavior : InteractionInterface
 
         AnvilInfos anvilInfo = GetMergeArtefactArray();
 
-        for (int i = 1; i < anvilInfo.artefactsInfosToMerge.Length; i++)
+        for (int i = 0; i < anvilInfo.artefactsInfosToMerge.Length; i++)
         {
+            if (i == 0) 
+            {
+                m_characterArtefact.RemoveSpecificFragment(anvilInfo.artefactsInfosToMerge[0]);
+                continue;
+            }  
             anvilInfo.artefactsInfosToMerge[0].MergeFragment(anvilInfo.artefactsInfosToMerge[i]);
 
             UnlockFragment(anvilInfo.indexArtefact[i], anvilInfo.indexReceptacle[i]);
@@ -291,7 +299,7 @@ public class AnvilBehavior : InteractionInterface
         string sufixName = currentName.Substring(currentName.IndexOf(" "), currentName.Length - currentName.IndexOf(" "));
 
         anvilInfo.artefactsInfosToMerge[0].nameArtefact = FragmentUIRessources.instance.prefixElementNamesArray[(int)m_cloneMergeFragment.gameElement] + sufixName;
-
+        m_uiInventory.m_characterArtefact.GenerateNewArtefactAround(m_cloneMergeFragment);
         m_uiInventory.ActualizeInventory();
         m_uiInventory.RemoveFragmentConditionalUse();
 

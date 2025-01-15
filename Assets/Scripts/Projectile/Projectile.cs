@@ -5,11 +5,9 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using UnityEngine.VFX;
 using SeekerOfSand.Tools;
-using Mono.Cecil;
 using Enemies;
 using SpellSystem;
 using UnityEngine.Profiling;
-using UnityEditor.Purchasing;
 using GuerhoubaGames;
 using TreeEditor;
 
@@ -264,7 +262,7 @@ public class Projectile : MonoBehaviour
         {
 
             GameObject instance = GamePullingSystem.SpawnObject(ObjectToSpawn, transform.position, transform.rotation);
-            DOTMeta dotMeta = instance.GetComponent<DOTMeta>();
+            MultiHitAreaMeta dotMeta = instance.GetComponent<MultiHitAreaMeta>();
             if (dotMeta)
             {
                 dotMeta.dotData.characterShoot = m_characterShoot;

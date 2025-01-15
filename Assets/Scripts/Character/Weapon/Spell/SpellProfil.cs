@@ -855,11 +855,11 @@ namespace SpellSystem
             ManageStat(StatType.SummonSimultanely, testResult, true);
             ManageStat(StatType.LifeTimeSummon, testResult, true);
 
-            testResult = tagData.EqualsSpellNature(SpellNature.DOT);
+            testResult = tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
             ManageStat(StatType.HitFrequency, testResult);
             ManageStat(StatType.HitNumber, testResult, true);
 
-            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.DOT);
+            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
             ManageStat(StatType.AreaTargetSimulately, testResult, true);
 
             testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);

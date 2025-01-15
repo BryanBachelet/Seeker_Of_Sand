@@ -18,7 +18,7 @@ namespace GuerhoubaGames.VFX
         {
             if(onDamageSpawn)
             {
-                SpellSystem.DOTMeta dotMeta = GetComponent<SpellSystem.DOTMeta>();
+                SpellSystem.MultiHitAreaMeta dotMeta = GetComponent<SpellSystem.MultiHitAreaMeta>();
                 dotMeta.OnDamage += SpawnVFx;
             }
           

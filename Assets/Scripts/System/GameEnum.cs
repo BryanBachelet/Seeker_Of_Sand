@@ -227,7 +227,7 @@ namespace GuerhoubaGames.GameEnum
         PROJECTILE = 2,
         AREA = 3,
         SUMMON = 4,
-        DOT = 5,
+        MULTI_HIT_AREA = 5,
        
     }
 

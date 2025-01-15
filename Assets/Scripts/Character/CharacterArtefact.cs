@@ -203,17 +203,22 @@ public class CharacterArtefact : MonoBehaviour
 
     }
 
-    public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
+    public void GenerateNewArtefactAround(ArtefactsInfos artefactInfo)
     {
-        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
+        //GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
+        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefactInfo.levelTierFragment], transform.position, transform.rotation);
+        fragmentMiniElemental fragMiniElement = newArtefactAround.GetComponent<fragmentMiniElemental>();
+        fragMiniElement.m_artefactInfo = artefactInfo;
+        fragMiniElement.SelectElement(artefactInfo.gameElement);
         newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
         artefactAround_List.Add(newArtefactAround);
-
     }
 
     public void RemoveFragment(int indexFragmentAround)
     {
-        artefactAround_List.RemoveAt(indexFragmentAround);
+        GameObject fragmentToRemove = artefactAround_List[indexFragmentAround];
+        artefactAround_List.Remove(fragmentToRemove);
+        Destroy(fragmentToRemove);
     }
     public void RemoveArtefact(int index)
     {
@@ -230,6 +235,12 @@ public class CharacterArtefact : MonoBehaviour
 
         UnSetupArtefact(artefactsInfos);
         artefactsList.Remove(artefactsInfos);
+    }
+
+    public void RemoveSpecificFragment(ArtefactsInfos artefactInfo)
+    {
+        int indexTargetArtefact = artefactsList.IndexOf(artefactInfo);
+        RemoveFragment(indexTargetArtefact);
     }
 
 

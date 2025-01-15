@@ -29,10 +29,15 @@ namespace GuerhoubaGames.UI
 
         public bool IsActive;
 
+        public Sprite tooltip_Image;
+        [HideInInspector] public bool associated_Image_Bool;
+        public Vector2 offSet_Image;
         public void Start()
         {
 
             m_rectTransform = GetComponent<RectTransform>();
+            if(tooltip_Image != null ) {associated_Image_Bool = true;}
+            else { associated_Image_Bool=false;}
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -101,8 +106,11 @@ namespace GuerhoubaGames.UI
         private TooltipDisplayData CreateDisplayData()
         {
             TooltipDisplayData displayData = new TooltipDisplayData();
+
             displayData.content = content;
             displayData.header = header;
+            displayData.contentImage = tooltip_Image;
+            displayData.asImageInData = associated_Image_Bool;
             return displayData;
         }
 
@@ -110,6 +118,7 @@ namespace GuerhoubaGames.UI
         {
             TooltipPositionData positionData = new TooltipPositionData();
             positionData.offset = offset;
+            positionData.additionnalOffset = offSet_Image;
             Vector2 vector = Camera.main.WorldToScreenPoint(m_rectTransform.position);
             positionData.basePosition = vector;
             return positionData;

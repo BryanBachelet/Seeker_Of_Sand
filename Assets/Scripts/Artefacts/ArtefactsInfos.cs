@@ -4,6 +4,7 @@ using GuerhoubaGames.Resources;
 using System.Collections.Generic;
 using SeekerOfSand.Tools;
 using GuerhoubaGames;
+using UnityEngine.VFX;
 
 public enum ConditionsTrigger
 {
@@ -54,6 +55,7 @@ public class ArtefactsInfos : ScriptableObject
     [TextArea]
     public string descriptionResult;
 
+    public VisualEffect effectActivation;
     public string description
     {
         get
@@ -183,7 +185,7 @@ public class ArtefactsInfos : ScriptableObject
             SetupArtefactData(artefactData, objectPre);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
-
+            effectActivation.Play();
             if (!m_HasBeenMergeOnce) return;
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {
@@ -214,7 +216,7 @@ public class ArtefactsInfos : ScriptableObject
             SetupArtefactData(artefactData, agent);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
-
+            effectActivation.Play();
             if (!m_HasBeenMergeOnce) return;
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {

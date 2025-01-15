@@ -60,6 +60,7 @@ public class RoomManager : MonoBehaviour
     public float timeReset = 0.2f;
 
     public float timerReset = 0.0f;
+    static public float progress = 0;
 
     private GameObject playerGO;
 
@@ -82,6 +83,8 @@ public class RoomManager : MonoBehaviour
 
     private NavMeshData m_navMesh;
     private CameraBehavior m_cameraBehavior;
+
+
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -122,6 +125,7 @@ public class RoomManager : MonoBehaviour
 
         m_enemyManager.ResetAllSpawingPhasse();
         m_enemyManager.ResetSpawnStat();
+        progress = 0;
         if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
@@ -335,7 +339,7 @@ public class RoomManager : MonoBehaviour
     private void CountEnemy()
     {
         currentCountOfEnemy++;
-        float progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
+        progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
         //Debug.Log("Enemy Count" + progress);
         if (currentRoomType == RoomType.Enemy)
         {

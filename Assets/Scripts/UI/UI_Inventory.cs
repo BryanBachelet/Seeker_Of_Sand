@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using GuerhoubaGames.UI;
+using Character;
 public class UI_Inventory : MonoBehaviour
 {
     public bool isOpen;
@@ -23,7 +24,7 @@ public class UI_Inventory : MonoBehaviour
 
     private Character.CharacterSpellBook m_characterSpellBool;
     private Character.CharacterShoot m_characterShoot;
-    private CharacterArtefact m_characterArtefact;
+    [HideInInspector] public CharacterArtefact m_characterArtefact;
     private UI_Fragment_Tooltip m_fragmentToolTip;
 
     #region Resources variables
@@ -135,9 +136,9 @@ public class UI_Inventory : MonoBehaviour
             cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i] / 4)];
         }
         CharacterStat stat = CharacterProfile.instance.stats;
-        m_healthBonusText.text = ": " + stat.baseStat.healthMax;
-        m_speedBonusText.text = ": " + stat.baseStat.speed;
-        m_damageBonusText.text = ": " + stat.baseStat.damage;
+        m_healthBonusText.text = ": " + (stat.baseStat.healthMax / 15);
+        m_speedBonusText.text = ": " + (stat.baseStat.speed / 5);
+        m_damageBonusText.text = ": " + m_characterShoot.GetComponent<CharacterDamageComponent>().m_damageStats.damageBonusGeneral;
         m_armorBonusText.text = ": " + stat.baseStat.armor;
 
     }
@@ -171,6 +172,7 @@ public class UI_Inventory : MonoBehaviour
         fragmentUIViews[index].gameObject.SetActive(true);
         fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
         m_characterArtefact.uiFragmentTooltip.SelectElement(m_fragmentToolTip.fragment_List[index], m_characterArtefact.artefactsList[index]);
+
 
     }
 

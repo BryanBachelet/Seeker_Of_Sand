@@ -13,7 +13,7 @@ namespace SpellSystem
     {
         private ObjectState state;
         private AreaMeta m_areaMeta;
-        private DOTMeta m_DotMeta;
+        private MultiHitAreaMeta m_DotMeta;
         private SummonsMeta m_summonMeta;
 
         private float m_hitFrequencyTime = 0.0f;
@@ -50,7 +50,7 @@ namespace SpellSystem
         public void Awake()
         {
             m_areaMeta = GetComponent<AreaMeta>();
-            m_DotMeta = GetComponent<DOTMeta>();
+            m_DotMeta = GetComponent<MultiHitAreaMeta>();
 
             m_areaMeta.OnSpawn += InitComponent;
             m_areaMeta.OnRelaunch += RelaunchComponent;
@@ -75,7 +75,7 @@ namespace SpellSystem
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
             m_damageCalculComponent = GetComponent<DamageCalculComponent>();
-            if (profil.tagData.EqualsSpellNature(SpellNature.DOT))
+            if (profil.tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
                 m_hitMaxCount = m_DotMeta.dotData.currentMaxHitCount;

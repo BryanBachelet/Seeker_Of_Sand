@@ -5,7 +5,7 @@ using System;
 
 namespace SpellSystem
 {
-    public struct DOTData
+    public struct MultiHitAreaData
     {
         public Character.CharacterShoot characterShoot;
         public SpellProfil spellProfil;
@@ -13,9 +13,9 @@ namespace SpellSystem
     }
 
 
-    public class DOTMeta : MonoBehaviour
+    public class MultiHitAreaMeta : MonoBehaviour
     {
-        public DOTData dotData;
+        public MultiHitAreaData dotData;
         public Action<Vector3> OnDamage;
         public Action OnSpawn;
 

@@ -77,7 +77,7 @@ namespace SpellSystem
                 {
 
                     GameObject instance = GamePullingSystem.SpawnObject(ObjectToSpawnAtDeath, transform.position, transform.rotation);
-                    DOTMeta dotMeta = instance.GetComponent<DOTMeta>();
+                    MultiHitAreaMeta dotMeta = instance.GetComponent<MultiHitAreaMeta>();
                     if (dotMeta)
                     {
                         dotMeta.dotData.characterShoot = m_areaMeta.areaData.characterShoot;
