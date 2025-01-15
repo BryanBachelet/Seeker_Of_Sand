@@ -11,6 +11,7 @@ using SpellSystem;
 using UnityEngine.Profiling;
 using UnityEditor.Purchasing;
 using GuerhoubaGames;
+using TreeEditor;
 
 public struct ProjectileData
 {
@@ -84,9 +85,11 @@ public class Projectile : MonoBehaviour
 
     public GameObject vFXObject;
     public GameObject vFXExplosion;
-    private DamageCalculComponent m_damageCalculComponent;
+    protected DamageCalculComponent m_damageCalculComponent;
 
-    void Update()
+   [HideInInspector] public GameObject ObjectToSpawn;
+
+  public  void Update()
     {
         if (!checkSpawnTime) { spawnTime = Time.time; checkSpawnTime = true; GlobalSoundManager.PlayOneShot(m_indexSFX, transform.position); }
         else
@@ -251,6 +254,39 @@ public class Projectile : MonoBehaviour
         }
 
     }
+
+
+
+    public void SpawnObject( Vector3 position)
+    {
+
+        if (ObjectToSpawn != null)
+        {
+
+            GameObject instance = GamePullingSystem.SpawnObject(ObjectToSpawn, transform.position, transform.rotation);
+            DOTMeta dotMeta = instance.GetComponent<DOTMeta>();
+            if (dotMeta)
+            {
+                dotMeta.dotData.characterShoot = m_characterShoot;
+                dotMeta.dotData.currentMaxHitCount = spellProfil.GetIntStat(StatType.HitNumber);
+                dotMeta.dotData.spellProfil = spellProfil;
+
+            }
+            AreaMeta areaMeta = instance.GetComponent<AreaMeta>();
+            if (areaMeta)
+            {
+                AreaData areaData = new AreaData();
+                areaData.spellProfil = spellProfil;
+                areaData.objectType = objectType;
+                areaData.destination = position;
+
+                areaMeta.areaData = areaData;
+                areaMeta.OnSpawn?.Invoke();
+            }
+
+        }
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {

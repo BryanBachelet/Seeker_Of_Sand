@@ -48,6 +48,8 @@ namespace GuerhoubaGames.Input
 
         public void DetectionDevicesUpdate()
         {
+            SetKeyboardScheme();
+            return;
 
             if (Keyboard.current.anyKey.isPressed)
             {

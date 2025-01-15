@@ -892,8 +892,12 @@ namespace Character
                 {
                     SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
                     SpellSystem.AreaMeta areaMeta = projectileCreate.GetComponent<SpellSystem.AreaMeta>();
-                    areaMeta.areaData = data;
-                    areaMeta.ResetOnSpawn();
+                    if(areaMeta)
+                    {
+                        areaMeta.areaData = data;
+                        areaMeta.ResetOnSpawn();
+                    }
+                  
                 }
 
 

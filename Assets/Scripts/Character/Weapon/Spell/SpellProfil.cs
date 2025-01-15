@@ -270,7 +270,7 @@ namespace SpellSystem
         public Vector3 angleRotation;
         public GameObject VFX;
         public Material matToUse;
-        public Texture previewDecal_mat;
+        public Texture previewDecal_mat; 
         public Texture previewDecalEnd_mat;
 
         public int currentSpellTier;
@@ -313,7 +313,6 @@ namespace SpellSystem
 
             if (isSetup)
             {
-
                 spellProfil.SetupSpell();
             }
             return spellProfil;
@@ -378,7 +377,6 @@ namespace SpellSystem
         public void GainLevel()
         {
             if (currentSpellTier == 3) return;
-
 
 
             if (levelSpellsProfiles == null || levelSpellsProfiles.Length <= currentSpellTier || levelSpellsProfiles[currentSpellTier] == null)
