@@ -31,7 +31,7 @@ public class CristalInventory : MonoBehaviour
         hasEnoughCristalToSpawn = false;
         for (int i = 0; i < cristalCount.Length; i++)
         {
-            if (cristalCount[i] > 25)
+            if (cristalCount[i] > 60)
             {
                 hasEnoughCristalToSpawn = true;
             }
