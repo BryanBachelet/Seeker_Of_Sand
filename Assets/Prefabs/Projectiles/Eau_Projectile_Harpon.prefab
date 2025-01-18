@@ -576,8 +576,11 @@ MonoBehaviour:
   isDebugInstance: 0
   vFXObject: {fileID: 0}
   vFXExplosion: {fileID: 0}
+  ObjectToSpawn: {fileID: 0}
   m_minRangeToImpale: 100
   m_impalementDamageRatio: 1.5
+  timeBeforeSpawnArea: 0.5
+  impaleCountUpgrade: 5
 --- !u!95 &8554265425995580361
 Animator:
   serializedVersion: 5
@@ -648,6 +651,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageStats:
+    damageBonusGeneral: 0
+    damageTemporaireGeneral: 0
     generalModificator: 0
     OnDeath: 0
     OnContact: 0

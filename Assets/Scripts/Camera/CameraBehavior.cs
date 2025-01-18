@@ -702,5 +702,11 @@ namespace Render.Camera
             Gizmos.color = Color.red;
             Gizmos.DrawRay(m_targetTransform.position, directionDebug * m_distanceToTarget);
         }
+
+        public void ChangeLerpForTP()
+        {
+            m_currentLerpValue = 1;
+        }
     }
+
 }

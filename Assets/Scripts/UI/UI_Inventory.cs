@@ -59,6 +59,8 @@ public class UI_Inventory : MonoBehaviour
         if (m_marchandUiView != null) return;
 
         m_marchandUiView = GameState.m_uiManager.GetComponent<UIDispatcher>().marchandUiView;
+        tmpText_CurrentCristal = m_marchandUiView.GetCristalCount_TmpText;
+
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
         m_characterSpellBool = GameState.s_playerGo.GetComponent<Character.CharacterSpellBook>();
         m_characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();

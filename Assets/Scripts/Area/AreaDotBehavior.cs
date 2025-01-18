@@ -13,7 +13,7 @@ namespace SpellSystem
     {
         private ObjectState state;
         private AreaMeta m_areaMeta;
-        private DOTMeta m_DotMeta;
+        private MultiHitAreaMeta m_DotMeta;
         private SummonsMeta m_summonMeta;
 
         private float m_hitFrequencyTime = 0.0f;
@@ -50,8 +50,8 @@ namespace SpellSystem
         public void Awake()
         {
             m_areaMeta = GetComponent<AreaMeta>();
-            m_DotMeta = GetComponent<DOTMeta>();
-          
+            m_DotMeta = GetComponent<MultiHitAreaMeta>();
+
             m_areaMeta.OnSpawn += InitComponent;
             m_areaMeta.OnRelaunch += RelaunchComponent;
         }
@@ -75,7 +75,7 @@ namespace SpellSystem
             m_damage = profil.GetIntStat(StatType.Damage);
             m_element = profil.tagData.element;
             m_damageCalculComponent = GetComponent<DamageCalculComponent>();
-            if (profil.tagData.EqualsSpellNature(SpellNature.DOT))
+            if (profil.tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
                 m_hitMaxCount = m_DotMeta.dotData.currentMaxHitCount;
@@ -96,7 +96,7 @@ namespace SpellSystem
 
         public void RelaunchComponent()
         {
-            hitCount = 0;  
+            hitCount = 0;
         }
 
         public void UpdateArea()
@@ -142,6 +142,34 @@ namespace SpellSystem
             {
                 transform.position = m_areaMeta.areaData.characterShoot.transform.position + new Vector3(0, 10, 0);
             }
+
+            if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.Direction || profil.tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
+            {
+                RaycastHit hit = new RaycastHit();
+
+                if (Physics.Raycast(transform.position, -Vector3.up, out hit, Mathf.Infinity, GameLayer.instance.groundLayerMask))
+                {
+                    float distance = Vector3.Distance(hit.point, transform.position);
+
+                    float deltaDistance = 10 - distance;
+                    // deltaDistance = Mathf.Clamp(deltaDistance, 0, 10.0f);
+
+
+                    transform.position += Vector3.up * deltaDistance;
+
+                }
+
+
+                if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.Direction)
+                    transform.position += m_areaMeta.areaData.direction.normalized * profil.GetFloatStat(StatType.DirectionSpeed) * Time.deltaTime;
+                if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
+                {
+                    Character.CharacterAim characterAim = m_areaMeta.areaData.characterShoot.GetComponent<Character.CharacterAim>();
+                    Vector3 direction = characterAim.lastRawPosition - transform.position;
+                    transform.position += direction.normalized * profil.GetFloatStat(StatType.DirectionSpeed) * Time.deltaTime;
+                }
+
+            }
         }
 
         public void ApplyAreaDamage()
@@ -152,7 +180,7 @@ namespace SpellSystem
 
             if (!isLimitTarget)
             {
-                for (int i = 0; i < collider.Length ; i++)
+                for (int i = 0; i < collider.Length; i++)
                 {
                     IDamageReceiver npcHealthComponent = collider[i].GetComponent<IDamageReceiver>();
                     Vector3 direction = collider[i].transform.position - transform.position;
@@ -174,8 +202,8 @@ namespace SpellSystem
             {
                 List<Collider> colliderDraw = new List<Collider>(collider);
 
-              
-                for (int i = 0;  i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
+
+                for (int i = 0; i < profil.GetIntStat(StatType.AreaTargetSimulately); i++)
                 {
                     int index = Random.Range(0, colliderDraw.Count);
                     IDamageReceiver npcHealthComponent = colliderDraw[index].GetComponent<IDamageReceiver>();

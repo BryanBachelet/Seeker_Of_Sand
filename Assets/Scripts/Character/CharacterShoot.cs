@@ -351,7 +351,7 @@ namespace Character
             if (currentCloneSpellProfil.tagData.spellNatureType == SpellNature.PROJECTILE) UpdateMultipleShoot(StatType.TimeBetweenShot);
             if (currentCloneSpellProfil.tagData.spellNatureType == SpellNature.AREA) UpdateMultipleShoot(StatType.SpellFrequency);
 
-            if (currentCloneSpellProfil.tagData.spellNatureType == SpellNature.DOT) Shoot();
+            if (currentCloneSpellProfil.tagData.spellNatureType == SpellNature.MULTI_HIT_AREA) Shoot();
             if (currentCloneSpellProfil.tagData.spellNatureType == SpellNature.SUMMON) Shoot();
 
             // m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
@@ -747,7 +747,7 @@ namespace Character
                 endShoot = ShootAttackArea(index);
 
 
-            if (stats.tagData.spellNatureType == SpellNature.DOT)
+            if (stats.tagData.spellNatureType == SpellNature.MULTI_HIT_AREA)
                 endShoot = ShootAttackDot(index);
 
             if (stats.tagData.spellNatureType == SpellNature.SUMMON)
@@ -781,18 +781,20 @@ namespace Character
 
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, m_characterAim.lastRawPosition, rot);
+            Vector3 directoinInstance =  m_characterAim.lastRawPosition - transformUsed.position;
+            Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
+            areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, instancePosition, rot);
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
             damageCalculComponent.Init(m_characterDamageComponent, this,spellProfil);
 
-            if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
+            if (spellProfil.tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA))
             {
-                SpellSystem.DOTData dataDot = new SpellSystem.DOTData();
+                SpellSystem.MultiHitAreaData dataDot = new SpellSystem.MultiHitAreaData();
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
                 dataDot.currentMaxHitCount = m_currentStack[m_currentRotationIndex];
-                SpellSystem.DOTMeta dOTMeta = areaInstance.GetComponent<SpellSystem.DOTMeta>();
+                SpellSystem.MultiHitAreaMeta dOTMeta = areaInstance.GetComponent<SpellSystem.MultiHitAreaMeta>();
                 dOTMeta.dotData = dataDot;
                 dOTMeta.ResetOnSpawn();
             }
@@ -890,8 +892,12 @@ namespace Character
                 {
                     SpellSystem.AreaData data = FillAreaData(spellProfil, m_characterAim.lastRawPosition);
                     SpellSystem.AreaMeta areaMeta = projectileCreate.GetComponent<SpellSystem.AreaMeta>();
-                    areaMeta.areaData = data;
-                    areaMeta.ResetOnSpawn();
+                    if(areaMeta)
+                    {
+                        areaMeta.areaData = data;
+                        areaMeta.ResetOnSpawn();
+                    }
+                  
                 }
 
 
@@ -937,15 +943,16 @@ namespace Character
             }
 
             Transform transformUsed = transform;
-            Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
+            Vector3 directoinInstance = m_characterAim.lastRawPosition - transformUsed.position;
+            Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            GameObject areaInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
+            GameObject areaInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, instancePosition, rot);
 
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
             damageCalculComponent.Init(m_characterDamageComponent, this, spellProfil);
 
-            SpellSystem.AreaData data = FillAreaData(spellProfil, position);
+            SpellSystem.AreaData data = FillAreaData(spellProfil, instancePosition);
             SpellSystem.AreaMeta areaMeta = areaInstance.GetComponent<SpellSystem.AreaMeta>();
             areaMeta.areaData = data;
             areaMeta.ResetOnSpawn();
@@ -1013,13 +1020,13 @@ namespace Character
 
             }
 
-            if (spellProfil.tagData.EqualsSpellNature(SpellNature.DOT))
+            if (spellProfil.tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA))
             {
-                SpellSystem.DOTData dataDot = new SpellSystem.DOTData();
+                SpellSystem.MultiHitAreaData dataDot = new SpellSystem.MultiHitAreaData();
                 dataDot.spellProfil = spellProfil;
                 dataDot.characterShoot = this;
                 dataDot.currentMaxHitCount = m_currentStack[m_currentRotationIndex];
-                SpellSystem.DOTMeta dOTMeta = summonInstance.GetComponent<SpellSystem.DOTMeta>();
+                SpellSystem.MultiHitAreaMeta dOTMeta = summonInstance.GetComponent<SpellSystem.MultiHitAreaMeta>();
                 dOTMeta.dotData = dataDot;
                 dOTMeta.ResetOnSpawn();
             }
@@ -1189,7 +1196,7 @@ namespace Character
         {
             int maxStack = 1;
             if (spellProfil.tagData.spellNatureType == SpellNature.PROJECTILE) maxStack = spellProfil.GetIntStat(StatType.ShootNumber);
-            else if (spellProfil.tagData.spellNatureType == SpellNature.DOT) maxStack = spellProfil.GetIntStat(StatType.HitNumber);
+            else if (spellProfil.tagData.spellNatureType == SpellNature.MULTI_HIT_AREA) maxStack = spellProfil.GetIntStat(StatType.HitNumber);
             return maxStack;
         }
 
@@ -1509,7 +1516,7 @@ namespace Character
             {
                 if (spellEquip[i] == -1) continue;
                 int index = spellEquip[i];
-                levelArray[i] = m_characterSpellBook.GetAllSpells()[index].spellLevel;
+                levelArray[i] = m_characterSpellBook.GetAllSpells()[index].currentSpellTier;
             }
 
             return levelArray;
@@ -1538,7 +1545,7 @@ namespace Character
                 if (spellEquip[i] == -1) continue;
 
                 int index = spellEquip[i];
-                spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].spellLevel];
+                spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].currentSpellTier];
 
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }

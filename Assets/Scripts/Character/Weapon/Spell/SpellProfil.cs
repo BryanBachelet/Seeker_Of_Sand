@@ -270,17 +270,17 @@ namespace SpellSystem
         public Vector3 angleRotation;
         public GameObject VFX;
         public Material matToUse;
-        public Texture previewDecal_mat;
+        public Texture previewDecal_mat; 
         public Texture previewDecalEnd_mat;
 
-        public int spellLevel;
+        public int currentSpellTier;
         [HideInInspector] public int spellExp;
         private int spellExpNextLevel = 4;
         private int spellExpCountPerLevel = 4;
 
         private bool hasBeenSetup;
         [Header("Level Spell ")]
-        public LevelSpell[] levelSpells;
+        public LevelSpell[] levelSpellsProfiles;
 
 
         [Header("Effect Proc")]
@@ -313,7 +313,6 @@ namespace SpellSystem
 
             if (isSetup)
             {
-
                 spellProfil.SetupSpell();
             }
             return spellProfil;
@@ -322,9 +321,9 @@ namespace SpellSystem
         public void SetupSpell()
         {
             if (hasBeenSetup) return;
-            LevelSpell.SetupLevelEffect(levelSpells);
+            LevelSpell.SetupLevelEffect(levelSpellsProfiles);
 
-            for (int i = 0; i < spellLevel; i++)
+            for (int i = 0; i < currentSpellTier; i++)
             {
                 GainLevel(i);
             }
@@ -337,15 +336,15 @@ namespace SpellSystem
         public ChainEffect[] GetChainEffects()
         {
             List<ChainEffect> chainEffectsList = new List<ChainEffect>();
-            if (levelSpells == null) return chainEffectsList.ToArray();
+            if (levelSpellsProfiles == null) return chainEffectsList.ToArray();
 
-            for (int i = 0; i < spellLevel && i < levelSpells.Length; i++)
+            for (int i = 0; i < currentSpellTier && i < levelSpellsProfiles.Length; i++)
             {
-                if (levelSpells[i] == null) continue;
+                if (levelSpellsProfiles[i] == null) continue;
 
-                if (levelSpells[i].LevelType == SpellLevelType.CHAIN_EFFECT)
+                if (levelSpellsProfiles[i].LevelType == SpellLevelType.CHAIN_EFFECT)
                 {
-                    chainEffectsList.Add((ChainEffect)levelSpells[i]);
+                    chainEffectsList.Add((ChainEffect)levelSpellsProfiles[i]);
                 }
             }
             return chainEffectsList.ToArray();
@@ -354,15 +353,15 @@ namespace SpellSystem
         public BehaviorLevel[] GetBehaviorsLevels()
         {
             List<BehaviorLevel> behaviorList = new List<BehaviorLevel>();
-            if (levelSpells == null) return behaviorList.ToArray();
+            if (levelSpellsProfiles == null) return behaviorList.ToArray();
 
-            for (int i = 0; i < spellLevel && i < levelSpells.Length; i++)
+            for (int i = 0; i < currentSpellTier && i < levelSpellsProfiles.Length; i++)
             {
-                if (levelSpells[i] == null) continue;
+                if (levelSpellsProfiles[i] == null) continue;
 
-                if (levelSpells[i].LevelType == SpellLevelType.BEHAVIOR)
+                if (levelSpellsProfiles[i].LevelType == SpellLevelType.BEHAVIOR)
                 {
-                    behaviorList.Add((BehaviorLevel)levelSpells[i]);
+                    behaviorList.Add((BehaviorLevel)levelSpellsProfiles[i]);
                 }
             }
             return behaviorList.ToArray();
@@ -370,39 +369,38 @@ namespace SpellSystem
 
         public bool CanGainLevel()
         {
-            if (spellLevel == 3) return false;
+            if (currentSpellTier == 3) return false;
 
             return true;
         }
 
         public void GainLevel()
         {
-            if (spellLevel == 3) return;
+            if (currentSpellTier == 3) return;
 
 
-
-            if (levelSpells == null || levelSpells.Length <= spellLevel || levelSpells[spellLevel] == null)
+            if (levelSpellsProfiles == null || levelSpellsProfiles.Length <= currentSpellTier || levelSpellsProfiles[currentSpellTier] == null)
             {
-                spellLevel++;
+                currentSpellTier++;
                 spellExpNextLevel = spellExp + spellExpCountPerLevel;
                 return;
             }
-            if (levelSpells[spellLevel].isPermanent)
+            if (levelSpellsProfiles[currentSpellTier].isPermanent)
             {
-                if (levelSpells[spellLevel].LevelType == SpellLevelType.STATS)
+                if (levelSpellsProfiles[currentSpellTier].LevelType == SpellLevelType.STATS)
                 {
-                    StatsLevel statsLevel = (StatsLevel)(levelSpells[spellLevel]);
+                    StatsLevel statsLevel = (StatsLevel)(levelSpellsProfiles[currentSpellTier]);
                     statsLevel.Apply(this);
                 }
-                if (levelSpells[spellLevel].LevelType == SpellLevelType.BEHAVIOR)
+                if (levelSpellsProfiles[currentSpellTier].LevelType == SpellLevelType.BEHAVIOR)
                 {
-                    BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[spellLevel]);
+                    BehaviorLevel statsLevel = (BehaviorLevel)(levelSpellsProfiles[currentSpellTier]);
                     statsLevel.OnGain(this);
                 }
 
             }
 
-            spellLevel++;
+            currentSpellTier++;
             spellExpNextLevel = spellExp + spellExpCountPerLevel;
 
         }
@@ -425,22 +423,22 @@ namespace SpellSystem
 
 
 
-            if (levelSpells == null || levelSpells.Length <= index || levelSpells[index] == null)
+            if (levelSpellsProfiles == null || levelSpellsProfiles.Length <= index || levelSpellsProfiles[index] == null)
             {
                 // spellLevel++;
                 spellExpNextLevel = spellExp + spellExpCountPerLevel;
                 return;
             }
-            if (levelSpells[index].isPermanent)
+            if (levelSpellsProfiles[index].isPermanent)
             {
-                if (levelSpells[index].LevelType == SpellLevelType.STATS)
+                if (levelSpellsProfiles[index].LevelType == SpellLevelType.STATS)
                 {
-                    StatsLevel statsLevel = (StatsLevel)(levelSpells[index]);
+                    StatsLevel statsLevel = (StatsLevel)(levelSpellsProfiles[index]);
                     statsLevel.Apply(this);
                 }
-                if (levelSpells[index].LevelType == SpellLevelType.BEHAVIOR)
+                if (levelSpellsProfiles[index].LevelType == SpellLevelType.BEHAVIOR)
                 {
-                    BehaviorLevel statsLevel = (BehaviorLevel)(levelSpells[index]);
+                    BehaviorLevel statsLevel = (BehaviorLevel)(levelSpellsProfiles[index]);
                     statsLevel.OnGain(this);
                 }
 
@@ -771,6 +769,13 @@ namespace SpellSystem
 
             testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Fix;
             ManageStat(StatType.OffsetDistance, testResult);
+
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Direction;
+            ManageStat(StatType.DirectionSpeed, testResult);
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse;
+            ManageStat(StatType.DirectionSpeed, testResult);
         }
 
         private void SetupMovementType()
@@ -850,11 +855,11 @@ namespace SpellSystem
             ManageStat(StatType.SummonSimultanely, testResult, true);
             ManageStat(StatType.LifeTimeSummon, testResult, true);
 
-            testResult = tagData.EqualsSpellNature(SpellNature.DOT);
+            testResult = tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
             ManageStat(StatType.HitFrequency, testResult);
             ManageStat(StatType.HitNumber, testResult, true);
 
-            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.DOT);
+            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
             ManageStat(StatType.AreaTargetSimulately, testResult, true);
 
             testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);

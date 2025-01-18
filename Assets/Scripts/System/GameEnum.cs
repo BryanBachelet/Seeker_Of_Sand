@@ -150,6 +150,7 @@ namespace GuerhoubaGames.GameEnum
         LifeTimeSummon = 2025,
         AttackReload =2026,
         SizeExplosion = 2027,
+        DirectionSpeed = 2028,
     }
 
     
@@ -226,7 +227,7 @@ namespace GuerhoubaGames.GameEnum
         PROJECTILE = 2,
         AREA = 3,
         SUMMON = 4,
-        DOT = 5,
+        MULTI_HIT_AREA = 5,
        
     }
 
@@ -255,6 +256,8 @@ namespace GuerhoubaGames.GameEnum
         OnSelf=2,
         Fix = 3,
         Return=4,
+        Direction=5,
+        FollowMouse=6
     }
 
     public enum DamageTrigger

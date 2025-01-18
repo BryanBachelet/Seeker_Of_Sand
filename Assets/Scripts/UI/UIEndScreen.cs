@@ -220,12 +220,12 @@ public class UIEndScreen : MonoBehaviour
             {
                 m_spellDetail[i].SetActive(true);
                 m_spellDetailImage[i].sprite = spellProfils[i].spell_Icon;
-                m_spellDetailUpgrades[i].text = "" + spellProfils[i].spellLevel;
+                m_spellDetailUpgrades[i].text = "" + spellProfils[i].currentSpellTier;
                 m_spellDetailName[i].text = "" + spellProfils[i].name;
 
 
                 spellDamaged[i] = GameStats.instance.GetDamage(spellProfils[i].name);
-                int tier = Mathf.FloorToInt(spellProfils[i].spellLevel);
+                int tier = Mathf.FloorToInt(spellProfils[i].currentSpellTier);
                 m_spellDetailTier[i].text = "" + tier;
             }
             else

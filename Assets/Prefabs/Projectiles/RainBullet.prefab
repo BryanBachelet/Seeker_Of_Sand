@@ -96,10 +96,10 @@ GameObject:
   - component: {fileID: 5484623518530732624}
   - component: {fileID: 5984570168554001361}
   - component: {fileID: 180466124074539530}
-  - component: {fileID: 2128609606482203326}
   - component: {fileID: 8092470702815903472}
   - component: {fileID: 8650082508591259553}
   - component: {fileID: -4732480349739013773}
+  - component: {fileID: 7690534533106045727}
   m_Layer: 15
   m_Name: RainBullet
   m_TagString: Projectile
@@ -208,18 +208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86f4f4dd529826641bd8b22565615a87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2128609606482203326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6333615331467375570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c39af5cc0538a7428709952daf1764b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8092470702815903472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790aad17fcd99e54aa95ab36d87e7608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitCount: 0
   isLimitTarget: 0
   indexSFX: 24
   damageDelay: 0
@@ -267,10 +256,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageStats:
+    damageBonusGeneral: 0
+    damageTemporaireGeneral: 0
     generalModificator: 0
     OnDeath: 0
     OnContact: 0
     OnHit: 0
+--- !u!114 &7690534533106045727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6333615331467375570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee2a038eee47b7e489f260abe1df6193, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7670501633248258616
 PrefabInstance:
   m_ObjectHideFlags: 0

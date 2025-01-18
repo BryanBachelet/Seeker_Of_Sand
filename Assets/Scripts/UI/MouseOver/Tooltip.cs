@@ -49,6 +49,7 @@ namespace GuerhoubaGames.UI
    
         public void SetText(TooltipDisplayData displayData)
         {
+
             if (string.IsNullOrEmpty(displayData.header))
             {
                 m_header.gameObject.SetActive(false);

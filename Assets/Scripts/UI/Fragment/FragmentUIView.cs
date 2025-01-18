@@ -70,6 +70,7 @@ namespace GuerhoubaGames.UI
             //m_elementImg.sprite = instanceResources.elementSprite[indexBaseElement];
             m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
             m_spriteImg.sprite = artefactsInfos.icon;
+            m_spriteImg.color = Color.white;
             m_nameText.text = artefactsInfos.nameArtefact;
 
             tooltipTrigger.header = "<u>"+artefactsInfos.nameArtefact+ "</u>" + "<br><#A6A6A6>Quantity: " + (artefactsInfos.additionialItemCount+1) + "<#FFFFFF>";

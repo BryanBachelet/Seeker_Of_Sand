@@ -47,6 +47,8 @@ public class MarchandUiView : MonoBehaviour
     public Sprite[] backgroundElement = new Sprite[4];
     public Sprite[] rarityCadre = new Sprite[3];
     public Sprite[] iconElement = new Sprite[4];
+
+    [SerializeField] private TMP_Text[] currentCristalTrade = new TMP_Text[4];
     public void Start()
     {
         InitEventComponent();
@@ -256,5 +258,8 @@ public class MarchandUiView : MonoBehaviour
         fragmentBackground[indexFragmentInShop].sprite = backgroundElement[elementIndex];
         fragmentElementIcon[indexFragmentInShop].sprite = iconElement[elementIndex - 1];
         fragmentNameArray[indexFragmentInShop].text = fragmentData.nameArtefact;
+        
     }
+
+    public TMP_Text[] GetCristalCount_TmpText { get { return currentCristalTrade; } }
 }
