@@ -142,7 +142,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.25, y: 3.25, z: 3.25}
+  m_LocalScale: {x: 4.3, y: 4.3, z: 4.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3287003117133031251}
@@ -744,6 +744,7 @@ MonoBehaviour:
   isInAttackSequence: 0
   sequenceIndex: -1
   DebugSpecificItem: 0
+  isStopRotationFirstFrame: 0
 --- !u!114 &344461231000591635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -789,6 +790,7 @@ MonoBehaviour:
     attackIndex: 0
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -804,6 +806,7 @@ MonoBehaviour:
     attackIndex: 0
     attackPhase: 1
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
 --- !u!114 &2230807567131238627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1104,6 +1107,37 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!1 &7863754121852090176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8749557760935555458}
+  m_Layer: 0
+  m_Name: Trail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8749557760935555458
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7863754121852090176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7798413501157207090}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8656990864706420996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1611,6 +1645,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4305195147333059221, guid: f18234a89cbbb6847a842fc6c923f509,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8749557760935555458}
     - targetCorrespondingSourceObject: {fileID: 4777683831449224072, guid: f18234a89cbbb6847a842fc6c923f509,
         type: 3}
       insertIndex: -1
@@ -1638,6 +1676,12 @@ Animator:
 --- !u!137 &7710195976898996122 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4361377301144127805, guid: f18234a89cbbb6847a842fc6c923f509,
+    type: 3}
+  m_PrefabInstance: {fileID: 6306912976365432487}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7798413501157207090 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4305195147333059221, guid: f18234a89cbbb6847a842fc6c923f509,
     type: 3}
   m_PrefabInstance: {fileID: 6306912976365432487}
   m_PrefabAsset: {fileID: 0}
