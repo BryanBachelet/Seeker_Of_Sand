@@ -8,7 +8,7 @@ public class ExperienceMouvement : MonoBehaviour
     public Transform m_playerPosition;
     [HideInInspector] public Vector3 GroundPosition;
     [Header("Particule Parameters")]
-    [SerializeField] private float m_speed = 15;
+    [SerializeField] public float m_speed = 15;
     [SerializeField] private float m_speedUp = 40;
     [SerializeField] private TrailRenderer m_trail;
     [HideInInspector] public float timeBeforeDestruction = 3;

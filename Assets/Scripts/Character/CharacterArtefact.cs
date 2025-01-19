@@ -4,6 +4,7 @@ using UnityEngine;
 using GuerhoubaTools;
 using GuerhoubaGames.Resources;
 using SeekerOfSand.Tools;
+using GuerhoubaGames.GameEnum;
 
 public class CharacterArtefact : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class CharacterArtefact : MonoBehaviour
 
     public bool activeDebug = false;
     private Character.CharacterShoot m_characterShoot;
+    private Character.CharacterDamageComponent m_characterDamageComponent;
     private HealthPlayerComponent m_healthComponent;
 
     public int radiusDetectionArtefact;
@@ -31,9 +33,20 @@ public class CharacterArtefact : MonoBehaviour
     public UI_Fragment_Tooltip uiFragmentTooltip;
     private Vector3 positionRandom;
 
+    public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
+    public event OnContact OnContactEvent = delegate { };
+
+
+    public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
+    public event OnDeath OnDeathEvent = delegate { };
+
+
+    
+
     public void Start()
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
+        m_characterDamageComponent = GetComponent<Character.CharacterDamageComponent>();
         m_healthComponent = GetComponent<HealthPlayerComponent>();
         positionRandom = Random.insideUnitSphere * rangeRandom;
 
@@ -44,10 +57,6 @@ public class CharacterArtefact : MonoBehaviour
             AddArtefact(cloneList[i]);
         }
 
-        for (int i = 0; i < artefactsList.Count; i++)
-        {
-            SetupArtefact(artefactsList[i]);
-        }
     }
 
     private void SetupArtefact(ArtefactsInfos artefacts)
@@ -61,9 +70,14 @@ public class CharacterArtefact : MonoBehaviour
                 break;
             case ConditionsTrigger.OnDeath:
                 m_enemyManager.OnDeathEvent += artefacts.ActiveArtefactOnDeath;
+                OnDeathEvent += artefacts.ActiveArtefactOnDeath;
                 break;
             case ConditionsTrigger.Contact:
                 m_healthComponent.OnContactEvent += artefacts.ActiveArtefactOnHit;
+                OnContactEvent += artefacts.ActiveArtefactOnHit;
+                break;
+            case ConditionsTrigger.StatGeneral:
+                m_characterDamageComponent.AddDamage(artefacts.damageToApply, artefacts.gameElement, artefacts.damageTypeBonus);
                 break;
             default:
                 break;
@@ -71,6 +85,16 @@ public class CharacterArtefact : MonoBehaviour
 
         artefacts.characterGo = gameObject;
 
+    }
+
+    public void ActiveOnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element)
+    {
+        OnContactEvent( position,  tag,  objectHit,  element);
+    }
+
+    public void ActiveOnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance)
+    {
+        OnDeathEvent(position, tag, objectHit, distance);
     }
 
     private void UnSetupArtefact(ArtefactsInfos artefacts)
@@ -83,9 +107,14 @@ public class CharacterArtefact : MonoBehaviour
                 break;
             case ConditionsTrigger.OnDeath:
                 m_enemyManager.OnDeathEvent -= artefacts.ActiveArtefactOnDeath;
+                OnDeathEvent -= artefacts.ActiveArtefactOnDeath;
                 break;
             case ConditionsTrigger.Contact:
                 m_healthComponent.OnContactEvent -= artefacts.ActiveArtefactOnHit;
+                OnContactEvent -= artefacts.ActiveArtefactOnHit;
+                break;
+            case ConditionsTrigger.StatGeneral:
+                m_characterDamageComponent.AddDamage(-artefacts.damageToApply, artefacts.gameElement, artefacts.damageTypeBonus);
                 break;
             default:
                 break;
@@ -135,8 +164,11 @@ public class CharacterArtefact : MonoBehaviour
         // Verify if the player doesn't already the artefact
         for (int i = 0; i < artefactsList.Count; i++)
         {
-            if (artefactsList[i].AddAdditionalFragment(artefacts))
+            if (artefactsList[i].IsSameFragment(artefacts))
             {
+                UnSetupArtefact(artefactsList[i]);
+                artefactsList[i].AddAdditionalFragment(artefacts);
+                SetupArtefact(artefactsList[i]);
                 uiFragmentTooltip.UpdateFragmentStack(i, artefactsList[i].additionialItemCount +1);
                 return;
             }
@@ -171,12 +203,22 @@ public class CharacterArtefact : MonoBehaviour
 
     }
 
-    public void GenerateNewArtefactAround(ArtefactsInfos artefacts)
+    public void GenerateNewArtefactAround(ArtefactsInfos artefactInfo)
     {
-        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
+        //GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
+        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefactInfo.levelTierFragment], transform.position, transform.rotation);
+        fragmentMiniElemental fragMiniElement = newArtefactAround.GetComponent<fragmentMiniElemental>();
+        fragMiniElement.m_artefactInfo = artefactInfo;
+        fragMiniElement.SelectElement(artefactInfo.gameElement);
         newArtefactAround.GetComponent<Klak.Motion.SmoothFollow>().target = targetObjectAround.transform;
         artefactAround_List.Add(newArtefactAround);
+    }
 
+    public void RemoveFragment(int indexFragmentAround)
+    {
+        GameObject fragmentToRemove = artefactAround_List[indexFragmentAround];
+        artefactAround_List.Remove(fragmentToRemove);
+        Destroy(fragmentToRemove);
     }
     public void RemoveArtefact(int index)
     {
@@ -189,9 +231,18 @@ public class CharacterArtefact : MonoBehaviour
     {
         int indexTargetArtefact = artefactsList.IndexOf(artefactsInfos);
         uiFragmentTooltip.RemoveFragment(indexTargetArtefact);
+        RemoveFragment(indexTargetArtefact);
 
         UnSetupArtefact(artefactsInfos);
         artefactsList.Remove(artefactsInfos);
     }
+
+    public void RemoveSpecificFragment(ArtefactsInfos artefactInfo)
+    {
+        int indexTargetArtefact = artefactsList.IndexOf(artefactInfo);
+        RemoveFragment(indexTargetArtefact);
+    }
+
+
 
 }

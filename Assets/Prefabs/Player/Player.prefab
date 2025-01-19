@@ -8681,6 +8681,8 @@ GameObject:
   - component: {fileID: 6695158059545031928}
   - component: {fileID: 8154175994360953483}
   - component: {fileID: 7266334552440170911}
+  - component: {fileID: 1054947795158149280}
+  - component: {fileID: 4839255453656362847}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -8932,6 +8934,7 @@ MonoBehaviour:
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 0
+  updateProfilStateSpeedDebug: 0
 --- !u!114 &1983534965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9727,6 +9730,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5276ad4e-d033-4428-b2ca-e18db8896ae1
     m_ActionName: Player/Cancel[/XInputControllerWindows/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bffe9196-9313-4091-a215-43dae9cb5312
+    m_ActionName: Player/ChooseUpgrade[/Keyboard/1,/Keyboard/2,/Keyboard/3]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -9884,12 +9891,14 @@ MonoBehaviour:
   m_lastTimeShot: 0
   m_TimeAutoWalk: 89000000
   m_characterSpellBook: {fileID: 0}
+  m_characterChainEffect: {fileID: 0}
   uiManager: {fileID: 0}
   icon_Sprite:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  spell_rarity: []
   m_spellGlobalCooldown:
   - {fileID: 0}
   - {fileID: 0}
@@ -9900,6 +9909,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  raritySprite: []
   numberOfUniqueSpell: 10
   castingVFXAnimator: {fileID: 2315213069328599731}
   specifiqueSpellStart: 1
@@ -9907,6 +9917,7 @@ MonoBehaviour:
   currentPreviewDecalTexture: {fileID: 2800000, guid: 35eb3282524735e4686aef5892a6d867,
     type: 3}
   currentPreviewDecalEndTexture: {fileID: 0}
+  areaInstance: {fileID: 0}
   gradientDecalElement:
   - serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 0}
@@ -10434,6 +10445,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96ba12f41df91f34ebe3c3ceb0dde7b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_currentStack: 1
+  m_maxStack: 1
   m_dashDistance: 50
   m_dashDuration: 0.3
   m_dashCooldownDuration: 1
@@ -10453,6 +10466,10 @@ MonoBehaviour:
   vfxDash: {fileID: 5718396276663658109, guid: 5f8cfa6d30c802249b02d1024b36e69f, type: 3}
   m_dashDecalFeedback: {fileID: 0}
   m_dashHolderDecal: {fileID: 975849080}
+  spriteDash:
+  - {fileID: 0}
+  - {fileID: 0}
+  dashCadre: {fileID: 0}
 --- !u!114 &301007838368404962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10698,6 +10715,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  m_currentSpellInRotationCount: 0
 --- !u!114 &8160340498062522489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11007,6 +11025,36 @@ MonoBehaviour:
   isCombatActionMap: 0
   timeBeforeChangeMap: 0.5
   isAbleToChangeMap: 0
+--- !u!114 &1054947795158149280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0899221a4bf3bd84288eedb7e7763721, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chainEffectsList: []
+--- !u!114 &4839255453656362847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 623c5d5b7a2b28842bd366e643e38ec0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1 &7080172677212411336
 GameObject:
   m_ObjectHideFlags: 0

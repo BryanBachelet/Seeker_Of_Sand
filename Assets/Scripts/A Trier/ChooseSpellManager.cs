@@ -53,6 +53,15 @@ public class ChooseSpellManager : MonoBehaviour
     public float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
     private int countSpellDraw = 0;
 
+    public Image spellTier1Image;
+    public Image spellTier2Image;
+    public Image spellTier3Image;
+    public Image cadreTier1Image;
+    public Image cadreTier2Image;
+    public Image cadreTier3Image;
+    public Sprite[] cadreTier; //Tier de rareté (0=T1, 1=T2, 2=T3, 3=Non discovered 
+    public TooltipTrigger[] tooltipNextTier = new TooltipTrigger[3];
+
     #region Unity Functions
 
     private void Awake()
@@ -257,7 +266,17 @@ public class ChooseSpellManager : MonoBehaviour
             tagText[i].text = tagLines[i];
         }
         spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
-        iconSpell.sprite = newSpell[spellIndex].spell_Icon;
+        Sprite spriteSpell = newSpell[spellIndex].spell_Icon;
+        iconSpell.sprite = spriteSpell;
+        spellTier1Image.sprite = spriteSpell;
+        spellTier2Image.sprite = spriteSpell;
+        spellTier3Image.sprite = spriteSpell;
+        for (int i = 0; i < newSpell[spellIndex].levelSpellsProfiles.Length; i++)
+        {
+            tooltipNextTier[i].content = newSpell[spellIndex].levelSpellsProfiles[i].description;
+        }
+
+
         GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         //description.text = popup.des
     }
@@ -298,4 +317,5 @@ public class ChooseSpellManager : MonoBehaviour
         decorationHolder[spellNumber].SetActive(true);
 
     }
+
 }

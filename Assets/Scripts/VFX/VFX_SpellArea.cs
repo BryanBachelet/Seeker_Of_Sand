@@ -1,6 +1,8 @@
+using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.VFX;
 
 namespace GuerhoubaGames.VFX
@@ -16,6 +18,10 @@ namespace GuerhoubaGames.VFX
         {
             areaMeta = GetComponentInParent<SpellSystem.AreaMeta>();
             vfx.SetFloat("Size", areaMeta.areaData.spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.Size));
+            if (areaMeta.areaData.spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+            {
+                vfx.SetFloat("Size", areaMeta.areaData.spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion));
+            }
         }
 
 

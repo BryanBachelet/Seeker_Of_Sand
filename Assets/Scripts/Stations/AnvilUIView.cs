@@ -104,11 +104,14 @@ namespace GuerhoubaGames.UI
                 }
             }
         }
+
+
         public void CloseUIAnvil()
         {
             CleanMergeInterface();
             anvilBehavior.ClearAnvil();
             m_panelAnvil.SetActive(false);
+            
         }
 
         // Add this behavior for all actions of the anvil
@@ -175,8 +178,6 @@ namespace GuerhoubaGames.UI
             for (int i = 0; i < vfxReinforcement.Length; i++)
             {
                 vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexElementToUse]);
-
-
             }
 
         }
@@ -195,6 +196,8 @@ namespace GuerhoubaGames.UI
 
             m_receptableImage.ResetFragmentUIView();
             m_resultImage.ResetFragmentUIView();
+
+
 
         }
         #endregion
@@ -223,11 +226,13 @@ namespace GuerhoubaGames.UI
         {
             int currentFragmentToMergeIndex = receptableData.indexObject;
             // Update Anvil Behavior
-            anvilBehavior.currentFragmentMergeArray[receptableData.indexReceptacle] = m_characterArtefact.artefactsList[currentFragmentToMergeIndex];
+            anvilBehavior.LockFragment(currentFragmentToMergeIndex, receptableData.indexReceptacle);
             fragmentFusionManager.ChangeFill(receptableData.indexReceptacle, m_characterArtefact.artefactsList[currentFragmentToMergeIndex].gameElement);
             // Update UI
             receptacleViews[receptableData.indexReceptacle].UpdateInteface(m_characterArtefact.artefactsList[currentFragmentToMergeIndex]);
+
             if (!anvilBehavior.CanFragmentBeMerge()) return;
+
             m_mergeFragmentClone = anvilBehavior.MergeFragmentClone();
             resultMergeImage.UpdateInteface(m_mergeFragmentClone);
 
@@ -259,15 +264,20 @@ namespace GuerhoubaGames.UI
             anvilBehavior.MergeFragment();
             CleanMergeInterface();
             anvilBehavior.ClearAnvil();
+            //m_characterArtefact.SelectElement(fragment_List[currentFragmentNumber], artefactInfo);
 
         }
 
         public void CleanMergeFragment(ReceptableData data)
         {
+           bool isValid = anvilBehavior.UnlockFragment(data.indexObject, data.indexReceptacle);
 
-            anvilBehavior.currentFragmentMergeArray[data.indexReceptacle] = null;
+            if (!isValid) return;
+
             receptacleViews[data.indexReceptacle].ResetFragmentUIView();
             fragmentFusionManager.RemoveFill(data.indexReceptacle);
+            
+
             if (!anvilBehavior.CanFragmentBeMerge())
             {
                 m_mergeFragmentClone = null;

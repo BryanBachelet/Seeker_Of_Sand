@@ -10,9 +10,11 @@ namespace GuerhoubaGames.UI
     {
         public CharacterObjectType objectType;
         public int index;
+        public bool isLock;
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (isLock) return;
             DragManager.instance.ActiveDragDrop(objectType, index, eventData.position);
         }
 
@@ -33,13 +35,14 @@ namespace GuerhoubaGames.UI
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            Debug.Log("On Pointer Down " + gameObject.name);
+            //Debug.Log("On Pointer Down " + gameObject.name);
         }
 
         public void OnDisable()
         {
             DragManager.instance.DeactiveDragDrop();
         }
+
 
     }
 }

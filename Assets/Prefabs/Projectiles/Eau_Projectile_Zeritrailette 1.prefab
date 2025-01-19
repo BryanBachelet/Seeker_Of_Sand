@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 270100141013101791}
   - component: {fileID: 8778362212055262413}
   - component: {fileID: 5323122015238274019}
+  - component: {fileID: 2919968781211224203}
   m_Layer: 15
   m_Name: Eau_Projectile_Zeritrailette 1
   m_TagString: Projectile
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.77, z: -1.32}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2559288265495686829}
@@ -131,8 +132,12 @@ MonoBehaviour:
   m_power: 100
   m_damage: 1
   m_indexSFX: 17
+  m_characterProfil: {fileID: 0}
   m_piercingMax: 0
   m_deltaTimeMove: 0
+  isDebugInstance: 0
+  vFXObject: {fileID: 0}
+  vFXExplosion: {fileID: 0}
 --- !u!114 &5323122015238274019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +153,23 @@ MonoBehaviour:
   isActive: 0
   id: -1
   bIsExtraSpawn: 0
+--- !u!114 &2919968781211224203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529003561376632028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1 &1117572370938328834
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,6 +720,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 0bd43b467f5bf8347b25754f20f89196, type: 2}
+    - target: {fileID: 7813860776056284807, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7813860776056284807, guid: 48c0bc741f0443345b961978ca2318bc,
+        type: 3}
+      propertyPath: m_Parameters.generateLightingData
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7813860776215824584, guid: 48c0bc741f0443345b961978ca2318bc,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size

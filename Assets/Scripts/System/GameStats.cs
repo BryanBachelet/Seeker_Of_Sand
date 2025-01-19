@@ -9,11 +9,20 @@ public struct DamageStatData
 {
     public int damage;
     public CharacterObjectType characterObjectType;
+    public GameElement element;
+
 
     public DamageStatData(int pdamage, CharacterObjectType objectType)
     {
         this.damage = pdamage;
         this.characterObjectType = objectType;
+        this.element = GameElement.NONE;
+    }
+    public DamageStatData(int pdamage, CharacterObjectType objectType, GameElement pElement)
+    {
+        this.damage = pdamage;
+        this.characterObjectType = objectType;
+        this.element = pElement;
     }
 }
 

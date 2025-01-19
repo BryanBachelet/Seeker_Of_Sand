@@ -24,11 +24,12 @@ MonoBehaviour:
   matToUse: {fileID: 2100000, guid: 1eabd1dc58d7b9d4a9471433350a7a3a, type: 2}
   previewDecal_mat: {fileID: 2800000, guid: 3e76e1fc5d63c9f4693d1e090c91766c, type: 3}
   previewDecalEnd_mat: {fileID: 2800000, guid: 31b5e604428441746b13ba6b27819754, type: 3}
-  spellLevel: 0
+  currentSpellTier: 0
   spellExp: 0
-  levelSpells:
-  - {fileID: 11400000, guid: 791f47ed87c900f4eb7652ef90868dc1, type: 2}
+  levelSpellsProfiles:
+  - {fileID: 11400000, guid: 4444672ec84a7f64b97055bb3a679d4d, type: 2}
   - {fileID: 11400000, guid: 6b79e90e96097f94b9ed071dd3079d6d, type: 2}
+  - {fileID: 11400000, guid: e3f10c88607af684ea87a155a470bc13, type: 2}
   OnContact: 0
   OnDeath: 0
   OnHit: 0
@@ -40,7 +41,7 @@ MonoBehaviour:
     spellNatureType2: 0
     spellProjectileTrajectory: 0
     canalisationType: 1
-    spellMovementBehavior: 3
+    spellMovementBehavior: 0
     damageTriggerType: 0
     spellParticualarity: 0
     spellParticualarity1: 0
@@ -93,7 +94,7 @@ MonoBehaviour:
   - stat: 2002
     valueType: 0
     val_int: 0
-    val_float: 100
+    val_float: 0
     val_string: 
     val_bool: 0
     isVisible: 0
@@ -111,3 +112,10 @@ MonoBehaviour:
     val_string: 
     val_bool: 0
     isVisible: 0
+  - stat: 1017
+    valueType: 0
+    val_int: 5
+    val_float: 0
+    val_string: 
+    val_bool: 0
+    isVisible: 1

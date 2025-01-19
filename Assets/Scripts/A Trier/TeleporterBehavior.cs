@@ -1,3 +1,4 @@
+using Render.Camera;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class TeleporterBehavior : MonoBehaviour
     public int nextTerrainNumber = 0;
 
     public CameraFadeFunction cameraFadeFunction;
+    private CameraBehavior m_cameraBehavior;
     public TerrainGenerator terrainGen;
     public AltarBehaviorComponent altarBehavior;
 
@@ -25,12 +27,16 @@ public class TeleporterBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
+        Camera cameraMain = Camera.main;
+        if (cameraFadeFunction == null) { cameraFadeFunction = cameraMain.GetComponent<CameraFadeFunction>(); }
+        if(m_cameraBehavior == null) { m_cameraBehavior = cameraMain.GetComponent<CameraBehavior>();}
     }
 
     private void OnEnable()
     {
-        if (cameraFadeFunction == null) { cameraFadeFunction = Camera.main.GetComponent<CameraFadeFunction>(); }
+        Camera cameraMain = Camera.main;
+        if (cameraFadeFunction == null) { cameraFadeFunction = cameraMain.GetComponent<CameraFadeFunction>(); }
+        if (m_cameraBehavior == null) { m_cameraBehavior = cameraMain.GetComponent<CameraBehavior>(); }
     }
 
     // Update is called once per frame
@@ -61,7 +67,7 @@ public class TeleporterBehavior : MonoBehaviour
             GlobalSoundManager.PlayOneShot(34, this.gameObject.transform.position);
             StartCoroutine(LaunchNewDay());
         }
-        else { cameraFadeFunction.LaunchFadeOut(true, 1); nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom(); }
+        else { cameraFadeFunction.LaunchFadeOut(true, 1); nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom(); m_cameraBehavior.ChangeLerpForTP(); }
 
 
     }

@@ -685,26 +685,81 @@ namespace Enemies
         {
             float value = enemyTypeStats[enemyType].animationCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
             int maxInstance = Mathf.RoundToInt(value);
-            if (enemyType < 2)
+            if(DayCyclecontroller.m_nightCountGlobal == 0)
             {
-                bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
-                return canSpawn;
-            }
-            else
-            {
-                bool canSpawn = false;
-                if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 2)
+                if (enemyType < 2)
                 {
-                    canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 2); 
+                    bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
+                    return canSpawn;
                 }
                 else
                 {
-                    canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                    bool canSpawn = false;
+                    if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 2)
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 2);
+                    }
+                    else
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                    }
+                    return canSpawn;
+
+
                 }
-                return canSpawn;
-
-
             }
+            else if (DayCyclecontroller.m_nightCountGlobal == 1)
+            {
+                if (enemyType < 2)
+                {
+                    bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
+                    return canSpawn;
+                }
+                else
+                {
+                    bool canSpawn = false;
+                    if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 2 && RoomManager.progress < 0.5f)
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 2);
+                    }
+                    else
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                    }
+                    return canSpawn;
+
+
+                }
+            }
+            else if (DayCyclecontroller.m_nightCountGlobal == 2)
+            {
+                if (enemyType < 2)
+                {
+                    bool canSpawn = enemyTypeStats[enemyType].instanceCount < maxInstance;
+                    return canSpawn;
+                }
+                else
+                {
+                    bool canSpawn = false;
+                    if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 3 && RoomManager.progress < 0.66f)
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 3);
+                    }
+                    else if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon / 2 && RoomManager.progress < 0.33f)
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < (maxInstance / 2);
+                    }
+                    else
+                    {
+                        canSpawn = enemyTypeStats[enemyType].instanceSpawnPerRoom < maxInstance;
+                    }
+                    return canSpawn;
+
+
+                }
+            }
+            return true;
+
         }
 
 

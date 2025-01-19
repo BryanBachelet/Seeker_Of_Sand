@@ -3,12 +3,15 @@ using UnityEngine;
 using GuerhoubaGames.Resources;
 using System.Collections.Generic;
 using SeekerOfSand.Tools;
+using GuerhoubaGames;
+using UnityEngine.VFX;
 
 public enum ConditionsTrigger
 {
     OnHit,
     OnDeath,
     Contact,
+    StatGeneral,
 }
 
 public enum EntitiesTrigger
@@ -52,6 +55,7 @@ public class ArtefactsInfos : ScriptableObject
     [TextArea]
     public string descriptionResult;
 
+    public VisualEffect effectActivation;
     public string description
     {
         get
@@ -70,6 +74,10 @@ public class ArtefactsInfos : ScriptableObject
 
     public int damageArtefact = 1;
 
+
+    [Header("StatGeneral Features")]
+    public DamageType damageTypeBonus;
+
     // Reinforcement Variables
     [Header("ReInforce Feature Variables")]
     public bool isReinforceFeatureActivate = true;
@@ -84,12 +92,27 @@ public class ArtefactsInfos : ScriptableObject
     [SerializeField] private bool m_ActiveMergeFeature = true;
     private bool m_HasBeenMergeOnce = false;
     private List<GameObject> additionalEffectToSpawn = new List<GameObject>();
-    public int IdFamily = 0;
+    public int idFamily = 0;
+
+    [HideInInspector]
+    public int damageToApply
+    {
+        get { return damageArtefact + damageGainPerCount * additionialItemCount; } 
+    }
 
     public ArtefactsInfos Clone()
     {
         ArtefactsInfos clone = Instantiate(this);
         return clone;
+    }
+
+    public bool IsSameFragment(ArtefactsInfos artefactInfos)
+    {
+        if (artefactInfos.nameArtefact != nameArtefact || !isReinforceFeatureActivate)
+        {
+            return false;
+        }
+        return true;
     }
 
     public bool AddAdditionalFragment(ArtefactsInfos artefactInfos)
@@ -106,7 +129,7 @@ public class ArtefactsInfos : ScriptableObject
 
     public bool MergeFragment(ArtefactsInfos artefactsInfos)
     {
-        if (!m_ActiveMergeFeature || IdFamily != artefactsInfos.IdFamily)
+        if (!m_ActiveMergeFeature || idFamily != artefactsInfos.idFamily)
         {
             return false;
         }
@@ -143,7 +166,9 @@ public class ArtefactsInfos : ScriptableObject
 
         if (entitiesTrigger != tag) return;
 
-        if (GeneralTools.IsThisElementPresent(gameElement, element) && element != GameElement.NONE) return;
+         if(conditionsTrigger == ConditionsTrigger.OnHit) 
+            if (!GeneralTools.IsThisElementPresent(gameElement, element) || element == GameElement.NONE) 
+                return;
 
 
         float change = Random.Range(0, 100.0f);
@@ -160,7 +185,7 @@ public class ArtefactsInfos : ScriptableObject
             SetupArtefactData(artefactData, objectPre);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
-
+            effectActivation.Play();
             if (!m_HasBeenMergeOnce) return;
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {
@@ -191,7 +216,7 @@ public class ArtefactsInfos : ScriptableObject
             SetupArtefactData(artefactData, agent);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
-
+            effectActivation.Play();
             if (!m_HasBeenMergeOnce) return;
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {
@@ -212,7 +237,7 @@ public class ArtefactsInfos : ScriptableObject
         artefactData.nameArtefact = nameArtefact;
         artefactData.elementIndex = (int)gameElement;
         artefactData.element = gameElement;
-        artefactData.damageToApply = damageArtefact + damageGainPerCount * additionialItemCount;
+        artefactData.damageToApply = damageToApply;
     }
 
     public bool CanApplyOnHit()
@@ -241,7 +266,19 @@ public class ArtefactsInfos : ScriptableObject
     {
         string result = string.Empty;
 
-        int countBracket = baseDescription.Split("{").Length-1;
+        if (baseDescription == null)
+        {
+            descriptionResult = baseDescription;
+            return;
+        }
+            string[] bracketArray = baseDescription.Split("{");
+        if (bracketArray == null)
+        {
+            descriptionResult = baseDescription;
+            return;
+        }
+
+        int countBracket = bracketArray.Length-1;
         int indexEndString = 0;
 
         if (countBracket <= 0)

@@ -26,7 +26,7 @@ public class Teleporter : MonoBehaviour
     
         if(terrainGen == null)
         {
-            terrainGen = GameObject.Find("TerrainGenerator").GetComponent<TerrainGenerator>();
+            terrainGen = GameObject.Find("9-TerrainGenerator").GetComponent<TerrainGenerator>();
         }
         tpFeedbackController = gameObject.GetComponentInChildren<TeleporterFeebackController>();
     }

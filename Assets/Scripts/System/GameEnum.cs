@@ -11,6 +11,13 @@ namespace GuerhoubaGames.GameEnum
         FRAGMENT = 1,
     }
 
+    public enum SpellLevelType
+    {
+        STATS = 0,
+        BEHAVIOR = 1,
+        CHAIN_EFFECT = 2,
+    }
+
 
 
     public enum RoomType
@@ -109,12 +116,11 @@ namespace GuerhoubaGames.GameEnum
         AngleTrajectory =1008,
         HitNumber =1009,
         DamageAdditionel= 1010,
-        SizeExplosion= 1011,
-        BounceNumber= 1012,
-        MaxSummon =1013,
-        SummonSimultanely = 1014,
-        SpellCount =1015,
-        AreaTargetSimulately = 1016,
+        BounceNumber= 1011,
+        MaxSummon =1012,
+        SummonSimultanely = 1013,
+        SpellCount =1014,
+        AreaTargetSimulately = 1017,
        
         
         
@@ -143,6 +149,8 @@ namespace GuerhoubaGames.GameEnum
         SpellFrequency = 2024,
         LifeTimeSummon = 2025,
         AttackReload =2026,
+        SizeExplosion = 2027,
+        DirectionSpeed = 2028,
     }
 
     
@@ -167,15 +175,16 @@ namespace GuerhoubaGames.GameEnum
         BuffType = 1,
         SpellNature = 2,
         SpellNature1 = 3,
-        SpellProjectileTrajectory = 4,
-        CanalisationType = 5,
-        SpellMovementBehavior = 6,
-        DamageTrigger = 7,
-        SpellParticualarity = 8,
-        SpellParticualarity1 = 9,
-        SpellParticualarity2 = 10,
-        MouvementBehavior = 11,
-        UpgradeSensitivity = 12,
+        SpellNature2 = 4,
+        SpellProjectileTrajectory = 5,
+        CanalisationType = 6,
+        SpellMovementBehavior = 7,
+        DamageTrigger = 8,
+        SpellParticualarity = 9,
+        SpellParticualarity1 = 10,
+        SpellParticualarity2 = 11,
+        MouvementBehavior = 12,
+        UpgradeSensitivity = 13,
     }
 
     [System.Serializable]
@@ -218,7 +227,7 @@ namespace GuerhoubaGames.GameEnum
         PROJECTILE = 2,
         AREA = 3,
         SUMMON = 4,
-        DOT = 5,
+        MULTI_HIT_AREA = 5,
        
     }
 
@@ -228,6 +237,7 @@ namespace GuerhoubaGames.GameEnum
         LINE = 1,
         CURVE = 2,
         SPECIAL =3,
+        RANDOM =4,
         
     }
 
@@ -246,6 +256,8 @@ namespace GuerhoubaGames.GameEnum
         OnSelf=2,
         Fix = 3,
         Return=4,
+        Direction=5,
+        FollowMouse=6
     }
 
     public enum DamageTrigger
@@ -269,6 +281,7 @@ namespace GuerhoubaGames.GameEnum
         Piercing = 3,
         Bouncing = 4,
         Physics = 5,
+        InfPiercing =6,
     }
 
     public enum MouvementBehavior

@@ -62,7 +62,7 @@ public class ProjectileExplosif : Projectile
 
         if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
         {
-            m_explosionSize = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion);
+            m_explosionSize = spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion);
             m_damage = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.DamageAdditionel);
         }
     }

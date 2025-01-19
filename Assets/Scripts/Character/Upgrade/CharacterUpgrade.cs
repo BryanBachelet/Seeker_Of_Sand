@@ -192,11 +192,13 @@ namespace Character
             }
             if (m_UiPlayerInfo)
             {
-                spellProfil.level++;
+               bool isLevelUp = spellProfil.AddSpellExpPoint(1);
+               
 
-                if (m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil))
+                if (isLevelUp )
                 {
-
+                    spellProfil.GainLevel();
+                    m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil);
                 }
                 else
                 {

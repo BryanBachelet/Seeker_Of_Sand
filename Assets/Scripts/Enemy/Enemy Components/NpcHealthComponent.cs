@@ -6,6 +6,7 @@ using FMOD.Studio;
 using FMODUnity;
 using GuerhoubaGames.Resources;
 using GuerhoubaTools.Gameplay;
+using GuerhoubaGames;
 
 namespace Enemies
 {
@@ -19,7 +20,7 @@ namespace Enemies
         public bool isMoving;
     }
 
-    public class NpcHealthComponent : MonoBehaviour
+    public class NpcHealthComponent : MonoBehaviour, IDamageReceiver
     {
         public int indexEnemy = 0;
         [Header("Health Parameter")]

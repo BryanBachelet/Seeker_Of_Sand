@@ -10,6 +10,7 @@ namespace SpellSystem
     {
         public GameObject objectToSpawn;
         public bool isArea = true;
+        public bool isProjectile = true;
 
         public override void Apply(SpellProfil profil)
         {
@@ -17,6 +18,10 @@ namespace SpellSystem
             if (isArea)
             {
                 profil.objectToSpawn.GetComponent<AreaOneHitBehavior>().ObjectToSpawnAtDeath = objectToSpawn;
+            }
+            else if (isProjectile)
+            {
+                profil.objectToSpawn.GetComponent<Projectile>().ObjectToSpawn = objectToSpawn;
             }
         }
 

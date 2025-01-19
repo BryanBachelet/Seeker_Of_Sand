@@ -949,6 +949,7 @@ GameObject:
   - component: {fileID: 5492311972639508082}
   - component: {fileID: 7526248969653413541}
   - component: {fileID: -8024694516102985720}
+  - component: {fileID: 8030625351052058868}
   m_Layer: 15
   m_Name: Fire_Projectile_Harpon
   m_TagString: Projectile
@@ -1047,10 +1048,17 @@ MonoBehaviour:
   m_power: 100
   m_damage: 1
   m_indexSFX: 26
+  m_characterProfil: {fileID: 0}
   m_piercingMax: 0
   m_deltaTimeMove: 0
+  isDebugInstance: 0
+  vFXObject: {fileID: 0}
+  vFXExplosion: {fileID: 0}
+  ObjectToSpawn: {fileID: 0}
   m_minRangeToImpale: 100
   m_impalementDamageRatio: 1.5
+  timeBeforeSpawnArea: 0.5
+  impaleCountUpgrade: 5
 --- !u!95 &5492311972639508082
 Animator:
   serializedVersion: 5
@@ -1108,6 +1116,25 @@ MonoBehaviour:
   isActive: 0
   id: -1
   bIsExtraSpawn: 0
+--- !u!114 &8030625351052058868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7743861960810523175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5130f35880b121540b84bba928907066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageStats:
+    damageBonusGeneral: 0
+    damageTemporaireGeneral: 0
+    generalModificator: 0
+    OnDeath: 0
+    OnContact: 0
+    OnHit: 0
 --- !u!1 &8480431083525181069
 GameObject:
   m_ObjectHideFlags: 0

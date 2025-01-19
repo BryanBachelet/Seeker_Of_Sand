@@ -10,6 +10,8 @@ public class FragmentUIRessources : MonoBehaviour
     public Sprite[] raretySprite;
     public Sprite[] elementSprite;
 
+    public string[] prefixElementNamesArray;
+
     public GameObject fragmentHolder_Prefab;
 
     public void Awake()

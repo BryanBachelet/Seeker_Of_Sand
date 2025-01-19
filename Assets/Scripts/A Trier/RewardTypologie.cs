@@ -36,6 +36,8 @@ public class RewardTypologie : MonoBehaviour
     public Material[] materialsRewardChange = new Material[5];
 
     public Material materialRewardColor;
+
+    public int rewardPoint = 3;
     // Start is called before the first frame update
 
     public void Update()
@@ -118,7 +120,7 @@ public class RewardTypologie : MonoBehaviour
             {
                 case RewardType.UPGRADE:
                    
-                    characterUpgrade.GiveUpgradePoint(3);
+                    characterUpgrade.GiveUpgradePoint(rewardPoint);
                     characterUpgrade.ShowUpgradeWindow();
                     GlobalSoundManager.PlayOneShot(6, Vector3.zero);
                     break;
