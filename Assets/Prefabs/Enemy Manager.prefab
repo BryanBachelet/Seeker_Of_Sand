@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 4071801354470995062}
   - component: {fileID: 2502084451113468328}
   - component: {fileID: 6969542198779083225}
+  - component: {fileID: 8981002825101793716}
   m_Layer: 0
   m_Name: Enemy Manager
   m_TagString: Untagged
@@ -199,7 +200,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_mainInformationDisplay: {fileID: 0}
   countEnemySpawnMaximum: 0
+  AstrePositionReference: {fileID: 0}
+  m_cameraBehavior: {fileID: 0}
   enemyTypeStats:
   - type: 0
     instanceCount: 0
@@ -604,6 +608,7 @@ MonoBehaviour:
   - {r: 1, g: 0.5803922, b: 0.5803922, a: 1}
   - {r: 0.2830189, g: 0.24163404, b: 0.24163404, a: 1}
   m_uiManagerGameObject: {fileID: 0}
+  uiDispatcher: {fileID: 0}
   remainEnemy: 0
   isStopSpawn: 0
   layerMaskGround:
@@ -932,3 +937,19 @@ MonoBehaviour:
   m_isDebugActive: 0
   gamepadScheme: 0
   divideSchemeManager: {fileID: 0}
+--- !u!114 &8981002825101793716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866458878302752457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40268cd8345649428d140ba71c1aea2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameInfoArray:
+  - Id: Test
+    titleId: Test
+    idDescription: Quelle description !

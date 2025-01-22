@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SpellSystem
 {
-    public  class LevelSpell : ScriptableObject
+    public class LevelSpell : ScriptableObject
     {
         public SpellLevelType LevelType;
         /// <summary>
@@ -14,6 +14,8 @@ namespace SpellSystem
         /// </summary>
         public bool isPermanent;
         [Header("Description")]
+        public string nameLevelUprade;
+        [TextAreaAttribute]
         public string description;
         public static void SetupLevelEffect(LevelSpell[] levelSpells)
         {
@@ -39,13 +41,13 @@ namespace SpellSystem
 
 
     public enum BehaviorLevelType
-    { 
-        GENERAL = 0,   
-        OBJECTS =1,
+    {
+        GENERAL = 0,
+        OBJECTS = 1,
     }
 
 
-    
+
 
 
 }

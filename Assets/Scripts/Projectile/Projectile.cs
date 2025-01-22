@@ -229,7 +229,8 @@ public class Projectile : MonoBehaviour
         isStartToMove = false;
         VisualEffect visual = GetComponent<VisualEffect>();
 
-        if (vFXObject != null) vFXObject.transform.rotation = Quaternion.Inverse( Quaternion.Euler(spellProfil.angleRotation));
+
+        if (vFXObject != null && spellProfil.angleRotation != Vector3.zero) vFXObject.transform.rotation = Quaternion.Inverse( Quaternion.Euler(spellProfil.angleRotation));
         if (visual != null) visual.Reinit();
     }
 

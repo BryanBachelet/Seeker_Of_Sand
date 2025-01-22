@@ -18,7 +18,7 @@ public class FragmentUIInfo : MonoBehaviour
         //m_spellTooltipArray = GetComponentsInChildren<TooltipTrigger>();
         for (int i = 0; i < m_spellTooltipArray.Length; i++)
         {
-            m_spellTooltipArray[i].tooltipEventData.index = i;
+            m_spellTooltipArray[i].TooltipEventData.index = i;
             m_spellTooltipArray[i].OnEnterData += GetArtefactInfo;
         }
     }

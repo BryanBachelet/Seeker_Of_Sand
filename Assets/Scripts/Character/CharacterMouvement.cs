@@ -143,9 +143,13 @@ namespace Character
         private bool m_isSlideRotating;
 
         public bool updateProfilStateSpeedDebug = false;
+
+        // temp
+        public float timeToAccelerate = 2;
+        private float m_timerToAccelerate = 0.0f;
         public void InitComponentStat(CharacterStat stat)
         {
-            runSpeed = 50 + stat.baseStat.speed;
+            runSpeed = runSpeed + stat.baseStat.speed;
             InitComponent();
         }
         private void InitComponent()
@@ -183,7 +187,7 @@ namespace Character
                 InitComponent();
             }
             //combatState = true;
-            SetCombatMode(true);
+            //SetCombatMode(true);
             mouvementSoundInstance = RuntimeManager.CreateInstance(MouvementSoundReference);
             RuntimeManager.AttachInstanceToGameObject(mouvementSoundInstance, this.transform);
             mouvementSoundInstance.start();
@@ -212,12 +216,14 @@ namespace Character
                     if (m_divideSchemeManager.isAbleToChangeMap)
                     {
                         m_divideSchemeManager.ChangeToCombatActionMap();
-                        CancelSlide();
+                         CancelSlide();
+                        ResetRun();
                     }
                 }
                 else
                 {
                     CancelSlide();
+                    ResetRun();
                 }
 
             }
@@ -229,6 +235,41 @@ namespace Character
             return m_playerInput.currentControlScheme == "Gamepad";
         }
 
+
+        public void ActiveSlide()
+        {
+            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            //m_characterShoot.gsm.CanalisationParameterStop();
+            SlideActivation(true);
+            m_CharacterAnim.SetBool("Running", true);
+            m_BookAnim.SetBool("Running", true);
+            m_CharacterAnim.SetBool("Casting", false);
+            m_characterAim.vfxCast.SetFloat("Progress", 0);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
+            m_BookAnim.SetBool("Running", false);
+            m_isSlideInputActive = true;
+            m_timerToAccelerate = 0.0f;
+            
+
+        }
+
+        public void ResetRun()
+        {
+            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            //m_characterShoot.gsm.CanalisationParameterStop();
+           // SlideActivation(true);
+            m_CharacterAnim.SetBool("Running", true);
+            m_BookAnim.SetBool("Running", true);
+            m_CharacterAnim.SetBool("Casting", false);
+            m_characterAim.vfxCast.SetFloat("Progress", 0);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
+            m_BookAnim.SetBool("Running", false);
+            m_isSlideInputActive = true;
+            m_timerToAccelerate = 0.0f;
+            m_timerBeforeSliding = 0.0f;
+            isSliding = false;
+            ChangeState(MouvementState.Classic);
+        }
         public void SlideInput(InputAction.CallbackContext ctx)
         {
 
@@ -239,15 +280,7 @@ namespace Character
                     if (!m_isSlideInputActive)
                     {
                         m_isSlideInputActive = true;
-                        m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
-                        //m_characterShoot.gsm.CanalisationParameterStop();
-                        SlideActivation(true);
-                        m_CharacterAnim.SetBool("Running", true);
-                        m_BookAnim.SetBool("Running", true);
-                        m_CharacterAnim.SetBool("Casting", false);
-                        m_characterAim.vfxCast.SetFloat("Progress", 0);
-                        m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
-                        m_BookAnim.SetBool("Running", false);
+                        ActiveSlide();
                         //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
                     }
                     else
@@ -338,7 +371,7 @@ namespace Character
                 if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
                 //DisplayNewCurrentState(0);
                 //  cameraPlayer.BlockZoom(true);
-                SetCombatMode(true);
+                //SetCombatMode(true);
             }
 
         }
@@ -358,6 +391,7 @@ namespace Character
         {
             if (!state.isPlaying) return;
             if(updateProfilStateSpeedDebug) { updateProfilStateSpeedDebug = false; }
+
             if (mouvementState == MouvementState.Train)
             {
                 transform.position = positionInTrain.localPosition;
@@ -405,6 +439,7 @@ namespace Character
                     m_CharacterAnim.SetBool("Sliding", false);
                     m_BookAnim.SetBool("Sliding", false);
                     //m_slidingEffect.SetActive(false);
+                  //  m_timerBeforeSliding = 0.0f;
                     if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 0);
                     break;
                 case MouvementState.Glide:
@@ -761,6 +796,14 @@ namespace Character
                 EndPause();
             }
 
+            if (!combatState)
+            {
+                if (m_timerToAccelerate <= timeToAccelerate+1)
+                {
+                    m_timerToAccelerate += Time.fixedDeltaTime;
+                    Debug.Log("Time : " + m_timerToAccelerate);
+                }
+            }
             CheckPlayerMouvement();
             ApplyVelocity();
 
@@ -806,7 +849,7 @@ namespace Character
             }
             else
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed + profile.stats.baseStat.speed;
+                m_speedData.referenceSpeed[(int)mouvementState] = Mathf.Clamp( (m_timerToAccelerate / timeToAccelerate),0,1.0f) * (runSpeed- combatSpeed) + combatSpeed + profile.stats.baseStat.speed;
             }
 
             m_speedData.IsFlexibleSpeed = false;
