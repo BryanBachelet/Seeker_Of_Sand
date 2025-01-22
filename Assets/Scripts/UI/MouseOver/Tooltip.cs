@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.InputSystem;
+using ExcelLibrary.BinaryFileFormat;
 
 namespace GuerhoubaGames.UI
 {
@@ -12,86 +13,157 @@ namespace GuerhoubaGames.UI
     {
 
         public PlayerInput instance;
-        
         private InputSystemUIInputModule m_inputModule;
-        [SerializeField] private LayoutElement m_layoutElement;
-        [SerializeField] private TMP_Text m_header; 
-        [SerializeField] private TMP_Text m_content;
-        [SerializeField] private RectTransform m_rectTransform;
-        [SerializeField] private int m_characterWrapLimit = 500;
-        [SerializeField] private ContentSizeFitter m_contentSizeFitter;
-        [SerializeField] private GameObject gameObject_ContentImage;
-        [SerializeField] private RectTransform holder_contentImage;
-        [SerializeField] private RectTransform holder_contentImage_Background;
-        private Vector2 imageOffSet = Vector2.zero;
+
+        [HideInInspector] public TooltipAdditionnalData[] tooltipAdditionnalData = new TooltipAdditionnalData[5];
+        [HideInInspector] public int currentSystemicTooltip =0;
+
+        public TooltipAdditionnal mainTooltip;
+        public TooltipAdditionnal[] tooltipAdditionnals;
+        public TooltipAdditionnal[] tooltipSystem;
+
+        private TooltipPositionData m_currentTooltipPositionData;
 
         public void Start()
         {
             m_inputModule = instance.uiInputModule;
-            gameObject.SetActive(false);
         }
 
-        public void SetPosition(TooltipPositionData positionData)
+        public void ApplyPosition(TooltipPositionData positionData, bool isJustData = false)
         {
-            Vector2 position = positionData.basePosition;
-             //position = m_inputModule.point.action.ReadValue<Vector2>();
-
-            float pivotX = position.x / Screen.width;
-            float pivotY = position.y / Screen.height;
-
-            m_rectTransform.pivot = new Vector2(pivotX, pivotY);
-            m_rectTransform.anchoredPosition = position + positionData.offset;
-            imageOffSet = positionData.additionnalOffset;
-            m_contentSizeFitter.SetLayoutHorizontal();
-            m_contentSizeFitter.SetLayoutVertical();
-        }
-        
-   
-        public void SetText(TooltipDisplayData displayData)
-        {
-
-            if (string.IsNullOrEmpty(displayData.header))
+            if (mainTooltip != null)
             {
-                m_header.gameObject.SetActive(false);
+                if (isJustData)
+                    positionData.offset.y += 2000;
+                mainTooltip.SetPosition(positionData, TooltipAdditionnal.PositionTooltipOffset.None);
             }
-            else
+            m_currentTooltipPositionData = positionData;
+            float height = 0;
+            for (int i = 0; i < positionData.tooltipPositionDatasAdditional.Length; i++)
             {
-                m_header.gameObject.SetActive(true);
-                m_header.text = displayData.header;
-            }
-
-            m_content.text = displayData.content;
-
-
-            // Check size of tooltip text
-            int headerLength = m_header.text.Length;
-            int contentLength = m_content.text.Length;
-
-            m_layoutElement.enabled = (headerLength > m_characterWrapLimit || contentLength > m_characterWrapLimit) ? true : false;
-            if(displayData.asImageInData)
-            {
-
-                gameObject_ContentImage.SetActive(true);
-                holder_contentImage.GetComponent<Image>().sprite = displayData.contentImage;
-                Vector2 sizeContentImage = displayData.contentImage.textureRect.size;
-                float halfWidth_ContentImage = sizeContentImage.x;
-                float halfHeight_ContentImage = 0;
-                Vector2 offSetPosition = new Vector2(halfWidth_ContentImage, halfHeight_ContentImage);
-                holder_contentImage.anchoredPosition = new Vector2(m_rectTransform.anchoredPosition.x + offSetPosition.x, 0) + imageOffSet;
-                holder_contentImage.sizeDelta = sizeContentImage;
-                holder_contentImage_Background.anchoredPosition = new Vector2(m_rectTransform.anchoredPosition.x + offSetPosition.x, 0) + imageOffSet;
-                holder_contentImage_Background.sizeDelta = sizeContentImage + new Vector2(40,40);
-            }
-            else
-            {
-                gameObject_ContentImage.SetActive(false);
-            }
+                positionData.tooltipPositionDatasAdditional[i].basePosition = m_currentTooltipPositionData.basePosition;
+                positionData.tooltipPositionDatasAdditional[i].offset = m_currentTooltipPositionData.offset;
+                Vector2 posToAdd = new Vector2(mainTooltip.GetExtenalWidth(), 0);
            
+                if (i != 0)
+                {
+                 
+                    height +=  tooltipAdditionnals[i - 1].GetExternalHeight();
+                    posToAdd += new Vector2(0, height);
+                    tooltipAdditionnals[i].SetPosition(positionData.tooltipPositionDatasAdditional[i], TooltipAdditionnal.PositionTooltipOffset.Both, posToAdd);
+                    height += tooltipAdditionnals[i].GetInternalHeight();
+                }
+                else
+                {
+                    tooltipAdditionnals[i].SetPosition(positionData.tooltipPositionDatasAdditional[i], TooltipAdditionnal.PositionTooltipOffset.Horizontal, posToAdd);
+
+                }
+
+
+            }
+
+            PositionSystemicTooltip();
         }
 
-        public void SetImage(TooltipDisplayData displayData)
+        public void ShowElement(int count)
         {
+            if (mainTooltip != null)
+            {
+                mainTooltip.gameObject.SetActive(true);
+            }
+            for (int i = 0; i < count; i++)
+            {
+                tooltipAdditionnals[i].gameObject.SetActive(true);
+            }
 
+            for (int i = 0; i < currentSystemicTooltip; i++)
+            {
+                tooltipSystem[i].gameObject.SetActive(true);
+            }
+        }
+
+        public void ApplyTextData(TooltipDisplayData displayData, bool isJustData = false)
+        {
+            if (mainTooltip != null)
+            {
+                mainTooltip.gameObject.SetActive(!isJustData);
+                mainTooltip.SetText(displayData);
+                if (!isJustData) mainTooltip.ResetLayout();
+            }
+            for (int i = 0; i < displayData.tooltipEventDatasAdditional.Length; i++)
+            {
+                tooltipAdditionnals[i].gameObject.SetActive(!isJustData);
+                tooltipAdditionnals[i].SetText(displayData.tooltipEventDatasAdditional[i]);
+                if (!isJustData) tooltipAdditionnals[i].ResetLayout();
+            }
+            ApplySystemicTooltip("tEST", isJustData);
+        }
+
+        public void SetNewSystemicTooltip(string header, string content)
+        {
+            tooltipAdditionnalData[currentSystemicTooltip].additionnalTooltip.content = content;
+            tooltipAdditionnalData[currentSystemicTooltip].additionnalTooltip.header = header;
+            currentSystemicTooltip++;
+        }
+
+        public void PositionSystemicTooltip()
+        {
+            float height = 0;
+
+            for (int j = 0; j < currentSystemicTooltip; j++)
+            {
+                TooltipPositionData tooltipPositionData = tooltipAdditionnalData[j].additionnalTooltipPosition;
+                tooltipPositionData.basePosition = m_currentTooltipPositionData.basePosition;
+                tooltipPositionData.offset = m_currentTooltipPositionData.offset;
+                Vector2 posToAdd = new Vector2(0, 0);
+             //   posToAdd += m_currentTooltipPositionData.offset;
+
+                tooltipSystem[j].SetPreferredWidth(mainTooltip.rectTransform.rect.width);
+                if (j >= 1)
+                    height +=  tooltipSystem[j - 1].GetExternalHeight();
+                if (j == 0)
+                    height +=  mainTooltip.GetExternalHeight();
+
+                posToAdd += new Vector2(0, height);
+                tooltipSystem[j].SetPosition(tooltipPositionData, TooltipAdditionnal.PositionTooltipOffset.Vertical, posToAdd,true);
+                height += tooltipSystem[j].GetInternalHeight();
+            }
+        }
+
+
+
+        public void ApplySystemicTooltip(string id, bool isJustData = false)
+        {
+            for (int j = 0; j < currentSystemicTooltip; j++)
+            {
+
+                TooltipDisplayData displayData = tooltipAdditionnalData[j].additionnalTooltip;
+                tooltipSystem[j].gameObject.SetActive(!isJustData);
+                tooltipSystem[j].SetText(displayData);
+                if (!isJustData) tooltipSystem[j].ResetLayout();
+            }
+        }
+
+        public void HideTooltip()
+        {
+            Debug.Log("Hide tooltip");
+            if (mainTooltip != null)
+            {
+                //   mainTooltip.rectTransform.localPosition = new Vector2(3000, 3000);
+                mainTooltip.gameObject.SetActive(false);
+            }
+            for (int i = 0; i < tooltipAdditionnals.Length; i++)
+            {
+                //  tooltipAdditionnals[i].rectTransform.localPosition= new Vector2(3000, 3000);
+                tooltipAdditionnals[i].gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < tooltipSystem.Length; i++)
+            {
+                //tooltipSystem[i].rectTransform.anchoredPosition = new Vector2(3000, 3000);
+                tooltipSystem[i].gameObject.SetActive(false);
+            }
+            currentSystemicTooltip = 0;
         }
 
 
