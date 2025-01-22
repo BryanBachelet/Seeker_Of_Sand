@@ -15,7 +15,7 @@ namespace GuerhoubaGames.UI
     [System.Serializable]
     public struct TooltipAdditionnalData
     {
-        public TooltipDisplayData additionnalTooltip;
+        public TooltipDisplayData additionnalTooltipDisplay;
         public TooltipPositionData additionnalTooltipPosition;
     }
 
@@ -137,7 +137,7 @@ namespace GuerhoubaGames.UI
             TooltipDisplayData[] array = new TooltipDisplayData[additionnalDatas.Length];
             for (int i = 0; i < additionnalDatas.Length; i++)
             {
-                array[i] = additionnalDatas[i].additionnalTooltip;
+                array[i] = additionnalDatas[i].additionnalTooltipDisplay;
             }
 
             return array;

@@ -101,8 +101,8 @@ namespace GuerhoubaGames.UI
 
         public void SetNewSystemicTooltip(string header, string content)
         {
-            tooltipAdditionnalData[currentSystemicTooltip].additionnalTooltip.content = content;
-            tooltipAdditionnalData[currentSystemicTooltip].additionnalTooltip.header = header;
+            tooltipAdditionnalData[currentSystemicTooltip].additionnalTooltipDisplay.content = content;
+            tooltipAdditionnalData[currentSystemicTooltip].additionnalTooltipDisplay.header = header;
             currentSystemicTooltip++;
         }
 
@@ -137,7 +137,7 @@ namespace GuerhoubaGames.UI
             for (int j = 0; j < currentSystemicTooltip; j++)
             {
 
-                TooltipDisplayData displayData = tooltipAdditionnalData[j].additionnalTooltip;
+                TooltipDisplayData displayData = tooltipAdditionnalData[j].additionnalTooltipDisplay;
                 tooltipSystem[j].gameObject.SetActive(!isJustData);
                 tooltipSystem[j].SetText(displayData);
                 if (!isJustData) tooltipSystem[j].ResetLayout();

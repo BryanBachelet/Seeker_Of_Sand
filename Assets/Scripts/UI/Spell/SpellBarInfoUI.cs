@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.UI;
+using Character;
 
 public class SpellBarInfoUI : MonoBehaviour
 {
@@ -32,6 +33,18 @@ public class SpellBarInfoUI : MonoBehaviour
         int capsuleIndex = m_characterShoot.spellEquip[eventData.index];
         string headerText = m_characterShoot.spellProfils[capsuleIndex].name;
         string contextText = "Level : " + m_characterShoot.spellProfils[capsuleIndex].spellExp + "\n" + m_characterShoot.spellProfils[capsuleIndex].description + "\n"+ m_characterShoot.spellProfils[capsuleIndex].DebugStat();
+
+
+        int countSpellTier = m_characterShoot.spellProfils[capsuleIndex].levelSpellsProfiles.Length;
+
+        m_spellTooltipArray[eventData.index].additionnalDatas = new TooltipAdditionnalData[countSpellTier];
+
+
+        for (int i = 0; i < countSpellTier; i++)
+        {
+            m_spellTooltipArray[eventData.index].additionnalDatas[i].additionnalTooltipDisplay.header = m_characterShoot.spellProfils[capsuleIndex].levelSpellsProfiles[i].nameLevelUprade;
+            m_spellTooltipArray[eventData.index].additionnalDatas[i].additionnalTooltipDisplay.content = m_characterShoot.spellProfils[capsuleIndex].levelSpellsProfiles[i].description;
+        }
 
         m_spellTooltipArray[eventData.index].content = contextText;
         m_spellTooltipArray[eventData.index].header = headerText;
