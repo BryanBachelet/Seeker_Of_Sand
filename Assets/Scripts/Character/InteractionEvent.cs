@@ -78,7 +78,7 @@ public class InteractionEvent : MonoBehaviour
             if (currentInteractibleObjectActive == null) { NearPossibleInteraction(col); }
             NearTrader();
             NearArtefact();
-            if(colliderProche.Length <= 0)
+            if(col.Length <= 0)
             {
                 if (hintInputInteraction.activeSelf)
                 {
