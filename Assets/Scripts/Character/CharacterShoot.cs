@@ -507,6 +507,8 @@ namespace Character
                 CancelShoot();
                 //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
+                m_CharacterMouvement.combatState = false;
+                m_CharacterMouvement.ActiveSlide();
             }
         }
         #endregion
