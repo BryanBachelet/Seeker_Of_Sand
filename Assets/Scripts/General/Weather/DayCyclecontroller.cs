@@ -83,6 +83,8 @@ public class DayCyclecontroller : MonoBehaviour
     public float speed;
     public bool newDay = false;
     public TMPro.TMP_Text dayText;
+
+    public Texture2D[] moonTexture = new Texture2D[3];
     // Start is called before the first frame update
     void Start()
     {
@@ -179,6 +181,7 @@ public class DayCyclecontroller : MonoBehaviour
         {
             if (!m_moon.isActiveAndEnabled)
             {
+                m_moon.GetComponent<HDAdditionalLightData>().surfaceTexture = moonTexture[m_nightCount];
                 m_moon.enabled = true;
                 dayChanged = false;
                 dayAnoncerAnimator.SetBool("ActiveDay", false);

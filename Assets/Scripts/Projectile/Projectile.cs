@@ -9,7 +9,6 @@ using Enemies;
 using SpellSystem;
 using UnityEngine.Profiling;
 using GuerhoubaGames;
-using TreeEditor;
 
 public struct ProjectileData
 {

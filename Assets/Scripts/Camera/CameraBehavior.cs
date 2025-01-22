@@ -705,7 +705,7 @@ namespace Render.Camera
 
         public void ChangeLerpForTP()
         {
-            m_currentLerpValue = 1;
+            m_currentLerpValue = 0.36f;
         }
     }
 

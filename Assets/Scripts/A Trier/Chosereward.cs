@@ -30,6 +30,9 @@ public class Chosereward : MonoBehaviour
 
     public int[] m_artefactIndex =new int[3];
     public bool IsDebugActive=false;
+
+    public GameObject chooseFragmentUI;
+    private FragmentChoose m_fragmentChoose;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +49,7 @@ public class Chosereward : MonoBehaviour
             DayCyclecontroller.choosingArtefactStart = false;
             colliderDome.SetActive(false);
         }
+        m_fragmentChoose = chooseFragmentUI.GetComponent<FragmentChoose>();
     }
 
     // Update is called once per frame
@@ -145,6 +149,7 @@ public class Chosereward : MonoBehaviour
 
     public void GiveArtefact(GameElement gameElement)
     {
+        chooseFragmentUI.SetActive(true);
         List<ArtefactsInfos> temp_artefactToChose = new List<ArtefactsInfos>(artefactToChose);
         int rndArtefact = 0;
         ArtefactsInfos artefactInfo = artefactToChose[rndArtefact];
@@ -167,7 +172,19 @@ public class Chosereward : MonoBehaviour
         m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactInfo);
         m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactInfo);
     }
+    public void GiveArtefactChoice(GameElement gameElement)
+    {
+        m_fragmentChoose.gameObject.SetActive(true);
+        List<ArtefactsInfos> temp_artefactToChose = new List<ArtefactsInfos>(artefactToChose);
+        int rndArtefact1 = Random.Range(0, temp_artefactToChose.Count);
+        int rndArtefact2 = Random.Range(0, temp_artefactToChose.Count);
+        ArtefactsInfos[] artefactInfoTemps = new ArtefactsInfos[] { artefactToChose[rndArtefact1], artefactToChose[rndArtefact2] };
 
+        m_fragmentChoose.SetFragmentInfo(artefactInfoTemps);
+
+        //m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactInfo);
+        //m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactInfo);
+    }
     public IEnumerator ChosedArtefact(int artefactToClear, float timeBeforeDestroy)
     {
 

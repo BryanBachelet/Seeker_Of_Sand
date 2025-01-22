@@ -134,7 +134,8 @@ public class RewardTypologie : MonoBehaviour
                     {
                         choseReward = GameObject.Find("Artefact-Choose-Trio").GetComponent<Chosereward>();
                     }
-                    choseReward.GiveArtefact(element);
+                    //choseReward.GiveArtefact(element);
+                    choseReward.GiveArtefactChoice(element);
                     GlobalSoundManager.PlayOneShot(56, Vector3.zero);
                     break;
                 case RewardType.HEAL:
