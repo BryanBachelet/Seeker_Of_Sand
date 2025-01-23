@@ -263,6 +263,7 @@ namespace SpellSystem
     {
         public string name;
         public int id;
+        public int idFamily = 0;
         [TextArea]
         public string description;
         public Sprite spell_Icon;

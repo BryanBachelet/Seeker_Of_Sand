@@ -280,7 +280,9 @@ public class RoomManager : MonoBehaviour
         {
             if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
             else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
+          //  terrainGenerator.GenerateTerrain();
             ActivateTeleporters();
+            
             isTeleporterActive = true;
         }
 

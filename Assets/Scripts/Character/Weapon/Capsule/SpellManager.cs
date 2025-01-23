@@ -19,7 +19,9 @@ public class SpellManager : MonoBehaviour
     private int indexAttackInfo;
     private int indexBuffInfo;
 
-    public static int GetElementRandomSpellIndex(GameElement element )
+    public static List<int> idFamilyBan = new List<int>();
+
+    public static int GetElementRandomSpellIndex(GameElement element)
     {
         int index = -1;
 
@@ -40,10 +42,27 @@ public class SpellManager : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < m_capsuleElementQuantity.Count; i++)
+        {
+            for (int j = 0; j < idFamilyBan.Count; j++)
+            {
+                SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsuleElementQuantity[i]];
+                if (spellProfil.idFamily == 0) 
+                    continue;
+                if (spellProfil.idFamily == idFamilyBan[j])
+                {
+                    m_capsuleElementQuantity.RemoveAt(i);
+                    i--;
+                    break;
+                }
+            }
+        }
+       
+
         if (m_capsuleElementQuantity.Count == 0)
         {
-            Debug.LogWarning("No "+element.ToString()+" spell left");
-            return GetRandomCapsuleIndex();
+            Debug.LogWarning("No " + element.ToString() + " spell left");
+            return GetRandomSpellIndex();
         }
 
         int listIndex = Random.Range(0, m_capsuleElementQuantity.Count);
@@ -74,10 +93,26 @@ public class SpellManager : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < m_capsuleElementQuantity.Count; i++)
+        {
+            for (int j = 0; j < idFamilyBan.Count; j++)
+            {
+                SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsuleElementQuantity[i]];
+                if (spellProfil.idFamily == 0)
+                    continue;
+                if (spellProfil.idFamily == idFamilyBan[j])
+                {
+                    m_capsuleElementQuantity.RemoveAt(i);
+                    i--;
+                    break;
+                }
+            }
+        }
+
         if (m_capsuleElementQuantity.Count == 0)
         {
             Debug.LogWarning("No " + element.ToString() + " spell left");
-            return GetRandomCapsuleIndex();
+            return GetRandomSpellIndex();
         }
 
         int listIndex = Random.Range(0, m_capsuleElementQuantity.Count);
@@ -87,7 +122,7 @@ public class SpellManager : MonoBehaviour
     }
 
 
-        public static int GetRandomCapsuleIndex(bool activeRemove = false)
+    public static int GetRandomSpellIndex(bool activeRemove = false)
     {
         int index = -1;
 
@@ -97,9 +132,27 @@ public class SpellManager : MonoBehaviour
             return index;
         }
 
-        int listIndex = Random.Range(0, m_capsulePool.Count);
-        index = m_capsulePool[listIndex];
-        if (activeRemove) m_capsulePool.RemoveAt(listIndex);
+        List<int> m_spellQuantity = new List<int>();
+        for (int i = 0; i < m_capsulePool.Count; i++)
+        {
+            bool isValid = true;
+            for (int j = 0; j < idFamilyBan.Count; j++)
+            {
+                SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsulePool[i]];
+
+                if (spellProfil.idFamily == idFamilyBan[j])
+                {
+                    isValid =false;
+                    break;
+                }
+            }
+
+            if(isValid) m_spellQuantity.Add(m_capsulePool[i]);
+        }
+
+        int listIndex = Random.Range(0, m_spellQuantity.Count);
+        index = m_spellQuantity[listIndex];
+        if (activeRemove) m_spellQuantity.RemoveAt(listIndex);
 
         return index;
     }

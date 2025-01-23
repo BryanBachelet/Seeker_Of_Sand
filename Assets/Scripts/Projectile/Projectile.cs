@@ -418,7 +418,7 @@ public class Projectile : MonoBehaviour
 
     protected virtual void PiercingUpdate()
     {
-        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Piercing))
+        if (spellProfil && spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Piercing))
             piercingCount++;
     }
     protected virtual void UpdateTravelTime()

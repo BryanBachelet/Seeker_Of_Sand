@@ -172,9 +172,10 @@ public class ChooseSpellManager : MonoBehaviour
         {
             // ---------------------
             randomSpellToChoose[i] = DrawRandomSpell();
-
+           
 
             newSpell[i] = spellManager.spellProfils[randomSpellToChoose[i]];
+           if(newSpell[i].idFamily!=0) SpellManager.idFamilyBan.Add(newSpell[i].idFamily);
             SpellManager.RemoveSpecificSpellFromSpellPool(randomSpellToChoose[i]);
             countSpellDraw++;
             // --------------------
@@ -192,6 +193,9 @@ public class ChooseSpellManager : MonoBehaviour
             GameObject lastVFx = Instantiate(vfxChooseSpell[indexVFX], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             vfxLastChooseSpell.Add(lastVFx);
         }
+
+        SpellManager.idFamilyBan.Clear();
+
         ResetUIAnimation();
     }
 
@@ -210,7 +214,7 @@ public class ChooseSpellManager : MonoBehaviour
             }
         }
 
-        if (lastRoomElement == GameElement.NONE) return SpellManager.GetRandomCapsuleIndex();
+        if (lastRoomElement == GameElement.NONE) return SpellManager.GetRandomSpellIndex();
 
         float percent = Random.Range(0.0f, 100.0f);
 
