@@ -17,7 +17,7 @@ namespace Render.Camera
     {
         [SerializeField] private Transform cameraTrainTransform;
         [SerializeField] private Character.CharacterMouvement playerMove;
-        [SerializeField] private Transform m_targetTransform;
+        [SerializeField] private Transform m_targetTransform;  
         [SerializeField] private float m_distanceToTarget;
         [HideInInspector] public Vector3 m_offsetPos;
 
@@ -250,7 +250,7 @@ namespace Render.Camera
             m_inputZoomValue = (sensibility * m_zoomInputGamepad) * m_angleSpeed;
             if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
 
-            if (m_isDezoomingAutomatily) return;
+        //    if (m_isDezoomingAutomatily) return;
 
             if (!m_isZoomBlock) m_currentLerpValue += m_inputZoomValue;
             m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
@@ -277,6 +277,10 @@ namespace Render.Camera
             if (IsGamepad())
             {
                 UpdateZoomValue(m_gamepadZoomSensibility);
+            }
+            else
+            {
+               // UpdateZoomValue(m_keyboardZoomSensibility);
             }
 
             m_prevSlopeAngle = m_slopeAngle;
@@ -335,8 +339,9 @@ namespace Render.Camera
 
             // Setup a bool 
             m_isDezoomingAutomatily = true;
+//m_isZoomBlock = true;
             float zoonDelta = m_currentLerpValue - m_maxZoomBlock;
-            float speed = zoonDelta * (1 / m_transitionDuration);
+            float speed = zoonDelta * (1.0f / m_transitionDuration);
             while (m_currentLerpValue > m_maxZoomBlock)
             {
                 m_currentLerpValue -= speed * Time.deltaTime;
@@ -344,6 +349,7 @@ namespace Render.Camera
             }
             m_isDezoomingAutomatily = false;
             isZoomActive = false;
+           // m_isZoomBlock = false;
             //Reset bool
 
         }
@@ -352,7 +358,7 @@ namespace Render.Camera
         {
             m_isDezoomingAutomatily = true;
             float zoonDelta = m_minZoomBlock - m_currentLerpValue;
-            float speed = zoonDelta * (1 / m_transitionDuration);
+            float speed = zoonDelta * (1.0f / m_transitionDuration);
             while (m_currentLerpValue < m_minZoomBlock)
             {
                 m_currentLerpValue += speed * Time.deltaTime;

@@ -801,7 +801,7 @@ namespace Character
                 if (m_timerToAccelerate <= timeToAccelerate+1)
                 {
                     m_timerToAccelerate += Time.fixedDeltaTime;
-                    Debug.Log("Time : " + m_timerToAccelerate);
+
                 }
             }
             CheckPlayerMouvement();

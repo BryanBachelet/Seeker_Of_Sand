@@ -83,7 +83,17 @@ namespace GuerhoubaGames.UI
             rectTransform.pivot = new Vector2(pivotX, pivotY);
 
             rectTransform.anchoredPosition = position + positionData.offset + otherOffset;
+
             imageOffSet = positionData.additionnalOffset;
+            Vector2 sizeContentImage = holder_contentImage.GetComponent<Image>().sprite.textureRect.size;
+            float halfWidth_ContentImage = sizeContentImage.x;
+            float halfHeight_ContentImage = 0;
+            Vector2 offSetPosition = new Vector2(halfWidth_ContentImage, halfHeight_ContentImage);
+            holder_contentImage.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x + offSetPosition.x, 0) + imageOffSet;
+            holder_contentImage.sizeDelta = sizeContentImage;
+            holder_contentImage_Background.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x + offSetPosition.x, 0) + imageOffSet;
+            holder_contentImage_Background.sizeDelta = sizeContentImage + new Vector2(40, 40);
+
             m_contentSizeFitter.SetLayoutHorizontal();
             m_contentSizeFitter.SetLayoutVertical();
 
@@ -230,14 +240,7 @@ namespace GuerhoubaGames.UI
 
                 gameObject_ContentImage.SetActive(true);
                 holder_contentImage.GetComponent<Image>().sprite = displayData.contentImage;
-                Vector2 sizeContentImage = displayData.contentImage.textureRect.size;
-                float halfWidth_ContentImage = sizeContentImage.x;
-                float halfHeight_ContentImage = 0;
-                Vector2 offSetPosition = new Vector2(halfWidth_ContentImage, halfHeight_ContentImage);
-                holder_contentImage.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x + offSetPosition.x, 0) + imageOffSet;
-                holder_contentImage.sizeDelta = sizeContentImage;
-                holder_contentImage_Background.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x + offSetPosition.x, 0) + imageOffSet;
-                holder_contentImage_Background.sizeDelta = sizeContentImage + new Vector2(40, 40);
+              
             }
             else
             {
