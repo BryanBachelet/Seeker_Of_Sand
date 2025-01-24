@@ -135,7 +135,7 @@ public class UI_Inventory : MonoBehaviour
         for (int i = 0; i < spellSprite.Length && i < 4; i++)
         {
             spellUse[i].sprite = spellSprite[i];
-            cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i] / 4)];
+            cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i])];
         }
         CharacterStat stat = CharacterProfile.instance.stats;
         m_healthBonusText.text = ": " + (stat.baseStat.healthMax / 15);

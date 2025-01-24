@@ -74,10 +74,12 @@ public class TeleporterBehavior : MonoBehaviour
 
     public IEnumerator LaunchNewDay()
     {
+        cameraFadeFunction.dayTextObj.SetActive(true);
         cameraFadeFunction.dayTextAnimator.SetTrigger("NewDay");
         yield return new WaitForSeconds(3f);
         nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
         cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay");
+        cameraFadeFunction.dayTextObj.SetActive(false);
     }
     public void ActivationDebugTeleportation()
     {

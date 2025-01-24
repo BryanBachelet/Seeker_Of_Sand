@@ -20,6 +20,7 @@ public class CameraFadeFunction : MonoBehaviour
     public Animator bandeNoir;
 
     public Animator dayTextAnimator;
+    public GameObject dayTextObj;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +54,7 @@ public class CameraFadeFunction : MonoBehaviour
                 fadeProgress = 1;
                 fadeInActive = false;
                 tpBehavior.ActivationTeleportation();
+                dayTextObj.SetActive(false);
                 //LaunchFadeOut(true, 1);
 
 
@@ -75,6 +77,7 @@ public class CameraFadeFunction : MonoBehaviour
             {
                 fadeProgress = 0;
                 fadeOutActive = false;
+                dayTextObj.SetActive(false);
                 //dayTextAnimator.ResetTrigger("NewDay");
             }
             ChangeFadeAlpha(fadeProgress);

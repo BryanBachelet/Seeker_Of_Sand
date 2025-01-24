@@ -244,8 +244,6 @@ namespace Character
             m_CharacterAnim.SetBool("Running", true);
             m_BookAnim.SetBool("Running", true);
             m_CharacterAnim.SetBool("Casting", false);
-            m_characterAim.vfxCast.SetFloat("Progress", 0);
-            m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
             m_BookAnim.SetBool("Running", false);
             m_isSlideInputActive = true;
             m_timerToAccelerate = 0.0f;
@@ -261,13 +259,14 @@ namespace Character
             m_CharacterAnim.SetBool("Running", true);
             m_BookAnim.SetBool("Running", true);
             m_CharacterAnim.SetBool("Casting", false);
-            m_characterAim.vfxCast.SetFloat("Progress", 0);
-            m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
+         
             m_BookAnim.SetBool("Running", false);
             m_isSlideInputActive = true;
             m_timerToAccelerate = 0.0f;
             m_timerBeforeSliding = 0.0f;
             isSliding = false;
+            m_characterAim.vfxCast.SetFloat("Progress", 1);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", 1);
             ChangeState(MouvementState.Classic);
         }
         public void SlideInput(InputAction.CallbackContext ctx)
@@ -493,7 +492,9 @@ namespace Character
                     m_CharacterAnim.SetBool("Sliding", true);
                     m_BookAnim.SetBool("Sliding", true);
                     UpdateParameter(1, "MouvementState");
-                    //m_slidingEffect.SetActive(true);
+                    //m_slidingEffect.SetActive(true);\
+                    m_characterAim.vfxCast.SetFloat("Progress", 0);
+                    m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
                     if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
 
                     if (m_isSlowdown && prevState == MouvementState.Slide)
