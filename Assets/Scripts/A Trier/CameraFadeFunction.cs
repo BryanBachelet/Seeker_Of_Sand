@@ -80,13 +80,17 @@ public class CameraFadeFunction : MonoBehaviour
                 fadeProgress = 0;
                 fadeOutActive = false;
                 dayTextObj.SetActive(false);
-                if (GameManager.instance.generalSaveData.IsFirstTime)
+                if (m_isFirstTime)
                 {
-                    gameTutorialView.StartTutoriel();
-                }
-                else
-                {
-                    GameState.ChangeState();
+                    if (GameManager.instance.generalSaveData.IsFirstTime)
+                    {
+                        gameTutorialView.StartTutoriel();
+                    }
+                    else
+                    {
+                        GameState.ChangeState();
+                    }
+                    m_isFirstTime = false;
                 }
                 //dayTextAnimator.ResetTrigger("NewDay");
             }

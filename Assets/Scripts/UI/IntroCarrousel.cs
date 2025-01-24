@@ -9,6 +9,7 @@ public class IntroCarrousel : MonoBehaviour
     private Scene thisScene;
 
     [SerializeField] private GameObject _loaderCanvas;
+    [SerializeField] private GameObject buttonPlay;
     [SerializeField] private UnityEngine.UI.Image _progressBar;
     private float _target;
 
@@ -33,6 +34,9 @@ public class IntroCarrousel : MonoBehaviour
             Destroy(gameObject);
         }
         m_sceneLoaderComponent = FindAnyObjectByType<GuerhoubaTools.SceneLoaderComponent>();
+
+        m_sceneLoaderComponent.LoadHubScene();
+        _loaderCanvas.SetActive(true);
     }
 
     #region Panel Functions
@@ -64,12 +68,16 @@ public class IntroCarrousel : MonoBehaviour
 
     public void ActiveLoadScene()
     {
-        _loaderCanvas.SetActive(true);
-        m_sceneLoaderComponent.LoadHubScene();
+        m_sceneLoaderComponent.ActiveScene();
     }
 
     private void Update()
     {
+        if (m_sceneLoaderComponent.IsSceneReady())
+        {
+            buttonPlay.SetActive(true);
+            _loaderCanvas.SetActive(false);
+        }
 
         _progressBar.fillAmount = m_sceneLoaderComponent.GetLoadProgress();
         textProgression.text = "Game is loading \n" + (_target * 100) + "%";

@@ -272,58 +272,58 @@ namespace Character
         public void SlideInput(InputAction.CallbackContext ctx)
         {
 
-            if (ctx.started)
-            {
-                if (!IsGamepad())
-                {
-                    if (!m_isSlideInputActive)
-                    {
-                        m_isSlideInputActive = true;
-                        ActiveSlide();
-                        //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
-                    }
-                    else
-                    {
-                        m_isSlideInputActive = false;
-                        SlideActivation(false);
-                        m_CharacterAnim.SetBool("Running", false);
-                        m_BookAnim.SetBool("Running", false);
-                        m_CharacterAnim.SetBool("Casting", true);
-                        m_characterShoot.gsm.CanalisationParameterLaunch(0.01f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            //if (ctx.started)
+            //{
+            //    if (!IsGamepad())
+            //    {
+            //        if (!m_isSlideInputActive)
+            //        {
+            //            m_isSlideInputActive = true;
+            //            ActiveSlide();
+            //            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
+            //        }
+            //        else
+            //        {
+            //            m_isSlideInputActive = false;
+            //            SlideActivation(false);
+            //            m_CharacterAnim.SetBool("Running", false);
+            //            m_BookAnim.SetBool("Running", false);
+            //            m_CharacterAnim.SetBool("Casting", true);
+            //            m_characterShoot.gsm.CanalisationParameterLaunch(0.01f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
 
-                        m_BookAnim.SetBool("Casting", true);
-                        //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true);  }
-                    }
-                }
-                else
-                {
-                    if (combatState)
-                    {
-                        m_isSlideInputActive = true;
-                        //m_characterShoot.gsm.CanalisationParameterStop();
-                        SlideActivation(true);
-                    }
-                    else
-                    {
-                        m_isSlideInputActive = false;
-                        SlideActivation(false);
-                    }
-                }
+            //            m_BookAnim.SetBool("Casting", true);
+            //            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true);  }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (combatState)
+            //        {
+            //            m_isSlideInputActive = true;
+            //            //m_characterShoot.gsm.CanalisationParameterStop();
+            //            SlideActivation(true);
+            //        }
+            //        else
+            //        {
+            //            m_isSlideInputActive = false;
+            //            SlideActivation(false);
+            //        }
+            //    }
 
-            }
-            if (ctx.canceled)
-            {
-                if (!IsGamepad())
-                {
-                    //m_isSlideInputActive = false;
-                    //SlideActivation(false);
-                    //m_CharacterAnim.SetBool("Running", false);
-                    //m_BookAnim.SetBool("Running", false);
-                    //m_CharacterAnim.SetBool("Casting", true);
-                    //m_BookAnim.SetBool("Running", true);
-                    //if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
-                }
-            }
+            //}
+            //if (ctx.canceled)
+            //{
+            //    if (!IsGamepad())
+            //    {
+            //        //m_isSlideInputActive = false;
+            //        //SlideActivation(false);
+            //        //m_CharacterAnim.SetBool("Running", false);
+            //        //m_BookAnim.SetBool("Running", false);
+            //        //m_CharacterAnim.SetBool("Casting", true);
+            //        //m_BookAnim.SetBool("Running", true);
+            //        //if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
+            //    }
+            //}
             if (!state.isPlaying)
             {
                 ChangeState(MouvementState.None);
