@@ -165,6 +165,7 @@ namespace Character
             if(m_isFirstTime && GameManager.instance.generalSaveData.IsFirstTime)
             {
                 gameTutorialView.StartTutoriel();
+                m_isFirstTime = false;
             }
         }
 

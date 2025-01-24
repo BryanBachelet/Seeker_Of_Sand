@@ -164,6 +164,7 @@ public class UI_Inventory : MonoBehaviour
             if(m_isFirstTimeOpen && GameManager.instance.generalSaveData.IsFirstTime)
             {
                 gameTutorialView.StartTutoriel();
+                m_isFirstTimeOpen = false;
             }
         }
         else
