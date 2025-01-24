@@ -154,6 +154,7 @@ namespace GuerhoubaGames.SaveData
             if (m_isDebugActive) m_playerData.ShowDebug();
 
             Save.SaveManager.WriteGameData(GetFilePath(), m_playerData.WriteData());
+            GameManager.instance.SaveGame();
         }
     }
 

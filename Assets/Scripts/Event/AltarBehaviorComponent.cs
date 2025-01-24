@@ -188,7 +188,7 @@ public class AltarBehaviorComponent : InteractionInterface
     public IEnumerator LastStart()
     {
         yield return new WaitForSeconds(2.0f);
-        m_idSpellReward = SpellManager.GetRandomCapsuleIndex();
+        m_idSpellReward = SpellManager.GetRandomSpellIndex();
         GenerateNextReward(resetNumber);
     }
     #endregion

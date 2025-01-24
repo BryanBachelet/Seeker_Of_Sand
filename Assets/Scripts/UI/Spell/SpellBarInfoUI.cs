@@ -16,7 +16,9 @@ public class SpellBarInfoUI : MonoBehaviour
         m_characterShoot = FindAnyObjectByType<Character.CharacterShoot>();
         m_spellTooltipArray = GetComponentsInChildren<TooltipTrigger>();
         for (int i = 0; i < m_spellTooltipArray.Length; i++)
-        {
+        { 
+            m_spellTooltipArray[i].IsActive = true;
+            m_spellTooltipArray[i].TooltipEventData.index = i;
             m_spellTooltipArray[i].OnEnterData += GetSpellInfo;
         }
     }

@@ -354,11 +354,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
-        Character.CharacterShoot shootComponent = player.GetComponent<Character.CharacterShoot>();
-        if (shootComponent.spellIndexGeneral.Count >= maxPlayerSpell && rewardList.Contains(RewardType.SPELL))
-        {
-            rewardList.Remove(RewardType.SPELL);
-        }
+  
 
         for (int i = 0; i < oldTerrain.Count; i++)
         {
@@ -379,6 +375,12 @@ public class TerrainGenerator : MonoBehaviour
         currentRoomManager.DeactivateRoom();
         currentRoomManager = lastTerrainPlay.GetComponentInChildren<RoomManager>();
         staticRoomManager = currentRoomManager;
+
+        Character.CharacterShoot shootComponent = player.GetComponent<Character.CharacterShoot>();
+        if (rewardList.Contains(RewardType.SPELL) && shootComponent.spellIndexGeneral.Count >= maxPlayerSpell-1 &&  currentRoomManager.rewardType == RewardType.SPELL)
+        {
+            rewardList.Remove(RewardType.SPELL);
+        }
 
         GenerateTerrain(selectedTerrainNumber);
         AssociateNewReward(selectedTerrainNumber);

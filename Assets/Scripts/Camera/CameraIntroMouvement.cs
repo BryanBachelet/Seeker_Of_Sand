@@ -51,7 +51,7 @@ public class CameraIntroMouvement : MonoBehaviour
             m_isActivate = false;
           
             m_fixInterface.SetActive(true);
-            GameState.ChangeState();
+         //   GameState.ChangeState();
             this.enabled = false;
         }
 
@@ -81,7 +81,7 @@ public class CameraIntroMouvement : MonoBehaviour
         m_isActivate = false;
         ActiveItemAfterStart();
         m_fixInterface.SetActive(true);
-        GameState.ChangeState();
+        //GameState.ChangeState();
         this.enabled = false;
 
     }
@@ -115,7 +115,7 @@ public class CameraIntroMouvement : MonoBehaviour
 
         float ratio = m_timerCamera / m_cameraSteps[m_nextIndex].duration;
         ratio = m_cameraStepsSpeeds[m_nextIndex].Evaluate(ratio);
-        transform.position = Vector3.Lerp(m_cameraSteps[m_prevIndex].position, m_cameraSteps[m_nextIndex].position, ratio);
+        transform.localPosition = Vector3.Lerp(m_cameraSteps[m_prevIndex].position, m_cameraSteps[m_nextIndex].position, ratio);
         transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_cameraSteps[m_prevIndex].rotation), Quaternion.Euler(m_cameraSteps[m_nextIndex].rotation), ratio);
     }
 

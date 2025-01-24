@@ -342,7 +342,7 @@ namespace Render.Camera
 //m_isZoomBlock = true;
             float zoonDelta = m_currentLerpValue - m_maxZoomBlock;
             float speed = zoonDelta * (1.0f / m_transitionDuration);
-            while (m_currentLerpValue > m_maxZoomBlock)
+            while (m_currentLerpValue >= m_maxZoomBlock)
             {
                 m_currentLerpValue -= speed * Time.deltaTime;
                 yield return Time.deltaTime;

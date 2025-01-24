@@ -1010,13 +1010,12 @@ namespace Enemies
         {
             AnimationCurve tempAnimationCurve = new AnimationCurve();
             string debugdata = "";
+
 #if UNITY_EDITOR
             string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet.csv";
 #else
 
-        string filePath = Application.dataPath + "\\Progression Demo -SpawnSheet.csv";
-       
-
+            string filePath = Application.dataPath + "\\Progression Demo -SpawnSheet.csv";
 #endif
 
             int lineNumber = 5;

@@ -1,23 +1,64 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Save
 {
 
-    public struct GeneralSaveData
+    public class GeneralSaveData
     {
-
+        public bool IsFirstTime;
     }
-
 
 
     public class SaveManager
     {
 
-        public static void TestStructSave(string filePath, TestStruct data)
+        public GeneralSaveData LoadData(string filePath)
+        {
+            GeneralSaveData generalSaveData = null ;
+
+            if(File.Exists(filePath))
+            {
+                try
+                {
+
+                    string dataToLoad = "";
+                    using(FileStream stream = new FileStream(filePath,FileMode.Open))
+                    {
+                        using(StreamReader streamReader = new StreamReader(stream))
+                        {
+                            dataToLoad = streamReader.ReadToEnd();
+                        }
+                    }
+
+                    generalSaveData = JsonUtility.FromJson<GeneralSaveData>(dataToLoad);
+                }
+                catch(Exception e)
+                {
+                    Debug.LogError("Error of loading : " + e);
+                }
+            }
+
+            return generalSaveData;
+        }
+
+        public void SaveData(string filePath, GeneralSaveData generalSaveData)
+        {
+            string dataText = JsonUtility.ToJson(generalSaveData, true);
+
+            using (StreamWriter outputFile = new StreamWriter(filePath))
+            {
+                outputFile.Write(dataText);
+                outputFile.Close();
+            }
+        }
+
+    public static void TestStructSave(string filePath, TestStruct data)
         {
             if (File.Exists(filePath))
             {
