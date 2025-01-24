@@ -22,6 +22,8 @@ public class CameraFadeFunction : MonoBehaviour
     public Animator dayTextAnimator;
     public GameObject dayTextObj;
 
+    public GameTutorialView gameTutorialView;
+    private bool m_isFirstTime = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,20 +34,20 @@ public class CameraFadeFunction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(manuelFade)
+        if (manuelFade)
         {
             ChangeFadeAlpha(fadeProgress);
             return;
         }
-        if(fadeInActivation)
+        if (fadeInActivation)
         {
             fadeInActive = true;
             fadeInActivation = false;
             fadeProgress = 0;
         }
-        if(fadeInActive)
+        if (fadeInActive)
         {
-            if(fadeProgress < 0.99f)
+            if (fadeProgress < 0.99f)
             {
                 fadeProgress += Time.deltaTime * fadeSpeed;
             }
@@ -78,15 +80,29 @@ public class CameraFadeFunction : MonoBehaviour
                 fadeProgress = 0;
                 fadeOutActive = false;
                 dayTextObj.SetActive(false);
+                if (GameManager.instance.generalSaveData.IsFirstTime)
+                {
+                    gameTutorialView.StartTutoriel();
+                }
+                else
+                {
+                    GameState.ChangeState();
+                }
                 //dayTextAnimator.ResetTrigger("NewDay");
             }
             ChangeFadeAlpha(fadeProgress);
         }
     }
 
+    public void LaunchGame()
+    {
+        GameState.ChangeState();
+        GameManager.instance.generalSaveData.IsFirstTime = false;
+    }
+
     private void ChangeFadeAlpha(float alphaValue)
     {
-        fadeMat.SetColor("_UnlitColor", new Color(0,0,0,alphaValue));
+        fadeMat.SetColor("_UnlitColor", new Color(0, 0, 0, alphaValue));
     }
 
     public void LaunchFadeIn(bool stateFade, float speedFade)
