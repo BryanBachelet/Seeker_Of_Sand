@@ -9,13 +9,17 @@ public class GameTutorialView : MonoBehaviour
     public CameraFadeFunction cameraFadeFunction;
     public void StartTutoriel()
     {
+        
+        if(GameState.IsPlaying())
+            GameState.ChangeState();
         startButton.SetActive(true);
     }    
 
     public void EndTutoriel()
     {
-        cameraFadeFunction.LaunchGame();
+
         endButton.SetActive(false);
+        GameState.ChangeState();
     }
 
 }

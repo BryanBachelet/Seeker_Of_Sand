@@ -101,7 +101,7 @@ public class CameraFadeFunction : MonoBehaviour
     public void LaunchGame()
     {
         GameState.ChangeState();
-        GameManager.instance.generalSaveData.IsFirstTime = false;
+        //GameManager.instance.generalSaveData.IsFirstTime = false;
     }
 
     private void ChangeFadeAlpha(float alphaValue)

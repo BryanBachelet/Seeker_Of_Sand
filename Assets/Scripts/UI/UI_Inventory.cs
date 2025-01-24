@@ -52,6 +52,9 @@ public class UI_Inventory : MonoBehaviour
     [SerializeField] private TMP_Text m_armorBonusText;
 
     #endregion
+
+    public GameTutorialView gameTutorialView;
+    private bool m_isFirstTimeOpen = true;
     // Avoid the close and t
     private bool IsNextCallDelay;
     public void InitComponent()
@@ -152,10 +155,16 @@ public class UI_Inventory : MonoBehaviour
             IsNextCallDelay = false;
             return;
         }
+
+        
         if (!inventoryContainer.activeSelf)
         {
             ActualizeInventory();
             ActivateInventoryInterface();
+            if(m_isFirstTimeOpen && GameManager.instance.generalSaveData.IsFirstTime)
+            {
+                gameTutorialView.StartTutoriel();
+            }
         }
         else
         {

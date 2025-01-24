@@ -108,6 +108,9 @@ namespace Character
         }
         #endregion
 
+        public GameTutorialView gameTutorialView;
+        private bool m_isFirstTime = true;
+
         public void ShowSpellChoiceInteface()
         {
             if (upgradeManager)
@@ -159,6 +162,10 @@ namespace Character
             //GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
             GameState.ChangeState(); // Set Game in pause
 
+            if(m_isFirstTime && GameManager.instance.generalSaveData.IsFirstTime)
+            {
+                gameTutorialView.StartTutoriel();
+            }
         }
 
         public void CloseUpgradeWindow()
