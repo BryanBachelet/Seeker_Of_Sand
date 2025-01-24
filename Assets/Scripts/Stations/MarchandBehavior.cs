@@ -43,6 +43,7 @@ public class MarchandBehavior : InteractionInterface
     [HideInInspector] public ItemData[] fragmentItemData = new ItemData[4];
 
     private MerchandItemData merchandItemData;
+    private bool m_isInit =false;
 
     public void InitComponents()
     {
@@ -59,6 +60,7 @@ public class MarchandBehavior : InteractionInterface
         m_fragmentManager = GameState.m_enemyManager.GetComponent<FragmentManager>();
         SetSpellItem();
         SetFragmentItem();
+        m_isInit = true;
     }
 
     #region Interaction Functions
@@ -74,6 +76,7 @@ public class MarchandBehavior : InteractionInterface
 
     public override void OnInteractionStart(GameObject player)
     {
+       if(!m_isInit) InitComponents();
         m_merchandView.ActiveMarchandUI(merchandItemData);
         m_uiDispatcher.fixeGameplayUI.SetActive(false);
         m_uiDispatcher.bandenoir.SetActive(false);

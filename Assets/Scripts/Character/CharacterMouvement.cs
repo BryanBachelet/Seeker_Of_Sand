@@ -191,6 +191,7 @@ namespace Character
             mouvementSoundInstance = RuntimeManager.CreateInstance(MouvementSoundReference);
             RuntimeManager.AttachInstanceToGameObject(mouvementSoundInstance, this.transform);
             mouvementSoundInstance.start();
+            ActiveSlide();
         }
 
         public void MoveInput(InputAction.CallbackContext ctx)
