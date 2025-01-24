@@ -37,8 +37,8 @@ public class FragmentChoose : MonoBehaviour
         artefactInfoCurrent = artefactInfo;
         fragmentUIView1.UpdateInteface(artefactInfo[0]);
         fragmentUIView2.UpdateInteface(artefactInfo[1]);
-        descriptionTmp_Text[0].text = artefactInfo[0].description;
-        descriptionTmp_Text[1].text = artefactInfo[1].description;
+        descriptionTmp_Text[0].text = artefactInfo[0].name + "<br>" + artefactInfo[0].description;
+        descriptionTmp_Text[1].text = artefactInfo[1].name + "<br>" + artefactInfo[1].description;
         m_animator.SetBool("OpenChoose", true);
 
     }
