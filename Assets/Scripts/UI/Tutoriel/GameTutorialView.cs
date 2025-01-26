@@ -6,6 +6,7 @@ public class GameTutorialView : MonoBehaviour
 {
     public GameObject startButton;
     public GameObject endButton;
+    public bool isEndPauseState = true;
     public CameraFadeFunction cameraFadeFunction;
     public void StartTutoriel()
     {
@@ -19,7 +20,8 @@ public class GameTutorialView : MonoBehaviour
     {
 
         endButton.SetActive(false);
-        GameState.ChangeState();
+        if (isEndPauseState && !GameState.IsPlaying())
+            GameState.ChangeState();
     }
 
 }
