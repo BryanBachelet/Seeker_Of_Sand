@@ -662,6 +662,8 @@ namespace Enemies
                 CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
                 closeAttackComponent.damage = currentAttackData.damage;
                 closeAttackComponent.attackName = currentAttackData.nameAttack;
+                closeAttackComponent.gameObject.transform.localScale = currentAttackData.scale / closeAttackComponent.transform.parent.localScale.x;
+
             }
             if (currentAttackData.typeAttack == AttackType.PROJECTILE_OBJ)
             {
