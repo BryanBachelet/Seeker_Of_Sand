@@ -120,7 +120,7 @@ namespace Character
 
                 GameState.ChangeState();
                 isSpellUpgradeWindowOpen = true;
-                ChangeBaseInterfaceDisplay(false);
+                //ChangeBaseInterfaceDisplay(false);
             }
 
         }
@@ -147,7 +147,7 @@ namespace Character
             isUpgradeWindowOpen = true;
 
             // -> Deactivate player in game interface
-            ChangeBaseInterfaceDisplay(false);
+            //ChangeBaseInterfaceDisplay(false);
 
             UpgradeLevelingData data = new UpgradeLevelingData();
             data.spellState = m_characterShoot.spellProfils.ToArray();
