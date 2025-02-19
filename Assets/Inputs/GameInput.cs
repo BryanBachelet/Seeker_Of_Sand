@@ -242,6 +242,24 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomIn"",
+                    ""type"": ""Button"",
+                    ""id"": ""e678dfe1-6fc9-491f-823d-0b25b6a80e01"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomOut"",
+                    ""type"": ""Button"",
+                    ""id"": ""5f40c655-fcec-4a8f-8a38-96bfaaa9143c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -968,6 +986,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ChooseUpgrade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a5c4b9d-87eb-4987-a723-6f37fd6a733e"",
+                    ""path"": ""<Keyboard>/numpadPlus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomIn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d1365c5a-2697-4a42-8386-e8aa9003ecc0"",
+                    ""path"": ""<Keyboard>/numpadMinus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOut"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -2603,6 +2643,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_RecapDamage = m_Player.FindAction("RecapDamage", throwIfNotFound: true);
         m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
         m_Player_ChooseUpgrade = m_Player.FindAction("ChooseUpgrade", throwIfNotFound: true);
+        m_Player_ZoomIn = m_Player.FindAction("ZoomIn", throwIfNotFound: true);
+        m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -2736,6 +2778,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RecapDamage;
     private readonly InputAction m_Player_Cancel;
     private readonly InputAction m_Player_ChooseUpgrade;
+    private readonly InputAction m_Player_ZoomIn;
+    private readonly InputAction m_Player_ZoomOut;
     public struct PlayerActions
     {
         private @GameInput m_Wrapper;
@@ -2764,6 +2808,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         public InputAction @RecapDamage => m_Wrapper.m_Player_RecapDamage;
         public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
         public InputAction @ChooseUpgrade => m_Wrapper.m_Player_ChooseUpgrade;
+        public InputAction @ZoomIn => m_Wrapper.m_Player_ZoomIn;
+        public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2845,6 +2891,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ChooseUpgrade.started += instance.OnChooseUpgrade;
             @ChooseUpgrade.performed += instance.OnChooseUpgrade;
             @ChooseUpgrade.canceled += instance.OnChooseUpgrade;
+            @ZoomIn.started += instance.OnZoomIn;
+            @ZoomIn.performed += instance.OnZoomIn;
+            @ZoomIn.canceled += instance.OnZoomIn;
+            @ZoomOut.started += instance.OnZoomOut;
+            @ZoomOut.performed += instance.OnZoomOut;
+            @ZoomOut.canceled += instance.OnZoomOut;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -2921,6 +2973,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ChooseUpgrade.started -= instance.OnChooseUpgrade;
             @ChooseUpgrade.performed -= instance.OnChooseUpgrade;
             @ChooseUpgrade.canceled -= instance.OnChooseUpgrade;
+            @ZoomIn.started -= instance.OnZoomIn;
+            @ZoomIn.performed -= instance.OnZoomIn;
+            @ZoomIn.canceled -= instance.OnZoomIn;
+            @ZoomOut.started -= instance.OnZoomOut;
+            @ZoomOut.performed -= instance.OnZoomOut;
+            @ZoomOut.canceled -= instance.OnZoomOut;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -3481,6 +3539,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         void OnRecapDamage(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
         void OnChooseUpgrade(InputAction.CallbackContext context);
+        void OnZoomIn(InputAction.CallbackContext context);
+        void OnZoomOut(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

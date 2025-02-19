@@ -57,6 +57,7 @@ public class TerrainGenerator : MonoBehaviour
     [Header("Debug Parameter")]
     public bool isOnlyBoss;
 
+    public MiniMapControl miniMapControl;
     public void Start()
     {
         dayController.dayStartEvent += ResetRoomAtNewDay;
@@ -347,6 +348,7 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
+        miniMapControl.ResetDiscovery(terrainInstantiated[selectedTerrain]);
         if (roomManager.currentRoomType == RoomType.Boss) { gsm.UpdateParameter(1, "BossAmbiant"); }
         else { gsm.UpdateParameter(0, "BossAmbiant"); }
 

@@ -11,7 +11,7 @@
 ////////////////////////////////////////
 
 
-Shader "Hidden/Terrain_Mid_Base1930371650"
+Shader "Hidden/Terrain_Mid_Base-1474138770"
 {
    Properties
    {
@@ -256,7 +256,7 @@ Shader "Hidden/Terrain_Mid_Base1930371650"
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -6068,7 +6068,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -11708,7 +11708,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -17418,7 +17418,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -23100,7 +23100,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -28736,7 +28736,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -34368,7 +34368,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -40029,7 +40029,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -45720,7 +45720,7 @@ void Frag(  VertexToPixel v2f
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
@@ -51374,7 +51374,7 @@ float3 GetTessFactors ()
             
       #define _MICROSPLAT 1
       #define _MICROTERRAIN 1
-      #define _DISABLEHEIGHTBLENDING 1
+      #define _PERTEXRIMLIGHT 1
       #define _USESPECULARWORKFLOW 1
       #define _USEGRADMIP 1
       #define _MAX8TEXTURES 1
