@@ -99,7 +99,6 @@ public class RoomManager : MonoBehaviour
         }
         if (playerRewardDistribution == null)
         {
-
             playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
         }
@@ -111,8 +110,6 @@ public class RoomManager : MonoBehaviour
         {
             m_cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
         }
-
-
 
         RoomInterface[] interfacesArray = transform.parent.GetComponentsInChildren<RoomInterface>();
         for (int i = 0; i < interfacesArray.Length; i++)

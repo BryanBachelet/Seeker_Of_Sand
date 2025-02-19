@@ -88,6 +88,8 @@ public class AltarBehaviorComponent : InteractionInterface
     [SerializeField] private Light eventLight;
     [SerializeField] private MeshRenderer meshPointLight;
 
+    public Transform piedestalTranformPosition;
+
     #endregion Variable
 
     #region Unity Functions
@@ -344,26 +346,29 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public void SpawnAltarReward()
     {
+        RewardDistribution rewardDistributionComponent =  m_playerTransform.GetComponent<RewardDistribution>();
+        int indexReward = Random.Range(0, 4);
+        rewardDistributionComponent.GiveReward((RewardType)(indexReward), piedestalTranformPosition, HealthReward.QUARTER, eventElementType);
 
         return;
-        for (int i = 0; i < nextReward; i++)
-        {
-            Vector3 randomRadiusPosition = new Vector3(Random.Range(-radiusEjection, radiusEjection), 0, Random.Range(-radiusEjection, radiusEjection));
+        //for (int i = 0; i < nextReward; i++)
+        //{
+        //    Vector3 randomRadiusPosition = new Vector3(Random.Range(-radiusEjection, radiusEjection), 0, Random.Range(-radiusEjection, radiusEjection));
 
-            GameObject rewardObject = Instantiate(nextRewardObject, transform.position, Quaternion.identity, this.transform);
+        //    GameObject rewardObject = Instantiate(nextRewardObject, transform.position, Quaternion.identity, this.transform);
 
-            if (nextRewardTypologie == 2)
-            {
-                //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-                if (rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
+        //    if (nextRewardTypologie == 2)
+        //    {
+        //        //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
+        //        if (rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
 
-            }
+        //    }
 
-            ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
-            expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
-            expMouvementComponent.GroundPosition = m_DropAreaPosition + randomRadiusPosition;
-            StartCoroutine(expMouvementComponent.MoveToGround());
-        }
+        //    ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
+        //    expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
+        //    expMouvementComponent.GroundPosition = m_DropAreaPosition + randomRadiusPosition;
+        //    StartCoroutine(expMouvementComponent.MoveToGround());
+        //}
 
     }
 

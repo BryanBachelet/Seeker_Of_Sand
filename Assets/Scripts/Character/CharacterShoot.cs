@@ -1567,28 +1567,38 @@ namespace Character
         public void AddSpell(int index)
         {
             int prevIndex = m_characterSpellBook.GetSpellCount();
-            spellIndexGeneral.Add(index);
-
             SpellSystem.SpellProfil clone = m_spellManger.spellProfils[index].Clone(true);
-            m_characterSpellBook.AddSpell(clone);
-            m_dropInventory.AddNewItem(index);
-
-            CreatePullObject(clone);
-            if (spellIndexGeneral.Count <= spellEquip.Length)
+            if (spellIndexGeneral.Count + 1 <= spellEquip.Length)
             {
-                icon_Sprite[spellIndexGeneral.Count - 1].transform.parent.gameObject.SetActive(true);
-                spellProfils.Add(clone);
-                spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
-                m_characterSpellBook.m_spellsRotationArray[spellIndexGeneral.Count - 1] = clone;
-                m_characterSpellBook.m_currentSpellInRotationCount++;
-                //m_clockImage[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
-                //m_textStack[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
-                m_stackingClock[maxSpellIndex] = new ClockTimer();
-                m_stackingClock[maxSpellIndex].ActiaveClock();
-                m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex], m_textStack[maxSpellIndex]);
-                maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
-                RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
-                m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
+                Debug.Log("Add Normaly");
+                m_characterSpellBook.AddSpell(clone);
+                spellIndexGeneral.Add(index);
+
+
+                m_dropInventory.AddNewItem(index);
+
+                CreatePullObject(clone);
+                if (spellIndexGeneral.Count <= spellEquip.Length)
+                {
+                    icon_Sprite[spellIndexGeneral.Count - 1].transform.parent.gameObject.SetActive(true);
+                    spellProfils.Add(clone);
+                    spellEquip[spellIndexGeneral.Count - 1] = m_characterSpellBook.GetSpellCount() - 1;
+                    m_characterSpellBook.m_spellsRotationArray[spellIndexGeneral.Count - 1] = clone;
+                    m_characterSpellBook.m_currentSpellInRotationCount++;
+                    //m_clockImage[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
+                    //m_textStack[spellIndexGeneral.Count - 1].gameObject.SetActive(true);
+                    m_stackingClock[maxSpellIndex] = new ClockTimer();
+                    m_stackingClock[maxSpellIndex].ActiaveClock();
+                    m_stackingClock[maxSpellIndex].SetTimerDuration(spellProfils[maxSpellIndex].GetFloatStat(StatType.StackDuration), m_clockImage[maxSpellIndex], m_textStack[maxSpellIndex]);
+                    maxSpellIndex = Mathf.Clamp(spellIndexGeneral.Count, 0, 4);
+                    RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
+                    m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
+                }
+            }else
+            {
+                Debug.Log("Add Temp Spell");
+                m_characterSpellBook.AddTempSpell(clone);
+                m_characterSpellBook.OpenUIExchange();
             }
         }
 
@@ -1652,11 +1662,37 @@ namespace Character
             int tempStack = m_currentStack[indexSpell1];
             m_currentStack[indexSpell1] = m_currentStack[indexSpell2];
             m_currentStack[indexSpell2] = tempStack;
-            //m_uiPlayerInfos.UpdateStackingObjects(m_currentStack);
             m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
             RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
             m_characterSpellBook.ActualizeUI();
 
+
+        }
+
+        public void ExchangeRotationSpellWithNew(int indexSpell)
+        {
+
+            SpellManager.ReAddSpell((m_characterSpellBook.m_spellsRotationArray[indexSpell]));
+
+            spellProfils[indexSpell] = m_characterSpellBook.tempSpell;
+            m_characterSpellBook.ReplaceSpell(m_characterSpellBook.m_spellsRotationArray[indexSpell], m_characterSpellBook.tempSpell);
+            m_characterSpellBook.m_spellsRotationArray[indexSpell] = m_characterSpellBook.tempSpell;
+             m_stackingClock[indexSpell] = new ClockTimer();
+            m_stackingClock[indexSpell].ActiaveClock();
+            m_stackingClock[indexSpell].SetTimerDuration(spellProfils[indexSpell].GetFloatStat(StatType.StackDuration), m_clockImage[indexSpell], m_textStack[indexSpell]);
+            RefreshActiveIcon(m_characterSpellBook.GetAllSpells());
+
+            m_characterUpgrade.upgradeManager.UpdateCharacterUpgradePool();
+
+
+            //----------  UpdateUI ----------------
+            currentCloneSpellProfil = spellProfils[0].Clone();
+            m_currentIndexCapsule = 0;
+            currentPreviewDecalTexture = spellProfils[0].previewDecal_mat;
+            currentPreviewDecalEndTexture = spellProfils[0].previewDecalEnd_mat;
+            ChangeDecalTexture(spellProfils[0].tagData.element);
+            UpdateCanalisationBar(m_totalCanalisationDuration);
+            gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
 
         }
 
