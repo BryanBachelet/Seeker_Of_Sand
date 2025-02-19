@@ -783,8 +783,9 @@ namespace Character
 
             Transform transformUsed = transform;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
-            Vector3 directoinInstance =  m_characterAim.lastRawPosition - transformUsed.position;
-            Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
+            Vector3 directoinInstance =  m_characterAim.GetAimFinalPoint() - transformUsed.position;
+            //Vector3 instancePosition = transformUsed.position + directoinInstance.normalized * spellProfil.GetFloatStat(StatType.Range);
+            Vector3 instancePosition = m_characterAim.GetAimFinalPoint();
             areaInstance = GameObject.Instantiate(spellProfil.objectToSpawn, instancePosition, rot);
 
             DamageCalculComponent damageCalculComponent = areaInstance.GetComponent<DamageCalculComponent>();
@@ -946,7 +947,8 @@ namespace Character
 
             Transform transformUsed = transform;
             Vector3 directoinInstance = m_characterAim.lastRawPosition - transformUsed.position;
-            Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
+            //Vector3 instancePosition = transformUsed.position + directoinInstance * spellProfil.GetFloatStat(StatType.Range);
+            Vector3 instancePosition = m_characterAim.GetAimFinalPoint(); ;
             Quaternion rot = m_characterAim.GetTransformHead().rotation;
             GameObject areaInstance = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, instancePosition, rot);
 
@@ -1691,6 +1693,7 @@ namespace Character
             currentPreviewDecalTexture = spellProfils[0].previewDecal_mat;
             currentPreviewDecalEndTexture = spellProfils[0].previewDecalEnd_mat;
             ChangeDecalTexture(spellProfils[0].tagData.element);
+
             UpdateCanalisationBar(m_totalCanalisationDuration);
             gsm.CanalisationParameterLaunch(0.5f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
 
