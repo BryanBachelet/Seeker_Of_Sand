@@ -146,7 +146,7 @@ public class DayCyclecontroller : MonoBehaviour
 
     public void UpdateTimeByStep()
     {
-        time += 201.6f;
+        time += 600;
         CheckPhase(m_timeOfDay);
         staticTimeOfTheDay = m_timeOfDay;
         UpdateTime();
