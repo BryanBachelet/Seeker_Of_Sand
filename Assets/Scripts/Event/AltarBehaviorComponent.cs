@@ -95,6 +95,11 @@ public class AltarBehaviorComponent : InteractionInterface
     #region Unity Functions
     void Start()
     {
+
+    }
+
+    public void LaunchInit()
+    {
         InitComponent();
         ownNumber = altarCount;
         altarCount++;
@@ -123,7 +128,6 @@ public class AltarBehaviorComponent : InteractionInterface
             eventHolder = EventHolder.GetInstance();
             eventHolder.GetNewAltar(this);
         }
-
     }
 
     void Update()
@@ -312,8 +316,8 @@ public class AltarBehaviorComponent : InteractionInterface
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
-        transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
-
+        //transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
+        transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
     }
@@ -347,7 +351,7 @@ public class AltarBehaviorComponent : InteractionInterface
     public void SpawnAltarReward()
     {
         RewardDistribution rewardDistributionComponent =  m_playerTransform.GetComponent<RewardDistribution>();
-        int indexReward = Random.Range(0, 4);
+        int indexReward = Random.Range(0, 3);
         rewardDistributionComponent.GiveReward((RewardType)(indexReward), piedestalTranformPosition, HealthReward.QUARTER, eventElementType);
 
         return;

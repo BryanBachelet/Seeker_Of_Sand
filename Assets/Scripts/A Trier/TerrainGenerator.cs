@@ -201,6 +201,7 @@ public class TerrainGenerator : MonoBehaviour
             //if (roomGeneration_Static < 10) { indexRoomType = Random.Range(0, 2); }
             //else { indexRoomType = Random.Range(0, roomTypeList.Count); }
             indexRoomType = Random.Range(0, roomTypeList.Count);
+            if(indexRoomType == 1 ) { indexRoomType = 1; }
             if (!hasMerchantAppear)
             {
                 if (!player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
@@ -208,6 +209,7 @@ public class TerrainGenerator : MonoBehaviour
                     while (roomTypeList[indexRoomType] == RoomType.Merchant)
                     {
                         indexRoomType = Random.Range(0, roomTypeList.Count);
+                        if (indexRoomType == 1) { indexRoomType = 1; }
                     }
                 }
 
@@ -342,6 +344,7 @@ public class TerrainGenerator : MonoBehaviour
         terrainInstantiated[selectedTerrain].SetActive(true);
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         RoomManager roomManager = terrainInstantiated[selectedTerrain].GetComponentInChildren<RoomManager>();
+        if (roomManager.currentRoomType == RoomType.Enemy) { roomManager.currentRoomType = RoomType.Event; }
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
         cameraFadeFunction.LaunchFadeIn(true, 1);
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
@@ -349,6 +352,7 @@ public class TerrainGenerator : MonoBehaviour
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
         miniMapControl.ResetDiscovery(terrainInstantiated[selectedTerrain]);
+
         if (roomManager.currentRoomType == RoomType.Boss) { gsm.UpdateParameter(1, "BossAmbiant"); }
         else { gsm.UpdateParameter(0, "BossAmbiant"); }
 

@@ -38,6 +38,7 @@ public class RewardTypologie : MonoBehaviour
     public Material materialRewardColor;
 
     public int rewardPoint = 3;
+    [HideInInspector] public bool autoValidation = false;
     // Start is called before the first frame update
 
     public void Update()
@@ -110,7 +111,7 @@ public class RewardTypologie : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player" && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
+        if(other.tag == "Player" && autoValidation)
         {
             rewardDistribution.RewardValidate();
             Character.CharacterUpgrade characterUpgrade = other.GetComponent<Character.CharacterUpgrade>();

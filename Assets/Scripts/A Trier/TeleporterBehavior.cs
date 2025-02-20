@@ -67,7 +67,7 @@ public class TeleporterBehavior : MonoBehaviour
             GlobalSoundManager.PlayOneShot(34, this.gameObject.transform.position);
             StartCoroutine(LaunchNewDay());
         }
-        else { cameraFadeFunction.LaunchFadeOut(true, 1); nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom(); m_cameraBehavior.ChangeLerpForTP(); }
+        else { cameraFadeFunction.LaunchFadeOut(true, 1); /*nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();*/ m_cameraBehavior.ChangeLerpForTP(); }
 
 
     }
