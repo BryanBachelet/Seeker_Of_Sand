@@ -104,6 +104,10 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
 
         if (currentRoomManager.currentRoomType == RoomType.Enemy)
         {
+            currentRoomManager.currentRoomType = RoomType.Event;
+        }
+            if (currentRoomManager.currentRoomType == RoomType.Enemy)
+        {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
             img_Objectif.sprite = spriteObjectif_tab[0];
             txtPro_Objectif.text = text_Objectif[0];

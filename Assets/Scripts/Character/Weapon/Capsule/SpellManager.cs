@@ -13,7 +13,7 @@ public class SpellManager : MonoBehaviour
     public static SpellManager instance;
     public static int capsuleCount;
 
-    public static List<int> m_capsulePool = new List<int>();
+    public static List<int> m_spellPool = new List<int>();
 
     public bool isDebugActive;
     private int indexAttackInfo;
@@ -26,19 +26,19 @@ public class SpellManager : MonoBehaviour
         int index = -1;
 
 
-        if (m_capsulePool.Count == 0)
+        if (m_spellPool.Count == 0)
         {
             Debug.LogWarning("No spell left");
             return index;
         }
 
         List<int> m_capsuleElementQuantity = new List<int>();
-        for (int i = 0; i < m_capsulePool.Count; i++)
+        for (int i = 0; i < m_spellPool.Count; i++)
         {
-            SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsulePool[i]];
+            SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_spellPool[i]];
             if (spellProfil.tagData.element == element)
             {
-                m_capsuleElementQuantity.Add(m_capsulePool[i]);
+                m_capsuleElementQuantity.Add(m_spellPool[i]);
             }
         }
 
@@ -77,19 +77,19 @@ public class SpellManager : MonoBehaviour
         int index = -1;
 
 
-        if (m_capsulePool.Count == 0)
+        if (m_spellPool.Count == 0)
         {
             Debug.LogWarning("No spell left");
             return index;
         }
 
         List<int> m_capsuleElementQuantity = new List<int>();
-        for (int i = 0; i < m_capsulePool.Count; i++)
+        for (int i = 0; i < m_spellPool.Count; i++)
         {
-            SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsulePool[i]];
+            SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_spellPool[i]];
             if (spellProfil.tagData.element != element)
             {
-                m_capsuleElementQuantity.Add(m_capsulePool[i]);
+                m_capsuleElementQuantity.Add(m_spellPool[i]);
             }
         }
 
@@ -126,19 +126,19 @@ public class SpellManager : MonoBehaviour
     {
         int index = -1;
 
-        if (m_capsulePool.Count == 0)
+        if (m_spellPool.Count == 0)
         {
             Debug.LogWarning("No spell left");
             return index;
         }
 
         List<int> m_spellQuantity = new List<int>();
-        for (int i = 0; i < m_capsulePool.Count; i++)
+        for (int i = 0; i < m_spellPool.Count; i++)
         {
             bool isValid = true;
             for (int j = 0; j < idFamilyBan.Count; j++)
             {
-                SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_capsulePool[i]];
+                SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_spellPool[i]];
 
                 if (spellProfil.idFamily == idFamilyBan[j])
                 {
@@ -147,7 +147,7 @@ public class SpellManager : MonoBehaviour
                 }
             }
 
-            if(isValid) m_spellQuantity.Add(m_capsulePool[i]);
+            if(isValid) m_spellQuantity.Add(m_spellPool[i]);
         }
 
         int listIndex = Random.Range(0, m_spellQuantity.Count);
@@ -160,18 +160,24 @@ public class SpellManager : MonoBehaviour
 
     public static void AddSpecificSpellFromSpellPool(int index)
     {
-        m_capsulePool.Add(index);
+        m_spellPool.Add(index);
 
     }
     public static void RemoveSpecificSpellFromSpellPool(int index)
     {
-        if (m_capsulePool.Contains(index))
+        if (m_spellPool.Contains(index))
         {
             if (instance.isDebugActive)
                 Debug.Log(instance.spellProfils[index].name);
 
-            m_capsulePool.Remove(index);
+            m_spellPool.Remove(index);
         }
+    }
+
+    public static void ReAddSpell(SpellSystem.SpellProfil spellProfile)
+    {
+        int index = instance.GetCapsuleIndex(spellProfile);
+        AddSpecificSpellFromSpellPool(index);
     }
 
     public int GetCapsuleIndex(SpellSystem.SpellProfil spellProfile)
@@ -193,7 +199,7 @@ public class SpellManager : MonoBehaviour
 
         for (int i = 0; i < spellProfils.Length; i++)
         {
-            m_capsulePool.Add(i);
+            m_spellPool.Add(i);
         }
 
         CreateInfo();

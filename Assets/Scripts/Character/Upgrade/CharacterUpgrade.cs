@@ -127,8 +127,8 @@ namespace Character
 
         public void ApplySpellChoise(SpellSystem.SpellProfil capsule)
         {
-            m_characterShoot.AddSpell(m_spellManager.GetCapsuleIndex(capsule));
             CloseSpellChoiceInterface();
+            m_characterShoot.AddSpell(m_spellManager.GetCapsuleIndex(capsule));
         }
 
         public void CloseSpellChoiceInterface()

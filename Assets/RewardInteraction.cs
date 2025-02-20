@@ -7,6 +7,8 @@ public class RewardInteraction : InteractionInterface
     [SerializeField] private RewardTypologie m_rewardTypologie;
     [SerializeField] private GameObject m_meshCristal;
     private Transform playerRef;
+
+    public bool autoValidation = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,11 +24,12 @@ public class RewardInteraction : InteractionInterface
 
     public override void OnInteractionStart(GameObject player)
     {
-        if (TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
+        if (TerrainGenerator.staticRoomManager.isRoomHasBeenValidate || autoValidation)
         {
             if (m_rewardTypologie)
             {
                 m_rewardTypologie.ActivationDistribution();
+                m_rewardTypologie.autoValidation = autoValidation;
                 m_rewardTypologie.GetComponent<ExperienceMouvement>().ActiveExperienceParticule(playerRef);
                 //m_meshCristal.SetActive(false);
                 

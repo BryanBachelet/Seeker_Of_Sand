@@ -84,7 +84,8 @@ public class RoomManager : MonoBehaviour
     private NavMeshData m_navMesh;
     private CameraBehavior m_cameraBehavior;
 
-
+    public int eventNumber = 0;
+    private TerrainActivationManager m_terrainActivation;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -99,7 +100,6 @@ public class RoomManager : MonoBehaviour
         }
         if (playerRewardDistribution == null)
         {
-
             playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
         }
@@ -112,8 +112,6 @@ public class RoomManager : MonoBehaviour
             m_cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
         }
 
-
-
         RoomInterface[] interfacesArray = transform.parent.GetComponentsInChildren<RoomInterface>();
         for (int i = 0; i < interfacesArray.Length; i++)
         {
@@ -122,10 +120,11 @@ public class RoomManager : MonoBehaviour
     }
     public void ActivateRoom()
     {
+        if(m_terrainActivation == null) { m_terrainActivation = this.GetComponent<TerrainActivationManager>(); }
+        m_terrainActivation.ActiveEvent();
 
-        m_enemyManager.ResetAllSpawingPhasse();
-        m_enemyManager.ResetSpawnStat();
-        progress = 0;
+        ResetObjectifData();
+
         if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
@@ -135,7 +134,7 @@ public class RoomManager : MonoBehaviour
         {
             m_cameraBehavior.SetupCamaraAnglge(spawnAngle);
         }
-        currentCountOfEnemy = 0;
+
         m_isStartActivation = true;
         m_startRoomChallengeTime = DateTime.Now;
         baseRoomType = currentRoomType;
@@ -154,6 +153,14 @@ public class RoomManager : MonoBehaviour
         previewCamera.gameObject.SetActive(false);
     }
 
+    public void ResetObjectifData()
+    {
+        m_enemyManager.ResetAllSpawingPhasse();
+        m_enemyManager.ResetSpawnStat();
+        progress = 0;
+        currentCountOfEnemy = 0;
+
+    }
     public void ActivateRoomAfterDistanceTP()
     {
         NavMeshHit hit;
@@ -234,18 +241,23 @@ public class RoomManager : MonoBehaviour
                 break;
             case RoomType.Event:
 
-                AltarBehaviorComponent obj = transform.parent.GetComponentInChildren<AltarBehaviorComponent>();
-                if (obj != null)
+                AltarBehaviorComponent[] obj = transform.parent.GetComponentsInChildren<AltarBehaviorComponent>();
+                eventNumber = obj.Length;
+                for (int i = 0; i < obj.Length; i++)
                 {
-                    obj.ResetAltar();
-                    //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
-                    obj.eventElementType = element;
-                    obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
-                    enemyMaxSpawnInRoon = enemyToKillCount = obj.m_enemiesCountConditionToWin;
-                    obj.roomInfoUI = roomInfoUI;
-                    roomInfoUI.UpdateTextProgression(obj.m_enemiesCountConditionToWin, obj.m_enemiesCountConditionToWin);
+                    if (obj[i] != null)
+                    {
+                        obj[i].ResetAltar();
+                        //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
+                        obj[i].eventElementType = element;
+                        obj[i].m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
+                        enemyMaxSpawnInRoon = enemyToKillCount = obj[i].m_enemiesCountConditionToWin;
+                        obj[i].roomInfoUI = roomInfoUI;
+                        roomInfoUI.UpdateTextProgression(obj[i].m_enemiesCountConditionToWin, obj[i].m_enemiesCountConditionToWin);
 
+                    }
                 }
+
 
                 break;
             case RoomType.Enemy:
@@ -360,7 +372,18 @@ public class RoomManager : MonoBehaviour
 
     }
 
-
+    public void CheckEventSucceded() //Temp Function
+    {
+        eventNumber--;
+        if(eventNumber <= 0)
+        {
+            ValidateRoom() ;
+        }
+        else
+        {
+            ResetObjectifData();
+        }
+    }
     public IEnumerator RoomDeactivation(int frameCount)
 
     {

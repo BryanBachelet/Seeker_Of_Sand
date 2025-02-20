@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using GuerhoubaGames.GameEnum;
+using SpellSystem;
+using GuerhoubaGames.UI;
 
 namespace Character
 {
@@ -13,6 +15,10 @@ namespace Character
         [SerializeField] public SpellSystem.SpellProfil[] m_spellsRotationArray = new SpellSystem.SpellProfil[4];
         UI_Inventory ui_inventory;
 
+
+        [HideInInspector] public SpellProfil tempSpell;
+        private CharacterShoot m_characterShoot;
+        public UI_SpellExchange m_spellExchangeUI;
         public int m_currentSpellInRotationCount;
         //  Need to create copy from the spell place
 
@@ -20,6 +26,7 @@ namespace Character
         {
             m_spellsRotationArray = new SpellSystem.SpellProfil[m_rotationSize];
             ui_inventory = GameState.m_uiManager.GetComponent<UIDispatcher>().uiInventory;
+            m_characterShoot= GetComponent<CharacterShoot>();
 
         }
 
@@ -68,6 +75,10 @@ namespace Character
             m_bookOfSpell.Add(spell);
 
         }
+        public void AddTempSpell(SpellProfil spell)
+        {
+            tempSpell = spell;
+        }
 
         public int GetSpellIndex(SpellSystem.SpellProfil spell) { return m_bookOfSpell.IndexOf(spell); }
 
@@ -88,6 +99,10 @@ namespace Character
         }
         public int GetSpellCount() { return m_bookOfSpell.Count; }
 
+        public void ReplaceSpell(SpellSystem.SpellProfil prevSpell, SpellSystem.SpellProfil spellToAdd)
+        {
+            m_bookOfSpell[GetSpellIndex(prevSpell)] = spellToAdd;
+        }
         public void ActualizeUI()
         {
             ui_inventory.ActualizeInventory();
@@ -96,7 +111,23 @@ namespace Character
         #endregion
 
 
+        #region Spell UI Exchange Functions
 
+        public void OpenUIExchange()
+        {
+            m_spellExchangeUI.OpenSpellExchangeUI();
+        }
+
+        public void ExchanceSpell(int index)
+        {
+            m_characterShoot.ExchangeRotationSpellWithNew(index);
+        }
+
+        public void CloseUiExchange()
+        {
+           
+        }
+        #endregion
     }
 
 }
