@@ -1,3 +1,4 @@
+using GuerhoubaGames;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,13 +11,14 @@ public enum EventObjectState
     Death,
 }
 
-public class ObjectHealthSystem : MonoBehaviour
+public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 {
 
+    public int maxLife;
+    public HealthSystem healthSystem;
+    public HealthManager healthManager;
 
-    [Header("Health Parameters")]
-    [SerializeField] private float m_maxHealth;
-    [SerializeField] private float m_currentHealth;
+
     [SerializeField] private float m_invicibleDuration;
     [SerializeField] private bool m_isInvicible;
 
@@ -36,12 +38,31 @@ public class ObjectHealthSystem : MonoBehaviour
     private void Start()
     {
         GameState.AddObject(state);
+        healthManager = GameState.m_enemyManager.GetComponent<HealthManager>();
+        healthSystem = new HealthSystem();
+        healthSystem.Setup(maxLife);
     }
 
     public void Update()
     {
         InvicibleCountdown();
-        CheckLifeState();
+    }
+
+    public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal)
+    {
+
+        healthSystem.ChangeCurrentHealth(-damageStat.damage);
+        GameStats.instance.AddDamageSource(nameDamage, damageStat);
+
+        // VfX feedback
+        Vector3 positionOnScreen = transform.position + new Vector3(0, 5, 0);
+        healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
+
+        if (healthSystem.health > 0) return;
+
+        eventState = EventObjectState.Death;
+        GlobalSoundManager.PlayOneShot(33, transform.position);
+
     }
 
     public void TakeDamage(int damage)
@@ -49,11 +70,9 @@ public class ObjectHealthSystem : MonoBehaviour
         return;
         if (m_isInvicible || !state.isPlaying || eventState != EventObjectState.Active) return;
 
-        m_currentHealth -= damage;
+  
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;
-        m_eventLifeUIFeedback.fillAmount = m_currentHealth / m_maxHealth;
-        m_eventProgressUIFeedback.text = ((m_currentHealth / m_maxHealth) * 100) + "%"; 
         GlobalSoundManager.PlayOneShot(32, transform.position);
     }
 
@@ -87,35 +106,22 @@ public class ObjectHealthSystem : MonoBehaviour
 
     public void SetMaxHealth(int newMaxHealth)
     {
-        m_maxHealth = newMaxHealth;
+        healthSystem.SetMaxHealth(newMaxHealth);
     }
 
     public void ResetCurrentHealth()
     {
-        m_currentHealth = m_maxHealth;
+        healthSystem.ChangeCurrentHealth(healthSystem.maxHealth);
     }
 
-    public void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.tag != "Enemy") return;
-        TakeDamage(1);
-    }
 
-    public void CheckLifeState()
-    {
-        if (m_currentHealth < 0.0f && eventState == EventObjectState.Active)
-        {
-            GlobalSoundManager.PlayOneShot(33, transform.position);
-            eventState = EventObjectState.Death;
-        }
-    }
 
     public bool IsEventActive()
     {
         return eventState == EventObjectState.Active;
     }
 
-    public void checkEnemyArround()
+    public void CheckEnemyArround()
     {
         Collider[] colProch = Physics.OverlapSphere(transform.position, rangeDegatAugmente, enemyLayer);
         m_invicibleDuration = evolutionDegatAugment.Evaluate(colProch.Length / 250);

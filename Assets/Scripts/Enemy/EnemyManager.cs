@@ -467,7 +467,7 @@ namespace Enemies
                 return;
             }
 #endif
-            if (countEnemySpawnMaximum < RoomManager.enemyMaxSpawnInRoon)
+            if (remainEnemy < RoomManager.enemyMaxSpawnInRoon)
             {
                 for (int i = 0; i < m_groupEnemySize; i++)
                 {

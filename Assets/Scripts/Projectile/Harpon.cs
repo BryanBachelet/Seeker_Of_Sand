@@ -220,6 +220,31 @@ public class Harpon : Projectile
                 }
             }
 
+            if(other.tag == "Object")
+            {
+
+                ObjectHealthSystem enemyTouch = other.GetComponent<ObjectHealthSystem>();
+                m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
+                DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType, enemyTouch.gameObject, spellProfil);
+
+                if (enemyTouch.eventState != EventObjectState.Active) return;
+
+                for (int i = 0; i < damageStatDatas.Length; i++)
+                {
+                    enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                }
+
+                PiercingUpdate();
+                if (piercingCount >= m_piercingMax)
+                {
+
+                    //Destroy(this.gameObject);
+                    m_lifeTimer = m_lifeTime;
+                    m_collider.enabled = false;
+                    //willDestroy = true;
+                }
+            }
+
                 if (other.tag == "Cristal")
             {
                 other.GetComponent<CristalHealth>().ReceiveHit((int)m_damage);

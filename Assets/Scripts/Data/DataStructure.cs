@@ -75,6 +75,7 @@ public class HealthSystem
     private float m_maxHealth;
     public float health { get { return m_currentHealth; } private set { } }
     public float percentHealth { get { return m_healthPercent; } private set { } }
+    public float maxHealth { get { return m_maxHealth; } private set { } }
 
     public delegate void HealthUpdateEvent(float currentHealth);
     public event HealthUpdateEvent healthUpdate;
