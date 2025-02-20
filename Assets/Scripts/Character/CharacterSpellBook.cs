@@ -22,7 +22,7 @@ namespace Character
         public int m_currentSpellInRotationCount;
         //  Need to create copy from the spell place
 
-        public void Start()
+        public void Awake()
         {
             m_spellsRotationArray = new SpellSystem.SpellProfil[m_rotationSize];
             ui_inventory = GameState.m_uiManager.GetComponent<UIDispatcher>().uiInventory;

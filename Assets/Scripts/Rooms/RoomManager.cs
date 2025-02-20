@@ -159,6 +159,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.ResetSpawnStat();
         progress = 0;
         currentCountOfEnemy = 0;
+        m_enemyManager.countEnemySpawnMaximum = 0;
 
     }
     public void ActivateRoomAfterDistanceTP()
@@ -227,7 +228,7 @@ public class RoomManager : MonoBehaviour
 
     public void SetupRoomType()
     {
-        m_enemyManager.countEnemySpawnMaximum = 0;
+
         switch (currentRoomType)
         {
             case RoomType.Free:

@@ -82,10 +82,12 @@ public class AnvilBehavior : InteractionInterface
                 value = costT3;
                 break;
         }
-        bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, currentArtefactReinforce.gameElement, currentArtefactReinforce.nameArtefact);
+        GameElement mabiteElement = GeneralTools.GetFirstBaseElement(currentArtefactReinforce.gameElement);
+        int indexElement = GeneralTools.GetElementalArrayIndex(mabiteElement);
+        bool hasEnoughCristal = m_cristalInventory.HasEnoughCristal(value, mabiteElement, currentArtefactReinforce.nameArtefact);
         if (!hasEnoughCristal) return BuyResult.NOT_ENOUGH_MONEY;
-        int mabiteElement = GeneralTools.GetElementalArrayIndex(currentArtefactReinforce.gameElement);
-        m_cristalInventory.RemoveCristalCount(mabiteElement, -value);
+
+        m_cristalInventory.RemoveCristalCount(indexElement, -value);
         // TODO : Update Anvil Upgrade price;
 
 

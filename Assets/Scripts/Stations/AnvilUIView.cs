@@ -172,12 +172,13 @@ namespace GuerhoubaGames.UI
             m_hasRecpetacle = true;
             m_resultImage.UpdateInteface(m_upgradePreviousClone);
             animator.SetBool("isAble", true);
-            int indexElementToUse = GeneralTools.GetElementalArrayIndex(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].gameElement);
+            GameElement indexElementToUse = GeneralTools.GetFirstBaseElement(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].gameElement);
+            int indexGameElement = GeneralTools.GetElementalArrayIndex(indexElementToUse);
             m_priceText.text = "x" + anvilBehavior.BuyPrice();
-            m_elementImageCristal.sprite = GameResources.instance.cristalIconArray[indexElementToUse];
+            m_elementImageCristal.sprite = GameResources.instance.cristalIconArray[indexGameElement];
             for (int i = 0; i < vfxReinforcement.Length; i++)
             {
-                vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexElementToUse]);
+                vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexGameElement]);
             }
 
         }
