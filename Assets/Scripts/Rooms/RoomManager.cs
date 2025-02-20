@@ -313,7 +313,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
       
-        if(dropGenerator != null) dropGenerator.DistributeCristalAtTheEnd();
+        //if(dropGenerator != null) dropGenerator.DistributeCristalAtTheEnd();
         m_EndRoomChallengeTime = DateTime.Now;
         m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
@@ -376,7 +376,8 @@ public class RoomManager : MonoBehaviour
     public void CheckEventSucceded() //Temp Function
     {
         eventNumber--;
-        if(eventNumber <= 0)
+        dropGenerator.GenerateCristal(this.transform);
+        if (eventNumber <= 0)
         {
             ValidateRoom() ;
         }

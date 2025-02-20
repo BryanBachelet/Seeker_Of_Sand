@@ -47,8 +47,8 @@ namespace GuerhoubaGames.UI
         [GradientUsage(true)]
         public Gradient[] colorByElement;
 
-        [SerializeField] private TMP_Text m_priceText;
-        [SerializeField] private Image m_elementImageCristal;
+        [SerializeField] private TMP_Text[] m_priceText;
+        //[SerializeField] private Image[] m_elementImageCristal;
         #region Unity Function
 
 
@@ -159,7 +159,10 @@ namespace GuerhoubaGames.UI
                 m_resultUpgradeImage.ResetFragmentUIView();
                 return;
             }
-
+            for (int i = 0; i < m_priceText.Length; i++)
+            {
+                m_priceText[i].text = "x" + 0;
+            }
 
 
             anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable];
@@ -172,17 +175,26 @@ namespace GuerhoubaGames.UI
             m_hasRecpetacle = true;
             m_resultImage.UpdateInteface(m_upgradePreviousClone);
             animator.SetBool("isAble", true);
-            GameElement indexElementToUse = GeneralTools.GetFirstBaseElement(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].gameElement);
-            int indexGameElement = GeneralTools.GetElementalArrayIndex(indexElementToUse);
-            m_priceText.text = "x" + anvilBehavior.BuyPrice();
-            m_elementImageCristal.sprite = GameResources.instance.cristalIconArray[indexGameElement];
-            for (int i = 0; i < vfxReinforcement.Length; i++)
+            GameElement[] indexElementToUse = GeneralTools.GetBaseElementsArray(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].gameElement);
+            for(int i = 0; i < indexElementToUse.Length;i++)
             {
-                vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexGameElement]);
+                int indexGameElement = GeneralTools.GetElementalArrayIndex(indexElementToUse[i]);
+                m_priceText[indexGameElement].text = "x" + (anvilBehavior.BuyPrice() / indexElementToUse.Length);
             }
 
-        }
+            //m_elementImageCristal.sprite = GameResources.instance.cristalIconArray[indexGameElement];
+            //for (int i = 0; i < vfxReinforcement.Length; i++)
+            //{
+            //    vfxReinforcement[i].SetGradient("GradientFlare", colorByElement[indexGameElement]);
+            //}
 
+        }
+        public void OnMergeFragment(Transform transform)
+        {
+            dispatcher.CreateObject(transform.gameObject);
+            m_receptableImage.ResetFragmentUIView();
+            m_resultImage.ResetFragmentUIView();
+        }
         public void OnUpgradeFragment(Transform transform)
         {
             if (!m_hasRecpetacle) return;
@@ -198,7 +210,10 @@ namespace GuerhoubaGames.UI
             m_receptableImage.ResetFragmentUIView();
             m_resultImage.ResetFragmentUIView();
 
-
+            for (int i = 0; i < m_priceText.Length; i++)
+            {
+                m_priceText[i].text = "x" + 0;
+            }
 
         }
         #endregion
