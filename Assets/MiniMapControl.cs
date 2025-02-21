@@ -17,6 +17,7 @@ public class MiniMapControl : MonoBehaviour
     public Vector2 playerPositionMiniMap;
     public GameObject terrainPosition;
     public int diameterDiscovery;
+    public int radiusBrush;
 
     private Material material;
     public RawImage imageMiniMap;
@@ -26,6 +27,7 @@ public class MiniMapControl : MonoBehaviour
         cameraminimap = this.GetComponent<Camera>();
         ResetDiscovery(terrainPosition);
 
+     
     }
 
     // Update is called once per frame
@@ -76,24 +78,30 @@ public class MiniMapControl : MonoBehaviour
 
     public void UpdateDiscovery()
     {
-        int[] brushDiscovery = new int[diameterDiscovery * diameterDiscovery];
         int radius = Mathf.FloorToInt(diameterDiscovery / 2);
 
         for (int i = 0; i < diameterDiscovery; i++)
         {
             int posX = (int)playerPositionMiniMap.x + (-radius) + i;
-            for(int j = 0; j < diameterDiscovery; j++)
+            posX = Mathf.Clamp(posX, 0, 256);
+            for (int j = 0; j < diameterDiscovery; j++)
             {
                 int posY = (int)playerPositionMiniMap.y + (-radius) + j;
-                posX = Mathf.Clamp(posX, 0, 256);
+              
                 posY = Mathf.Clamp(posY, 0, 256);
-                discoveryMap.SetPixel(posX, posY, Color.white);
+                Vector2 currentPos = new Vector2(posX, posY);
+                float distance = Vector2.Distance(playerPositionMiniMap, currentPos);
+                if (distance < radiusBrush)
+                {
+                    discoveryMap.SetPixel(posX, posY, Color.white);
+                }
+              
             }
-
+           
         }
-
-        discoveryMap.Apply();
+         discoveryMap.Apply();
         material.SetTexture("_DiscoveryMap", discoveryMap);
+
     }
 
     public void ResetDiscovery(GameObject NewterrainPosition)
