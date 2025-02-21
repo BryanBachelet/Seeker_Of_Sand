@@ -1,3 +1,4 @@
+using Character;
 using GuerhoubaGames;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,11 +36,14 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public AnimationCurve evolutionDegatAugment;
     public int indexUIEvent;
 
+    public AnimationCurve maxHealthEvolution;
+
     private void Start()
     {
         GameState.AddObject(state);
         healthManager = GameState.m_enemyManager.GetComponent<HealthManager>();
         healthSystem = new HealthSystem();
+        maxLife = (int)maxHealthEvolution.Evaluate(healthManager.characterShoot.GetComponent<CharacterUpgrade>().avatarUpgradeList.Count);
         healthSystem.Setup(maxLife);
     }
 

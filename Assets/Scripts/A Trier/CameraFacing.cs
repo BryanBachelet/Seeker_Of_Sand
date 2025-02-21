@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraFacing : MonoBehaviour
 {
-    public Camera mainCamera;
+    static public Camera mainCamera;
     //public GameObject player;
     //public Vector3 lookVector;
     // Start is called before the first frame update

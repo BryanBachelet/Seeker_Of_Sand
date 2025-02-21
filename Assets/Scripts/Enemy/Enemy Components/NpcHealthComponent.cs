@@ -79,9 +79,19 @@ namespace Enemies
         public GameObject dissonancePrefabObject;
         public HitEffectHighLight m_HitEffectHighLight;
         public Action OnDeathEvent;
+
+        public GameObject healthHolder;
+        public GameObject healthBarFill;
+        public GameObject healthBackground;
+        public SpriteRenderer healthBar;
+        public Vector3 posLowHealth;
+        public Vector3 posFullHealth;
+
+        public bool isHealthDisplay = false;
         void Awake()
         {
             InitComponent();
+            healthHolder.SetActive(isHealthDisplay);
         }
         private void InitComponent()
         {
@@ -124,6 +134,7 @@ namespace Enemies
                 float progressDeath = deathTimer / timeBeforeDestruction;
                 float cutoutValue = progressDeath;
                 float emissiveValue = progressDeath;
+
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
                     m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
@@ -180,6 +191,14 @@ namespace Enemies
 
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
+            if(isHealthDisplay)
+            {
+                float progressDeath = m_healthSystem.health / m_healthSystem.maxHealth;
+                healthBarFill.transform.localPosition = Vector3.Lerp(posFullHealth, posLowHealth, progressDeath);
+                healthBarFill.transform.localScale = new Vector3(Mathf.Lerp(0.35f, 0, progressDeath), 0.25f, 0.22f);
+                healthBackground.transform.localPosition = Vector3.Lerp(posLowHealth, new Vector3(-posFullHealth.x, posFullHealth.y, posFullHealth.z), progressDeath);
+                healthBackground.transform.localScale = new Vector3(Mathf.Lerp(0, 0.35f, progressDeath), 0.25f, 0.22f);
+            }
 
             if (m_healthSystem.health > 0) return;
 
@@ -275,9 +294,9 @@ namespace Enemies
             npcMove.lastTimeSeen = Time.time;
             npcMove.lastTimeCheck = npcMove.lastTimeSeen;
             npcMove.lastPosCheck = this.transform.position;
-            m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
+            //m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
-            m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
+            //m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
             death = false;
             if (hasDeathAnimation)
             {
