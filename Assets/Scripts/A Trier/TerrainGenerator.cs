@@ -324,8 +324,10 @@ public class TerrainGenerator : MonoBehaviour
 
             currentRoomManager.teleporterArray[i].TeleporterNumber = i;
             RoomManager roomManager = terrainInstantiated[i].GetComponentInChildren<RoomManager>();
+            int[] rewardsOfRoom = roomManager.GenerateRewardForRoom();
             TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
             tpFeedback.rewardToUse = (int)roomManager.rewardType;
+            tpFeedback.eventReward = rewardsOfRoom;
             tpFeedback.ChangeRewardID(tpFeedback.rewardToUse, roomManager.m_materialPreviewTRT);
             tpFeedback.ChangeColorVFX(GeneralTools.GetElementalArrayIndex(roomManager.element, true));
         }

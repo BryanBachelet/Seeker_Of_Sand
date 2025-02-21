@@ -316,14 +316,16 @@ public class AltarBehaviorComponent : InteractionInterface
 
         GlobalSoundManager.PlayOneShot(14, transform.position);
 
-        SpawnAltarReward();
+        int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
+        SpawnAltarReward(rewardIndex);
 
         StartCoroutine(ResetEventWithDelay(1.5f));
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
         //transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
-        transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
+
+
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
     }
@@ -354,10 +356,9 @@ public class AltarBehaviorComponent : InteractionInterface
 
     #region Reward Functions
 
-    public void SpawnAltarReward()
+    public void SpawnAltarReward(int indexReward)
     {
         RewardDistribution rewardDistributionComponent = m_playerTransform.GetComponent<RewardDistribution>();
-        int indexReward = Random.Range(0, 3);
         rewardDistributionComponent.GiveReward((RewardType)(indexReward), piedestalTranformPosition, HealthReward.QUARTER, eventElementType);
 
         return;
