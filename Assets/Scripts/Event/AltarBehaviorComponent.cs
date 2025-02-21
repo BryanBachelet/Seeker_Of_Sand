@@ -53,6 +53,7 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public SkinnedMeshRenderer[] altarAllMesh;
     public MeshRenderer socleMesh;
+    private Material matEvent;
 
     [HideInInspector] public bool isAltarDestroy = false;
 
@@ -162,6 +163,7 @@ public class AltarBehaviorComponent : InteractionInterface
     private void InitComponent()
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
+        m_objectHealthSystem.animatorAssociated = m_myAnimator;
         m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
         m_selectionFeedback = this.GetComponent<Selection_Feedback>();
     }
@@ -186,8 +188,14 @@ public class AltarBehaviorComponent : InteractionInterface
         socleMesh.material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
+            if(i == 1)
+            {
+                matEvent = altarAllMesh[i].material;
+            }
+
             altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
         }
+        m_objectHealthSystem._matAssociated = matEvent;
     }
 
 

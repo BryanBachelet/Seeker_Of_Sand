@@ -38,6 +38,7 @@ namespace GuerhoubaGames.VFX
             data = vfxMetaComponent.vfxData;
 
             visualEffect.SetVector3("Size", data.scale);
+            visualEffect.SetVector3("OffSetDirection", new Vector3(0,0,data.scale.y / 2));
             visualEffect.SetFloat("TempsRealese", data.duration);
             visualEffect.SendEvent("ActiveArea");
 
