@@ -50,6 +50,7 @@ namespace GuerhoubaGames.UI
         {
 
             CloseSpellExchangeUI();
+            spellBook.TradeSpellWithCristal();
 
         }
 

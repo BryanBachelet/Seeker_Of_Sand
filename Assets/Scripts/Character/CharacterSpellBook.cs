@@ -5,6 +5,7 @@ using UnityEditor;
 using GuerhoubaGames.GameEnum;
 using SpellSystem;
 using GuerhoubaGames.UI;
+using SeekerOfSand.Tools;
 
 namespace Character
 {
@@ -20,6 +21,8 @@ namespace Character
         private CharacterShoot m_characterShoot;
         public UI_SpellExchange m_spellExchangeUI;
         public int m_currentSpellInRotationCount;
+
+        private CristalInventory m_cristalInventory;
         //  Need to create copy from the spell place
 
         public void Awake()
@@ -27,6 +30,7 @@ namespace Character
             m_spellsRotationArray = new SpellSystem.SpellProfil[m_rotationSize];
             ui_inventory = GameState.m_uiManager.GetComponent<UIDispatcher>().uiInventory;
             m_characterShoot= GetComponent<CharacterShoot>();
+            m_cristalInventory = GetComponent<CristalInventory>();
 
         }
 
@@ -126,6 +130,12 @@ namespace Character
         public void CloseUiExchange()
         {
            
+        }
+
+        public void TradeSpellWithCristal()
+        {
+            int Indexelement = GeneralTools.GetElementalArrayIndex(tempSpell.tagData.element);
+            m_cristalInventory.AddCristalCount(Indexelement, 30);
         }
         #endregion
     }
