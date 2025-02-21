@@ -89,7 +89,7 @@ public class AltarBehaviorComponent : InteractionInterface
     [SerializeField] private MeshRenderer meshPointLight;
 
     public Transform piedestalTranformPosition;
-
+    public Collider sphereCollider;
     #endregion Variable
 
     #region Unity Functions
@@ -109,8 +109,8 @@ public class AltarBehaviorComponent : InteractionInterface
 
         // Setup the altar health
         float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
-        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
-        m_objectHealthSystem.ResetCurrentHealth();
+        //m_objectHealthSystem.SetMaxHealth((int)maxHealth);
+        //m_objectHealthSystem.ResetCurrentHealth();
 
         // Setup the drop point position
         RaycastHit hit = new RaycastHit();
@@ -135,25 +135,25 @@ public class AltarBehaviorComponent : InteractionInterface
 
         if (!m_isEventOccuring) return;
 
-        if (m_enemiesCountConditionToWin <= m_CurrentKillCount && m_objectHealthSystem.IsEventActive())
+        if (!m_objectHealthSystem.IsEventActive())
         {
             SucceedEvent();
             return;
         }
-        
 
-        progression = (float)m_CurrentKillCount / (float)m_enemiesCountConditionToWin;
+
+        progression = 1.0f - m_objectHealthSystem.healthSystem.percentHealth;
         //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
-        roomInfoUI.UpdateTextProgression(m_enemiesCountConditionToWin - m_CurrentKillCount, m_enemiesCountConditionToWin);
+        roomInfoUI.UpdateTextProgression((int)m_objectHealthSystem.healthSystem.maxHealth - (int)m_objectHealthSystem.healthSystem.health, (int)m_objectHealthSystem.healthSystem.maxHealth);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
         //m_eventProgressionSlider.fillAmount = progression; // Update event UI
 
-        if (DestroyCondition())
-        {
-            DestroyAltar();
-        }
+        //if (DestroyCondition())
+        //{
+        //    DestroyAltar();
+        //}
     }
 
     #endregion
@@ -257,6 +257,9 @@ public class AltarBehaviorComponent : InteractionInterface
         //m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
         m_enemyManager.ActiveEvent(transform);
 
+
+        sphereCollider.enabled = true;
+
         m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
         progression = 0;
 
@@ -293,6 +296,9 @@ public class AltarBehaviorComponent : InteractionInterface
 
     private void SucceedEvent()
     {
+        sphereCollider.enabled = false;
+        roomInfoUI.DeactivateMajorGoalInterface();
+
         m_isEventOccuring = false;
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");
@@ -339,8 +345,8 @@ public class AltarBehaviorComponent : InteractionInterface
         m_CurrentKillCount = 0;
         float maxHealth = 100;
 
-        m_objectHealthSystem.SetMaxHealth((int)maxHealth);
-        m_objectHealthSystem.ResetCurrentHealth();
+        //m_objectHealthSystem.SetMaxHealth((int)maxHealth);
+        //m_objectHealthSystem.ResetCurrentHealth();
 
     }
 
@@ -350,7 +356,7 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public void SpawnAltarReward()
     {
-        RewardDistribution rewardDistributionComponent =  m_playerTransform.GetComponent<RewardDistribution>();
+        RewardDistribution rewardDistributionComponent = m_playerTransform.GetComponent<RewardDistribution>();
         int indexReward = Random.Range(0, 3);
         rewardDistributionComponent.GiveReward((RewardType)(indexReward), piedestalTranformPosition, HealthReward.QUARTER, eventElementType);
 
@@ -456,7 +462,7 @@ public class AltarBehaviorComponent : InteractionInterface
         socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[GeneralTools.GetElementalArrayIndex(eventElementType,true)]);
+            altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[GeneralTools.GetElementalArrayIndex(eventElementType, true)]);
             altarAllMesh[i].material.SetFloat("_SelfLitIntensity", intensity);
         }
         eventLight.color = colorEvent[GeneralTools.GetElementalArrayIndex(eventElementType, true)];
