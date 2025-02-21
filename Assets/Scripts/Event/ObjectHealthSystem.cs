@@ -38,6 +38,10 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     public AnimationCurve maxHealthEvolution;
 
+    public Animator animatorAssociated;
+
+    public Material _matAssociated;
+
     private void Start()
     {
         GameState.AddObject(state);
@@ -57,7 +61,8 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
         healthSystem.ChangeCurrentHealth(-damageStat.damage);
         GameStats.instance.AddDamageSource(nameDamage, damageStat);
-
+        animatorAssociated.SetTrigger("TakeHit");
+        m_invicibleTimer = 0;
         // VfX feedback
         Vector3 positionOnScreen = transform.position + new Vector3(0, 5, 0);
         healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
@@ -96,10 +101,16 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         if (m_invicibleTimer > m_invicibleDuration)
         {
             m_isInvicible = false;
+            animatorAssociated.ResetTrigger("TakeHit");
         }
         else
         {
             m_invicibleTimer += Time.deltaTime;
+            if(_matAssociated)
+            {
+                _matAssociated.SetColor("_MainColor", Color.Lerp(new Color(0.55f, 0.17f, 0.17f), new Color(0.077f, 0.077f, 0.077f), m_invicibleTimer / m_invicibleDuration));
+            }
+           
         }
     }
 
