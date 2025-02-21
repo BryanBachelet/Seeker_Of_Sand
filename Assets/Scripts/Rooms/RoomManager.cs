@@ -86,6 +86,8 @@ public class RoomManager : MonoBehaviour
 
     public int eventNumber = 0;
     private TerrainActivationManager m_terrainActivation;
+
+    public int[] rewardAssociated;
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -244,6 +246,7 @@ public class RoomManager : MonoBehaviour
 
                 AltarBehaviorComponent[] obj = transform.parent.GetComponentsInChildren<AltarBehaviorComponent>();
                 eventNumber = obj.Length;
+
                 for (int i = 0; i < obj.Length; i++)
                 {
                     if (obj[i] != null)
@@ -255,6 +258,7 @@ public class RoomManager : MonoBehaviour
                         enemyMaxSpawnInRoon = enemyToKillCount = obj[i].m_enemiesCountConditionToWin;
                         obj[i].roomInfoUI = roomInfoUI;
                         roomInfoUI.UpdateTextProgression(obj[i].m_enemiesCountConditionToWin, obj[i].m_enemiesCountConditionToWin);
+
 
                     }
                 }
@@ -281,7 +285,16 @@ public class RoomManager : MonoBehaviour
     }
 
 
+    public int[] GenerateRewardForRoom()
+    {
+        rewardAssociated = new int[3];
+        for(int i = 0; i < rewardAssociated.Length; i++)
+        {
+            rewardAssociated[i] = UnityEngine.Random.Range(0, 3);
+        }
+        return rewardAssociated;
 
+    }
 
     public void Update()
     {
@@ -373,8 +386,9 @@ public class RoomManager : MonoBehaviour
 
     }
 
-    public void CheckEventSucceded() //Temp Function
+    public int CheckEventSucceded() //Temp Function
     {
+        int eventIndex = eventNumber;
         eventNumber--;
         dropGenerator.GenerateCristal(this.transform);
         if (eventNumber <= 0)
@@ -385,6 +399,7 @@ public class RoomManager : MonoBehaviour
         {
             ResetObjectifData();
         }
+        return rewardAssociated[eventNumber];
     }
     public IEnumerator RoomDeactivation(int frameCount)
 

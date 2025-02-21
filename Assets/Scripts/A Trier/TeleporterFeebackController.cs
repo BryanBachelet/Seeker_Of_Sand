@@ -27,6 +27,8 @@ public class TeleporterFeebackController : MonoBehaviour
 
     [Range(0, 6)]
     [HideInInspector] public int rewardToUse = 0;
+    [Range(0, 6)]
+    [HideInInspector] public int[] eventReward;
     public MeshRenderer socleMesh;
     [HideInInspector] public Material socleSpawn_mat;
     [HideInInspector] public Material dissonance_mat;
@@ -45,6 +47,10 @@ public class TeleporterFeebackController : MonoBehaviour
     private bool portalState = false;
 
     private int colorToUse;
+
+    public GameObject previewRewardEvent;
+    public Sprite[] eventRewardImage;
+    public SpriteRenderer[] spriteReward;
     // Start is called before the first frame update
     void Awake()
     {
@@ -112,6 +118,10 @@ public class TeleporterFeebackController : MonoBehaviour
         planeSymbole_mat.SetTexture("_Symbole", textureReward[ID]);
         idReward = ID;
         previewMeshPlane.material = mat;
+        for (int i = 0; i < eventReward.Length; i++)
+        {
+            spriteReward[i].sprite = eventRewardImage[eventReward[i]];
+        }
 
     }
 
@@ -121,7 +131,7 @@ public class TeleporterFeebackController : MonoBehaviour
         socleSpawn_mat.SetColor("_SelfLitColor", color_Elem_Portal[ID]);
         planeSymbole_mat.SetColor("_Color", color_Elem_Portal[ID]);
         dissonance_mat.SetFloat("_Visibility", 0);
-
+        if(!previewRewardEvent.activeSelf) { previewRewardEvent.SetActive(true); }
         for (int i = 0; i < rLow_Holder.transform.childCount; i++)
         {
             rLow_Holder.transform.GetChild(i).GetComponent<MeshRenderer>().materials[1].SetFloat("_Visibility", 0);
