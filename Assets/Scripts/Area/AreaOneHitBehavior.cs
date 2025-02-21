@@ -123,6 +123,9 @@ namespace SpellSystem
 
             for (int i = 0; i < collider.Length; i++)
             {
+                if (collider[i] == null) 
+                    return;
+
                 IDamageReceiver npcHealthComponent = collider[i].GetComponent<IDamageReceiver>();
                 Vector3 direction = collider[i].transform.position - transform.position;
                 m_damageCalculComponent.damageStats.AddDamage(m_damage, m_element, DamageType.TEMPORAIRE);
@@ -130,7 +133,10 @@ namespace SpellSystem
 
                 for (int j = 0; j < damageStatDatas.Length; j++)
                 {
-                    npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    if (collider[i] == null)
+                        return;
+
+                    npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[j].element, (int)CharacterProfile.instance.stats.baseStat.damage);
                 }
 
             }

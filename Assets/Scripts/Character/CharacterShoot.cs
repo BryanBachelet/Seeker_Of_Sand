@@ -1579,7 +1579,7 @@ namespace Character
 
                 m_dropInventory.AddNewItem(index);
 
-                CreatePullObject(clone);
+                
                 if (spellIndexGeneral.Count <= spellEquip.Length)
                 {
                     icon_Sprite[spellIndexGeneral.Count - 1].transform.parent.gameObject.SetActive(true);
@@ -1675,7 +1675,7 @@ namespace Character
         {
 
             SpellManager.ReAddSpell((m_characterSpellBook.m_spellsRotationArray[indexSpell]));
-
+            CreatePullObject(m_characterSpellBook.tempSpell);
             spellProfils[indexSpell] = m_characterSpellBook.tempSpell;
             m_characterSpellBook.ReplaceSpell(m_characterSpellBook.m_spellsRotationArray[indexSpell], m_characterSpellBook.tempSpell);
             m_characterSpellBook.m_spellsRotationArray[indexSpell] = m_characterSpellBook.tempSpell;

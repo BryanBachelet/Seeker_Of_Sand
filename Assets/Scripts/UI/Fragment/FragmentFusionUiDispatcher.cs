@@ -88,7 +88,9 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
 
     public void RemoveFill(int indexToRemove)
     {
-        ColorList.RemoveAt(indexColorReceptacle.IndexOf(indexToRemove));
+        int indexColorList = indexColorReceptacle.IndexOf(indexToRemove);
+        ColorList.RemoveAt(indexColorList);
+        indexColorReceptacle.RemoveAt(indexColorList);
         img_Fill[indexToRemove].material.SetColor("_Color1", Color.black);
         img_Fill[indexToRemove].material.SetColor("_Color2", Color.black);
         img_Fill[indexToRemove].material.SetColor("_Color3", Color.black);
@@ -96,6 +98,7 @@ public class FragmentFusionUiDispatcher : MonoBehaviour
         img_Fill[indexToRemove].material.SetFloat("_ColorNumber", 0);
         animatorFill[indexToRemove].SetBool("Activation", false);
         isUsed[indexToRemove] = false;
+       
         ChangeMultipleFill();
     }
     public void ResetFill()

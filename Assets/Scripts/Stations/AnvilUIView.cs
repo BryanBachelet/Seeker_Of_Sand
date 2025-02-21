@@ -165,8 +165,8 @@ namespace GuerhoubaGames.UI
             }
 
 
-            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable];
             m_indexArtecfactUpgradable = indexObject;
+            anvilBehavior.currentArtefactReinforce = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable];
             m_receptableImage.UpdateInteface(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable]);
             ArtefactsInfos clone = m_characterArtefact.artefactsList[m_indexArtecfactUpgradable].Clone();
             Destroy(m_upgradePreviousClone);
