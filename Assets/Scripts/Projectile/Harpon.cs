@@ -149,7 +149,7 @@ public class Harpon : Projectile
 
     private void EnemyCollision(Collider other)
     {
-        if (other.tag == "Enemy" || other.tag == "Dummy" || other.tag == "Cristal")
+        if (other.tag == "Enemy" || other.tag == "Dummy" || other.tag == "Cristal" || other.tag == "Object")
         {
             GlobalSoundManager.PlayOneShot(9, transform.position);
             if (other.tag == "Enemy" )

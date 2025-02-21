@@ -1579,7 +1579,7 @@ namespace Character
 
                 m_dropInventory.AddNewItem(index);
 
-                
+                CreatePullObject(clone);
                 if (spellIndexGeneral.Count <= spellEquip.Length)
                 {
                     icon_Sprite[spellIndexGeneral.Count - 1].transform.parent.gameObject.SetActive(true);
