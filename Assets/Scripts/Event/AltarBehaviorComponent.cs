@@ -93,6 +93,7 @@ public class AltarBehaviorComponent : InteractionInterface
     public Collider sphereCollider;
     #endregion Variable
 
+    public int indexEvent = 0;
     #region Unity Functions
     void Start()
     {
@@ -277,10 +278,11 @@ public class AltarBehaviorComponent : InteractionInterface
         {
             m_myAnimator.SetTrigger("Activation");
         }
+        int alatarDone = transform.parent.GetComponentInChildren<RoomManager>().CheckEventNumber();
         int nightCount = m_enemyManager.m_dayController.m_nightCount;
-        if (nightCount >= 0)
+        if (alatarDone >= 0)
         {
-            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[nightCount], transform.position, transform.rotation);
+            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[alatarDone], transform.position, transform.rotation);
             TrainingArea area = lastItemInstantiate.GetComponent<TrainingArea>();
             area.altarAssociated = this.gameObject;
             area.element = eventElementType;

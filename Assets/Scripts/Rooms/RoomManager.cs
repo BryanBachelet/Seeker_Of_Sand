@@ -251,6 +251,7 @@ public class RoomManager : MonoBehaviour
                 {
                     if (obj[i] != null)
                     {
+                        obj[i].indexEvent = i;
                         obj[i].ResetAltar();
                         //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
                         obj[i].eventElementType = element;
@@ -400,6 +401,10 @@ public class RoomManager : MonoBehaviour
             ResetObjectifData();
         }
         return rewardAssociated[eventNumber];
+    }
+    public int CheckEventNumber()
+    {
+        return 3 - eventNumber;
     }
     public IEnumerator RoomDeactivation(int frameCount)
 

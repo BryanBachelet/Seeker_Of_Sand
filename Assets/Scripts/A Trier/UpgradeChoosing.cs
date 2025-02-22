@@ -21,10 +21,12 @@ public class UpgradeChoosing : MonoBehaviour
     public Image cadreCurrentTier;
     public Image cadreNextTier;
     public Image[] spellChoseUpgrade = new Image[3];
+    private Material[] materialIcon = new Material[4];
     private GuerhoubaGames.UI.TooltipTrigger tooltipCurrentTier;
     private GuerhoubaGames.UI.TooltipTrigger tooltipNextTier;
     public TMPro.TMP_Text upgradePointText;
     public TMPro.TMP_Text[] upgradeSelectable = new TMPro.TMP_Text[3];
+    public TMPro.TMP_Text[] upgradeSelectableDescription = new TMPro.TMP_Text[3];
 
     public Sprite[] spellTier = new Sprite[4];
 
@@ -48,6 +50,7 @@ public class UpgradeChoosing : MonoBehaviour
 
     public TMPro.TMP_Text[] upgradeTextStatBase = new TMPro.TMP_Text[6];
     public TMPro.TMP_Text[] upgradeTextStatModify = new TMPro.TMP_Text[6];
+    private bool[] stateStat = new bool[6];
     public UIOver[] uiUpgradeButton = new UIOver[3];
     public TMPro.TMP_Text rerollText;
 
@@ -90,6 +93,8 @@ public class UpgradeChoosing : MonoBehaviour
         for (int i = 0; i < m_upgradeLevelingData.spellCount; i++)
         {
             spellInBar[i].sprite = m_upgradeLevelingData.iconSpell[i];
+            spellInBar[i].material = m_upgradeLevelingData.materialIconSpell[i];
+            materialIcon[i] = m_upgradeLevelingData.materialIconSpell[i];
         }
 
         SetBaseSpellStat(0);
@@ -99,7 +104,8 @@ public class UpgradeChoosing : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).name;
-            spellChoseUpgrade[i].sprite = spellUpgradeFocus.sprite;
+            upgradeSelectableDescription[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).description;
+            spellChoseUpgrade[i].material = materialIcon[data.indexSpellFocus];
             //if (gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
         }
     }
@@ -201,11 +207,30 @@ public class UpgradeChoosing : MonoBehaviour
             SpellSystem.StatData statDataSpell = spellProfil.statDatas[i];
             if (statDataSpell.isVisible)
             {
-                if (stats.HasThisStat(statDataSpell.stat)) textStatUpgrade += "-->" + stats.PrewiewApplyValue(statDataSpell) + "\n";
-                else textStatUpgrade += "\n";
+                if (stats.HasThisStat(statDataSpell.stat))
+                {
+                    textStatUpgrade += "" + stats.PrewiewApplyValue(statDataSpell) + "\n"; 
+                    stateStat[i] = true;
+                }
+                else textStatUpgrade += "";
             }
         }
-        upgradeTextStatModify[0].text = textStatUpgrade;
+        for(int i = 0; i < upgradeTextStatModify.Length;i++)
+        {
+            for (int j = 0; j < stateStat.Length; j++)
+            {
+                if (i == index)
+                {
+                    upgradeTextStatModify[index].text = textStatUpgrade;
+                }
+                else if(i != index)
+                {
+                    upgradeTextStatModify[index].text = "";
+                }
+            }
+        }
+        
+
 
        
     }

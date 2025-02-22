@@ -16,6 +16,7 @@ public struct UpgradeLevelingData
     public int[] capsuleIndex;
     public SpellSystem.SpellProfil[] spellState;
     public Sprite[] iconSpell;
+    public Material[] materialIconSpell;
     public UpgradeObject[] upgradeChoose;
     public GameElement roomElement;
 }
@@ -54,6 +55,7 @@ public class UpgradeManager : MonoBehaviour
     public Image progressRang;
     public Image progressNextRang;
 
+    public Material[] materialProgress = new Material[2];
     public int rerollPoint = 3;
 
     public int countUpgradePointUse;
@@ -62,6 +64,7 @@ public class UpgradeManager : MonoBehaviour
     public float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
     public float percentForSpellMatchingElementRoom = 75;
 
+    public Image[] progressionCristal = new Image[4];
     public void Awake()
     {
 
@@ -120,7 +123,43 @@ public class UpgradeManager : MonoBehaviour
             float fillAmoutPNR = (float)((float)(expSpell + 1 - (float)(Tier * 4)) / 4);
             progressRang.fillAmount = fillAmountPR;
             progressNextRang.fillAmount = fillAmoutPNR;
+            if(Tier > 0)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (expSpell / 4 > i)
+                    {
+                        //progressionCristal[i].(true);
+                        progressionCristal[i].material = materialProgress[0];
+                    }
+                    else
+                    {
+                        //progressionCristal[i].SetActive(false);
+                        progressionCristal[i].material = materialProgress[1];
+                    }
+
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (expSpell > i)
+                    {
+                        //progressionCristal[i].(true);
+                        progressionCristal[i].material = materialProgress[0];
+                    }
+                    else
+                    {
+                        //progressionCristal[i].SetActive(false);
+                        progressionCristal[i].material = materialProgress[1];
+                    }
+
+                }
+            }
+
         }
+
         levelCurrentSpell.text = "Lv. " + expSpell;
 
         for (int i = 0; i < upgradeGenerate.Length; i++)
@@ -302,8 +341,8 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(true);
-        upgradeBook.SetActive(true);
-        if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
+        //upgradeBook.SetActive(true);
+        //if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
         m_upgradeLevelingData.spellCount = upgradeLevelingData.spellCount;
 
@@ -316,6 +355,7 @@ public class UpgradeManager : MonoBehaviour
 
         m_upgradeLevelingData.spellState = upgradeLevelingData.spellState;
         m_upgradeLevelingData.iconSpell = upgradeLevelingData.iconSpell;
+        m_upgradeLevelingData.materialIconSpell = upgradeLevelingData.materialIconSpell;
         m_upgradeLevelingData.upgradePoint = upgradeLevelingData.upgradePoint;
         m_upgradeLevelingData.roomElement = upgradeLevelingData.roomElement;
 
@@ -380,6 +420,7 @@ public class UpgradeManager : MonoBehaviour
 
     public void CloseUpgradeUI()
     {
+
         if (!upgradeLevelUi) return;
 
         if (book_Animator != null)

@@ -153,6 +153,7 @@ namespace Character
             data.spellState = m_characterShoot.spellProfils.ToArray();
             data.spellCount = m_characterShoot.maxSpellIndex;
             data.iconSpell = m_characterShoot.GetSpellSprite();
+            data.materialIconSpell = m_characterShoot.GetSpellMaterial();
             data.capsuleIndex = m_characterShoot.spellIndexGeneral.ToArray();
             data.upgradePoint = upgradePoint;
             data.roomElement = lastRoomElement;
