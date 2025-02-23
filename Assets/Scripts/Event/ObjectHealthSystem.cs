@@ -63,6 +63,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         GameStats.instance.AddDamageSource(nameDamage, damageStat);
         animatorAssociated.SetTrigger("TakeHit");
         m_invicibleTimer = 0;
+        GlobalSoundManager.PlayOneShot(32, transform.position);
         // VfX feedback
         Vector3 positionOnScreen = transform.position + new Vector3(0, 5, 0);
         healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);

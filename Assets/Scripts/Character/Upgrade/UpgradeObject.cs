@@ -165,7 +165,7 @@ public class UpgradeObject : ScriptableObject
 
                 if (IsStatInt(statTypes[i]))
                 {
-                    return (statData.val_int + statDatas[i].val_int).ToString();
+                    return (statData.val_int + "-->"+ (statData.val_int + statDatas[i].val_int)).ToString();
                 }
 
 

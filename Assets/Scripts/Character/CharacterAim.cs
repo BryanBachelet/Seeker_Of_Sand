@@ -81,6 +81,8 @@ namespace Character
             m_characterShoot = GetComponent<CharacterShoot>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
             vfxCastEnd = gameObject_vfxCastEnd.GetComponentInChildren<VisualEffect>();
+            gameObject_vfxCastEnd.transform.SetParent(this.transform.parent);
+
         }
 
 

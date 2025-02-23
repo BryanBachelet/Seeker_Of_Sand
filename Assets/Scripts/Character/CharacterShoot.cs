@@ -1514,7 +1514,17 @@ namespace Character
 
             return spriteArray;
         }
-
+        public Material[]  GetSpellMaterial()
+        {
+            Material[] materialArray = new Material[maxSpellIndex];
+            for (int i = 0; i < spellEquip.Length; i++)
+            {
+                if (spellEquip[i] == -1) continue;
+                int index = spellEquip[i];
+                materialArray[i] = m_characterSpellBook.GetAllSpells()[index].matToUse;
+            }
+            return materialArray;
+        }
         public int[] GetSpellLevel()
         {
             int[] levelArray = new int[maxSpellIndex];

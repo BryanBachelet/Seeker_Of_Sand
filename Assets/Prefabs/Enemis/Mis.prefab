@@ -242,7 +242,7 @@ NavMeshAgent:
   m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 20
+  m_Speed: 50
   m_Acceleration: 16
   avoidancePriority: 99
   m_AngularSpeed: 600
@@ -774,20 +774,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selected: 0
   minTargetDistance: 1
-  speed: 20
+  speed: 50
   speedThreshold: 5
   isSlow: 0
   baseTransform: {fileID: 521167447699466396}
   isAffectedBySlope: 0
   maxVariation: 1.5
   minVariation: 0.5
-  m_maxAngle: 60
+  m_maxAngle: 100
   m_groundDistance: 3
   m_groundLayerMask:
     serializedVersion: 2
     m_Bits: 8
   timeBetweenNavRefresh: 0.2
-  minDistanceToFullyActive: 80
+  minDistanceToFullyActive: 120
   m_distanceBeforeRepositionning: 400
   m_isAlwaysUpdate: 1
   enemiesManager: {fileID: 0}
@@ -1996,7 +1996,7 @@ PrefabInstance:
     - target: {fileID: 6786170199435002977, guid: 935497234895c7245bb85a315d6b3a2d,
         type: 3}
       propertyPath: m_ResetSeedOnPlay
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6786170199435002977, guid: 935497234895c7245bb85a315d6b3a2d,
         type: 3}
@@ -2006,7 +2006,7 @@ PrefabInstance:
     - target: {fileID: 6786170199435002977, guid: 935497234895c7245bb85a315d6b3a2d,
         type: 3}
       propertyPath: m_InitialEventNameOverriden
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6786170199435002977, guid: 935497234895c7245bb85a315d6b3a2d,
         type: 3}
