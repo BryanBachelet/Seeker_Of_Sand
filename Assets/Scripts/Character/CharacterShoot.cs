@@ -113,6 +113,7 @@ namespace Character
         private UI_PlayerInfos m_uiPlayerInfos;
         [SerializeField] public List<Image> icon_Sprite;
         [SerializeField] public List<Image> spell_rarity;
+        [SerializeField] public List<Transform> rankPoint;
         [SerializeField] public List<Image> m_spellGlobalCooldown;
         [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
@@ -1493,7 +1494,7 @@ namespace Character
                 if (spellEquip[i] == -1) continue;
 
                 int index = spellEquip[i];
-
+                if (!icon_Sprite[i].IsActive()) icon_Sprite[i].enabled = true;
                 icon_Sprite[i].sprite = spellProfilsIcon[index].spell_Icon;
                 icon_Sprite[i].material = spellProfilsIcon[index].matToUse;
 
@@ -1562,7 +1563,18 @@ namespace Character
 
                 int index = spellEquip[i];
                 spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].currentSpellTier];
-
+                int spellNumberUpgrade = spellProfilsIcon[i].spellExp;
+                for (int j = 0; j < 12; j++)
+                {
+                    if(j > spellNumberUpgrade)
+                    {
+                        rankPoint[i].GetChild(j).gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        rankPoint[i].GetChild(j).gameObject.SetActive(true);
+                    }
+                }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
 

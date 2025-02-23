@@ -85,6 +85,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     private CharacterProfile m_Profil;
 
+    public GameObject[] quarterCristal;
     void Start()
     {
         InitializedHealthData();
@@ -186,6 +187,17 @@ public class HealthPlayerComponent : MonoBehaviour
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
         uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
+        for (int i = 0; i < 4; i++)
+        {
+            if(i >= m_CurrentQuarter)
+            {
+                quarterCristal[i].SetActive(false);
+            }
+            else
+            {
+                quarterCristal[i].SetActive(true);
+            }
+        }
         if (attackDamageInfo.bIsHeavy)
         {
             m_characterMouvement.SetKnockback(attackDamageInfo.position, 100);
