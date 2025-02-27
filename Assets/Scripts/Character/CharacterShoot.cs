@@ -1697,7 +1697,7 @@ namespace Character
         {
 
             SpellManager.ReAddSpell((m_characterSpellBook.m_spellsRotationArray[indexSpell]));
-
+            CreatePullObject(m_characterSpellBook.tempSpell);
             spellProfils[indexSpell] = m_characterSpellBook.tempSpell;
             m_characterSpellBook.ReplaceSpell(m_characterSpellBook.m_spellsRotationArray[indexSpell], m_characterSpellBook.tempSpell);
             m_characterSpellBook.m_spellsRotationArray[indexSpell] = m_characterSpellBook.tempSpell;

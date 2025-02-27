@@ -8,6 +8,7 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 using SpellSystem;
 using Unity.VisualScripting;
+using static UnityEngine.Rendering.DebugUI;
 
 
 public class UpgradeChoosing : MonoBehaviour
@@ -39,7 +40,7 @@ public class UpgradeChoosing : MonoBehaviour
     public GameObject[] decorationHolder = new GameObject[3];
     public float timeSolve;
     private SeekerOfSand.UI.UI_PlayerInfos m_UiPlayerInfo;
-
+    private UIDispatcher m_Dispatcher;
     // Stats Order 
     // - Damage
     // - Size
@@ -56,6 +57,15 @@ public class UpgradeChoosing : MonoBehaviour
 
     public GameObject firstObjectSelect;
 
+    public GameObject panelUI;
+    [HideInInspector] public SpellProfil[] spellProfils;
+    public Character.CharacterSpellBook spellBook;
+    public GameObject[] skillUiHolder = new GameObject[4];
+    public GameObject[] referenceSkill = new GameObject[4];
+    public List<GameObject> skillUiHolderTemp;
+
+
+    public GameObject prefabRank;
     private void Awake()
     {
         if (m_imageBandeau != null)
@@ -73,6 +83,7 @@ public class UpgradeChoosing : MonoBehaviour
     public void Start()
     {
          m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
+        m_Dispatcher = m_UiPlayerInfo.gameObject.GetComponent<UIDispatcher>();
         for (int i = 0; i < uiUpgradeButton.Length; i++)
         {
             uiUpgradeButton[i].OnEnter += SetModifySpellStat;
@@ -96,7 +107,8 @@ public class UpgradeChoosing : MonoBehaviour
             spellInBar[i].material = m_upgradeLevelingData.materialIconSpell[i];
             materialIcon[i] = m_upgradeLevelingData.materialIconSpell[i];
         }
-
+        OpenRotation();
+        //m_Dispatcher.HideOrShowFixeUi(false);
         SetBaseSpellStat(0);
 
         upgradePointText.text = m_upgradeLevelingData.upgradePoint.ToString();
@@ -120,7 +132,7 @@ public class UpgradeChoosing : MonoBehaviour
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);   
         m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
         GlobalSoundManager.PlayOneShot(31, Vector3.zero);
-
+        //GameObject rankMoving = Instantiate(prefabRank, transform.position, transform.rotation); 
 
         for (int i = 0; i < upgradeSelectable.Length; i++)
         {
@@ -287,5 +299,29 @@ public class UpgradeChoosing : MonoBehaviour
     public void Update()
     {
 
+    }
+
+    public void OpenRotation()
+    {
+        GameState.ChangeState();
+
+        panelUI.SetActive(true);
+        spellProfils = spellBook.GetSpellsRotations();
+        for (int i = 0; i < spellProfils.Length; i++)
+        {
+            skillUiHolderTemp.Add(Instantiate(referenceSkill[i], skillUiHolder[i].transform.position, skillUiHolder[i].transform.rotation, skillUiHolder[i].transform));
+        }
+    }
+
+    public void CloseRotation()
+    {
+        GameState.ChangeState();
+        for (int i = 0; i < skillUiHolderTemp.Count; i++)
+        {
+            Destroy(skillUiHolderTemp[i]);
+        }
+        skillUiHolderTemp.Clear();
+        panelUI.SetActive(false);
+        spellBook.CloseUiExchange();
     }
 }

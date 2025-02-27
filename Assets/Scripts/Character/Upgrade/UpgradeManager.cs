@@ -65,6 +65,8 @@ public class UpgradeManager : MonoBehaviour
     public float percentForSpellMatchingElementRoom = 75;
 
     public Image[] progressionCristal = new Image[4];
+
+    private UIDispatcher m_dispatcher;
     public void Awake()
     {
 
@@ -86,6 +88,7 @@ public class UpgradeManager : MonoBehaviour
         m_chooseSpellManagerComponent = spellChoiceUI.GetComponent<ChooseSpellManager>();
         m_chooseSpellManagerComponent.m_upgradeManagerComponenet = this;
         m_dropInventory = m_characterUpgradeComponent.GetComponent<DropInventory>();
+        if(m_dispatcher == null) m_dispatcher = GameObject.Find("UI_Manager").GetComponent<UIDispatcher>();
     }
 
     public UpgradeObject[] RandomUpgrade(int count)
@@ -341,6 +344,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!upgradeLevelUi) return;
         upgradeLevelUi.SetActive(true);
+        m_dispatcher.HideOrShowFixeUi(false);
         //upgradeBook.SetActive(true);
         //if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
         m_upgradeLevelingData.capsuleIndex = upgradeLevelingData.capsuleIndex;
@@ -463,10 +467,12 @@ public class UpgradeManager : MonoBehaviour
 
     public IEnumerator CloseUIWithDelay(float time)
     {
+        m_dispatcher.HideOrShowFixeUi(true);
         yield return new WaitForSeconds(time);
         upgradeBook.SetActive(false);
         spellChoiceUI.SetActive(false);
         upgradeLevelUi.SetActive(false);
+
         GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
     }
     #endregion

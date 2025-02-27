@@ -269,7 +269,7 @@ namespace Enemies
             if (spawningPhase)
             {
 
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static);
+                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static + (3 - TerrainGenerator.staticRoomManager.eventNumber));
                 SpawnCooldown();
             }
 

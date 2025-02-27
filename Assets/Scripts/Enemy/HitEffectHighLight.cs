@@ -19,6 +19,7 @@ public class HitEffectHighLight : MonoBehaviour
     [SerializeField] private Material m_materialAffected;
     private MaterialPropertyBlock _propBlock;
 
+    public Object_HealthDisplay m_objectHealthDisplay;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +44,7 @@ public class HitEffectHighLight : MonoBehaviour
         float progression = effectCurve.Evaluate(currentEffectDuration / effectDuration);
         _propBlock.SetColor("_HighlightColor", Color.Lerp(colorsUsed[0], colorsUsed[1], progression));
         _propBlock.SetFloat("_HighlightColorPower", Mathf.Lerp(colorsIntensity[0], colorsIntensity[1], progression));
+        m_objectHealthDisplay.UpdateAlpha(progression);
         m_meshRenderer.SetPropertyBlock(_propBlock, 0);
         //m_materialAffected.SetColor("_HighlightColor", Color.Lerp(colorsUsed[0], colorsUsed[1], progression));
         //m_materialAffected.SetFloat("_HighlightColorPower", Mathf.Lerp(colorsIntensity[0], colorsIntensity[1], progression));

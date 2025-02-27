@@ -47,12 +47,15 @@ namespace Character
         private Quaternion m_startRotation;
 
 
+        [Header("Run State")]
+        public float rotationLerpStepRunState = .5f;
+
+
         private bool m_onProjection;
 
         private ObjectState state;
 
 
-        public bool isSliding;
         private float m_currentSlideSpeed;
 
         [Header("Glide Parameter")]
@@ -66,6 +69,7 @@ namespace Character
         public bool activeCombatModeConstant;
 
         [Header("Slide Parameters")]
+        public bool isSliding;
         public AnimationCurve accelerationCurve;
         public float maxSpeed = 30.0f;
         public float maxSlope = 60.0f;
@@ -147,8 +151,7 @@ namespace Character
         // temp
         public float timeToAccelerate = 2;
         private float m_timerToAccelerate = 0.0f;
-
-
+        
         public void InitComponentStat(CharacterStat stat)
         {
             runSpeed = runSpeed + stat.baseStat.speed;
@@ -984,7 +987,7 @@ namespace Character
                 }
                 else
                 {
-                    m_rotationTime += .1f;
+                    m_rotationTime += rotationLerpStepRunState;
                 }
 
                 Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
@@ -993,7 +996,7 @@ namespace Character
                 Quaternion endRot = Quaternion.AngleAxis(angleDir, Vector3.up);
 
                 transform.rotation = Quaternion.Slerp(m_startRotation, endRot, m_rotationTime);
-                m_avatarTransform.localRotation = Quaternion.identity;
+                m_avatarTransform.localRotation = Quaternion.identity;  
             }
 
             if (combatState && m_characterShoot.m_aimModeState != AimMode.Automatic)

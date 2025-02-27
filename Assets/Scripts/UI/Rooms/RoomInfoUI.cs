@@ -173,7 +173,7 @@ namespace GuerhoubaGames.UI
 
         public void UpdateTextProgression(int currentProgress, int currentGoal)
         {
-            textProgress.text = "" + currentProgress + "/" + currentGoal;
+            textProgress.text = "" + (currentGoal - currentProgress) + "<voffset=-0.2em> / <voffset=0em>" + currentGoal;
         }
     };
 }

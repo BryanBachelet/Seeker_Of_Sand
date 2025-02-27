@@ -59,4 +59,9 @@ public class UIDispatcher : MonoBehaviour
         objectCreated.activeMovement = true;
 
     }
+
+    public void HideOrShowFixeUi(bool active)
+    {
+        fixeGameplayUI.SetActive(active);
+    }
 }

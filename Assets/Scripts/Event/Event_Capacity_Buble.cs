@@ -74,23 +74,29 @@ public class Event_Capacity_Buble : MonoBehaviour
                     else
                     {
                         Vector3 positionSpawn = areaRef.altarAssociated.transform.position + offSetSign;
-                        GameObject attackInstiate = Instantiate(attack[i], foundNewPosition(positionSpawn) + (areaRef.playerRigidBodyVelocity * predictionPercent[i]), transform.rotation, transform);
+                        //GameObject attackInstiate = Instantiate(attack[i], foundNewPosition(positionSpawn) + (areaRef.playerRigidBodyVelocity * predictionPercent[i]), transform.rotation, transform);
                         GameObject vfx = Instantiate(shotVfx, positionSpawn, Quaternion.identity);
                         vfx.transform.eulerAngles = new Vector3(0, currentAngle[i], 0);
 
                         SignAttack signAttack_Projectil = vfx.GetComponent<SignAttack>();
+                        
                         Vector3 positionToGo = vfx.transform.forward * 150;
+
                         signAttack_Projectil.positionToGo = vfx.transform.position + vfx.transform.forward * 150;
                         float speed = Vector3.Distance(vfx.transform.position, signAttack_Projectil.positionToGo) / tempsRealese[i];
                         signAttack_Projectil.speedMovement = speed;
+                      
+                        ProjectileEventDamage projectileEventDamage = vfx.GetComponent<ProjectileEventDamage>();
+                        projectileEventDamage.damage = attack[i].GetComponent<AttackTrainingArea>().damage;
+
                         //Debug.Log("Attack spawned : " + attackInstiate.name + " Life time is : " + tempsRealese[i] + " distance with player is : " + distance + " Speed will be : " + (distance / tempsRealese[i]));
-                        AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
-                        dataLife.lifeTimeVFX = tempsRealese[i];
-                        dataLife.playerTarget = playerPosition;
-                        dataLife.rangeHit = RangeAttack[i];
-                        attackEnCour.Add(attackInstiate);
-                        attackEncourCount[i]++;
-                        StartCoroutine(DestroyAfterDelay(tempsRealese[i] + 1, attackInstiate, i));
+                        //AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
+                        //dataLife.lifeTimeVFX = tempsRealese[i];
+                        //dataLife.playerTarget = playerPosition;
+                        //dataLife.rangeHit = RangeAttack[i];
+                        //attackEnCour.Add(attackInstiate);
+                        //attackEncourCount[i]++;
+                        //StartCoroutine(DestroyAfterDelay(tempsRealese[i] + 1, attackInstiate, i));
                         numberOfAttackByTypeCounter[i] += 1;
                         tempsEcouleLastSingleAttack = delayBtwnSingleAttack;
                         currentAngle[i] += 36;

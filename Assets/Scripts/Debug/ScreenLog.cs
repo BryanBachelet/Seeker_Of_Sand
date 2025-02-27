@@ -8,7 +8,7 @@ public class ScreenLog : MonoBehaviour
 
     uint qsize = 15;  // number of messages to keep
     Queue myLogQueue = new Queue();
-
+    public bool Deactivate;
     void Start()
     {
         Debug.Log("Started up logging.");
@@ -35,6 +35,7 @@ public class ScreenLog : MonoBehaviour
 
     void OnGUI()
     {
+        if (Deactivate) return;
         GUILayout.BeginArea(new Rect(Screen.width - 400, 0, 400, Screen.height));
         GUILayout.Label("\n" + string.Join("\n", myLogQueue.ToArray()));
         GUILayout.EndArea();
