@@ -140,7 +140,7 @@ namespace Enemies
             GameObject projectileInstance = Instantiate(m_projectileThrow, m_targetTransform.position, Quaternion.identity);
      
             AttackTrainingArea attackObjectArea = projectileInstance.GetComponent<AttackTrainingArea>();
-            attackObjectArea.playerTarget = m_targetTransform;
+            attackObjectArea.playerTransform = m_targetTransform;
 
             m_npcMeta.state = NpcState.RECUPERATION;
             animator.ResetTrigger("Attacking");

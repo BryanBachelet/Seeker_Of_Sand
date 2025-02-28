@@ -10,7 +10,7 @@ public class AttackTrainingArea : MonoBehaviour
     public Vector3 positionOnDestroy;
     public float rangeHit;
     public Vector3 scaleAttack;
-    public Transform playerTarget;
+    public Transform playerTransform;
     public HealthPlayerComponent hpPlayer;
     private VisualEffect m_Vfx;
     [SerializeField] public float lifeTimeVFX;
@@ -41,9 +41,9 @@ public class AttackTrainingArea : MonoBehaviour
     {
 
         debugCollider = activeDebugCollider;
-        if (playerTarget != null)
+        if (playerTransform != null)
         {
-            hpPlayer = playerTarget.GetComponent<HealthPlayerComponent>();
+            hpPlayer = playerTransform.GetComponent<HealthPlayerComponent>();
             destroyScript.m_DestroyAfterTime = lifeTimeVFX;
             m_Vfx.SetVector3("Size", new Vector3(1,1,1) * rangeHit * 3f);
             m_Vfx.SetFloat("TempsRealese", lifeTimeVFX);
@@ -75,10 +75,10 @@ public class AttackTrainingArea : MonoBehaviour
     {
         GameObject vfxExplosionObject = Instantiate(vfxExplosion, transform.position, transform.rotation);
        // vfxExplosionObject.transform.localScale = scaleAttack * rangeHit;
-        if (playerTarget == null) return;
+        if (playerTransform == null) return;
 
         positionOnDestroy = transform.position;
-        if (Vector3.Distance(positionOnDestroy, playerTarget.position) < rangeHit)
+        if (Vector3.Distance(positionOnDestroy, playerTransform.position) < rangeHit)
         {
             AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
             attackDamageInfo.attackName = "Mortar";

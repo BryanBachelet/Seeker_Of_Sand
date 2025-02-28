@@ -1,6 +1,9 @@
+using GuerhoubaGames.GameEnum;
+using SeekerOfSand.Tools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Rendering.FilterWindow;
 
 public class EventHolder : MonoBehaviour
 {
@@ -11,6 +14,11 @@ public class EventHolder : MonoBehaviour
     public List<Vector3> altarTransformTabDisplay = new List<Vector3>();
 
     [SerializeField] public GameObject[] DangerAddition;
+
+    public AltarAttackData[] altarAttackDataArray;
+
+    [SerializeField] private GameObject[] capacityGameObject = new GameObject[5];
+    private GameObject instantiatedArea;
     // Start is called before the first frame update
 
     private void Awake()
@@ -71,5 +79,28 @@ public class EventHolder : MonoBehaviour
         altarTransformTab.Add(newAltar.transform.position);
         altarTransformTabDisplay = altarTransformTab;
 
+    }
+
+    public AltarAttackData GetAltarAttackData(GameElement element, int difficulty)
+    {
+        for (int i = 0; i < altarAttackDataArray.Length; i++)
+        {
+            if (altarAttackDataArray[i].element == element)
+            {
+                return altarAttackDataArray[i];
+            }
+        }
+        Debug.LogError("An altar is missing for the case of " + element.ToString() + " and with the difficulty level of " + difficulty.ToString());
+        return null;
+    }
+
+    public void SpawnAreaVFX(GameElement element, Vector3 position)
+    {
+        instantiatedArea = Instantiate(capacityGameObject[GeneralTools.GetElementalArrayIndex(element, true)], position, Quaternion.identity);
+    }
+
+    public void ActiveEndEvent()
+    {
+        Destroy(instantiatedArea);
     }
 }

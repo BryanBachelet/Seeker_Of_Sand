@@ -282,13 +282,15 @@ public class AltarBehaviorComponent : InteractionInterface
         int nightCount = m_enemyManager.m_dayController.m_nightCount;
         if (alatarDone >= 0)
         {
-            lastItemInstantiate = Instantiate(eventHolder.DangerAddition[alatarDone], transform.position, transform.rotation);
-            TrainingArea area = lastItemInstantiate.GetComponent<TrainingArea>();
-            area.altarAssociated = this.gameObject;
-            area.element = eventElementType;
-            lastItemInstantiate.SetActive(true);
+            //lastItemInstantiate = Instantiate(eventHolder.DangerAddition[alatarDone], transform.position, transform.rotation);
+            //TrainingArea area = lastItemInstantiate.GetComponent<TrainingArea>();
+            //area.altarAssociated = this.gameObject;
+            //area.element = eventElementType;
+            //lastItemInstantiate.SetActive(true);
         }
-
+        AltarAttackComponent  altarAttackComponent = GetComponent<AltarAttackComponent>();
+        altarAttackComponent.ActivateAltarAttack(eventHolder.GetAltarAttackData(eventElementType,0), m_myAnimator.transform.position);
+        eventHolder.SpawnAreaVFX(eventElementType, transform.position);
 
         SetMeshesEventIntensity(0.33f * (1 + 1));
         m_visualEffectActivation.Play();
@@ -325,6 +327,9 @@ public class AltarBehaviorComponent : InteractionInterface
         SetMeshesEventIntensity(.32f * (resetNumber + 1));
 
         GlobalSoundManager.PlayOneShot(14, transform.position);
+        AltarAttackComponent altarAttackComponent = GetComponent<AltarAttackComponent>();
+        altarAttackComponent.DeactivateAltarAttack();
+        eventHolder.ActiveEndEvent();
 
         int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
         SpawnAltarReward(rewardIndex);

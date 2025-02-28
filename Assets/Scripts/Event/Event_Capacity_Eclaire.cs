@@ -102,7 +102,7 @@ public class Event_Capacity_Eclaire : MonoBehaviour
                        
                         AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
                         dataLife.lifeTimeVFX = tempsRealese[i];
-                        dataLife.playerTarget = playerPosition;
+                        dataLife.playerTransform = playerPosition;
                         dataLife.rangeHit = RangeAttack[i];
                         attackEnCour.Add(attackInstiate);
                         attackEncourCount[i]++;
