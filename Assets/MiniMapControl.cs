@@ -21,13 +21,12 @@ public class MiniMapControl : MonoBehaviour
 
     private Material material;
     public RawImage imageMiniMap;
+
     // Start is called before the first frame update
     void Start()
     {
         cameraminimap = this.GetComponent<Camera>();
         ResetDiscovery(terrainPosition);
-
-     
     }
 
     // Update is called once per frame
@@ -99,7 +98,8 @@ public class MiniMapControl : MonoBehaviour
             }
            
         }
-         discoveryMap.Apply();
+        
+        discoveryMap.Apply();
         material.SetTexture("_DiscoveryMap", discoveryMap);
 
     }

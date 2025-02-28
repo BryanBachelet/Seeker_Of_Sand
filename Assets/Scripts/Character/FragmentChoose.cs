@@ -24,11 +24,6 @@ public class FragmentChoose : MonoBehaviour
         m_animator = this.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void SetFragmentInfo(ArtefactsInfos[] artefactInfo)
     {
@@ -40,7 +35,7 @@ public class FragmentChoose : MonoBehaviour
         descriptionTmp_Text[0].text = artefactInfo[0].name + "<br>" + artefactInfo[0].description;
         descriptionTmp_Text[1].text = artefactInfo[1].name + "<br>" + artefactInfo[1].description;
         m_animator.SetBool("OpenChoose", true);
-
+        GameState.SetState(false);
     }
 
     public void GiveSelectedFragment(int fragmentNumber)
@@ -49,6 +44,7 @@ public class FragmentChoose : MonoBehaviour
         m_playerTransform.GetComponent<CharacterArtefact>().AddArtefact(artefactInfoCurrent[fragmentNumber]);
         m_playerTransform.GetComponent<DropInventory>().AddNewArtefact(artefactInfoCurrent[fragmentNumber]);
         m_animator.SetBool("OpenChoose", false);
+        GameState.SetState(true);
     }
 
 

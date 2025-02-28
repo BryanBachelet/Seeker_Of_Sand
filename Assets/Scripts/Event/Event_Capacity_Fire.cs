@@ -78,7 +78,7 @@ public class Event_Capacity_Fire : MonoBehaviour
                         //Debug.Log("Attack spawned : " + attackInstiate.name + " Life time is : " + tempsRealese[i] + " distance with player is : " + distance + " Speed will be : " + (distance / tempsRealese[i]));
                         AttackTrainingArea dataLife = attackInstiate.GetComponent<AttackTrainingArea>();
                         dataLife.lifeTimeVFX = tempsRealese[i];
-                        dataLife.playerTarget = playerPosition;
+                        dataLife.playerTransform = playerPosition;
                         dataLife.rangeHit = RangeAttack[i];
                         attackEnCour.Add(attackInstiate);
                         StartCoroutine(DestroyAfterDelay(tempsRealese[i] + 1, attackInstiate));
