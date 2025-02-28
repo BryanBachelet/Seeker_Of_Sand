@@ -100,7 +100,7 @@ public class ProjectileMortar : MonoBehaviour
                 }
                 if (m_projectileData.target.tag == "Altar")
                 {
-                    m_projectileData.target.GetComponent<ObjectHealthSystem>().TakeDamage((int)m_projectileData.damage);
+                   // m_projectileData.target.GetComponent<ObjectHealthSystem>().TakeDamage((int)m_projectileData.damage);
 
                 }
             }

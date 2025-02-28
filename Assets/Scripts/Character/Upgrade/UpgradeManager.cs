@@ -67,6 +67,7 @@ public class UpgradeManager : MonoBehaviour
     public Image[] progressionCristal = new Image[4];
 
     private UIDispatcher m_dispatcher;
+
     public void Awake()
     {
 
@@ -165,9 +166,11 @@ public class UpgradeManager : MonoBehaviour
 
         levelCurrentSpell.text = "Lv. " + expSpell;
 
+        List<UpgradeObject> listUpgrade = new List<UpgradeObject>();
+        listUpgrade.AddRange( spellUpgradeArrayList[indexSpellEquip]);
         for (int i = 0; i < upgradeGenerate.Length; i++)
         {
-            UpgradeObject nxtProfil = ChooseUpgrade(indexSpellEquip);
+            UpgradeObject nxtProfil = ChooseUpgrade(indexSpellEquip,listUpgrade);
             upgradeGenerate[i] = nxtProfil;
             upgradeGenerate[i].indexSpellLink = indexSpellEquip;
         }
@@ -244,11 +247,13 @@ public class UpgradeManager : MonoBehaviour
 
 
 
-    private UpgradeObject ChooseUpgrade(int spellIndex)
+    private UpgradeObject ChooseUpgrade(int spellIndex, List<UpgradeObject> upgradeObjects)
     {
-        UpgradeObject[] upgradeObject = spellUpgradeArrayList[spellIndex];
-        int indexUpgrade = UnityEngine.Random.Range(0, upgradeObject.Length);
-        return upgradeObject[indexUpgrade];
+
+        int indexUpgrade = UnityEngine.Random.Range(0, upgradeObjects.Count);
+        UpgradeObject obj = upgradeObjects[indexUpgrade];
+        upgradeObjects.RemoveAt(indexUpgrade);
+        return obj;
     }
 
     public void ValidateUpgrade(int index)

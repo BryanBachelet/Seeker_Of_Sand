@@ -33,7 +33,7 @@ public class UpgradeChoosing : MonoBehaviour
 
     public EventSystem eventSystem;
     private UpgradeLevelingData m_upgradeLevelingData;
-    [HideInInspector] public UpgradeManager m_upgradeManager;
+    public UpgradeManager m_upgradeManager;
 
     [SerializeField] private Image[] m_imageBandeau = new Image[3];
     [SerializeField] private Material[] m_materialBandeauDissolve = new Material[3];
@@ -78,12 +78,15 @@ public class UpgradeChoosing : MonoBehaviour
                 m_imageBandeau[i].material = mat;
             }
         }
+
+        m_upgradeManager = GameState.m_enemyManager.GetComponent<UpgradeManager>();
     }
 
     public void Start()
     {
-         m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
+        m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
         m_Dispatcher = m_UiPlayerInfo.gameObject.GetComponent<UIDispatcher>();
+       
         for (int i = 0; i < uiUpgradeButton.Length; i++)
         {
             uiUpgradeButton[i].OnEnter += SetModifySpellStat;
@@ -119,6 +122,7 @@ public class UpgradeChoosing : MonoBehaviour
             upgradeSelectableDescription[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).description;
             spellChoseUpgrade[i].material = materialIcon[data.indexSpellFocus];
             //if (gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
+            SetModifySpellStat(i);
         }
     }
 
@@ -129,7 +133,7 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void ChooseUpgrade(int index)
     {
-        m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);   
+        m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
         m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
         GlobalSoundManager.PlayOneShot(31, Vector3.zero);
         //GameObject rankMoving = Instantiate(prefabRank, transform.position, transform.rotation); 
@@ -197,7 +201,7 @@ public class UpgradeChoosing : MonoBehaviour
         for (int i = 0; i < spellProfil.statDatas.Count; i++)
         {
             SpellSystem.StatData statData = spellProfil.statDatas[i];
-            if(statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
+            if (statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
         }
         ChangeTierCadre(spellProfil);
         upgradeTextStatBase[0].text = textStatUpgrade;
@@ -217,17 +221,15 @@ public class UpgradeChoosing : MonoBehaviour
         {
 
             SpellSystem.StatData statDataSpell = spellProfil.statDatas[i];
-            if (statDataSpell.isVisible)
+
+            if (stats.HasThisStat(statDataSpell.stat))
             {
-                if (stats.HasThisStat(statDataSpell.stat))
-                {
-                    textStatUpgrade += "" + stats.PrewiewApplyValue(statDataSpell) + "\n"; 
-                    stateStat[i] = true;
-                }
-                else textStatUpgrade += "";
+                textStatUpgrade += "" + stats.PrewiewApplyValue(statDataSpell) + "\n";
+                stateStat[0] = true;
             }
+            else textStatUpgrade += "";
         }
-        for(int i = 0; i < upgradeTextStatModify.Length;i++)
+        for (int i = 0; i < upgradeTextStatModify.Length; i++)
         {
             for (int j = 0; j < stateStat.Length; j++)
             {
@@ -235,16 +237,16 @@ public class UpgradeChoosing : MonoBehaviour
                 {
                     upgradeTextStatModify[index].text = textStatUpgrade;
                 }
-                else if(i != index)
+                else if (i != index)
                 {
-                    upgradeTextStatModify[index].text = "";
+                    //upgradeTextStatModify[index].text = "";
                 }
             }
         }
-        
 
 
-       
+
+
     }
 
     public void ChangeTierCadre(SpellProfil data)
@@ -264,30 +266,30 @@ public class UpgradeChoosing : MonoBehaviour
         else
         {
             cadreCurrentTier.sprite = spellTier[currentTier];
-            cadreNextTier.sprite = spellTier[currentTier +1];
+            cadreNextTier.sprite = spellTier[currentTier + 1];
 
         }
 
 
 
-        if(tooltipCurrentTier == null) { tooltipCurrentTier = spellCurrentTierFocus.GetComponent<GuerhoubaGames.UI.TooltipTrigger>(); }
+        if (tooltipCurrentTier == null) { tooltipCurrentTier = spellCurrentTierFocus.GetComponent<GuerhoubaGames.UI.TooltipTrigger>(); }
         if (tooltipNextTier == null) { tooltipNextTier = spellNextTierFocus.GetComponent<GuerhoubaGames.UI.TooltipTrigger>(); }
 
         if (currentTier == 0)
         {
-            if (data.levelSpellsProfiles[currentTier] == null || data.levelSpellsProfiles[currentTier+1] == null) return;
+            if (data.levelSpellsProfiles[currentTier] == null || data.levelSpellsProfiles[currentTier + 1] == null) return;
 
             tooltipCurrentTier.content = "No additional effect yet";
             tooltipNextTier.content = data.levelSpellsProfiles[currentTier].description;
         }
         else if (currentTier > 0 && currentTier < 3)
         {
-            if (data.levelSpellsProfiles[currentTier-1] == null || data.levelSpellsProfiles[currentTier] == null) return;
+            if (data.levelSpellsProfiles[currentTier - 1] == null || data.levelSpellsProfiles[currentTier] == null) return;
 
-            tooltipCurrentTier.content = data.levelSpellsProfiles[currentTier-1].description;
+            tooltipCurrentTier.content = data.levelSpellsProfiles[currentTier - 1].description;
             tooltipNextTier.content = data.levelSpellsProfiles[currentTier].description;
         }
-        else if(currentTier >= 3)
+        else if (currentTier >= 3)
         {
             if (data.levelSpellsProfiles[2] == null) return;
 
