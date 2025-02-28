@@ -60,6 +60,7 @@ public class ChooseSpellManager : MonoBehaviour
     public Image cadreTier2Image;
     public Image cadreTier3Image;
     public Sprite[] cadreTier; //Tier de rareté (0=T1, 1=T2, 2=T3, 3=Non discovered 
+    public Texture[] textureGradientTier;
     public TooltipTrigger[] tooltipNextTier = new TooltipTrigger[3];
 
     #region Unity Functions
@@ -107,7 +108,7 @@ public class ChooseSpellManager : MonoBehaviour
 
                 for (int i = 0; i < vfxHolder.Length; i++)
                 {
-                    vfxHolder[i].SetActive(false);
+                    //vfxHolder[i].SetActive(false);
                     spellHolder[i].SetActive(false);
                     vfxSpell[i].enabled = false;
                     vfxSpell[i].sprite = null;
@@ -182,7 +183,7 @@ public class ChooseSpellManager : MonoBehaviour
             StartCoroutine(SpellFadeIn(i, Time.time));
             vfxSpell[i].sprite = newSpell[i].spell_Icon;
             vfxSpell[i].material = newSpell[i].matToUse;
-            vfxHolder[i].SetActive(true);
+            //vfxHolder[i].SetActive(true);
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;
             newSpell[i].tagData.element = spellManager.spellProfils[randomSpellToChoose[i]].tagData.element;
@@ -190,8 +191,8 @@ public class ChooseSpellManager : MonoBehaviour
             textObject[i].text = nextSpellName[i];
             int indexVFX = (int)GeneralTools.GetElementalArrayIndex( newSpell[i].tagData.element);
             indexVFX = Mathf.Clamp(indexVFX, 0, 100);
-            GameObject lastVFx = Instantiate(vfxChooseSpell[indexVFX], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
-            vfxLastChooseSpell.Add(lastVFx);
+            //GameObject lastVFx = Instantiate(vfxChooseSpell[indexVFX], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
+            //vfxLastChooseSpell.Add(lastVFx);
         }
 
         SpellManager.idFamilyBan.Clear();
@@ -238,7 +239,7 @@ public class ChooseSpellManager : MonoBehaviour
         {
             if (i != indexChoice)
             {
-                vfxHolder[i].SetActive(false);
+                //vfxHolder[i].SetActive(false);
                 //spellHolder[i].SetActive(false);
                 StartCoroutine(SpellFadeOut(i, Time.time));
             }
@@ -270,11 +271,11 @@ public class ChooseSpellManager : MonoBehaviour
             tagText[i].text = tagLines[i];
         }
         spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
-        Sprite spriteSpell = newSpell[spellIndex].spell_Icon;
-        iconSpell.sprite = spriteSpell;
-        spellTier1Image.sprite = spriteSpell;
-        spellTier2Image.sprite = spriteSpell;
-        spellTier3Image.sprite = spriteSpell;
+        Material materialSpell = newSpell[spellIndex].matToUse;
+        iconSpell.material = materialSpell;
+        spellTier1Image.material = materialSpell;
+        spellTier2Image.material = materialSpell;
+        spellTier3Image.material = materialSpell;
         for (int i = 0; i < newSpell[spellIndex].levelSpellsProfiles.Length; i++)
         {
             tooltipNextTier[i].content = newSpell[spellIndex].levelSpellsProfiles[i].description;

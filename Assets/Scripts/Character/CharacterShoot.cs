@@ -117,7 +117,7 @@ namespace Character
         [SerializeField] public List<Image> m_spellGlobalCooldown;
         [SerializeField] public List<TextMeshProUGUI> m_TextSpellGlobalCooldown;
 
-        [SerializeField] private Sprite[] raritySprite;
+        [SerializeField] private Material[] raritySprite;
 
 
         [Header("Spell Unique ")]
@@ -1562,7 +1562,7 @@ namespace Character
                 if (spellEquip[i] == -1) continue;
 
                 int index = spellEquip[i];
-                spell_rarity[i].sprite = raritySprite[(int)spellProfilsIcon[index].currentSpellTier];
+                spell_rarity[i].material = raritySprite[(int)spellProfilsIcon[index].currentSpellTier];
                 int spellNumberUpgrade = spellProfilsIcon[i].spellExp;
                 for (int j = 0; j < 12; j++)
                 {
