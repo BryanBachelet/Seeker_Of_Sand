@@ -103,7 +103,7 @@ public class dummy : MonoBehaviour
                 if (tempsCurrentAbsorb > tempsAvantAbsorb)
                 {
                     tempsCurrentAbsorb = 0;
-                    objectHealthSystem.TakeDamage((int)10);
+                  //  objectHealthSystem.TakeDamage((int)10);
                 }
             }
             else

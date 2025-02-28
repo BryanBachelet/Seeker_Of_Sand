@@ -68,6 +68,9 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         Vector3 positionOnScreen = transform.position + new Vector3(0, 5, 0);
         healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
 
+        m_isInvicible = true;
+        m_invicibleTimer = 0.0f;
+
         if (healthSystem.health > 0) return;
 
         eventState = EventObjectState.Death;
@@ -75,16 +78,6 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     }
 
-    public void TakeDamage(int damage)
-    {
-        return;
-        if (m_isInvicible || !state.isPlaying || eventState != EventObjectState.Active) return;
-
-  
-        m_isInvicible = true;
-        m_invicibleTimer = 0.0f;
-        GlobalSoundManager.PlayOneShot(32, transform.position);
-    }
 
     public void ResetUIHealthBar()
     {

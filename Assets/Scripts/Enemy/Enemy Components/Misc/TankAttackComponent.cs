@@ -103,7 +103,7 @@ namespace Enemies
                 }
                 if (m_targetTransform.tag == "Altar")
                 {
-                    m_targetTransform.GetComponent<ObjectHealthSystem>().TakeDamage((int)damage);
+                  //  m_targetTransform.GetComponent<ObjectHealthSystem>().TakeDamage((int)damage);
 
                 }
             }
