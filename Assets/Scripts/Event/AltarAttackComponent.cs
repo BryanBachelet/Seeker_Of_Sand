@@ -145,7 +145,7 @@ public class AltarAttackComponent : MonoBehaviour
 
 
         // -- Spawn Object --
-        GameObject attackGO = GamePullingSystem.SpawnObject(m_attackData.prefabAttack, positionToSpawn, Quaternion.identity);
+        GameObject attackGO = GamePullingSystem.SpawnObject(m_attackData.prefabAttack, positionToSpawn + Vector3.up*0.2f, Quaternion.identity);
 
         // -- Check if Area --
         if (m_attackData.isArea)

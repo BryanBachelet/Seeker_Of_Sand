@@ -21,7 +21,7 @@ namespace Render.Camera
         [SerializeField] private float m_distanceToTarget;
         [HideInInspector] public Vector3 m_offsetPos;
 
-        [SerializeField] private bool m_activeCameraRotation = true;
+
 
         private Vector3 m_cameraDirection;
         private Vector3 m_baseAngle;
@@ -434,7 +434,7 @@ namespace Render.Camera
         public void RotationAimInput(InputAction.CallbackContext ctx)
         {
             if (!GameState.IsPlaying()) return;
-            if (m_mouseInputActivate && this.enabled && ctx.performed && m_activeCameraRotation)
+            if (m_mouseInputActivate && this.enabled && ctx.performed)
             {
                 int value = 1;
                 if (m_inverseCameraController) value = -1;
@@ -636,7 +636,7 @@ namespace Render.Camera
                 //m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
                 //m_lerpTimer = 0.1f;
                 modifyTargetDistance = ( m_targetTransform.position - hit.point).magnitude;
-                if (m_activeCameraRotation) SetCameraRotation();
+                 SetCameraRotation();
                 SetCameraPosition(true);
             }
         }

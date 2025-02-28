@@ -171,7 +171,7 @@ public class UpgradeObject : ScriptableObject
 
                 if (IsStatFloat(statTypes[i]))
                 {
-                    return (statData.val_float + statDatas[i].val_float).ToString();
+                    return (statData.val_float + "-->" +(statData.val_float + statDatas[i].val_float)).ToString();
                 }
             }
         }
