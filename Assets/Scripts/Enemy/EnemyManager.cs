@@ -390,7 +390,7 @@ namespace Enemies
                 {
                     distance = hit.position.y - m_playerTranform.position.y;
                     if (distance < 0) { distance = -distance; }
-                    if(distance < 40)
+                    if (distance < 40)
                     {
                         i = 25;
                         return hit.position;
@@ -467,6 +467,7 @@ namespace Enemies
                 return;
             }
 #endif
+
             if (remainEnemy < RoomManager.enemyMaxSpawnInRoon)
             {
                 for (int i = 0; i < m_groupEnemySize; i++)
@@ -478,10 +479,33 @@ namespace Enemies
             }
 
 
+
+        }
+
+        public void SpawEnemiesGroupCustom(Vector3 positionCustom, int groupSize, bool isDebug = false)
+        {
+            if (!isDebug && isStopSpawn) return;
+            position = FindPosition();
+            posspawn.Add(positionCustom);
+
+
+            for (int i = 0; i < groupSize; i++)
+            {
+                SpawnEnemyByPool(positionCustom + Random.insideUnitSphere * 5f);
+
+            }
+            InstantiateSpawnFeedback();
+
+
+
         }
 
         private void SpawnCooldown()
         {
+            if (remainEnemy + m_groupEnemySize >= m_maxUnittotal && m_spawnCooldown > GetTimeSpawn()/2.0f)
+            {
+                return;
+            }
             if (m_spawnCooldown > GetTimeSpawn())
             {
 
@@ -546,7 +570,7 @@ namespace Enemies
             {
 
             }
-            Instantiate(m_spawningVFX, hit.point + new Vector3(0,-18,0), transform.rotation);
+            Instantiate(m_spawningVFX, hit.point + new Vector3(0, -18, 0), transform.rotation);
             GlobalSoundManager.PlayOneShot(37, position);
         }
 
@@ -685,7 +709,7 @@ namespace Enemies
         {
             float value = enemyTypeStats[enemyType].animationCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
             int maxInstance = Mathf.RoundToInt(value);
-            if(DayCyclecontroller.m_nightCountGlobal == 0)
+            if (DayCyclecontroller.m_nightCountGlobal == 0)
             {
                 if (enemyType < 2)
                 {
@@ -932,7 +956,7 @@ namespace Enemies
             if (CanActiveSpawnPhase() != spawningPhase)
             {
                 ChangeSpawningPhase(!spawningPhase);
-                if(spawningPhase == true) { StartCoroutine(m_cameraBehavior.DeZoomCamera()); }
+                if (spawningPhase == true) { StartCoroutine(m_cameraBehavior.DeZoomCamera()); }
                 else { m_cameraBehavior.isZoomActive = true; }
             }
         }

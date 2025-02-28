@@ -6,6 +6,7 @@ using UnityEngine.VFX;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
 using SeekerOfSand.Tools;
+using JetBrains.Annotations;
 
 public class AltarBehaviorComponent : InteractionInterface
 {
@@ -91,9 +92,16 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public Transform piedestalTranformPosition;
     public Collider sphereCollider;
+
+    [Header("Wave Variables")]
+    public int groupSize;
+    public int lostLifeToSpawnWave = 25;
+    private bool m_isWaveCanSpawn = true;
     #endregion Variable
 
     public int indexEvent = 0;
+    private int currentQuarter;
+
     #region Unity Functions
     void Start()
     {
@@ -142,7 +150,21 @@ public class AltarBehaviorComponent : InteractionInterface
             SucceedEvent();
             return;
         }
+        if ((int)(m_objectHealthSystem.healthSystem.health) / lostLifeToSpawnWave != currentQuarter)
+        {
+            if (m_isWaveCanSpawn)
+            {
+                m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
+                m_isWaveCanSpawn = false;
+                currentQuarter--;
+            }
+        }
+        else
+        {
+            m_isWaveCanSpawn = true;
+        }
 
+        
 
         progression = 1.0f - m_objectHealthSystem.healthSystem.percentHealth;
         //m_eventProgressionSlider.fillAmount = progression;
@@ -269,6 +291,10 @@ public class AltarBehaviorComponent : InteractionInterface
 
         sphereCollider.enabled = true;
 
+
+        m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
+        m_isWaveCanSpawn = false;
+        currentQuarter = (int)(m_objectHealthSystem.healthSystem.health) / lostLifeToSpawnWave;
         m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
         progression = 0;
 
@@ -278,9 +304,9 @@ public class AltarBehaviorComponent : InteractionInterface
         {
             m_myAnimator.SetTrigger("Activation");
         }
-        int alatarDone = transform.parent.GetComponentInChildren<RoomManager>().CheckEventNumber();
+        int altarDone = transform.parent.GetComponentInChildren<RoomManager>().CheckEventNumber();
         int nightCount = m_enemyManager.m_dayController.m_nightCount;
-        if (alatarDone >= 0)
+        if (altarDone >= 0)
         {
             //lastItemInstantiate = Instantiate(eventHolder.DangerAddition[alatarDone], transform.position, transform.rotation);
             //TrainingArea area = lastItemInstantiate.GetComponent<TrainingArea>();
@@ -289,7 +315,7 @@ public class AltarBehaviorComponent : InteractionInterface
             //lastItemInstantiate.SetActive(true);
         }
         AltarAttackComponent  altarAttackComponent = GetComponent<AltarAttackComponent>();
-        altarAttackComponent.ActivateAltarAttack(eventHolder.GetAltarAttackData(eventElementType,0), m_myAnimator.transform.position);
+        altarAttackComponent.ActivateAltarAttack(eventHolder.GetAltarAttackData(eventElementType, altarDone), m_myAnimator.transform.position);
         eventHolder.SpawnAreaVFX(eventElementType, transform.position);
 
         SetMeshesEventIntensity(0.33f * (1 + 1));

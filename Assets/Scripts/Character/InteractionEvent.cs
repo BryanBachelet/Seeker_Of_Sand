@@ -275,8 +275,6 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
-            if (!GameState.IsPlaying())
-                return;
 
             if (currentInteractionInterface != null)
             {
@@ -297,12 +295,12 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
-            if (!GameState.IsPlaying())
-                return;
+            
 
             if (currentInteractionInterface != null && !currentInteractionInterface.isOpen)
             {
-
+                if (!GameState.IsPlaying())
+                    return;
                 currentInteractionInterface.CallOpenInteraction(this.gameObject);
                 if (currentInteractionInterface.hasClosePhase)
                 {

@@ -85,7 +85,7 @@ public class EventHolder : MonoBehaviour
     {
         for (int i = 0; i < altarAttackDataArray.Length; i++)
         {
-            if (altarAttackDataArray[i].element == element)
+            if (altarAttackDataArray[i].element == element && altarAttackDataArray[i].difficulty == difficulty )
             {
                 return altarAttackDataArray[i];
             }

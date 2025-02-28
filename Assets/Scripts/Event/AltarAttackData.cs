@@ -1,13 +1,17 @@
 using GuerhoubaGames.GameEnum;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static JBooth.MicroSplat.TraxManager;
+
 
 [CreateAssetMenu(fileName = "Altar Attack Data", menuName = "Altar/ Altar Attack Data")]
 public class AltarAttackData : ScriptableObject
 {
     public GameElement element;
+    public int difficulty;
+
     public GameObject prefabAttack;
 
     public bool isArea;

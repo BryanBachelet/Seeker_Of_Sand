@@ -301,7 +301,7 @@ namespace Render.Camera
             m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle;
             m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
             m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
-            m_distanceToTarget = CheckGroundCamera(m_cameraDirection);
+        //    m_distanceToTarget = CheckGroundCamera(m_cameraDirection);
 
         }
 
