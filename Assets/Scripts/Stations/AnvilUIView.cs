@@ -152,7 +152,8 @@ namespace GuerhoubaGames.UI
 
         private void UpdateUpgradeUI(int indexObject, CharacterObjectType characterObjectType, bool isUpdate = false)
         {
-            // Check if fragment is already Tier 3;
+            // Check if fragment is already
+            // 3;
             if (isUpdate && !anvilBehavior.IsFrgmentCanBeUpgrade(m_characterArtefact.artefactsList[m_indexArtecfactUpgradable]))
             {
                 m_receptableImage.ResetFragmentUIView();

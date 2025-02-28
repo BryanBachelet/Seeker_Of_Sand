@@ -88,6 +88,8 @@ namespace Enemies
         public Vector3 posFullHealth;
 
         public bool isHealthDisplay = false;
+
+        private Object_HealthDisplay m_objectHealthDisplay;
         void Awake()
         {
             InitComponent();
@@ -98,6 +100,7 @@ namespace Enemies
             m_healthSystem = new HealthSystem();
             m_npcInfo = GetComponent<NpcMetaInfos>();
             m_entityAnimator = GetComponentInChildren<Animator>(false);
+            m_objectHealthDisplay = GetComponentInChildren<Object_HealthDisplay>();
             _propBlock = new MaterialPropertyBlock();
             if (!isMassed)
             {
@@ -114,7 +117,7 @@ namespace Enemies
                 }
 
             }
-            if (this.GetComponent<HitEffectHighLight>() != null) { m_HitEffectHighLight = this.GetComponent<HitEffectHighLight>(); }
+            if (this.GetComponent<HitEffectHighLight>() != null) { m_HitEffectHighLight = this.GetComponent<HitEffectHighLight>(); m_HitEffectHighLight.m_objectHealthDisplay = m_objectHealthDisplay; }
 
             if(deathStateDuration == 0 && hasDeathAnimation) { SearchDeathOnAnimator(); }
             RestartObject(1);
@@ -191,14 +194,7 @@ namespace Enemies
 
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
-            if(isHealthDisplay)
-            {
-                float progressDeath = m_healthSystem.health / m_healthSystem.maxHealth;
-                healthBarFill.transform.localPosition = Vector3.Lerp(posFullHealth, posLowHealth, progressDeath);
-                healthBarFill.transform.localScale = new Vector3(Mathf.Lerp(0.35f, 0, progressDeath), 0.25f, 0.22f);
-                healthBackground.transform.localPosition = Vector3.Lerp(posLowHealth, new Vector3(-posFullHealth.x, posFullHealth.y, posFullHealth.z), progressDeath);
-                healthBackground.transform.localScale = new Vector3(Mathf.Lerp(0, 0.35f, progressDeath), 0.25f, 0.22f);
-            }
+            m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
 
             if (m_healthSystem.health > 0) return;
 
@@ -297,6 +293,7 @@ namespace Enemies
             //m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
             //m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
+            m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
             death = false;
             if (hasDeathAnimation)
             {

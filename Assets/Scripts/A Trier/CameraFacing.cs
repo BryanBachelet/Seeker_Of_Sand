@@ -8,6 +8,8 @@ public class CameraFacing : MonoBehaviour
     //public GameObject player;
     //public Vector3 lookVector;
     // Start is called before the first frame update
+
+    public bool faceCameraAxis = false;
     void Start()
     {
         if(mainCamera == null) { mainCamera = Camera.main; }
@@ -18,8 +20,16 @@ public class CameraFacing : MonoBehaviour
     {
         if(mainCamera)
         {
+            if(faceCameraAxis)
+            {
+                transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.back, mainCamera.transform.rotation * Vector3.up);
+            }
+            else
+            {
+                transform.LookAt(mainCamera.transform.position, Vector3.up);
+            }
             //transform.forward = mainCamera.transform.forward;
-            transform.LookAt(mainCamera.transform.position, Vector3.up);
+
         }
         else
         {
