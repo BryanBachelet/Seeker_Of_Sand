@@ -86,6 +86,19 @@ public class DayCyclecontroller : MonoBehaviour
 
     public Texture2D[] moonTexture = new Texture2D[3];
     // Start is called before the first frame update
+
+    public GameObject AiguilleRotation;
+    public GameObject horlogeDay;
+    public GameObject horlogeNight;
+
+    public Vector3[] positionAiguille;
+    public Vector3[] rotationAiguille;
+
+    public Vector3[] positionDay;
+    public Vector3[] positionNight;
+
+    public Vector3[] rotationDay;
+    public Vector3[] rotationNight;
     void Start()
     {
         //newDay = true;
@@ -100,6 +113,8 @@ public class DayCyclecontroller : MonoBehaviour
         Time.timeScale = timescale;
         if (currentPhase < 0) currentPhase = 0;
         m_TimeProchainePhase = time + tempsChaquePhase[currentPhase];
+        //AiguilleRotation.transform.Rotate(new Vector3(0, 0, 75));
+
     }
 
     // Update is called once per frame
@@ -158,6 +173,10 @@ public class DayCyclecontroller : MonoBehaviour
 
 
         float moonRotation = sunRotation - 180;
+        if (Application.isPlaying)
+        {
+            AiguilleRotation.transform.Rotate(rotationAiguille[currentPhase]);
+        }
 
         m_sun.transform.rotation = Quaternion.Euler(sunRotation, -149, 0);
         m_moon.transform.rotation = Quaternion.Euler(moonRotation, -149, 0);
@@ -243,6 +262,10 @@ public class DayCyclecontroller : MonoBehaviour
     private void StartDay()
     {
         m_sun.gameObject.SetActive(true);
+        horlogeDay.transform.position = positionDay[0];
+        horlogeDay.transform.Rotate(rotationDay[0]);
+        horlogeNight.transform.position = positionDay[1];
+        horlogeNight.transform.Rotate(rotationDay[1]);
         isNight = false;
         isNightState = isNight;
         if (dayStartEvent != null) dayStartEvent.Invoke();
@@ -268,6 +291,10 @@ public class DayCyclecontroller : MonoBehaviour
     private void StartNight()
     {
         m_moon.gameObject.SetActive(true);
+        horlogeDay.transform.position = positionNight[0];
+        horlogeDay.transform.Rotate(rotationNight[0]);
+        horlogeNight.transform.position = positionNight[1];
+        horlogeNight.transform.Rotate(rotationNight[1]);
         isNight = true;
         isNightState = isNight;
         if (nightStartEvent != null) nightStartEvent.Invoke();
@@ -299,6 +326,7 @@ public class DayCyclecontroller : MonoBehaviour
             StartCoroutine(DisplayInstruction(instructionPhase[currentPhase], 2, Color.white, ""));
             lastPhaseChecked = currentPhase;
         }
+        //AiguilleRotation.transform.position = positionAiguille[currentPhase];
 
     }
 

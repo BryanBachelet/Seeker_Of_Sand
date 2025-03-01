@@ -291,7 +291,19 @@ public class RoomManager : MonoBehaviour
         rewardAssociated = new int[3];
         for(int i = 0; i < rewardAssociated.Length; i++)
         {
-            rewardAssociated[i] = UnityEngine.Random.Range(0, 3);
+            int randomReward = UnityEngine.Random.Range(0, 100);
+            if(randomReward < 50)
+            {
+                rewardAssociated[i] = 0;
+            }
+            else if(randomReward >= 50 && randomReward < 75)
+            {
+                rewardAssociated[i] = 1;
+            }
+            else
+            {
+                rewardAssociated[i] = 1;
+            }
         }
         return rewardAssociated;
 
