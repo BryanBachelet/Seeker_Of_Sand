@@ -41,7 +41,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public Animator animatorAssociated;
 
     public Material _matAssociated;
-
+    public MeshRenderer m_meshRender;
     private void Start()
     {
         GameState.AddObject(state);
@@ -49,6 +49,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         healthSystem = new HealthSystem();
         maxLife = (int)maxHealthEvolution.Evaluate(healthManager.characterShoot.GetComponent<CharacterUpgrade>().avatarUpgradeList.Count);
         healthSystem.Setup(maxLife);
+        if(m_meshRender != null) _matAssociated = m_meshRender.material;
     }
 
     public void Update()
@@ -74,6 +75,12 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         if (healthSystem.health > 0) return;
 
         eventState = EventObjectState.Death;
+        animatorAssociated.SetBool("ActiveEvent", false);
+        if (this.GetComponent<SpawnerBehavior>() != null) 
+        {
+            this.GetComponent<SpawnerBehavior>().SendSpawnerDesactivation();
+        }
+
         GlobalSoundManager.PlayOneShot(33, transform.position);
 
     }

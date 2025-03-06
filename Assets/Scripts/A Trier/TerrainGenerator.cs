@@ -45,6 +45,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public RoomInfoUI roomInfoUI;
     public DayCyclecontroller dayController;
+    public DayTimeController dayTimeController;
     private int lastNightCount = -1;
 
     private List<RewardType> rewardList = new List<RewardType>();
@@ -61,6 +62,7 @@ public class TerrainGenerator : MonoBehaviour
     public void Start()
     {
         dayController.dayStartEvent += ResetRoomAtNewDay;
+        dayTimeController.dayStartEvent += ResetRoomAtNewDay;
     }
 
     public void ResetRoomAtNewDay()
