@@ -8,7 +8,6 @@ using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.AI;
 using Render.Camera;
-using UnityEditor.ShaderGraph.Internal;
 
 
 
@@ -469,8 +468,12 @@ public class RoomManager : MonoBehaviour
             if (Physics.Raycast(transform.position + positionVariant, -Vector3.up, out hit, 150, groundLayer))
             {
                 GameObject lastSpawnerCreated = Instantiate(spawnerPrefab, hit.point, Quaternion.identity, this.transform);
-                lastSpawnerCreated.GetComponent<SpawnerBehavior>().m_roomManager = this;
-                lastSpawnerCreated.GetComponent<SpawnerBehavior>().m_enemyManager = m_enemyManager;
+                SpawnerBehavior lastSpawnerBehavior = lastSpawnerCreated.GetComponent<SpawnerBehavior>();
+                lastSpawnerBehavior.m_roomManager = this;
+                lastSpawnerBehavior.m_enemyManager = m_enemyManager;
+                lastSpawnerBehavior.m_healthSystem = lastSpawnerCreated.GetComponent<ObjectHealthSystem>();
+
+
                 spawnerTemp.Add(lastSpawnerCreated);
 
             }

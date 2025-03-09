@@ -283,7 +283,7 @@ public class DayCyclecontroller : MonoBehaviour
         //vSpaceEmissionTexture.
         m_nightCount++;
         m_nightCountGlobal++;
-        m_EnemyManager.m_playerTranform.GetComponent<CharacterDash>().gainDash(1, true);
+        //m_EnemyManager.m_playerTranform.GetComponent<CharacterDash>().gainDash(1, true);
         dayText.text = "Day " + (m_nightCount + 1);
         newDay = true;
     }

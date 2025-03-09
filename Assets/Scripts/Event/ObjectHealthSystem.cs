@@ -18,7 +18,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public int maxLife;
     public HealthSystem healthSystem;
     public HealthManager healthManager;
-
+    public float ratioLife;
 
     [SerializeField] private float m_invicibleDuration;
     [SerializeField] private bool m_isInvicible;
@@ -42,6 +42,11 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     public Material _matAssociated;
     public MeshRenderer m_meshRender;
+
+    //public Vector3 offsetDamage = new Vector3(0, 5, 0);
+    public Vector3 offset_DisplayDamage = new Vector3(0, 5, 0);
+
+    private SpawnerBehavior spawnerbehavior; //A RETIRER A TERME, N'A RIEN A FAIRE LA
     private void Start()
     {
         GameState.AddObject(state);
@@ -65,13 +70,18 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         animatorAssociated.SetTrigger("TakeHit");
         m_invicibleTimer = 0;
         GlobalSoundManager.PlayOneShot(32, transform.position);
+        ratioLife = healthSystem.percentHealth;
         // VfX feedback
-        Vector3 positionOnScreen = transform.position + new Vector3(0, 5, 0);
+        Vector3 positionOnScreen = transform.position + offset_DisplayDamage;
         healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
 
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;
-
+        if (this.GetComponent<SpawnerBehavior>() != null)
+        {
+            spawnerbehavior = this.GetComponent<SpawnerBehavior>();
+            spawnerbehavior.UpdatePulse(ratioLife);
+        }
         if (healthSystem.health > 0) return;
 
         eventState = EventObjectState.Death;
