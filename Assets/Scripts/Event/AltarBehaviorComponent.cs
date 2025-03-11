@@ -172,7 +172,7 @@ public class AltarBehaviorComponent : InteractionInterface
         progression = 1.0f - m_objectHealthSystem.healthSystem.percentHealth;
         //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
-        corruptedRoot.transform.localScale = Vector3.one * (corruptedRootScale.Evaluate(progression));
+        //corruptedRoot.transform.localScale = Vector3.one * (corruptedRootScale.Evaluate(progression));
         roomInfoUI.UpdateTextProgression((int)m_objectHealthSystem.healthSystem.maxHealth - (int)m_objectHealthSystem.healthSystem.health, (int)m_objectHealthSystem.healthSystem.maxHealth);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
@@ -340,7 +340,7 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         sphereCollider.enabled = false;
         roomInfoUI.DeactivateMajorGoalInterface();
-        corruptedRoot.transform.localScale = Vector3.one * (0.01f);
+        //corruptedRoot.transform.localScale = Vector3.one * (0.01f);
         m_isEventOccuring = false;
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");
