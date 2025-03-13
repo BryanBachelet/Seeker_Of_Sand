@@ -13,6 +13,7 @@ using SeekerOfSand.UI;
 using UnityEngine.InputSystem;
 using System.Runtime.Serialization.Formatters.Binary;
 using Render.Camera;
+using Unity.VisualScripting;
 
 namespace Enemies
 {
@@ -193,6 +194,12 @@ namespace Enemies
         private int comboCount;
         private int maxComboValue;
         [SerializeField] private LayerMask layerMaskGround;
+
+        public Vector3[] spawnPositionAvailable;
+        public float[] spawnPositionTimer;
+        public bool[] spawningStateOfSpawner;
+        public int spawnMaxCD;
+        public bool debugSpawningPerPosition = false;
         public void Awake()
         {
             NavMesh.pathfindingIterationsPerFrame = 400;
@@ -269,45 +276,17 @@ namespace Enemies
             if (spawningPhase)
             {
 
-                m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static + (3 - TerrainGenerator.staticRoomManager.eventNumber));
-                SpawnCooldown();
+                //m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static + (3 - TerrainGenerator.staticRoomManager.eventNumber));
+                //SpawnCooldown();
+            }
+
+            if (debugSpawningPerPosition)
+            {
+                SpawnByUsingCorrupted();
             }
 
 
-
-            //if (m_uiManagerGameObject && lastAltarActivated != null)
-            //{
-            //    lastSkeletonCount = lastAltarActivated.skeletonCount;
-            //    if (lastSkeletonCount != punketoneInvoked.Count)
-            //    {
-            //        punketoneInvoked.Clear();
-            //        for (int i = 0; i < lastSkeletonCount; i++)
-            //        {
-            //            punketoneInvoked.Add(lastAltarActivated.punketonHP[i]);
-            //            m_UiEventManager.SetupUIBoss(i);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        for (int i = 0; i < lastSkeletonCount; i++)
-            //        {
-            //            m_UiEventManager.UpdateUIBossLifebar(i, punketoneInvoked[i].percentHP, punketoneInvoked[i].currentHP);
-            //        }
-            //    }
-            //
-            //}
-            //else
-            //{
-            //    if (punketoneInvoked.Count > 0)
-            //    {
-            //        for (int i = 0; i < lastSkeletonCount; i++)
-            //        {
-            //            m_UiEventManager.RemoveUIBoss(i);
-            //        }
-            //        punketoneInvoked.Clear();
-            //    }
-            //}
-
+           
         }
 
 #if UNITY_EDITOR
@@ -502,7 +481,7 @@ namespace Enemies
 
         private void SpawnCooldown()
         {
-            if (remainEnemy + m_groupEnemySize >= m_maxUnittotal && m_spawnCooldown > GetTimeSpawn()/2.0f)
+            if (remainEnemy + m_groupEnemySize >= m_maxUnittotal && m_spawnCooldown > GetTimeSpawn() / 2.0f)
             {
                 return;
             }
@@ -1181,6 +1160,69 @@ namespace Enemies
                 canSpawnDissonance = false;
             }
             return canSpawnDissonance;
+        }
+
+        public void GetDataSpawner(GameObject[] spawnerObject)
+        {
+            spawnPositionAvailable = new Vector3[spawnerObject.Length];
+            spawnPositionTimer = new float[spawnerObject.Length];
+            spawningStateOfSpawner = new bool[spawnerObject.Length];
+            for (int i = 0; i < spawnPositionAvailable.Length; i++)
+            {
+                spawnPositionAvailable[i] = spawnerObject[i].transform.position;
+                spawnPositionTimer[i] = Random.Range(0, spawnMaxCD);
+                spawningStateOfSpawner[i] = true;
+            }
+            if(spawnPositionAvailable.Length > 0) { debugSpawningPerPosition = true; }
+        }
+
+        public void DesactiveSpawner(GameObject spawner)
+        {
+            for (int i = 0; i < spawnPositionAvailable.Length; i++)
+            {
+                if (spawnPositionAvailable[i] == spawner.transform.position)
+                {
+                    spawningStateOfSpawner[i] = false;
+                }
+
+            }
+        }
+
+        public void SpawnByUsingCorrupted()
+        {
+            float addTime = Time.deltaTime;
+            for (int i = 0; i < spawningStateOfSpawner.Length; i++)
+            {
+                if (spawningStateOfSpawner[i] == true)
+                {
+                    spawnPositionTimer[i] += addTime;
+                    if (spawnPositionTimer[i] >= spawnMaxCD)
+                    {
+                        //CALL groupe spawn function en dehors du spawn normal
+                        for (int j = 0; j < m_groupEnemySize; j++)
+                        {
+
+                            SpawnEnemyByPool(FindPositionAtSpawner(spawnPositionAvailable[i]));
+
+                        }
+                        InstantiateSpawnFeedback();
+                        spawnPositionTimer[i] = 0;
+                    }
+                }
+            }
+        }
+
+        public Vector3 FindPositionAtSpawner(Vector3 position)
+        {
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(position, out hit, Mathf.Infinity, NavMesh.AllAreas))
+            {
+                return hit.position;
+            }
+            else
+            {
+                return Vector3.zero;
+            }
         }
     }
 

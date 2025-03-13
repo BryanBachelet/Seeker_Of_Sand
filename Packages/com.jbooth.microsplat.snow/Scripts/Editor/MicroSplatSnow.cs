@@ -528,7 +528,7 @@ namespace JBooth.MicroSplat
             {
                sb.AppendLine("      _SnowSSSTint(\"Subsurface Tint\", Color) = (1,1,1,0.5)");
             }
-            if (HasFeature(features, "_TESSDISTANCE"))
+            if (HasFeature(features, "_TESSDISTANCE") || HasFeature(features, "_TESSONLYDISTANCE"))
             {
                sb.AppendLine ("      _TessDisplaceSnowMultiplier(\"Snow Displacement Multiplier\", Range(0, 2)) = 1");
             }

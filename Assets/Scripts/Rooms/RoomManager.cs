@@ -88,6 +88,14 @@ public class RoomManager : MonoBehaviour
     private TerrainActivationManager m_terrainActivation;
 
     public int[] rewardAssociated;
+
+    #region spawner Parameter
+    public GameObject spawnerPrefab;
+    public float rangeSpawner;
+    public int quantitySpawner = 1;
+    public GameObject[] spawnerList;
+    public LayerMask groundLayer;
+    #endregion
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -140,6 +148,7 @@ public class RoomManager : MonoBehaviour
         m_isStartActivation = true;
         m_startRoomChallengeTime = DateTime.Now;
         baseRoomType = currentRoomType;
+        if (quantitySpawner > 0) { GenerateSpawner(); } 
         //if (currentRoomType == RoomType.Enemy)
         //{
         //    m_enemyManager.OnDeathSimpleEvent += CountEnemy;
@@ -149,7 +158,7 @@ public class RoomManager : MonoBehaviour
 
         //if (currentRoomType == RoomType.Enemy) m_enemyManager.isStopSpawn = false;
         //else
-        m_enemyManager.isStopSpawn = true;
+        //m_enemyManager.isStopSpawn = true;
         //m_cameraBehavior.ResetZoom();
         SetupRoomType();
         previewCamera.gameObject.SetActive(false);
@@ -335,7 +344,7 @@ public class RoomManager : MonoBehaviour
         if ((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
         roomInfoUI.DeactivateMajorGoalInterface();
-        m_enemyManager.isStopSpawn = true;
+        //m_enemyManager.isStopSpawn = true;
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
       
@@ -447,4 +456,38 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    public void GenerateSpawner()
+    {
+
+        float radius = rangeSpawner / 2;
+        List<GameObject> spawnerTemp = new List<GameObject>();
+        for (int i = 0; i < quantitySpawner; i++)
+        {
+            RaycastHit hit;
+            Vector3 positionVariant = new Vector3(UnityEngine.Random.Range(-radius, radius), 0, UnityEngine.Random.Range(-radius, radius));
+            if (Physics.Raycast(transform.position + positionVariant, -Vector3.up, out hit, 150, groundLayer))
+            {
+                GameObject lastSpawnerCreated = Instantiate(spawnerPrefab, hit.point, Quaternion.identity, this.transform);
+                SpawnerBehavior lastSpawnerBehavior = lastSpawnerCreated.GetComponent<SpawnerBehavior>();
+                lastSpawnerBehavior.m_roomManager = this;
+                lastSpawnerBehavior.m_enemyManager = m_enemyManager;
+                lastSpawnerBehavior.m_healthSystem = lastSpawnerCreated.GetComponent<ObjectHealthSystem>();
+
+
+                spawnerTemp.Add(lastSpawnerCreated);
+
+            }
+        }
+        spawnerList = new GameObject[spawnerTemp.Count];
+        for (int j = 0; j < spawnerTemp.Count; j++)
+        {
+            spawnerList[j] = spawnerTemp[j];
+        }
+        m_enemyManager.GetDataSpawner(spawnerList);
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, rangeSpawner);
+    }
 }

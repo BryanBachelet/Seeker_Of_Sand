@@ -91,7 +91,7 @@ namespace Character
 
         }
 
-        private bool CalculateDashEndPoint(float dashDistance,bool isCollisionEnemy =false, bool isDetermineByMouse = false) // Function that test where the player should arrive
+        private bool CalculateDashEndPoint(float dashDistance, bool isCollisionEnemy = false, bool isDetermineByMouse = false) // Function that test where the player should arrive
         {
             Vector3 m_direction = Vector3.zero;
             if (!isDetermineByMouse)
@@ -102,16 +102,16 @@ namespace Character
             else
             {
                 m_direction = m_characterAim.GetAimDirection();
-               m_direction = m_characterMouvement.OrientateWithSlopeDirection(m_direction);
+                m_direction = m_characterMouvement.OrientateWithSlopeDirection(m_direction);
             }
 
-           
+
             m_startPoint = transform.position;
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
 
             LayerMask raycastLayerMaskUse = m_obstacleLayerMask;
-            if(isCollisionEnemy)
+            if (isCollisionEnemy)
             {
                 raycastLayerMaskUse = m_enemyObstacleLayerMask;
             }
@@ -166,12 +166,12 @@ namespace Character
 
             CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
 
-            Vector3 p1 =  capsuleCollider.center - new Vector3(0, capsuleCollider.height, 0);
+            Vector3 p1 = capsuleCollider.center - new Vector3(0, capsuleCollider.height, 0);
             Vector3 p2 = capsuleCollider.center + new Vector3(0, capsuleCollider.height, 0);
-            if (Physics.CapsuleCast(transform.position +  p1, transform.position + p2,capsuleCollider.radius, m_direction.normalized, out hit, dashDistance, raycastLayerMaskUse))
+            if (Physics.CapsuleCast(transform.position + p1, transform.position + p2, capsuleCollider.radius, m_direction.normalized, out hit, dashDistance, raycastLayerMaskUse))
             {
                 frontPoint = hit.point;
-                m_endPoint = hit.point + hit.normal * 4.5f + -m_direction.normalized *2.0f;
+                m_endPoint = hit.point + hit.normal * 4.5f + -m_direction.normalized * 2.0f;
 
                 if (Physics.Raycast(m_endPoint, Vector3.down, out hit, dashDistance, m_obstacleLayerMask))
                 {
@@ -248,6 +248,7 @@ namespace Character
 
             if (m_isActiveCooldown)
             {
+                float dashFillFeedback = m_dashCooldownTimer / m_dashCooldownDuration;
                 if (m_dashCooldownTimer > m_dashCooldownDuration)
                 {
 
@@ -256,19 +257,20 @@ namespace Character
                     if (m_currentStack >= m_maxStack)
                     {
                         m_isActiveCooldown = false;
+                        if (m_dashUI != null) m_dashUI.fillAmount = 1;
                     }
 
                 }
                 else
                 {
                     m_dashCooldownTimer += Time.deltaTime;
+                    if (m_dashUI != null) m_dashUI.fillAmount = dashFillFeedback;
                 }
-                float dashFillFeedback = m_dashCooldownTimer / m_dashCooldownDuration;
-                if (m_dashUI != null) m_dashUI.fillAmount = dashFillFeedback;
+
                 m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);
             }
-        }
 
+        }
         public void SpellDash(float duration, float distance)
         {
 
@@ -277,7 +279,7 @@ namespace Character
             characterModel[1].SetActive(false);
             //characterModel[2].SetActive(true);
             //characterModel[2].transform.localScale = new Vector3(4f, 4f, 4f);
-            m_isDashValid = CalculChargeEndPoint(distance, true,true);
+            m_isDashValid = CalculChargeEndPoint(distance, true, true);
             if (!m_isDashValid) return;
             m_characterMouvement.ChangeState(CharacterMouvement.MouvementState.SpecialSpell);
             m_spellDashDistance = distance;
@@ -301,6 +303,8 @@ namespace Character
             m_maxStack++;
             m_currentStack = m_maxStack;
         }
-
     }
+
+   
+
 }

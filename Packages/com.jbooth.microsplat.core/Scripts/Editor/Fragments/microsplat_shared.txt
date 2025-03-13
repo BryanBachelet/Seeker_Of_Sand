@@ -13,12 +13,13 @@ TEXTURE2D(_MainTex);
          float4    _TerrainNormalmapTexture_TexelSize;
       #endif
 
+#if !_MICROVERSEPREVIEW
       #if (_MICROTERRAIN || _MICROMESHTERRAIN)
           TEXTURE2D(_TerrainHeightmapTexture);
           float4 _TerrainHeightmapTexture_TexelSize;
           TEXTURE2D(_TerrainNormalmapTexture);
       #endif
-
+#endif
       UNITY_INSTANCING_BUFFER_START(Terrain)
           UNITY_DEFINE_INSTANCED_PROP(float4, _TerrainPatchInstanceData)  // float4(xBase, yBase, skipScale, ~)
       UNITY_INSTANCING_BUFFER_END(Terrain)          

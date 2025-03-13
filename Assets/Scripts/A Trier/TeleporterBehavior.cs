@@ -24,6 +24,7 @@ public class TeleporterBehavior : MonoBehaviour
     [HideInInspector] public bool isTimePassing;
     public EventHolder eventHolder;
     public DayCyclecontroller dayController;
+    public DayTimeController dayTimeController;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,15 +60,25 @@ public class TeleporterBehavior : MonoBehaviour
 
         this.gameObject.transform.position = nextTpPosition + new Vector3(0, 10, 0);
         apparitionVFX.Play();
-        if (isTimePassing) dayController.UpdateTimeByStep();
-        terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
-        if (dayController.newDay)
+        if (isTimePassing)
         {
-            cameraFadeFunction.LaunchFadeOut(true, 0.25f);
-            GlobalSoundManager.PlayOneShot(34, this.gameObject.transform.position);
-            StartCoroutine(LaunchNewDay());
+            dayController.UpdateTimeByStep();
+            dayTimeController.UpdateNextPhase();
+
         }
-        else { cameraFadeFunction.LaunchFadeOut(true, 1); /*nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();*/ m_cameraBehavior.ChangeLerpForTP(); }
+        terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
+        cameraFadeFunction.LaunchFadeOut(true, 1);
+        //if (dayController.newDay)
+        //{
+        //    cameraFadeFunction.LaunchFadeOut(true, 0.25f);
+        //    GlobalSoundManager.PlayOneShot(34, this.gameObject.transform.position);
+        //    StartCoroutine(LaunchNewDay());
+        //}
+        //else 
+        //{ 
+        //    cameraFadeFunction.LaunchFadeOut(true, 1); 
+        //    m_cameraBehavior.ChangeLerpForTP(); 
+        //}
 
 
     }

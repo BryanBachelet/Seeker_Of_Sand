@@ -6,6 +6,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if USING_URP
+using UnityEngine.Rendering.Universal;
+#endif
 
 namespace JBooth.MicroSplat
 {
@@ -125,6 +128,12 @@ namespace JBooth.MicroSplat
          camData.renderingPathCustomFrameSettings.litShaderMode = UnityEngine.Rendering.HighDefinition.LitShaderMode.Forward;
 #endif
 
+
+
+#if UNITY_URP && UNITY_2021_3_OR_NEWER
+        var camData = cam.gameObject.AddComponent<UniversalAdditionalCameraData>();
+        camData.SetRenderer(1);
+#endif
 
          cam.orthographic = true;
          cam.orthographicSize = worldSize;

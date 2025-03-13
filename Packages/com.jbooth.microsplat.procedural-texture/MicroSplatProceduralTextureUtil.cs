@@ -19,7 +19,7 @@ namespace JBooth.MicroSplat
 
       static float PCFilter(int index, float height, float slope, float cavity, float flow, Vector3 worldPos, Vector2 uv,
           Color bMask, Color bMask2, out int texIndex, Vector3 pN, MicroSplatProceduralTextureConfig config, 
-          Texture2D procTexNoise, NoiseUVMode noiseMode)
+          Texture2D procTexNoise, NoiseUVMode noiseMode, Vector4 noiseWeights)
       {
          var layer = config.layers [index];
          Vector2 noiseUV = uv;
@@ -36,11 +36,11 @@ namespace JBooth.MicroSplat
             Color noise2 = procTexNoise.GetPixelBilinear (nUV2.x, nUV2.y);
             noise = noise0 * pN.x + noise1 * pN.y + noise2 * pN.z;
          }
-         else if (noiseMode == NoiseUVMode.World)
+         else if (noiseMode == NoiseUVMode.UV)
          {
             noise = procTexNoise.GetPixelBilinear (noiseUV.x * layer.noiseFrequency + layer.noiseOffset, noiseUV.y * layer.noiseFrequency + layer.noiseOffset);
          }
-         else if (noiseMode == NoiseUVMode.UV)
+         else if (noiseMode == NoiseUVMode.World)
          {
             noise *= procTexNoise.GetPixelBilinear (worldPos.x * 0.002f * layer.noiseFrequency + layer.noiseOffset, worldPos.z * 0.002f * layer.noiseFrequency + layer.noiseOffset);
          }
@@ -56,10 +56,12 @@ namespace JBooth.MicroSplat
          float c0 = layer.cavityMapCurve.Evaluate (cavity);
          float f0 = layer.erosionMapCurve.Evaluate (flow);
 
-         h0 *= 1.0f + Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.r);
-         s0 *= 1.0f + Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.g);
-         c0 *= 1.0f + Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.b);
-         f0 *= 1.0f + Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.a);
+         float mul = noiseWeights.w;
+         float noises = noise.r * noiseWeights.x + noise.g * noiseWeights.y + noise.b * noiseWeights.z;
+         h0 *= 1.0f + Mathf.Max(0, Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noises) * mul);
+         s0 *= 1.0f + Mathf.Max(0, Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.g) * mul);
+         c0 *= 1.0f + Mathf.Max(0, Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.b) * mul);
+         f0 *= 1.0f + Mathf.Max(0, Mathf.Lerp (layer.noiseRange.x, layer.noiseRange.y, noise.a) * mul);
 
          if (!layer.heightActive)
             h0 = 1;
@@ -92,10 +94,10 @@ namespace JBooth.MicroSplat
           int curIdx, float height, float slope, float cavity, float flow, Vector3 worldPos, Vector2 uv,
           Color biomeMask, Color biomeMask2, Vector3 pN,
           MicroSplatProceduralTextureConfig config, 
-          Texture2D noiseMap, NoiseUVMode noiseMode)
+          Texture2D noiseMap, NoiseUVMode noiseMode, Vector4 noiseWeights)
       {
          int texIndex = 0;
-         float w = PCFilter(curIdx, height, slope, cavity, flow, worldPos, uv, biomeMask, biomeMask2, out texIndex, pN, config, noiseMap, noiseMode);
+         float w = PCFilter(curIdx, height, slope, cavity, flow, worldPos, uv, biomeMask, biomeMask2, out texIndex, pN, config, noiseMap, noiseMode, noiseWeights);
          w = Mathf.Min(totalWeight, w);
          totalWeight -= w;
 
@@ -143,7 +145,8 @@ namespace JBooth.MicroSplat
          Material mat,
          MicroSplatProceduralTextureConfig config,
          out Vector4 weights,
-         out Int4 indexes)
+         out Int4 indexes,
+         Vector4 noiseWeights = new Vector4())
       {
          weights = new Vector4(0, 0, 0, 0);
 
@@ -185,7 +188,7 @@ namespace JBooth.MicroSplat
          }
          if (mask2 != null)
          {
-            biomeMask2 = mask.GetPixelBilinear(uv.x, uv.y);
+            biomeMask2 = mask2.GetPixelBilinear(uv.x, uv.y);
          }
 
          Vector3 pN = new Vector3(0, 0, 0);
@@ -210,7 +213,7 @@ namespace JBooth.MicroSplat
 
          for (int i = 0; i < layerCount; ++i)
          {
-            PCProcessLayer(ref weights, ref indexes, ref totalWeight, i, height, slope, cavity, flow, worldPos, uv, biomeMask, biomeMask2, pN, config, noiseMap, noiseUVMode);
+            PCProcessLayer(ref weights, ref indexes, ref totalWeight, i, height, slope, cavity, flow, worldPos, uv, biomeMask, biomeMask2, pN, config, noiseMap, noiseUVMode, noiseWeights);
             if (totalWeight <= 0)
                break;
          }

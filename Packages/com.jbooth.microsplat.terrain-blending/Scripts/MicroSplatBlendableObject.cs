@@ -243,6 +243,7 @@ namespace JBooth.MicroSplat
          props.SetVector("_SnowBlendParams", new Vector4(snowWidth, 0, 0, 0));
          props.SetFloat("_TBNoiseScale", noiseScale);
          props.SetVector("_FeatureFilters", new Vector4(doTerrainBlend ? 0.0f : 1.0f, doSnow ? 0.0f : 1.0f, 0, 0));
+         props.SetFloat("_BlendMode", 2); // for HDRP
 
          if (normalFromObject != null)
          {

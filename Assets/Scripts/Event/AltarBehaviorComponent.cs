@@ -75,6 +75,8 @@ public class AltarBehaviorComponent : InteractionInterface
 
     private float progression = 0;
 
+
+
     private int m_idSpellReward;
     public int m_enemiesCountConditionToWin = 0;
     public Sprite instructionImage;
@@ -101,7 +103,8 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public int indexEvent = 0;
     private int currentQuarter;
-
+    public GameObject corruptedRoot;
+    public AnimationCurve corruptedRootScale;
     #region Unity Functions
     void Start()
     {
@@ -169,6 +172,7 @@ public class AltarBehaviorComponent : InteractionInterface
         progression = 1.0f - m_objectHealthSystem.healthSystem.percentHealth;
         //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
+        //corruptedRoot.transform.localScale = Vector3.one * (corruptedRootScale.Evaluate(progression));
         roomInfoUI.UpdateTextProgression((int)m_objectHealthSystem.healthSystem.maxHealth - (int)m_objectHealthSystem.healthSystem.health, (int)m_objectHealthSystem.healthSystem.maxHealth);
         //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
@@ -336,7 +340,7 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         sphereCollider.enabled = false;
         roomInfoUI.DeactivateMajorGoalInterface();
-
+        //corruptedRoot.transform.localScale = Vector3.one * (0.01f);
         m_isEventOccuring = false;
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");

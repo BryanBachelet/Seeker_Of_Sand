@@ -4,6 +4,7 @@
 //////////////////////////////////////////////////////
 
 using UnityEngine;
+using UnityEditor;
 #if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
 #else
@@ -19,6 +20,13 @@ namespace JBooth.MicroSplat
    {
       public static void Write (Texture2D r, string path, bool mips, bool linear)
       {
+         var filePath = path + ".hdtexture";
+
+         if (File.Exists(filePath))
+         {
+             AssetDatabase.MakeEditable(filePath);
+         }
+
          using (var bw = new BinaryWriter (File.Open (path + ".hdtexture", FileMode.OpenOrCreate)))
          {
             bw.Write (0);

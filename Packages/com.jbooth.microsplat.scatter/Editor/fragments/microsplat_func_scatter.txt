@@ -229,15 +229,15 @@
 
          if (blend0 == 1)
          {
-            a0.a = SAMPLE_TEXTURE2D_ARRAY_GRAD(_ScatterDiffuse, my_point_repeat_sampler, uv * scale0 + uvOffset, i0, dx * scale0 * 0.3, dy * scale0 * 3).a;
+            a0.a = SAMPLE_TEXTURE2D_ARRAY_GRAD(_ScatterDiffuse, my_point_repeat_sampler, uv * scale0 + uvOffset, i0, dx * scale0 * 0.3, dy * scale0 * 0.3).a;
          }
          if (blend1 == 1)
          {
-            a1.a = SAMPLE_TEXTURE2D_ARRAY_GRAD(_ScatterDiffuse, my_point_repeat_sampler, uv * scale1 + uvOffset, i1, dx * scale1 * 0.3, dy * scale1 * 3).a;
+            a1.a = SAMPLE_TEXTURE2D_ARRAY_GRAD(_ScatterDiffuse, my_point_repeat_sampler, uv * scale1 + uvOffset, i1, dx * scale1 * 0.3, dy * scale1 * 0.3).a;
          }
          if (blend2 == 1)
          {
-            a2.a = SAMPLE_TEXTURE2D_ARRAY_GRAD(_ScatterDiffuse, my_point_repeat_sampler, uv * scale2 + uvOffset, i2, dx * scale2 * 0.3, dy * scale2 * 3).a;
+            a2.a = SAMPLE_TEXTURE2D_ARRAY_GRAD(_ScatterDiffuse, my_point_repeat_sampler, uv * scale2 + uvOffset, i2, dx * scale2 * 0.3, dy * scale2 * 0.3).a;
          }
 
          half4 n0 = 0;

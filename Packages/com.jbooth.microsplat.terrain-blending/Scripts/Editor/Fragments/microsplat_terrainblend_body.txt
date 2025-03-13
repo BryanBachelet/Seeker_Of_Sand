@@ -34,8 +34,8 @@
          th.w += _TerrainBlendParams.z; // add terrain height and center..
 
          float db = abs(th.w - d.worldSpacePosition.y);
-         normBlend = saturate(db / _SlopeBlendParams.w);
-         th.w = saturate(db / _TerrainBlendParams.x);
+         normBlend = saturate(db / max(0.0001, _SlopeBlendParams.w));
+         th.w = saturate(db / max(0.0001, _TerrainBlendParams.x));
          th.w = pow(th.w, _TerrainBlendParams.w);
          #if !_SNOW
          clip(0.999-th.w * _FeatureFilters.y < 1);
@@ -46,7 +46,7 @@
 
       float3x3 ComputeTerrainTBN(float4 th, out float3 terrainTangent, out float3 terrainBitangent)
       {
-         terrainTangent = (cross(th.xyz, float3(0,0,1)));
+         terrainTangent = (cross(th.xyz, float3(0,0,-1)));
          terrainBitangent = (cross(th.xyz, terrainTangent));
          float3x3 tbn = float3x3(terrainTangent, terrainBitangent, th.xyz);
          return tbn;
