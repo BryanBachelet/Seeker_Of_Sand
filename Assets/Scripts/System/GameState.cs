@@ -232,7 +232,7 @@ public class GameState : MonoBehaviour
 
     public void Start()
     {
-        scene = (SceneManager.GetSceneByBuildIndex(5));
+        scene = (SceneManager.GetSceneByBuildIndex(1));
         m_isDeath = false;
         if (terrainGenerator) terrainGenerator.LaunchRoomGenerator();
         m_uiManager.GetComponent<UIDispatcher>().ActiveUIElement();

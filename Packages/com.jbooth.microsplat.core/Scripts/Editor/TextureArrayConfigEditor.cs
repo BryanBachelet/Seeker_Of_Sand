@@ -1575,17 +1575,6 @@ namespace JBooth.MicroSplat
             {
                 return (TextureFormat.ETC2_RGBA8);
             }
-            else if (cmp == TextureArrayConfig.Compression.ForcePVR)
-            {
-                if (q == TextureArrayConfig.CompressionQuality.High || q == TextureArrayConfig.CompressionQuality.Medium)
-                {
-                    return (TextureFormat.PVRTC_RGBA4);
-                }
-                else
-                {
-                    return TextureFormat.PVRTC_RGBA2;
-                }
-            }
             else if (cmp == TextureArrayConfig.Compression.ForceASTC)
             {
                 if (q == TextureArrayConfig.CompressionQuality.High)
@@ -1666,9 +1655,6 @@ namespace JBooth.MicroSplat
             Graphics.Blit(src, resRT, genMat);
             GL.sRGBWrite = false;
 
-            RenderTexture.active = null;
-            resRT.Release();
-            DestroyImmediate(resRT);
             GameObject.DestroyImmediate(genMat);
             return resRT;
         }

@@ -76,7 +76,11 @@ namespace JBooth.MicroSplat
             if (GUILayout.Button ("Compress Scene"))
             {
                MicroSplatCompressor comp = new MicroSplatCompressor ();
+#if UNITY_6000_0_OR_NEWER
+               MicroSplatObject[] objs = GameObject.FindObjectsByType<MicroSplatObject>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+#else
                MicroSplatObject [] objs = GameObject.FindObjectsOfType<MicroSplatObject> ();
+#endif
                foreach (var obj in objs)
                {
                   comp.Compress (obj, o);
@@ -85,7 +89,11 @@ namespace JBooth.MicroSplat
             if (GUILayout.Button ("Uncompress Scene"))
             {
                MicroSplatCompressor comp = new MicroSplatCompressor ();
+#if UNITY_6000_0_OR_NEWER
+               MicroSplatObject[] objs = GameObject.FindObjectsByType<MicroSplatObject>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+#else
                MicroSplatObject [] objs = GameObject.FindObjectsOfType<MicroSplatObject> ();
+#endif
                foreach (var obj in objs)
                {
                   comp.Revert (obj);
@@ -162,6 +170,10 @@ namespace JBooth.MicroSplat
             var tex = t.terrain.terrainData.GetAlphamapTexture (i);
             var path = MicroSplatUtilities.RelativePathFromAsset (t);
             path += "/" + t.name + "_splat" + i + ".tga";
+            if (System.IO.File.Exists(path))
+            {
+                AssetDatabase.MakeEditable(path);
+            }
             System.IO.File.WriteAllBytes (path, tex.EncodeToTGA ());
          }
 

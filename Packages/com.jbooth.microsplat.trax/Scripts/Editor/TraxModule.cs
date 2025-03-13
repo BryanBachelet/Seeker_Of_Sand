@@ -504,7 +504,7 @@ namespace JBooth.MicroSplat
             perTexOpacity = DrawPerTexFloatSlider (index, 20, GetFeatureName (DefineFeature._PERTEXTRAXOPACITY), keywords, propData, Channel.G, CPerTexOpacity, 0, 1);
             perTexNormalStr = DrawPerTexFloatSlider (index, 20, GetFeatureName (DefineFeature._PERTEXTRAXNORMALSTR), keywords, propData, Channel.B, CPerTexNormalStr, 0, 2);
             //// 20 Trax Dig Depth, opacity, normal strength (A) Open
-            if (keywords.IsKeywordEnabled ("_TESSDISTANCE"))
+            if (keywords.IsKeywordEnabled ("_TESSDISTANCE") || keywords.IsKeywordEnabled("_TESSONLYDISPLACEMENT"))
             {
                perTexDigDepth = DrawPerTexFloatSlider (index, 20, GetFeatureName (DefineFeature._PERTEXTRAXDIGDEPTH), keywords, propData, Channel.R, CPerTexDigDepth, 0, 3);
             }

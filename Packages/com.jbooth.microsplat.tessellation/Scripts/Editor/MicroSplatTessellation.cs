@@ -50,6 +50,7 @@ namespace JBooth.MicroSplat
          _POM,
          _PERTEXPARALLAX,
          _TESSFADEHOLES,
+         _TESSONLYDISPLACE,
          kNumFeatures,
       }
 
@@ -59,8 +60,17 @@ namespace JBooth.MicroSplat
          Offset,
          POM
       }
+
+      public enum DisplacementMode
+      {
+         None = 0,
+         OnlyDisplacement,
+         Tessellation
+      }
       
       public bool isTessellated = false;
+      public bool isDisplaced = false;
+      public DisplacementMode displacementMode = DisplacementMode.None;
       public bool perTexDisplace;
       public bool perTexUpBias;
       public bool perTexOffset;
@@ -79,8 +89,8 @@ namespace JBooth.MicroSplat
       public TextAsset cbuffer_parallax;
       public TextAsset cbuffer_pom;
 
-      GUIContent CShaderTessellation = new GUIContent("Tessellation", "Tessellate and Displace Geometry?");
-
+      GUIContent CShaderDisplacementOptions = new GUIContent("Displacement Mode", "Displace Original or Tessellated vertices?");
+      
       GUIContent CTessUpBias = new GUIContent("Up Bias", "How much to bias displacement along the normal, or up");
       GUIContent CTessDisplacement = new GUIContent("Displacement", "How far to displace the surface from it's original position");
       GUIContent CTessMipBias = new GUIContent("Mip Bias", "Allows you to use lower mip map levels for displacement, which often produces a better looking result and is slightly faster");
@@ -135,7 +145,17 @@ namespace JBooth.MicroSplat
       {
          if (!keywords.IsKeywordEnabled ("_MICROVERTEXMESH"))
          {
-            isTessellated = EditorGUILayout.Toggle (CShaderTessellation, isTessellated);
+            displacementMode = (DisplacementMode)EditorGUILayout.EnumPopup(CShaderDisplacementOptions, displacementMode);
+            switch(displacementMode)
+            {
+               case DisplacementMode.None:
+                  isTessellated = isDisplaced = false;
+                  break;
+               case DisplacementMode.OnlyDisplacement:
+                  isTessellated = false; isDisplaced = true; break;
+               case DisplacementMode.Tessellation:
+                  isTessellated = true; isDisplaced = false; break;
+            }
             fadeNearHoles = EditorGUILayout.Toggle(new GUIContent("Fade Near Holes", "Fades tessellation around terrain holes"), fadeNearHoles);
          }
          parallax = (ParallaxMode)EditorGUILayout.EnumPopup(CParallax, parallax);
@@ -143,7 +163,7 @@ namespace JBooth.MicroSplat
 
       public override void DrawShaderGUI(MicroSplatShaderGUI shaderGUI, MicroSplatKeywords keywords, Material mat, MaterialEditor materialEditor, MaterialProperty[] props)
       {
-         if (isTessellated && mat.HasProperty("_TessData1") && MicroSplatUtilities.DrawRollup("Tessellation"))
+         if ((isTessellated || isDisplaced) && mat.HasProperty("_TessData1") && MicroSplatUtilities.DrawRollup("Tessellation"))
          {
             var td1 = shaderGUI.FindProp("_TessData1", props);
             var td2 = shaderGUI.FindProp("_TessData2", props);
@@ -158,9 +178,12 @@ namespace JBooth.MicroSplat
                td2v.w = (float)EditorGUILayout.Slider(CTessUpBias, td2v.w, 0.0f, 1);
             }
 
-            td1v.x = EditorGUILayout.Slider(CTessTessellation, td1v.x, 1, 32);
-            td2v.x = EditorGUILayout.FloatField(CTessMinDistance, td2v.x);
-            td2v.y = EditorGUILayout.FloatField(CTessMaxDistance, td2v.y);
+            if (isTessellated)
+            {
+               td1v.x = EditorGUILayout.Slider(CTessTessellation, td1v.x, 1, 32);
+               td2v.x = EditorGUILayout.FloatField(CTessMinDistance, td2v.x);
+               td2v.y = EditorGUILayout.FloatField(CTessMaxDistance, td2v.y);
+            }
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -240,7 +263,7 @@ namespace JBooth.MicroSplat
 
       public override void WriteProperties(string[] features, System.Text.StringBuilder sb)
       {
-         if (isTessellated)
+         if (isTessellated || isDisplaced)
          {
             sb.Append(properties_tess.text);
          }
@@ -297,9 +320,10 @@ namespace JBooth.MicroSplat
       public override string[] Pack()
       {
          List<string> features = new List<string>();
-         if (isTessellated)
+         if (isTessellated) features.Add(GetFeatureName(DefineFeature._TESSDISTANCE));
+         if (isDisplaced) features.Add(GetFeatureName(DefineFeature._TESSONLYDISPLACE));
+         if (isTessellated || isDisplaced)
          {
-            features.Add(GetFeatureName(DefineFeature._TESSDISTANCE));
             if (perTexDisplace)
             {
                features.Add(GetFeatureName(DefineFeature._PERTEXTESSDISPLACE));
@@ -350,7 +374,7 @@ namespace JBooth.MicroSplat
 
       public override void WritePerMaterialCBuffer (string[] features, StringBuilder sb)
       {
-         if (isTessellated)
+         if (isTessellated || isDisplaced)
          {
             sb.AppendLine(cbuffer_tess.text);
          }
@@ -366,7 +390,7 @@ namespace JBooth.MicroSplat
 
       public override void WriteFunctions(string [] features, System.Text.StringBuilder sb)
       {
-         if (isTessellated)
+         if (isTessellated || isDisplaced)
          {
             sb.AppendLine(func_tess.text);
          }
@@ -388,6 +412,8 @@ namespace JBooth.MicroSplat
       public override void Unpack(string[] keywords)
       {
          isTessellated = (HasFeature(keywords, DefineFeature._TESSDISTANCE));
+         isDisplaced = (HasFeature(keywords, DefineFeature._TESSONLYDISPLACE));
+         displacementMode = isTessellated ? DisplacementMode.Tessellation : isDisplaced ? DisplacementMode.OnlyDisplacement : DisplacementMode.None;
          perTexDisplace = (HasFeature(keywords, DefineFeature._PERTEXTESSDISPLACE));
          perTexUpBias = (HasFeature(keywords, DefineFeature._PERTEXTESSUPBIAS));
          perTexOffset = (HasFeature(keywords, DefineFeature._PERTEXTESSOFFSET));
@@ -472,7 +498,7 @@ namespace JBooth.MicroSplat
 
       public override void DrawPerTextureGUI(int index, MicroSplatKeywords keywords, Material mat, MicroSplatPropData propData)
       {
-         if (isTessellated)
+         if (isTessellated || isDisplaced)
          {
             InitPropData(6, propData, new Color(1.0f, 0.0f, 0.0f, 0.5f)); // displace, up, offset
 

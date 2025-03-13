@@ -208,6 +208,10 @@ namespace JBooth.MicroSplat
                   ti.isReadable)
                {
                   var bytes = tex.EncodeToTGA();
+                  if(System.IO.File.Exists(path))
+                  {
+                      AssetDatabase.MakeEditable(path);
+                  }
                   System.IO.File.WriteAllBytes(path, bytes);
                }
             }
