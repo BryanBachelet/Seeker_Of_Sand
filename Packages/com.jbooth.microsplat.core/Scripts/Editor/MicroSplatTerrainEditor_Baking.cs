@@ -619,6 +619,10 @@ namespace JBooth.MicroSplat
 
                 DestroyImmediate(worldPos, worldNormal);
                 string texPath = MicroSplatUtilities.RelativePathFromAsset(mst.terrain) + "/" + mst.terrain.name + "_" + debugOutput.ToString();
+                if (System.IO.File.Exists(texPath))
+                {
+                    AssetDatabase.MakeEditable(texPath);
+                }
                 System.IO.File.WriteAllBytes(texPath + ".png", bytes);
 
             }

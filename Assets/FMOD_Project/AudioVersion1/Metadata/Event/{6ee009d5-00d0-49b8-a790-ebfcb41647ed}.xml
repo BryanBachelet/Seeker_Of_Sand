@@ -33,6 +33,7 @@
 		</relationship>
 		<relationship name="banks">
 			<destination>{2565353e-f7b8-424d-b1dd-6c523ffab09f}</destination>
+			<destination>{476f451e-f697-46f5-a62f-b550876278ad}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{8e648d7e-2317-4398-b02a-442246c511f9}">
@@ -53,7 +54,7 @@
 			<destination>{2b536f8d-6eaf-4ab2-ae3a-09468d7347f7}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{01c4e95a-f29c-4f25-8e52-d1c03adde702}</destination>
+			<destination>{05095c63-600a-4b9e-bcee-cc93f92410b3}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{f1991f81-53d2-4565-bab8-c59d8f0976ec}">
@@ -96,11 +97,17 @@
 		<property name="length">
 			<value>2.1951247165532881</value>
 		</property>
+		<relationship name="fadeInCurve">
+			<destination>{90d09a5c-a6b0-4175-86ea-26c9a8ebcf67}</destination>
+		</relationship>
 		<relationship name="audioFile">
 			<destination>{fb68c0a6-5a8b-41dd-bf75-916fd4c38e10}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{5303b95e-2f65-435d-ac25-e4becd3f893e}">
+		<property name="volume">
+			<value>-11.5</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>
@@ -122,6 +129,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{8020a43b-5aab-4bdb-8a26-79942807f1d6}" />
 	<object class="MixerBusFader" id="{f8d5f072-91b3-44e4-9135-429166f4769b}" />
+	<object class="FadeCurve" id="{90d09a5c-a6b0-4175-86ea-26c9a8ebcf67}">
+		<relationship name="startPoint">
+			<destination>{f4a74237-e781-4c95-9c0c-7c090728852c}</destination>
+		</relationship>
+		<relationship name="endPoint">
+			<destination>{cd19ad5f-16d5-41f4-9085-2f9e9503b006}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusEffectChain" id="{d5ad3b68-d4f0-452b-a4df-0ce73331f0cc}">
 		<relationship name="effects">
 			<destination>{ac264ce2-5f90-4aff-8576-d60e867f64d0}</destination>
@@ -132,6 +147,25 @@
 	<object class="SpatialiserEffect" id="{c1788da7-9bee-4ef1-b014-8c01c9ca2fa8}">
 		<property name="maximumDistance">
 			<value>250</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{f4a74237-e781-4c95-9c0c-7c090728852c}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+		<property name="curveShape">
+			<value>-1.00000048</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{cd19ad5f-16d5-41f4-9085-2f9e9503b006}">
+		<property name="position">
+			<value>0.65000000000000002</value>
+		</property>
+		<property name="value">
+			<value>1</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{ac264ce2-5f90-4aff-8576-d60e867f64d0}" />

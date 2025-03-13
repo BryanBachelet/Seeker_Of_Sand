@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace FMODUnity
 {
@@ -10,14 +11,28 @@ namespace FMODUnity
     {
         public EventReference EventReference;
 
-        [Obsolete("Use the EventReference field instead")]
+        [Obsolete("Use the EventReference field instead.")]
         public string Event = "";
 
-        public EmitterGameEvent PlayEvent = EmitterGameEvent.None;
-        public EmitterGameEvent StopEvent = EmitterGameEvent.None;
+        [FormerlySerializedAs("PlayEvent")]
+        public EmitterGameEvent EventPlayTrigger = EmitterGameEvent.None;
+        public EmitterGameEvent PlayEvent
+        {
+            get { return EventPlayTrigger; }
+            set { EventPlayTrigger = value; }
+        }
+        [FormerlySerializedAs("StopEvent")]
+        public EmitterGameEvent EventStopTrigger = EmitterGameEvent.None;
+        public EmitterGameEvent StopEvent
+        {
+            get { return EventStopTrigger; }
+            set { EventStopTrigger = value; }
+        }
         public bool AllowFadeout = true;
         public bool TriggerOnce = false;
         public bool Preload = false;
+        [FormerlySerializedAs("AllowNonRigidbodyDoppler")]
+        public bool NonRigidbodyVelocity = false;
         public ParamRef[] Params = new ParamRef[0];
         public bool OverrideAttenuation = false;
         public float OverrideMinDistance = -1.0f;
@@ -101,7 +116,7 @@ namespace FMODUnity
             }
         }
 
-        protected override void Start() 
+        protected override void Start()
         {
             RuntimeUtils.EnforceLibraryOrder();
             if (Preload)
@@ -111,6 +126,22 @@ namespace FMODUnity
             }
 
             HandleGameEvent(EmitterGameEvent.ObjectStart);
+
+            // If a Rigidbody or Rigidbody2D is present on this GameObject, turn off "NonRigidbodyVelocity"
+#if UNITY_PHYSICS_EXIST
+            if (NonRigidbodyVelocity && GetComponent<Rigidbody>())
+            {
+                Debug.LogWarning(string.Format("[FMOD] Non-Rigidbody Velocity is enabled on Emitter attached to GameObject \"{0}\", which also has a Rigidbody component attached - this will be disabled in favor of velocity from Rigidbody component.", this.name));
+                NonRigidbodyVelocity = false;
+            }
+#endif
+#if UNITY_PHYSICS2D_EXIST
+            if (NonRigidbodyVelocity && GetComponent<Rigidbody2D>())
+            {
+                Debug.LogWarning(string.Format("[FMOD] Non-Rigidbody Velocity is enabled on Emitter attached to GameObject \"{0}\", which also has a Rigidbody2D component attached - this will be disabled in favor of velocity from Rigidbody2D component.", this.name));
+                NonRigidbodyVelocity = false;
+            }
+#endif
         }
 
         private void OnApplicationQuit()
@@ -145,11 +176,11 @@ namespace FMODUnity
 
         protected override void HandleGameEvent(EmitterGameEvent gameEvent)
         {
-            if (PlayEvent == gameEvent)
+            if (EventPlayTrigger == gameEvent)
             {
                 Play();
             }
-            if (StopEvent == gameEvent)
+            if (EventStopTrigger == gameEvent)
             {
                 Stop();
             }
@@ -212,7 +243,7 @@ namespace FMODUnity
                 PlayInstance();
             }
         }
-        
+
         private void PlayInstance()
         {
             if (!instance.isValid())
@@ -243,7 +274,7 @@ namespace FMODUnity
                     {
                         Rigidbody rigidBody = GetComponent<Rigidbody>();
                         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject, rigidBody));
-                        RuntimeManager.AttachInstanceToGameObject(instance, transform, rigidBody);
+                        RuntimeManager.AttachInstanceToGameObject(instance, gameObject, rigidBody);
                     }
                     else
 #endif
@@ -252,13 +283,13 @@ namespace FMODUnity
                     {
                         var rigidBody2D = GetComponent<Rigidbody2D>();
                         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject, rigidBody2D));
-                        RuntimeManager.AttachInstanceToGameObject(instance, transform, rigidBody2D);
+                        RuntimeManager.AttachInstanceToGameObject(instance, gameObject, rigidBody2D);
                     }
                     else
 #endif
                     {
                         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gameObject));
-                        RuntimeManager.AttachInstanceToGameObject(instance, transform);
+                        RuntimeManager.AttachInstanceToGameObject(instance, gameObject, NonRigidbodyVelocity);
                     }
                 }
             }

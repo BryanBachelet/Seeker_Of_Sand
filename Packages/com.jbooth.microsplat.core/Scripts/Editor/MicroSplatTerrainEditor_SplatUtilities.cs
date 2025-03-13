@@ -161,6 +161,10 @@ namespace JBooth.MicroSplat
             for (int i = 0; i < tdata.alphamapTextures.Length; ++i)
             {
                 var bytes = tdata.alphamapTextures[i].EncodeToTGA();
+                if(System.IO.File.Exists(path))
+                {
+                    AssetDatabase.MakeEditable(path);
+                }
                 System.IO.File.WriteAllBytes(path + "SplatControl" + i + ".tga", bytes);
             }
             AssetDatabase.Refresh();

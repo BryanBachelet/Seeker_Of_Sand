@@ -7,7 +7,7 @@ namespace Render.Camera
 
     public class CameraAimOffset : CameraEffect
     {
-        [SerializeField] private float m_sizeDistance = 2;
+
         [SerializeField] private Character.CharacterAim m_characterAim;
 
 

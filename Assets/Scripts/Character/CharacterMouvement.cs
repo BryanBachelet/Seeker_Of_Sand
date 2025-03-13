@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
+using FMOD.Studio;
+using FMODUnity;
+using Klak.Motion;
+using UnityEngine.Profiling;
 
 namespace Character
 {
@@ -15,46 +19,58 @@ namespace Character
         public Vector3 direction;
     }
 
-
-
     [RequireComponent(typeof(Rigidbody))]
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
+        private CharacterProfile profile;
         public Render.Camera.CameraBehavior cameraPlayer;
         [SerializeField] private Transform positionInTrain;
         public float runSpeed = 7.0f;
+        public float combatSpeed = 26.0f;
         public bool combatState;
+        public float ratioSmoothMouvement = 10.0f;
         [HideInInspector] public float initialSpeed = 10.0f;
         [SerializeField] private LayerMask m_groundLayerMask;
         [SerializeField] private LayerMask m_objstacleLayer;
         [SerializeField] private float m_groundDistance = 2.0f;
         [SerializeField] private float m_maxGroundSlopeAngle = 60f;
         [SerializeField] private Animator m_CharacterAnim = null;
+        [SerializeField] private Animator m_BookAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
+        public UnityEngine.VFX.VisualEffect m_slidingEffectVfx;
         [Range(0, 1)]
         [SerializeField] public float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
+        private Vector3 m_prevInputDirection;
+        private float m_rotationTime;
+        private Quaternion m_startRotation;
+
+
+        [Header("Run State")]
+        public float rotationLerpStepRunState = .5f;
+
 
         private bool m_onProjection;
 
         private ObjectState state;
 
 
-        public bool isSliding;
         private float m_currentSlideSpeed;
 
         [Header("Glide Parameter")]
         [SerializeField] private float m_glideSpeed = 4;
         [SerializeField] private float m_gravityForce = 50;
-
+        [HideInInspector] public float m_lastTimeShot = 0;
 
         [Header("Move Parameter")]
         [SerializeField] private float m_accelerationSpeed = 4.0f;
         private Vector3 m_velMovement;
+        public bool activeCombatModeConstant;
 
         [Header("Slide Parameters")]
-        public float accelerationSlide = 3.0f;
+        public bool isSliding;
+        public AnimationCurve accelerationCurve;
         public float maxSpeed = 30.0f;
         public float maxSlope = 60.0f;
         public float minSlope = 5.0f;
@@ -62,20 +78,35 @@ namespace Character
         public float angularSpeed;
         public float timeAfterSliding = 0.5f;
         public float timeBeforeSliding = 0.3f;
-        public float combatDeccelerationSpeed = 6.0f;
-        private bool isSlidingIsActive;
-        private float m_timerBeforeSliding;
 
+        public float combatDeccelerationSpeed = 6.0f;
+        public float turningRatioOfDecceleration = 1.3f;
+
+        private bool isSlidingIsActive;
+        private bool m_isSlideInputActive;
+        private float m_timerBeforeSliding;
+        public float angleMinToRotateInSlide = 3;
         private float m_slope;
+        private Vector3 m_groundNormal;
         private bool m_isSave;
         private Vector3 m_saveVeloctiy;
         private bool m_saveStateSliding;
+
+        private SmoothFollow bookSmoothFollow;
 
 
         public Vector3 forwardDirection;
         public bool m_isSlowdown;
         private float m_speedLimit;
 
+        public EventInstance mouvementSoundInstance;
+        public EventReference MouvementSoundReference;
+
+        [SerializeField] private Sprite[] m_spriteStateAssociated;
+        public UnityEngine.UI.Image m_spriteState;
+
+        public Animator m_uiStateAnimator;
+        private bool m_changingState;
         public enum MouvementState
         {
             None,
@@ -85,6 +116,7 @@ namespace Character
             Train,
             Knockback,
             Dash,
+            SpecialSpell,
         }
 
         [Header("Knockback Parameters")]
@@ -95,31 +127,57 @@ namespace Character
         private float m_knockbackBaseGravityPower = 10.0f;
         private Vector3 m_directionKnockback;
 
-
         public MouvementState mouvementState;
 
         [SerializeField] private SpeedData m_speedData = new SpeedData();
+        private bool m_directionInputActive = false;
 
         public Vector3 currentDirection { get; private set; }
 
+        private Character.CharacterAim m_characterAim;
+        [SerializeField] private Transform m_avatarTransform;
+
+        [Header("Debug Parameters")]
+        [SerializeField] private bool m_activeDebug;
+
+        private PlayerInput m_playerInput;
+        private CharacterShoot m_characterShoot;
+        public LayerMask obstacleLayerMask;
+        private GuerhoubaGames.Input.DivideSchemeManager m_divideSchemeManager;
+        private bool m_isSlideRotating;
+
+        public bool updateProfilStateSpeedDebug = false;
+
+        // temp
+        public float timeToAccelerate = 2;
+        private float m_timerToAccelerate = 0.0f;
+        
         public void InitComponentStat(CharacterStat stat)
         {
-            runSpeed = stat.baseStat.speed;
+            runSpeed = runSpeed + stat.baseStat.speed;
             InitComponent();
         }
         private void InitComponent()
         {
-            state = new ObjectState();
-            GameState.AddObject(state);
+            if (state == null)
+            {
+                state = new ObjectState();
+                GameState.AddObject(state);
+            }
 
-
+            m_slidingEffectVfx = m_slidingEffect.GetComponentInChildren<UnityEngine.VFX.VisualEffect>();
             m_rigidbody = GetComponent<Rigidbody>();
-            if (m_CharacterAnim == null) { m_CharacterAnim = GameObject.Find("Avatar_Model").GetComponent<Animator>(); }
             initialSpeed = runSpeed;
+            m_characterAim = GetComponent<CharacterAim>();
+            m_playerInput = GetComponent<PlayerInput>();
+            m_characterShoot = GetComponent<CharacterShoot>();
+            m_divideSchemeManager = GetComponent<GuerhoubaGames.Input.DivideSchemeManager>();
+            if (m_BookAnim.GetComponent<SmoothFollow>()) { bookSmoothFollow = m_BookAnim.GetComponent<SmoothFollow>(); }
         }
 
         private void Start()
         {
+            profile = this.GetComponent<CharacterProfile>();
             m_speedData.referenceSpeed = new float[4];
             m_speedData.referenceSpeed[0] = 0;
             m_speedData.referenceSpeed[1] = runSpeed;
@@ -129,31 +187,216 @@ namespace Character
             m_speedData.currentSpeed = 0;
 
             m_speedData.direction = Vector3.zero;
+            if (state == null)
+            {
+                InitComponent();
+            }
+            //combatState = true;
+            //SetCombatMode(true);
+            mouvementSoundInstance = RuntimeManager.CreateInstance(MouvementSoundReference);
+            RuntimeManager.AttachInstanceToGameObject(mouvementSoundInstance, this.transform);
+            mouvementSoundInstance.start();
+            ActiveSlide();
         }
 
         public void MoveInput(InputAction.CallbackContext ctx)
         {
 
-            // ========== Need to be clean ================
+            if (ctx.started)
+            {
+                m_inputDirection = ctx.ReadValue<Vector2>();
+                m_directionInputActive = true;
+            }
             if (ctx.performed)
             {
                 m_inputDirection = ctx.ReadValue<Vector2>();
-
+                m_directionInputActive = true;
             }
             if (ctx.canceled)
             {
                 m_inputDirection = Vector2.zero;
+                m_directionInputActive = false;
+
+                if (IsGamepad())
+                {
+                    if (m_divideSchemeManager.isAbleToChangeMap)
+                    {
+                        m_divideSchemeManager.ChangeToCombatActionMap();
+                        CancelSlide();
+                        ResetRun();
+                    }
+                }
+                else
+                {
+                    CancelSlide();
+                    ResetRun();
+                }
 
             }
+
+        }
+
+        private bool IsGamepad()
+        {
+            return m_playerInput.currentControlScheme == "Gamepad";
+        }
+
+
+        public void ActiveSlide()
+        {
+            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            //m_characterShoot.gsm.CanalisationParameterStop();
+            SlideActivation(true);
+            m_CharacterAnim.SetBool("Running", true);
+            m_BookAnim.SetBool("Running", true);
+            m_CharacterAnim.SetBool("Casting", false);
+            m_BookAnim.SetBool("Running", false);
+            m_isSlideInputActive = true;
+            m_timerToAccelerate = 0.0f;
+
+
+        }
+
+        public void ResetRun()
+        {
+            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            //m_characterShoot.gsm.CanalisationParameterStop();
+            // SlideActivation(true);
+            m_CharacterAnim.SetBool("Running", true);
+            m_BookAnim.SetBool("Running", true);
+            m_CharacterAnim.SetBool("Casting", false);
+
+            m_BookAnim.SetBool("Running", false);
+            m_isSlideInputActive = true;
+            m_timerToAccelerate = 0.0f;
+            m_timerBeforeSliding = 0.0f;
+            isSliding = false;
+            m_characterAim.vfxCast.SetFloat("Progress", 1);
+            m_characterAim.vfxCastEnd.SetFloat("Progress", 1);
+            ChangeState(MouvementState.Classic);
+        }
+        public void SlideInput(InputAction.CallbackContext ctx)
+        {
+
+            //if (ctx.started)
+            //{
+            //    if (!IsGamepad())
+            //    {
+            //        if (!m_isSlideInputActive)
+            //        {
+            //            m_isSlideInputActive = true;
+            //            ActiveSlide();
+            //            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
+            //        }
+            //        else
+            //        {
+            //            m_isSlideInputActive = false;
+            //            SlideActivation(false);
+            //            m_CharacterAnim.SetBool("Running", false);
+            //            m_BookAnim.SetBool("Running", false);
+            //            m_CharacterAnim.SetBool("Casting", true);
+            //            m_characterShoot.gsm.CanalisationParameterLaunch(0.01f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+
+            //            m_BookAnim.SetBool("Casting", true);
+            //            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true);  }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (combatState)
+            //        {
+            //            m_isSlideInputActive = true;
+            //            //m_characterShoot.gsm.CanalisationParameterStop();
+            //            SlideActivation(true);
+            //        }
+            //        else
+            //        {
+            //            m_isSlideInputActive = false;
+            //            SlideActivation(false);
+            //        }
+            //    }
+
+            //}
+            //if (ctx.canceled)
+            //{
+            //    if (!IsGamepad())
+            //    {
+            //        //m_isSlideInputActive = false;
+            //        //SlideActivation(false);
+            //        //m_CharacterAnim.SetBool("Running", false);
+            //        //m_BookAnim.SetBool("Running", false);
+            //        //m_CharacterAnim.SetBool("Casting", true);
+            //        //m_BookAnim.SetBool("Running", true);
+            //        //if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
+            //    }
+            //}
             if (!state.isPlaying)
             {
                 ChangeState(MouvementState.None);
+                m_isSlideInputActive = false;
             }
+        }
+
+        public void CancelSlide()
+        {
+            m_isSlideInputActive = false;
+            SlideActivation(false);
+            m_CharacterAnim.SetBool("Running", false);
+            m_BookAnim.SetBool("Running", false);
+            m_CharacterAnim.SetBool("Casting", true);
+            m_BookAnim.SetBool("Casting", true);
+            //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
+
+        }
+
+        public void SlideActivation(bool isActive)
+        {
+            if (!activeCombatModeConstant) return;
+            if (isActive)
+            {
+                SetCombatMode(false);
+                m_characterShoot.DeactivateCanalisation();
+                m_CharacterAnim.SetBool("Casting", false);
+                m_BookAnim.SetBool("Casting", false);
+                m_characterShoot.gsm.CanalisationParameterLaunch(1, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+                MatchRotationAndDirection();
+                if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
+                //  cameraPlayer.BlockZoom(false);
+                //DisplayNewCurrentState(1);
+
+            }
+
+            if (!isActive && combatState == false)
+            {
+                m_characterShoot.ActivateCanalisation();
+                m_CharacterAnim.SetBool("Casting", true);
+                m_BookAnim.SetBool("Casting", true);
+                m_characterShoot.gsm.CanalisationParameterLaunch(0.01f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+
+                if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
+                //DisplayNewCurrentState(0);
+                //  cameraPlayer.BlockZoom(true);
+                //SetCombatMode(true);
+            }
+
+        }
+
+        public void SetCombatMode(bool state)
+        {
+            if (m_isSlideInputActive)
+                combatState = false;
+            else
+                combatState = state;
+
+            bookSmoothFollow.ChangeForBook(combatState);
+            //if (!combatState) cameraPlayer.BlockZoom(false);
         }
 
         public void Update()
         {
             if (!state.isPlaying) return;
+            if (updateProfilStateSpeedDebug) { updateProfilStateSpeedDebug = false; }
+
             if (mouvementState == MouvementState.Train)
             {
                 transform.position = positionInTrain.localPosition;
@@ -174,10 +417,12 @@ namespace Character
 
         public void ChangeState(MouvementState newState)
         {
+            MouvementState prevState = mouvementState;
             if (newState == mouvementState) return;
             BeforeChangeState(mouvementState);
             mouvementState = newState;
-            AfterChangeState(mouvementState);
+            if (m_activeDebug) Debug.Log("New State = " + newState);
+            AfterChangeState(mouvementState, prevState);
         }
 
         public void BeforeChangeState(MouvementState prevState)
@@ -188,29 +433,40 @@ namespace Character
                 case MouvementState.None:
 
                     m_CharacterAnim.SetBool("Idle", false);
+                    m_BookAnim.SetBool("Idle", false);
                     break;
                 case MouvementState.Classic:
                     m_CharacterAnim.SetBool("Running", false);
+                    m_BookAnim.SetBool("Running", false);
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 15);
                     break;
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", false);
-                    m_slidingEffect.SetActive(false);
+                    m_BookAnim.SetBool("Sliding", false);
+                    //m_slidingEffect.SetActive(false);
+                    //  m_timerBeforeSliding = 0.0f;
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 0);
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    m_BookAnim.SetBool("Shooting", false);
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    m_BookAnim.SetBool("Shooting", false);
                     break;
                 case MouvementState.Dash:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    m_BookAnim.SetBool("Shooting", false);
+
                     break;
                 default:
                     break;
             }
+
         }
 
-        public void AfterChangeState(MouvementState newState)
+        public void AfterChangeState(MouvementState newState, MouvementState prevState)
         {
 
 
@@ -219,9 +475,17 @@ namespace Character
                 case MouvementState.None:
 
                     m_CharacterAnim.SetBool("Idle", true);
+                    m_BookAnim.SetBool("Idle", true);
+                    UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Classic:
-                    m_CharacterAnim.SetBool("Running", true);
+                    if (m_isSlideInputActive)
+                    {
+                        m_CharacterAnim.SetBool("Running", true);
+                        m_BookAnim.SetBool("Running", true);
+                        UpdateParameter(0.10f, "MouvementState");
+                    }
+
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
                     if (m_isSlowdown)
                     {
@@ -232,22 +496,43 @@ namespace Character
 
                 case MouvementState.Slide:
                     m_CharacterAnim.SetBool("Sliding", true);
-                    m_slidingEffect.SetActive(true);
+                    m_BookAnim.SetBool("Sliding", true);
+                    UpdateParameter(1, "MouvementState");
+                    //m_slidingEffect.SetActive(true);\
+                    m_characterAim.vfxCast.SetFloat("Progress", 0);
+                    m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
+                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
+
+                    if (m_isSlowdown && prevState == MouvementState.Slide)
+                    {
+                        m_speedLimit = m_speedData.referenceSpeed[2];
+                    }
+
 
                     break;
                 case MouvementState.Glide:
-                    m_CharacterAnim.SetBool("Shooting", true);
+                    //m_CharacterAnim.SetBool("Shooting", true);
+                    UpdateParameter(0f, "MouvementState");
                     m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)newState]);
-                    if (m_isSlowdown )
+                    if (m_isSlowdown && prevState == MouvementState.Slide)
                     {
                         m_speedLimit = m_speedData.referenceSpeed[2];
+                    }
+
+                    if (prevState == MouvementState.Classic)
+                    {
+                        m_speedLimit = m_speedData.referenceSpeed[1];
                     }
                     break;
                 case MouvementState.Knockback:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    m_BookAnim.SetBool("Shooting", false);
+                    UpdateParameter(0f, "MouvementState");
                     break;
                 case MouvementState.Dash:
                     m_CharacterAnim.SetBool("Shooting", false);
+                    m_BookAnim.SetBool("Shooting", false);
+                    UpdateParameter(0f, "MouvementState");
                     break;
                 default:
                     break;
@@ -263,19 +548,32 @@ namespace Character
 
         #endregion
 
+        public Vector3 GetDirection()
+        {
+            Vector3 horizontalDirection = new Vector3(forwardDirection.x, 0, forwardDirection.z);
+            float angle = Vector3.SignedAngle(horizontalDirection.normalized, GetMouvementDirection(), Vector3.up);
+            Vector3 forward = Quaternion.AngleAxis(angle, m_groundNormal.normalized) * forwardDirection;
+            return forward;
+        }
+        public Vector3 OrientateWithSlopeDirection(Vector3 dir)
+        {
+            Vector3 direction = Quaternion.AngleAxis(m_slope, Vector3.right) * dir;
+            return direction;
+        }
+
         private void CheckPlayerMouvement()
         {
-            if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash) return;
-            
+            if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash || mouvementState == MouvementState.SpecialSpell) return;
+
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
 
-            if (IsObstacle())
+            if (IsObstacle() )
             {
                 m_speedData.currentSpeed = 0;
                 m_velMovement = Vector3.zero;
                 m_rigidbody.velocity = Vector3.zero;
-
+                return;
             }
 
             RaycastHit hit = new RaycastHit();
@@ -286,7 +584,16 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 return;
             }
+
             Vector3 direction = GetForwardDirection(hit.normal);
+            Vector3 newDir = new Vector3(direction.x, 0, direction.z);
+            if (combatState && inputDirection != Vector3.zero)
+            {
+                float angle = Vector3.SignedAngle(newDir, inputDirection, hit.normal.normalized);
+                newDir = Quaternion.AngleAxis(angle, hit.normal.normalized) * direction;
+            }
+
+            m_groundNormal = hit.normal;
             forwardDirection = direction;
             m_speedData.direction = direction;
 
@@ -301,9 +608,10 @@ namespace Character
             }
 
 
-            if (isSliding && !combatState)
+            if (isSliding && !combatState && m_isSlideInputActive)
             {
                 ChangeState(MouvementState.Slide);
+
                 Slide(direction);
                 return;
             }
@@ -313,6 +621,18 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
                 m_velMovement = Vector3.zero;
+                currentDirection = Vector3.zero;
+
+                if (IsGamepad())
+                {
+                    //if (m_divideSchemeManager.isAbleToChangeMap)
+                    //{
+                    //    m_divideSchemeManager.ChangeToCombatActionMap();
+
+                    //}
+
+                    CancelSlide();
+                }
                 if (m_rigidbody.velocity.magnitude > 0)
                 {
                     m_rigidbody.velocity = m_rigidbody.velocity.normalized * (m_rigidbody.velocity.magnitude - (2 * Time.deltaTime));
@@ -326,19 +646,21 @@ namespace Character
             {
                 isSliding = false;
                 ChangeState(MouvementState.Classic);
-                Move(direction);
+                Move(newDir);
                 return;
             }
 
 
 
-            if (m_slope > minSlope)
+            if (m_slope > minSlope && m_isSlideInputActive)
             {
                 if (m_timerBeforeSliding < timeBeforeSliding)
                 {
                     m_timerBeforeSliding += Time.deltaTime;
+
                     if (m_timerBeforeSliding >= timeBeforeSliding)
                         ChangeState(MouvementState.Slide);
+
                     ChangeState(MouvementState.Classic);
                     Move(direction);
                     return;
@@ -353,30 +675,34 @@ namespace Character
             return;
         }
 
+        public float GetSlope()
+        {
+            return m_slope;
+        }
 
         /// <summary>
         ///  Function that apply the final result of our velocity calcul to our rigidbody
         /// </summary>
         private void ApplyVelocity()
         {
-            if (mouvementState == MouvementState.Dash)
+            if (mouvementState == MouvementState.Dash || mouvementState == MouvementState.SpecialSpell)
             {
                 m_rigidbody.velocity = Vector3.zero;
                 //m_velMovement = Vector3.zero;
                 //m_speedData.currentSpeed = 0.0f;
                 return;
             }
-                if (mouvementState == MouvementState.Knockback)
+            if (mouvementState == MouvementState.Knockback)
             {
                 if (m_applyKnockback)
                 {
                     m_velMovement = Vector3.zero;
                     m_rigidbody.velocity = Vector3.zero;
                     m_rigidbody.velocity += (m_directionKnockback);
-
                     m_applyKnockback = false;
-
                     m_knockbackTimer = 0;
+
+                 
                 }
                 if (m_knockbackTimer > m_knockBackDuration)
                 {
@@ -387,10 +713,14 @@ namespace Character
                 }
                 else
                 {
+                    m_knockbackTimer += Time.deltaTime;
+                 
+
                     Vector3 vel = (m_directionKnockback.normalized * Mathf.Lerp(m_knockBackPower, 0.0f, m_knockbackTimer / m_knockBackDuration));
                     vel.y = m_rigidbody.velocity.y - m_knockbackBaseGravityPower;
                     m_rigidbody.velocity = vel;
-                    m_knockbackTimer += Time.deltaTime;
+
+
                 }
 
                 return;
@@ -404,6 +734,17 @@ namespace Character
                 m_speedLimit -= combatDeccelerationSpeed * Time.deltaTime;
                 currentRefSpeed = m_speedLimit;
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
+
+
+            }
+
+            if (m_isSlowdown && mouvementState == MouvementState.Slide)
+            {
+                if (isSliding)
+                {
+                    currentRefSpeed = m_speedData.referenceSpeed[2];
+                    m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                }
             }
 
             if (mouvementState == MouvementState.Glide)
@@ -412,17 +753,44 @@ namespace Character
                 {
                     currentRefSpeed = m_speedLimit;
                 }
-                m_rigidbody.AddForce(Vector3.down*m_gravityForce, ForceMode.Impulse);
+                m_rigidbody.AddForce(Vector3.down * m_gravityForce, ForceMode.Impulse);
                 m_velMovement += Vector3.down * m_gravityForce * Time.deltaTime;
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, currentRefSpeed);
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
                 m_speedData.currentSpeed = m_velMovement.magnitude;
                 return;
             }
-            m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
-            m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
-            m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
 
+
+
+            RaycastHit hit = new RaycastHit();
+            float targetDistance = m_rigidbody.velocity.magnitude;
+
+            Ray ray = new Ray(transform.position, m_velMovement.normalized);
+            if (Physics.Raycast(ray, out hit, 20, obstacleLayerMask))
+            {
+                Vector3 direction = GetForwardDirection(hit.normal);
+                float slopeAngle = GetSlopeAngleAbs(direction);
+                if (slopeAngle >= 60)
+                {
+                    m_rigidbody.velocity = Vector3.zero;
+                }
+                else
+                {
+                    m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
+                    m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                    m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                }
+
+            }
+            else
+            {
+                m_rigidbody.AddForce(m_velMovement, ForceMode.Impulse);
+                m_rigidbody.velocity = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+                m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
+            }
+
+            m_rigidbody.velocity *= m_SpeedReduce;
         }
 
         public void FixedUpdate()
@@ -440,6 +808,14 @@ namespace Character
                 EndPause();
             }
 
+            if (!combatState)
+            {
+                if (m_timerToAccelerate <= timeToAccelerate + 1)
+                {
+                    m_timerToAccelerate += Time.fixedDeltaTime;
+
+                }
+            }
             CheckPlayerMouvement();
             ApplyVelocity();
 
@@ -467,10 +843,8 @@ namespace Character
 
         private bool IsObstacle()
         {
-            return Physics.Raycast(transform.position, transform.forward, 3, m_objstacleLayer);
+            return Physics.Raycast(transform.position, transform.forward, 3 + m_velMovement.magnitude * Time.deltaTime, m_objstacleLayer);
         }
-
-     
 
         private bool IsFasterThanSpeedReference(float speedReference)
         {
@@ -483,11 +857,11 @@ namespace Character
 
             if (combatState)
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed * m_SpeedReduce;
+                m_speedData.referenceSpeed[(int)mouvementState] = combatSpeed + profile.stats.baseStat.speed;
             }
             else
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = runSpeed;
+                m_speedData.referenceSpeed[(int)mouvementState] = Mathf.Clamp((m_timerToAccelerate / timeToAccelerate), 0, 1.0f) * (runSpeed - combatSpeed) + combatSpeed + profile.stats.baseStat.speed;
             }
 
             m_speedData.IsFlexibleSpeed = false;
@@ -495,15 +869,15 @@ namespace Character
             currentDirection = direction;
 
 
+            m_velMovement += direction.normalized * (m_velMovement.magnitude / ratioSmoothMouvement + m_accelerationSpeed * Time.deltaTime);
             if (!m_isSlowdown)
             {
-                m_velMovement += direction.normalized  * m_accelerationSpeed * Time.deltaTime;
+
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedData.referenceSpeed[(int)mouvementState]);
             }
             else
             {
 
-                m_velMovement += direction.normalized * m_accelerationSpeed * Time.deltaTime;
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
             m_speedData.currentSpeed = m_velMovement.magnitude;
@@ -517,11 +891,24 @@ namespace Character
 
             m_currentSlideSpeed = 0;
             isSliding = true;
-            if (m_slope < minSlope) m_currentSlideSpeed -= minDecceleration * Time.deltaTime;
-            m_currentSlideSpeed += accelerationSlide * m_slope / maxSlope * Time.deltaTime;
-            m_speedData.currentSpeed += m_currentSlideSpeed;
 
-            if (m_speedData.currentSpeed < runSpeed && m_slope < minSlope)
+            // Decceleration of slide
+            if (m_slope < minSlope)
+            {
+                float multiplyDecceleration = 1;
+                if (m_isSlideRotating)
+                {
+                    multiplyDecceleration = turningRatioOfDecceleration;
+
+                }
+                m_currentSlideSpeed -= minDecceleration * multiplyDecceleration * Time.deltaTime;
+
+            }
+
+            m_currentSlideSpeed += accelerationCurve.Evaluate(m_slope / maxSlope) * Time.deltaTime;
+            m_speedData.currentSpeed += m_currentSlideSpeed; ;
+
+            if (m_speedData.currentSpeed < runSpeed)
             {
                 isSliding = false;
                 m_currentSlideSpeed = 0.0f;
@@ -565,35 +952,99 @@ namespace Character
             }
         }
 
+        public void UpdateParameter(float parameterValue, string parameterName)
+        {
+            mouvementSoundInstance.setParameterByName(parameterName, parameterValue);
+        }
+
+        public void UpdateSpeedData(int additionnalSpeed)
+        {
+            for (int i = 1; i < m_speedData.referenceSpeed.Length; i++)
+            {
+                m_speedData.referenceSpeed[i] += additionnalSpeed;
+            }
+        }
+        public void OnDisable()
+        {
+            mouvementSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        }
         #region Rotation
 
         private void RotateCharacter()
         {
-            Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-            
+            if (!m_directionInputActive) return;
 
-            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
-            float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
-            transform.rotation = Quaternion.AngleAxis(angleDir, Vector3.up);
+            if (!combatState || m_characterShoot.m_aimModeState == AimMode.Automatic)
+            {
+
+                Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+                if (m_prevInputDirection != inputDirection)
+                {
+                    m_startRotation = transform.rotation;
+                    m_prevInputDirection = inputDirection;
+                    m_rotationTime = 0.0f;
+
+                }
+                else
+                {
+                    m_rotationTime += rotationLerpStepRunState;
+                }
+
+                Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
+                float angleDir = Vector3.SignedAngle(Vector3.forward, dir, Vector3.up);
+
+                Quaternion endRot = Quaternion.AngleAxis(angleDir, Vector3.up);
+
+                transform.rotation = Quaternion.Slerp(m_startRotation, endRot, m_rotationTime);
+                m_avatarTransform.localRotation = Quaternion.identity;  
+            }
+
+            if (combatState && m_characterShoot.m_aimModeState != AimMode.Automatic)
+            {
+
+                m_characterAim.FeedbackHeadRotation();
+                Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
+                m_avatarTransform.rotation = rotationFromHead;
+            }
+
         }
 
 
         private void SlideRotationCharacter()
         {
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
-           
+
             Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
             float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+            m_isSlideRotating = false;
+            if (Mathf.Abs(angleDir) > angleMinToRotateInSlide)
+            {
+                m_isSlideRotating = true;
+
+            }
             angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
+
+
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            m_avatarTransform.localRotation = Quaternion.identity;
+        }
+
+        private void MatchRotationAndDirection()
+        {
+            Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+
+            Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
+            float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+
+
+            transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
+            m_avatarTransform.localRotation = Quaternion.identity;
         }
         #endregion
 
-
-
         #region Knockback
 
-        public void SetKnockback(Vector3 attackPosition)
+        public void SetKnockback(Vector3 attackPosition, float powerKnockback = 50)
         {
 
             if (mouvementState == MouvementState.Knockback) return;
@@ -601,7 +1052,7 @@ namespace Character
             Vector3 attackDirection = transform.position - attackPosition;
             attackDirection = attackDirection.normalized;
             attackDirection.y = 0.0f;
-            m_directionKnockback = attackDirection.normalized * 50.0f;
+            m_directionKnockback = attackDirection.normalized * powerKnockback;
             m_applyKnockback = true;
             m_velMovement = Vector3.zero;
             m_rigidbody.velocity = Vector3.zero;
@@ -609,6 +1060,21 @@ namespace Character
         }
 
         #endregion
+
+
+        public void StopRigidbody()
+        {
+            m_rigidbody.velocity = Vector3.zero;
+        }
+
+        public void DisplayNewCurrentState(int indexImage)
+        {
+            m_uiStateAnimator.SetTrigger("ChangeDisplay");
+            m_spriteState.sprite = m_spriteStateAssociated[indexImage];
+
+            //m_uiStateAnimator.ResetTrigger("ChangeDisplay");
+        }
+
 
     }
 }

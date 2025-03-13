@@ -16,11 +16,10 @@ void ClosestHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attri
 	BuildFragInputsFromIntersection(currentVertex, fragInput);
 
 	float3 viewWS = -WorldRayDirection();
-	float3 pointWSPos = GetAbsolutePositionWS(fragInput.positionRWS);
+	float3 pointWSPos = fragInput.positionRWS;
 
-	float travelDistance = length(fragInput.positionRWS - rayIntersection.origin);
-	rayIntersection.t = travelDistance;
-	rayIntersection.cone.width += travelDistance * rayIntersection.cone.spreadAngle;
+	rayIntersection.t = RayTCurrent();
+	rayIntersection.cone.width += rayIntersection.t * rayIntersection.cone.spreadAngle;
 
 	PositionInputs posInput = GetPositionInput(rayIntersection.pixelCoord, _ScreenSize.zw, fragInput.positionRWS);
 
@@ -52,14 +51,13 @@ void ClosestHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attri
 		}
 
 		RayDesc rayDescriptor;
-		rayDescriptor.Origin = pointWSPos + surfaceData.normalWS * _RaytracingRayBias;
+		rayDescriptor.Origin = pointWSPos + surfaceData.normalWS * _RayTracingRayBias;
 		rayDescriptor.Direction = sampleDir;
 		rayDescriptor.TMin = 0.0f;
 		rayDescriptor.TMax = _RaytracingRayMaxLength;
 
 		RayIntersection reflectedIntersection;
 		reflectedIntersection.color = float3(0.0, 0.0, 0.0);
-		reflectedIntersection.origin = rayDescriptor.Origin;
 		reflectedIntersection.t = -1.0f;
 		reflectedIntersection.remainingDepth = rayIntersection.remainingDepth + 1;
 		reflectedIntersection.pixelCoord = rayIntersection.pixelCoord;
@@ -80,7 +78,7 @@ void ClosestHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attri
 
 		if (_RayTracingDiffuseLightingOnly)
 			builtinData.bakeDiffuseLighting = reflectedIntersection.color;
-		else //
+		else
 		{
 			reflected = reflectedIntersection.color;
 			reflectedWeight = 1.0;
@@ -131,7 +129,10 @@ void ClosestHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attri
 	context.shadowValue = 1;			
 	context.sampleReflection = 0;
 	context.splineVisibility = -1;
-	
+#ifdef APPLY_FOG_ON_SKY_REFLECTIONS
+	context.positionWS = posInput.positionWS;
+#endif
+
 	uint i=0;
 	uint i_en=0;
 	uint cellIndex;
@@ -146,7 +147,11 @@ void ClosestHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attri
 		builtinData.shadowMask3 = shaMask.w;
 	#endif
 
-	builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#if UNITY_VERSION >= 202310
+		builtinData.renderingLayers = GetMeshRenderingLayerMask();
+	#else
+		builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#endif
 
 	//=========//
 	//=========//
@@ -314,7 +319,7 @@ void ClosestHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attri
 
 	//RT_RELGI_SUB1
 	float ref_int_val;
-	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1( posInput ,RTD_GI_FS_OO , RTD_SHAT_COL , RTD_MCIALO , RTD_STIAL , RTD_RT_GI_Sha_FO , ref_int_val , refdif , false);
+	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1(posInput, viewReflectDirection, viewDirection, RTD_GI_FS_OO , RTD_SHAT_COL , RTD_MCIALO , RTD_STIAL , RTD_RT_GI_Sha_FO , ref_int_val , refdif , false);
 
 	//RT_SS
 	float RTD_SS = RT_SS( fragInput.color , RTD_NDOTL , attenuation , DirLigDim );
@@ -683,15 +688,14 @@ void AnyHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attribute
 
 	float3 viewWS = -WorldRayDirection();
 
-	float travelDistance = length(fragInput.positionRWS - rayIntersection.origin);
-	rayIntersection.t = travelDistance;
+	rayIntersection.t = RayTCurrent();
 
 	PositionInputs posInput;
 	posInput.positionWS = fragInput.positionRWS;
 	posInput.positionSS = rayIntersection.pixelCoord;
 
-	SurfaceData surfaceData;
-	BuiltinData builtinData;
+	//SurfaceData surfaceData;
+	//BuiltinData builtinData;
 	bool isVisible;
 
 	float4 objPos = mul ( GetObjectToWorldMatrix(), float4(0.0,0.0,0.0,1.0) );

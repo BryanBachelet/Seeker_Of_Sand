@@ -80,7 +80,16 @@ Varyings LitPassVertex(Attributes input)
     return output;
 }
 
-float4 LitPassFragment(Varyings input, float facing : VFACE) : SV_Target
+void LitPassFragment(Varyings input 
+				, out float4 outColor : SV_Target0
+			#ifdef UNITY_VIRTUAL_TEXTURING
+				, out float4 outVTFeedback : SV_Target1
+			#endif
+				, float facing : VFACE
+			#ifdef _DEPTHOFFSET_ON
+				, out float outputDepth : DEPTH_OFFSET_SEMANTIC
+			#endif
+)
 {
 
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -107,6 +116,14 @@ float4 LitPassFragment(Varyings input, float facing : VFACE) : SV_Target
 	float2 RTD_VD_Cal = (float2((sceneUVs.x * 2.0 - 1.0)*(_ScreenParams.r/_ScreenParams.g), sceneUVs.y * 2.0 - 1.0).rg*RTD_OB_VP_CAL);
 
 	float2 RTD_TC_TP_OO = lerp( input.uv, RTD_VD_Cal, _TexturePatternStyle );
+
+
+	#if !defined(SHADER_STAGE_RAY_TRACING) //&& !defined(_TESSELLATION_DISPLACEMENT)
+		#ifdef LOD_FADE_CROSSFADE 
+			LODDitheringTransition(ComputeFadeMaskSeed(viewDirection, posInput.positionSS), unity_LODFade.x);
+		#endif
+	#endif
+
 
 	//=========//
 
@@ -185,6 +202,12 @@ float4 LitPassFragment(Varyings input, float facing : VFACE) : SV_Target
 	context.sampleReflection = 0;
 	context.splineVisibility = -1;
 
+	#ifdef APPLY_FOG_ON_SKY_REFLECTIONS
+		context.positionWS = posInput.positionWS;
+	#endif
+	context.contactShadowFade = 0.0;
+	context.contactShadow = 0;
+
 	uint i=0;
 	uint i_en=0;
 
@@ -201,7 +224,13 @@ float4 LitPassFragment(Varyings input, float facing : VFACE) : SV_Target
 		builtinData.shadowMask3 = shaMask.w;
 	#endif
 
-	builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+
+		
+	#if UNITY_VERSION >= 202310
+		builtinData.renderingLayers = GetMeshRenderingLayerMask();
+	#else
+		builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#endif
 
 	//=========//
 	//=========//
@@ -331,7 +360,7 @@ float4 LitPassFragment(Varyings input, float facing : VFACE) : SV_Target
 
 	//RT_RELGI_SUB1
 	float ref_int_val;
-	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1(posInput, RTD_GI_FS_OO, RTD_SHAT_COL, RTD_MCIALO, RTD_STIAL, RTD_RT_GI_Sha_FO, ref_int_val, (float3)0.0, false);
+	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1(posInput, viewReflectDirection, viewDirection, RTD_GI_FS_OO, RTD_SHAT_COL, RTD_MCIALO, RTD_STIAL, RTD_RT_GI_Sha_FO, ref_int_val, (float3)0.0, false);
 
 	//RT_R
 	float3 RTD_R = RT_R( input.uv , viewDirection , normalDirection , EnvRef , RTD_TEX_COL , RTD_R_OFF_OTHERS );
@@ -656,34 +685,47 @@ if (LIGHTFEATUREFLAGS_PUNCTUAL)
 	float3 RTD_CA = RT_CA( color * SSAmOc + GLO_OUT);
 
 //SSOL
-#ifdef UNITY_COLORSPACE_GAMMA//SSOL
-_OutlineColor=float4(LinearToGamma22(_OutlineColor.rgb),_OutlineColor.a);//SSOL
-#endif//SSOL
-#if N_F_O_ON//SSOL
-float3 SSOLi=(float3)EdgDet(sceneUVs.xy,input.positionCS);//SSOL
-#if N_F_O_MOTTSO_ON//SSOL
-float3 Init_FO=(RTD_CA*RTD_SON_CHE_1)*lerp((float3)1.0,_OutlineColor.rgb,SSOLi);//SSOL
-float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP
-#else//SSOL
-float3 Init_FO=lerp((RTD_CA*RTD_SON_CHE_1),_OutlineColor.rgb,SSOLi);//SSOL
-float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP2
-#endif//SSOL
-#else//SSOL
-float4 finalRGBA=float4((RTD_CA*RTD_SON_CHE_1),Trans_Val);//FOP
-#endif//SSOL
+//#ifdef UNITY_COLORSPACE_GAMMA//SSOL
+//_OutlineColor=float4(LinearToGamma22(_OutlineColor.rgb),_OutlineColor.a);//SSOL
+//#endif//SSOL
+//#if N_F_O_ON//SSOL
+//float3 SSOLi=(float3)EdgDet(sceneUVs.xy,input.positionCS);//SSOL
+//#if N_F_O_MOTTSO_ON//SSOL
+//float3 Init_FO=(RTD_CA*RTD_SON_CHE_1)*lerp((float3)1.0,_OutlineColor.rgb,SSOLi);//SSOL
+//float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP
+//#else//SSOL
+//float3 Init_FO=lerp((RTD_CA*RTD_SON_CHE_1),_OutlineColor.rgb,SSOLi);//SSOL
+//float4 finalRGBA=float4(Init_FO,Trans_Val);//FOP2
+//#endif//SSOL
+//#else//SSOL
+//float4 finalRGBA=float4((RTD_CA*RTD_SON_CHE_1),Trans_Val);//FOP
+//#endif//SSOL
 
-//float4 finalRGBA=float4(RTD_CA*RTD_SON_CHE_1,Trans_Val);//FOP
+float4 finalRGBA=float4(RTD_CA*RTD_SON_CHE_1,Trans_Val);//FOP
 
 	//RT_NFD
 	#ifdef N_F_NFD_ON
-		RT_NFD(input.positionCS);
+		RT_NFD(input.positionCS.xy);
 	#endif
 
 	#ifdef UNITY_VIRTUAL_TEXTURING
 		input.outVTFeedback = builtinData.vtPackedFeedback;
 	#endif
 
-	return EL_AT_SC(posInput, viewDirection, finalRGBA);
+	outColor = EL_AT_SC(posInput, viewDirection, finalRGBA); // 
+
+	//
+	#ifdef _DEPTHOFFSET_ON 
+		outputDepth = posInput.deviceDepth;
+	#endif
+	//
+
+	//
+	#ifdef UNITY_VIRTUAL_TEXTURING
+		float vtAlphaValue = builtinData.opacity;
+		outVTFeedback = PackVTFeedbackWithAlpha(builtinData.vtPackedFeedback, input.positionSS.xy, finalRGBA);
+	#endif
+	//
 }
 
-//SSOL_U
+//SSOL_NU

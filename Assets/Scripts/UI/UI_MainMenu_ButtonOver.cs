@@ -28,10 +28,9 @@ public class UI_MainMenu_ButtonOver : MonoBehaviour
 
     public void OnMouseOver()
     {
-        Debug.Log("TestUI");
-        if(!buttonActive)
+     if(!buttonActive)
         {
-            Debug.Log("TestUI 2!");
+
             mainControlScript.ButtonOver(IndexNumber);
             buttonActive = true;
         }

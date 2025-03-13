@@ -50,9 +50,9 @@ string srp_mode = "HDRP";
 bool del_skw = false;
 static bool aruskw = false;
 
-static bool UseSSOL = false;
-static string UseSSOLStat = "Use Traditional Outline";
-static string OLType = "Screen Space";
+static bool UseSSOL = true;
+static string UseSSOLStat = "Use Screen Space Outline";
+static string OLType = "Traditional";
 
 static bool remoout = true;
 static string remooutstat = "Remove Outline";
@@ -327,7 +327,7 @@ HDRenderPipelineAsset hdrpasset;
             N_F_ESSGI_ON,
             N_F_ESSAO_ON,
             N_F_COEDGL_ON,
-            _F_SIMTRANS_ON,
+            N_F_SIMTRANS_ON,
             _NORMALMAP_TANGENT_SPACE,
             _BLENDMODE_ALPHA,
             _BLENDMODE_PRESERVE_SPECULAR_LIGHTING,
@@ -1623,7 +1623,9 @@ HDRenderPipelineAsset hdrpasset;
 
                             GUILayout.Space(10);
 
+                            EditorGUI.BeginDisabledGroup(_TRANSMODE.floatValue == 1 && _N_F_CO.floatValue == 0 && UseSSOL == false);
                             materialEditor.ShaderProperty(_OutlineWidth, new GUIContent(_OutlineWidth.displayName, TOTIPS[23]));
+                            EditorGUI.EndDisabledGroup();
 
                             if (UseSSOL == true)
                             {
@@ -1689,6 +1691,7 @@ HDRenderPipelineAsset hdrpasset;
                             }
                             else
                             {
+                                EditorGUI.BeginDisabledGroup(_TRANSMODE.floatValue == 1 && _N_F_CO.floatValue == 0);
                                 materialEditor.ShaderProperty(_OutlineColor, new GUIContent(_OutlineColor.displayName, TOTIPS[28]));
 
                                 GUILayout.Space(10);
@@ -1701,6 +1704,7 @@ HDRenderPipelineAsset hdrpasset;
                                 materialEditor.ShaderProperty(_NormalThreshold, new GUIContent(_NormalThreshold.displayName, TOTIPS[152]));
                                 materialEditor.ShaderProperty(_NormalMin, new GUIContent(_NormalMin.displayName, TOTIPS[153]));
                                 materialEditor.ShaderProperty(_NormalMax, new GUIContent(_NormalMax.displayName, TOTIPS[154]));
+                                EditorGUI.EndDisabledGroup();
                             }
 
                             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);

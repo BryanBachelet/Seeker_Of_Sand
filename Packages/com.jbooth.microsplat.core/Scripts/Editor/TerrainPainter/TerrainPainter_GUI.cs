@@ -50,7 +50,10 @@ namespace JBooth.MicroSplat
          if (overwrite || !System.IO.File.Exists(path) && path.EndsWith(".tga"))
          {
             var bytes = tex.EncodeToTGA();
-
+            if (System.IO.File.Exists(path))
+            {
+                AssetDatabase.MakeEditable(path);
+            }
             System.IO.File.WriteAllBytes(path, bytes);
             AssetDatabase.Refresh();
             AssetImporter ai = AssetImporter.GetAtPath(path);

@@ -1,6 +1,6 @@
 //RealToon V5.0.8 (HDRP with DXR/Raytracing) [Beta]
 //MJQStudioWorks
-//©2022
+//©2023
 
 //Note:
 //
@@ -8,6 +8,7 @@
 //		I spent alot of time/i work hard in making this RealToon HDRP Version, 
 //		i started working on this last year 2019 and finally finished it this year 2020 april.
 //
+//		I hope you respect this work =).
 //		Have fun using the shader and i hope to see what you can make using this.
 //
 //		This is still in beta means it is not final and there will be some changes will be made,
@@ -28,7 +29,9 @@
 // 
 //      Added Screen Space Ambient Occlusion/SSAO/AO RayTracing and Non-Raytracing.
 //      I stared working on it on April 2022 an also finished it on April 2022.
-//	
+// 
+//      Added APV/Adaptive Probe Volume.
+//      I stared working on it on May 2022 an also finished it on May 2022.
 //
 //		( MJQ Studio Works [PH] )
 //
@@ -235,7 +238,7 @@ Shader "HDRP/RealToon/Version 5/Default"
         [ToggleUI] _LightAffectRimLightColor ("Light Affect Rim Light Color", Float ) = 0.0
 
         _MinFadDistance("Min Distance", Float) = 0.0
-        _MaxFadDistance("Max Distance", Float) = 2.0
+		_MaxFadDistance("Max Distance", Float) = 2.0
 
 		//Tessellation is still in development
 		//_TessellationSmoothness ("Smoothness", Range(0, 1)) = 0.5
@@ -267,7 +270,7 @@ Shader "HDRP/RealToon/Version 5/Default"
 		[Toggle(N_F_R_ON)] _N_F_R ("Relfection", Float ) = 0.0
 		[Toggle(N_F_FR_ON)] _N_F_FR ("FRelfection", Float ) = 0.0
 		[Toggle(N_F_RL_ON)] _N_F_RL ("Rim Light", Float ) = 0.0
-        [Toggle(N_F_NFD_ON)] _N_F_NFD("Near Fade Dithering", Float) = 0.0
+        [Toggle(N_F_NFD_ON)] _N_F_NFD ("Near Fade Dithering", Float) = 0.0
 
 		//Temporarily disabled because unity HDRP handles the ztest differently.
 		//This might be completely remove soon if it is not really in use.
@@ -348,10 +351,8 @@ Shader "HDRP/RealToon/Version 5/Default"
     #pragma shader_feature_local N_F_COEDGL_ON
     #pragma shader_feature_local N_F_NFD_ON
 
-    //#pragma shader_feature _FORCE_FORWARD_EMISSIVE //under testing
-    #pragma multi_compile _ LOD_FADE_CROSSFADE
-
-
+    //#pragma shader_feature _FORCE_FORWARD_EMISSIVE //under testing or might delete it if no use.
+    
     //Tessellation is still in development
     //#pragma shader_feature_local N_F_TESSE_ON
 
@@ -365,7 +366,6 @@ Shader "HDRP/RealToon/Version 5/Default"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/FragInputs.hlsl"
     #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPass.cs.hlsl"
-
     //Properties
 
     #include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/RT_HDRP_PROP.hlsl"
@@ -394,6 +394,7 @@ Tags { "LightMode" = "SceneSelectionPass" }
         #pragma instancing_options renderinglayer
         #pragma multi_compile _ DOTS_INSTANCING_ON
 
+        #pragma multi_compile _ LOD_FADE_CROSSFADE
         #define SHADERPASS SHADERPASS_DEPTH_ONLY
         #define SCENESELECTIONPASS
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/PickingSpaceTransforms.hlsl"
@@ -402,6 +403,15 @@ Tags { "LightMode" = "SceneSelectionPass" }
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitDepthPass.hlsl"
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
         #include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/Pass/RT_HDRP_DeOnPas.hlsl"
+                    #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+            //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/FragInputs.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPass.cs.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/TextureStack.hlsl"
+                        #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
+            //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
+            //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalUtilities.hlsl"
+            //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitDecalData.hlsl"
 
         #pragma vertex Vert
         #pragma fragment Frag
@@ -414,18 +424,17 @@ Tags { "LightMode" = "SceneSelectionPass" }
 		Pass {
 
 Name"Outline"
-Tags{"LightMode"="remove"}
+Tags{"LightMode"="SRPDefaultUnlit"}
 //OL_NRE
 			Blend [_BleModSour] [_BleModDest]
 
-//Cull [_DoubleSidedOutline]//OL_RCUL
+Cull [_DoubleSidedOutline]//OL_RCUL
 			ZTest LEqual
 			ZWrite On
 
             HLSLPROGRAM
 
             #pragma only_renderers d3d11 playstation xboxone xboxseries vulkan metal switch
-
             #pragma vertex LitPassVertex
             #pragma fragment LitPassFragment
 
@@ -433,7 +442,10 @@ Tags{"LightMode"="remove"}
 			#pragma instancing_options renderinglayer
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
-            #pragma multi_compile SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH SHADOW_VERY_HIGH
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
+
+            #pragma multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH
+            #pragma multi_compile_fragment AREA_SHADOW_MEDIUM AREA_SHADOW_HIGH
 
 			#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
 			#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
@@ -471,10 +483,11 @@ Tags{"LightMode"="GBuffer"}
             HLSLPROGRAM
 
             #pragma only_renderers d3d11 playstation xboxone vulkan xboxseries metal switch
-
             #pragma multi_compile_instancing
             #pragma instancing_options renderinglayer
             #pragma multi_compile _ DOTS_INSTANCING_ON
+
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 
             #pragma multi_compile _ DEBUG_DISPLAY
             #pragma multi_compile_fragment _ SHADOWS_SHADOWMASK
@@ -495,7 +508,6 @@ Tags{"LightMode"="GBuffer"}
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
 
 			#include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/Pass/RT_HDRP_GBuPas.hlsl"
-
             #pragma vertex Vert
             #pragma fragment Frag
 
@@ -519,13 +531,14 @@ Tags{"LightMode"="ShadowCaster"}
             HLSLPROGRAM
 
             #pragma only_renderers d3d11 playstation xboxone vulkan xboxseries metal switch
-
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
 
 			#pragma multi_compile_instancing
 			#pragma instancing_options renderinglayer
             #pragma multi_compile _ DOTS_INSTANCING_ON
+
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 
 			#define SHADERPASS SHADERPASS_SHADOWS
 
@@ -557,19 +570,25 @@ Tags{"LightMode"="DepthOnly"}
             HLSLPROGRAM
 
             #pragma only_renderers d3d11 playstation xboxone vulkan xboxseries metal switch
-
+                    //GuerhoubaCorp added element
+        #pragma instancing_options renderinglayer
             #pragma multi_compile_instancing
             #pragma instancing_options renderinglayer
             #pragma multi_compile _ DOTS_INSTANCING_ON
+
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 
             #pragma multi_compile _ WRITE_NORMAL_BUFFER
             #pragma multi_compile_fragment _ WRITE_MSAA_DEPTH
 
             #define SHADERPASS SHADERPASS_DEPTH_ONLY
 
+            #ifdef N_F_CO_ON
+                #define WRITE_NORMAL_BUFFER
+            #endif
+
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
-
             #ifdef WRITE_NORMAL_BUFFER
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
             #else
@@ -605,21 +624,25 @@ Tags{"LightMode"="MotionVectors"}
             ZWrite On
 
             HLSLPROGRAM
-
             #pragma only_renderers d3d11 playstation xboxone vulkan xboxseries metal switch
 
             #pragma multi_compile_instancing
             #pragma instancing_options renderinglayer
             #pragma multi_compile _ DOTS_INSTANCING_ON
 
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
+
             #pragma multi_compile _ WRITE_NORMAL_BUFFER
             #pragma multi_compile_fragment _ WRITE_MSAA_DEPTH
 
             #define SHADERPASS SHADERPASS_MOTION_VECTORS
 
+            #ifdef N_F_CO_ON
+                #define WRITE_NORMAL_BUFFER
+            #endif
+
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
-
             #ifdef WRITE_NORMAL_BUFFER 
                 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
             #else
@@ -658,13 +681,14 @@ Tags{"LightMode"="ForwardOnly"}
             HLSLPROGRAM
 
             #pragma only_renderers d3d11 playstation xboxone vulkan xboxseries metal switch
-
 			#pragma vertex LitPassVertex
             #pragma fragment LitPassFragment
 
 			#pragma multi_compile_instancing
 			#pragma instancing_options renderinglayer
             #pragma multi_compile _ DOTS_INSTANCING_ON
+
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 
 			#define SHADERPASS SHADERPASS_FORWARD
             #define ATTRIBUTES_NEED_TEXCOORD0
@@ -675,10 +699,13 @@ Tags{"LightMode"="ForwardOnly"}
             #pragma multi_compile_fragment _ SHADOWS_SHADOWMASK
             #pragma multi_compile_fragment PROBE_VOLUMES_OFF PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
             #pragma multi_compile_fragment SCREEN_SPACE_SHADOWS_OFF SCREEN_SPACE_SHADOWS_ON
-            #pragma multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH SHADOW_VERY_HIGH
+
+            #pragma multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH
+            #pragma multi_compile_fragment AREA_SHADOW_MEDIUM AREA_SHADOW_HIGH
 
 			#pragma multi_compile_fragment DECALS_OFF DECALS_3RT DECALS_4RT
 			#pragma multi_compile_fragment USE_FPTL_LIGHTLIST USE_CLUSTERED_LIGHTLIST
+            #define DECALS
 
             #ifndef SHADER_STAGE_FRAGMENT
                 #define SHADOW_LOW
@@ -692,7 +719,7 @@ Tags{"LightMode"="ForwardOnly"}
 			#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
 			#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RayTracingCommon.hlsl"
-
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalPrepassBuffer.hlsl"
 			#ifdef DEBUG_DISPLAY
 			#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
 			#endif
@@ -726,6 +753,7 @@ Tags{"LightMode"="RayTracingPrepass"}
             HLSLPROGRAM
 
             #pragma only_renderers d3d11 playstation xboxone vulkan xboxseries metal switch
+            #pragma multi_compile _ LOD_FADE_CROSSFADE
 
             #define SHADERPASS SHADERPASS_CONSTANT
 
@@ -757,7 +785,7 @@ Tags{"LightMode" = "IndirectDXR"}
 
         HLSLPROGRAM
 
-        #pragma only_renderers d3d11 ps5
+        #pragma only_renderers d3d11 xboxseries ps5
 
         #pragma raytracing surface_shader
 
@@ -776,13 +804,10 @@ Tags{"LightMode" = "IndirectDXR"}
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/ShaderVariablesRaytracing.hlsl"
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/ShaderVariablesRaytracingLightLoop.hlsl"
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingIntersection.hlsl"
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/LightLoop/LightLoopDef.hlsl"
         #define HAS_LIGHTLOOP
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
@@ -794,7 +819,6 @@ Tags{"LightMode" = "IndirectDXR"}
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingFragInputs.hlsl"
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingSampling.hlsl"
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/Common/AtmosphericScatteringRayTracing.hlsl"
 
         #include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/Pass/RT_HDRP_RT_IndirPas.hlsl"
@@ -810,8 +834,7 @@ Tags{"LightMode" = "ForwardDXR"}
 
         HLSLPROGRAM
 
-        #pragma only_renderers d3d11 ps5
-
+        #pragma only_renderers d3d11 xboxseries ps5
         #pragma raytracing surface_shader
 
         #pragma multi_compile _ DEBUG_DISPLAY
@@ -834,7 +857,6 @@ Tags{"LightMode" = "ForwardDXR"}
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingIntersection.hlsl"
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/LightLoop/LightLoopDef.hlsl"
         #define HAS_LIGHTLOOP
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
@@ -844,9 +866,7 @@ Tags{"LightMode" = "ForwardDXR"}
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RayTracingCommon.hlsl"
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
 
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingFragInputs.hlsl"
-        
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/Common/AtmosphericScatteringRayTracing.hlsl"
 
         #include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/Pass/RT_HDRP_RT_ForwPas.hlsl"
@@ -863,11 +883,11 @@ Tags{"LightMode" = "GBufferDXR"}
 
         HLSLPROGRAM
 
-        #pragma only_renderers d3d11 ps5
+        #pragma only_renderers d3d11 xboxseries ps5
         #pragma raytracing surface_shader
-
         #pragma multi_compile _ DEBUG_DISPLAY
         #pragma multi_compile PROBE_VOLUMES_OFF PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
+        #pragma instancing_options renderinglayer
 
         #define SHADERPASS SHADERPASS_RAYTRACING_GBUFFER
 
@@ -877,10 +897,10 @@ Tags{"LightMode" = "GBufferDXR"}
         #define SHADOW_LOW
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingMacros.hlsl"
+        #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Decal/DecalUtilities.hlsl"
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/ShaderVariablesRaytracing.hlsl"
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
-
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/ShaderVariablesRaytracingLightLoop.hlsl"
 
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Lighting.hlsl"
@@ -900,7 +920,7 @@ Tags{"LightMode" = "GBufferDXR"}
         #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingFragInputs.hlsl"
 
         #include "Assets/RealToon/RealToon Shaders/RealToon Core/HDRP/Pass/RT_HDRP_RT_GBuPas.hlsl"
-
+        #define DECALS
         ENDHLSL
     }
 
@@ -912,9 +932,8 @@ Tags{"LightMode" = "VisibilityDXR"}
 
             HLSLPROGRAM
 
-            #pragma only_renderers d3d11 ps5
+            #pragma only_renderers d3d11 xboxseries ps5
             #pragma raytracing surface_shader
-
             #define SHADERPASS SHADERPASS_RAYTRACING_VISIBILITY
             #define ATTRIBUTES_NEED_TEXCOORD0
             #define ATTRIBUTES_NEED_TANGENT
@@ -922,7 +941,6 @@ Tags{"LightMode" = "VisibilityDXR"}
             #pragma multi_compile _ TRANSPARENT_COLOR_SHADOW
 
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingMacros.hlsl"
-
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/ShaderVariablesRaytracing.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/Raytracing/Shaders/RaytracingIntersection.hlsl"
@@ -940,7 +958,6 @@ Tags{"LightMode" = "VisibilityDXR"}
             ENDHLSL
 
           }
-
     }
 
 FallBack "Hidden/InternalErrorShader"

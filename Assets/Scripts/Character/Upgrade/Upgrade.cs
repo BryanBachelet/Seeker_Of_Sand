@@ -11,10 +11,6 @@ public enum UpgradeType
     CAPSULE
 }
 
-
-
-
-
 [Serializable]
 public class Upgrade
 {
@@ -41,9 +37,9 @@ public class Upgrade
     {
 
     }
-    public virtual void Apply(ref CapsuleStats playerStat)
+    public virtual CapsuleStats Apply( CapsuleStats playerStat)
     {
-      
+        return playerStat;
     }
 }
 
@@ -90,7 +86,7 @@ public class UpgradeCapsule : Upgrade
     public UpgradeCapsule(UpgradeProfil profil) : base(profil)
     {
         gain.type = UpgradeType.CAPSULE;
-        m_baseString = gain.nameUgrade;
+        m_baseString = gain.nameUpgrade;
         m_baseStringDescription = gain.description;
     }
 
@@ -101,9 +97,9 @@ public class UpgradeCapsule : Upgrade
         gain.icon_Associat = sprite;
     }
 
-    public override void Apply(ref CapsuleStats playerStat)
+    public override CapsuleStats Apply( CapsuleStats playerStat)
     {
-        base.Apply(ref playerStat);
+        playerStat =  base.Apply( playerStat);
         playerStat.damage += gain.capsulsStats.damage;
         playerStat.projectileNumber += gain.capsulsStats.projectileNumber;
         playerStat.range += gain.capsulsStats.range;
@@ -113,14 +109,16 @@ public class UpgradeCapsule : Upgrade
         playerStat.size += gain.capsulsStats.size;
         playerStat.sizeMultiplicatorFactor += gain.capsulsStats.sizeMultiplicatorFactor;
         playerStat.piercingMax += gain.capsulsStats.piercingMax;
-
+        playerStat.lifetime += gain.capsulsStats.lifetime;
+        playerStat.level += 1;
+        return playerStat;
         //gain.description = m_baseString;
     }
 
     public override void Destroy()
     {
         gain.description = m_baseStringDescription;
-        gain.nameUgrade = m_baseString;
+        gain.nameUpgrade = m_baseString;
     }
 }
 

@@ -2,22 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 
 public interface CharacterComponent
 {
-   public void InitComponentStat(CharacterStat stat);
+    public void InitComponentStat(CharacterStat stat);
 }
 
 public class CharacterProfile : MonoBehaviour
 {
     private HealthSystem m_healthSystem;
     [SerializeField] public CharacterStat stats;
+    
     [HideInInspector] public CharacterStat m_baseStat;
+    public static CharacterProfile instance;
     private CharacterComponent[] m_characterComponent = new CharacterComponent[0];
     private Buff.BuffsManager m_buffManager;
 
+    [SerializeField] private GameObject m_pauseMenuObject;
+    [SerializeField] private GameObject m_CustomPassSeeThrough;
+
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         m_characterComponent = GetComponents<CharacterComponent>();
@@ -28,10 +38,10 @@ public class CharacterProfile : MonoBehaviour
 
     public void Update()
     {
-     
+
         m_buffManager.ApplyBuffCharacter(ref stats);
         m_buffManager.ManageBuffs(ref stats);
-        ApplyStat(stats);
+        // ApplyStat(stats);
     }
 
     public void ApplyStat(CharacterStat newStat)
@@ -43,6 +53,13 @@ public class CharacterProfile : MonoBehaviour
         }
     }
 
-
+    public void OpenPauseMenuInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            m_pauseMenuObject.GetComponent<PauseMenu>().CallPauseMenu();
+            m_CustomPassSeeThrough.gameObject.SetActive(!m_CustomPassSeeThrough.gameObject.activeSelf);
+        }
+    }
 
 }

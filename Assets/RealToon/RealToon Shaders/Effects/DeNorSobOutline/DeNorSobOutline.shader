@@ -1,6 +1,6 @@
 //RealToon - DeNorSob Outline Effect (HDRP - Post Processing)
 //MJQStudioWorks
-//2022
+//©2025
 
 Shader  "Hidden/HDRP/RealToon/Effects/DeNorSobOutline"
 {
@@ -100,16 +100,18 @@ Shader  "Hidden/HDRP/RealToon/Effects/DeNorSobOutline"
         //Most of the lines are based on unity hdrp example
         float EdgeDetect(float2 uv, float4 input_pos_cs)
         {
+            float2 _ScrSi = _OutlineWidth / float2(1920, 1080);
+
             float depth = LoadCameraDepth(input_pos_cs.xy);
             float obj_only = depth != UNITY_RAW_FAR_CLIP_VALUE;
 
             float halfScaleFloor = floor(_OutlineWidth * 0.5);
             float halfScaleCeil = ceil(_OutlineWidth * 0.5);
 
-            float2 bottomLeftUV = uv - float2(_ScreenSize.zw.x, _ScreenSize.zw.y) * halfScaleFloor;
-            float2 topRightUV = uv + float2(_ScreenSize.zw.x, _ScreenSize.zw.y) * halfScaleCeil;
-            float2 bottomRightUV = uv + float2(_ScreenSize.zw.x * halfScaleCeil, -_ScreenSize.zw.y * halfScaleFloor);
-            float2 topLeftUV = uv + float2(-_ScreenSize.zw.x * halfScaleFloor, _ScreenSize.zw.y * halfScaleCeil);
+            float2 bottomLeftUV = uv - float2(_ScrSi.x, _ScrSi.y) * halfScaleFloor;
+            float2 topRightUV = uv + float2(_ScrSi.x, _ScrSi.y) * halfScaleCeil;
+            float2 bottomRightUV = uv + float2(_ScrSi.x * halfScaleCeil, -_ScrSi.y * halfScaleFloor);
+            float2 topLeftUV = uv + float2(-_ScrSi.x * halfScaleFloor, _ScrSi.y * halfScaleCeil);
 
             float depth0 = SampleClampedDepth(bottomLeftUV);
             float depth1 = SampleClampedDepth(topRightUV);
@@ -172,7 +174,7 @@ Shader  "Hidden/HDRP/RealToon/Effects/DeNorSobOutline"
                 float denorsobOut = EdgeDetect(input.texcoord, input.positionCS);
 
 				float3 coloutmix = lerp(_OutlineColor * _OutlineColorIntensity, lerp(ful_scr_so * ful_scr_so, ful_scr_so , _OutlineColorIntensity) * _OutlineColor, _ColOutMiSel);
-                return float4(lerp(coloutmix, lerp(ful_scr_so, 1, _OutOnSel), (1.0 - denorsobOut)), 1); //
+                return float4(lerp(coloutmix, lerp(ful_scr_so, 1, _OutOnSel), (1.0 - denorsobOut)), 1);
         }
 
     ENDHLSL

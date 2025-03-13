@@ -79,6 +79,14 @@ void ModifyVertex(inout VertexData v, inout ExtraV2F d)
 {
    ApplyMeshModification(v);
 
+   #if _TESSONLYDISPLACE
+      #if _MICROVERSEPREVIEW 
+         v.vertex.y = OffsetVertex(v, d).y;
+      #else
+         v.vertex.xyz += OffsetVertex(v, d);
+      #endif
+   #endif
+
    #if _MICROVERTEXMESH || _MICRODIGGERMESH
       EncodeVertexWorkflow(v, d);
    #elif _MEGASPLAT

@@ -19,9 +19,9 @@ using UnityEngine;
 // 8 Snow (R), Glitter (G), GeoHeightFilter(B), (A) GeoHeightFilterStrength 
 // 9 Triplanar, trplanar contrast, stochastic enabled, (A) Saturation
 // 10 Texture Cluster Contrast, boost, Height Offset, Height Contrast
-// 11 Advanced Detail UV Scale/Offset
-// 12 Advanced Detail (G)Normal Blend, (B)Tex Overlay (A) MeshOverlayNormalBlend
-// 13 Advanced Detail (R)Contrast, (G) AngleContrast, (B)HeightConttast, (A) Distance Resample UV scale
+// 11 Open
+// 12 Open
+// 13 Open
 // 14 AntiTileArray (R)Normal Str, (G) Detail Strength, (B) Distance Strength (A) DisplaceShaping
 // 15 Reserved for initialization marking
 // 16 UV Rotation, Triplanar rot, triplanar rot, (A) GlobalSpecularStrength
@@ -34,7 +34,7 @@ using UnityEngine;
 // 23 ColorIntensity(R)
 // 24 Scatter UV Scale (RG), blendMode (B), Alpha Mult (A)
 // 25 Scatter Height Filter (RG), Scatter SlopeFilter (BA)
-// 26 Scatter Distance Fade (R), RimLight Power (G)
+// 26 Scatter Distance Fade (R), RimLight Power (G), ScatterWeight (B)
 // 27 Rim Light Color, intensity (A)
 // 28 Outline Color and intensity
 // 29 Slope Texture Angle (R), Contrast (G)

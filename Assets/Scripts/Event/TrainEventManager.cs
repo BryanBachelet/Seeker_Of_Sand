@@ -21,6 +21,8 @@ public class TrainEventManager : MonoBehaviour
 
     private void SetDayCycleEvent()
     {
+        if (m_dayCycleScript == null) return;
+
         m_dayCycleScript.nightStartEvent += StartEvent;
         m_dayCycleScript.dayStartEvent += EndEvent;
     }
@@ -32,27 +34,31 @@ public class TrainEventManager : MonoBehaviour
 
     public void StartEvent()
     {
+        return;
+
         if (m_pilarActive < 3)
             m_pilarActive++;
         m_isEventActive = true;
+
         for (int i = 0; i < m_pilarActive; i++)
         {
             // m_pilarHealthSystem[i].GetComponent<MeshRenderer>().enabled = true;
             m_pilarHealthSystem[i].transform.GetChild(0).gameObject.SetActive(true);
             m_pilarHealthSystem[i].ChangeState(EventObjectState.Active);
             m_pilarHealthSystem[i].ResetCurrentHealth();
-            m_enemiesManager.AddTarget(m_pilarHealthSystem[i].transform);
+          
+
         }
     }
     public void EndEvent()
     {
+        return;
         m_isEventActive = false;
         for (int i = 0; i < m_pilarActive; i++)
         {
            // m_pilarHealthSystem[i].GetComponent<MeshRenderer>().enabled = false;
             m_pilarHealthSystem[i].transform.GetChild(0).gameObject.SetActive(false);
             m_pilarHealthSystem[i].ChangeState(EventObjectState.Deactive);
-            m_enemiesManager.RemoveTarget(m_pilarHealthSystem[i].transform);
         }
     }
     private void CheckPilarState()

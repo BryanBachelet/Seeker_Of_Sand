@@ -25,6 +25,7 @@ public class ProjectileMortar : MonoBehaviour
     private float m_gravityForce;
     private Vector3 m_prevPosition;
     private float m_lifeTimer;
+    private int damage = 5;
 
     public void InitProjectile(ProjectileCurveData data)
     {
@@ -33,7 +34,8 @@ public class ProjectileMortar : MonoBehaviour
 
     public void Start()
     {
-        InitTrajectory();
+        //InitTrajectory();
+        transform.position = m_projectileData.destination;
         
     }
     private void InitTrajectory()
@@ -76,7 +78,7 @@ public class ProjectileMortar : MonoBehaviour
 
     public void Update()
     {
-        CurveTrajectory();
+        //CurveTrajectory();
         Duration();
         m_vfx.transform.localPosition = transform.InverseTransformPoint( m_projectileData.destination);
     }
@@ -89,12 +91,16 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage,transform.position);
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "Mortar";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = damage;
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().ApplyDamage(attackDamageInfo);
 
                 }
                 if (m_projectileData.target.tag == "Altar")
                 {
-                    m_projectileData.target.GetComponent<ObjectHealthSystem>().TakeDamage((int)m_projectileData.damage);
+                   // m_projectileData.target.GetComponent<ObjectHealthSystem>().TakeDamage((int)m_projectileData.damage);
 
                 }
             }
@@ -114,7 +120,11 @@ public class ProjectileMortar : MonoBehaviour
             {
                 if (m_projectileData.target.tag == "Player")
                 {
-                    m_projectileData.target.GetComponent<health_Player>().GetDamageLeger(m_projectileData.damage,transform.position);
+                    AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
+                    attackDamageInfo.attackName = "Mortar";
+                    attackDamageInfo.position = transform.position;
+                    attackDamageInfo.damage = damage;
+                    m_projectileData.target.GetComponent<HealthPlayerComponent>().ApplyDamage(attackDamageInfo);
                     
                 }
             }

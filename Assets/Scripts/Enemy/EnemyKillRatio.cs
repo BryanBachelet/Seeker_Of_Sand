@@ -22,7 +22,6 @@ public class EnemyKillRatio : MonoBehaviour
         {
             m_PlayerExperienceRef = GameObject.Find("Player").GetComponent<Experience_System>();
         }
-        DrawUI();
     }
 
     void Update()
@@ -37,16 +36,10 @@ public class EnemyKillRatio : MonoBehaviour
             if (m_enemyCount[i] <= 0)
             {
                 m_enemyCount.RemoveAt(i);
-                DrawUI();
                 continue;
             }
             m_enemyCount[i] -= Time.deltaTime;
         }
-    }
-
-    private void DrawUI()
-    {
-        m_textFeedbackUI.text = m_enemyCount.Count.ToString();
     }
 
     public float GetRatioValue()
@@ -58,6 +51,5 @@ public class EnemyKillRatio : MonoBehaviour
     {
         m_enemyCount.Add(m_killRatioTime);
         //m_PlayerExperienceRef.OnEnemyKilled();
-        DrawUI();
     }
 }

@@ -3,209 +3,269 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
-public class CharacterUpgrade : MonoBehaviour
+using GuerhoubaTools;
+using GuerhoubaGames.GameEnum;
+namespace Character
 {
-    public List<Upgrade> m_avatarUpgrade;
-    public int upgradePoint = 0;
-    public GameObject upgradeUiGO;
-
-    public GameObject uiLoaderDisplay;
-    public Text m_upgradePoint;
-    [SerializeField] private Text m_LevelDisplay;
-    [SerializeField] private int m_CurrentLevel = 1;
-
-       // UI display object
-    private GameObject m_upgradeUiGODisplay;
-    private GameObject m_spellBookUIDisplay;
-
-
-    private Loader_Behavior m_loaderBehavior;
-    private UpgradeManager m_upgradeManager;
-    private UpgradeUI m_upgradeUi;
-    private CharacterProfile m_characterProfil;
-    private Character.CharacterShoot m_characterShoot;
-
-    private Upgrade[] m_upgradeToChoose = new Upgrade[3];
-
-    private bool had5level = false;
-    private UpgradeUIDecal m_UpgradeUiDecal;
-
-    public void UpgradeWindowInput(InputAction.CallbackContext ctx)
+    [System.Serializable]
+    public struct SpellUpgradeConfig
     {
-        if (ctx.started)
-        {
-            if (upgradePoint == 0 || had5level) return;
-            upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
+        public int levelToGainSpell;
+        public bool hasBeenTaken;
+    }
 
-            m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
-            m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
-            GlobalSoundManager.PlayOneShot(6, Vector3.zero);
-            if (upgradeUiGO.activeSelf == false)
+    public class CharacterUpgrade : MonoBehaviour
+    {
+        [Header("Upgrades Base Infos")]
+        public List<UpgradeObject> avatarUpgradeList;
+        public static int upgradePoint = 0;
+        [SerializeField] private int presetUpgradePoint = 0;
+
+        [Header("Spell Upgrades Parameters")]
+        public SpellUpgradeConfig[] spellUpgradeConfigs;
+        private int baseSpellIndex;
+
+        // UI display object
+        [Header("UI Objects")]
+        public TMPro.TMP_Text upgradePointTextDisplay;
+        public GameObject baseGameInterfaceUI;
+        //   private UpgradeUIDecal m_UpgradeUiDecal;
+
+        // Useful Components
+        [HideInInspector] public UpgradeManager upgradeManager;
+        private SpellManager m_spellManager;
+        [HideInInspector] public Character.CharacterShoot m_characterShoot;
+        [HideInInspector] public Character.CharacterSpellBook m_characterInventory;
+        private Experience_System experience;
+
+        private bool isUpgradeWindowOpen;
+        private bool isSpellUpgradeWindowOpen;
+        [SerializeField] private bool isDebugActive = false;
+
+        private ObjectState state;
+        private SeekerOfSand.UI.UI_PlayerInfos m_UiPlayerInfo;
+
+        public GameElement lastRoomElement;
+
+        #region Input Functions
+        public void UpgradeWindowInput(InputAction.CallbackContext ctx)
+        {
+            if (ctx.started)
             {
-                GameState.ChangeState();
-                DestroyAllUpgrade();
-                return;
+                if (upgradePoint == 0 || isSpellUpgradeWindowOpen)
+                    return;
+
+                if (!isUpgradeWindowOpen)
+                {
+                    ShowUpgradeWindow();
+                    return;
+                }
+                if (isUpgradeWindowOpen)
+                {
+                    CloseUpgradeWindow();
+                    return;
+                }
             }
-            GetNewUpgrade();
-            m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
+        }
+
+        public void ChooseUpgradeInput(InputAction.CallbackContext ctx)
+        {
+            if (ctx.started)
+            {
+                if (isUpgradeWindowOpen)
+                {
+                    upgradeManager.ValidateUpgrade(int.Parse(ctx.control.name)-1);
+                }
+
+                if(isSpellUpgradeWindowOpen)
+                {
+                    upgradeManager.ValidateSpell(int.Parse(ctx.control.name) -1);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Init Script
+        public void Start()
+        {
+            state = new ObjectState();
+            GameState.AddObject(state);
+            upgradePoint = presetUpgradePoint;
+            InitComponents();
+        }
+
+        public void InitComponents()
+        {
+            upgradeManager = FindObjectOfType<UpgradeManager>();
+            m_spellManager = upgradeManager.GetComponent<SpellManager>();
+            m_characterShoot = GetComponent<Character.CharacterShoot>();
+            m_characterInventory = GetComponent<Character.CharacterSpellBook>();
+            experience = GetComponent<Experience_System>();
+            if (!m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
+            // m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
+            //upgradePointTextDisplay.text = upgradePoint.ToString();
+        }
+        #endregion
+
+        public GameTutorialView gameTutorialView;
+        private bool m_isFirstTime = true;
+
+        public void ShowSpellChoiceInteface()
+        {
+            if (upgradeManager)
+            {
+                upgradeManager.OpenSpellChoiceUI(lastRoomElement);
+               
+
+                GameState.ChangeState();
+                isSpellUpgradeWindowOpen = true;
+                //ChangeBaseInterfaceDisplay(false);
+            }
+
+        }
+
+        public void ApplySpellChoise(SpellSystem.SpellProfil capsule)
+        {
+            CloseSpellChoiceInterface();
+            m_characterShoot.AddSpell(m_spellManager.GetCapsuleIndex(capsule));
+        }
+
+        public void CloseSpellChoiceInterface()
+        {
+            GlobalSoundManager.PlayOneShot(30, Vector3.zero);
+            upgradeManager.CloseSpellChoiceUI();
             GameState.ChangeState();
-            // Time.timeScale = 0.02f;
+            isSpellUpgradeWindowOpen = false;
+            ChangeBaseInterfaceDisplay(true);
         }
-    }
 
-    public void UpgradeWindowLevel5()
-    {
-        had5level = true;
-        upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-        UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
-        m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
-        m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
-        GlobalSoundManager.PlayOneShot(6, Vector3.zero);
-        if (upgradeUiGO.activeSelf == false)
+        #region Upgrade Functions
+        public void ShowUpgradeWindow()
         {
+            if (!m_characterShoot) return;
+            isUpgradeWindowOpen = true;
+
+            // -> Deactivate player in game interface
+            //ChangeBaseInterfaceDisplay(false);
+
+            UpgradeLevelingData data = new UpgradeLevelingData();
+            data.spellState = m_characterShoot.spellProfils.ToArray();
+            data.spellCount = m_characterShoot.maxSpellIndex;
+            data.iconSpell = m_characterShoot.GetSpellSprite();
+            data.materialIconSpell = m_characterShoot.GetSpellMaterial();
+            data.capsuleIndex = m_characterShoot.spellIndexGeneral.ToArray();
+            data.upgradePoint = upgradePoint;
+            data.roomElement = lastRoomElement;
+            upgradeManager.OpenUpgradeUI(data);
+
+
+            //GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
+            GameState.ChangeState(); // Set Game in pause
+
+            if(m_isFirstTime && GameManager.instance.generalSaveData.IsFirstTime)
+            {
+                gameTutorialView.StartTutoriel();
+                m_isFirstTime = false;
+            }
+        }
+
+        public void CloseUpgradeWindow()
+        {
+            isUpgradeWindowOpen = false;
+            ChangeBaseInterfaceDisplay(true);
+            upgradeManager.CloseUpgradeUI();
+            m_characterShoot.UpdateSpellRarityCadre(m_characterShoot.m_characterSpellBook.GetAllSpells());
             GameState.ChangeState();
-            DestroyAllUpgrade();
-            return;
-        }
-        GetNewUpgrade();
-        m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
-        GameState.ChangeState();
-        // Time.timeScale = 0.02f;
-    }
-    #region Init Script
-    public void Start()
-    {
-        InitComponents();
-        m_upgradeUi.m_upgradeButtonFunction += ChooseUpgrade;
-        for (int i = 0; i < m_upgradeUi.upgradeButtons.Length; i++)
-        {
-            int upgradeLink = m_upgradeUi.upgradeButtons[i].upgradeLink;
-            int upgradeNumber = m_upgradeUi.upgradeButtons[i].numberOfUpgrade;
-            m_upgradeUi.upgradeButtons[i].button.onClick.AddListener(() => m_upgradeUi.m_upgradeButtonFunction.Invoke(upgradeLink, upgradeNumber));
-        }
-        m_upgradePoint.text = upgradePoint.ToString();
-    }
-
-    private void InitComponents()
-    {
-        m_upgradeManager = FindObjectOfType<UpgradeManager>();
-        m_upgradeUi = upgradeUiGO.GetComponent<UpgradeUI>();
-        m_characterProfil = GetComponent<CharacterProfile>();
-        m_characterShoot = GetComponent<Character.CharacterShoot>();
-        m_upgradeUiGODisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().upgradePanelGameObject;
-        m_spellBookUIDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>().gameObject;
-        m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
-        //m_loaderBehavior = uiLoaderDisplay.GetComponent<Loader_Behavior>();
-    }
-    #endregion
-
-    public void GetNewUpgrade()
-    {
-        if (upgradePoint == 0) return;
-
-        m_upgradeToChoose = m_upgradeManager.RandomUpgrade(3);
-        for (int i = 0; i < 3; i++)
-        {
-            int index = Random.Range(0, 4);
-            int spellIndex = m_characterShoot.spellEquip[index];
-            m_upgradeToChoose[i].Setup(index, m_characterShoot.bookOfSpell[spellIndex].sprite);
-        }
-    }
-
-    public void DestroyAllUpgrade()
-    {
-        for (int i = 0; i < m_upgradeToChoose.Length; i++)
-        {
-            m_upgradeToChoose[i].Destroy();
-            m_upgradeToChoose[i] = null;
         }
 
-    }
-    public void ChooseUpgrade(int indexChoice, int numberUpgrade)
-    {
-
-        //Debug.Log("Index Choice = " + indexChoice.ToString() + " number of upgrade " + numberUpgrade.ToString());
-        if (numberUpgrade > upgradePoint) return;
-        for (int i = 0; i < numberUpgrade; i++)
+        public void ApplyUpgrade(UpgradeObject upgradeChoose)
         {
-            m_avatarUpgrade.Add(m_upgradeToChoose[indexChoice]);
-            ApplyUpgrade(indexChoice);
             upgradePoint--;
-            m_UpgradeUiDecal.upgradAvailable.text = ""+ upgradePoint;
+
+
+            SpellSystem.SpellProfil spellProfil = m_characterInventory.GetSpellOfRotation(upgradeChoose.indexSpellLink);
+            LogSystem.LogMsg("Upgrade choose is " + upgradeChoose.name + " for the spell" + spellProfil.name, isDebugActive);
+            if (isDebugActive)
+            {
+
+                spellProfil.DebugStat();
+            }
+
+            upgradeChoose.Apply(spellProfil);
+            m_characterShoot.UpdatePullObject(spellProfil);
+            avatarUpgradeList.Add(upgradeChoose);
+            if (isDebugActive)
+            {
+                spellProfil.DebugStat();
+            }
+            if (m_UiPlayerInfo)
+            {
+               bool isLevelUp = spellProfil.AddSpellExpPoint(1);
+               
+
+                if (isLevelUp )
+                {
+                    spellProfil.GainLevel();
+                    m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil);
+                }
+                else
+                {
+                    if (upgradePoint == 0 && isUpgradeWindowOpen)
+                    {
+
+                        CloseUpgradeWindow();
+
+                    }
+                }
+            }
+
+
+
         }
 
-        DestroyAllUpgrade();
-        if (upgradePoint == 0 )
+        public void OpenTierUpObject()
         {
-            upgradeUiGO.SetActive(!upgradeUiGO.activeSelf);
-            UiSpellGrimoire.bookDisplayRoot.SetActive(!upgradeUiGO.activeSelf);
-            m_upgradeUiGODisplay.SetActive(!m_upgradeUiGODisplay.activeSelf);
-            m_spellBookUIDisplay.SetActive(!m_spellBookUIDisplay.activeSelf);
-            m_upgradePoint.text = upgradePoint.ToString();
-            GameState.ChangeState();
-            if(had5level) { had5level = false; }
+
+        }
+
+        public void CloseTierUpObject()
+        {
+            if (upgradePoint == 0 && isUpgradeWindowOpen)
+            {
+
+                CloseUpgradeWindow();
+            }
+        }
+
+        #endregion
+
+        public void GainLevel()
+        {
             return;
+            upgradePoint++;
+            upgradePointTextDisplay.text = upgradePoint.ToString();
+            if (baseSpellIndex < spellUpgradeConfigs.Length && spellUpgradeConfigs[baseSpellIndex].levelToGainSpell <= experience.GetCurrentLevel())
+            {
+                ShowSpellChoiceInteface();
+                ChangeBaseInterfaceDisplay(false);
+                baseSpellIndex++;
+
+            }
+
         }
 
-        GetNewUpgrade();
-        m_upgradeUi.UpdateUpgradeDisplay(m_upgradeToChoose);
-        m_upgradePoint.text = upgradePoint.ToString();
-    }
-
-
-    public void GainLevel()
-    {
-        upgradePoint++;
-        m_UpgradeUiDecal.upgradAvailable.text = "" + upgradePoint;
-        m_upgradePoint.text = upgradePoint.ToString();
-        if (upgradePoint >= 5) { UpgradeWindowLevel5(); }
-    }
-
-    private CharacterStat CalculateStat(CharacterStat stats)
-    {
-        CharacterStat newStats = stats;
-
-        for (int i = 0; i < m_avatarUpgrade.Count; i++)
+        public void GiveUpgradePoint(int upgradeNumber)
         {
-            ApplyUpgrade(i, ref newStats);
+            upgradePoint += upgradeNumber;
+            //upgradePointTextDisplay.text = upgradePoint.ToString();
         }
 
-        return newStats;
-    }
-
-    private void ApplyUpgrade(int index, ref CharacterStat stat)
-    {
-        switch (m_avatarUpgrade[index].gain.type)
+        public void ChangeBaseInterfaceDisplay(bool willBeAble)
         {
-            case UpgradeType.CHARACTER:
-                m_avatarUpgrade[index].Apply(ref stat);
-                break;
-            case UpgradeType.LAUNCHER:
-                m_avatarUpgrade[index].Apply(ref m_characterShoot.launcherStats);
-                break;
-            case UpgradeType.CAPSULE:
-                m_avatarUpgrade[index].Apply(ref m_characterShoot.capsuleStatsAlone[m_avatarUpgrade[index].capsuleIndex]);
-                break;
-            default:
-                break;
+            baseGameInterfaceUI.SetActive(willBeAble);
         }
+
     }
 
-    private void ApplyUpgrade(int indexChoose)
-    {
-        switch (m_upgradeToChoose[indexChoose].gain.type)
-        {
-            case UpgradeType.CHARACTER:
-                m_upgradeToChoose[indexChoose].Apply(ref m_characterProfil.stats);
-                break;
-            case UpgradeType.LAUNCHER:
-                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.launcherStats);
-                break;
-            case UpgradeType.CAPSULE:
-                m_upgradeToChoose[indexChoose].Apply(ref m_characterShoot.capsuleStatsAlone[m_upgradeToChoose[indexChoose].capsuleIndex]);
-                break;
-        }
-    }
 }

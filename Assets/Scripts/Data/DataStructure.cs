@@ -71,8 +71,11 @@ public class AgentProfile : ScriptableObject
 public class HealthSystem
 {
    private float m_currentHealth;
-
+    private float m_healthPercent;
+    private float m_maxHealth;
     public float health { get { return m_currentHealth; } private set { } }
+    public float percentHealth { get { return m_healthPercent; } private set { } }
+    public float maxHealth { get { return m_maxHealth; } private set { } }
 
     public delegate void HealthUpdateEvent(float currentHealth);
     public event HealthUpdateEvent healthUpdate;
@@ -80,6 +83,9 @@ public class HealthSystem
     public void Setup(float maxHealth)
     {
         m_currentHealth = maxHealth;
+        m_maxHealth = maxHealth;
+        m_healthPercent = m_currentHealth / m_maxHealth;
+
     }
 
     public void SetMaxHealth(int maxHealth)
@@ -91,6 +97,7 @@ public class HealthSystem
     public void ChangeCurrentHealth(float value)
     {
         m_currentHealth += value;
+        m_healthPercent = m_currentHealth / m_maxHealth;
         healthUpdate?.Invoke(m_currentHealth);
     }
 
