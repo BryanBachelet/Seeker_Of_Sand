@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using ExcelLibrary.SpreadSheet;
 namespace GuerhoubaTools.Curves
 {
     [CreateAssetMenu(fileName = "Curve Object", menuName = "Tools Guerhouba", order = 0)]
@@ -18,15 +19,26 @@ namespace GuerhoubaTools.Curves
         [SerializeField] public Object csvfile;
         public void SetCurve()
         {
-            Debug.Log(AssetDatabase.GetAssetPath(csvfile));
-            if (csvfile.name == "*.csv")
-            {
+            string path =AssetDatabase.GetAssetPath(csvfile);
+            Debug.Log(path);
 
-            }
-            else
+            if (!path.EndsWith(".csv"))
             {
+                Debug.Log("The csvfile is not as csv file");
                 return;
             }
+
+            string allText = System.IO.File.ReadAllText( path);
+            string[] lines = allText.Split('\n');
+            Debug.Log("The lines count  " + lines.Length);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string[] cells1 = lines[1].Split(',');
+                Debug.Log("The cells " +i+" count  " + cells1.Length);
+            }
+            
+
+
         }
 #endif
 

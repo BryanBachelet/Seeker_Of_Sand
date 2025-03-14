@@ -118,7 +118,7 @@ namespace Character
                 upgradeManager.OpenSpellChoiceUI(lastRoomElement);
                
 
-                GameState.ChangeState();
+                GameState.SetState(false);
                 isSpellUpgradeWindowOpen = true;
                 //ChangeBaseInterfaceDisplay(false);
             }
@@ -135,7 +135,7 @@ namespace Character
         {
             GlobalSoundManager.PlayOneShot(30, Vector3.zero);
             upgradeManager.CloseSpellChoiceUI();
-            GameState.ChangeState();
+            GameState.SetState(true);
             isSpellUpgradeWindowOpen = false;
             ChangeBaseInterfaceDisplay(true);
         }

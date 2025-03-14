@@ -307,11 +307,11 @@ public class RoomManager : MonoBehaviour
             }
             else if(randomReward >= 50 && randomReward < 75)
             {
-                rewardAssociated[i] = 1;
+                rewardAssociated[i] = 2;
             }
             else
             {
-                rewardAssociated[i] = 1;
+                rewardAssociated[i] =2;
             }
         }
         return rewardAssociated;

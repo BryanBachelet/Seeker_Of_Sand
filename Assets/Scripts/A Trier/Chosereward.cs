@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
+
 public class Chosereward : MonoBehaviour
 {
     public int ArtefactQuantity = 3;
