@@ -6,27 +6,36 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
+    [SerializeField] private GameObject m_healthUiFeedbackHolder;
+    [HideInInspector] private DamageHealthFD[] m_damageHealthFDs;
+    [HideInInspector] private List<DamageHealthFD> m_inactiveText;
+    [HideInInspector] private List<DamageHealthFD> m_activeText;
 
-    [SerializeField] public DamageHealthFD[] m_damageHealthFDs;
-    private List<DamageHealthFD> m_inactiveText;
-    private List<DamageHealthFD> m_activeText;
+    [HideInInspector] private int m_damageFDMax;
+    [HideInInspector] private int m_textActiveCount = 1;
 
-    private int m_damageFDMax;
-    private int m_textActiveCount = 1;
+    [HideInInspector] private Camera m_cameraReference;
 
-    [SerializeField] public Camera m_cameraReference;
-    [SerializeField] public SerieController m_serieController;
+    [HideInInspector] public Character.CharacterShoot characterShoot;
 
-    public Character.CharacterShoot characterShoot;
-
-    public Color[] elementDamageColor = new Color[4];
+    [SerializeField] private Color[] elementDamageColor = new Color[4];
     private void Start()
     {
-        InitTextFeedback();
+        m_cameraReference = Camera.main;
+        GetDamageHealthFDObject(m_healthUiFeedbackHolder);
+        characterShoot = GameObject.Find("Player").GetComponent<Character.CharacterShoot>();
     }
 
 
-
+    public void GetDamageHealthFDObject(GameObject gameObjectDamageFeedbackHolder)
+    {
+        m_damageHealthFDs = new DamageHealthFD[gameObjectDamageFeedbackHolder.transform.childCount];
+        for (int i = 0; i < gameObjectDamageFeedbackHolder.transform.childCount; i++)
+        {
+            m_damageHealthFDs[i] = m_healthUiFeedbackHolder.transform.GetChild(i).GetComponent<DamageHealthFD>();
+        }
+        InitTextFeedback();
+    }
     public void InitTextFeedback()
     {
         m_damageFDMax = m_damageHealthFDs.Length;
@@ -47,7 +56,6 @@ public class HealthManager : MonoBehaviour
     {
         if (m_textActiveCount == m_damageFDMax) return;
 
-        if (m_serieController) m_serieController.RefreshSeries(true);
         DamageHealthFD currentDamageFD = m_inactiveText[m_damageFDMax - m_textActiveCount];
         Tool_DamageMeter.AddDamage(damage);
         float cameraDistance = Vector3.Distance(m_cameraReference.transform.position, position);

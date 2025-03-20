@@ -5,24 +5,28 @@ using UnityEngine;
 public class TerrainLocationID : MonoBehaviour
 {
     [Header("Terrain")]
-    public int terrainID;
-    public string locationName;
+    [HideInInspector] private int terrainID;
+    [HideInInspector] private string locationName;
 
     [Header("Player")]
     [SerializeField] private bool m_IsPlayer = false;
-    public LayerMask groundLayer;
-    public int currentTerrainID;
+    [HideInInspector] private GameLayer m_gameLayer;
+    [HideInInspector] private int currentTerrainID;
     static public string currentLocationName;
-    private TerrainLocationID lastLocation;
-    [SerializeField] public TMPro.TMP_Text locationText;
+    [HideInInspector] private TerrainLocationID lastLocation;
+    [SerializeField] private TMPro.TMP_Text locationText;
 
+    public void Start()
+    {
+        m_gameLayer = GameLayer.instance;
+    }
     public void Update()
     {
         if (!m_IsPlayer) return;
 
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundLayer))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, m_gameLayer.groundLayerMask))
         {
             if (!hit.transform.GetComponent<TerrainLocationID>()) return;
             TerrainLocationID newterrainlocation = hit.transform.GetComponent<TerrainLocationID>();

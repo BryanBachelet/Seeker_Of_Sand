@@ -11,16 +11,16 @@ namespace Character
 {
     public class CharacterSpellBook : MonoBehaviour
     {
-        [SerializeField] private int m_rotationSize = 4;
+        [HideInInspector] private int m_rotationSize = 4;
         private List<SpellSystem.SpellProfil> m_bookOfSpell = new List<SpellSystem.SpellProfil>();
-        [SerializeField] public SpellSystem.SpellProfil[] m_spellsRotationArray = new SpellSystem.SpellProfil[4];
-        UI_Inventory ui_inventory;
+        [HideInInspector] public SpellSystem.SpellProfil[] m_spellsRotationArray = new SpellSystem.SpellProfil[4];
+        [HideInInspector] private UI_Inventory ui_inventory;
 
 
         [HideInInspector] public SpellProfil tempSpell;
         private CharacterShoot m_characterShoot;
         public UI_SpellExchange m_spellExchangeUI;
-        public int m_currentSpellInRotationCount;
+        [HideInInspector] public int m_currentSpellInRotationCount;
 
         private CristalInventory m_cristalInventory;
         //  Need to create copy from the spell place

@@ -19,20 +19,18 @@ namespace Character
     public class CharacterAim : MonoBehaviour
     {
 
-        [SerializeField] private Camera m_camera;
+        [HideInInspector] private Camera m_camera;
         [SerializeField] private Transform m_transformHead;
-        [SerializeField] private LayerMask m_aimLayer;
+        private GameLayer m_gameLayer;
+        private LayerMask combineLayer;
 
         [Header("Aim Feedback")]
-        public int distanceMinimumProjectorVisor = 1;
-        public GameObject projectorVisorObject;
+        private int distanceMinimumProjectorVisor = 12;
+        [SerializeField] private GameObject projectorVisorObject;
         [SerializeField] private Texture2D m_cursorTex;
         [SerializeField] private RectTransform m_cursor;
         [SerializeField] private LineRenderer m_lineRenderer;
-        [SerializeField] private GameObject m_AreaFeedbackHolder;
-        [SerializeField] private LayerMask enemyLayer;
-        [SerializeField] private bool m_hasCloseTarget = false;
-        private GameObject currentFeedbackInUse;
+        [HideInInspector] private bool m_hasCloseTarget = false;
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
@@ -57,23 +55,19 @@ namespace Character
         private bool m_isNewTarget = false;
         private bool m_isInRange = false;
 
-        public float rangeDebug;
-        public Collider[] colProche;
-        [SerializeField] private float aimAssistDistance = 1;
+        [HideInInspector] private float aimAssistDistance = 1;
 
         private Vector3 prevAimPosition;
 
-        public Collider NearestCol;
-
         private bool m_exitCombatState = false;
-        public Vector3 v3Ref;
+        private Vector3 v3Ref = new Vector3(1,0,0);
 
         public VisualEffect vfxCast;
         public GameObject gameObject_vfxCastEnd;
-        public VisualEffect vfxCastEnd;
+        [HideInInspector] public VisualEffect vfxCastEnd;
 
-        public Vector3 lastRawPosition;
-        public Transform basePosition;
+        [HideInInspector] public Vector3 lastRawPosition;
+        [SerializeField] private Transform basePosition;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
@@ -82,7 +76,9 @@ namespace Character
             m_characterMouvement = GetComponent<CharacterMouvement>();
             vfxCastEnd = gameObject_vfxCastEnd.GetComponentInChildren<VisualEffect>();
             gameObject_vfxCastEnd.transform.SetParent(this.transform.parent);
-
+            m_camera = Camera.main;
+            m_gameLayer = GameLayer.instance;
+            combineLayer = m_gameLayer.groundLayerMask + m_gameLayer.interactibleLayerMask;
         }
 
 
@@ -99,7 +95,7 @@ namespace Character
                 if (m_characterShoot.m_aimModeState == AimMode.Automatic)
                     position = transform.position;
 
-                col = Physics.OverlapSphere(position, m_characterShoot.GetPodRange(), enemyLayer);
+                col = Physics.OverlapSphere(position, m_characterShoot.GetPodRange(), m_gameLayer.enemisLayerMask);
                 if (col.Length > 0)
                 {
                     m_hasCloseTarget = true;
@@ -123,7 +119,7 @@ namespace Character
 
             Ray aimRay = m_camera.ScreenPointToRay(m_aimScreenPoint);
             RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(aimRay, out hit, m_aimScreenToWorldDistance, m_aimLayer))
+            if (Physics.Raycast(aimRay, out hit, m_aimScreenToWorldDistance, combineLayer))
             {
                 m_rawAimPoint = m_aimPoint = hit.point;
 
@@ -196,14 +192,14 @@ namespace Character
             Ray aimTrajectoryRay = new Ray(transform.position, m_aimDirection);
             RaycastHit hit = new RaycastHit();
             //Debug.Log("Dist :" + m_characterShoot.GetPodRange());
-            if (Physics.Raycast(aimTrajectoryRay, out hit, m_characterShoot.GetPodRange(), m_aimLayer))
+            if (Physics.Raycast(aimTrajectoryRay, out hit, m_characterShoot.GetPodRange(), combineLayer))
             {
 
                 //Debug.Log("Hit obstacle" + hit.collider.name);
 
                 m_aimPoint = hit.point;
                 m_aimFinalPointNormal = hit.normal;
-                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimFinalPointNormal, aimAssistDistance, enemyLayer);
+                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimFinalPointNormal, aimAssistDistance, m_gameLayer.enemisLayerMask);
 
                 if (nearestAimedEnemy.Length > 0)
                 {
@@ -231,7 +227,7 @@ namespace Character
             Ray aimTrajectoryRay = new Ray(transform.position, (heightestPoint - transform.position).normalized);
             RaycastHit hit = new RaycastHit();
 
-            if (Physics.Raycast(aimTrajectoryRay, out hit, (heightestPoint - transform.position).magnitude, m_aimLayer))
+            if (Physics.Raycast(aimTrajectoryRay, out hit, (heightestPoint - transform.position).magnitude, combineLayer))
             {
                 Debug.Log("Hit obstacle" + hit.collider.name);
                 m_aimPoint = hit.point;
@@ -240,7 +236,7 @@ namespace Character
             }
 
             aimTrajectoryRay = new Ray(heightestPoint, (m_aimPoint - heightestPoint).normalized);
-            if (Physics.Raycast(aimTrajectoryRay, out hit, (m_aimPoint - heightestPoint).magnitude, m_aimLayer))
+            if (Physics.Raycast(aimTrajectoryRay, out hit, (m_aimPoint - heightestPoint).magnitude, combineLayer))
             {
                 //Debug.Log("Hit obstacle" + hit.collider.name);
                 m_aimPoint = hit.point;
@@ -256,7 +252,7 @@ namespace Character
         {
             Ray aimTrajectoryRay = new Ray(m_aimPoint, Vector3.down);
             RaycastHit hit = new RaycastHit();
-            if (Physics.Raycast(aimTrajectoryRay, out hit, Mathf.Infinity, m_aimLayer))
+            if (Physics.Raycast(aimTrajectoryRay, out hit, Mathf.Infinity, combineLayer))
             {
                 if (Vector3.Distance(m_aimPoint, hit.point) > 1.0f)
                 {

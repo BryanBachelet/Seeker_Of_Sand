@@ -9,10 +9,12 @@ public class GameLayer : MonoBehaviour
 
     public LayerMask groundLayerMask;
     public LayerMask propsGroundLayerMask;
+    public LayerMask decoLayerMask;
     public LayerMask playerLayerMask;
     public LayerMask enemisLayerMask;
-
-
+    public LayerMask traderLayerMask;
+    public LayerMask interactibleLayerMask;
+    public LayerMask artefactLayerMask;
     void Awake()
     {
         instance = this;

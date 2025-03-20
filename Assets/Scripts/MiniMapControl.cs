@@ -5,33 +5,35 @@ using UnityEngine.UI;
 
 public class MiniMapControl : MonoBehaviour
 {
-    public GameObject playerTarget;
-    public float[] y_distance;
-    public int currentZoomLevel;
-    public Vector3 maxDezoomPosition;
-    private Camera cameraminimap;
+    [HideInInspector] private GameObject playerTarget;
+    [SerializeField] private float[] y_distance;
+    [HideInInspector] private int currentZoomLevel;
+    [HideInInspector] private Vector3 maxDezoomPosition = new Vector3(-11327.8096f, 570, -2150.37207f);
+    [HideInInspector] private Camera cameraminimap;
 
-    public Texture2D discoveryMap;
-    private Color[] colorMap;
-    public Vector3 playerPosition;
-    public Vector2 playerPositionMiniMap;
-    public GameObject terrainPosition;
-    public int diameterDiscovery;
-    public int radiusBrush;
+    [HideInInspector] private Texture2D discoveryMap;
+    [HideInInspector] private Color[] colorMap;
+    [HideInInspector] private Vector3 playerPosition;
+    [HideInInspector] private Vector2 playerPositionMiniMap;
+    [HideInInspector] private GameObject terrainPosition;
+    [HideInInspector] private int diameterDiscovery = 50;
+    [HideInInspector] private int radiusBrush = 25;
 
-    private Material material;
-    public RawImage imageMiniMap;
+    [HideInInspector] private Material material;
+    [SerializeField] private RawImage imageMiniMap;
 
     // Start is called before the first frame update
     void Start()
     {
         cameraminimap = this.GetComponent<Camera>();
-        ResetDiscovery(terrainPosition);
+        playerTarget = GameObject.Find("Player");
+        //ResetDiscovery(terrainPosition);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(terrainPosition == null) { return; }
         playerPosition = playerTarget.transform.position - terrainPosition.transform.position;
         playerPositionMiniMap = new Vector2((playerPosition.x / 1500) * 256, (playerPosition.z / 1500) * 256);
         UpdateDiscovery();

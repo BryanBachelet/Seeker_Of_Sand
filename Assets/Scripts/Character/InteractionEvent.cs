@@ -12,50 +12,34 @@ using UnityEngine.InputSystem;
 public class InteractionEvent : MonoBehaviour
 {
     [SerializeField] private float radiusInteraction;
-    [SerializeField] private LayerMask InteractibleObject;
-    [SerializeField] private Vector2 offsetPopUpDisplay;
-    private float lastInteractionCheck;
-    public float intervalCheckInteraction;
-    public GameObject currentInteractibleObject;
+    [HideInInspector] private GameLayer m_gameLayer;
+    [HideInInspector] private float lastInteractionCheck = 0.5f;
+    [HideInInspector] private float intervalCheckInteraction = 0.5f;
+    [HideInInspector] private GameObject currentInteractibleObject;
     private Transform m_socleTransform;
 
-    public GameObject ui_HintInteractionObject;
-    private RectTransform ui_RectTransformHintInteraction;
-    public Animator m_lastHintAnimator;
+    [HideInInspector] public Animator m_lastHintAnimator;
     [HideInInspector] public Animator m_lastArtefactAnimator;
-    public RectTransform parentHintTransform;
 
-    public string[] eventDataInfo;
+    [HideInInspector] private TMP_Text txt_ObjectifDescriptionPnj;
 
-    public TMP_Text txt_ObjectifDescription;
-    public TMP_Text txt_ObjectifDescriptionPnj;
-    public TMP_Text txt_RewardDescription;
-    public UnityEngine.UI.Image img_ImageReward;
-    public Sprite[] sprite_List;
-    public Image img_progressionBar;
+    private Animator lastTrader;
 
-    public LayerMask traderLayer;
-    public float rangeTrader;
+    [HideInInspector] public ArtefactHolder lastArtefact;
+    [HideInInspector] private RectTransform CanvasRect;
 
-    public Animator lastTrader;
+    [HideInInspector] private Collider[] colliderProche;
 
-    public LayerMask artefactLayer;
-    public float rangeArtefact;
-    public ArtefactHolder lastArtefact;
-    [SerializeField] private RectTransform CanvasRect;
+    [HideInInspector] private HintInteractionManager m_hintInteractionManager;
 
-    public Collider[] colliderProche;
-
-    public HintInteractionManager m_hintInteractionManager;
-
-    [SerializeField] private Camera mainCamera;
+    [HideInInspector] private Camera mainCamera;
     private InteractionInterface currentInteractionInterface;
     private InteractionInterface saveInteractionInterface;
 
-    public GameObject currentInteractibleObjectActive = null;
+    [HideInInspector] public GameObject currentInteractibleObjectActive = null;
 
-    public Animator bandeDiscussion;
-    public GameObject hintInputInteraction;
+    [SerializeField] private Animator bandeDiscussion;
+    [SerializeField] private GameObject hintInputInteraction;
 
     private Character.CharacterMouvement m_characterMouvement;
 
@@ -65,6 +49,8 @@ public class InteractionEvent : MonoBehaviour
     {
         lastInteractionCheck = 0;
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        if(m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
+        if(mainCamera == null) {mainCamera = Camera.main; }
       
     }
 
@@ -73,7 +59,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (Time.time > lastInteractionCheck + intervalCheckInteraction)
         {
-            Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, InteractibleObject);
+            Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.interactibleLayerMask);
             FindInteractiveElementAround(col);
             if (currentInteractibleObjectActive == null) { NearPossibleInteraction(col); }
             NearTrader();
@@ -153,13 +139,6 @@ public class InteractionEvent : MonoBehaviour
             {
                 hintInputInteraction.SetActive(true);
                 //bandeDiscussion.SetBool("NearNPC", true);
-            }
-            if (ui_HintInteractionObject != null)
-            {
-                //ui_HintInteractionObject.SetActive(true);
-
-                /// Remove Event UI
-                //m_hintInteractionManager.ActivateAutelData(true);
             }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
@@ -330,7 +309,7 @@ public class InteractionEvent : MonoBehaviour
     #region Near Functions
     public void NearTrader()
     {
-        Collider[] col = Physics.OverlapSphere(transform.position, rangeTrader, traderLayer);
+        Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.traderLayerMask);
         colliderProche = col;
         if (col.Length > 0)
         {
@@ -390,16 +369,10 @@ public class InteractionEvent : MonoBehaviour
 
     public void NearArtefact()
     {
-        Collider[] col = Physics.OverlapSphere(transform.position, rangeArtefact, artefactLayer);
+        Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.artefactLayerMask);
         colliderProche = col;
         if (col.Length > 0 && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
         {
-            if (ui_HintInteractionObject != null)
-            {
-                //ui_HintInteractionObject.SetActive(true);
-                m_hintInteractionManager.ActiveArtefactData(true);
-
-            }
             for (int i = 0; i < col.Length; i++)
             {
                 if (lastArtefact != null)

@@ -6,24 +6,21 @@ using UnityEngine.VFX;
 
 public class TeleporterBehavior : MonoBehaviour
 {
-    public Teleporter lastTeleportor;
-    public Vector3 lastTpPosition;
-    public bool activationTP;
-    public Teleporter nextTeleporter;
-    public Vector3 nextTpPosition;
-    public int nextTerrainNumber = 0;
+    [HideInInspector] private Teleporter nextTeleporter;
+    [HideInInspector] private Vector3 nextTpPosition;
+    [HideInInspector] public int nextTerrainNumber = 0;
 
-    public CameraFadeFunction cameraFadeFunction;
-    private CameraBehavior m_cameraBehavior;
+
+    [HideInInspector] private CameraFadeFunction cameraFadeFunction;
+    [HideInInspector] private CameraBehavior m_cameraBehavior;
     public TerrainGenerator terrainGen;
-    public AltarBehaviorComponent altarBehavior;
 
-    public VisualEffect apparitionVFX;
+    [SerializeField] private VisualEffect apparitionVFX;
     public VisualEffect disparitionVFX;
 
     [HideInInspector] public bool isTimePassing;
     public EventHolder eventHolder;
-    public DayCyclecontroller dayController;
+
     public DayTimeController dayTimeController;
     // Start is called before the first frame update
     void Start()
@@ -62,7 +59,7 @@ public class TeleporterBehavior : MonoBehaviour
         apparitionVFX.Play();
         if (isTimePassing)
         {
-            dayController.UpdateTimeByStep();
+            //dayController.UpdateTimeByStep();
             dayTimeController.UpdateNextPhase();
 
         }

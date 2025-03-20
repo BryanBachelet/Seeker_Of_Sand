@@ -7,66 +7,59 @@ using TMPro;
 using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
 using SeekerOfSand.Tools;
+using Unity.VisualScripting;
 
 public class ChooseSpellManager : MonoBehaviour
 {
-    private const double minAnimTime = 0.20;
-    public GameObject[] vfxChooseSpell = new GameObject[4];
-    public int[] randomSpellToChoose = new int[3];
-    public SpellManager spellManager;
-    public SpellSystem.SpellProfil[] newSpell = new SpellSystem.SpellProfil[3];
-    public Image[] vfxSpell = new Image[3];
-    public GameObject[] spellHolder = new GameObject[3];
-    public TMPro.TMP_Text[] textObject = new TMPro.TMP_Text[3];
-    public string[] nextSpellName = new string[3];
+    [HideInInspector] private int[] randomSpellToChoose = new int[3];
+    [HideInInspector] private SpellManager spellManager;
+    [HideInInspector] private SpellSystem.SpellProfil[] newSpell = new SpellSystem.SpellProfil[3];
+    [SerializeField] private Image[] vfxSpell = new Image[3];
+    [SerializeField] private GameObject[] spellHolder = new GameObject[3];
+    [SerializeField] private TMPro.TMP_Text[] textObject = new TMPro.TMP_Text[3];
+    [HideInInspector] private string[] nextSpellName = new string[3];
     [SerializeField] private Image[] m_imageBandeau = new Image[3];
-    [SerializeField] private Material[] m_materialBandeauDissolve = new Material[3];
-    public GameObject[] decorationHolder = new GameObject[3];
-    public float timeSolve;
+    [HideInInspector] private Material[] m_materialBandeauDissolve = new Material[3];
+    [SerializeField] private GameObject[] decorationHolder = new GameObject[3];
+    [HideInInspector] private float timeSolve = 1;
 
-
-    public bool activeGeneration = false;
-
-    public GameObject[] vfxHolder = new GameObject[3];
-    public List<GameObject> vfxLastChooseSpell = new List<GameObject>();
-    public PopupFunction[] popupFunction = new PopupFunction[3];
-    public TMP_Text spellName;
-    public TMP_Text spellDescription;
-    public Image iconSpell;
-    private PopupFunction lastSpell = null;
-    public GameObject descriptionHolder = null;
-    private Animator descriptionHolderAnimator;
-    public TMPro.TMP_Text[] tagText = new TMPro.TMP_Text[3];
-    public bool overable = false;
-    public TMP_Text textSpellFeedback;
+    [SerializeField] private TMP_Text spellName;
+    [SerializeField] private TMP_Text spellDescription;
+    [SerializeField] private Image iconSpell;
+    [HideInInspector] private PopupFunction lastSpell = null;
+    [SerializeField] private GameObject descriptionHolder = null;
+    [SerializeField] private Animator descriptionHolderAnimator;
+    [SerializeField] private TMPro.TMP_Text[] tagText = new TMPro.TMP_Text[3];
+    [HideInInspector] private bool overable = false;
+    [SerializeField] private TMP_Text textSpellFeedback;
     [HideInInspector] public UpgradeManager m_upgradeManagerComponenet;
 
 
-    private Animator m_animator;
-    private bool m_hasChooseSpell = false;
-    private int m_indexSpellChoose = -1;
+    [HideInInspector] private Animator m_animator;
+    [HideInInspector] private bool m_hasChooseSpell = false;
+    [HideInInspector] private int m_indexSpellChoose = -1;
 
-    public GameObject FirstObjectSelect;
+    [SerializeField] private GameObject FirstObjectSelect;
 
     [Header("Elements Reward ")]
-    public GameElement lastRoomElement;
-    public float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
-    private int countSpellDraw = 0;
+    [HideInInspector] public GameElement lastRoomElement;
+    [SerializeField] private float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
+    [HideInInspector] private int countSpellDraw = 0;
 
-    public Image spellTier1Image;
-    public Image spellTier2Image;
-    public Image spellTier3Image;
-    public Image cadreTier1Image;
-    public Image cadreTier2Image;
-    public Image cadreTier3Image;
-    public Sprite[] cadreTier; //Tier de rareté (0=T1, 1=T2, 2=T3, 3=Non discovered 
-    public Texture[] textureGradientTier;
-    public TooltipTrigger[] tooltipNextTier = new TooltipTrigger[3];
+    [SerializeField] private spell_Attribution[] rankSpell_Preview = new spell_Attribution[3];
+    [SerializeField] private Image spellTier1Image;
+    [SerializeField] private Image spellTier2Image;
+    [SerializeField] private Image spellTier3Image;
+    [SerializeField] private Image cadreTier1Image;
+    [SerializeField] private Image cadreTier2Image;
+    [SerializeField] private Image cadreTier3Image;
+    [SerializeField] private TooltipTrigger[] tooltipNextTier = new TooltipTrigger[3];
 
     #region Unity Functions
 
     private void Awake()
     {
+        spellManager = GameObject.Find("General_Manager").GetComponent<SpellManager>();
         if (m_imageBandeau != null)
         {
             for (int i = 0; i < m_imageBandeau.Length; i++)
@@ -102,20 +95,16 @@ public class ChooseSpellManager : MonoBehaviour
         {
             if (m_hasChooseSpell)
             {
-                ClearVfxInstance();
                 m_hasChooseSpell = false;
                 textSpellFeedback.alpha = 0;
 
-                for (int i = 0; i < vfxHolder.Length; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     //vfxHolder[i].SetActive(false);
                     spellHolder[i].SetActive(false);
                     vfxSpell[i].enabled = false;
                     vfxSpell[i].sprite = null;
                     m_materialBandeauDissolve[i].SetFloat("_Fade_Step", -0.5f);
-
-
-
                 }
                 m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
 
@@ -145,18 +134,6 @@ public class ChooseSpellManager : MonoBehaviour
     }
 
 
-    private void ClearVfxInstance()
-    {
-        if (vfxLastChooseSpell.Count > 0)
-        {
-            for (int i = 0; i < vfxLastChooseSpell.Count; i++)
-            {
-                Destroy(vfxLastChooseSpell[i]);
-            }
-            vfxLastChooseSpell.Clear();
-        }
-    }
-
 
     public void OpenSpellChoice()
     {
@@ -167,7 +144,6 @@ public class ChooseSpellManager : MonoBehaviour
 
     public void ResetRandomSpell()
     {
-        ClearVfxInstance();
 
         for (int i = 0; i < randomSpellToChoose.Length; i++)
         {
@@ -235,7 +211,7 @@ public class ChooseSpellManager : MonoBehaviour
     {
         ActivateChoiceAnimation();
         GlobalSoundManager.PlayOneShot(31, Vector3.zero);
-        for (int i = 0; i < vfxHolder.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
             if (i != indexChoice)
             {
@@ -273,9 +249,12 @@ public class ChooseSpellManager : MonoBehaviour
         spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
         Material materialSpell = newSpell[spellIndex].matToUse;
         iconSpell.material = materialSpell;
-        spellTier1Image.material = materialSpell;
-        spellTier2Image.material = materialSpell;
-        spellTier3Image.material = materialSpell;
+        for(int i = 0; i < rankSpell_Preview.Length; i++)
+        {
+            rankSpell_Preview[i].AcquireSpellData(newSpell[spellIndex]);
+            rankSpell_Preview[i].ChangeNameForSpecificText(newSpell[spellIndex].levelSpellsProfiles[i].nameLevelUprade + " " + newSpell[spellIndex].levelSpellsProfiles[i].LevelType);
+            //newSpell[spellIndex].levelSpellsProfiles[i].nameLevelUprade + " " + newSpell[spellIndex].levelSpellsProfiles[i].LevelType;
+        }
         for (int i = 0; i < newSpell[spellIndex].levelSpellsProfiles.Length; i++)
         {
             tooltipNextTier[i].content = newSpell[spellIndex].levelSpellsProfiles[i].description;
@@ -300,27 +279,33 @@ public class ChooseSpellManager : MonoBehaviour
 
     public IEnumerator SpellFadeOut(int spellNumber, float time)
     {
-        decorationHolder[spellNumber].SetActive(false);
-
-        while (time + timeSolve - Time.time > 0)
+        if (decorationHolder.Length > 0) 
         {
-            m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (time + timeSolve - Time.time) / timeSolve - 0.5f);
-            yield return Time.deltaTime;
+            decorationHolder[spellNumber].SetActive(false);
+
+            while (time + timeSolve - Time.time > 0)
+            {
+                m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (time + timeSolve - Time.time) / timeSolve - 0.5f);
+                yield return Time.deltaTime;
+            }
+            m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", -0.5f);
         }
-        m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", -0.5f);
+
 
     }
 
     public IEnumerator SpellFadeIn(int spellNumber, float time)
     {
-        while (Time.time - time < timeSolve)
+        if (decorationHolder.Length > 0)
         {
-            m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (Time.time - time) / timeSolve - 0.5f);
-            yield return Time.deltaTime;
+            while (Time.time - time < timeSolve)
+            {
+                m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", (Time.time - time) / timeSolve - 0.5f);
+                yield return Time.deltaTime;
+            }
+            m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", 0.6f);
+            decorationHolder[spellNumber].SetActive(true);
         }
-        m_materialBandeauDissolve[spellNumber].SetFloat("_Fade_Step", 0.6f);
-        decorationHolder[spellNumber].SetActive(true);
-
     }
 
 }

@@ -159,6 +159,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         }
         else if (collision.gameObject.tag == "CristalDrop")
         {
+            if(m_cristalInventory == null) m_cristalInventory = GetComponent<CristalInventory>();
             m_cristalInventory.AddCristalCount(collision.GetComponent<ExperienceMouvement>().cristalType, 1);
             Destroy(collision.gameObject);
             GlobalSoundManager.PlayOneShot(3, Vector3.zero);

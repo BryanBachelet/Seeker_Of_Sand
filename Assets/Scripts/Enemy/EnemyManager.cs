@@ -1,6 +1,3 @@
-
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,39 +45,30 @@ namespace Enemies
 
     public class EnemyManager : MonoBehaviour
     {
-        private ObjectState state;
-        [SerializeField] public Transform m_playerTranform;
-        [SerializeField] public Transform m_basePlayerTransform;
-        [SerializeField] private Transform m_cameraTransform;
+        [HideInInspector] private ObjectState state;
+        [HideInInspector] public Transform m_playerTranform;
+        [HideInInspector] private Transform m_cameraTransform;
 
-        [SerializeField] private Vector3 m_offsetSpawnPos;
-        [SerializeField] private Vector3 position;
-        [SerializeField] private float m_spawnTime = 3.0f;
+        [HideInInspector] private Vector3 position = new Vector3(0,0,0);
+        [HideInInspector] private float m_spawnTime = 10;
 
-        [SerializeField] public int m_maxUnittotal = 400;
         [SerializeField] private int m_groupEnemySize = 5;
-        [SerializeField] private AnimationCurve m_MaxUnitControl;
-        static float currentMaxUnitValue;
-        [SerializeField] private HealthManager m_healthManager;
-        [SerializeField] private float m_radiusspawn;
-        [SerializeField] private GameObject[] m_ExperiencePrefab = new GameObject[5];
+        [HideInInspector] private HealthManager m_healthManager;
 
         [Header("Enemy Spawn Parameters")]
-        [SerializeField] private float m_minimumRadiusOfSpawn = 100;
-        [SerializeField] private float m_maximumRadiusOfSpawn = 300;
-        [SerializeField] private float m_offsetToSpawnCenter = 20.0f;
-        [SerializeField] private float m_minimumSpeedToRepositing = 30.0f;
-        private float m_upperStartPositionMagnitude = 50.0f;
-        [SerializeField] private Transform m_enemyHolder;
+        [HideInInspector] private float m_minimumRadiusOfSpawn = 150;
+        [HideInInspector] private float m_maximumRadiusOfSpawn = 300;
+        [HideInInspector] private float m_offsetToSpawnCenter = 20.0f;
+        [HideInInspector] private float m_upperStartPositionMagnitude = 50.0f;
         [SerializeField] private AnimationCurve enemyGenerateDissonanceProba;
 
-        public ui_DisplayText m_mainInformationDisplay;
+        [SerializeField] public ui_DisplayText m_mainInformationDisplay;
 
-        public int countEnemySpawnMaximum;
+        [SerializeField] public int countEnemySpawnMaximum;
 
-        public Transform AstrePositionReference;
+        [SerializeField] public Transform AstrePositionReference;
 
-        [SerializeField] private CameraBehavior m_cameraBehavior;
+        [HideInInspector] private CameraBehavior m_cameraBehavior;
         public void ResetSpawnStat()
         {
             for (int i = 0; i < enemyTypeStats.Length; i++)
@@ -92,64 +80,43 @@ namespace Enemies
         #region EnemyParameter
 
         [SerializeField] private EnemyTypeStats[] enemyTypeStats = new EnemyTypeStats[6];
-
-
-        [Header("Enemy Bonus")]
-        [SerializeField] private GameObject m_expBonus;
-        [Range(0, 1.0f)][SerializeField] private float m_spawnRateExpBonus = 0.01f;
         #endregion
 
-        private Experience_System m_experienceSystemComponent;
+        [HideInInspector] private EnemyKillRatio m_enemyKillRatio;
 
-        private EnemyKillRatio m_enemyKillRatio;
-        private float m_spawnCooldown;
+        [HideInInspector] private List<NpcMetaInfos> m_enemiesArray = new List<NpcMetaInfos>();
+        [HideInInspector] private List<NpcMetaInfos> m_enemiesFocusAltar = new List<NpcMetaInfos>();
 
+        [HideInInspector] private List<Transform> m_targetTransformLists = new List<Transform>();
+        [HideInInspector] private List<ObjectHealthSystem> m_targetList = new List<ObjectHealthSystem>();
 
-        public List<NpcMetaInfos> m_enemiesArray = new List<NpcMetaInfos>();
-        public List<NpcMetaInfos> m_enemiesFocusAltar = new List<NpcMetaInfos>();
+        [HideInInspector] private List<Transform> m_altarTransform = new List<Transform>();
+        [HideInInspector] private List<AltarBehaviorComponent> m_altarList = new List<AltarBehaviorComponent>();
 
-        static public bool EnemyTargetPlayer = true;
+        [HideInInspector] private bool spawningPhase = true;
 
-        public Transform m_targetTranform;
-        private ObjectHealthSystem m_targetScript;
-        public List<Transform> m_targetTransformLists = new List<Transform>();
-        private List<ObjectHealthSystem> m_targetList = new List<ObjectHealthSystem>();
+        [HideInInspector] public GlobalSoundManager gsm;
+        [HideInInspector] private List<Vector3> posspawn = new List<Vector3>();
 
-        private List<Transform> m_altarTransform = new List<Transform>();
-        private List<AltarBehaviorComponent> m_altarList = new List<AltarBehaviorComponent>();
-
-        public bool spawningPhase = true;
-
-        public GlobalSoundManager gsm;
-        private List<Vector3> posspawn = new List<Vector3>();
-
-        private Character.CharacterMouvement m_characterMouvement;
         [HideInInspector] public Character.CharacterUpgrade m_characterUpgrade;
 
-        private int repositionningLimit = 2;
-        private int repositionningCount;
+        [HideInInspector] private int repositionningLimit = 2;
+        [HideInInspector] private int repositionningCount;
 
+        [HideInInspector] public DayCyclecontroller m_dayController;
+        [HideInInspector] private float m_timeOfGame;
 
-        public DayCyclecontroller m_dayController;
-        private float m_timeOfGame;
-
-        private SerieController m_serieController;
-        private TerrainGenerator m_terrainGenerator;
+        [HideInInspector] private SerieController m_serieController;
+        [HideInInspector] private TerrainGenerator m_terrainGenerator;
 
         [SerializeField] private GameObject m_spawningVFX;
 
         // Stats Variables
-        [HideInInspector] public int altarLaunch;
+        [HideInInspector] private int altarLaunch;
         [HideInInspector] public int altarSuccessed;
-        [HideInInspector] public int killCount;
-        private const string fileStatsName = "\\Stats_data";
-        private const int m_tryCountToSpawnEnemy = 10;
-
-        [Header("Instruction UI")]
-        [SerializeField] public TMP_Text m_Instruction;
-        [SerializeField] public Image m_ImageInstruction;
-        [SerializeField] public Sprite[] instructionSprite;
-        [SerializeField] public Animator m_instructionAnimator;
+        [HideInInspector] private int killCount;
+        [HideInInspector] private const string fileStatsName = "\\Stats_data";
+        [HideInInspector] private const int m_tryCountToSpawnEnemy = 10;
 
         // Test Variable
 #if UNITY_EDITOR
@@ -159,9 +126,9 @@ namespace Enemies
         [HideInInspector] public bool activeSpecialSquad = false;
 
 #endif
-        [HideInInspector] public int[] specialSquadSelect;
-        [HideInInspector] public PlayerInput playerInput;
-        private int m_squadCount;
+        [HideInInspector] private int[] specialSquadSelect;
+        [HideInInspector] private PlayerInput playerInput;
+        [HideInInspector] private int m_squadCount;
         // --------------------
 
         public delegate void OnDeath(Vector3 position, EntitiesTrigger tag, GameObject objectHit, float distance);
@@ -169,40 +136,32 @@ namespace Enemies
         public delegate void OnDeathSimple();
         public event OnDeathSimple OnDeathSimpleEvent = delegate { };
 
-        [SerializeField] private Animator detectionAnimator;
-        [SerializeField] private Image m_enemyIcon;
-        [SerializeField] private TMP_Text m_tmpTextEnemyRemain;
-        [SerializeField] private Color[] colorSignUI = new Color[2];
+        [HideInInspector] private EnemiesPullingSystem m_pullingSystem;
 
-        private EnemiesPullingSystem m_pullingSystem;
+        [HideInInspector] public UIDispatcher uiDispatcher;
 
-        public GameObject m_uiManagerGameObject;
-        public UIDispatcher uiDispatcher;
-        private UI_EventManager m_UiEventManager;
-
-        private AltarBehaviorComponent lastAltarActivated;
-        private List<Punketone> punketoneInvoked = new List<Punketone>();
-        private int lastSkeletonCount;
-        public int remainEnemy = 0;
-
+        [HideInInspector] private AltarBehaviorComponent lastAltarActivated;
+        [HideInInspector] private int remainEnemy = 0;
 
         [HideInInspector] public bool isStopSpawn;
         // Spawn Cause Variable
-        private bool[] m_spawnCauseState = new bool[4];
+        [HideInInspector] private bool[] m_spawnCauseState = new bool[4];
 
+        [HideInInspector] private int comboCount;
+        [HideInInspector] private int maxComboValue;
+        [HideInInspector] private GameLayer m_gameLayer;
 
-        private int comboCount;
-        private int maxComboValue;
-        [SerializeField] private LayerMask layerMaskGround;
-
-        public Vector3[] spawnPositionAvailable;
-        public float[] spawnPositionTimer;
-        public bool[] spawningStateOfSpawner;
-        public int spawnMaxCD;
+        [HideInInspector] private Vector3[] spawnPositionAvailable;
+        [HideInInspector] private float[] spawnPositionTimer;
+        [HideInInspector] private bool[] spawningStateOfSpawner;
+        [HideInInspector] private int spawnMaxCD = 10;
         public bool debugSpawningPerPosition = false;
         public void Awake()
         {
+            m_gameLayer = this.GetComponent<GameLayer>();
+            m_healthManager = this.GetComponent<HealthManager>();
             NavMesh.pathfindingIterationsPerFrame = 400;
+            m_playerTranform = GameObject.Find("Player").transform;
 #if UNITY_EDITOR
             playerInput = m_playerTranform.GetComponent<PlayerInput>();
             InputAction action = playerInput.actions.FindAction("SpawnEnemy");
@@ -213,11 +172,10 @@ namespace Enemies
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
+            m_cameraTransform = Camera.main.transform;
             gsm = m_cameraTransform.GetComponentInChildren<GlobalSoundManager>();
-
-            m_characterMouvement = m_playerTranform.GetComponent<Character.CharacterMouvement>();
+            m_cameraBehavior = m_cameraTransform.GetComponent<CameraBehavior>();
             m_characterUpgrade = m_playerTranform.GetComponent<Character.CharacterUpgrade>();
-            m_experienceSystemComponent = m_playerTranform.GetComponent<Experience_System>();
             m_dayController = GameObject.Find("DayController").gameObject.GetComponent<DayCyclecontroller>();
             m_serieController = m_playerTranform.GetComponent<SerieController>();
 
@@ -226,7 +184,7 @@ namespace Enemies
             m_timeOfGame = 0;
             m_pullingSystem = GetComponent<EnemiesPullingSystem>();
 
-            uiDispatcher = m_uiManagerGameObject.GetComponent<UIDispatcher>();
+            uiDispatcher = transform.parent.GetComponentInChildren<UIDispatcher>();
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -301,18 +259,6 @@ namespace Enemies
 #endif
 
 
-        public IEnumerator DisplayInstruction(string instruction, float time, Color colorText, Sprite iconSprite)
-        {
-            if (!m_Instruction)
-                yield break;
-
-            m_Instruction.color = colorText;
-            m_Instruction.text = instruction;
-            m_ImageInstruction.sprite = iconSprite;
-            m_instructionAnimator.SetTrigger("DisplayInstruction");
-            yield return new WaitForSeconds(time);
-            m_instructionAnimator.ResetTrigger("DisplayInstruction");
-        }
         public void ChangePauseState(bool state)
         {
             for (int i = 0; i < m_enemiesArray.Count; i++)
@@ -442,7 +388,6 @@ namespace Enemies
             if (activeSpecialSquad)
             {
                 SpawnSpecificSquad(position);
-                m_spawnCooldown = 0;
                 return;
             }
 #endif
@@ -479,30 +424,6 @@ namespace Enemies
 
         }
 
-        private void SpawnCooldown()
-        {
-            if (remainEnemy + m_groupEnemySize >= m_maxUnittotal && m_spawnCooldown > GetTimeSpawn() / 2.0f)
-            {
-                return;
-            }
-            if (m_spawnCooldown > GetTimeSpawn())
-            {
-
-                if (remainEnemy < m_maxUnittotal)
-                {
-                    SpawEnemiesGroup();
-                }
-
-
-
-                m_spawnCooldown = 0;
-            }
-            else
-            {
-                m_spawnCooldown += Time.deltaTime;
-
-            }
-        }
 
 
         private void OnDrawGizmos()
@@ -545,7 +466,7 @@ namespace Enemies
         {
             RaycastHit hit;
             // Does the ray intersect any objects excluding the player layer
-            if (Physics.Raycast(position, Vector3.down, out hit, Mathf.Infinity, layerMaskGround))
+            if (Physics.Raycast(position, Vector3.down, out hit, Mathf.Infinity, m_gameLayer.groundLayerMask))
             {
 
             }
@@ -577,7 +498,7 @@ namespace Enemies
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
-            npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
+            npcHealth.SetTarget(m_playerTranform, m_playerTranform);
 
             npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
             npcMove.enabled = true;
@@ -620,7 +541,7 @@ namespace Enemies
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
-            npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
+            npcHealth.SetTarget(m_playerTranform, m_playerTranform);
             countEnemySpawnMaximum++;
 
             npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
@@ -678,7 +599,7 @@ namespace Enemies
             npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
             npcHealth.targetData.isMoving = true;
             npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
-            npcHealth.SetTarget(m_playerTranform, m_basePlayerTransform);
+            npcHealth.SetTarget(m_playerTranform, m_playerTranform);
 
             m_enemiesArray.Add(npcInfo);
         }
@@ -766,12 +687,6 @@ namespace Enemies
         }
 
 
-        public void SendInstruction(string Instruction, Color colorText, Sprite iconAssociate)
-        {
-            StartCoroutine(DisplayInstruction(Instruction, 2, colorText, iconAssociate));
-        }
-
-
         public void ActiveEvent(Transform target)
         {
             ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
@@ -803,26 +718,6 @@ namespace Enemies
             m_altarTransform.Remove(target);
             lastAltarActivated = null;
 
-            //m_UiEventManager.RemoveEventUI(indexTargetList);
-        }
-
-
-        public void SpawnExp(Vector3 position, int count, int indexMob)
-        {
-            for (int i = 0; i < count; i++)
-            {
-
-            }
-            GameObject expObj = Instantiate(m_ExperiencePrefab[indexMob], position, Quaternion.identity);
-            ExperienceMouvement experienceMouvement = expObj.GetComponent<ExperienceMouvement>();
-            m_experienceSystemComponent.AddExpParticule(experienceMouvement);
-
-            float rate = Random.Range(0.0f, 1.0f);
-            if (rate <= m_spawnRateExpBonus)
-            {
-                Instantiate(m_expBonus, position, Quaternion.identity);
-
-            }
         }
 
         public void IncreseAlterEnemyCount(NpcHealthComponent npcHealth)
@@ -943,25 +838,7 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            //if (detectionAnimator) detectionAnimator.SetBool("ShadowDetection", spawningPhase);
-            if (spawning)
-            {
-                //gsm.globalMusicInstance.setParameterByName("Repos", 0);
-                //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(3, "Intensity", 13, 1,"TransitionIntensity"));
-                gsm.UpdateParameter(1.5f, "Intensity");
-                StartCoroutine(DisplayInstruction("Corrupt spirit appears", 2, Color.white, instructionSprite[0]));
-                //m_enemyIcon.color = colorSignUI[0];
-                //m_tmpTextEnemyRemain.color = Color.Lerp(colorSignUI[0], Color.red, 0.5f); ;
-            }
-            else
-            {
-                //gsm.globalMusicInstance.setParameterByName("Repos", 1);
-                //gsm.StartCoroutine(gsm.UpdateParameterWithDelay(0.1f, "Intensity", 13, 2, "TransitionIntensity"));
-                gsm.UpdateParameter(0.1f, "Intensity");
-                StartCoroutine(DisplayInstruction("Corrupt spirit stop appears", 2, Color.white, instructionSprite[1]));
-                //m_enemyIcon.color = colorSignUI[1];
-                //m_tmpTextEnemyRemain.color = colorSignUI[1];
-            }
+            
         }
 
         public void CreateCurveSheet()

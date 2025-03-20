@@ -120,11 +120,6 @@ public class AltarBehaviorComponent : InteractionInterface
 
         m_playerTransform = m_enemyManager.m_playerTranform;
 
-        // Setup the altar health
-        float maxHealth = 50 + m_enemyManager.m_maxUnittotal;
-        //m_objectHealthSystem.SetMaxHealth((int)maxHealth);
-        //m_objectHealthSystem.ResetCurrentHealth();
-
         // Setup the drop point position
         RaycastHit hit = new RaycastHit();
         Vector3 raycastdirection = new Vector3(0, -10, 0);
@@ -252,7 +247,6 @@ public class AltarBehaviorComponent : InteractionInterface
     private void DestroyAltar()
     {
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
-        m_enemyManager.SendInstruction("Altar protection fail...", Color.red, instructionImage);
         m_myAnimator.SetBool("ActiveEvent", false);
         m_hasEventActivate = true;
         m_isEventOccuring = false;
@@ -299,7 +293,6 @@ public class AltarBehaviorComponent : InteractionInterface
         m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
         m_isWaveCanSpawn = false;
         currentQuarter = (int)(m_objectHealthSystem.healthSystem.health) / lostLifeToSpawnWave;
-        m_enemyManager.SendInstruction(instructionOnActivation + " [Repeat(+" + resetNumber + ")]", Color.white, instructionImage);
         progression = 0;
 
         m_myAnimator.SetBool("ActiveEvent", true);
@@ -351,7 +344,6 @@ public class AltarBehaviorComponent : InteractionInterface
         m_interactionEvent.currentInteractibleObjectActive = null;
         // Update Enemies Manager  ==> Create One functions from the enemyManager
         m_enemyManager.altarSuccessed++;
-        m_enemyManager.SendInstruction("Event succeed ! Gain [" + nextReward + "] (" + nextRewardTypologie + ")", Color.green, instructionImage);
         m_enemyManager.DeactiveEvent(transform);
         // Update altar mesh color
         SetMeshesEventIntensity(.32f * (resetNumber + 1));

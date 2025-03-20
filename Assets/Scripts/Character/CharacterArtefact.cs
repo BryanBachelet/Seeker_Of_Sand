@@ -5,28 +5,23 @@ using GuerhoubaTools;
 using GuerhoubaGames.Resources;
 using SeekerOfSand.Tools;
 using GuerhoubaGames.GameEnum;
+using Enemies;
 
 public class CharacterArtefact : MonoBehaviour
 {
-    public List<ArtefactsInfos> artefactsList;
-    public Enemies.EnemyManager m_enemyManager;
+    [HideInInspector] public List<ArtefactsInfos> artefactsList;
+    [HideInInspector] private Enemies.EnemyManager m_enemyManager;
 
     public bool activeDebug = false;
     private Character.CharacterShoot m_characterShoot;
     private Character.CharacterDamageComponent m_characterDamageComponent;
     private HealthPlayerComponent m_healthComponent;
 
-    public int radiusDetectionArtefact;
-    public List<ArtefactHolder> nearArtefactHolder = new List<ArtefactHolder>();
-
-    public GameObject ui_HintInteractionObject;
-    public HintInteractionManager m_hintInteractionManager;
-
-    public GameObject[] artefactAround_Prefab;
+    [HideInInspector] private GameResources m_gameResources;
     public GameObject targetObjectAround;
-    public List<GameObject> artefactAround_List = new List<GameObject>();
+    [HideInInspector] private List<GameObject> artefactAround_List = new List<GameObject>();
 
-    public float rangeRandom = 5;
+    [HideInInspector] private float rangeRandom = 5f;
 
     private int pullingQuantity = 100;
 
@@ -47,9 +42,10 @@ public class CharacterArtefact : MonoBehaviour
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
         m_characterDamageComponent = GetComponent<Character.CharacterDamageComponent>();
+        m_enemyManager = GameObject.Find("General_Manager").GetComponent<EnemyManager>();
         m_healthComponent = GetComponent<HealthPlayerComponent>();
         positionRandom = Random.insideUnitSphere * rangeRandom;
-
+        m_gameResources = GameResources.instance;
         List<ArtefactsInfos> cloneList = new List<ArtefactsInfos>(artefactsList.ToArray());
         artefactsList.Clear();
         for (int i = 0; i < cloneList.Count; i++)
@@ -206,7 +202,7 @@ public class CharacterArtefact : MonoBehaviour
     public void GenerateNewArtefactAround(ArtefactsInfos artefactInfo)
     {
         //GameObject newArtefactAround = Instantiate(artefactAround_Prefab[GeneralTools.GetElementalArrayIndex( artefacts.gameElement,true)], transform.position, transform.rotation);
-        GameObject newArtefactAround = Instantiate(artefactAround_Prefab[(int)artefactInfo.levelTierFragment], transform.position, transform.rotation);
+        GameObject newArtefactAround = Instantiate(m_gameResources.artefactAround_Prefab[(int)artefactInfo.levelTierFragment], transform.position, transform.rotation);
         fragmentMiniElemental fragMiniElement = newArtefactAround.GetComponent<fragmentMiniElemental>();
         fragMiniElement.m_artefactInfo = artefactInfo;
         fragMiniElement.SelectElement(artefactInfo.gameElement);

@@ -13,50 +13,45 @@ namespace SeekerOfSand
     {
         public class UI_PlayerInfos : MonoBehaviour
         {
-            public GameObject playerTarget;
-            private Character.CharacterShoot m_characterShoot;
+            [HideInInspector] private GameObject playerTarget;
+            [HideInInspector] private Character.CharacterShoot m_characterShoot;
 
             [Header("Spell Canalisation Objects")]
-            public Image m_canalisationBar;
-            public Image m_canalisationBarSegment;
-            public Image m_canalisationSpell;
+            [SerializeField] private Image m_canalisationBar;
+            [SerializeField] private Image m_canalisationBarSegment;
+            [SerializeField] private Image m_canalisationSpell;
             [Header("Spell Stacking Object")]
-            public GameObject stackingUIHolder;
-            public GameObject clockUIHolder;
-            public TMP_Text[] m_stackingText;
-            public TMP_Text[] m_levelText;
-            private int[] levelSpell = new int[4];
-            public Image[] m_stackingImageClock;
+            [SerializeField] private TMP_Text[] m_stackingText;
+            [SerializeField] private Image[] m_stackingImageClock;
 
-            public TMP_Text levelTaken;
-            private int m_level;
+            [SerializeField] private TMP_Text levelTaken;
+            [HideInInspector] private int m_level;
 
-            public Animator canalisationBarDisplay;
+            [SerializeField] private Animator canalisationBarDisplay;
 
-            public Sprite[] canalisationBarreSprites;
+            [SerializeField] private Sprite[] canalisationBarreSprites;
 
-            private bool bufferFill = false;
-            private float newFillAmount = 0;
-            private float lastFillAmount = 0;
-            private Color lastColor;
-            private Sprite lastSprite;
+            [HideInInspector] private bool bufferFill = false;
+            [HideInInspector] private float newFillAmount = 0;
+            [HideInInspector] private float lastFillAmount = 0;
+            [HideInInspector] private Color lastColor;
+            [HideInInspector] private Sprite lastSprite;
 
-            public Animator upgradeScreenAnimator;
-            public TMP_Text textTier;
-            public GameObject tierUpEffect;
-            public Animator tierUpAnimation;
-            public VisualEffect[] vfxTierUp = new VisualEffect[4];
+            [SerializeField] private Animator upgradeScreenAnimator;
+            [SerializeField] private TMP_Text textTier;
+            [SerializeField] private GameObject tierUpEffect;
+            [SerializeField] private Animator tierUpAnimation;
+            [SerializeField] private VisualEffect[] vfxTierUp = new VisualEffect[4];
             [GradientUsage(true)]
-            public Gradient[] gradient1vfx = new Gradient[4];
+            [SerializeField] private Gradient[] gradient1vfx = new Gradient[4];
             [GradientUsage(true)]
-            public Gradient[] gradient2vfx = new Gradient[4];
-            public MeshRenderer imgSpriteSpell;
-            private Material matSpell;
+            [SerializeField] private Gradient[] gradient2vfx = new Gradient[4];
+            [SerializeField] private MeshRenderer imgSpriteSpell;
             void Start()
             {
+                playerTarget = GameObject.Find("Player");
                 m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
                 canalisationBarDisplay = m_canalisationBar.transform.parent.GetComponent<Animator>();
-                matSpell = imgSpriteSpell.material;
                 //InitStackingObjects();
                 m_level = 0;
             }

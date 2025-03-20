@@ -13,9 +13,9 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class UpgradeChoosing : MonoBehaviour
 {
-    public int indexSpellBar = 0;
+    //[HideInInspector] private
     [Header("UI Object")]
-    public Image[] spellInBar = new Image[4];
+    [SerializeField] private Image[] spellInBar = new Image[4];
     public Image spellUpgradeFocus;
     public Image spellCurrentTierFocus;
     public Image spellNextTierFocus;
@@ -134,7 +134,7 @@ public class UpgradeChoosing : MonoBehaviour
     public void ChooseUpgrade(int index)
     {
         m_upgradeManager.SendUpgrade(m_upgradeLevelingData.upgradeChoose[index]);
-        m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
+        //m_upgradeManager.m_dropInventory.AddNewUpgrade(m_upgradeLevelingData.upgradeChoose[index], spellUpgradeFocus.sprite);
         GlobalSoundManager.PlayOneShot(31, Vector3.zero);
         //GameObject rankMoving = Instantiate(prefabRank, transform.position, transform.rotation); 
 
@@ -203,7 +203,7 @@ public class UpgradeChoosing : MonoBehaviour
             SpellSystem.StatData statData = spellProfil.statDatas[i];
             if (statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
         }
-        ChangeTierCadre(spellProfil);
+        //ChangeTierCadre(spellProfil);
         upgradeTextStatBase[0].text = textStatUpgrade;
     }
 
@@ -309,10 +309,10 @@ public class UpgradeChoosing : MonoBehaviour
 
         panelUI.SetActive(true);
         spellProfils = spellBook.GetSpellsRotations();
-        for (int i = 0; i < spellProfils.Length; i++)
-        {
-            skillUiHolderTemp.Add(Instantiate(referenceSkill[i], skillUiHolder[i].transform.position, skillUiHolder[i].transform.rotation, skillUiHolder[i].transform));
-        }
+        //for (int i = 0; i < spellProfils.Length; i++)
+        //{
+        //    skillUiHolderTemp.Add(Instantiate(referenceSkill[i], skillUiHolder[i].transform.position, skillUiHolder[i].transform.rotation, skillUiHolder[i].transform));
+        //}
     }
 
     public void CloseRotation()

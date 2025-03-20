@@ -8,7 +8,7 @@ using SeekerOfSand.Tools;
 public class CristalInventory : MonoBehaviour
 {
     public int[] cristalCount = new int[4];
-    public bool hasEnoughCristalToSpawn = false;
+    [HideInInspector] public bool hasEnoughCristalToSpawn = false;
 
     private GuerhoubaGames.UI.CristalUI m_cristalUI;
 

@@ -1,4 +1,5 @@
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Resources;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,36 +7,34 @@ using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 public class Chosereward : MonoBehaviour
 {
+    private GameResources m_gameRessources;
     public int ArtefactQuantity = 3;
-    public int radiusDistribution;
     public GameObject piedestalReward;
-    public GameObject[] artefactPrefab = new GameObject[4]; //0 --> Elec, 1 --> Eau, 2 --> Terre, 3 - Feu
     public List<ArtefactsInfos> artefactToChose = new List<ArtefactsInfos>();
-    public List<Animator> artefactPiedestalAnimator = new List<Animator>();
-    public List<ArtefactHolder> artefactHolder = new List<ArtefactHolder>();
-    [HideInInspector] public List<ExperienceMouvement> artefactMouvement = new List<ExperienceMouvement>();
-    public List<VisualEffect> vfxArtefact = new List<VisualEffect>();
-    public Transform m_playerTransform;
-    private InteractionEvent m_interactionEventScript;
+    [HideInInspector] private List<Animator> artefactPiedestalAnimator = new List<Animator>();
+    [HideInInspector] private List<ArtefactHolder> artefactHolder = new List<ArtefactHolder>();
+    [HideInInspector] private List<ExperienceMouvement> artefactMouvement = new List<ExperienceMouvement>();
+    [HideInInspector] private List<VisualEffect> vfxArtefact = new List<VisualEffect>();
+    [HideInInspector] private Transform m_playerTransform;
+    [HideInInspector] private InteractionEvent m_interactionEventScript;
 
-    [SerializeField] private GameObject m_lastPiedestal;
+    [HideInInspector] private GameObject m_lastPiedestal;
 
-    public bool activeGeneration = true;
-    public InteractionEvent interactionEvent;
+    [HideInInspector] public bool activeGeneration = true;
 
     public Vector3[] positionArtefact = new Vector3[3];
 
-    public bool isStart = true;
-    public GameObject colliderDome;
+    [HideInInspector] private bool isStart = true;
 
-    public int[] m_artefactIndex =new int[3];
+    [HideInInspector] private int[] m_artefactIndex =new int[3];
     public bool IsDebugActive=false;
 
-    public GameObject chooseFragmentUI;
-    private FragmentChoose m_fragmentChoose;
+    [SerializeField] private GameObject chooseFragmentUI;
+    [HideInInspector] private FragmentChoose m_fragmentChoose;
     // Start is called before the first frame update
     void Start()
     {
+        m_gameRessources = GameObject.Find("General_Manager").GetComponent<GameResources>();
         m_artefactIndex = new int[3];
         for (int i = 0; i < m_artefactIndex.Length; i++)
         {
@@ -47,7 +46,6 @@ public class Chosereward : MonoBehaviour
         {
             isStart = false;
             DayCyclecontroller.choosingArtefactStart = false;
-            colliderDome.SetActive(false);
         }
         m_fragmentChoose = chooseFragmentUI.GetComponent<FragmentChoose>();
     }
@@ -68,7 +66,7 @@ public class Chosereward : MonoBehaviour
         //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
         m_lastPiedestal = Instantiate(piedestalReward, transform.position + new Vector3(position.x, -8, position.z), Quaternion.identity, transform);
         artefactPiedestalAnimator.Add(m_lastPiedestal.GetComponent<Animator>());
-        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[type].gameElement], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
+        GameObject newArtefact = Instantiate(m_gameRessources.artefactPrefab[(int)artefactToChose[type].gameElement], transform.position + new Vector3(position.x, 8, position.z), transform.rotation, m_lastPiedestal.transform.Find("ArtefactContainer"));
         ExperienceMouvement m_ExperienceMouvement = newArtefact.GetComponent<ExperienceMouvement>();
         artefactMouvement.Add(m_ExperienceMouvement);
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
@@ -99,40 +97,12 @@ public class Chosereward : MonoBehaviour
         }
     }
 
-    public void ChoseAnArtefact(InputAction.CallbackContext ctx)
-    {
-        return;
-        if (ctx.performed && interactionEvent.lastArtefact != null)
-        {
-            for (int i = 0; i < artefactHolder.Count; i++)
-            {
-                if(artefactHolder[i] == interactionEvent.lastArtefact)
-                {
-                    artefactMouvement[i].m_playerPosition = m_playerTransform;
-                    interactionEvent.StartCoroutine(interactionEvent.CloseUIWithDelay(2));
-                    StartCoroutine(ChosedArtefact(i, 30));
-
-                }
-                else
-                {
-                    StartCoroutine(ChosedArtefact(i, 3));
-                }
-            }
-            if(isStart)
-            {
-                isStart = false;
-                DayCyclecontroller.choosingArtefactStart = false;
-                colliderDome.SetActive(false);
-            }
-        }
-    }
-
     public void GenerateNewArtefactReward(Transform positionAltar)
     {
         int rndArtefact = Random.Range(0, artefactToChose.Count);
         Vector3 position = positionAltar.position;
         //Vector3 position = Random.insideUnitSphere * (radiusDistribution + index * 10);
-        GameObject newArtefact = Instantiate(artefactPrefab[(int)artefactToChose[rndArtefact].gameElement], position, transform.rotation, positionAltar);
+        GameObject newArtefact = Instantiate(m_gameRessources.artefactPrefab[(int)artefactToChose[rndArtefact].gameElement], position, transform.rotation, positionAltar);
         ExperienceMouvement m_ExperienceMouvement = newArtefact.GetComponent<ExperienceMouvement>();
         ArtefactHolder m_artefactHolder = m_ExperienceMouvement.GetComponentInChildren<ArtefactHolder>();
         VisualEffect vfx = m_ExperienceMouvement.GetComponentInChildren<VisualEffect>();

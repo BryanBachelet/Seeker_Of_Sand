@@ -7,6 +7,7 @@ public class UIDispatcher : MonoBehaviour
 {
     public MarchandUiView marchandUiView;
     public GameObject fixeGameplayUI;
+    public GameObject miniMap_UI;
     public UI_Inventory uiInventory;
     public GuerhoubaGames.UI.DamageRecapUI damageRecap;
     public GuerhoubaGames.UI.DragManager dragManager;
@@ -62,6 +63,7 @@ public class UIDispatcher : MonoBehaviour
 
     public void HideOrShowFixeUi(bool active)
     {
-        fixeGameplayUI.SetActive(active);
+        //fixeGameplayUI.SetActive(active);
+        miniMap_UI.SetActive(active);
     }
 }
