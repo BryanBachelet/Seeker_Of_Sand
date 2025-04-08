@@ -139,7 +139,7 @@ namespace Enemies
 
 
                     }
-                    else if (time > lastTimeSeen + 5)
+                    else if (time > lastTimeSeen + 30)
                     {
                         if (!IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main) || Vector3.Distance(transform.position, lastPosCheck) < 10)
                         {

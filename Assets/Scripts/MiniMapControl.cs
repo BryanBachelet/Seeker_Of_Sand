@@ -115,7 +115,7 @@ public class MiniMapControl : MonoBehaviour
         colorMap = discoveryMap.GetPixels();
         for (int i = 0; i < colorMap.Length; i++)
         {
-            colorMap[i] = Color.black;
+            colorMap[i] = Color.white;
         }
         discoveryMap.SetPixels(colorMap);
         discoveryMap.Apply();

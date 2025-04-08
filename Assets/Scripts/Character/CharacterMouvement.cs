@@ -44,7 +44,7 @@ namespace Character
         private float m_rotationTime;
         private Quaternion m_startRotation;
 
-
+        public float distanceDetectObstacle = 3;
         [Header("Run State")]
         private float rotationLerpStepRunState = .5f;
 
@@ -553,26 +553,36 @@ namespace Character
             if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash || mouvementState == MouvementState.SpecialSpell) return;
 
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
 
-            if (IsObstacle() )
+            if (IsObstacle())
             {
+                Debug.Log("hit obstacle");
                 m_speedData.currentSpeed = 0;
                 m_velMovement = Vector3.zero;
                 m_rigidbody.velocity = Vector3.zero;
                 return;
             }
+            else
+            {
+                Debug.Log("not hit obstacle");
+            }
 
             RaycastHit hit = new RaycastHit();
             if (!OnGround(ref hit))
             {
+                Debug.Log("NotGround");
                 ChangeState(MouvementState.Glide);
                 AirMove(inputDirection);
                 m_timerBeforeSliding = 0;
                 return;
             }
-
-            Vector3 direction = GetForwardDirection(hit.normal);
+            else
+            {
+                Debug.Log("hit ground");
+            }
+                Vector3 direction = GetForwardDirection(hit.normal);
             Vector3 newDir = new Vector3(direction.x, 0, direction.z);
             if (combatState && inputDirection != Vector3.zero)
             {
@@ -587,7 +597,7 @@ namespace Character
             m_slope = GetSlopeAngle(direction);
             if (GetSlopeAngleAbs(direction) >= m_maxGroundSlopeAngle)
             {
-
+                Debug.Log("Slope superior");
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
@@ -604,6 +614,7 @@ namespace Character
             }
             if (inputDirection == Vector3.zero && m_speedData.currentSpeed <= m_speedData.referenceSpeed[(int)mouvementState])
             {
+                Debug.Log("Stop Move");
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
@@ -745,6 +756,7 @@ namespace Character
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, currentRefSpeed);
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
                 m_speedData.currentSpeed = m_velMovement.magnitude;
+                Debug.Log("gliding");
                 return;
             }
 
@@ -754,7 +766,7 @@ namespace Character
             float targetDistance = m_rigidbody.velocity.magnitude;
 
             Ray ray = new Ray(transform.position, m_velMovement.normalized);
-            if (Physics.Raycast(ray, out hit, 20))
+            if (Physics.Raycast(ray, out hit, 20, m_gameLayer.groundLayerMask))
             {
                 Vector3 direction = GetForwardDirection(hit.normal);
                 float slopeAngle = GetSlopeAngleAbs(direction);
@@ -830,7 +842,7 @@ namespace Character
 
         private bool IsObstacle()
         {
-            return Physics.Raycast(transform.position, transform.forward, 3 + m_velMovement.magnitude * Time.deltaTime, m_gameLayer.decoLayerMask);
+            return Physics.Raycast(transform.position, transform.forward, distanceDetectObstacle + m_velMovement.magnitude * Time.deltaTime, m_gameLayer.decoLayerMask);
         }
 
         private bool IsFasterThanSpeedReference(float speedReference)
@@ -868,6 +880,7 @@ namespace Character
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
             m_speedData.currentSpeed = m_velMovement.magnitude;
+            
         }
 
         private void Slide(Vector3 direction)
@@ -893,10 +906,11 @@ namespace Character
             }
 
             m_currentSlideSpeed += accelerationCurve.Evaluate(m_slope / maxSlope) * Time.deltaTime;
-            m_speedData.currentSpeed += m_currentSlideSpeed; ;
+            m_speedData.currentSpeed += m_currentSlideSpeed;
 
             if (m_speedData.currentSpeed < runSpeed)
             {
+                Debug.Log("Stop sliding");
                 isSliding = false;
                 m_currentSlideSpeed = 0.0f;
                 m_timerBeforeSliding = 0;
@@ -1053,7 +1067,6 @@ namespace Character
         {
             m_rigidbody.velocity = Vector3.zero;
         }
-
 
     }
 }

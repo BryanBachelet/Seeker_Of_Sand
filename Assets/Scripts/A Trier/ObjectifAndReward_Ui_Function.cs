@@ -11,7 +11,14 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
 {
     [SerializeField] private Animator objectifAnimator;
     [SerializeField] private TMP_Text txtPro_Objectif;
+    [SerializeField] private TMP_Text txtPro_Objectif_Count;
     [SerializeField] private Image img_Objectif;
+
+    [SerializeField] private Animator optional_objectifAnimator;
+    [SerializeField] private TMP_Text optional_txtPro_Objectif;
+    [SerializeField] private TMP_Text optional_txtPro_Objectif_Count;
+    [SerializeField] private Image optional_img_Objectif;
+
 
     [SerializeField] private Animator rewardAnimator;
     [SerializeField] private Image img_Reward;
@@ -75,6 +82,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     public void UpdateObjectifAndReward()
     {
         objectifAnimator.ResetTrigger("ActiveDisplay");
+        optional_objectifAnimator.ResetTrigger("ActiveDisplay");
         rewardAnimator.ResetTrigger("ActiveDisplay");
         if (currentRoomManager.rewardType == RewardType.UPGRADE)
         {
@@ -101,7 +109,9 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
             img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[0];
+            optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[0];
             txtPro_Objectif.text = m_gameRessources.text_Objectif[0];
+            optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[0];
             enemyRoom = true;
             eventRoom = false;
             currentProgress = 0;
@@ -114,7 +124,9 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
             img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[1];
+            optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[1];
             txtPro_Objectif.text = m_gameRessources.text_Objectif[1];
+            optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[1];
             eventRoom = true;
             enemyRoom = false;
             currentProgress = 0;
@@ -126,12 +138,15 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         else if (currentRoomManager.currentRoomType == RoomType.Free)
         {
             img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[2];
+            optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[2];
             txtPro_Objectif.text = m_gameRessources.text_Objectif[2];
+            optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[2];
             eventRoom = false;
             enemyRoom = false;
             DisactiveDisplayProgress();
         }
         objectifAnimator.SetTrigger("ActiveDisplay");
+        optional_objectifAnimator.SetTrigger("ActiveDisplay");
         rewardAnimator.SetTrigger("ActiveDisplay");
     }
 
@@ -146,10 +161,14 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         objectifAnimatorMajor.SetBool("MajorDisplay", false);
         enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.EVENT);
         objectifAnimator.ResetTrigger("ActiveDisplay");
+        optional_objectifAnimator.ResetTrigger("ActiveDisplay");
         rewardAnimator.ResetTrigger("ActiveDisplay");
         img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[2];
+        optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[2];
         txtPro_Objectif.text = m_gameRessources.text_Objectif[2];
+        optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[2];
         objectifAnimator.SetTrigger("ActiveDisplay");
+        optional_objectifAnimator.SetTrigger("ActiveDisplay");
         rewardAnimator.SetTrigger("ActiveDisplay");
 
 

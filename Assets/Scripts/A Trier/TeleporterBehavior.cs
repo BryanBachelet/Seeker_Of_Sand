@@ -19,6 +19,7 @@ public class TeleporterBehavior : MonoBehaviour
     public VisualEffect disparitionVFX;
 
     [HideInInspector] public bool isTimePassing;
+    [SerializeField] public int specialRoomID = -1;
     public EventHolder eventHolder;
 
     public DayTimeController dayTimeController;
@@ -63,6 +64,10 @@ public class TeleporterBehavior : MonoBehaviour
             dayTimeController.UpdateNextPhase();
 
         }
+        if(specialRoomID >= 0)
+        {
+            dayTimeController.ChangeNextRoomSpecialStatut(specialRoomID, false);
+        }
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
         cameraFadeFunction.LaunchFadeOut(true, 1);
         //if (dayController.newDay)
@@ -85,7 +90,7 @@ public class TeleporterBehavior : MonoBehaviour
         cameraFadeFunction.dayTextObj.SetActive(true);
         cameraFadeFunction.dayTextAnimator.SetTrigger("NewDay");
         yield return new WaitForSeconds(3f);
-        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
+        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom(null);
         cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay");
         cameraFadeFunction.dayTextObj.SetActive(false);
     }

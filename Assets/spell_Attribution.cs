@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.Rendering;
+using GuerhoubaGames.UI;
 public class spell_Attribution : MonoBehaviour
 {
     [SerializeField] private int preLeveledDisplay = 0;
@@ -34,10 +35,13 @@ public class spell_Attribution : MonoBehaviour
     [HideInInspector] private Material spellCadre_cloneMaterial;
     [HideInInspector] private Material spellTab_cloneMaterial;
 
+    [HideInInspector] public TooltipTrigger tooltipTrigger;
+
     // Start is called before the first frame update
     void OnEnable()
     {
         if (animatorSpell == null) { animatorSpell = this.GetComponentInChildren<Animator>(); }
+        tooltipTrigger = imageSpell.GetComponent<TooltipTrigger>();
         ChangeAnimatorBool();
     }
 
@@ -69,6 +73,7 @@ public class spell_Attribution : MonoBehaviour
         spell_name = spell.name;
         description = spell.description;
         nameSpell.text = spell_name;
+
         if(generateTexture)
         {
             Texture2D texture = (Texture2D)materialUse.GetTexture("_Symbole");
@@ -78,6 +83,12 @@ public class spell_Attribution : MonoBehaviour
         StartCoroutine(UpdateSpellLevelDelay(spell));
     }
 
+    public void UpdateToolTipInfo()
+    {
+        tooltipTrigger.header = spellProfil.name;
+        tooltipTrigger.content = spellProfil.description;
+        //tooltipTrigger.additionnalDatas
+    }
     public void UpdateSpellLevel(SpellProfil spell)
     {
         if (preLeveledDisplay > 0) { level = preLeveledDisplay; }

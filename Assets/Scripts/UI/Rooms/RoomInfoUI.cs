@@ -8,8 +8,11 @@ namespace GuerhoubaGames.UI
 {
     public class RoomInfoUI : MonoBehaviour
     {
+        static public RoomInfoUI instance;
+
         [Header("Room Top info")]
         public GameObject UiObjectifGO;
+        public GameObject UiOptionnalObjectifGO;
         public GameObject UiRewardGO;
 
         [Tooltip("The array need to follow objectif enum order.  Event = 0, Enemy= 1, Free =2, Merchant = 3")]
@@ -21,12 +24,17 @@ namespace GuerhoubaGames.UI
         [SerializeField] private Sprite[] m_rewardSpriteArray;
 
         private Animator m_objectifAnimator;
+        private Animator m_objectifOptionalAnimator;
         private Animator m_rewardAnimator;
 
         private Image m_rewardIcon;
         private Image m_objectifIcon;
+        private Image m_objectifOptionalIcon;
 
-        private TMP_Text m_objectifText;
+        [SerializeField] private TMP_Text m_objectifText;
+        [SerializeField] private TMP_Text m_objectifRemain;
+        [SerializeField] private TMP_Text m_objectifOptionalText;
+        [SerializeField] private TMP_Text m_objectifOptionalRemain;
 
         [Header("Room Major Goal")]
         public GameObject majorGoalGO;
@@ -60,13 +68,16 @@ namespace GuerhoubaGames.UI
         {
 
             if (!this.enabled) return;
-
+            instance = this;
             // Init Top Goal Interface
             m_objectifAnimator = UiObjectifGO.GetComponent<Animator>();
+            m_objectifOptionalAnimator = UiOptionnalObjectifGO.GetComponent<Animator>();
             m_rewardAnimator = UiRewardGO.GetComponent<Animator>();
 
             m_objectifIcon = UiObjectifGO.GetComponentsInChildren<Image>()[1];
-            m_objectifText = UiObjectifGO.GetComponentInChildren<TMP_Text>();
+            m_objectifOptionalIcon = UiOptionnalObjectifGO.GetComponentsInChildren<Image>()[1];
+            //m_objectifText = UiObjectifGO.GetComponentInChildren<TMP_Text>();
+            //m_objectifRemain = UiObjectifGO.GetComponentInChildren<TMP_Text>();
 
             m_rewardIcon = UiRewardGO.GetComponentsInChildren<Image>()[1];
 
@@ -87,7 +98,7 @@ namespace GuerhoubaGames.UI
 
         public void ActualizeRoomInfoInterface()
         {
-          if(m_objectifAnimator.isActiveAndEnabled)  m_objectifAnimator.ResetTrigger("ActiveDisplay");
+          if(m_objectifAnimator.isActiveAndEnabled)  m_objectifAnimator.ResetTrigger("ActiveDisplay"); m_objectifOptionalAnimator.SetTrigger("ActiveDisplay");
             if (m_rewardAnimator.isActiveAndEnabled) m_rewardAnimator.ResetTrigger("ActiveDisplay");
 
             // Reward inteface update
@@ -98,7 +109,7 @@ namespace GuerhoubaGames.UI
             m_objectifIcon.sprite = m_objectifSpriteArray[indexRoomType];
             m_objectifText.text = m_objectifTextArray[indexRoomType];
 
-            if (m_objectifAnimator.isActiveAndEnabled) m_objectifAnimator.SetTrigger("ActiveDisplay");
+            if (m_objectifAnimator.isActiveAndEnabled) m_objectifAnimator.SetTrigger("ActiveDisplay"); m_objectifOptionalAnimator.SetTrigger("ActiveDisplay");
             if (m_rewardAnimator.isActiveAndEnabled) m_rewardAnimator.SetTrigger("ActiveDisplay");
         }
 
@@ -174,6 +185,35 @@ namespace GuerhoubaGames.UI
         public void UpdateTextProgression(int currentProgress, int currentGoal)
         {
             textProgress.text = "" + (currentGoal - currentProgress) + "<voffset=-0.2em> / <voffset=0em>" + currentGoal;
+        }
+
+        public void UpdateRoomInfoDisplay(int[] objectifData, int[] objectifOptionalData)
+        {
+            if(objectifData != null)
+            {
+                m_objectifAnimator.SetTrigger("Update");
+                m_objectifRemain.text = "(" + objectifData[0] + "/" + objectifData[1] + ")";
+            }
+            if(objectifOptionalData != null)
+            {
+                if(objectifOptionalData[0] == objectifOptionalData[1])
+                {
+                    m_objectifOptionalText.text = "Success !";
+                    m_objectifOptionalAnimator.SetTrigger("SuccessOptional");
+                    m_objectifOptionalAnimator.ResetTrigger("UpdateOptional");
+                }
+                else
+                {
+                    m_objectifOptionalAnimator.ResetTrigger("SuccessOptional");
+                    m_objectifOptionalAnimator.SetTrigger("UpdateOptional");
+                    m_objectifOptionalText.text = "(optional) Destroy dissonance spawner)";
+                    m_objectifOptionalRemain.text = "(" + objectifOptionalData[0] + "/" + objectifOptionalData[1] + ")";
+                }
+
+            }
+
+
+
         }
     };
 }

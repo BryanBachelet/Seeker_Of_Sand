@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using GuerhoubaGames.Resources;
+using GuerhoubaGames.UI;
 
 
 /// <summary>
@@ -15,7 +17,7 @@ public class InteractionEvent : MonoBehaviour
     [HideInInspector] private GameLayer m_gameLayer;
     [HideInInspector] private float lastInteractionCheck = 0.5f;
     [HideInInspector] private float intervalCheckInteraction = 0.5f;
-    [HideInInspector] private GameObject currentInteractibleObject;
+    [SerializeField] private GameObject currentInteractibleObject;
     private Transform m_socleTransform;
 
     [HideInInspector] public Animator m_lastHintAnimator;
@@ -26,7 +28,7 @@ public class InteractionEvent : MonoBehaviour
     private Animator lastTrader;
 
     [HideInInspector] public ArtefactHolder lastArtefact;
-    [HideInInspector] private RectTransform CanvasRect;
+    [SerializeField] private RectTransform CanvasRect;
 
     [HideInInspector] private Collider[] colliderProche;
 
@@ -40,8 +42,20 @@ public class InteractionEvent : MonoBehaviour
 
     [SerializeField] private Animator bandeDiscussion;
     [SerializeField] private GameObject hintInputInteraction;
+    [SerializeField] private TMP_Text interactionAction_Txt;
+    [SerializeField] private GameObject hintInputInteraction_Detail;
+    [HideInInspector] private TMP_Text interactionDetail_Txt;
+    [SerializeField] private Animator hintAnimator;
+
+    [SerializeField] private GameObject costCristal;
+    ///[SerializeField] private TMP_Text costText;
+
+    [HideInInspector] private GameResources m_gameRessources;
 
     private Character.CharacterMouvement m_characterMouvement;
+    private CristalInventory m_CristalInventory;
+
+    private GameObject hintDetailCost;
 
     #region Unity Functions
     // Start is called before the first frame update
@@ -51,7 +65,10 @@ public class InteractionEvent : MonoBehaviour
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
         if(m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
         if(mainCamera == null) {mainCamera = Camera.main; }
-      
+        interactionDetail_Txt = hintInputInteraction_Detail.GetComponentInChildren<TMP_Text>();
+        m_gameRessources = GameResources.instance;
+        m_CristalInventory = this.gameObject.GetComponent<CristalInventory>();
+
     }
 
     // Update is called once per frame
@@ -61,14 +78,23 @@ public class InteractionEvent : MonoBehaviour
         {
             Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.interactibleLayerMask);
             FindInteractiveElementAround(col);
-            if (currentInteractibleObjectActive == null) { NearPossibleInteraction(col); }
+            if (currentInteractibleObjectActive == null) 
+            {
+              if (col.Length > 0) 
+                { NearPossibleInteraction(col); }
+            }
             NearTrader();
             NearArtefact();
             if(col.Length <= 0)
             {
                 if (hintInputInteraction.activeSelf)
                 {
+                    interactionAction_Txt.text = "";
+                    hintInputInteraction_Detail.SetActive(false);
                     hintInputInteraction.SetActive(false);
+                    hintAnimator.SetBool("OpenHintDetail", false);
+                    interactionDetail_Txt.text = "";
+
                 }
             }
             lastInteractionCheck = Time.time;
@@ -137,8 +163,32 @@ public class InteractionEvent : MonoBehaviour
         {
             if (!hintInputInteraction.activeSelf)
             {
+                interactionAction_Txt.text = currentInteractionInterface.verbeInteraction;
                 hintInputInteraction.SetActive(true);
-                //bandeDiscussion.SetBool("NearNPC", true);
+                if (currentInteractionInterface.hasAdditionalDescription)
+                {
+                    hintInputInteraction_Detail.SetActive(true);
+                    hintAnimator.SetBool("OpenHintDetail", true);
+                    interactionDetail_Txt.text = currentInteractionInterface.additionalDescription;
+                    if(currentInteractionInterface.cost > 0)
+                    {
+                        if(hintDetailCost != null) { Destroy(hintDetailCost); }
+
+                        hintDetailCost = Instantiate(m_gameRessources.costPrefab[currentInteractionInterface.cristalID], costCristal.transform.position, costCristal.transform.rotation, costCristal.transform);
+                        TMP_Text textCost = hintDetailCost.GetComponentInChildren<TMP_Text>();
+                        if (currentInteractionInterface.cristalID < 4) //On regarde la nature du cristal (si < 4, le cristal est élémentaire
+                        {
+                            if (currentInteractionInterface.cost > m_CristalInventory.cristalCount[currentInteractionInterface.cristalID]) { textCost.color = Color.red; }
+                            else { textCost.color = Color.white; }
+                        }
+                        else if (currentInteractionInterface.cristalID == 4) //On regarde la nature du cristal (si == 4, le cristal est dissonance
+                        {
+                            if (currentInteractionInterface.cost > m_CristalInventory.dissonanceCout) { textCost.color = Color.red; }
+                            else { textCost.color = Color.white; }
+                        }
+                        textCost.text = "x " + currentInteractionInterface.cost;
+                    }
+                }
             }
             if (currentInteractibleObject != col[0].transform.gameObject)
             {
@@ -150,7 +200,7 @@ public class InteractionEvent : MonoBehaviour
                 //eventDataInfo = altarBehaviorComponent.GetAltarData();
 
                 // Removing the event animation
-                m_lastHintAnimator.SetBool("InteractionOn", true);
+                //m_lastHintAnimator.SetBool("InteractionOn", true);
 
                 //if (eventDataInfo[0] == "0")
                 //{
@@ -211,6 +261,15 @@ public class InteractionEvent : MonoBehaviour
         {
             if (hintInputInteraction.activeSelf)
             {
+                interactionAction_Txt.text = "";
+
+                if (!currentInteractionInterface.hasAdditionalDescription)
+                {
+                    
+                    hintAnimator.SetBool("OpenHintDetail", false);
+                    interactionDetail_Txt.text = "";
+                }
+                hintInputInteraction_Detail.SetActive(false);
                 hintInputInteraction.SetActive(false);
             }
             //bandeDiscussion.SetBool("NearNPC", false);
@@ -381,7 +440,7 @@ public class InteractionEvent : MonoBehaviour
                     {
 
                         NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
-                        m_lastHintAnimator.SetBool("InteractionOn", true);
+                        //m_lastHintAnimator.SetBool("InteractionOn", true);
                         txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.descriptionResult;
                         m_lastArtefactAnimator.SetBool("PlayerProxi", true);
 
@@ -390,14 +449,14 @@ public class InteractionEvent : MonoBehaviour
                 else
                 {
                     NewArtefact(col[i].gameObject.GetComponent<ArtefactHolder>());
-                    m_lastHintAnimator.SetBool("InteractionOn", true);
+                    //m_lastHintAnimator.SetBool("InteractionOn", true);
                     //txt_ObjectifDescriptionPnj.text = lastArtefact.m_artefactsInfos.description;
                     m_lastArtefactAnimator.SetBool("PlayerProxi", true);
                 }
 
             }
         }
-        else if (col.Length == 0 && m_lastHintAnimator.GetBool("InteractionOn") && lastTrader == null && currentInteractibleObject == null)
+        else if (col.Length == 0 /*&& m_lastHintAnimator.GetBool("InteractionOn") */&& lastTrader == null && currentInteractibleObject == null)
         {
             lastArtefact = null;
             if (m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
@@ -428,7 +487,7 @@ public class InteractionEvent : MonoBehaviour
     #region UI Functions
     public IEnumerator CloseUIWithDelay(float time)
     {
-        m_lastHintAnimator.SetBool("InteractionOn", false);
+        //m_lastHintAnimator.SetBool("InteractionOn", false);
         if (m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
 
         txt_ObjectifDescriptionPnj.text = "";
@@ -449,6 +508,8 @@ public class InteractionEvent : MonoBehaviour
         //now you can set the position of the ui element
         //parentHintTransform.anchoredPosition = WorldObject_ScreenPosition + offsetPopUpDisplay;
     }
+
+
     #endregion
 
 }

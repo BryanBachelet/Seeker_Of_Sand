@@ -30,11 +30,24 @@ namespace GuerhoubaGames.Resources
         [Tooltip("This array contain the text of objectif")]
         public string[] text_Objectif;
 
+        [Tooltip("This array contain texture of different objectif")]
+        public Sprite[] optional_spriteObjectif_tab;
+
+        [Tooltip("This array contain the text of objectif")]
+        public string[] optional_text_Objectif;
+
         [Tooltip("This array contain texture of different reward (Upgrade, heal, spell, fragment)")]
         public Sprite[] spriteReward_tab;
 
         [Tooltip("This array contain Prefab for physical Artefact Object")]
         public GameObject[] artefactPrefab = new GameObject[5]; //0 --> Neutre, 1 --> Eau, 2 --> Elec, 3 - Feu, 4 - Terre
+
+
+        [Tooltip("This array contain Prefab for physical Artefact Object")]
+        public GameObject[] costPrefab = new GameObject[5]; //0 --> Eau, 1 --> Elec, 2 --> Feu, 3 - Terre, 4 - Dissonance
+
+        [Tooltip("This array contain Prefab for physical Artefact Object")]
+        public Texture[] textureGradient_Ornement = new Texture[5]; //0 --> Eau, 1 --> Elec, 2 --> Feu, 3 - Terre, 4 - Dissonance
         public void Awake()
         {
             instance = this;

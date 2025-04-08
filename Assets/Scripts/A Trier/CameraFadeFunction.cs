@@ -23,7 +23,7 @@ public class CameraFadeFunction : MonoBehaviour
     [SerializeField] public GameObject dayTextObj;
 
     [SerializeField] public GameTutorialView gameTutorialView;
-    private bool m_isFirstTime = true;
+    private bool m_isFirstTime = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -100,7 +100,7 @@ public class CameraFadeFunction : MonoBehaviour
 
     public void LaunchGame()
     {
-        GameState.ChangeState();
+        //GameState.ChangeState();
         //GameManager.instance.generalSaveData.IsFirstTime = false;
     }
 

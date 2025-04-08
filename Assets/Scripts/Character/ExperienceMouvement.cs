@@ -29,6 +29,7 @@ public class ExperienceMouvement : MonoBehaviour
     private PullingMetaData m_pullingMetaData;
     private float m_timerBeforeDestruction;
 
+    [HideInInspector] public int dissonanceValue;
     private void Awake()
     {
 

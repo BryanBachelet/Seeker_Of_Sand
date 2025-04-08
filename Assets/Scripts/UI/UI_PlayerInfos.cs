@@ -41,12 +41,12 @@ namespace SeekerOfSand
             [SerializeField] private TMP_Text textTier;
             [SerializeField] private GameObject tierUpEffect;
             [SerializeField] private Animator tierUpAnimation;
-            [SerializeField] private VisualEffect[] vfxTierUp = new VisualEffect[4];
+            [HideInInspector] private VisualEffect[] vfxTierUp = new VisualEffect[4];
             [GradientUsage(true)]
-            [SerializeField] private Gradient[] gradient1vfx = new Gradient[4];
+            [HideInInspector] private Gradient[] gradient1vfx = new Gradient[4];
             [GradientUsage(true)]
-            [SerializeField] private Gradient[] gradient2vfx = new Gradient[4];
-            [SerializeField] private MeshRenderer imgSpriteSpell;
+            [HideInInspector] private Gradient[] gradient2vfx = new Gradient[4];
+            [HideInInspector] private MeshRenderer imgSpriteSpell;
             void Start()
             {
                 playerTarget = GameObject.Find("Player");
@@ -71,16 +71,16 @@ namespace SeekerOfSand
 
             public void UpdateLevelSpell(int index, SpellProfil spellprofil)
             {
-                imgSpriteSpell.material = spellprofil.matToUse;
+                //imgSpriteSpell.material = spellprofil.matToUse;
                 if (spellprofil.currentSpellTier == 1)
                 {
                     tierUpEffect.SetActive(true);
                     int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element, true);
-                    for (int i = 0; i < vfxTierUp.Length; i++)
-                    {
-                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[indexElement]);
-                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
-                    }
+                    //for (int i = 0; i < vfxTierUp.Length; i++)
+                    //{
+                    //    vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[indexElement]);
+                    //    vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[indexElement]);
+                    //}
                     tierUpAnimation.SetTrigger("UpgradeTo1");
                     if (spellprofil.levelSpellsProfiles[0] != null)
                     {
@@ -95,11 +95,11 @@ namespace SeekerOfSand
                 else if (spellprofil.currentSpellTier == 2)
                 {
                     tierUpEffect.SetActive(true);
-                    for (int i = 0; i < vfxTierUp.Length; i++)
-                    {
-                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
-                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
-                    }
+                    //for (int i = 0; i < vfxTierUp.Length; i++)
+                    //{
+                    //    vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
+                    //    vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
+                    //}
                     tierUpAnimation.SetTrigger("UpgradeTo2");
                     if (spellprofil.levelSpellsProfiles[1] != null)
                     {
@@ -113,11 +113,11 @@ namespace SeekerOfSand
                 else if (spellprofil.currentSpellTier == 3)
                 {
                     tierUpEffect.SetActive(true);
-                    for (int i = 0; i < vfxTierUp.Length; i++)
-                    {
-                        vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
-                        vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
-                    }
+                    //for (int i = 0; i < vfxTierUp.Length; i++)
+                    //{
+                    //    vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[(int)spellprofil.tagData.element]);
+                    //    vfxTierUp[i].SetGradient("Gradient2", gradient2vfx[(int)spellprofil.tagData.element]);
+                    //}
                     tierUpAnimation.SetTrigger("UpgradeTo3");
                     if (spellprofil.levelSpellsProfiles[2] != null) { textTier.text = spellprofil.levelSpellsProfiles[2].description; }
                     upgradeScreenAnimator.ResetTrigger("Reset");

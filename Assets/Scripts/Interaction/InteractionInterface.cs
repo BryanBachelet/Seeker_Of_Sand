@@ -7,6 +7,11 @@ public abstract class InteractionInterface : MonoBehaviour
     public bool isOpen;
     public bool hasClosePhase;
 
+    public string verbeInteraction = "Interact";
+    public bool hasAdditionalDescription;
+    public string additionalDescription = "Activate the object";
+    public int cost = 0;
+    public int cristalID = 4; //0 --> Water, 1 --> Air, 2 --> Feu, 3 --> Terre, 4 --> Dissonance
     public void CallOpenInteraction(GameObject player)
     {
         if(!isOpen)

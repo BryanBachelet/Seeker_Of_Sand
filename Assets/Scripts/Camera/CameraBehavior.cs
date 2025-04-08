@@ -81,7 +81,7 @@ namespace Render.Camera
         [HideInInspector] private float m_keyboardZoomSensibility = 0.001f;
         [HideInInspector] private float m_gamepadZoomSensibility = 0.1f;
         [SerializeField] private bool m_activeCameraZoomDebug = false;
-        [HideInInspector] private Vector3 m_baseOffset = new Vector3(30, 0, 0);
+        [HideInInspector] private Vector3 m_baseOffset = new Vector3(0, 0, -10);
         [HideInInspector] private float m_valueMinToStartSlope = 0.8f;
 
         private float m_zoomInputGamepad = 0.0f;

@@ -68,16 +68,16 @@ public class UpgradeChoosing : MonoBehaviour
     public GameObject prefabRank;
     private void Awake()
     {
-        if (m_imageBandeau != null)
-        {
-            for (int i = 0; i < m_imageBandeau.Length; i++)
-            {
-                Material mat = Instantiate(m_imageBandeau[i].material);
-
-                m_materialBandeauDissolve[i] = mat;
-                m_imageBandeau[i].material = mat;
-            }
-        }
+        //if (m_imageBandeau != null)
+        //{
+        //    for (int i = 0; i < m_imageBandeau.Length; i++)
+        //    {
+        //        Material mat = Instantiate(m_imageBandeau[i].material);
+        //
+        //        m_materialBandeauDissolve[i] = mat;
+        //        m_imageBandeau[i].material = mat;
+        //    }
+        //}
 
         m_upgradeManager = GameState.m_enemyManager.GetComponent<UpgradeManager>();
     }

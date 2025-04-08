@@ -90,6 +90,9 @@ namespace Enemies
         public bool isHealthDisplay = false;
 
         private Object_HealthDisplay m_objectHealthDisplay;
+        public TrailRenderer m_trailRenderer;
+        public GameObject lastDissonanceInstantiated;
+
         void Awake()
         {
             InitComponent();
@@ -137,7 +140,7 @@ namespace Enemies
                 float progressDeath = deathTimer / timeBeforeDestruction;
                 float cutoutValue = progressDeath;
                 float emissiveValue = progressDeath;
-
+                ResetTrail();
                 for (int i = 0; i < materialCutout.Length; i++)
                 {
                     m_materialList[materialCutout[i]].SetFloat("_Cutout", cutoutProgress.Evaluate(cutoutValue));
@@ -234,7 +237,10 @@ namespace Enemies
             }
 
             //StartCoroutine(Death());
-            if (gameObject.activeSelf) StartCoroutine(TeleportToPool());
+            if (gameObject.activeSelf)
+            {
+                StartCoroutine(TeleportToPool());
+            }
         }
 
 
@@ -251,10 +257,11 @@ namespace Enemies
             if (m_enemyManager.GenerateDissonance())
             {
                 GlobalSoundManager.PlayOneShot(indexDestroySound, transform.position);
-                
-                GameObject dissonanceInstance = GamePullingSystem.SpawnObject(dissonancePrefabObject,transform.position,transform.rotation) ;
-                ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
-                ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
+                lastDissonanceInstantiated = GamePullingSystem.SpawnObject(dissonancePrefabObject,transform.position,transform.rotation, m_enemyManager.transform) ;
+                ExperienceMouvement ExperienceMove = lastDissonanceInstantiated.GetComponent<ExperienceMouvement>();
+                ExperienceMove.dissonanceValue = 1;
+                //ExperienceMove.m_playerPosition = TerrainGenerator.staticRoomManager.rewardPosition;
+                ExperienceMove.m_playerPosition = m_enemyManager.m_playerTranform;
 
             }
 
@@ -288,6 +295,7 @@ namespace Enemies
                 m_materialList[materialCutout[i]].SetFloat("_Cutout", 0);
             }
             npcMove.lastTimeSeen = Time.time;
+            ResetTrail();
             npcMove.lastTimeCheck = npcMove.lastTimeSeen;
             npcMove.lastPosCheck = this.transform.position;
             //m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
@@ -338,6 +346,11 @@ namespace Enemies
                     timeBeforeDestruction = deathStateDuration;
                 }
             }
+        }
+
+        public void ResetTrail()
+        {
+            if (m_trailRenderer != null) { m_trailRenderer.Clear(); }
         }
     }
 }

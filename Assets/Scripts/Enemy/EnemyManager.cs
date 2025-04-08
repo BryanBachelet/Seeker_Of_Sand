@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 using System.Runtime.Serialization.Formatters.Binary;
 using Render.Camera;
 using Unity.VisualScripting;
-
+using GuerhoubaGames.UI;
 namespace Enemies
 {
 
@@ -49,7 +49,7 @@ namespace Enemies
         [HideInInspector] public Transform m_playerTranform;
         [HideInInspector] private Transform m_cameraTransform;
 
-        [HideInInspector] private Vector3 position = new Vector3(0,0,0);
+        [HideInInspector] private Vector3 position = new Vector3(0, 0, 0);
         [HideInInspector] private float m_spawnTime = 10;
 
         [SerializeField] private int m_groupEnemySize = 5;
@@ -155,6 +155,11 @@ namespace Enemies
         [HideInInspector] private float[] spawnPositionTimer;
         [HideInInspector] private bool[] spawningStateOfSpawner;
         [HideInInspector] private int spawnMaxCD = 10;
+        [SerializeField] private float waveSpawnPositionTimer;
+        [SerializeField] private int waveSpawnMaxCD = 60;
+
+        [SerializeField] private TMP_Text waveTimer;
+        [SerializeField] private Color colorBeforeSpawnWave;
         public bool debugSpawningPerPosition = false;
         public void Awake()
         {
@@ -185,6 +190,7 @@ namespace Enemies
             m_pullingSystem = GetComponent<EnemiesPullingSystem>();
 
             uiDispatcher = transform.parent.GetComponentInChildren<UIDispatcher>();
+            waveSpawnPositionTimer = waveSpawnMaxCD - 10;
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -240,11 +246,12 @@ namespace Enemies
 
             if (debugSpawningPerPosition)
             {
-                SpawnByUsingCorrupted();
+                //SpawnByUsingCorrupted();
+                SpawnWaveByUsingCorrupted();
             }
 
 
-           
+
         }
 
 #if UNITY_EDITOR
@@ -356,9 +363,12 @@ namespace Enemies
                 return false;
 
             repositionningCount++;
-            Vector3 position = FindPositionAroundTarget(enemy.GetComponent<NpcHealthComponent>().targetData.target);
+            NpcHealthComponent tempNPCHealth = enemy.GetComponent<NpcHealthComponent>();
+            Vector3 position = FindPositionAroundTarget(tempNPCHealth.targetData.target);
+
             enemy.GetComponent<NavMeshAgent>().Warp(position);
             enemy.transform.position = position;
+            tempNPCHealth.ResetTrail();
             return true;
         }
         private float GetTimeSpawn()
@@ -526,9 +536,10 @@ namespace Enemies
             enemyTypeStats[enemyIndexChoose].instanceCount += 1;
             enemyTypeStats[enemyIndexChoose].instanceSpawnPerRoom += 1;
             enemyObjectPull.transform.position = positionSpawn;
-            enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
-            enemyObjectPull.GetComponent<NavMeshAgent>().Warp(positionSpawn);
-            enemyObjectPull.GetComponent<NavMeshAgent>().enabled = true;
+            NavMeshAgent tempNavMesh = enemyObjectPull.GetComponent<NavMeshAgent>();
+            tempNavMesh.updatePosition = true;
+            tempNavMesh.Warp(positionSpawn);
+            tempNavMesh.enabled = true;
 
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
             npcInfo.RestartEnemy();
@@ -838,7 +849,7 @@ namespace Enemies
         public void ChangeSpawningPhase(bool spawning)
         {
             spawningPhase = spawning;
-            
+
         }
 
         public void CreateCurveSheet()
@@ -1050,7 +1061,7 @@ namespace Enemies
                 spawnPositionTimer[i] = Random.Range(0, spawnMaxCD);
                 spawningStateOfSpawner[i] = true;
             }
-            if(spawnPositionAvailable.Length > 0) { debugSpawningPerPosition = true; }
+            if (spawnPositionAvailable.Length > 0) { debugSpawningPerPosition = true; }
         }
 
         public void DesactiveSpawner(GameObject spawner)
@@ -1063,6 +1074,7 @@ namespace Enemies
                 }
 
             }
+            RoomInfoUI.instance.UpdateRoomInfoDisplay(null, CountSpawnerActive());
         }
 
         public void SpawnByUsingCorrupted()
@@ -1089,6 +1101,32 @@ namespace Enemies
             }
         }
 
+        public void SpawnWaveByUsingCorrupted()
+        {
+            float addTime = Time.deltaTime;
+            int[] spawnersData = CountSpawnerActive();
+            waveSpawnPositionTimer += Time.deltaTime * (spawnersData[1] - spawnersData[0]);
+            if (waveSpawnPositionTimer > waveSpawnMaxCD)
+            {
+                for (int i = 0; i < spawningStateOfSpawner.Length; i++)
+                {
+                    if (spawningStateOfSpawner[i] == true)
+                    {
+                        for (int j = 0; j < m_groupEnemySize; j++)
+                        {
+                            SpawnEnemyByPool(FindPositionAtSpawner(spawnPositionAvailable[i]));
+                        }
+                        InstantiateSpawnFeedback();
+                    }
+                }
+                waveSpawnPositionTimer = 0;
+            }
+            float secondeBeforeWave = (waveSpawnMaxCD - waveSpawnPositionTimer);
+            float ratio = waveSpawnPositionTimer / waveSpawnMaxCD;
+            Color color = Color.Lerp(Color.white, colorBeforeSpawnWave, ratio);
+            waveTimer.color = color;
+            waveTimer.text = "" + (int)(waveSpawnPositionTimer / 60) + ":" + (secondeBeforeWave).ToString(".");
+        }
         public Vector3 FindPositionAtSpawner(Vector3 position)
         {
             NavMeshHit hit;
@@ -1100,6 +1138,18 @@ namespace Enemies
             {
                 return Vector3.zero;
             }
+        }
+
+        public int[] CountSpawnerActive()
+        {
+            int spawnerTotal = spawningStateOfSpawner.Length;
+            int spawnerRemain = 0;
+            for (int i = 0; i < spawnerTotal; i++)
+            {
+                if (spawningStateOfSpawner[i] == false) { spawnerRemain++; }
+            }
+            int[] dataSpawner = new int[] { spawnerRemain, spawnerTotal };
+            return dataSpawner;
         }
     }
 

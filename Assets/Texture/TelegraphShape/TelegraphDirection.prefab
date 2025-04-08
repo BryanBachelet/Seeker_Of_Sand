@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 8010025466583887044}
   - component: {fileID: 2704381651271955797}
   - component: {fileID: 2897797889261925533}
+  - component: {fileID: 749199163298738122}
+  - component: {fileID: 3062289362700039661}
+  - component: {fileID: 8399056609714309205}
   m_Layer: 0
   m_Name: TelegraphDirection
   m_TagString: Untagged
@@ -43,11 +46,11 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6084578823839014238}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: fd35d6bc536cc994e9a96d35f2ae400d, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 2864315107cf178489bfb4643f03d7ed, type: 3}
   m_InitialEventName: ActiveArea
   m_InitialEventNameOverriden: 1
   m_StartSeed: 1176773271
-  m_ResetSeedOnPlay: 1
+  m_ResetSeedOnPlay: 0
   m_AllowInstancing: 1
   m_ResourceVersion: 1
   m_PropertySheet:
@@ -62,20 +65,44 @@ VisualEffect:
       - m_Value: 0
         m_Name: Progress
         m_Overridden: 1
+      - m_Value: 0.331
+        m_Name: Alpha
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: Intensity
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: DirectinalLightIntensity
+        m_Overridden: 1
+      - m_Value: 5924.478
+        m_Name: Temperature
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 50, y: 50, z: 50}
+      - m_Value: {x: 4.5, y: 4.5, z: 4.5}
         m_Name: Size
         m_Overridden: 1
-      - m_Value: {x: 0, y: 0, z: 25}
+      - m_Value: {x: 0, y: 0, z: 2.25}
         m_Name: OffSetDirection
         m_Overridden: 1
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: Position
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: New TerrainType_Bounds_center
+        m_Overridden: 0
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: New TerrainType_Bounds_size
+        m_Overridden: 0
     m_Vector4f:
       m_Array:
       - m_Value: {x: 0.735849, y: 0.22491989, z: 0.22491989, w: 1}
         m_Name: Color A
+        m_Overridden: 1
+      - m_Value: {x: 0.9056604, y: 0.9056604, z: 0.9056604, w: 1}
+        m_Name: SunColor
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -116,7 +143,7 @@ VisualEffect:
       - m_Value:
           serializedVersion: 2
           key0: {r: 0.16301487, g: 0, b: 0.001706985, a: 1}
-          key1: {r: 4.237095, g: 0, b: 0, a: 1}
+          key1: {r: 0.7490196, g: 0, b: 0, a: 1}
           key2: {r: 4.5412054, g: 0.44645378, b: 0.40419102, a: 1}
           key3: {r: 0, g: 0, b: 0, a: 0}
           key4: {r: 0, g: 0, b: 0, a: 0}
@@ -179,10 +206,10 @@ VisualEffect:
         m_Overridden: 1
     m_NamedObject:
       m_Array:
-      - m_Value: {fileID: 2800000, guid: b93916fcd0b7023458b19b5892aafb6c, type: 3}
+      - m_Value: {fileID: 2800000, guid: f7f2af40a623f154880e45047d92f1c6, type: 3}
         m_Name: Shape
         m_Overridden: 1
-      - m_Value: {fileID: 2800000, guid: 92470967ce93a3547bd795895e29ca18, type: 3}
+      - m_Value: {fileID: 2800000, guid: f7c1f5e81e083244b901928568b19fc7, type: 3}
         m_Name: ShapeContour
         m_Overridden: 1
     m_Bool:
@@ -252,3 +279,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDestroyNotActive: 0
+--- !u!114 &749199163298738122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6084578823839014238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExecuteInEditor: 1
+  m_Bindings:
+  - {fileID: 3062289362700039661}
+  m_VisualEffect: {fileID: 6786170199435002977}
+--- !u!114 &3062289362700039661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6084578823839014238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3671ed6f113debb429f6d2e16a2f494b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ColorProperty:
+    m_Name: Color
+  m_BrightnessProperty:
+    m_Name: Brightness
+  m_RadiusProperty:
+    m_Name: Radius
+  m_TemperatureProperty:
+    m_Name: Temperature
+  Target: {fileID: 0}
+  BindColor: 0
+  BindBrightness: 0
+  BindRadius: 0
+  BindTemperature: 1
+--- !u!114 &8399056609714309205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6084578823839014238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452133d1e903b804292f6b72c25793af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFixePosition: 1
+  position: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0, w: 0}

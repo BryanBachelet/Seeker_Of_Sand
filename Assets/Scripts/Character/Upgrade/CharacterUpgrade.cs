@@ -161,13 +161,13 @@ namespace Character
 
 
             //GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
-            GameState.ChangeState(); // Set Game in pause
+            //GameState.ChangeState(); // Set Game in pause
 
-            if(m_isFirstTime && GameManager.instance.generalSaveData.IsFirstTime)
-            {
-                gameTutorialView.StartTutoriel();
-                m_isFirstTime = false;
-            }
+            //if(m_isFirstTime && GameManager.instance.generalSaveData.IsFirstTime)
+            //{
+            //    gameTutorialView.StartTutoriel();
+            //    m_isFirstTime = false;
+            //}
         }
 
         public void CloseUpgradeWindow()
@@ -176,7 +176,7 @@ namespace Character
             ChangeBaseInterfaceDisplay(true);
             upgradeManager.CloseUpgradeUI();
             m_characterShoot.UpdateSpellRarityCadre(m_characterShoot.m_characterSpellBook.GetAllSpells());
-            GameState.ChangeState();
+            //GameState.ChangeState();
         }
 
         public void ApplyUpgrade(UpgradeObject upgradeChoose)

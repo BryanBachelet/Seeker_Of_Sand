@@ -59,6 +59,7 @@ public class TerrainGenerator : MonoBehaviour
     public bool isOnlyBoss;
 
     public MiniMapControl miniMapControl;
+    public MiniMapControl miniMap_IconControl;
     public void Start()
     {
         dayController.dayStartEvent += ResetRoomAtNewDay;
@@ -128,7 +129,7 @@ public class TerrainGenerator : MonoBehaviour
 
         currentRoomManager.roomInfoUI = roomInfoUI;
         roomInfoUI.currentRoomManager = currentRoomManager;
-        currentRoomManager.ActivateRoom();
+        currentRoomManager.ActivateRoom(currentRoomManager.m_materialPreviewTRT);
         roomInfoUI.ActualizeRoomInfoInterface();
 
     }
@@ -164,6 +165,7 @@ public class TerrainGenerator : MonoBehaviour
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             isHealthBossRoom = true;
+            roomManager.m_CRT.Initialize();
             roomManager.m_CRT.Update();
             StartCoroutine(roomManager.RoomDeactivation(3));
             return;
@@ -172,7 +174,7 @@ public class TerrainGenerator : MonoBehaviour
         }
         // -------------------------
 
-        if (dayController.IsNextRoomIsDay() && !isHealthBossRoom)
+        if (dayTimeController.IsNextRoomIsBoss() && !isHealthBossRoom)
         {
             GameObject newTerrain;
             int randomTerrain = Random.Range(1, poolNumber);
@@ -191,6 +193,7 @@ public class TerrainGenerator : MonoBehaviour
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             isHealthBossRoom = true;
+            roomManager.m_CRT.Initialize();
             roomManager.m_CRT.Update();
             StartCoroutine(roomManager.RoomDeactivation(3));
             return;
@@ -204,22 +207,21 @@ public class TerrainGenerator : MonoBehaviour
             //else { indexRoomType = Random.Range(0, roomTypeList.Count); }
             indexRoomType = Random.Range(0, roomTypeList.Count);
             if(indexRoomType == 1 ) { indexRoomType = 1; }
-            if (!hasMerchantAppear)
+            if (dayTimeController.IsNextRoomIsBoss())
             {
-                if (!player.GetComponent<CristalInventory>().hasEnoughCristalToSpawn)
-                {
+
                     while (roomTypeList[indexRoomType] == RoomType.Merchant)
                     {
                         indexRoomType = Random.Range(0, roomTypeList.Count);
                         if (indexRoomType == 1) { indexRoomType = 1; }
                     }
-                }
+
 
             }
             GameObject newTerrain;
             isHealthBossRoom = false;
             int indexTerrain = -1;
-            if (hasMerchantAppear)
+            if (dayTimeController.IsNextRoomIsMerchand())
             {
                 if (!roomTypeList.Contains(RoomType.Merchant))
                     roomTypeList.Add(RoomType.Merchant);
@@ -304,7 +306,10 @@ public class TerrainGenerator : MonoBehaviour
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             roomManager.previewCamera.gameObject.SetActive(true);
             RenderTexture custom_TRT = roomManager.previewCamera.targetTexture;
+            roomManager.m_CRT.Initialize();
             roomManager.m_CRT.Update();
+
+
 
             StartCoroutine(roomManager.RoomDeactivation(3));
             //newTerrain.SetActive(false);
@@ -334,7 +339,7 @@ public class TerrainGenerator : MonoBehaviour
             tpFeedback.ChangeColorVFX(GeneralTools.GetElementalArrayIndex(roomManager.element, true));
         }
 
-        currentRoomManager.SetupTeleporter(terrainInstantiated.Count);
+        //currentRoomManager.SetupTeleporter(terrainInstantiated.Count);
 
 
     }
@@ -353,9 +358,11 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.LaunchFadeIn(true, 1);
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
+        cameraFadeFunction.tpBehavior.specialRoomID = roomManager.specialID;
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
         miniMapControl.ResetDiscovery(terrainInstantiated[selectedTerrain]);
+        miniMap_IconControl.ResetDiscovery(terrainInstantiated[selectedTerrain]);
 
         if (roomManager.currentRoomType == RoomType.Boss) { gsm.UpdateParameter(1, "BossAmbiant"); }
         else { gsm.UpdateParameter(0, "BossAmbiant"); }
@@ -364,8 +371,6 @@ public class TerrainGenerator : MonoBehaviour
 
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
-  
-
         for (int i = 0; i < oldTerrain.Count; i++)
         {
             NavMeshSurface navSurf = oldTerrain[i].GetComponent<NavMeshSurface>();
@@ -379,7 +384,7 @@ public class TerrainGenerator : MonoBehaviour
         }
 
 
-
+        RoomManager previousRoomManager = currentRoomManager;
         selectedTerrain = selectedTerrainNumber;
         lastTerrainPlay = previousTerrain[selectedTerrain].transform;
         currentRoomManager.DeactivateRoom();
@@ -393,11 +398,11 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         GenerateTerrain(selectedTerrainNumber);
-        AssociateNewReward(selectedTerrainNumber);
 
+        AssociateNewReward(selectedTerrainNumber);
         currentRoomManager.roomInfoUI = roomInfoUI;
         roomInfoUI.currentRoomManager = currentRoomManager;
-        currentRoomManager.ActivateRoom();
+        currentRoomManager.ActivateRoom(previousRoomManager.m_materialPreviewTRT);
         roomInfoUI.ActualizeRoomInfoInterface();
 
 

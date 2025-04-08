@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.VFX;
 using System.IO;
 using Character;
+using GuerhoubaGames.Resources;
 public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;
@@ -146,15 +147,10 @@ public class Experience_System : MonoBehaviour, CharacterComponent
     {
         if (collision.gameObject.tag == "Experience")
         {
-            ExperienceMouvement lastXpDrop = collision.GetComponent<ExperienceMouvement>();
-            if (!lastXpDrop.m_destruction)
-            {
-                lastXpDrop.InitDestruction();
-                //Destroy(collision.gameObject);
-                GlobalSoundManager.PlayOneShot(3, Vector3.zero);
-                //OnEnemyKilled(lastXpDrop.quantity);
-                OnEnemyKilledNew(lastXpDrop.quantity);
-            }
+            if (m_cristalInventory == null) m_cristalInventory = GetComponent<CristalInventory>();
+            m_cristalInventory.AddDissonanceCount(collision.GetComponent<ExperienceMouvement>().dissonanceValue);
+            GamePullingSystem.instance.ResetObject(collision.gameObject, collision.GetComponent<PullingMetaData>().id);
+            GlobalSoundManager.PlayOneShot(3, Vector3.zero);
 
         }
         else if (collision.gameObject.tag == "CristalDrop")
