@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -24,12 +25,14 @@ namespace GuerhoubaGames.AI
 
         protected override State OnUpdate()
         {
+
             if (agent.moveComponent.IsOutsideRange(outSideRange) && agent.moveComponent.IsFacingTarget())
             {
                 return State.SUCCESS;
             }
             else
             {
+
                 agent.state = Enemies.NpcState.MOVE;
                 return State.RUNNING;
             }

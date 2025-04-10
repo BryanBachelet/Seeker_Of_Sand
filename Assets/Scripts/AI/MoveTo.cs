@@ -30,14 +30,13 @@ namespace GuerhoubaGames.AI
         protected override State OnUpdate()
         {
            
-         
             if (agent.moveComponent.IsInRange())
             {
                 return State.SUCCESS;
             }
             else
             {
-                agent.state = Enemies.NpcState.MOVE;
+               agent.state = Enemies.NpcState.MOVE;
                 return State.RUNNING;
             }
 

@@ -161,6 +161,8 @@ namespace Enemies
         [SerializeField] private TMP_Text waveTimer;
         [SerializeField] private Color colorBeforeSpawnWave;
         public bool debugSpawningPerPosition = false;
+
+        [SerializeField] private GameObject prefabSpawnTrail;
         public void Awake()
         {
             m_gameLayer = this.GetComponent<GameLayer>();
@@ -365,7 +367,7 @@ namespace Enemies
             repositionningCount++;
             NpcHealthComponent tempNPCHealth = enemy.GetComponent<NpcHealthComponent>();
             Vector3 position = FindPositionAroundTarget(tempNPCHealth.targetData.target);
-
+            Debug.Log("Repositioning");
             enemy.GetComponent<NavMeshAgent>().Warp(position);
             enemy.transform.position = position;
             tempNPCHealth.ResetTrail();
@@ -406,7 +408,7 @@ namespace Enemies
             {
                 for (int i = 0; i < m_groupEnemySize; i++)
                 {
-                    SpawnEnemyByPool(position + Random.insideUnitSphere * 5f);
+                    SpawnEnemyByPool(position + Random.insideUnitSphere * 5f, position);
 
                 }
                 InstantiateSpawnFeedback();
@@ -425,7 +427,7 @@ namespace Enemies
 
             for (int i = 0; i < groupSize; i++)
             {
-                SpawnEnemyByPool(positionCustom + Random.insideUnitSphere * 5f);
+                SpawnEnemyByPool(positionCustom + Random.insideUnitSphere * 5f, positionCustom);
 
             }
             InstantiateSpawnFeedback();
@@ -518,7 +520,7 @@ namespace Enemies
             return enemyObjectPull;
         }
 
-        private void SpawnEnemyByPool(Vector3 positionSpawn)
+        private void SpawnEnemyByPool(Vector3 positionSpawn, Vector3 positionFromSpawn)
         {
 
             if (isStopSpawn) return;
@@ -532,6 +534,16 @@ namespace Enemies
             NpcMouvementComponent npcMove = null;
             NpcMetaInfos npcInfo = null;
 
+            ExperienceMouvement signExperienceMouvement = Instantiate(prefabSpawnTrail, positionFromSpawn, Quaternion.identity).GetComponent<ExperienceMouvement>();
+            signExperienceMouvement.ActiveParticuleByPosition(positionSpawn);
+            float delaySpawn = 3;
+
+            while (delaySpawn > 0)
+            {
+                delaySpawn -= Time.deltaTime;
+                Debug.Log("Delay remain : " + delaySpawn);
+            }
+            Debug.Log("Active spawn Mob");
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);
             enemyTypeStats[enemyIndexChoose].instanceCount += 1;
             enemyTypeStats[enemyIndexChoose].instanceSpawnPerRoom += 1;
@@ -562,6 +574,53 @@ namespace Enemies
             m_enemiesArray.Add(npcInfo);
         }
 
+        private IEnumerator SpawnEnemyByPoolWithDelay(Vector3 positionSpawn, Vector3 positionFromSpawn)
+        {
+
+            if (isStopSpawn) yield break;
+
+            int enemyIndexChoose = FindValidTypeEnemyToSpawn();
+
+            if (enemyIndexChoose == -1) yield break;
+
+            GameObject enemyObjectPull = null;
+            NpcHealthComponent npcHealth = null;
+            NpcMouvementComponent npcMove = null;
+            NpcMetaInfos npcInfo = null;
+
+            ExperienceMouvement signExperienceMouvement = Instantiate(prefabSpawnTrail, positionFromSpawn, Quaternion.identity).GetComponent<ExperienceMouvement>();
+            signExperienceMouvement.ActiveParticuleByPosition(positionSpawn);
+            yield return new WaitForSeconds(5);
+            Debug.Log("Active spawn Mob");
+            enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);
+            enemyTypeStats[enemyIndexChoose].instanceCount += 1;
+            enemyTypeStats[enemyIndexChoose].instanceSpawnPerRoom += 1;
+            enemyObjectPull.transform.position = positionSpawn;
+            NavMeshAgent tempNavMesh = enemyObjectPull.GetComponent<NavMeshAgent>();
+            tempNavMesh.updatePosition = true;
+            tempNavMesh.Warp(positionSpawn);
+            tempNavMesh.enabled = true;
+
+            npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
+            npcInfo.RestartEnemy();
+            npcInfo.manager = this;
+
+
+
+            npcHealth = enemyObjectPull.GetComponent<NpcHealthComponent>();
+            npcHealth.SetInitialData(m_healthManager, this);
+            npcHealth.spawnMinute = (int)(m_timeOfGame / 60);
+            npcHealth.targetData.isMoving = true;
+            npcHealth.RestartObject(m_characterUpgrade.avatarUpgradeList.Count);
+            npcHealth.SetTarget(m_playerTranform, m_playerTranform);
+            countEnemySpawnMaximum++;
+
+            npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
+            npcMove.enabled = true;
+            npcMove.enemiesManager = this;
+
+            m_enemiesArray.Add(npcInfo);
+        }
         public void SetSpawnSquad(int[] mobCount)
         {
             specialSquadSelect = mobCount;
@@ -1091,7 +1150,7 @@ namespace Enemies
                         for (int j = 0; j < m_groupEnemySize; j++)
                         {
 
-                            SpawnEnemyByPool(FindPositionAtSpawner(spawnPositionAvailable[i]));
+                            SpawnEnemyByPool(FindPositionAtSpawner(spawnPositionAvailable[i]), spawnPositionAvailable[i]);
 
                         }
                         InstantiateSpawnFeedback();
@@ -1114,7 +1173,8 @@ namespace Enemies
                     {
                         for (int j = 0; j < m_groupEnemySize; j++)
                         {
-                            SpawnEnemyByPool(FindPositionAtSpawner(spawnPositionAvailable[i]));
+                            //SpawnEnemyByPool(FindPositionAtSpawner(spawnPositionAvailable[i]), spawnPositionAvailable[i]);
+                            StartCoroutine(SpawnEnemyByPoolWithDelay(FindPositionAtSpawner(spawnPositionAvailable[i]), spawnPositionAvailable[i]));
                         }
                         InstantiateSpawnFeedback();
                     }
@@ -1130,6 +1190,7 @@ namespace Enemies
         public Vector3 FindPositionAtSpawner(Vector3 position)
         {
             NavMeshHit hit;
+            position += FindPositionAroundCorruptionSpawner(50, 125);
             if (NavMesh.SamplePosition(position, out hit, Mathf.Infinity, NavMesh.AllAreas))
             {
                 return hit.position;
@@ -1150,6 +1211,29 @@ namespace Enemies
             }
             int[] dataSpawner = new int[] { spawnerRemain, spawnerTotal };
             return dataSpawner;
+        }
+
+        public Vector3 FindPositionAroundCorruptionSpawner(float rangeMin, float rangeMax)
+        {
+            Vector3 position = Vector3.zero;
+            int randomPosition = UnityEngine.Random.Range(0, 4);
+            if (randomPosition == 0)
+            {
+                position = new Vector3(UnityEngine.Random.Range(rangeMin, rangeMax), 0, UnityEngine.Random.Range(rangeMin, rangeMax));
+            }
+            else if (randomPosition == 1)
+            {
+                position = new Vector3(-UnityEngine.Random.Range(rangeMin, rangeMax), 0, UnityEngine.Random.Range(rangeMin, rangeMax));
+            }
+            else if (randomPosition == 2)
+            {
+                position = new Vector3(UnityEngine.Random.Range(rangeMin, rangeMax), 0, -UnityEngine.Random.Range(rangeMin, rangeMax));
+            }
+            else if (randomPosition == 3)
+            {
+                position = new Vector3(-UnityEngine.Random.Range(rangeMin, rangeMax), 0, -UnityEngine.Random.Range(rangeMin, rangeMax));
+            }
+            return position;
         }
     }
 

@@ -271,8 +271,9 @@ namespace Enemies
         {
             float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
 
-            if(customMouvement == null)
-            return distance < minTargetDistance;
+            
+            
+            if (customMouvement == null) return distance < minTargetDistance;
             else
             {
                 
