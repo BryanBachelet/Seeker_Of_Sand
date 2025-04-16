@@ -9,7 +9,7 @@ namespace GuerhoubaGames.DebugTool
     public class DamageRecapComponent : MonoBehaviour
     {
         private List<string> m_damageString = new List<string>();
-        public DamageRecapUI damageRecapUI;
+        [HideInInspector] public DamageRecapUI damageRecapUI;
         private HealthPlayerComponent healthPlayerComponent;
 
         void Start()

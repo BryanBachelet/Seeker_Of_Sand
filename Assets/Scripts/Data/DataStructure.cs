@@ -86,6 +86,7 @@ public class HealthSystem
         m_maxHealth = maxHealth;
         m_healthPercent = m_currentHealth / m_maxHealth;
 
+
     }
 
     public void SetMaxHealth(int maxHealth)

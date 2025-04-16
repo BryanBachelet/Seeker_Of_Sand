@@ -139,7 +139,7 @@ namespace Enemies
 
 
                     }
-                    else if (time > lastTimeSeen + 5)
+                    else if (time > lastTimeSeen + 30)
                     {
                         if (!IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main) || Vector3.Distance(transform.position, lastPosCheck) < 10)
                         {
@@ -271,8 +271,9 @@ namespace Enemies
         {
             float distance = Vector3.Distance(baseTransform.position, targetData.baseTarget.position);
 
-            if(customMouvement == null)
-            return distance < minTargetDistance;
+            
+            
+            if (customMouvement == null) return distance < minTargetDistance;
             else
             {
                 

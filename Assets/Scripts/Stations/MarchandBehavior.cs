@@ -158,7 +158,7 @@ public class MarchandBehavior : InteractionInterface
 
         m_uiInventory.ActualizeInventory();
         return BuyResult.BUY;
-        }
+    }
 
     private void CheckPlayerBuyCapacity()
     {

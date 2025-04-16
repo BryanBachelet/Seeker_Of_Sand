@@ -6,24 +6,22 @@ using UnityEngine.VFX;
 
 public class TeleporterBehavior : MonoBehaviour
 {
-    public Teleporter lastTeleportor;
-    public Vector3 lastTpPosition;
-    public bool activationTP;
-    public Teleporter nextTeleporter;
-    public Vector3 nextTpPosition;
-    public int nextTerrainNumber = 0;
+    [HideInInspector] private Teleporter nextTeleporter;
+    [HideInInspector] private Vector3 nextTpPosition;
+    [HideInInspector] public int nextTerrainNumber = 0;
 
-    public CameraFadeFunction cameraFadeFunction;
-    private CameraBehavior m_cameraBehavior;
+
+    [HideInInspector] private CameraFadeFunction cameraFadeFunction;
+    [HideInInspector] private CameraBehavior m_cameraBehavior;
     public TerrainGenerator terrainGen;
-    public AltarBehaviorComponent altarBehavior;
 
-    public VisualEffect apparitionVFX;
+    [SerializeField] private VisualEffect apparitionVFX;
     public VisualEffect disparitionVFX;
 
     [HideInInspector] public bool isTimePassing;
+    [SerializeField] public int specialRoomID = -1;
     public EventHolder eventHolder;
-    public DayCyclecontroller dayController;
+
     public DayTimeController dayTimeController;
     // Start is called before the first frame update
     void Start()
@@ -62,9 +60,13 @@ public class TeleporterBehavior : MonoBehaviour
         apparitionVFX.Play();
         if (isTimePassing)
         {
-            dayController.UpdateTimeByStep();
+            //dayController.UpdateTimeByStep();
             dayTimeController.UpdateNextPhase();
 
+        }
+        if(specialRoomID >= 0)
+        {
+            dayTimeController.ChangeNextRoomSpecialStatut(specialRoomID, false);
         }
         terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
         cameraFadeFunction.LaunchFadeOut(true, 1);
@@ -88,7 +90,7 @@ public class TeleporterBehavior : MonoBehaviour
         cameraFadeFunction.dayTextObj.SetActive(true);
         cameraFadeFunction.dayTextAnimator.SetTrigger("NewDay");
         yield return new WaitForSeconds(3f);
-        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom();
+        nextTeleporter.transform.parent.GetComponentInChildren<RoomManager>().ActivateRoom(null);
         cameraFadeFunction.dayTextAnimator.ResetTrigger("NewDay");
         cameraFadeFunction.dayTextObj.SetActive(false);
     }

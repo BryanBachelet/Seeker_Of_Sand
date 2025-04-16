@@ -9,20 +9,18 @@ namespace Character
     public class CharacterDash : MonoBehaviour
     {
         [Header("Dash Parameters")]
-        [SerializeField] private int m_currentStack = 1;
+        [HideInInspector] private int m_currentStack = 1;
         [SerializeField] private int m_maxStack = 1;
-        [SerializeField] private float m_dashDistance = 5;
-        [SerializeField] private float m_dashDuration = .5f;
-        [SerializeField] private float m_dashCooldownDuration = 1.0f;
-        [SerializeField] private LayerMask m_obstacleLayerMask;
-        [SerializeField] private LayerMask m_enemyObstacleLayerMask;
-        [SerializeField] private GameObject m_playerMesh;
+        [SerializeField] private float m_dashDistance = 70;
+        [SerializeField] private float m_dashDuration = .25f;
+        [SerializeField] private float m_dashCooldownDuration = 4.0f;
+        [HideInInspector] private GameLayer m_gameLayer;
 
         [Header("Dash UI Feedback")]
-        [SerializeField] public Image m_dashUI;
+        [SerializeField] private Image m_dashUI;
 
-        private float m_dashTimer = 0.0f;
-        private float m_dashCooldownTimer = 0.0f;
+        [HideInInspector] private float m_dashTimer = 0.0f;
+        [HideInInspector] private float m_dashCooldownTimer = 0.0f;
 
         private Vector3 m_startPoint;
         private Vector3 m_endPoint;
@@ -30,22 +28,18 @@ namespace Character
         private CharacterAim m_characterAim;
         private bool m_isDashValid;
         private bool m_isActiveCooldown;
-        public Render.Camera.CameraBehavior m_cameraBehavior;
 
         public GameObject[] characterModel;
         public GameObject vfxDash;
 
-        public Material m_dashDecalFeedback;
+        [HideInInspector] private Material m_dashDecalFeedback;
         public UnityEngine.Rendering.HighDefinition.DecalProjector m_dashHolderDecal;
 
-        private bool m_isDashFinish;
-        private bool m_isSpellDash;
-        private float m_spellDashDistance;
-        private float m_spellDashDuration;
+        [HideInInspector] private bool m_isDashFinish;
+        [HideInInspector] private bool m_isSpellDash;
+        [HideInInspector] private float m_spellDashDistance;
+        [HideInInspector] private float m_spellDashDuration;
 
-
-        [SerializeField] private Image[] spriteDash = new Image[2];
-        [SerializeField] private Image dashCadre;
         private GameObject dashHolder;
         // Start is called before the first frame update
         void Start()
@@ -61,6 +55,7 @@ namespace Character
             m_dashDecalFeedback = m_dashHolderDecal.material;
             dashHolder = m_dashUI.transform.parent.gameObject;
             Image[] tempsSpriteRef = dashHolder.GetComponentsInChildren<Image>();
+            m_gameLayer = GameLayer.instance;
             dashHolder.gameObject.SetActive(false);
         }
 
@@ -110,10 +105,10 @@ namespace Character
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
 
-            LayerMask raycastLayerMaskUse = m_obstacleLayerMask;
+            LayerMask raycastLayerMaskUse = m_gameLayer.propsGroundLayerMask;
             if (isCollisionEnemy)
             {
-                raycastLayerMaskUse = m_enemyObstacleLayerMask;
+                raycastLayerMaskUse = m_gameLayer.propsGroundLayerMask + m_gameLayer.enemisLayerMask;
             }
             // Check if obstacle in the front of the player 
             if (Physics.Raycast(transform.position, m_direction.normalized, out hit, dashDistance, raycastLayerMaskUse))
@@ -158,10 +153,10 @@ namespace Character
             RaycastHit hit = new RaycastHit();
             Vector3 frontPoint = transform.position;
 
-            LayerMask raycastLayerMaskUse = m_obstacleLayerMask;
+            LayerMask raycastLayerMaskUse = m_gameLayer.propsGroundLayerMask;
             if (isCollisionEnemy)
             {
-                raycastLayerMaskUse = m_enemyObstacleLayerMask;
+                raycastLayerMaskUse = m_gameLayer.propsGroundLayerMask + m_gameLayer.enemisLayerMask;
             }
 
             CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
@@ -173,7 +168,7 @@ namespace Character
                 frontPoint = hit.point;
                 m_endPoint = hit.point + hit.normal * 4.5f + -m_direction.normalized * 2.0f;
 
-                if (Physics.Raycast(m_endPoint, Vector3.down, out hit, dashDistance, m_obstacleLayerMask))
+                if (Physics.Raycast(m_endPoint, Vector3.down, out hit, dashDistance, m_gameLayer.propsGroundLayerMask))
                 {
                     m_endPoint = hit.point + hit.normal * 2;
 

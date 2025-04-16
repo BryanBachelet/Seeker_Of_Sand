@@ -426,7 +426,8 @@ namespace Enemies
             isAttackOnCooldown[currentAttackIndex] = true;
             OnFinishAttack?.Invoke(true);
             currentAttackState = AttackPhase.NONE;
-            m_npcMetaInfos.state = NpcState.IDLE;
+            //m_npcMetaInfos.state = NpcState.IDLE;
+            m_npcMetaInfos.state = NpcState.MOVE;
             m_timer = 0.0f;
             if (isActiveDebug) Debug.Log($"Agent {transform.gameObject.name} has finished to attack");
         }

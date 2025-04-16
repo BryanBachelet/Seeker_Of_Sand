@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class CameraFadeFunction : MonoBehaviour
 {
-    public MeshRenderer fadeObject;
-    private Material fadeMat;
+    [SerializeField] private MeshRenderer m_fadeObject;
+    [HideInInspector] private Material fadeMat;
 
-    public float fadeProgress = 0;
-    public float fadeSpeed = 1; //1 = 1 seconde ; 2 = 2 secondes
-    public bool fadeInActive;
-    public bool fadeInActivation;
+    [HideInInspector] private float fadeProgress = 0;
+    [Range(1,5)] [SerializeField] private float m_fadeInSecond = 1; //1 = 1 seconde ; 2 = 2 secondes
+    [HideInInspector] private bool fadeInActive = false;
+    [HideInInspector] private bool fadeInActivation = false;
 
-    public bool fadeOutActive;
-    public bool fadeOutActivation;
+    [HideInInspector] private bool fadeOutActive = false;
+    [HideInInspector] private bool fadeOutActivation = true;
     public bool manuelFade = false;
 
-    public TeleporterBehavior tpBehavior;
-    public Animator bandeNoir;
+    [SerializeField] public TeleporterBehavior tpBehavior;
+    [SerializeField] public Animator bandeNoir;
 
-    public Animator dayTextAnimator;
-    public GameObject dayTextObj;
+    [SerializeField] public Animator dayTextAnimator;
+    [SerializeField] public GameObject dayTextObj;
 
-    public GameTutorialView gameTutorialView;
-    private bool m_isFirstTime = true;
+    [SerializeField] public GameTutorialView gameTutorialView;
+    private bool m_isFirstTime = false;
     // Start is called before the first frame update
     void Start()
     {
-        fadeMat = fadeObject.material;
+        fadeMat = m_fadeObject.material;
         LaunchFadeOut(true, 0.5f);
     }
 
@@ -49,7 +49,7 @@ public class CameraFadeFunction : MonoBehaviour
         {
             if (fadeProgress < 0.99f)
             {
-                fadeProgress += Time.deltaTime * fadeSpeed;
+                fadeProgress += Time.deltaTime * m_fadeInSecond;
             }
             else
             {
@@ -73,7 +73,7 @@ public class CameraFadeFunction : MonoBehaviour
         {
             if (fadeProgress > 0.01f)
             {
-                fadeProgress -= Time.deltaTime * fadeSpeed;
+                fadeProgress -= Time.deltaTime * m_fadeInSecond;
             }
             else
             {
@@ -100,7 +100,7 @@ public class CameraFadeFunction : MonoBehaviour
 
     public void LaunchGame()
     {
-        GameState.ChangeState();
+        //GameState.ChangeState();
         //GameManager.instance.generalSaveData.IsFirstTime = false;
     }
 
@@ -112,13 +112,13 @@ public class CameraFadeFunction : MonoBehaviour
     public void LaunchFadeIn(bool stateFade, float speedFade)
     {
         fadeInActivation = stateFade;
-        fadeSpeed = speedFade;
+        m_fadeInSecond = speedFade;
     }
 
     public void LaunchFadeOut(bool stateFade, float speedFade)
     {
 
         fadeOutActivation = stateFade;
-        fadeSpeed = speedFade;
+        m_fadeInSecond = speedFade;
     }
 }

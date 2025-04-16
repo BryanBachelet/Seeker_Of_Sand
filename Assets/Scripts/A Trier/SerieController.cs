@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SerieController : MonoBehaviour
 {
-    [SerializeField] private float m_timeMaintienSeries = 1;
-    [SerializeField] private bool m_SerieActive = false;
-    [SerializeField] private int m_currentCount = 0;
+    [HideInInspector] private float m_timeMaintienSeries = 5;
+    [HideInInspector] private bool m_SerieActive = false;
+    [HideInInspector] private int m_currentCount = 0;
     [SerializeField] private AnimationCurve m_multiplicatorCurve;
-    [SerializeField] public TMPro.TMP_Text m_multiplicatorDisplay;
-    [SerializeField] public UnityEngine.UI.Image m_serieTimeDisplay;
-    [SerializeField] public TMPro.TMP_Text m_serieKillCount;
+    [SerializeField] private TMPro.TMP_Text m_multiplicatorDisplay;
+    [SerializeField] private UnityEngine.UI.Image m_serieTimeDisplay;
+    [SerializeField] private TMPro.TMP_Text m_serieKillCount;
 
     public float m_biggestMultiplicator { get; private set; }
 

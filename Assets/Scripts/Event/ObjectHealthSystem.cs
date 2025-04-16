@@ -47,6 +47,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public Vector3 offset_DisplayDamage = new Vector3(0, 5, 0);
 
     private SpawnerBehavior spawnerbehavior; //A RETIRER A TERME, N'A RIEN A FAIRE LA
+    public GameObject miniMap_Icon;
     private void Start()
     {
         GameState.AddObject(state);
@@ -54,7 +55,8 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         healthSystem = new HealthSystem();
         maxLife = (int)maxHealthEvolution.Evaluate(healthManager.characterShoot.GetComponent<CharacterUpgrade>().avatarUpgradeList.Count);
         healthSystem.Setup(maxLife);
-        if(m_meshRender != null) _matAssociated = m_meshRender.material;
+        if (miniMap_Icon) miniMap_Icon.SetActive(true);
+        if (m_meshRender != null) _matAssociated = m_meshRender.material;
     }
 
     public void Update()
@@ -85,6 +87,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         if (healthSystem.health > 0) return;
 
         eventState = EventObjectState.Death;
+        if (miniMap_Icon) miniMap_Icon.SetActive(false);
         animatorAssociated.SetBool("ActiveEvent", false);
         if (this.GetComponent<SpawnerBehavior>() != null) 
         {

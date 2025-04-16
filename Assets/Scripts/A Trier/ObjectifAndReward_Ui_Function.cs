@@ -4,45 +4,51 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Resources;
+using Enemies;
 
 public class ObjectifAndReward_Ui_Function : MonoBehaviour
 {
-    public Animator objectifAnimator;
-    public TMP_Text txtPro_Objectif;
-    public Image img_Objectif;
+    [SerializeField] private Animator objectifAnimator;
+    [SerializeField] private TMP_Text txtPro_Objectif;
+    [SerializeField] private TMP_Text txtPro_Objectif_Count;
+    [SerializeField] private Image img_Objectif;
 
-    public Sprite[] spriteObjectif_tab;
-    public string[] text_Objectif;
+    [SerializeField] private Animator optional_objectifAnimator;
+    [SerializeField] private TMP_Text optional_txtPro_Objectif;
+    [SerializeField] private TMP_Text optional_txtPro_Objectif_Count;
+    [SerializeField] private Image optional_img_Objectif;
 
-    public Animator rewardAnimator;
-    public TMP_Text txtPro_Reward;
-    public Image img_Reward;
 
-    public Sprite[] spriteReward_tab;
+    [SerializeField] private Animator rewardAnimator;
+    [SerializeField] private Image img_Reward;
+
+    [HideInInspector] private GameResources m_gameRessources;
 
     public RoomManager currentRoomManager;
 
-    public bool enemyRoom = false;
-    public bool eventRoom = false;
+    [HideInInspector] private bool enemyRoom = false;
+    [HideInInspector] private bool eventRoom = false;
 
-    public float currentProgress = 1;
-    public float delayProgress = 1;
+    [HideInInspector] private float currentProgress = 1;
+    [HideInInspector] private float delayProgress = 1;
     static private float progressStatic;
 
     public Animator objectifAnimatorMajor;
     public Image fill_Progress;
     public Image fill_ProgressDelay;
 
-    public bool stopDisplay = false;
+    [HideInInspector] private bool stopDisplay = false;
 
     private static float timeLastUpdate;
-    public float timeDelay = 1;
+    [HideInInspector] private float timeDelay = 500;
 
     [SerializeField] private Enemies.EnemyManager enemyManager;
     // Start is called before the first frame update
     void Start()
     {
-
+        enemyManager = GameObject.Find("General_Manager").GetComponent<EnemyManager>();
+        m_gameRessources = GameObject.Find("General_Manager").GetComponent<GameResources>();
     }
 
     // Update is called once per frame
@@ -63,14 +69,6 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
                 stopDisplay = false;
                 eventRoom = false;
                 enemyRoom = false;
-                //objectifAnimator.ResetTrigger("ActiveDisplay");
-                //rewardAnimator.ResetTrigger("ActiveDisplay");
-                //img_Objectif.sprite = spriteObjectif_tab[2];
-                //txtPro_Objectif.text = text_Objectif[2];
-                //eventRoom = false;
-                //enemyRoom = false;
-                //objectifAnimator.SetTrigger("ActiveDisplay");
-                //rewardAnimator.SetTrigger("ActiveDisplay");
             }
 
         }
@@ -84,22 +82,23 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     public void UpdateObjectifAndReward()
     {
         objectifAnimator.ResetTrigger("ActiveDisplay");
+        optional_objectifAnimator.ResetTrigger("ActiveDisplay");
         rewardAnimator.ResetTrigger("ActiveDisplay");
         if (currentRoomManager.rewardType == RewardType.UPGRADE)
         {
-            img_Reward.sprite = spriteReward_tab[0];
+            img_Reward.sprite = m_gameRessources.spriteReward_tab[0];
         }
         else if (currentRoomManager.rewardType == RewardType.HEAL)
         {
-            img_Reward.sprite = spriteReward_tab[1];
+            img_Reward.sprite = m_gameRessources.spriteReward_tab[1];
         }
         else if (currentRoomManager.rewardType == RewardType.SPELL)
         {
-            img_Reward.sprite = spriteReward_tab[2];
+            img_Reward.sprite = m_gameRessources.spriteReward_tab[2];
         }
         else if (currentRoomManager.rewardType == RewardType.ARTEFACT)
         {
-            img_Reward.sprite = spriteReward_tab[3];
+            img_Reward.sprite = m_gameRessources.spriteReward_tab[3];
         }
 
         if (currentRoomManager.currentRoomType == RoomType.Enemy)
@@ -109,8 +108,10 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
             if (currentRoomManager.currentRoomType == RoomType.Enemy)
         {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
-            img_Objectif.sprite = spriteObjectif_tab[0];
-            txtPro_Objectif.text = text_Objectif[0];
+            img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[0];
+            optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[0];
+            txtPro_Objectif.text = m_gameRessources.text_Objectif[0];
+            optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[0];
             enemyRoom = true;
             eventRoom = false;
             currentProgress = 0;
@@ -122,8 +123,10 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         else if (currentRoomManager.currentRoomType == RoomType.Event)
         {
             enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.EVENT);
-            img_Objectif.sprite = spriteObjectif_tab[1];
-            txtPro_Objectif.text = text_Objectif[1];
+            img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[1];
+            optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[1];
+            txtPro_Objectif.text = m_gameRessources.text_Objectif[1];
+            optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[1];
             eventRoom = true;
             enemyRoom = false;
             currentProgress = 0;
@@ -134,13 +137,16 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         }
         else if (currentRoomManager.currentRoomType == RoomType.Free)
         {
-            img_Objectif.sprite = spriteObjectif_tab[2];
-            txtPro_Objectif.text = text_Objectif[2];
+            img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[2];
+            optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[2];
+            txtPro_Objectif.text = m_gameRessources.text_Objectif[2];
+            optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[2];
             eventRoom = false;
             enemyRoom = false;
             DisactiveDisplayProgress();
         }
         objectifAnimator.SetTrigger("ActiveDisplay");
+        optional_objectifAnimator.SetTrigger("ActiveDisplay");
         rewardAnimator.SetTrigger("ActiveDisplay");
     }
 
@@ -155,10 +161,14 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         objectifAnimatorMajor.SetBool("MajorDisplay", false);
         enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.EVENT);
         objectifAnimator.ResetTrigger("ActiveDisplay");
+        optional_objectifAnimator.ResetTrigger("ActiveDisplay");
         rewardAnimator.ResetTrigger("ActiveDisplay");
-        img_Objectif.sprite = spriteObjectif_tab[2];
-        txtPro_Objectif.text = text_Objectif[2];
+        img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[2];
+        optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[2];
+        txtPro_Objectif.text = m_gameRessources.text_Objectif[2];
+        optional_txtPro_Objectif.text = m_gameRessources.optional_text_Objectif[2];
         objectifAnimator.SetTrigger("ActiveDisplay");
+        optional_objectifAnimator.SetTrigger("ActiveDisplay");
         rewardAnimator.SetTrigger("ActiveDisplay");
 
 

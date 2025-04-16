@@ -7,20 +7,21 @@ using System;
 
 public class DamageHealthFD : MonoBehaviour
 {
-    [SerializeField] private Vector3 m_startPosition;
-    [SerializeField] private bool m_active;
-    [SerializeField] private TMP_Text m_text;
-    [SerializeField] private Animator m_animation;
+    [HideInInspector] private Vector3 m_startPosition;
+    [HideInInspector] private bool m_active;
+    [HideInInspector] private TMP_Text m_text;
+    [HideInInspector] private Animator m_animation;
     [SerializeField] private float m_animationDuration = 1;
-    [SerializeField] public Camera m_cameraToLook;
+    [HideInInspector] public Camera m_cameraToLook;
 
-    public HealthManager healthManager;
-    private float m_animationTimer;
+    [HideInInspector] private HealthManager healthManager;
+    [HideInInspector] private float m_animationTimer;
 
     public void SetupText(HealthManager healthManager)
     {
         this.healthManager = healthManager;
-        m_animation = this.GetComponent<Animator>();
+        if (m_animation == null) { m_animation = this.GetComponent<Animator>(); }
+        if (m_text == null) { m_text = this.GetComponentInChildren<TMP_Text>(); }
         m_startPosition = transform.position;
     }
 

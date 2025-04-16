@@ -75,7 +75,7 @@ namespace Enemies
         public void RestartEnemy()
         {
             attackComponent.ResetComponent();
-
+            m_healthComponent.ResetTrail();
             transform.rotation = Quaternion.identity;
             if(behaviorTreeComponent.isFirstSpawn)
             {

@@ -2,13 +2,16 @@ using GuerhoubaGames.Resources;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class ExperienceMouvement : MonoBehaviour
 {
     public Transform m_playerPosition;
+    private Vector3 m_positionToGo;
     [HideInInspector] public Vector3 GroundPosition;
     [Header("Particule Parameters")]
     [SerializeField] public float m_speed = 15;
+    [SerializeField] public float m_speedOverTime;
     [SerializeField] private float m_speedUp = 40;
     [SerializeField] private TrailRenderer m_trail;
     [HideInInspector] public float timeBeforeDestruction = 3;
@@ -29,6 +32,7 @@ public class ExperienceMouvement : MonoBehaviour
     private PullingMetaData m_pullingMetaData;
     private float m_timerBeforeDestruction;
 
+    [HideInInspector] public int dissonanceValue;
     private void Awake()
     {
 
@@ -93,6 +97,18 @@ public class ExperienceMouvement : MonoBehaviour
 
 
             }
+            else if(m_positionToGo != Vector3.zero)
+            {
+                if (Vector3.Distance(transform.position, m_positionToGo) < 1)
+                {
+                    m_isGrounded = true;
+                }
+                else
+                {
+                    transform.LookAt(m_positionToGo);
+                    MoveDestination();
+                }
+            }
         }
 
         if (m_destruction)
@@ -148,16 +164,33 @@ public class ExperienceMouvement : MonoBehaviour
 
     public void MoveDestination()
     {
-        Vector3 direction = m_playerPosition.position - transform.position;
-
-        if (!m_isFollowPlayer)
+        if (m_playerPosition != null)
         {
-            transform.position += Vector3.up * m_speedUp * Time.deltaTime;
-            m_speedUp -= m_speedUp * 1.0f / m_durationOfCuve * Time.deltaTime;
+            Vector3 direction = m_playerPosition.position - transform.position;
+
+            if (!m_isFollowPlayer)
+            {
+                transform.position += Vector3.up * m_speedUp * Time.deltaTime;
+                m_speedUp -= m_speedUp * 1.0f / m_durationOfCuve * Time.deltaTime;
+            }
+
+            transform.position += direction.normalized * m_speed * Time.deltaTime;
+            m_speed += (m_speedOverTime * Time.deltaTime);
+        }
+        else
+        {
+            Vector3 direction = m_positionToGo - transform.position;
+
+            if (!m_isFollowPlayer)
+            {
+                transform.position += Vector3.up * m_speedUp * Time.deltaTime;
+                m_speedUp -= m_speedUp * 1.0f / m_durationOfCuve * Time.deltaTime;
+            }
+
+            transform.position += direction.normalized * m_speed * Time.deltaTime;
+            m_speed += (m_speedOverTime * Time.deltaTime);
         }
 
-        transform.position += direction.normalized * m_speed * Time.deltaTime;
-        m_speed += (10.0f * Time.deltaTime);
     }
 
     public void MoveGround()
@@ -174,7 +207,7 @@ public class ExperienceMouvement : MonoBehaviour
             if (Vector3.Distance(transform.position, GroundPosition) < 1) { m_isGrounded = true; }
         }
         transform.position += direction.normalized * m_speed * Time.deltaTime;
-        m_speed += (10.0f * Time.deltaTime);
+        m_speed += (m_speedOverTime * Time.deltaTime);
 
     }
 
@@ -183,6 +216,12 @@ public class ExperienceMouvement : MonoBehaviour
     public void ActiveExperienceParticule(Transform target)
     {
         m_playerPosition = target;
+        StartCoroutine(MoveToDestination());
+    }
+
+    public void ActiveParticuleByPosition(Vector3 position)
+    {
+        m_positionToGo = position;
         StartCoroutine(MoveToDestination());
     }
 }

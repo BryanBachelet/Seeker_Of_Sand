@@ -24,49 +24,39 @@ public struct UpgradeLevelingData
 public class UpgradeManager : MonoBehaviour
 {
     private const int upgradeGenerateCount = 3;
-    public UpgradeObject[] upgradeList;
+    [SerializeField] private UpgradeObject[] upgradeList;
 
-    private List<UpgradeObject> m_sortUpgradeList;
-    private int[] m_indexTagUpgradeArray;
-    private List<UpgradeObject[]> spellUpgradeArrayList = new List<UpgradeObject[]>();
-    public int[] indexUpgrade;
-    public UpgradeData.UpgradeSort upgradeSort;
+    [HideInInspector] private List<UpgradeObject> m_sortUpgradeList;
+    [HideInInspector] private int[] m_indexTagUpgradeArray;
+    [HideInInspector] private List<UpgradeObject[]> spellUpgradeArrayList = new List<UpgradeObject[]>();
+    [HideInInspector] private UpgradeData.UpgradeSort upgradeSort;
 
-
-
-    public CharacterUpgrade m_characterUpgradeComponent;
+    [HideInInspector] private GameObject m_player;
+    [HideInInspector] public CharacterUpgrade m_characterUpgradeComponent;
     [HideInInspector] public DropInventory m_dropInventory;
     [Header("UI Upgrade")]
     [Tooltip("Not neccessary")]
-    public GameObject upgradeLevelUi;
-    public GameObject spellChoiceUI;
-    public GameObject upgradeBook;
-    public Animator book_Animator;
-    private UpgradeChoosing m_upgradeChoosingComponent;
-    private ChooseSpellManager m_chooseSpellManagerComponent;
+    [SerializeField] private GameObject choseCanvasObject;
+    [SerializeField] private GameObject upgradeBook;
+    [SerializeField] private Animator book_Animator;
+    [HideInInspector] private UpgradeChoosing m_upgradeChoosingComponent;
+    [HideInInspector] private ChooseSpellManager m_chooseSpellManagerComponent;
 
-    private bool isUpgradeUILevel;
+    [HideInInspector] private UpgradeLevelingData m_upgradeLevelingData;
 
-    private UpgradeLevelingData m_upgradeLevelingData;
+    [HideInInspector] private UpgradeData.UpgradeTable m_upgradeData = new UpgradeData.UpgradeTable();
 
-    private UpgradeData.UpgradeTable m_upgradeData = new UpgradeData.UpgradeTable();
+    [SerializeField] private Material[] materialProgress = new Material[2];
+    [SerializeField] public int rerollPoint = 3;
 
-    public TMPro.TMP_Text levelCurrentSpell;
-    public Image progressRang;
-    public Image progressNextRang;
-
-    public Material[] materialProgress = new Material[2];
-    public int rerollPoint = 3;
-
-    public int countUpgradePointUse;
+    [SerializeField] private int countUpgradePointUse;
 
 
-    public float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
-    public float percentForSpellMatchingElementRoom = 75;
+    [SerializeField] private float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
 
-    public Image[] progressionCristal = new Image[4];
+    [SerializeField] private Image[] progressionCristal = new Image[4];
 
-    private UIDispatcher m_dispatcher;
+    [HideInInspector] private UIDispatcher m_dispatcher;
 
     public void Awake()
     {
@@ -77,19 +67,20 @@ public class UpgradeManager : MonoBehaviour
         m_indexTagUpgradeArray = upgradeDataSort.indexArray;
         string path = Application.dataPath + "\\Resources\\UpgradeTable.csv";
         LoadUpgradeTable(path);
-        if (!upgradeLevelUi) return;
 
         for (int i = 0; i < upgradeList.Length; i++)
         {
             upgradeList[i] = upgradeList[i].Clone();
         }
 
-        m_upgradeChoosingComponent = upgradeLevelUi.GetComponent<UpgradeChoosing>();
+        m_upgradeChoosingComponent = choseCanvasObject.GetComponentInChildren<UpgradeChoosing>(true);
         m_upgradeChoosingComponent.m_upgradeManager = this;
-        m_chooseSpellManagerComponent = spellChoiceUI.GetComponent<ChooseSpellManager>();
+        m_chooseSpellManagerComponent = choseCanvasObject.GetComponentInChildren<ChooseSpellManager>(true);
+        m_player = GameObject.Find("Player");
         m_chooseSpellManagerComponent.m_upgradeManagerComponenet = this;
-        m_dropInventory = m_characterUpgradeComponent.GetComponent<DropInventory>();
-        if(m_dispatcher == null) m_dispatcher = GameObject.Find("UI_Manager").GetComponent<UIDispatcher>();
+        m_dropInventory = m_player.GetComponent<DropInventory>();
+        m_characterUpgradeComponent = m_player.GetComponent<CharacterUpgrade>();
+        if (m_dispatcher == null) m_dispatcher = GameObject.Find("UI_Manager").GetComponent<UIDispatcher>();
     }
 
     public UpgradeObject[] RandomUpgrade(int count)
@@ -117,16 +108,13 @@ public class UpgradeManager : MonoBehaviour
         int expSpell = m_characterUpgradeComponent.m_characterShoot.spellProfils[indexSpellEquip].spellExp;
         if (expSpell >= 12)
         {
-            progressRang.fillAmount = 1;
-            progressNextRang.fillAmount = 1;
+
         }
         else
         {
             int Tier = expSpell / 4;
             float fillAmountPR = ((float)(expSpell - (float)(Tier * 4)) / 4);
             float fillAmoutPNR = (float)((float)(expSpell + 1 - (float)(Tier * 4)) / 4);
-            progressRang.fillAmount = fillAmountPR;
-            progressNextRang.fillAmount = fillAmoutPNR;
             if(Tier > 0)
             {
                 for (int i = 0; i < 4; i++)
@@ -163,8 +151,6 @@ public class UpgradeManager : MonoBehaviour
             }
 
         }
-
-        levelCurrentSpell.text = "Lv. " + expSpell;
 
         List<UpgradeObject> listUpgrade = new List<UpgradeObject>();
         listUpgrade.AddRange( spellUpgradeArrayList[indexSpellEquip]);
@@ -312,9 +298,8 @@ public class UpgradeManager : MonoBehaviour
 
     public void OpenSpellChoiceUI(GameElement roomElement)
     {
-        if (!spellChoiceUI) return;
 
-        spellChoiceUI.SetActive(true);
+        m_chooseSpellManagerComponent.gameObject.SetActive(true);
         upgradeBook.SetActive(true);
         if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
         m_chooseSpellManagerComponent.lastRoomElement = roomElement;
@@ -331,9 +316,6 @@ public class UpgradeManager : MonoBehaviour
 
     public void CloseSpellChoiceUI()
     {
-        if (!spellChoiceUI) return;
-
-        //GlobalSoundManager.PlayOneShot(30, Vector3.zero);
 
         if (book_Animator != null) book_Animator.SetBool("BookOpen", false);
         float time = Time.time;
@@ -347,8 +329,7 @@ public class UpgradeManager : MonoBehaviour
     #region Upgrade Level UI Functions
     public void OpenUpgradeUI(UpgradeLevelingData upgradeLevelingData)
     {
-        if (!upgradeLevelUi) return;
-        upgradeLevelUi.SetActive(true);
+        m_upgradeChoosingComponent.gameObject.SetActive(true);
         m_dispatcher.HideOrShowFixeUi(false);
         //upgradeBook.SetActive(true);
         //if (book_Animator != null) book_Animator.SetBool("BookOpen", true);
@@ -430,7 +411,6 @@ public class UpgradeManager : MonoBehaviour
     public void CloseUpgradeUI()
     {
 
-        if (!upgradeLevelUi) return;
 
         if (book_Animator != null)
         {
@@ -475,8 +455,8 @@ public class UpgradeManager : MonoBehaviour
         m_dispatcher.HideOrShowFixeUi(true);
         yield return new WaitForSeconds(time);
         upgradeBook.SetActive(false);
-        spellChoiceUI.SetActive(false);
-        upgradeLevelUi.SetActive(false);
+        m_chooseSpellManagerComponent.gameObject.SetActive(false);
+        m_upgradeChoosingComponent.gameObject.SetActive(false);
 
         GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
     }

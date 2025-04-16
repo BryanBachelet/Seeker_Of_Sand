@@ -21,30 +21,29 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
     [Header("Heath Parameters")]
-    [SerializeField] private float m_MaxHealthQuantity;
+    [SerializeField] private float m_MaxHealthQuantity = 50;
 
     private float[] m_CurrentQuarterMinHealth;
     private int m_QuarterNumber = 4;
     private float m_QuarterHealthQuantity;
 
 
-    [SerializeField] private float m_invulerableLightTime;
-    [SerializeField] private float m_invulerableHeavyTime;
-    private bool m_isLightInvulnerable = false;
-    private bool m_isHeavyInvulnerable = false;
+    [SerializeField] private float m_invulerableLightTime = 0.5f;
+    [SerializeField] private float m_invulerableHeavyTime = 1f;
+    [HideInInspector] private bool m_isLightInvulnerable = false;
+    [HideInInspector] private bool m_isHeavyInvulnerable = false;
 
     private ClockTimer m_invulerableLightClock = new ClockTimer();
     private ClockTimer m_invulerableHeavyClock = new ClockTimer();
 
 
     [Header("Heath Info")]
-    [SerializeField] private float m_CurrentHealth;
-    [SerializeField] private int m_CurrentQuarter;
+    [HideInInspector] private float m_CurrentHealth = 50;
+    [HideInInspector] private int m_CurrentQuarter = 4;
 
     [Header("Death Info")]
-    [SerializeField] private bool activeDeath = false;
+    [HideInInspector] private bool activeDeath = false;
     private bool isEndMenuActivate = false;
-    public GameObject m_gameOverMenu;
 
     [Header("UI Object")]
     public GuerhoubaGames.UI.UI_HealthPlayer uiHealthPlayer;
@@ -53,14 +52,14 @@ public class HealthPlayerComponent : MonoBehaviour
     [SerializeField] private AnimationCurve m_SlowdownEffectCurve;
     [SerializeField] private AnimationCurve m_SlowdownEffectCurveLastQuarter;
     private AnimationCurve m_currentAnimationCurveToUse;
-    [SerializeField] private float m_DurationSlowdownEffect = 1;
-    [SerializeField] private bool m_isFeedbackHitActive = false;
-    private float tempsEcouleSlowEffect = 0;
-    private bool slowDownActive = false;
-    private Vignette vignette;
-    private ColorAdjustments colorAdjustments;
+    [HideInInspector] private float m_DurationSlowdownEffect = 1;
+    [HideInInspector] private bool m_isFeedbackHitActive = false;
+    [HideInInspector] private float tempsEcouleSlowEffect = 0;
+    [HideInInspector] private bool slowDownActive = false;
+    [HideInInspector] private Vignette vignette;
+    [HideInInspector] private ColorAdjustments colorAdjustments;
     public Volume volume;
-    private Camera m_cameraUsed;
+    [HideInInspector] private Camera m_cameraUsed;
     [SerializeField] private AnimationCurve m_fieldOfViewEdit;
     [SerializeField] private AnimationCurve m_ColorAdjustementSaturation;
 
@@ -72,7 +71,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
     public AnimationCurve evolutionVignetteOverTime;
-    private float m_timeLastHit;
+    [HideInInspector] private float m_timeLastHit;
     public float timeVignetteFeedbackActive = 0.25f;
 
     public System.Action<AttackDamageInfo> OnDamage;
@@ -80,12 +79,12 @@ public class HealthPlayerComponent : MonoBehaviour
     public delegate void OnContact(Vector3 position, EntitiesTrigger tag, GameObject objectHit, GameElement element);
     public event OnContact OnContactEvent = delegate { };
 
-    public HitEffectHighLight m_HitEffectHighLight;
+    [HideInInspector] private HitEffectHighLight m_HitEffectHighLight;
     // Start is called before the first frame update
 
-    private CharacterProfile m_Profil;
+    [HideInInspector] private CharacterProfile m_Profil;
 
-    public GameObject[] quarterCristal;
+    [SerializeField] private GameObject[] quarterCristal;
     void Start()
     {
         InitializedHealthData();

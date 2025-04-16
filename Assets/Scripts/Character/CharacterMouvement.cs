@@ -7,6 +7,7 @@ using FMOD.Studio;
 using FMODUnity;
 using Klak.Motion;
 using UnityEngine.Profiling;
+using Render.Camera;
 
 namespace Character
 {
@@ -23,32 +24,29 @@ namespace Character
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
         private CharacterProfile profile;
-        public Render.Camera.CameraBehavior cameraPlayer;
-        [SerializeField] private Transform positionInTrain;
-        public float runSpeed = 7.0f;
-        public float combatSpeed = 26.0f;
-        public bool combatState;
-        public float ratioSmoothMouvement = 10.0f;
-        [HideInInspector] public float initialSpeed = 10.0f;
-        [SerializeField] private LayerMask m_groundLayerMask;
-        [SerializeField] private LayerMask m_objstacleLayer;
-        [SerializeField] private float m_groundDistance = 2.0f;
-        [SerializeField] private float m_maxGroundSlopeAngle = 60f;
+        private Render.Camera.CameraBehavior cameraPlayer;
+        public float runSpeed = 80f;
+        public float combatSpeed = 40f;
+        [HideInInspector] public bool combatState;
+        [HideInInspector] public float ratioSmoothMouvement = 10.0f;
+        [HideInInspector] private float initialSpeed = 10.0f;
+        [HideInInspector] private GameLayer m_gameLayer;
+        [HideInInspector] private float m_groundDistance = 5;
+        [HideInInspector] private float m_maxGroundSlopeAngle = 90;
         [SerializeField] private Animator m_CharacterAnim = null;
         [SerializeField] private Animator m_BookAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
-        public UnityEngine.VFX.VisualEffect m_slidingEffectVfx;
-        [Range(0, 1)]
-        [SerializeField] public float m_SpeedReduce;
+        [HideInInspector] public UnityEngine.VFX.VisualEffect m_slidingEffectVfx;
+        [HideInInspector] public float m_SpeedReduce;
         private Rigidbody m_rigidbody;
         private Vector2 m_inputDirection;
         private Vector3 m_prevInputDirection;
         private float m_rotationTime;
         private Quaternion m_startRotation;
 
-
+        public float distanceDetectObstacle = 3;
         [Header("Run State")]
-        public float rotationLerpStepRunState = .5f;
+        private float rotationLerpStepRunState = .5f;
 
 
         private bool m_onProjection;
@@ -59,33 +57,33 @@ namespace Character
         private float m_currentSlideSpeed;
 
         [Header("Glide Parameter")]
-        [SerializeField] private float m_glideSpeed = 4;
-        [SerializeField] private float m_gravityForce = 50;
+        [HideInInspector] private float m_glideSpeed = 4;
+        [HideInInspector] private float m_gravityForce = 500;
         [HideInInspector] public float m_lastTimeShot = 0;
 
         [Header("Move Parameter")]
-        [SerializeField] private float m_accelerationSpeed = 4.0f;
+        [HideInInspector] private float m_accelerationSpeed = 150;
         private Vector3 m_velMovement;
-        public bool activeCombatModeConstant;
+        [HideInInspector] public bool activeCombatModeConstant = true;
 
         [Header("Slide Parameters")]
-        public bool isSliding;
+        [HideInInspector] public bool isSliding;
         public AnimationCurve accelerationCurve;
-        public float maxSpeed = 30.0f;
-        public float maxSlope = 60.0f;
-        public float minSlope = 5.0f;
-        public float minDecceleration = 2.0f;
-        public float angularSpeed;
-        public float timeAfterSliding = 0.5f;
-        public float timeBeforeSliding = 0.3f;
+        [HideInInspector] private float maxSpeed = 120 ;
+        [HideInInspector] private float maxSlope = 90;
+        [HideInInspector] private float minSlope = 5.0f;
+        [HideInInspector] private float minDecceleration = 10;
+        [HideInInspector] private float angularSpeed = 200;
+        [HideInInspector] private float timeAfterSliding = 0.2f;
+        [HideInInspector] private float timeBeforeSliding = 0.1f;
 
-        public float combatDeccelerationSpeed = 6.0f;
-        public float turningRatioOfDecceleration = 1.3f;
+        [HideInInspector] private float combatDeccelerationSpeed = 2400;
+        [HideInInspector] private float turningRatioOfDecceleration = 5;
 
         private bool isSlidingIsActive;
         private bool m_isSlideInputActive;
         private float m_timerBeforeSliding;
-        public float angleMinToRotateInSlide = 3;
+        [HideInInspector] private float angleMinToRotateInSlide = 3;
         private float m_slope;
         private Vector3 m_groundNormal;
         private bool m_isSave;
@@ -95,18 +93,13 @@ namespace Character
         private SmoothFollow bookSmoothFollow;
 
 
-        public Vector3 forwardDirection;
-        public bool m_isSlowdown;
+        [HideInInspector] private Vector3 forwardDirection = new Vector3(-0.0131f, 0.303f, -0.947f);
+        [HideInInspector] private bool m_isSlowdown;
         private float m_speedLimit;
 
         public EventInstance mouvementSoundInstance;
         public EventReference MouvementSoundReference;
 
-        [SerializeField] private Sprite[] m_spriteStateAssociated;
-        public UnityEngine.UI.Image m_spriteState;
-
-        public Animator m_uiStateAnimator;
-        private bool m_changingState;
         public enum MouvementState
         {
             None,
@@ -120,16 +113,16 @@ namespace Character
         }
 
         [Header("Knockback Parameters")]
-        [SerializeField] private float m_knockBackPower = 50.0f;
-        [SerializeField] private float m_knockBackDuration = 1.0f;
+        [HideInInspector] private float m_knockBackPower = 500.0f;
+        [HideInInspector] private float m_knockBackDuration = 0.15f;
         private float m_knockbackTimer;
         private bool m_applyKnockback;
         private float m_knockbackBaseGravityPower = 10.0f;
         private Vector3 m_directionKnockback;
 
-        public MouvementState mouvementState;
+        [HideInInspector] public MouvementState mouvementState;
 
-        [SerializeField] private SpeedData m_speedData = new SpeedData();
+        [HideInInspector] private SpeedData m_speedData = new SpeedData();
         private bool m_directionInputActive = false;
 
         public Vector3 currentDirection { get; private set; }
@@ -142,14 +135,13 @@ namespace Character
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
-        public LayerMask obstacleLayerMask;
         private GuerhoubaGames.Input.DivideSchemeManager m_divideSchemeManager;
         private bool m_isSlideRotating;
 
         public bool updateProfilStateSpeedDebug = false;
 
         // temp
-        public float timeToAccelerate = 2;
+        private float timeToAccelerate = 0.75f;
         private float m_timerToAccelerate = 0.0f;
         
         public void InitComponentStat(CharacterStat stat)
@@ -173,6 +165,8 @@ namespace Character
             m_characterShoot = GetComponent<CharacterShoot>();
             m_divideSchemeManager = GetComponent<GuerhoubaGames.Input.DivideSchemeManager>();
             if (m_BookAnim.GetComponent<SmoothFollow>()) { bookSmoothFollow = m_BookAnim.GetComponent<SmoothFollow>(); }
+            if(m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
+            if(cameraPlayer == null) { cameraPlayer = Camera.main.GetComponent<CameraBehavior>(); }
         }
 
         private void Start()
@@ -397,13 +391,6 @@ namespace Character
             if (!state.isPlaying) return;
             if (updateProfilStateSpeedDebug) { updateProfilStateSpeedDebug = false; }
 
-            if (mouvementState == MouvementState.Train)
-            {
-                transform.position = positionInTrain.localPosition;
-                m_rigidbody.velocity = Vector3.zero;
-                m_rigidbody.useGravity = false;
-                return;
-            }
             if (!isSliding) RotateCharacter();
             else SlideRotationCharacter();
         }
@@ -566,26 +553,36 @@ namespace Character
             if (mouvementState == MouvementState.Knockback || mouvementState == MouvementState.Dash || mouvementState == MouvementState.SpecialSpell) return;
 
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
+            
             inputDirection = cameraPlayer.TurnDirectionForCamera(inputDirection);
 
-            if (IsObstacle() )
+            if (IsObstacle())
             {
+                Debug.Log("hit obstacle");
                 m_speedData.currentSpeed = 0;
                 m_velMovement = Vector3.zero;
                 m_rigidbody.velocity = Vector3.zero;
                 return;
             }
+            else
+            {
+                Debug.Log("not hit obstacle");
+            }
 
             RaycastHit hit = new RaycastHit();
             if (!OnGround(ref hit))
             {
+                Debug.Log("NotGround");
                 ChangeState(MouvementState.Glide);
                 AirMove(inputDirection);
                 m_timerBeforeSliding = 0;
                 return;
             }
-
-            Vector3 direction = GetForwardDirection(hit.normal);
+            else
+            {
+                Debug.Log("hit ground");
+            }
+                Vector3 direction = GetForwardDirection(hit.normal);
             Vector3 newDir = new Vector3(direction.x, 0, direction.z);
             if (combatState && inputDirection != Vector3.zero)
             {
@@ -600,7 +597,7 @@ namespace Character
             m_slope = GetSlopeAngle(direction);
             if (GetSlopeAngleAbs(direction) >= m_maxGroundSlopeAngle)
             {
-
+                Debug.Log("Slope superior");
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
@@ -617,6 +614,7 @@ namespace Character
             }
             if (inputDirection == Vector3.zero && m_speedData.currentSpeed <= m_speedData.referenceSpeed[(int)mouvementState])
             {
+                Debug.Log("Stop Move");
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);
@@ -758,6 +756,7 @@ namespace Character
                 m_rigidbody.velocity = Vector3.ClampMagnitude(m_rigidbody.velocity, currentRefSpeed);
                 m_velMovement = Vector3.ClampMagnitude(m_velMovement, currentRefSpeed);
                 m_speedData.currentSpeed = m_velMovement.magnitude;
+                Debug.Log("gliding");
                 return;
             }
 
@@ -767,7 +766,7 @@ namespace Character
             float targetDistance = m_rigidbody.velocity.magnitude;
 
             Ray ray = new Ray(transform.position, m_velMovement.normalized);
-            if (Physics.Raycast(ray, out hit, 20, obstacleLayerMask))
+            if (Physics.Raycast(ray, out hit, 20, m_gameLayer.groundLayerMask))
             {
                 Vector3 direction = GetForwardDirection(hit.normal);
                 float slopeAngle = GetSlopeAngleAbs(direction);
@@ -838,12 +837,12 @@ namespace Character
         }
         private bool OnGround(ref RaycastHit hit)
         {
-            return Physics.Raycast(transform.position, -Vector3.up, out hit, m_groundDistance, m_groundLayerMask);
+            return Physics.Raycast(transform.position, -Vector3.up, out hit, m_groundDistance, m_gameLayer.propsGroundLayerMask);
         }
 
         private bool IsObstacle()
         {
-            return Physics.Raycast(transform.position, transform.forward, 3 + m_velMovement.magnitude * Time.deltaTime, m_objstacleLayer);
+            return Physics.Raycast(transform.position, transform.forward, distanceDetectObstacle + m_velMovement.magnitude * Time.deltaTime, m_gameLayer.decoLayerMask);
         }
 
         private bool IsFasterThanSpeedReference(float speedReference)
@@ -881,6 +880,7 @@ namespace Character
                 m_isSlowdown = IsFasterThanSpeedReference(m_speedData.referenceSpeed[(int)mouvementState]);
             }
             m_speedData.currentSpeed = m_velMovement.magnitude;
+            
         }
 
         private void Slide(Vector3 direction)
@@ -906,10 +906,11 @@ namespace Character
             }
 
             m_currentSlideSpeed += accelerationCurve.Evaluate(m_slope / maxSlope) * Time.deltaTime;
-            m_speedData.currentSpeed += m_currentSlideSpeed; ;
+            m_speedData.currentSpeed += m_currentSlideSpeed;
 
             if (m_speedData.currentSpeed < runSpeed)
             {
+                Debug.Log("Stop sliding");
                 isSliding = false;
                 m_currentSlideSpeed = 0.0f;
                 m_timerBeforeSliding = 0;
@@ -1066,15 +1067,6 @@ namespace Character
         {
             m_rigidbody.velocity = Vector3.zero;
         }
-
-        public void DisplayNewCurrentState(int indexImage)
-        {
-            m_uiStateAnimator.SetTrigger("ChangeDisplay");
-            m_spriteState.sprite = m_spriteStateAssociated[indexImage];
-
-            //m_uiStateAnimator.ResetTrigger("ChangeDisplay");
-        }
-
 
     }
 }

@@ -41,7 +41,7 @@ namespace GuerhoubaGames.UI
             m_currentLifeRatio = lifeRatio;
 
             m_healthBufferSlider.fillAmount = lifeRatio;
-            m_currentQuarterSlider.fillAmount = quarterRatio;
+            //m_currentQuarterSlider.fillAmount = quarterRatio;
 
 
         }

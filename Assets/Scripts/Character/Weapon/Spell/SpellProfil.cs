@@ -299,7 +299,7 @@ namespace SpellSystem
         private StatType[] statTypes = new StatType[0];
 
 
-
+        [HideInInspector] public spell_Attribution m_SpellAttributionAssociated;
 
         public SpellProfil Clone(bool isSetup = false)
         {
@@ -453,7 +453,7 @@ namespace SpellSystem
         public bool AddSpellExpPoint(int points)
         {
             spellExp += points;
-
+            if(m_SpellAttributionAssociated != null) { m_SpellAttributionAssociated.StartCoroutine(m_SpellAttributionAssociated.UpdateSpellLevelDelay(this)); }
             bool isLevelUp = spellExp >= spellExpNextLevel;
 
 

@@ -3,6 +3,7 @@ using Enemies;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
@@ -13,8 +14,8 @@ public class DayTimeController : MonoBehaviour
     public int currentPhase = 0;
     public float currentHour = 7;
     public float[] hourPerPhase = new float[2];
-    private bool isNight = false;
-    private bool isDay = true;
+    public bool isNight = false;
+    public bool isDay = true;
     public int dayCount = 0;
     public bool newDay = true;
 
@@ -49,17 +50,19 @@ public class DayTimeController : MonoBehaviour
     // Day Event
     public delegate void DayBeginning();
     public event DayBeginning dayStartEvent;
+
+    public bool[] nextRoomIsSpecial = { false, false }; //0 = Merchand, 1 = Boss
     // Start is called before the first frame update
     void Start()
     {
         isNight = false;
         isDay = true;
         dayCount = 1;
-        currentPhase = 0;
-        currentHour = hourPerPhase[currentPhase];
+        currentPhase = -1;
+        //currentHour = hourPerPhase[currentPhase];
         m_Player = GameObject.Find("Player");
         //UpdateNextPhase();
-        UpdateTime(currentHour);
+        //UpdateTime(currentHour);
     }
 
     // Update is called once per frame
@@ -84,24 +87,33 @@ public class DayTimeController : MonoBehaviour
         {
             currentPhase = currentPhase + 1;
             currentHour = hourPerPhase[currentPhase];
-            if (isNight)
+            
+        }
+        if (isNight)
+        {
+            if (currentHour > 5 && currentHour < 18)
             {
-                if (currentHour > 5 && currentHour < 18)
-                {
-                    isNight = false;
-                    isDay = true;
-                    StartDay();
-                }
+                isNight = false;
+                isDay = true;
+                StartDay();
             }
-            else if (isDay)
+        }
+        else if (isDay)
+        {
+            if (currentHour < 5 || currentHour > 18)
             {
-                if (currentHour < 5 || currentHour > 18)
-                {
-                    isNight = true;
-                    isDay = false;
-                    StartNight();
-                }
+                isNight = true;
+                isDay = false;
+                StartNight();
             }
+        }
+        if(currentPhase == 2)
+        {
+            ChangeNextRoomSpecialStatut(0, true);
+        }
+        else if(currentPhase == 3)
+        {
+            ChangeNextRoomSpecialStatut(1, true);
         }
         UpdateTime(currentHour);
     }
@@ -177,5 +189,16 @@ public class DayTimeController : MonoBehaviour
         m_moon.enabled = true;
 
     }
-
+    public void ChangeNextRoomSpecialStatut(int specialRoomIndex, bool newState)
+    {
+        nextRoomIsSpecial[specialRoomIndex] = newState;
+    }
+    public bool IsNextRoomIsBoss()
+    {
+        return nextRoomIsSpecial[1];
+    }
+    public bool IsNextRoomIsMerchand()
+    {
+        return nextRoomIsSpecial[0];
+    }
 }

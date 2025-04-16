@@ -1,5 +1,6 @@
 using Character;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Resources;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,10 +9,11 @@ using UnityEngine;
 public class ObjectReward : MonoBehaviour
 {
     public GameElement element;
+    static GameResources ressources;
     // Start is called before the first frame update
     void Start()
     {
-
+        if(ressources == null) { ressources = GameResources.instance; }
     }
 
     // Update is called once per frame
@@ -29,22 +31,22 @@ public class ObjectReward : MonoBehaviour
             {
                 charaprofil.stats.baseStat.healthMax += 15;
                 charaprofil.gameObject.GetComponent<HealthPlayerComponent>().AugmenteMaxHealth(15);
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Water bonus acquiered");
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Water bonus acquiered", ressources.textureGradient_Ornement[0]);
             }
             else if (element == GameElement.AIR)
             {
                 charaprofil.stats.baseStat.speed += 5;
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Aerial bonus acquiered");
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Aerial bonus acquiered", ressources.textureGradient_Ornement[1]);
             }
             else if (element == GameElement.FIRE)
             {
                 other.gameObject.GetComponent<CharacterDamageComponent>().m_damageStats.damageBonusGeneral += 1;
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Fire bonus acquiered");
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Fire bonus acquiered", ressources.textureGradient_Ornement[2]);
             }
             else if (element == GameElement.EARTH)
             {
                 charaprofil.stats.baseStat.armor += 1;
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Earth bonus acquiered");
+                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Earth bonus acquiered", ressources.textureGradient_Ornement[3]);
             }
 
         }

@@ -42,7 +42,7 @@ public class CameraIntroMouvement : MonoBehaviour
         LogSystem.LogMsg(" New game");
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
 
-        GameState.ChangeState();
+        //GameState.ChangeState();
         GlobalSoundManager.PlayOneShot(41, transform.position);
 
         if (isSkipCinematics)
@@ -102,7 +102,7 @@ public class CameraIntroMouvement : MonoBehaviour
                 m_isActivate = false;
                 ActiveItemAfterStart();
                 m_fixInterface.SetActive(true);
-                GameState.ChangeState();
+                //GameState.ChangeState();
                 this.enabled = false;
 
                 return;

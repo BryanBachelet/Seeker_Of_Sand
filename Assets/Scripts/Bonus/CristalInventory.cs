@@ -8,7 +8,9 @@ using SeekerOfSand.Tools;
 public class CristalInventory : MonoBehaviour
 {
     public int[] cristalCount = new int[4];
-    public bool hasEnoughCristalToSpawn = false;
+    [HideInInspector] public bool hasEnoughCristalToSpawn = false;
+
+    public int dissonanceCout = 0;
 
     private GuerhoubaGames.UI.CristalUI m_cristalUI;
 
@@ -61,6 +63,23 @@ public class CristalInventory : MonoBehaviour
             Debug.LogError("This element is None " + name);
         }
         return cristalCount[indexCristal ] >= value;
+    }
+
+    public void AddDissonanceCount(int cristalNumberAdd)
+    {
+        dissonanceCout += cristalNumberAdd;
+        m_cristalUI.UpdateDissonanceCristal(dissonanceCout);
+    }
+
+    public void RemoveDissonanceCount(int cristalNumberAdd)
+    {
+        dissonanceCout += cristalNumberAdd;
+        m_cristalUI.UpdateDissonanceCristal(dissonanceCout);
+    }
+
+    public bool HasEnoughDissonanceCristal(int value, string name)
+    {
+        return dissonanceCout >= value;
     }
 
 }

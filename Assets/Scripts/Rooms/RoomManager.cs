@@ -29,6 +29,7 @@ public class RoomManager : MonoBehaviour
     public RewardType rewardType;
     public HealthReward healthReward;
     public bool isTimingPassing;
+    public int specialID = -1; //-1 signifie que la salle n'est pas spécial. 0 = Salle Marchand, 1 = Salle Boss
     public int enemyToKillCount = 0;
     public int currentCountOfEnemy;
     [HideInInspector] public int terrainIndex;
@@ -92,9 +93,13 @@ public class RoomManager : MonoBehaviour
     #region spawner Parameter
     public GameObject spawnerPrefab;
     public float rangeSpawner;
+    public float rangeSpawner_Min;
     public int quantitySpawner = 1;
     public GameObject[] spawnerList;
     public LayerMask groundLayer;
+
+    public TeleporterFeebackController teleporterFeedback;
+    [SerializeField] private int specialRoomID = -1;
     #endregion
     public void RetriveComponent()
     {
@@ -128,14 +133,14 @@ public class RoomManager : MonoBehaviour
             interfacesArray[i].SetupRoomOptions();
         }
     }
-    public void ActivateRoom()
+    public void ActivateRoom(Material previousMat)
     {
         if(m_terrainActivation == null) { m_terrainActivation = this.GetComponent<TerrainActivationManager>(); }
         m_terrainActivation.ActiveEvent();
 
         ResetObjectifData();
 
-        if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
+
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
 
@@ -161,6 +166,7 @@ public class RoomManager : MonoBehaviour
         //m_enemyManager.isStopSpawn = true;
         //m_cameraBehavior.ResetZoom();
         SetupRoomType();
+        teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
         previewCamera.gameObject.SetActive(false);
     }
 
@@ -169,6 +175,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.ResetAllSpawingPhasse();
         m_enemyManager.ResetSpawnStat();
         progress = 0;
+       
         currentCountOfEnemy = 0;
         m_enemyManager.countEnemySpawnMaximum = 0;
 
@@ -323,11 +330,19 @@ public class RoomManager : MonoBehaviour
         ActivateRoomAfterDistanceTP();
 
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
-
+        if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
         {
             if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
             else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
+
+            //HEREEEE
+            for (int i = 0; i < teleporterArray.Length; i++)
+            {
+                SetupTeleporter(teleporterArray[i].TeleporterNumber);
+            }
+
+
           //  terrainGenerator.GenerateTerrain();
             ActivateTeleporters();
             
@@ -413,6 +428,8 @@ public class RoomManager : MonoBehaviour
         int eventIndex = eventNumber;
         eventNumber--;
         dropGenerator.GenerateCristal(this.transform);
+        int[] dataObjectif = { (3-eventNumber), 3 };
+        roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
         if (eventNumber <= 0)
         {
             ValidateRoom() ;
@@ -425,7 +442,14 @@ public class RoomManager : MonoBehaviour
     }
     public int CheckEventNumber()
     {
-        return 3 - eventNumber;
+        int data = 3 - eventNumber;
+
+        return data;
+    }
+
+    public void UpdateMajorInfo()
+    {
+
     }
     public IEnumerator RoomDeactivation(int frameCount)
 
@@ -460,12 +484,14 @@ public class RoomManager : MonoBehaviour
     {
 
         float radius = rangeSpawner / 2;
+        float radiusMin = rangeSpawner_Min / 2;
         List<GameObject> spawnerTemp = new List<GameObject>();
         for (int i = 0; i < quantitySpawner; i++)
         {
             RaycastHit hit;
-            Vector3 positionVariant = new Vector3(UnityEngine.Random.Range(-radius, radius), 0, UnityEngine.Random.Range(-radius, radius));
-            if (Physics.Raycast(transform.position + positionVariant, -Vector3.up, out hit, 150, groundLayer))
+            Vector3 positionVariant = FindCorruptSpawnerPosition(radiusMin, radius);
+
+            if (Physics.Raycast(this.transform.position + new Vector3(0,150,0) + positionVariant, -Vector3.up, out hit, 250, groundLayer))
             {
                 GameObject lastSpawnerCreated = Instantiate(spawnerPrefab, hit.point, Quaternion.identity, this.transform);
                 SpawnerBehavior lastSpawnerBehavior = lastSpawnerCreated.GetComponent<SpawnerBehavior>();
@@ -483,11 +509,42 @@ public class RoomManager : MonoBehaviour
         {
             spawnerList[j] = spawnerTemp[j];
         }
+        int[] dataObjectifOptional = { 0, spawnerList.Length };
+        roomInfoUI.UpdateRoomInfoDisplay(null, dataObjectifOptional);
         m_enemyManager.GetDataSpawner(spawnerList);
     }
 
+    public void SetupSpawnGate(Material materialPreview)
+    {
+        teleporterFeedback.previewMeshPlane.material = materialPreview;
+    }
     public void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, rangeSpawner);
+        Gizmos.DrawWireSphere(transform.position, rangeSpawner_Min);
     }
+
+    public Vector3 FindCorruptSpawnerPosition(float rangeMin, float rangeMax)
+    {
+        Vector3 position = Vector3.zero;
+        int randomPosition = UnityEngine.Random.Range(0, 4);
+        if (randomPosition == 0)
+        {
+            position = new Vector3(UnityEngine.Random.Range(rangeMin, rangeMax), 0, UnityEngine.Random.Range(rangeMin, rangeMax));
+        }
+        else if(randomPosition == 1)
+        {
+            position = new Vector3(-UnityEngine.Random.Range(rangeMin, rangeMax), 0, UnityEngine.Random.Range(rangeMin, rangeMax));
+        }
+        else if (randomPosition == 2)
+        {
+            position = new Vector3(UnityEngine.Random.Range(rangeMin, rangeMax), 0, -UnityEngine.Random.Range(rangeMin, rangeMax));
+        }
+        else if (randomPosition == 3)
+        {
+            position = new Vector3(-UnityEngine.Random.Range(rangeMin, rangeMax), 0, -UnityEngine.Random.Range(rangeMin, rangeMax));
+        }
+        return position;
+    }
+
 }

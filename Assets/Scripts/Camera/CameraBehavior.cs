@@ -15,11 +15,9 @@ namespace Render.Camera
 
     public class CameraBehavior : MonoBehaviour
     {
-        [SerializeField] private Transform cameraTrainTransform;
         [SerializeField] private Character.CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;  
-        [SerializeField] private float m_distanceToTarget;
-        [HideInInspector] public Vector3 m_offsetPos;
+        [SerializeField] private float m_distanceToTarget = 80;
 
 
 
@@ -32,7 +30,7 @@ namespace Render.Camera
 
         // Oriented Camera Variable 
         [Header("Oriented Camera Parameter")]
-        public float cameraOrientedAngleSpeed = 0.25f;
+        public float cameraOrientedAngleSpeed = 5f;
         public int minFrameCamOriented = 5; 
         
         private bool m_isOrientedCamera;
@@ -67,34 +65,33 @@ namespace Render.Camera
         [Space]
         public CameraMode cameraMode = CameraMode.HIGH_VIEW;
         private CameraEffect[] cameraEffects;
-        public Transform sun;
         [SerializeField] private Texture2D[] m_cursorTex = new Texture2D[2];
 
         [Header("Cameara Collider Parameters")]
-        public LayerMask obstacleLayerMask;
+        [HideInInspector] private GameLayer m_gameLayer;
         // -- Test Camera Zoom ---- 
 
         [Header("Camera Zoom parameter")]
         public bool isZoomActive;
-        [SerializeField] private float m_maxDistance = 10;
-        [SerializeField] private float m_minDistance = 2;
-        [SerializeField] private Vector3 m_maxAngle;
-        [SerializeField] private Vector3 m_minAngle;
+        [SerializeField] private float m_maxDistance = 110;
+        [SerializeField] private float m_minDistance = 100;
+        [SerializeField] private Vector3 m_maxAngle = new Vector3(50,0,0);
+        [SerializeField] private Vector3 m_minAngle = new Vector3(30,0,0);
         [SerializeField] private float m_currentLerpValue = 1;
-        [SerializeField] private float m_keyboardZoomSensibility = 1.0f;
-        [SerializeField] private float m_gamepadZoomSensibility = 7.0f;
+        [HideInInspector] private float m_keyboardZoomSensibility = 0.001f;
+        [HideInInspector] private float m_gamepadZoomSensibility = 0.1f;
         [SerializeField] private bool m_activeCameraZoomDebug = false;
-        [SerializeField] private Vector3 m_baseOffset;
-        [SerializeField] private float m_valueMinToStartSlope = 0.8f;
+        [HideInInspector] private Vector3 m_baseOffset = new Vector3(0, 0, -10);
+        [HideInInspector] private float m_valueMinToStartSlope = 0.8f;
 
         private float m_zoomInputGamepad = 0.0f;
         private bool m_IsGamepad = true;
 
         [Header("Camera Zoom High Block State parameters")]
         private bool m_isZoomBlock = false;
-        [SerializeField] private float m_maxZoomBlock = 0.15f;
-        [SerializeField] private float m_transitionDuration = 2;
-        [SerializeField] private float m_minZoomBlock = .85f;
+        [HideInInspector] private float m_maxZoomBlock = 0f;
+        [HideInInspector] private float m_transitionDuration = 2;
+        [HideInInspector] private float m_minZoomBlock = .85f;
         private bool m_isDezoomingAutomatily;
 
         private float m_inputZoomValue;
@@ -102,32 +99,32 @@ namespace Render.Camera
         private float m_prevSlopeAngle;
         private float m_nextSlopeAngle;
 
-        [SerializeField] private float m_thresholdAngle = 4.0f;
+        [HideInInspector] private float m_thresholdAngle = 4.0f;
 
         // -------------
 
         // -------- Test Rotation Camera Mouse ---------
 
         [Header("Camera Mouse Parameters")]
-        [SerializeField] private float m_mousDeltaThreshold = 3.0f;
-        [SerializeField] private float m_maxMouseDeltaSpeed = 500;
-        [SerializeField] private float m_minMouseDeltaSpeed = 5.0f;
-        [SerializeField] private float m_mouseSensibility = 1.0f;
-        [SerializeField] private float m_gamepadSensibility = 1.0f;
-        [SerializeField] private float m_maxAngularSpeed = 360;
+        [HideInInspector] private float m_mousDeltaThreshold = 3.0f;
+        [HideInInspector] private float m_maxMouseDeltaSpeed = 200;
+        [HideInInspector] private float m_minMouseDeltaSpeed = 5.0f;
+        [HideInInspector] private float m_mouseSensibility = 0.8f;
+        [HideInInspector] private float m_gamepadSensibility = 30;
+        [HideInInspector] private float m_maxAngularSpeed = 720;
 
-        [SerializeField] private float m_sensibility = 0.8f;
-        [SerializeField] private float m_angleSpeed = 1f;
+        [HideInInspector] private float m_sensibility = 0.8f;
+        [HideInInspector] private float m_angleSpeed = 0.5f;
         // ------------------------------
 
 
         // Free Rotation Variable
         [Header("Free Rotation Variables")]
-        [SerializeField] private float m_angularSpeed = 10;
+        [HideInInspector] private float m_angularSpeed = 200;
         [SerializeField] private AnimationCurve angularSpeedAcceleration;
-        [SerializeField] private bool m_inverseCameraController = false;
-        [SerializeField] private bool m_activateHeightDirectionMode = false;
-        [SerializeField] private bool m_mouseInputActivate = true;
+        [HideInInspector] private bool m_inverseCameraController = false;
+        [HideInInspector] private bool m_activateHeightDirectionMode = false;
+        [HideInInspector] private bool m_mouseInputActivate = true;
 
         private float initialAngularSpeed;
         private float timeLastRotationInput;
@@ -155,6 +152,7 @@ namespace Render.Camera
         void Start()
         {
             cameraMode = CameraMode.HIGH_VIEW;
+            m_gameLayer = GameLayer.instance;
             m_playerInputComponent = m_targetTransform.GetComponent<PlayerInput>();
             m_characterShootComponent = m_targetTransform.GetComponent<Character.CharacterShoot>();
             initialAngularSpeed = m_angularSpeed;
@@ -199,14 +197,6 @@ namespace Render.Camera
                 CheckCameraTerrain();
 
                 Apply();
-            }
-            else
-            {
-                //transform.parent = cameraTrainTransform;
-                transform.position = cameraTrainTransform.position;
-                Vector3 directionsun = sun.position;
-                directionsun.y = m_targetTransform.position.y;
-                transform.LookAt(directionsun);
             }
 
 
@@ -316,7 +306,7 @@ namespace Render.Camera
             float targetDistance = m_distanceToTarget;
             Ray ray = new Ray(m_targetTransform.position, direction.normalized);
             collsionRayDebug = ray;
-            if (Physics.Raycast(ray, out hit, targetDistance, obstacleLayerMask))
+            if (Physics.Raycast(ray, out hit, targetDistance, m_gameLayer.propsGroundLayerMask))
             {
                 float distance = Vector3.Distance(m_targetTransform.position, hit.point) - 0.3f;
                 return distance;
@@ -622,19 +612,10 @@ namespace Render.Camera
             Vector3 direction = (transform.position+ Vector3.down) - m_targetTransform.position;
             Vector3 dir2 = (m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down) - m_targetTransform.position;
 
-            bool hasHit2 =    Physics.Raycast(m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down, -dir2, out hit2, m_distanceToTarget + 5f, maskGround);
-            bool hasHit = Physics.Raycast(m_targetTransform.position, direction, out hit, m_distanceToTarget + 5f, maskGround);
+            bool hasHit2 =    Physics.Raycast(m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down, -dir2, out hit2, m_distanceToTarget + 5f, m_gameLayer.groundLayerMask);
+            bool hasHit = Physics.Raycast(m_targetTransform.position, direction, out hit, m_distanceToTarget + 5f, m_gameLayer.groundLayerMask);
             if (hasHit && (hit2.point -hit.point).magnitude >0.5f /*|| hasHit && !hasHit2*/)
             {
-
-                //m_prevAngle = m_currentAngle;
-                //m_prevRot = new Vector3(0.0f, m_currentAngle, 0.0f);
-
-                //m_currentAngle += 1 * 60 * Time.deltaTime;
-
-                //m_nextAngle = m_currentAngle;
-                //m_nextRot = new Vector3(0.0f, m_currentAngle, 0.0f);
-                //m_lerpTimer = 0.1f;
                 modifyTargetDistance = ( m_targetTransform.position - hit.point).magnitude;
                  SetCameraRotation();
                 SetCameraPosition(true);

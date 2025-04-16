@@ -6,14 +6,12 @@ using UnityEngine.UI;
 public class EnemyKillRatio : MonoBehaviour
 {
     [Header("Enemy Kill Ratio Parameter")]
-    [SerializeField] private float m_killRatioTime = 60;
-    [SerializeField] private Text m_textFeedbackUI;
-    [SerializeField] private int m_maxKillPerMinute = 70;
+    [HideInInspector] private float m_killRatioTime = 60;
+    [HideInInspector] private int m_maxKillPerMinute = 70;
 
-    [HideInInspector]
-    public List<float> m_enemyCount = new List<float>();
+    [HideInInspector] private List<float> m_enemyCount = new List<float>();
 
-    [SerializeField] private Experience_System m_PlayerExperienceRef;
+    [HideInInspector] private Experience_System m_PlayerExperienceRef;
 
 
     private void Start()
