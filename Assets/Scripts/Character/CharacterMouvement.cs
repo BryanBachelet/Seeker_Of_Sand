@@ -558,30 +558,24 @@ namespace Character
 
             if (IsObstacle())
             {
-                Debug.Log("hit obstacle");
+
                 m_speedData.currentSpeed = 0;
                 m_velMovement = Vector3.zero;
                 m_rigidbody.velocity = Vector3.zero;
                 return;
             }
-            else
-            {
-                Debug.Log("not hit obstacle");
-            }
+        
 
             RaycastHit hit = new RaycastHit();
             if (!OnGround(ref hit))
             {
-                Debug.Log("NotGround");
+
                 ChangeState(MouvementState.Glide);
                 AirMove(inputDirection);
                 m_timerBeforeSliding = 0;
                 return;
             }
-            else
-            {
-                Debug.Log("hit ground");
-            }
+        
                 Vector3 direction = GetForwardDirection(hit.normal);
             Vector3 newDir = new Vector3(direction.x, 0, direction.z);
             if (combatState && inputDirection != Vector3.zero)
@@ -614,7 +608,6 @@ namespace Character
             }
             if (inputDirection == Vector3.zero && m_speedData.currentSpeed <= m_speedData.referenceSpeed[(int)mouvementState])
             {
-                Debug.Log("Stop Move");
                 m_speedData.currentSpeed = 0;
                 m_timerBeforeSliding = 0;
                 ChangeState(MouvementState.None);

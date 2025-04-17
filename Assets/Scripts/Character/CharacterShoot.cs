@@ -79,7 +79,7 @@ namespace Character
         private GameObject lastElementToUse;
 
 
-        private bool isDirectSpellLaunchActivate = true;
+        private bool isDirectSpellLaunchActivate = false;
 
         private float m_timerBetweenSpell;
         private float m_reloadTimer;
@@ -515,7 +515,7 @@ namespace Character
 
         public void ActivateCanalisation()
         {
-            m_spellTimer = 0.0f;
+            m_spellTimer = m_totalCanalisationDuration;
             SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
             int maxStack = GetMaxStack(spellProfil);
             UpdateCanalisationBar(m_totalCanalisationDuration);

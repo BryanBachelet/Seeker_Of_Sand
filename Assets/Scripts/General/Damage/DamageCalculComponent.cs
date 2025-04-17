@@ -11,6 +11,8 @@ namespace GuerhoubaGames
     public interface IDamageReceiver
     {
         public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal);
+        public float GetLifeRatio();
+        public string GetName();
     }
     public enum DamageType
     {

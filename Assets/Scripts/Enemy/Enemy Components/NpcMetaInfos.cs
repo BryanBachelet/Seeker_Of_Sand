@@ -24,6 +24,7 @@ namespace Enemies
     /// </summary>
     public class NpcMetaInfos : MonoBehaviour
     {
+        public string nameNpc;
         public EnemyType type;
         public NpcState state;
         public NpcAttackComponent attackComponent;

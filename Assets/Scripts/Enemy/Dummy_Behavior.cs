@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dummy_Behavior : MonoBehaviour ,IDamageReceiver
+public class Dummy_Behavior : MonoBehaviour, IDamageReceiver
 {
     private HealthSystem m_healthSystem;
 
@@ -28,5 +28,15 @@ public class Dummy_Behavior : MonoBehaviour ,IDamageReceiver
 
        // if (m_healthSystem.health > 0) return;
 
+    }
+
+    public float GetLifeRatio()
+    {
+        return m_healthSystem.percentHealth;
+    }
+
+    public string GetName()
+    {
+        return "Dummy";
     }
 }

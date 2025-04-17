@@ -1203,6 +1203,9 @@ namespace Enemies
 
         public int[] CountSpawnerActive()
         {
+            if (spawningStateOfSpawner == null)
+                return new int[] { 0, 0 };
+
             int spawnerTotal = spawningStateOfSpawner.Length;
             int spawnerRemain = 0;
             for (int i = 0; i < spawnerTotal; i++)

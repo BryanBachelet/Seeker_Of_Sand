@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using System.Linq;
 using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
+using GuerhoubaGames.UI;
+using GuerhoubaGames;
 namespace Character
 {
 
@@ -56,6 +58,7 @@ namespace Character
         private bool m_isInRange = false;
 
         [HideInInspector] private float aimAssistDistance = 1;
+        [HideInInspector] private float aimClosetEnemyRadiusDetection = 20;
 
         private Vector3 prevAimPosition;
 
@@ -68,6 +71,10 @@ namespace Character
 
         [HideInInspector] public Vector3 lastRawPosition;
         [SerializeField] private Transform basePosition;
+
+        private GameObject m_closestEnemy;
+        [SerializeField] private UI_LifeTarget m_lifeTargetUI;
+
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
@@ -199,11 +206,15 @@ namespace Character
 
                 m_aimPoint = hit.point;
                 m_aimFinalPointNormal = hit.normal;
-                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimFinalPointNormal, aimAssistDistance, m_gameLayer.enemisLayerMask);
+                Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimPoint, aimClosetEnemyRadiusDetection, m_gameLayer.enemisLayerMask);
 
                 if (nearestAimedEnemy.Length > 0)
                 {
                     m_aimFinalPointNormal = NearestEnemy(nearestAimedEnemy, m_aimFinalPointNormal);
+                }
+                else
+                {
+                    m_closestEnemy = null;
                 }
             }
 
@@ -319,6 +330,16 @@ namespace Character
             AimFeedback();
             //projectorVisorObject.transform.position = GetAimFinalPoint();
             prevAimPosition = GetAimFinalPoint();
+
+            if (m_closestEnemy != null)
+            {
+                    IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
+                m_lifeTargetUI.ActiveLifeTarget(damageReceiver.GetLifeRatio(), damageReceiver.GetName());
+            }
+            else
+            {
+                m_lifeTargetUI.DeactiveLifeTarget();
+            }
             if (search) search = false;
         }
 
@@ -431,6 +452,7 @@ namespace Character
                 {
                     distance = indexDistance;
                     closestPosition = enemysPos[i].transform.position;
+                    m_closestEnemy = enemysPos[i].gameObject;
                 }
             }
             return closestPosition;

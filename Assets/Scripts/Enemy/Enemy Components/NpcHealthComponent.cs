@@ -352,5 +352,15 @@ namespace Enemies
         {
             if (m_trailRenderer != null) { m_trailRenderer.Clear(); }
         }
+
+        public float GetLifeRatio()
+        {
+            return m_healthSystem.percentHealth;
+        }
+
+        public string GetName()
+        {
+            return m_npcInfo.nameNpc;
+        }
     }
 }

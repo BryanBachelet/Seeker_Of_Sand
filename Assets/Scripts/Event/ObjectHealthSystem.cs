@@ -15,6 +15,7 @@ public enum EventObjectState
 public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 {
 
+    public string nameObject;
     public int maxLife;
     public HealthSystem healthSystem;
     public HealthManager healthManager;
@@ -154,5 +155,15 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     {
         Collider[] colProch = Physics.OverlapSphere(transform.position, rangeDegatAugmente, enemyLayer);
         m_invicibleDuration = evolutionDegatAugment.Evaluate(colProch.Length / 250);
+    }
+
+    public float GetLifeRatio()
+    {
+        return healthSystem.percentHealth;
+    }
+
+    public string GetName()
+    {
+       return nameObject;
     }
 }
