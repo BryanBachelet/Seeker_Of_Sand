@@ -63,7 +63,7 @@ namespace Character
         private Vector3 prevAimPosition;
 
         private bool m_exitCombatState = false;
-        private Vector3 v3Ref = new Vector3(1,0,0);
+        private Vector3 v3Ref = new Vector3(1, 0, 0);
 
         public VisualEffect vfxCast;
         public GameObject gameObject_vfxCastEnd;
@@ -146,13 +146,13 @@ namespace Character
             m_aimPointToPlayerDistance = (m_aimFinalPoint - basePosition.position).magnitude;
             //if(m_aimPointToPlayerDistance < distanceMinimumProjectorVisor)
             //{
-                Vector3 newpos = new Vector3(m_aimFinalPoint.x, 0, m_aimFinalPoint.z) - new Vector3(transform.position.x, 0, transform.position.z);
-                newpos = newpos.normalized * distanceMinimumProjectorVisor;
-                projectorVisorObject.transform.position = this.transform.position + newpos + new Vector3(0, 5, 0);
+            Vector3 newpos = new Vector3(m_aimFinalPoint.x, 0, m_aimFinalPoint.z) - new Vector3(transform.position.x, 0, transform.position.z);
+            newpos = newpos.normalized * distanceMinimumProjectorVisor;
+            projectorVisorObject.transform.position = this.transform.position + newpos + new Vector3(0, 5, 0);
             //}
             //else
             //{
-               lastRawPosition =  m_rawAimPoint + new Vector3(0, 5, 0);
+            lastRawPosition = m_rawAimPoint + new Vector3(0, 5, 0);
             gameObject_vfxCastEnd.transform.position = m_rawAimPoint + new Vector3(0, 5, 0);
             //}
             projectorVisorObject.transform.LookAt(this.transform);
@@ -333,8 +333,9 @@ namespace Character
 
             if (m_closestEnemy != null)
             {
-                    IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
-                m_lifeTargetUI.ActiveLifeTarget(damageReceiver.GetLifeRatio(), damageReceiver.GetName());
+                IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
+               if(damageReceiver != null)
+                    m_lifeTargetUI.ActiveLifeTarget(damageReceiver.GetLifeRatio(), damageReceiver.GetName());
             }
             else
             {
@@ -357,7 +358,7 @@ namespace Character
             if (m_characterShoot.m_CharacterMouvement.combatState)
             {
                 m_exitCombatState = false;
-               // FeedbackHeadRotation();
+                // FeedbackHeadRotation();
             }
             else if (!m_exitCombatState)
             {
@@ -406,8 +407,8 @@ namespace Character
             for (int i = 1; i < m_numberOfPointForCurveTrajectory + 1; i++)
             {
                 Vector3 newPos = Vector3.zero;
-                newPos = dir.normalized *GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad) * ratio; // Angle
-                newPos += normalDirection * (-GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil) * ratio * i + GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory)* Mathf.Deg2Rad)) * ratio;
+                newPos = dir.normalized * GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad) * ratio; // Angle
+                newPos += normalDirection * (-GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil) * ratio * i + GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad)) * ratio;
                 m_lineRenderer.SetPosition(i, position + newPos);
                 position += newPos;
             }
@@ -445,12 +446,21 @@ namespace Character
         {
             Vector3 closestPosition = Vector3.zero;
             float distance = 10000.0f;
+            int highestPriority = -1;
             for (int i = 0; i < enemysPos.Length; i++)
             {
-                float indexDistance = Vector3.Distance(enemysPos[i].transform.position, position);
-                if (indexDistance < distance)
+                float currentDistance = Vector3.Distance(enemysPos[i].transform.position, position);
+
+                int currentPriority = 0;
+
+                DamageInfoObject damageInfoObject = enemysPos[i].GetComponent<DamageInfoObject>();
+                if (damageInfoObject)
+                    currentPriority = damageInfoObject.priorityTarget;
+
+                if (currentPriority >= highestPriority && currentDistance < distance)
                 {
-                    distance = indexDistance;
+                    highestPriority = currentPriority;
+                    distance = currentDistance;
                     closestPosition = enemysPos[i].transform.position;
                     m_closestEnemy = enemysPos[i].gameObject;
                 }
@@ -468,9 +478,9 @@ namespace Character
         }
 
 
-        public float GetSpeed(float rangeGive,SpellSystem.SpellProfil spellProfil)
+        public float GetSpeed(float rangeGive, SpellSystem.SpellProfil spellProfil)
         {
-            float speed = (rangeGive / (spellProfil.GetFloatStat(StatType.TrajectoryTimer) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory))* Mathf.Deg2Rad));
+            float speed = (rangeGive / (spellProfil.GetFloatStat(StatType.TrajectoryTimer) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory)) * Mathf.Deg2Rad));
             return speed;
         }
 
@@ -493,13 +503,13 @@ namespace Character
         private void OnDrawGizmos()
         {
 
-            if (Application.isPlaying  )
+            if (Application.isPlaying)
             {
                 SpellSystem.SpellProfil spellProfil = m_characterShoot.GetSpellProfil();
                 if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
                 {
                     float speed = GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad); // TODO 
-                    float gravity =GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil);
+                    float gravity = GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil);
                     float height = ((speed * speed) / (2 * gravity));
                     Vector3 dir = m_aimDirection.normalized;
                     Vector3 dirRight = Quaternion.AngleAxis(90, Vector3.up) * dir;
