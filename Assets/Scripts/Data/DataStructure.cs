@@ -89,6 +89,7 @@ public class HealthSystem
 
     }
 
+
     public void SetMaxHealth(int maxHealth)
     {
         m_currentHealth = maxHealth;

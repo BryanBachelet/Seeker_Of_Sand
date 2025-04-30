@@ -455,6 +455,7 @@ namespace SpellSystem
             spellExp += points;
             if(m_SpellAttributionAssociated != null) { m_SpellAttributionAssociated.StartCoroutine(m_SpellAttributionAssociated.UpdateSpellLevelDelay(this)); }
             bool isLevelUp = spellExp >= spellExpNextLevel;
+            if(spellExp >= 13) isLevelUp = false;
 
 
             return isLevelUp;

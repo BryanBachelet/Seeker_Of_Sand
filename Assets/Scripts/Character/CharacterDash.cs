@@ -56,7 +56,7 @@ namespace Character
             dashHolder = m_dashUI.transform.parent.gameObject;
             Image[] tempsSpriteRef = dashHolder.GetComponentsInChildren<Image>();
             m_gameLayer = GameLayer.instance;
-            dashHolder.gameObject.SetActive(false);
+            //dashHolder.gameObject.SetActive(false);
         }
 
         // Function that get the dash input
@@ -252,14 +252,14 @@ namespace Character
                     if (m_currentStack >= m_maxStack)
                     {
                         m_isActiveCooldown = false;
-                        if (m_dashUI != null) m_dashUI.fillAmount = 1;
+                        if (m_dashUI != null) m_dashUI.fillAmount = 0;
                     }
 
                 }
                 else
                 {
                     m_dashCooldownTimer += Time.deltaTime;
-                    if (m_dashUI != null) m_dashUI.fillAmount = dashFillFeedback;
+                    if (m_dashUI != null) m_dashUI.fillAmount = 1-dashFillFeedback;
                 }
 
                 m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);

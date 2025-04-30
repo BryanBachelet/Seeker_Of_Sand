@@ -321,7 +321,8 @@ public class Projectile : MonoBehaviour
 
                 //Destroy(this.gameObject);
                 m_lifeTimer = m_lifeTime;
-                m_collider.enabled = false;
+                if (m_collider) { m_collider.enabled = false; }
+
                 //willDestroy = true;
             }
         }

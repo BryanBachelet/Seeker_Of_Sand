@@ -139,12 +139,14 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         healthSystem.SetMaxHealth(newMaxHealth);
     }
 
+    public void Setup(int maxHealth)
+    {
+        healthSystem.Setup(maxHealth);
+    }
     public void ResetCurrentHealth()
     {
         healthSystem.ChangeCurrentHealth(healthSystem.maxHealth);
     }
-
-
 
     public bool IsEventActive()
     {

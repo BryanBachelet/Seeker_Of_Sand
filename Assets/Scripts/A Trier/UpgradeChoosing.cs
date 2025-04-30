@@ -16,6 +16,8 @@ public class UpgradeChoosing : MonoBehaviour
     //[HideInInspector] private
     [Header("UI Object")]
     [SerializeField] private Image[] spellInBar = new Image[4];
+    public spell_Attribution currentSpellSelected;
+    public spell_Attribution currentspellSelected_NextRank;
     public Image spellUpgradeFocus;
     public Image spellCurrentTierFocus;
     public Image spellNextTierFocus;
@@ -120,10 +122,15 @@ public class UpgradeChoosing : MonoBehaviour
         {
             upgradeSelectable[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).name;
             upgradeSelectableDescription[i].text = ((m_upgradeLevelingData.upgradeChoose[i])).description;
-            spellChoseUpgrade[i].material = materialIcon[data.indexSpellFocus];
+            //spellChoseUpgrade[i].material = materialIcon[data.indexSpellFocus];
             //if (gameObject.activeSelf) StartCoroutine(SpellFadeIn(i, Time.time));
             SetModifySpellStat(i);
         }
+        currentSpellSelected.AcquireSpellData(m_upgradeLevelingData.spellState[m_upgradeLevelingData.indexSpellFocus]);
+        SpellProfil tempSpellProfil = m_upgradeLevelingData.spellState[m_upgradeLevelingData.indexSpellFocus];
+        tempSpellProfil.spellExp += 4;
+        currentspellSelected_NextRank.AcquireSpellData(tempSpellProfil);
+        tempSpellProfil.spellExp -= 4;
     }
 
     public void UpdateUpgradesAvailable(UpgradeObject[] upgradeGenerate)

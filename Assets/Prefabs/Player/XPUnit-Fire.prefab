@@ -27,6 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278518001253408458}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.281, y: 2.203, z: 8.379}
   m_LocalScale: {x: 10, y: 10, z: 10}
@@ -35,7 +36,6 @@ Transform:
   - {fileID: 2509822337679848657}
   - {fileID: 315742915010198965}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4249426521543485427
 MeshFilter:
@@ -95,9 +95,17 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278518001253408458}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Radius: 0.04
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8240917812127822276
@@ -112,12 +120,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8a8ea809091ae4b904846029259ed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_playerPosition: {fileID: 0}
   GroundPosition: {x: 0, y: 0, z: 0}
-  m_speed: 15
+  m_speed: 30
+  m_speedOverTime: 30
   m_speedUp: 40
   m_trail: {fileID: 6268820045213260168}
-  m_timeBeforeDestruction: 3
+  timeBeforeDestruction: 3
+  quantity: 0
   cristalType: 1
+  m_destruction: 0
+  m_durationOfCuve: 1
+  dissonanceValue: 0
 --- !u!1 &1919461930451284906
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,17 +156,17 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919461930451284906}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7634399387720621085}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &6268820045213260168
 TrailRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -193,6 +207,7 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Time: 5
+  m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -265,22 +280,27 @@ TrailRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 4
       m_NumAlphaKeys: 4
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
     textureMode: 0
+    textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1
+  m_MaskInteraction: 0
   m_Autodestruct: 0
   m_Emitting: 1
+  m_ApplyActiveColorSpace: 0
 --- !u!1001 &9113395535916684856
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 7634399387720621085}
     m_Modifications:
     - target: {fileID: 8798052860319673218, guid: 9b7858a0b699cf84dac6e368b7885c6c,
@@ -374,6 +394,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b7858a0b699cf84dac6e368b7885c6c, type: 3}
 --- !u!4 &315742915010198965 stripped
 Transform:

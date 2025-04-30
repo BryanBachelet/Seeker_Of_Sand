@@ -7,6 +7,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.Rendering;
 using GuerhoubaGames.UI;
+using Character;
 public class spell_Attribution : MonoBehaviour
 {
     [SerializeField] private int preLeveledDisplay = 0;
@@ -14,7 +15,7 @@ public class spell_Attribution : MonoBehaviour
     [HideInInspector] private Material materialUse;
     [HideInInspector] private string spell_name;
     [HideInInspector] private string description;
-    [HideInInspector] private int level;
+    [HideInInspector] public int level;
     [HideInInspector] private int rank;
 
     [SerializeField] private SpellProfil spellProfil;
@@ -80,14 +81,27 @@ public class spell_Attribution : MonoBehaviour
             imageSpell.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
         }
         //UpdateSpellLevel(spell);
-        StartCoroutine(UpdateSpellLevelDelay(spell));
+        if(this.gameObject.activeSelf) { StartCoroutine(UpdateSpellLevelDelay(spell)); }
+
     }
 
     public void UpdateToolTipInfo()
     {
-        tooltipTrigger.header = spellProfil.name;
+        tooltipTrigger.header = spellProfil.name + "<br><i>Level : " + spellProfil.spellExp + " | rank : " + rank + "</i >";
         tooltipTrigger.content = spellProfil.description;
+        tooltipTrigger.IsActive = true;
         //tooltipTrigger.additionnalDatas
+        tooltipTrigger.additionnalDatas = new TooltipAdditionnalData[rank];
+
+
+        for (int i = 0; i < rank; i++)
+        {
+            tooltipTrigger.additionnalDatas[i].additionnalTooltipDisplay.header = spellProfil.levelSpellsProfiles[i].nameLevelUprade;
+            tooltipTrigger.additionnalDatas[i].additionnalTooltipDisplay.content =  spellProfil.levelSpellsProfiles[i].description;
+        }
+
+        //m_spellTooltipArray[eventData.index].content = contextText;
+        //m_spellTooltipArray[eventData.index].header = headerText;
     }
     public void UpdateSpellLevel(SpellProfil spell)
     {
@@ -140,8 +154,9 @@ public class spell_Attribution : MonoBehaviour
             {
                 levelDisplayObject[i].material = materialLevel[0];
             }
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.10f);
         }
+        UpdateToolTipInfo();
     }
     public void ChangeAnimatorBool()
     {

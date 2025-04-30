@@ -307,7 +307,7 @@ namespace Enemies
             {
                 m_EnemyAnimatorDissolve.SetBool("DeathBool", false);
             }
-            m_npcInfo.state = NpcState.MOVE;
+            m_npcInfo.state = NpcState.IDLE;
             if (!isMassed)
             {
                 moveSoundInstance.setVolume(1);

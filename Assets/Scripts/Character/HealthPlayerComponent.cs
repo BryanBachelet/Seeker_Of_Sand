@@ -85,6 +85,9 @@ public class HealthPlayerComponent : MonoBehaviour
     [HideInInspector] private CharacterProfile m_Profil;
 
     [SerializeField] private GameObject[] quarterCristal;
+    [SerializeField] private Color[] m_colorFraction = new Color[2];
+    [SerializeField] private List<Image> m_imageFraction = new List<Image>();
+    //[SerializeField] private List<Image> 
     void Start()
     {
         InitializedHealthData();
@@ -191,10 +194,18 @@ public class HealthPlayerComponent : MonoBehaviour
             if(i >= m_CurrentQuarter)
             {
                 quarterCristal[i].SetActive(false);
+                //for(int j = 0; j < quarterCristal[i].transform.childCount; j++)
+                //{
+                //    quarterCristal[i].transform.GetChild(j).gameObject.GetComponentInChildren<Image>().color = m_colorFraction[1];
+                //}
             }
             else
             {
                 quarterCristal[i].SetActive(true);
+                //for (int j = 0; j < quarterCristal[i].transform.childCount; j++)
+                //{
+                //    quarterCristal[i].transform.GetChild(j).gameObject.GetComponentInChildren<Image>().color = m_colorFraction[0];
+                //}
             }
         }
         if (attackDamageInfo.bIsHeavy)

@@ -29,14 +29,15 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _MATERIAL_AFFECTS_ALBEDO
+  m_InvalidKeywords:
   - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   - _DOUBLESIDED_ON
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2475
+  m_CustomRenderQueue: 2000
   stringTagMap:
     MotionVector: User
     RenderType: TransparentCutout
@@ -50,6 +51,14 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,6 +74,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AffectAlbedo: 1
+    - _AffectEmission: 1
+    - _AffectMetal: 1
+    - _AffectNormal: 1
+    - _AffectSmoothness: 1
     - _AlphaClip: 1
     - _AlphaCutoffEnable: 1
     - _AlphaDstBlend: 0
@@ -73,10 +87,20 @@ Material:
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 0
     - _CullModeForward: 0
+    - _DecalColorMask0: 15
+    - _DecalColorMask1: 0
+    - _DecalColorMask2: 0
+    - _DecalColorMask3: 0
+    - _DecalMeshBiasType: 0
+    - _DecalMeshDepthBias: 0
+    - _DecalMeshViewBias: 0
+    - _DecalStencilRef: 16
+    - _DecalStencilWriteMask: 16
     - _DepthOffsetEnable: 0
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 1
     - _DoubleSidedNormalMode: 2
+    - _DrawOrder: 0
     - _DstBlend: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
@@ -116,6 +140,7 @@ Material:
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
+    - _alpha_value: 0
     - _scale: 0
     m_Colors:
     - _Color: {r: 0.8784314, g: 0, b: 0.05951287, a: 0}

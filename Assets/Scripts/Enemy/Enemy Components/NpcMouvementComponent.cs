@@ -7,6 +7,7 @@ namespace Enemies
 {
     public class NpcMouvementComponent : MonoBehaviour
     {
+        #region variables
         public bool selected = false;
         private const float slowSpeed = .7f;
         private const int facingAngle = 4;
@@ -32,7 +33,7 @@ namespace Enemies
         [Header("Navmesh Parameters")]
         public float timeBetweenNavRefresh;
         public float minDistanceToFullyActive;
-        [SerializeField] private float m_distanceBeforeRepositionning = 400;
+        [SerializeField] private float m_distanceBeforeRepositionning = 4000;
         [SerializeField] private bool m_isAlwaysUpdate;
 
 
@@ -60,6 +61,9 @@ namespace Enemies
         [HideInInspector] public float lastTimeSeen = 0;
         [HideInInspector] public float lastTimeCheck = 0;
         [HideInInspector] public Vector3 lastPosCheck;
+        [SerializeField] private float replaceDelta = Mathf.Infinity;
+
+        #endregion
         public void Start()
         {
             InitComponent();
@@ -108,7 +112,10 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-
+            if(m_npcInfo.state == NpcState.IDLE)
+            {
+                StopMouvement();
+            }
             if (m_npcInfo.state == NpcState.MOVE )
             {
                 if(m_npcInfo.type != EnemyType.TWILIGHT_SISTER)
@@ -139,7 +146,7 @@ namespace Enemies
 
 
                     }
-                    else if (time > lastTimeSeen + 30)
+                    else if (time > lastTimeSeen + replaceDelta)
                     {
                         if (!IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main) || Vector3.Distance(transform.position, lastPosCheck) < 10)
                         {

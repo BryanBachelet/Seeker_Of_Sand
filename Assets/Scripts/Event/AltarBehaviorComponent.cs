@@ -7,6 +7,7 @@ using GuerhoubaGames.UI;
 using GuerhoubaGames.GameEnum;
 using SeekerOfSand.Tools;
 using JetBrains.Annotations;
+using Character;
 
 public class AltarBehaviorComponent : InteractionInterface
 {
@@ -50,6 +51,7 @@ public class AltarBehaviorComponent : InteractionInterface
     private Transform m_playerTransform;
 
     public VisualEffect m_visualEffectActivation;
+    public VisualEffect m_distortionWave;
     int resetNumber = 0;
 
     public SkinnedMeshRenderer[] altarAllMesh;
@@ -153,6 +155,8 @@ public class AltarBehaviorComponent : InteractionInterface
             if (m_isWaveCanSpawn)
             {
                 m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
+                m_enemyManager.ActiveMobAggro();
+                m_distortionWave.SendEvent("Activation");
                 m_isWaveCanSpawn = false;
                 currentQuarter--;
             }
@@ -281,7 +285,8 @@ public class AltarBehaviorComponent : InteractionInterface
         hasBeenActivate = true;
 
         m_interactionEvent = GameState.s_playerGo.GetComponent<InteractionEvent>();
-
+        m_objectHealthSystem.Setup((int)m_objectHealthSystem.maxHealthEvolution.Evaluate(m_enemyManager.m_characterUpgrade.avatarUpgradeList.Count));
+        lostLifeToSpawnWave = (int)(m_objectHealthSystem.healthSystem.maxHealth / 3);
 
         //m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
         m_enemyManager.ActiveEvent(transform);
@@ -317,6 +322,7 @@ public class AltarBehaviorComponent : InteractionInterface
 
         SetMeshesEventIntensity(0.33f * (1 + 1));
         m_visualEffectActivation.Play();
+        m_distortionWave.SendEvent("Activation");
 
         GlobalSoundManager.PlayOneShot(13, transform.position);
 

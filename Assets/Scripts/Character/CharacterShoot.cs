@@ -1529,7 +1529,14 @@ namespace Character
                 }
                 //SignPosition[i].GetComponent<SpriteRenderer>().sprite = icon_Sprite[i].sprite;
             }
+            for(int j = 0; j < spellEquip.Length; j++)
+            {
+                if (spellEquip[j] != -1)
+                {
+                    spellAttribution[j].AcquireSpellData(spellProfilsIcon[j]);
+                }
 
+            }
         }
 
         public void UpdateFeedbackAimLayout()

@@ -159,6 +159,7 @@ namespace Enemies
         [SerializeField] private int waveSpawnMaxCD = 60;
 
         [SerializeField] private TMP_Text waveTimer;
+        [SerializeField] private Image waveTimerFill;
         [SerializeField] private Color colorBeforeSpawnWave;
         public bool debugSpawningPerPosition = false;
 
@@ -760,7 +761,7 @@ namespace Enemies
         public void ActiveEvent(Transform target)
         {
             ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
-
+            ActiveMobAggro();
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
             ObjectHealthSystem healthSystemReference = target.GetComponent<ObjectHealthSystem>();
@@ -776,6 +777,16 @@ namespace Enemies
             //m_UiEventManager.SetupEventUI(healthSystemReference, indexTargetList);
         }
 
+        public void ActiveMobAggro()
+        {
+            for (int i = 0; i < m_enemiesArray.Count; i++)
+            {
+                if (m_enemiesArray[i].state == NpcState.IDLE)
+                {
+                    m_enemiesArray[i].state = NpcState.MOVE;
+                }
+            }
+        }
         public void DeactiveEvent(Transform target)
         {
             m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
@@ -1185,7 +1196,8 @@ namespace Enemies
             float ratio = waveSpawnPositionTimer / waveSpawnMaxCD;
             Color color = Color.Lerp(Color.white, colorBeforeSpawnWave, ratio);
             waveTimer.color = color;
-            waveTimer.text = "" + (int)(waveSpawnPositionTimer / 60) + ":" + (secondeBeforeWave).ToString(".");
+            waveTimerFill.fillAmount = 1 - ratio;
+            //waveTimer.text = "" + (int)(waveSpawnPositionTimer / 60) + ":" + (secondeBeforeWave).ToString(".");
         }
         public Vector3 FindPositionAtSpawner(Vector3 position)
         {

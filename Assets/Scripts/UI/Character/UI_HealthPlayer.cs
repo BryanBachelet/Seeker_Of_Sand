@@ -12,6 +12,7 @@ namespace GuerhoubaGames.UI
     {
         [SerializeField] public Image m_currentHealthSlider;
         [SerializeField] private Image m_healthBufferSlider ;
+        [HideInInspector] private Material m_healthBarMaterial;
         [SerializeField] public Image m_currentQuarterSlider;
         [SerializeField] private TMP_Text m_healthText;
 
@@ -21,6 +22,10 @@ namespace GuerhoubaGames.UI
         private float m_currentLifeRatio;
         private float m_lastLifeRatio;
 
+        private void Start()
+        {
+            m_healthBarMaterial = m_currentHealthSlider.material;
+        }
 
         public void Update()
         {
@@ -39,7 +44,9 @@ namespace GuerhoubaGames.UI
             m_lastLifeRatio = m_healthBufferSlider.fillAmount;
             m_lastLifeUpdateTime = Time.time;
             m_currentLifeRatio = lifeRatio;
-
+            float ratioTest = 0.5f - lifeRatio * 0.5f;
+            if(m_healthBarMaterial == null) { m_healthBarMaterial = m_currentHealthSlider.material; }
+            m_healthBarMaterial.SetFloat("_ratio", ratioTest);
             m_healthBufferSlider.fillAmount = lifeRatio;
             //m_currentQuarterSlider.fillAmount = quarterRatio;
 
