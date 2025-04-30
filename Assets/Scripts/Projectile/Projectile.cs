@@ -314,7 +314,7 @@ public class Projectile : MonoBehaviour
 
             for (int i = 0; i < damageStatDatas.Length; i++)
             {
-                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
 
             PiercingUpdate();
@@ -352,7 +352,7 @@ public class Projectile : MonoBehaviour
 
             for (int i = 0; i < damageStatDatas.Length; i++)
             {
-                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
 
             PiercingUpdate();
@@ -394,7 +394,7 @@ public class Projectile : MonoBehaviour
 
             for (int i = 0; i < damageStatDatas.Length; i++)
             {
-                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
            
 
@@ -434,11 +434,11 @@ public class Projectile : MonoBehaviour
                 if(collider[i].tag == "Dummy")
                 {
                     Dummy_Behavior enemyTouch = collider[i].GetComponent<Dummy_Behavior>();
-                    enemyTouch.ReceiveDamage(damageSourceName, damageStatData, collider[i].transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(damageSourceName, damageStatData, collider[i].transform.position - transform.position, m_power, elementIndex, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                 }
                 else
                 {
-                    npcHealthComponent.ReceiveDamage(spellProfil.name, damageStatData, direction, 10, (int)sizeArea, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    npcHealthComponent.ReceiveDamage(spellProfil.name, damageStatData, direction, 10, (int)sizeArea, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                 }
                 
             }

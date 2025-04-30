@@ -29,13 +29,13 @@ public class ObjectReward : MonoBehaviour
             CharacterProfile charaprofil = other.gameObject.GetComponent<CharacterProfile>();
             if (element == GameElement.WATER)
             {
-                charaprofil.stats.baseStat.healthMax += 15;
+                charaprofil.stats.baseDamage.statsValue += 15;
                 charaprofil.gameObject.GetComponent<HealthPlayerComponent>().AugmenteMaxHealth(15);
                 TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Water bonus acquiered", ressources.textureGradient_Ornement[0]);
             }
             else if (element == GameElement.AIR)
             {
-                charaprofil.stats.baseStat.speed += 5;
+                charaprofil.stats.runSpeed.statsValue += 5;
                 TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Aerial bonus acquiered", ressources.textureGradient_Ornement[1]);
             }
             else if (element == GameElement.FIRE)
@@ -45,7 +45,7 @@ public class ObjectReward : MonoBehaviour
             }
             else if (element == GameElement.EARTH)
             {
-                charaprofil.stats.baseStat.armor += 1;
+                charaprofil.stats.armor.statsValue += 1;
                 TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Earth bonus acquiered", ressources.textureGradient_Ornement[3]);
             }
 

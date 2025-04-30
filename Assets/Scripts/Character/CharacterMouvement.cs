@@ -25,7 +25,8 @@ namespace Character
     {
         private CharacterProfile profile;
         private Render.Camera.CameraBehavior cameraPlayer;
-        public float runSpeed = 80f;
+        public float runSpeed = 0;
+        private float m_baseRunSpeed;
         public float combatSpeed = 40f;
         [HideInInspector] public bool combatState;
         [HideInInspector] public float ratioSmoothMouvement = 10.0f;
@@ -143,12 +144,24 @@ namespace Character
         // temp
         private float timeToAccelerate = 0.75f;
         private float m_timerToAccelerate = 0.0f;
-        
+
+        #region Stats functions
         public void InitComponentStat(CharacterStat stat)
         {
-            runSpeed = runSpeed + stat.baseStat.speed;
+            runSpeed =  stat.runSpeed.totalValue;
+            combatSpeed = stat.runSpeed.totalValue * stat.combatSpeed.percent + stat.combatSpeed.statsValue;
+            m_baseRunSpeed = runSpeed;
             InitComponent();
         }
+
+        public void UpdateComponentStat(CharacterStat stat)
+        {
+            runSpeed = stat.runSpeed.totalValue;
+            combatSpeed = stat.runSpeed.totalValue * stat.combatSpeed.modificatorPercent + stat.combatSpeed.statsValue;
+
+        }
+        #endregion
+
         private void InitComponent()
         {
             if (state == null)
@@ -849,11 +862,11 @@ namespace Character
 
             if (combatState)
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = combatSpeed + profile.stats.baseStat.speed;
+                m_speedData.referenceSpeed[(int)mouvementState] = combatSpeed + profile.stats.runSpeed.totalValue;
             }
             else
             {
-                m_speedData.referenceSpeed[(int)mouvementState] = Mathf.Clamp((m_timerToAccelerate / timeToAccelerate), 0, 1.0f) * (runSpeed - combatSpeed) + combatSpeed + profile.stats.baseStat.speed;
+                m_speedData.referenceSpeed[(int)mouvementState] = Mathf.Clamp((m_timerToAccelerate / timeToAccelerate), 0, 1.0f) * (runSpeed - combatSpeed) + combatSpeed + profile.stats.runSpeed.totalValue;
             }
 
             m_speedData.IsFlexibleSpeed = false;

@@ -9,11 +9,12 @@ using Enemies;
 
 public class CharacterArtefact : MonoBehaviour
 {
-    [HideInInspector] public List<ArtefactsInfos> artefactsList;
+    public List<ArtefactsInfos> artefactsList;
     [HideInInspector] private Enemies.EnemyManager m_enemyManager;
 
     public bool activeDebug = false;
     private Character.CharacterShoot m_characterShoot;
+    private CharacterProfile m_characterProfil;
     private Character.CharacterDamageComponent m_characterDamageComponent;
     private HealthPlayerComponent m_healthComponent;
 
@@ -41,6 +42,7 @@ public class CharacterArtefact : MonoBehaviour
     public void Start()
     {
         m_characterShoot = GetComponent<Character.CharacterShoot>();
+        m_characterProfil = GetComponent<CharacterProfile>();
         m_characterDamageComponent = GetComponent<Character.CharacterDamageComponent>();
         m_enemyManager = GameObject.Find("General_Manager").GetComponent<EnemyManager>();
         m_healthComponent = GetComponent<HealthPlayerComponent>();
@@ -57,6 +59,13 @@ public class CharacterArtefact : MonoBehaviour
 
     private void SetupArtefact(ArtefactsInfos artefacts)
     {
+        artefacts.characterGo = gameObject;
+        if (artefacts.artefactType == ArtefactType.Buff)
+        {
+            m_characterProfil.AddStat(artefacts.generalStatData.CharacterStat);
+            m_characterProfil.UpdateStats();
+            return;
+        }
 
         artefacts.isDebugActive = activeDebug;
         switch (artefacts.conditionsTrigger)
@@ -79,7 +88,7 @@ public class CharacterArtefact : MonoBehaviour
                 break;
         }
 
-        artefacts.characterGo = gameObject;
+       // artefacts.characterGo = gameObject;
 
     }
 
@@ -170,6 +179,8 @@ public class CharacterArtefact : MonoBehaviour
             }
         }
 
+
+
         ArtefactsInfos clone = artefacts.Clone();
 
         artefactsList.Add(clone);
@@ -184,6 +195,7 @@ public class CharacterArtefact : MonoBehaviour
 
     public void CreatePull(ArtefactsInfos instance)
     {
+        if (instance.m_artefactToSpawn == null) return;
         PullConstructionData pullConstructionData = new PullConstructionData(instance.m_artefactToSpawn, pullingQuantity);
 
         if (GamePullingSystem.instance == null) return;

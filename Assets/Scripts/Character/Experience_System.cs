@@ -55,7 +55,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
     public void InitComponentStat(CharacterStat stat)
     {
-        m_RadiusPickupXp = stat.attrackness;
+        m_RadiusPickupXp = stat.attrackness.totalValue;
     }
 
     // Update is called once per frame
@@ -171,7 +171,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
 
     private void UpdateMagnet(ref CharacterStat playerStat)
     {
-        m_RadiusPickupXp = playerStat.attrackness;
+        m_RadiusPickupXp = playerStat.attrackness.totalValue;
     }
 
     static string ReadSpecificLine(string filePath, int lineNumber)
@@ -234,5 +234,10 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_ExperienceQuantityControl = tempAnimationCurve;
         //  Debug.Log(debugdata);
 
+    }
+
+    public void UpdateComponentStat(CharacterStat stat)
+    {
+        m_RadiusPickupXp = stat.attrackness.totalValue;
     }
 }

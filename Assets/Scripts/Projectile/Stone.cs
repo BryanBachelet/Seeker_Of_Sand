@@ -76,7 +76,7 @@ public class Stone : Projectile
         if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
 
         DamageStatData damageStatData = new DamageStatData((int)(m_rigidbody.velocity.magnitude * m_damage), objectType);
-        enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (other.transform.position - transform.position).normalized, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.instance.stats.baseStat.damage);
+        enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (other.transform.position - transform.position).normalized, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
     }
 
 }

@@ -136,7 +136,7 @@ namespace SpellSystem
                     if (collider[i] == null)
                         return;
 
-                    npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[j].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[j].element, (int)CharacterProfile.instance.stats.baseDamage.totalValue);
                 }
 
             }
