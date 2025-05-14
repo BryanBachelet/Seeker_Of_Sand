@@ -63,12 +63,15 @@ namespace Enemies
         [HideInInspector] public Vector3 lastPosCheck;
         [SerializeField] private float replaceDelta = Mathf.Infinity;
 
+        public bool isAlreadyPlace = false;
+
         #endregion
         public void Start()
         {
             InitComponent();
             m_npcHealthComponent.destroyEvent += OnDeath;
-            RestartObject();
+            if(!isAlreadyPlace) { RestartObject(); }
+
         }
 
         public void InitComponent()

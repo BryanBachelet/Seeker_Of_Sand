@@ -120,13 +120,13 @@ public class RewardTypologie : MonoBehaviour
             switch (rewardType)
             {
                 case RewardType.UPGRADE:
-                   
+                    GameState.ChangeState();
                     characterUpgrade.GiveUpgradePoint(rewardPoint);
                     characterUpgrade.ShowUpgradeWindow();
                     GlobalSoundManager.PlayOneShot(6, Vector3.zero);
                     break;
                 case RewardType.SPELL:
-           
+            
                     characterUpgrade.ShowSpellChoiceInteface();
                     GlobalSoundManager.PlayOneShot(6, Vector3.zero);
                     break;

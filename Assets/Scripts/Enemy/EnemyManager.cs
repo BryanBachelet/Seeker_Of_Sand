@@ -24,6 +24,7 @@ namespace Enemies
         TANK,
         RUNNER,
         TWILIGHT_SISTER,
+        SHROOM,
     }
 
     [System.Serializable]
@@ -164,6 +165,7 @@ namespace Enemies
         public bool debugSpawningPerPosition = false;
 
         [SerializeField] private GameObject prefabSpawnTrail;
+        private int enemyTypeNumber;
         public void Awake()
         {
             m_gameLayer = this.GetComponent<GameLayer>();
@@ -194,6 +196,7 @@ namespace Enemies
 
             uiDispatcher = transform.parent.GetComponentInChildren<UIDispatcher>();
             waveSpawnPositionTimer = waveSpawnMaxCD - 10;
+            enemyTypeNumber = System.Enum.GetValues(typeof(EnemyType)).Length;
             //if (m_uiManagerGameObject) m_UiEventManager = m_uiManagerGameObject.GetComponent<UI_EventManager>();
             //if(altarObject != null) { alatarRefScript = altarObject.GetComponent<AlatarHealthSysteme>(); }
         }
@@ -456,8 +459,9 @@ namespace Enemies
             int countTentative = 0;
             while (countTentative < m_tryCountToSpawnEnemy)
             {
-                countTentative++;
-                enemyIndex = Random.Range(0, 5);
+                countTentative++; 
+                enemyIndex = Random.Range(0, enemyTypeNumber -1);
+
                 if (!CanEnemySpawn(enemyIndex))
                 {
                     enemyIndex = -1;

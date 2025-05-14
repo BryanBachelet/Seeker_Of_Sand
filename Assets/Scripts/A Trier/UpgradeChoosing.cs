@@ -312,7 +312,7 @@ public class UpgradeChoosing : MonoBehaviour
 
     public void OpenRotation()
     {
-        GameState.ChangeState();
+        //GameState.ChangeState();
 
         panelUI.SetActive(true);
         spellProfils = spellBook.GetSpellsRotations();
