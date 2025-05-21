@@ -1,5 +1,53 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &347680852609341628
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5734857405255513022}
+  - component: {fileID: 6047617549336525508}
+  m_Layer: 0
+  m_Name: CameraPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5734857405255513022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347680852609341628}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 319774888888303157}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6047617549336525508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347680852609341628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0812fa1571f0ec648a54cc27d6c4b67f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Crt_position: {x: 0, y: 1000, z: 0}
+  Crt_rotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
+  Ci_position: {x: -200, y: 690, z: -433}
+  Ci_rotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
 --- !u!1 &5054419895580720600
 GameObject:
   m_ObjectHideFlags: 0
@@ -30,7 +78,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5734857405255513022}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6066533219921724104
@@ -47,6 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceBeforeActivatingRooom: 30
   element: 2
+  miniMapCameraPosition: {fileID: 5734857405255513022}
   previewCamera: {fileID: 0}
   m_CRT: {fileID: 8600000, guid: bc1df6f1d5917964a9aef505f589c3e8, type: 2}
   m_materialPreviewTRT: {fileID: 2100000, guid: 4cb2809aa188d84459096336689d9fc3,
@@ -56,6 +106,7 @@ MonoBehaviour:
   rewardType: 3
   healthReward: 0
   isTimingPassing: 0
+  specialID: -1
   enemyToKillCount: 0
   currentCountOfEnemy: 0
   terrainIndex: 0
@@ -254,6 +305,18 @@ MonoBehaviour:
   bossRoom: {fileID: 0}
   isRoomHasBeenDeactivated: 0
   eventNumber: 0
+  rewardAssociated: 
+  spawnerPrefab: {fileID: 0}
+  rangeSpawner: 0
+  rangeSpawner_Min: 0
+  quantitySpawner: 1
+  spawnerList: []
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  teleporterFeedback: {fileID: 0}
+  specialRoomID: -1
+  delayUpdate: 1
 --- !u!114 &5626092623342691025
 MonoBehaviour:
   m_ObjectHideFlags: 0

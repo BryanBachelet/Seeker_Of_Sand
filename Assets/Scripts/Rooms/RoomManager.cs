@@ -15,9 +15,9 @@ using Render.Camera;
 public class RoomManager : MonoBehaviour
 {
     [SerializeField] private float distanceBeforeActivatingRooom = 30;
-    public GameElement element = 0; 
+    public GameElement element = 0;
 
-
+    public Transform miniMapCameraPosition;
     [HideInInspector] public Camera previewCamera;
     public CustomRenderTexture m_CRT;
     public Material m_materialPreviewTRT;
@@ -100,6 +100,8 @@ public class RoomManager : MonoBehaviour
 
     public TeleporterFeebackController teleporterFeedback;
     [SerializeField] private int specialRoomID = -1;
+
+    public bool delayUpdate = true;
     #endregion
     public void RetriveComponent()
     {
@@ -132,6 +134,7 @@ public class RoomManager : MonoBehaviour
         {
             interfacesArray[i].SetupRoomOptions();
         }
+        delayUpdate = false;
     }
     public void ActivateRoom(Material previousMat)
     {
@@ -328,7 +331,7 @@ public class RoomManager : MonoBehaviour
     public void Update()
     {
         ActivateRoomAfterDistanceTP();
-
+        if (delayUpdate) return;
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
         if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
         if (playerRewardDistribution.isRewardSend && !isTeleporterActive)

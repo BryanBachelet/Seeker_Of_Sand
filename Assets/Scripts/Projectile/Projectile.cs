@@ -86,6 +86,7 @@ public class Projectile : MonoBehaviour
     protected DamageCalculComponent m_damageCalculComponent;
 
    [HideInInspector] public GameObject ObjectToSpawn;
+    [HideInInspector] private Animator animator;
 
   public  void Update()
     {
@@ -229,7 +230,7 @@ public class Projectile : MonoBehaviour
         transform.localScale = m_initialScale;
         isStartToMove = false;
         VisualEffect visual = GetComponent<VisualEffect>();
-
+        if(animator != null) { animator.SetTrigger("Reset"); }
 
         if (vFXObject != null && spellProfil.angleRotation != Vector3.zero) vFXObject.transform.rotation = Quaternion.Inverse( Quaternion.Euler(spellProfil.angleRotation));
         if (visual != null) visual.Reinit();
@@ -263,6 +264,7 @@ public class Projectile : MonoBehaviour
         {
 
             GameObject instance = GamePullingSystem.SpawnObject(ObjectToSpawn, transform.position, transform.rotation);
+            if(this.GetComponent<Animator>() != null) { animator = this.GetComponent<Animator>(); }
             MultiHitAreaMeta dotMeta = instance.GetComponent<MultiHitAreaMeta>();
             if (dotMeta)
             {

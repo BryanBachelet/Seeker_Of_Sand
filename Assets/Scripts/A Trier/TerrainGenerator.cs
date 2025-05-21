@@ -361,8 +361,8 @@ public class TerrainGenerator : MonoBehaviour
         cameraFadeFunction.tpBehavior.specialRoomID = roomManager.specialID;
         //dayController.UpdateTimeByStep();
         roomGeneration_text.text = "Room " + TerrainGenerator.roomGeneration_Static;
-        miniMapControl.ResetDiscovery(terrainInstantiated[selectedTerrain]);
-        miniMap_IconControl.ResetDiscovery(terrainInstantiated[selectedTerrain]);
+        miniMapControl.ResetDiscovery(roomManager.miniMapCameraPosition.gameObject);
+        miniMap_IconControl.ResetDiscovery(roomManager.miniMapCameraPosition.gameObject);
 
         if (roomManager.currentRoomType == RoomType.Boss) { gsm.UpdateParameter(1, "BossAmbiant"); }
         else { gsm.UpdateParameter(0, "BossAmbiant"); }

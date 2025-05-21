@@ -166,6 +166,10 @@ namespace Enemies
 
         [SerializeField] private GameObject prefabSpawnTrail;
         private int enemyTypeNumber;
+
+        static public AltarBehaviorComponent currentAltarBehavior = null;
+
+        public GameObject tips2_CustomPass_Object = null;
         public void Awake()
         {
             m_gameLayer = this.GetComponent<GameLayer>();
@@ -776,6 +780,8 @@ namespace Enemies
                 m_altarList.Add(target.GetComponent<AltarBehaviorComponent>());
                 m_altarTransform.Add(target);
                 lastAltarActivated = target.GetComponent<AltarBehaviorComponent>();
+                currentAltarBehavior = lastAltarActivated;
+                tips2_CustomPass_Object.SetActive(true);
             }
 
             //m_UiEventManager.SetupEventUI(healthSystemReference, indexTargetList);
@@ -798,10 +804,12 @@ namespace Enemies
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             healthSystem.ResetUIHealthBar();
             int indexTargetList = healthSystem.indexUIEvent;
-
+            tips2_CustomPass_Object.SetActive(false);
             m_altarList.Remove(target.GetComponent<AltarBehaviorComponent>());
             m_altarTransform.Remove(target);
             lastAltarActivated = null;
+            currentAltarBehavior = null;
+
 
         }
 

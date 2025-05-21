@@ -154,7 +154,8 @@ public class AltarBehaviorComponent : InteractionInterface
         {
             if (m_isWaveCanSpawn)
             {
-                m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
+                Vector2 rndPosition = Random.insideUnitSphere * 350;
+                m_enemyManager.SpawEnemiesGroupCustom(transform.position + new Vector3(rndPosition.x, 0, rndPosition.y), groupSize);
                 m_enemyManager.ActiveMobAggro();
                 m_distortionWave.SendEvent("Activation");
                 m_isWaveCanSpawn = false;

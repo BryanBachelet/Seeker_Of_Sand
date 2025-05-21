@@ -6,7 +6,7 @@ using UnityEngine;
 public class Tool_PositionningTerrain : MonoBehaviour
 {
     public bool changeRotationAlso = false;
-    public bool activeDebugDisplay;
+    public bool UseRepositionning = false;
     public bool activeDebugDisplayParent;
 
 
@@ -14,7 +14,7 @@ public class Tool_PositionningTerrain : MonoBehaviour
     public Vector3 directionPosition;
 
     public List<bool> isRotatingProps;
-
+    public Vector3 rotationAjustement;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +24,8 @@ public class Tool_PositionningTerrain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(activeDebugDisplay)
+        if (!UseRepositionning && !activeDebugDisplayParent) return;
+        else if(UseRepositionning)
         {
             RaycastHit hit;
             // Does the ray intersect any objects excluding the player layer
@@ -35,7 +36,7 @@ public class Tool_PositionningTerrain : MonoBehaviour
                 Quaternion rotationProp = Quaternion.identity;
                 if (changeRotationAlso)
                 {
-                    rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal) * new Quaternion(-90, 0, 0, 0);
+                    rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal) * new Quaternion(rotationAjustement.x, rotationAjustement.y, rotationAjustement.z, 0);
                     transform.localRotation = rotationProp;
                 }
                 transform.position = hit.point;
@@ -45,27 +46,26 @@ public class Tool_PositionningTerrain : MonoBehaviour
                 Debug.DrawRay(transform.position, directionPosition * 1000, Color.white);
                 Debug.Log("Did not Hit");
             }
-            activeDebugDisplay = false;
+            UseRepositionning = false;
         }
 
 
         if(activeDebugDisplayParent)
         {
             
-            for(int i = 0; i < transform.childCount; i++)
+            for(int i = 0; i < transform.childCount-1; i++)
             {
                 RaycastHit hit;
                 Transform childTransform = transform.GetChild(i);
                 // Does the ray intersect any objects excluding the player layer
                 if (Physics.Raycast(childTransform.position, directionPosition, out hit, Mathf.Infinity, layerGround))
-
                 {
                     Debug.DrawRay(childTransform.position, directionPosition * hit.distance, Color.yellow);
                     Debug.Log("Did Hit");
                     Quaternion rotationProp = Quaternion.identity;
                     if (changeRotationAlso)
                     {
-                        rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal) * new Quaternion(90,0,0,0); 
+                        rotationProp = Quaternion.FromToRotation(Vector3.up, hit.normal) * new Quaternion(rotationAjustement.x, rotationAjustement.y, rotationAjustement.z, 0);
                         childTransform.localRotation = rotationProp;
                     }
                     childTransform.position = hit.point;
@@ -86,9 +86,12 @@ public class Tool_PositionningTerrain : MonoBehaviour
     }
 
 
+    public void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(transform.GetChild(0).position, directionPosition);
+    }
 
 
-  
 
 
 }

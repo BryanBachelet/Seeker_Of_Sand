@@ -1,3 +1,4 @@
+using MagicaCloth2;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,12 +17,17 @@ public class MiniMapControl : MonoBehaviour
     [HideInInspector] private Vector3 playerPosition;
     [HideInInspector] private Vector2 playerPositionMiniMap;
     [HideInInspector] private GameObject terrainPosition;
+    [HideInInspector] private CameraMinimap_Data minimapData;
     [HideInInspector] private int diameterDiscovery = 50;
     [HideInInspector] private int radiusBrush = 25;
 
     [HideInInspector] private Material material;
     [SerializeField] private RawImage imageMiniMap;
 
+    public Vector3 positionOffSet;
+    public bool debugUpdatePosition = false;
+
+    [SerializeField] private int indexReferenceCameraMinimap = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +39,11 @@ public class MiniMapControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(debugUpdatePosition)
+        {
+            debugUpdatePosition = false;
+            UpdateMiniMapPosition();
+        }
         if(terrainPosition == null) { return; }
         playerPosition = playerTarget.transform.position - terrainPosition.transform.position;
         playerPositionMiniMap = new Vector2((playerPosition.x / 1500) * 256, (playerPosition.z / 1500) * 256);
@@ -108,8 +119,13 @@ public class MiniMapControl : MonoBehaviour
 
     public void ResetDiscovery(GameObject NewterrainPosition)
     {
+        minimapData = NewterrainPosition.GetComponent<CameraMinimap_Data>();
         terrainPosition = NewterrainPosition;
-        cameraminimap.transform.position = NewterrainPosition.transform.position + new Vector3(750,570,750);
+        //cameraminimap.transform.position = NewterrainPosition.transform.position + minimapData.SettingCameraMinimap_Position()[indexReferenceCameraMinimap];
+        cameraminimap.transform.SetPositionAndRotation
+            (NewterrainPosition.transform.position + minimapData.SettingCameraMinimap_Position()[indexReferenceCameraMinimap], 
+            minimapData.SettingCameraMinimap_Rotation()[indexReferenceCameraMinimap]);
+        cameraminimap.transform.position = new Vector3(cameraminimap.transform.position.x, minimapData.SettingCameraMinimap_Position()[indexReferenceCameraMinimap].y, cameraminimap.transform.position.z);
         maxDezoomPosition = cameraminimap.transform.position;
         discoveryMap = new Texture2D(256, 256, TextureFormat.ARGB32, false);
         colorMap = discoveryMap.GetPixels();
@@ -122,4 +138,8 @@ public class MiniMapControl : MonoBehaviour
         material = imageMiniMap.material;
     }
 
+    public void UpdateMiniMapPosition()
+    {
+        cameraminimap.transform.position = terrainPosition.transform.position + minimapData.SettingCameraMinimap_Position()[indexReferenceCameraMinimap];
+    }
 }

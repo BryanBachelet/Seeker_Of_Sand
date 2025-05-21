@@ -23,6 +23,8 @@ public class TeleporterBehavior : MonoBehaviour
     public EventHolder eventHolder;
 
     public DayTimeController dayTimeController;
+
+    public static Transform socleReferencePosition = null;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +50,7 @@ public class TeleporterBehavior : MonoBehaviour
     {
         nextTeleporter = tpObject;
         nextTpPosition = tpObject.transform.position;
+        socleReferencePosition = tpObject.transform;
         //dayController.UpdateTimeByStep();
         //  nextTerrainNumber = tpObject.TeleporterNumber;
         // eventHolder.GetNewAltar(tpObject.altarBehavior);
