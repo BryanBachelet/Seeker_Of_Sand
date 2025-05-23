@@ -16,6 +16,7 @@ public class UpgradeChoosing : MonoBehaviour
     //[HideInInspector] private
     [Header("UI Object")]
     [SerializeField] private Image[] spellInBar = new Image[4];
+    [SerializeField] private Image fillNextTierRankPoint;
     public spell_Attribution currentSpellSelected;
     public spell_Attribution currentspellSelected_NextRank;
     public Image spellUpgradeFocus;
@@ -128,6 +129,22 @@ public class UpgradeChoosing : MonoBehaviour
         }
         currentSpellSelected.AcquireSpellData(m_upgradeLevelingData.spellState[m_upgradeLevelingData.indexSpellFocus]);
         SpellProfil tempSpellProfil = m_upgradeLevelingData.spellState[m_upgradeLevelingData.indexSpellFocus];
+        if(tempSpellProfil.currentSpellTier <= 0)
+        {
+            if(tempSpellProfil.spellExp > 0)
+            {
+                fillNextTierRankPoint.fillAmount = ((float)tempSpellProfil.spellExp / 4);
+            }
+            else
+            {
+                fillNextTierRankPoint.fillAmount = 0;
+            }
+
+        }
+        else
+        {
+            fillNextTierRankPoint.fillAmount = (((float)tempSpellProfil.spellExp - ((float)tempSpellProfil.currentSpellTier * 4))/4);
+        }
         tempSpellProfil.spellExp += 4;
         currentspellSelected_NextRank.AcquireSpellData(tempSpellProfil);
         tempSpellProfil.spellExp -= 4;
