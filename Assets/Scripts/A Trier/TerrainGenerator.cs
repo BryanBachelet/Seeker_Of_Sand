@@ -371,18 +371,20 @@ public class TerrainGenerator : MonoBehaviour
 
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
-        for (int i = 0; i < oldTerrain.Count; i++)
+        if (oldTerrain.Count > 0)
         {
-            NavMeshSurface navSurf = oldTerrain[i].GetComponent<NavMeshSurface>();
-            if (navSurf != null)
+            for (int i = 0; i < oldTerrain.Count; i++)
             {
-                navSurf.RemoveData();
-                navSurf.enabled = false;
+                NavMeshSurface navSurf = oldTerrain[i].GetComponent<NavMeshSurface>();
+                if (navSurf != null)
+                {
+                    navSurf.RemoveData();
+                    navSurf.enabled = false;
+                }
+
+                oldTerrain[i].SetActive(false);
             }
-
-            oldTerrain[i].SetActive(false);
         }
-
 
         RoomManager previousRoomManager = currentRoomManager;
         selectedTerrain = selectedTerrainNumber;

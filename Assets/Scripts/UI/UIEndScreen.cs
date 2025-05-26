@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using GuerhoubaGames.UI;
 using TMPro;
+using UnityEngine.VFX;
 
 public class UIEndScreen : MonoBehaviour
 {
@@ -18,9 +19,11 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text m_roomCountText;
     [SerializeField] private Image[] m_nightCompletionFill = new Image[3];
     [SerializeField] private GameObject[] m_nightCompleted;
+    [SerializeField] private VisualEffect[] m_vfxNightCompleted = new VisualEffect[3];
     [SerializeField] private GameObject fixeElement;
     [SerializeField] private int m_spelltDisplayCount = 4;
     [SerializeField] private GameObject[] m_spellDetail = new GameObject[4];
+    [SerializeField] private spell_Attribution[] m_spellAttribution = new spell_Attribution[4];
     [SerializeField] private TMP_Text[] m_spellDetailUpgrades = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailTier = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailDamages = new TMP_Text[4];
@@ -125,6 +128,7 @@ public class UIEndScreen : MonoBehaviour
         if(stat.nightValidate > 0 && progress > 0.33f)
         {
             m_nightCompleted[0].SetActive(true);
+            m_vfxNightCompleted[0].Play();
             m_nightCompletionFill[0].fillAmount = 1;
             m_nightCompletionFill[1].fillAmount = Mathf.Lerp(0, (stat.roomCount - 7) / 7.0f, (progress - 0.33f) / 0.33f);
             //m_nightCompletionFill[2].fillAmount = 0;
@@ -132,13 +136,15 @@ public class UIEndScreen : MonoBehaviour
         if (stat.nightValidate > 1 && progress > 0.66f)
         {
             m_nightCompleted[1].SetActive(true);
-           m_nightCompletionFill[0].fillAmount = 1;
+            m_vfxNightCompleted[1].Play();
+            m_nightCompletionFill[0].fillAmount = 1;
            m_nightCompletionFill[1].fillAmount = 1;
             m_nightCompletionFill[2].fillAmount = Mathf.Lerp(0, (stat.roomCount - 14) / 7f, (progress - 0.66f) / 0.33f);
         }
         if (stat.nightValidate > 2 && progress >= 0.99f)
         {
             m_nightCompleted[2].SetActive(true);
+            m_vfxNightCompleted[2].Play();
             m_nightCompletionFill[0].fillAmount = 1;
             m_nightCompletionFill[1].fillAmount = 1;
             m_nightCompletionFill[2].fillAmount = 1;
@@ -219,14 +225,15 @@ public class UIEndScreen : MonoBehaviour
             if (i < spellCount)
             {
                 m_spellDetail[i].SetActive(true);
-                m_spellDetailImage[i].sprite = spellProfils[i].spell_Icon;
-                m_spellDetailUpgrades[i].text = "" + spellProfils[i].currentSpellTier;
+                m_spellAttribution[i].AcquireSpellData(spellProfils[i]);
+                //m_spellDetailImage[i].sprite = spellProfils[i].spell_Icon;
+                m_spellDetailUpgrades[i].text = "" + spellProfils[i].spellExp;
                 m_spellDetailName[i].text = "" + spellProfils[i].name;
 
 
                 spellDamaged[i] = GameStats.instance.GetDamage(spellProfils[i].name);
                 int tier = Mathf.FloorToInt(spellProfils[i].currentSpellTier);
-                m_spellDetailTier[i].text = "" + tier;
+                m_spellDetailTier[i].text = "" + m_spellAttribution[i].level;
             }
             else
             {
