@@ -20,11 +20,13 @@ public class FragmentDisplay_Elemental : MonoBehaviour
     public Material mat;
     // Start is called before the first frame update
     [SerializeField] private FragmentCornerElemental fragmentCornerElemental;
+
     private void OnEnable()
     {
         imageFragment = this.GetComponent<Image>();
         mat = new Material(myMat);
         imageFragment.material = mat;
+
     }
     void Start()
     {
