@@ -28,6 +28,8 @@ namespace Character
         [SerializeField] private float m_slopeMax = 20;
         [SerializeField] private float m_rotationDurationOnRun = .15f;
         [SerializeField] private float m_mouvementLagChangeDirection = 3.0f;
+        [SerializeField] private float m_durationRotationToCursor = .3f;
+        private float m_timerRotationToCursor = 0.0f;
 
         [Header("Combat Speed Variables")]
         public float m_combatReductionSpeedPercent = 0.45f;
@@ -147,7 +149,7 @@ namespace Character
         [SerializeField] private Transform m_avatarTransform;
 
         [Header("Debug Parameters")]
-        [SerializeField] private bool m_activeDebug;
+        [SerializeField] private bool m_activeMouvementDebug;
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
@@ -425,7 +427,7 @@ namespace Character
             BeforeChangeState(mouvementState);
             mouvementState = newState;
             SetSpeedLimit();
-            if (m_activeDebug) Debug.Log("New State = " + newState);
+            
             AfterChangeState(mouvementState, prevState);
         }
 
@@ -976,6 +978,7 @@ namespace Character
 
                 transform.rotation = Quaternion.Slerp(m_startRotation, endRot, m_rotationTime);
                 m_avatarTransform.localRotation = Quaternion.identity;
+                m_timerRotationToCursor = 0;
             }
 
             if (m_characterShoot.IsCombatMode() && m_characterShoot.m_aimModeState != AimMode.Automatic || m_inputDirection == Vector2.zero)
@@ -983,8 +986,20 @@ namespace Character
                 m_prevInputDirection = Vector3.zero;
                 m_characterAim.FeedbackHeadRotation();
                 Quaternion rotationFromHead = m_characterAim.GetTransformHead().rotation;
-                m_avatarTransform.rotation = rotationFromHead;
-                transform.rotation = rotationFromHead;
+                
+                if(m_inputDirection == Vector2.zero)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, rotationFromHead, m_timerRotationToCursor / m_durationRotationToCursor);
+
+                    m_timerRotationToCursor += Time.deltaTime;
+                    m_timerRotationToCursor = Mathf.Clamp(m_timerRotationToCursor, 0, m_durationRotationToCursor);
+
+                }
+                else
+                {
+                    m_avatarTransform.rotation = rotationFromHead;
+                }
+               
             }
 
         }
@@ -1078,10 +1093,12 @@ namespace Character
 
         public void UpdateDebug()
         {
+            if (!m_activeMouvementDebug) return;
             ScreenDebuggerTool.AddMessage("Current Speed : " + m_currentSpeed.ToString());
             ScreenDebuggerTool.AddMessage("Current State : " + mouvementState.ToString());
             ScreenDebuggerTool.AddMessage("Combat State : " + m_characterShoot.combatPlayerState.ToString());
             ScreenDebuggerTool.AddMessage("Player Velocity : " + m_velMovement);
+            ScreenDebuggerTool.AddMessage("Timer Rotation Cursor : " + m_timerRotationToCursor / m_durationRotationToCursor);
         }
     }
 }
