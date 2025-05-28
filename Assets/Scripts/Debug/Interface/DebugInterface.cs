@@ -40,7 +40,7 @@ public class DebugInterface : MonoBehaviour
             return;
         }
 
-        m_characterMouvement.runSpeed = value;
+        m_characterMouvement.runningSpeed = value;
 
     }
 

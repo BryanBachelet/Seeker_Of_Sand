@@ -106,7 +106,7 @@ namespace Character
                 if (col.Length > 0)
                 {
                     m_hasCloseTarget = true;
-                    m_characterMouvement.SetCombatMode(true);
+                    //m_characterMouvement.SetCombatMode(true);
                     Vector3 nearestEnemyPos = NearestEnemy(col, position);
                     nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
                     Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
@@ -355,7 +355,7 @@ namespace Character
 
         private void AimFeedback()
         {
-            if (m_characterShoot.m_CharacterMouvement.combatState)
+            if (m_characterShoot.IsCombatMode())
             {
                 m_exitCombatState = false;
                 // FeedbackHeadRotation();

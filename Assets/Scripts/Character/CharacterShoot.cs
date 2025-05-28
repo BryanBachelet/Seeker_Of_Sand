@@ -14,9 +14,16 @@ using Klak.Motion;
 using SeekerOfSand.Tools;
 using GuerhoubaGames;
 using Render.Camera;
+using System;
 
 namespace Character
 {
+    public enum CombatPlayerState
+    {
+        NONE =0,
+        COMBAT =1,
+    }
+
     public class CharacterShoot : MonoBehaviour
     {
 
@@ -169,6 +176,10 @@ namespace Character
         private SmoothFollow bookSmoothFollow;
         private CharacterDamageComponent m_characterDamageComponent;
 
+        [HideInInspector] public CombatPlayerState combatPlayerState;
+        public Action OnCombatStarting;
+        public Action OnCombatEnding;
+
         #region Unity Functions
 
         private void Awake()
@@ -224,7 +235,7 @@ namespace Character
         {
             if (!state.isPlaying) { return; } // Block Update during pause state
 
-            if (m_CharacterMouvement.combatState)
+            if (IsCombatMode())
             {
                 UpdateAvatarModels();
                 AutomaticAimMode();
@@ -273,7 +284,7 @@ namespace Character
         {
             if (m_aimModeState != AimMode.FullControl) return;
 
-            if (!m_CharacterMouvement.combatState || hasShootBlock) return;
+            if (!IsCombatMode() || hasShootBlock) return;
 
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell) return;
 
@@ -356,6 +367,8 @@ namespace Character
             if(gsm == null) { gsm = m_cameraObject.GetComponentInChildren<GlobalSoundManager>(); }
             if(m_cameraShake == null) { m_cameraShake = m_cameraObject.GetComponent<CameraShake>(); }
             if(m_cameraBehavior == null) { m_cameraBehavior = m_cameraObject.GetComponent<CameraBehavior>(); }
+
+            bookSmoothFollow = FindObjectOfType<SmoothFollow>();
         }
 
         private void InitSpriteSpell()
@@ -475,7 +488,7 @@ namespace Character
                 m_shootInputActive = true;
                 m_lastTimeShot = Time.time;
                 m_hasCancel = false;
-                m_CharacterMouvement.combatState = true;
+                SetCombatMode(CombatPlayerState.COMBAT);
             }
             if (ctx.canceled && state.isPlaying)
             {
@@ -484,7 +497,7 @@ namespace Character
                 CancelShoot();
                 //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
-                m_CharacterMouvement.combatState = false;
+                SetCombatMode(CombatPlayerState.NONE);
                 m_CharacterMouvement.ActiveSlide();
             }
         }
@@ -1333,8 +1346,7 @@ namespace Character
 
 
             if (!m_CharacterMouvement.activeCombatModeConstant)
-                m_CharacterMouvement.SetCombatMode(false);
-
+                SetCombatMode(CombatPlayerState.NONE);
             //m_cameraBehavior.BlockZoom(false);
             SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
             int maxStack = GetMaxStack(spellProfil);
@@ -1401,7 +1413,7 @@ namespace Character
             isCasting = true;
             m_CharacterAnimator.SetBool("Casting", true);
             m_BookAnimator.SetBool("Casting", true);
-            m_CharacterMouvement.SetCombatMode(true);
+            SetCombatMode(CombatPlayerState.COMBAT);
             m_uiPlayerInfos.ActiveSpellCanalisationUIv2(GetMaxStack(currentCloneSpellProfil), spellAttribution[m_currentRotationIndex].imageSpell);
 
             //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); bookSmoothFollow.JumpRandomly(); }
@@ -1420,7 +1432,8 @@ namespace Character
             m_lastTimeShot = Mathf.Infinity;
             avatarTransform.localRotation = Quaternion.identity;
             //bookTransform.localRotation = Quaternion.identity;
-            if (!m_CharacterMouvement.activeCombatModeConstant) m_CharacterMouvement.SetCombatMode(false);
+            if (!m_CharacterMouvement.activeCombatModeConstant) 
+                SetCombatMode(CombatPlayerState.NONE);
             //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); bookSmoothFollow.Snap(); }
 
         }
@@ -1766,6 +1779,36 @@ namespace Character
             int id = GamePullingSystem.GetDeterministicHashCode(spellProfil.objectToSpawn.name);
             GamePullingSystem.instance.UpdatePullQuantity(quantity, id);
         }
+
+
+        #region Combat State Functions
+        public void SetCombatMode(CombatPlayerState newState)
+        {
+            if (newState == combatPlayerState) return;
+            combatPlayerState = newState;
+            if (combatPlayerState == CombatPlayerState.COMBAT)
+            {
+               
+                OnCombatStarting?.Invoke();
+
+                bookSmoothFollow.ChangeForBook(true);
+            }
+            if(combatPlayerState == CombatPlayerState.NONE)
+            {
+                
+                OnCombatEnding?.Invoke();
+
+                bookSmoothFollow.ChangeForBook(false);
+            }
+
+            
+        }
+
+        internal bool IsCombatMode()
+        {
+            return combatPlayerState == CombatPlayerState.COMBAT;
+        }
+        #endregion
 
 
     }
