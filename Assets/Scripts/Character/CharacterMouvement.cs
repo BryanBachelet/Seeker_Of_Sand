@@ -26,7 +26,8 @@ namespace Character
     [RequireComponent(typeof(Rigidbody))]
     public class CharacterMouvement : MonoBehaviour, CharacterComponent
     {
-        private const int slopeMaxWalkable = 60;
+        private const int m_slopeMaxWalkable = 60;
+        private const int m_slopeMinAngleAcceleration = 5;
         private CharacterProfile profile;
         private Render.Camera.CameraBehavior cameraPlayer;
         private SlopeData m_slopeData;
@@ -41,8 +42,7 @@ namespace Character
         private float m_timerRotationToCursor = 0.0f;
 
         [Header("Running Slope Variables")]
-        [SerializeField] private float m_slopeAdditionalSpeed = 20;
-        [SerializeField] private float m_slopeMaxGainSpeedRunning = 40;
+        [SerializeField] private float m_slopeMaxGainSpeedRunning = 20;
         [SerializeField] private float m_slopeRunningGainSpeedLimit = 20;
         [SerializeField] private float m_slopeRunningLoseSpeedLimit = 20;
 
@@ -808,7 +808,7 @@ namespace Character
             {
                 Vector3 direction = GetForwardDirection(hit.normal);
 
-                if (m_slopeData.slopeAngleAbs >= slopeMaxWalkable)
+                if (m_slopeData.slopeAngleAbs >= m_slopeMaxWalkable)
                 {
                     m_rigidbody.velocity = Vector3.zero;
                 }
@@ -906,7 +906,7 @@ namespace Character
 
             if (m_characterShoot.IsCombatMode()) return;
 
-            if (m_slopeData.slopeAngle > 5 )
+            if (m_slopeData.slopeAngle > m_slopeMinAngleAcceleration)
             {
                 m_slopeAddionnalRunningSpeed += m_slopeRunningGainSpeedLimit * Time.deltaTime;
                 m_slopeAddionnalRunningSpeed = Mathf.Clamp(m_slopeAddionnalRunningSpeed, 0, m_slopeMaxGainSpeedRunning);
@@ -942,9 +942,19 @@ namespace Character
             //    m_currentSlideSpeed -= minDecceleration * multiplyDecceleration * Time.deltaTime;
 
             //}
+            Vector3 inputMvt = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
-            m_currentSlideSpeed += m_slidingAcceleration.Evaluate(m_slopeData.slopeAngle ) * Time.deltaTime;
-            m_currentSpeed += m_currentSlideSpeed;
+            if (inputMvt.z < 0)
+            {
+                m_currentSlideSpeed -= m_slidingBrake * Time.deltaTime;
+                m_currentSpeed += m_currentSlideSpeed;
+            }
+            else
+            {
+                m_currentSlideSpeed += m_slidingAcceleration.Evaluate(m_slopeData.slopeAngle) * Time.deltaTime;
+                m_currentSpeed += m_currentSlideSpeed;
+            }
+           
 
             if (m_currentSpeed < runningSpeed)
             {
