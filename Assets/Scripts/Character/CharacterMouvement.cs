@@ -11,6 +11,8 @@ using Render.Camera;
 using BorsalinoTools;
 using UnityEditor;
 using GuerhoubaTools.Curves;
+using static Character.CharacterMouvement;
+using UnityEditor.Rendering;
 
 namespace Character
 {
@@ -56,7 +58,7 @@ namespace Character
         [SerializeField] private float m_slidingThreshold = 100;
         [SerializeField] private float m_slidingBrake = 100;
         [SerializeField] private float m_slidingMaxSpeed = 200;
-        [SerializeField] private CurveObject m_slidingMaxRotation;
+        [SerializeField] private float m_angularSpeed = 200;
         [SerializeField] private CurveObject m_slidingAcceleration;
         [SerializeField] private float m_combatSpeedTransitionDuration;
         [SerializeField] private float m_slidingBaseSpeedEnter = 120;
@@ -65,12 +67,14 @@ namespace Character
         private float m_currentSpeed;
         private Vector3 m_currentDirection;
 
+        
         [Header("Old Variables")]
-
+        
         [HideInInspector] private float initialSpeed = 10.0f;
         [HideInInspector] private GameLayer m_gameLayer;
         [HideInInspector] private float m_groundDistance = 12;
         [HideInInspector] private float m_maxGroundSlopeAngle = 90;
+        [Space]
         [SerializeField] private Animator m_CharacterAnim = null;
         [SerializeField] private Animator m_BookAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
@@ -111,7 +115,7 @@ namespace Character
         [HideInInspector] private float maxSlope = 90;
         [HideInInspector] private float minSlope = 5.0f;
         [HideInInspector] private float minDecceleration = 10;
-        [HideInInspector] private float angularSpeed = 200;
+
         [HideInInspector] private float timeAfterSliding = 0.2f;
         [HideInInspector] private float timeBeforeSliding = 0.1f;
 
@@ -176,6 +180,8 @@ namespace Character
 
         public bool updateProfilStateSpeedDebug = false;
 
+
+        private MouvementState m_prevState;
         // temp
         private float timeToAccelerate = 0.75f;
         private float m_timerToAccelerate = 0.0f;
@@ -441,6 +447,7 @@ namespace Character
         public void ChangeState(MouvementState newState)
         {
             MouvementState prevState = mouvementState;
+            m_prevState = mouvementState;
             if (newState == mouvementState) return;
             BeforeChangeState(mouvementState);
             mouvementState = newState;
@@ -470,6 +477,7 @@ namespace Character
                     //m_slidingEffect.SetActive(false);
                     //  m_timerBeforeSliding = 0.0f;
                     if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 0);
+                    timeSlideTransition  = 0;
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
@@ -904,6 +912,7 @@ namespace Character
             m_velMovement = Vector3.ClampMagnitude(m_velMovement, m_speedLimit);
             m_currentSpeed = Mathf.Clamp(m_velMovement.magnitude, 0, m_speedLimit);
 
+            SetSpeedLimit();
             if (m_characterShoot.IsCombatMode()) return;
 
             if (m_slopeData.slopeAngle > m_slopeMinAngleAcceleration)
@@ -1075,15 +1084,15 @@ namespace Character
             Vector3 inputDirection = new Vector3(m_inputDirection.x, 0, m_inputDirection.y);
 
             Vector3 dir = Quaternion.Euler(0, cameraPlayer.GetAngle(), 0) * inputDirection;
-            //float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up)
-            float angleDir = m_slidingMaxRotation.Evaluate(m_currentSpeed) * m_inputDirection.x;
+            float angleDir = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+            //float angleDir = m_slidingMaxRotation.Evaluate(m_currentSpeed) * m_inputDirection.x;
             m_isSlideRotating = false;
             if (Mathf.Abs(angleDir) > angleMinToRotateInSlide)
             {
                 m_isSlideRotating = true;
 
             }
-            angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -angularSpeed * Time.deltaTime, angularSpeed * Time.deltaTime);
+            angleDir = Mathf.Clamp(angleDir * Time.deltaTime, -m_angularSpeed * Time.deltaTime, m_angularSpeed * Time.deltaTime);
 
 
             transform.rotation *= Quaternion.AngleAxis(angleDir, Vector3.up);
@@ -1128,19 +1137,26 @@ namespace Character
             m_rigidbody.velocity = Vector3.zero;
         }
 
+        private float timeSlideTransition;
+
         public void SetSpeedLimit()
         {
             float result = 0;
+          
             switch (mouvementState)
             {
                 case MouvementState.None:
                     break;
                 case MouvementState.Classic:
 
+                    
                     result = runningSpeed + m_slopeAddionnalRunningSpeed;
+
+         
                     if (m_characterShoot.IsCombatMode())
                     {
-                        result = runningSpeed * m_combatReductionSpeedPercent;
+                        timeSlideTransition += Time.deltaTime * 0.5f;
+                        result = (runningSpeed * m_combatReductionSpeedPercent + Mathf.Clamp(m_slidingMaxSpeed * ((m_combatSpeedTransitionDuration - timeSlideTransition) / m_combatSpeedTransitionDuration), 0, 200) );
                     }
 
                     break;

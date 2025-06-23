@@ -5574,27 +5574,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runningSpeed: 80
   m_runningSpeedAccelerationDuration: 0.1
-  m_slopeAdditionalSpeed: 20
-  m_slopeMax: 20
   m_rotationDurationOnRun: 0.15
-  m_transitionDirectionMouvement: 3
+  m_mouvementLagChangeDirection: 3
+  m_durationRotationToCursor: 0.3
+  m_slopeMaxGainSpeedRunning: 20
+  m_slopeRunningGainSpeedLimit: 40
+  m_slopeRunningLoseSpeedLimit: 20
   m_combatReductionSpeedPercent: 0.45
   m_slidingThreshold: 100
   m_slidingBrake: 100
   m_slidingMaxSpeed: 200
-  m_slidingMaxRotation:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_slidingAcceleration:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_combatSpeedTransitionDuration: 0
+  m_angularSpeed: 200
+  m_slidingAcceleration: {fileID: 11400000, guid: 6588427e7a89da146b3f79909052d153,
+    type: 2}
+  m_combatSpeedTransitionDuration: 1
   m_slidingBaseSpeedEnter: 120
   m_CharacterAnim: {fileID: 699862458290668006}
   m_BookAnim: {fileID: 2250799611024702229}
@@ -5656,7 +5649,7 @@ MonoBehaviour:
     Path: event:/Player/Mouvement
   mouvementState: 0
   m_avatarTransform: {fileID: 6632142262200979151}
-  m_activeDebug: 0
+  m_activeMouvementDebug: 0
   updateProfilStateSpeedDebug: 0
 --- !u!114 &1983534965
 MonoBehaviour:
