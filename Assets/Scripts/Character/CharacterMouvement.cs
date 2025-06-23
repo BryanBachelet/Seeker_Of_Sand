@@ -68,13 +68,13 @@ namespace Character
         private Vector3 m_currentDirection;
 
         
-        [Header("Old Variables")]
-        
+       
         [HideInInspector] private float initialSpeed = 10.0f;
         [HideInInspector] private GameLayer m_gameLayer;
         [HideInInspector] private float m_groundDistance = 12;
         [HideInInspector] private float m_maxGroundSlopeAngle = 90;
         [Space]
+        [Header("Old Variables")]
         [SerializeField] private Animator m_CharacterAnim = null;
         [SerializeField] private Animator m_BookAnim = null;
         [SerializeField] private GameObject m_slidingEffect;
@@ -221,6 +221,8 @@ namespace Character
             if (m_BookAnim.GetComponent<SmoothFollow>()) { bookSmoothFollow = m_BookAnim.GetComponent<SmoothFollow>(); }
             if (m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
             if (cameraPlayer == null) { cameraPlayer = Camera.main.GetComponent<CameraBehavior>(); }
+
+            timeSlideTransition = m_combatSpeedTransitionDuration;
         }
 
         private void Start()

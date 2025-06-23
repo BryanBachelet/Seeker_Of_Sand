@@ -923,8 +923,7 @@ namespace Enemies
             if (CanActiveSpawnPhase() != spawningPhase)
             {
                 ChangeSpawningPhase(!spawningPhase);
-                if (spawningPhase == true) { StartCoroutine(m_cameraBehavior.DeZoomCamera()); }
-                else { m_cameraBehavior.isZoomActive = true; }
+              
             }
         }
 

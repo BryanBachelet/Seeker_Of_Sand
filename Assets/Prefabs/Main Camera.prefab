@@ -88,8 +88,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898435386039766562}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38661, y: -0.047001865, z: 0.019733638, w: 0.9208334}
-  m_LocalPosition: {x: 4.8595467, y: 16.784523, z: -3.741519}
+  m_LocalRotation: {x: 0.4051416, y: 0, z: 0, w: 0.91425395}
+  m_LocalPosition: {x: 405.4, y: 271.4226, z: -2461.306}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -289,51 +289,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d561d001629b20a489dbe19fef687dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTrainTransform: {fileID: 0}
   playerMove: {fileID: 0}
   m_targetTransform: {fileID: 0}
-  m_distanceToTarget: 60
-  m_offsetPos: {x: 0, y: 0, z: 0}
-  cameraOrientedAngleSpeed: 0.25
+  m_distanceToTarget: 150
+  m_directionCamera: {x: 0, y: 0.7721508, z: -0.6354393}
+  m_angleCamera: {x: 47.8, y: 0, z: 0}
+  m_offsetCamera: {x: 0, y: 0, z: 0}
+  cameraOrientedAngleSpeed: 5
   minFrameCamOriented: 5
   cameraMode: 1
-  sun: {fileID: 0}
   m_cursorTex:
-  - {fileID: 0}
-  - {fileID: 0}
-  obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_maxDistance: 10
-  m_minDistance: 2
-  m_maxAngle: {x: 0, y: 0, z: 0}
-  m_minAngle: {x: 0, y: 0, z: 0}
-  m_currentLerpValue: 1
-  m_keyboardZoomSensibility: 1
-  m_gamepadZoomSensibility: 7
-  m_activeCameraZoomDebug: 0
-  m_baseOffset: {x: 0, y: 0, z: 0}
-  m_valueMinToStartSlope: 0.8
-  m_maxZoomBlock: 0.15
-  m_transitionDuration: 2
-  m_minZoomBlock: 0.85
-  m_thresholdAngle: 4
-  m_mousDeltaThreshold: 3
-  m_maxMouseDeltaSpeed: 500
-  m_minMouseDeltaSpeed: 5
-  m_mouseSensibility: 1
-  m_gamepadSensibility: 1
-  m_maxAngularSpeed: 360
-  m_angularSpeed: 10
+  - {fileID: 2800000, guid: 9c2b464794e9c9243bf317d4cbe4b996, type: 3}
+  - {fileID: 2800000, guid: 23e213a8445a767469499520ee38e2d1, type: 3}
   angularSpeedAcceleration:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 45
+      inSlope: 21.295729
+      outSlope: 21.295729
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.079739615
+    - serializedVersion: 3
+      time: 0.29806998
+      value: 65
+      inSlope: 85.05895
+      outSlope: 85.05895
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 95
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_inverseCameraController: 0
-  m_activateHeightDirectionMode: 0
-  m_mouseInputActivate: 0
   maskGround:
     serializedVersion: 2
     m_Bits: 0
@@ -353,9 +353,6 @@ MonoBehaviour:
   m_shakeYaw: 1.4
   m_shakeRoll: 2.4
   m_shakePitch: 3.2
-  m_shakeOffsetX: 1
-  m_shakeOffsetY: 1
-  m_shakeOffsetZ: 1
 --- !u!114 &8870188415779612043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,6 +378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
   attenuationObject: {fileID: 0}
 --- !u!114 &1999966531
 MonoBehaviour:
@@ -1347,6 +1345,7 @@ MonoBehaviour:
     Path: 
   changing: 0
   delayMusic: 0
+  menuMute: 0
 --- !u!1 &6424542838334370276
 GameObject:
   m_ObjectHideFlags: 0
