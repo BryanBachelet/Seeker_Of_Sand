@@ -71,6 +71,8 @@ public class DayTimeController : MonoBehaviour
         if(debugTime)
         {
             debugTime =false;
+            Debug.Log("Debug time Controller");  
+
             UpdateNextPhase();
         }
     }

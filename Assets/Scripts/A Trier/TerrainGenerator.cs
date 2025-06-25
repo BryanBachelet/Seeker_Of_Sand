@@ -116,6 +116,7 @@ public class TerrainGenerator : MonoBehaviour
 
         roomTypeList.Remove(RoomType.Free);
         roomTypeList.Remove(RoomType.Boss);
+        roomTypeList.Remove(RoomType.Merchant);
     }
 
     public void SetupFirstRoom()
@@ -131,6 +132,7 @@ public class TerrainGenerator : MonoBehaviour
         roomInfoUI.currentRoomManager = currentRoomManager;
         currentRoomManager.ActivateRoom(currentRoomManager.m_materialPreviewTRT);
         roomInfoUI.ActualizeRoomInfoInterface();
+        roomTypeList.Add(RoomType.Merchant);
 
     }
     public void GenerateTerrain(int selectedTerrainNumber)

@@ -42,7 +42,11 @@ public class CharacterProfile : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        stats = characterStatPreset.preset;
+        if(characterStatPreset)
+        {
+            stats = characterStatPreset.preset;
+        }
+      
     }
     private void Start()
     {

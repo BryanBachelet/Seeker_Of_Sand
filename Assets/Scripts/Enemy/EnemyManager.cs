@@ -550,7 +550,7 @@ namespace Enemies
             while (delaySpawn > 0)
             {
                 delaySpawn -= Time.deltaTime;
-                Debug.Log("Delay remain : " + delaySpawn);
+                //Debug.Log("Delay remain : " + delaySpawn);
             }
             Debug.Log("Active spawn Mob");
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);

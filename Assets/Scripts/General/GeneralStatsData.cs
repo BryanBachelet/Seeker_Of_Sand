@@ -15,9 +15,9 @@ public class GeneralStatData : ScriptableObject
 
     public List<StatData> statDatas = new List<StatData>();
     public List<StatType> statTypes = new List<StatType>();
-
-#if UNITY_EDITOR
     private List<StatType> statTypesTemp = new List<StatType>();
+#if UNITY_EDITOR
+
 #endif
 
 
