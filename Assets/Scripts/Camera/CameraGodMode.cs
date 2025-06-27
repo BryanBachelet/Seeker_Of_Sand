@@ -96,7 +96,7 @@ public class CameraGodMode : MonoBehaviour
     public void CameraRotationInput(InputAction.CallbackContext ctx)
     {
         m_mouseDeltaInputValue = ctx.ReadValue<Vector2>();
-        Debug.Log("Mouse Delta Input : " + m_mouseDeltaInputValue);
+
         if(Mathf.Abs(m_mouseDeltaInputValue.x) <= m_thesholdLevel)
         {
             m_mouseDeltaInputValue.x = 0;   

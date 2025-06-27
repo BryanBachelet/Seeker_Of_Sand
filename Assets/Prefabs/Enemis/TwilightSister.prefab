@@ -1845,6 +1845,7 @@ GameObject:
   - component: {fileID: 8056349823282169993}
   - component: {fileID: 1480183017902568212}
   - component: {fileID: 957940569792382224}
+  - component: {fileID: 5527839324486854561}
   m_Layer: 6
   m_Name: TwilightSister
   m_TagString: Enemy
@@ -2409,6 +2410,7 @@ MonoBehaviour:
   isInAttackSequence: 0
   sequenceIndex: -1
   DebugSpecificItem: 0
+  isStopRotationFirstFrame: 0
 --- !u!114 &4556499592294721682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2437,6 +2439,7 @@ MonoBehaviour:
     attackIndex: 0
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -2452,6 +2455,7 @@ MonoBehaviour:
     attackIndex: 1
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -2467,6 +2471,7 @@ MonoBehaviour:
     attackIndex: 2
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 1
     isSpawn: 0
@@ -2482,6 +2487,7 @@ MonoBehaviour:
     attackIndex: 4
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -2497,6 +2503,7 @@ MonoBehaviour:
     attackIndex: 6
     attackPhase: 1
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 0
@@ -2512,6 +2519,7 @@ MonoBehaviour:
     attackIndex: 7
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -2527,6 +2535,7 @@ MonoBehaviour:
     attackIndex: 7
     attackPhase: 1
     offsetSpawnPosition: {x: 0, y: 0, z: 5}
+    isDelayed: 0
   - feedbackType: 1
     areaSpawnType: 1
     isSpawn: 0
@@ -2542,6 +2551,7 @@ MonoBehaviour:
     attackIndex: 7
     attackPhase: 1
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
+    isDelayed: 0
 --- !u!114 &5630804304538944160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2787,6 +2797,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5527839324486854561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7c5694252788814db30dd6061ff3563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1926249773738274090
 GameObject:
   m_ObjectHideFlags: 0
