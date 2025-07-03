@@ -8,7 +8,9 @@ using UnityEngine.SceneManagement;
 
 public class CreditTrigger : MonoBehaviour
 {
-    private   NpcHealthComponent m_healthComponent;    
+
+    private NpcHealthComponent m_healthComponent;    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,14 +18,17 @@ public class CreditTrigger : MonoBehaviour
         m_healthComponent.OnDeathEvent += OnDeathCredit;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-      
-    }
 
     void OnDeathCredit()
     {
+        Camera.main.GetComponent<CameraFadeFunction>().LaunchFadeIn(true, 1);
+        StartCoroutine(LaunchScene());
+    }
+
+    IEnumerator LaunchScene()
+    {
+        yield return new WaitForSeconds(1);
         SceneManager.LoadScene(6);
+        yield return null;
     }
 }
