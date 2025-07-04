@@ -94,7 +94,7 @@ public class Harpon : Projectile
                 if ( m_enemyImpales[i].m_npcInfo.state != Enemies.NpcState.DEATH)
                 {
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
-                    m_enemyImpales[i].ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpales[i].transform.position - transform.position, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    m_enemyImpales[i].ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpales[i].transform.position - transform.position, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                     m_enemyImpales[i].m_npcInfo.state = Enemies.NpcState.PAUSE;
                    
                 }
@@ -159,7 +159,7 @@ public class Harpon : Projectile
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                     return;
                 }
 
@@ -173,7 +173,7 @@ public class Harpon : Projectile
 
                     for (int i = 0; i < damageStatDatas.Length; i++)
                     {
-                        enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                        enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                     }
 
                     if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
@@ -196,7 +196,7 @@ public class Harpon : Projectile
 
                     for (int i = 0; i < damageStatDatas.Length; i++)
                     {
-                        enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                        enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                     }
                 }
             }
@@ -216,7 +216,7 @@ public class Harpon : Projectile
 
                 for (int i = 0; i < damageStatDatas.Length; i++)
                 {
-                    enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                 }
             }
 
@@ -231,7 +231,7 @@ public class Harpon : Projectile
 
                 for (int i = 0; i < damageStatDatas.Length; i++)
                 {
-                    enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                 }
 
                 PiercingUpdate();

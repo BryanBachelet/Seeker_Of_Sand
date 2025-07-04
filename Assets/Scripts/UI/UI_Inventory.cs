@@ -141,10 +141,10 @@ public class UI_Inventory : MonoBehaviour
             cadreSpellUse[i].sprite = spell_rarityCadre[(int)(spellLevel[i])];
         }
         CharacterStat stat = CharacterProfile.instance.stats;
-        m_healthBonusText.text = ": " + (stat.baseStat.healthMax / 15);
-        m_speedBonusText.text = ": " + (stat.baseStat.speed / 5);
+        m_healthBonusText.text = ": " + (stat.healthMax.totalValue / 15);
+        m_speedBonusText.text = ": " + (stat.runSpeed.totalValue / 5);
         m_damageBonusText.text = ": " + m_characterShoot.GetComponent<CharacterDamageComponent>().m_damageStats.damageBonusGeneral;
-        m_armorBonusText.text = ": " + stat.baseStat.armor;
+        m_armorBonusText.text = ": " + stat.armor;
 
     }
 

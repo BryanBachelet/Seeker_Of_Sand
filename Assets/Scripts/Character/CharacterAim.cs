@@ -111,7 +111,7 @@ namespace Character
                 if (col.Length > 0)
                 {
                     m_hasCloseTarget = true;
-                    m_characterMouvement.SetCombatMode(true);
+                    //m_characterMouvement.SetCombatMode(true);
                     Vector3 nearestEnemyPos = NearestEnemy(col, position);
                     nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
                     Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
@@ -342,30 +342,13 @@ namespace Character
                 if (damageReceiver != null)
                 {
                     m_lifeTargetUI.ActiveLifeTarget(damageReceiver.GetLifeRatio(), damageReceiver.GetName());
-                    if (m_closestEnemy != m_GO_lastObject)
-                    {
-                        if (m_GO_lastObject != null)
-                        {
-                            previewMask = (int)m_lastObjectPointed.gameObject.layer;
-                            m_lastObjectPointed.gameObject.layer = (int)pointedObject;
-                        }
-                        m_GO_lastObject = m_closestEnemy;
-                        m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_SkinMeshRenderer;
-                        previewMask = (int)m_lastObjectPointed.gameObject.layer;
-                        m_lastObjectPointed.gameObject.layer = (int)pointedObject;
-                    }
-
+                    ActiveOutlineForEnemi();
                 }
-
-
-
             }
             else
             {
                 m_lifeTargetUI.DeactiveLifeTarget();
-                if (m_lastObjectPointed != null) { m_lastObjectPointed.gameObject.layer = previewMask; }
-                m_GO_lastObject = null;
-
+                ResetOutlineForEnemi();
             }
             if (search) search = false;
         }
@@ -381,7 +364,7 @@ namespace Character
 
         private void AimFeedback()
         {
-            if (m_characterShoot.m_CharacterMouvement.combatState)
+            if (m_characterShoot.IsCombatMode())
             {
                 m_exitCombatState = false;
                 // FeedbackHeadRotation();
@@ -561,6 +544,28 @@ namespace Character
                     Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
                 }
             }
+        }
+
+        public void ActiveOutlineForEnemi()
+        {
+            if (m_GO_lastObject != null)
+            {
+                ResetOutlineForEnemi();
+            }
+            m_GO_lastObject = m_closestEnemy;
+            m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_SkinMeshRenderer;
+            previewMask = (int)m_lastObjectPointed.gameObject.layer;
+            m_lastObjectPointed.gameObject.layer = (int)pointedObject;
+        }
+
+        public void ResetOutlineForEnemi()
+        {
+            if (m_lastObjectPointed != null) 
+            { 
+                m_lastObjectPointed.gameObject.layer = previewMask; 
+            }
+            m_GO_lastObject = null;
+            m_lastObjectPointed = null;
         }
 
     }

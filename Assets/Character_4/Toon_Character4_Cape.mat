@@ -29,6 +29,8 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - N_F_AL_ON
+  - N_F_COEDGL_ON
+  - N_F_CO_ON
   - N_F_CS_ON
   - N_F_ESSAO_ON
   - N_F_ESSGI_ON
@@ -39,6 +41,7 @@ Material:
   - N_F_RELGI_ON
   - N_F_RL_ON
   - N_F_R_ON
+  - N_F_SL_ON
   - N_F_SS_ON
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
@@ -115,7 +118,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 8acebf647acfc3e45b53b04d4f64f40f, type: 3}
+        m_Texture: {fileID: 2800000, guid: dea0e35555fc9ce4091ba351cddeeb01, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskGloss:
@@ -131,7 +134,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskSelfLit:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 53d6db4d13b265944b99bb722e470585, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTransparency:
@@ -159,7 +162,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondaryCutout:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 1c398e57b97f5994a99835549542cc79, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowColorTexture:
@@ -276,7 +279,7 @@ Material:
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
     - _Glossiness: 0.6
-    - _Glow_Edge_Width: 1
+    - _Glow_Edge_Width: 0.91
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
     - _HeightMapParametrization: 0
@@ -315,8 +318,8 @@ Material:
     - _N_F_ALSL: 0
     - _N_F_CA: 0
     - _N_F_CLD: 0
-    - _N_F_CO: 0
-    - _N_F_COEDGL: 0
+    - _N_F_CO: 1
+    - _N_F_COEDGL: 1
     - _N_F_CS: 1
     - _N_F_DCS: 0
     - _N_F_ESSAO: 1
@@ -340,7 +343,7 @@ Material:
     - _N_F_R: 1
     - _N_F_RL: 1
     - _N_F_SCT: 0
-    - _N_F_SL: 0
+    - _N_F_SL: 1
     - _N_F_SON: 0
     - _N_F_SS: 1
     - _N_F_ST: 0
@@ -391,8 +394,8 @@ Material:
     - _STIL: 0
     - _Saturation: 1
     - _SelfLitHighContrast: 1
-    - _SelfLitIntensity: 0
-    - _SelfLitPower: 50
+    - _SelfLitIntensity: 1
+    - _SelfLitPower: 1
     - _SelfShadowAffectedByLightShadowStrength: 1
     - _SelfShadowHardness: 1
     - _SelfShadowRealTimeShadowColorPower: 1
@@ -471,7 +474,7 @@ Material:
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Glow_Color: {r: 16, g: 16, b: 16, a: 1}
     - _HighlightColor: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
@@ -482,7 +485,7 @@ Material:
     - _PTCol: {r: 0, g: 0, b: 0, a: 1}
     - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
     - _SSAOColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SelfLitColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SelfLitColor: {r: 92.689735, g: 402.30453, b: 1155.8954, a: 1}
     - _SelfShadowRealTimeShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowTColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

@@ -94,7 +94,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
         m_Profil = this.GetComponent<CharacterProfile>();
-        AugmenteMaxHealth((int)m_Profil.stats.baseStat.healthMax);
+        AugmenteMaxHealth((int)m_Profil.stats.healthMax.totalValue);
         m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out colorAdjustments);
@@ -172,7 +172,7 @@ public class HealthPlayerComponent : MonoBehaviour
         StartInvulnerability(attackDamageInfo.bIsHeavy);
 
         vignette.intensity.value = 0.35f;
-        int damage = attackDamageInfo.damage - m_Profil.stats.baseStat.armor;
+        int damage = attackDamageInfo.damage - m_Profil.stats.armor.totalValue;
         if (m_CurrentQuarter - 1 >= 0 && m_CurrentHealth - damage < m_CurrentQuarterMinHealth[m_CurrentQuarter - 1])
         {
             ActiveSlowEffect(1.5f, m_CurrentQuarter);

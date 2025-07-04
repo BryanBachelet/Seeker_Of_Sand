@@ -6,6 +6,13 @@ using SeekerOfSand.Tools;
 using GuerhoubaGames;
 using UnityEngine.VFX;
 
+public enum ArtefactType
+{
+    Spawner = 0,
+    Buff = 1,
+    Behavior = 2,
+}
+
 public enum ConditionsTrigger
 {
     OnHit,
@@ -33,6 +40,9 @@ public enum EntitiesTargetSystem
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Artefacts Info", order = 1)]
 public class ArtefactsInfos : ScriptableObject
 {
+
+    public ArtefactType artefactType = ArtefactType.Spawner;
+
     [CustomArrayName("Tier")]
     [Range(0, 100)]
     public float[] spawnRatePerTier;
@@ -74,6 +84,8 @@ public class ArtefactsInfos : ScriptableObject
 
     public int damageArtefact = 1;
 
+    [Header("Buff Features")]
+    public GeneralStatData generalStatData;
 
     [Header("StatGeneral Features")]
     public DamageType damageTypeBonus;

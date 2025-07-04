@@ -1,3 +1,4 @@
+using FMODUnity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,11 +19,14 @@ namespace Render.Camera
         [SerializeField] private Character.CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;  
         [SerializeField] private float m_distanceToTarget = 80;
+        [SerializeField] private Vector3 m_directionCamera;
+        [SerializeField] private Vector3 m_angleCamera;
+        [SerializeField] private Vector3 m_offsetCamera;
+ 
 
 
 
-        private Vector3 m_cameraDirection;
-        private Vector3 m_baseAngle;
+
         const int maxDirection = 8;
         const float angleValue = 360.0f / maxDirection;
         private int indexDirection = 0;
@@ -70,19 +74,6 @@ namespace Render.Camera
         [Header("Cameara Collider Parameters")]
         [HideInInspector] private GameLayer m_gameLayer;
         // -- Test Camera Zoom ---- 
-
-        [Header("Camera Zoom parameter")]
-        public bool isZoomActive;
-        [SerializeField] private float m_maxDistance = 110;
-        [SerializeField] private float m_minDistance = 100;
-        [SerializeField] private Vector3 m_maxAngle = new Vector3(50,0,0);
-        [SerializeField] private Vector3 m_minAngle = new Vector3(30,0,0);
-        [SerializeField] private float m_currentLerpValue = 1;
-        [HideInInspector] private float m_keyboardZoomSensibility = 0.001f;
-        [HideInInspector] private float m_gamepadZoomSensibility = 0.1f;
-        [SerializeField] private bool m_activeCameraZoomDebug = false;
-        [SerializeField] private Vector3 m_baseOffset = new Vector3(0, 0, -10);
-        [HideInInspector] private float m_valueMinToStartSlope = 0.8f;
 
         private float m_zoomInputGamepad = 0.0f;
         private bool m_IsGamepad = true;
@@ -153,12 +144,15 @@ namespace Render.Camera
         {
             cameraMode = CameraMode.HIGH_VIEW;
             m_gameLayer = GameLayer.instance;
+
             m_playerInputComponent = m_targetTransform.GetComponent<PlayerInput>();
             m_characterShootComponent = m_targetTransform.GetComponent<Character.CharacterShoot>();
+
             initialAngularSpeed = m_angularSpeed;
+           
             cameraEffects = GetComponents<CameraEffect>();
-            m_cameraDirection = transform.position - m_targetTransform.position;
-            m_baseAngle = transform.rotation.eulerAngles;
+
+            // Setup cursor state 
             Cursor.lockState = CursorLockMode.Confined;
 
         }
@@ -185,9 +179,7 @@ namespace Render.Camera
                     }
 
                 }
-                // ------------ Camera zoom ----------
-                CameraZoom();
-                // ------------------------
+          
 
                 if (!m_activateHeightDirectionMode && m_isRotationInputPress) FreeRotation(m_mouseDeltaValue);
                 if (m_isOrientedCamera && m_isRotationInputPress) OrientedCameraRotation();
@@ -200,121 +192,12 @@ namespace Render.Camera
             }
 
 
-            //if (m_characterShootComponent.m_aimModeState != Character.AimMode.FullControl)
-            //{
-            //    m_isActiveAutomaticDezoom = false; 
-            //}
-            //else
-            //{
-            //    m_isActiveAutomaticDezoom = false; 
-            //}
         }
 
         private bool IsGamepad()
         {
             return m_playerInputComponent.currentControlScheme == "Gamepad";
         }
-
-        #region Camera Zoom Functions
-
-        public void InputZoom(InputAction.CallbackContext ctx)
-        {
-            if (!GameState.IsPlaying()) return;
-            if (ctx.performed)
-            {
-                m_zoomInputGamepad = ctx.ReadValue<float>();
-                if (!IsGamepad())
-                {
-                    UpdateZoomValue(m_keyboardZoomSensibility);
-                }
-
-            }
-
-            if (ctx.canceled)
-            {
-                if (IsGamepad()) m_zoomInputGamepad = 0.0f;
-                //m_inputZoomValue = m_inputZoomSensibility * ctx.ReadValue<float>();
-            }
-        }
-
-        private void UpdateZoomValue(float sensibility)
-        {
-            if (!isZoomActive) return;
-            m_inputZoomValue = (sensibility * m_zoomInputGamepad) * m_angleSpeed;
-            if (m_activeCameraZoomDebug) Debug.Log("Zoom Input value = " + m_inputZoomValue);
-
-        //    if (m_isDezoomingAutomatily) return;
-
-            if (!m_isZoomBlock) m_currentLerpValue += m_inputZoomValue;
-            m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, 1.0f);
-            if (m_isZoomBlock) m_currentLerpValue = Mathf.Clamp(m_currentLerpValue, 0.0f, m_maxZoomBlock);
-
-            if (m_currentLerpValue > 0.6f) cameraMode = CameraMode.THIRD_VIEW;
-            else cameraMode = CameraMode.HIGH_VIEW;
-        }
-
-
-        public void ResetZoom()
-        {
-            m_baseAngle = m_maxAngle;
-            m_distanceToTarget = m_maxDistance;
-            //isZoomActive = false;
-            m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
-            m_currentLerpValue = 0;
-        }
-
-        private void CameraZoom()
-        {
-            if (!isZoomActive) return;
-
-            if (IsGamepad())
-            {
-                UpdateZoomValue(m_gamepadZoomSensibility);
-            }
-            else
-            {
-               // UpdateZoomValue(m_keyboardZoomSensibility);
-            }
-
-            m_prevSlopeAngle = m_slopeAngle;
-            float angle = playerMove.GetSlope();
-            if (angle > m_thresholdAngle)
-            {
-                m_nextSlopeAngle = angle;
-            }
-
-            m_slopeAngle = Mathf.Lerp(m_prevSlopeAngle, m_nextSlopeAngle, 0.2f);
-            Vector3 slopeAngle = new Vector3(0, 0.0f, 0);
-
-
-            if (m_currentLerpValue > m_valueMinToStartSlope) slopeAngle = new Vector3(m_slopeAngle / 2, 0.0f, 0);
-            m_baseAngle = Vector3.Lerp(m_maxAngle, m_minAngle, m_currentLerpValue) + slopeAngle;
-            m_distanceToTarget = Mathf.Lerp(m_maxDistance, m_minDistance, m_currentLerpValue);
-            m_cameraDirection = Quaternion.Euler(m_baseAngle) * -Vector3.forward;
-        //    m_distanceToTarget = CheckGroundCamera(m_cameraDirection);
-
-        }
-
-        // Check if they is a ground obstacle
-        public float CheckGroundCamera(Vector3 direction)
-        {
-            if (cameraMode != CameraMode.THIRD_VIEW) return m_distanceToTarget;
-
-            direction = Quaternion.Euler(0.0f, m_nextAngle, 0.0f) * direction;
-            directionDebug = direction;
-            RaycastHit hit = new RaycastHit();
-            float targetDistance = m_distanceToTarget;
-            Ray ray = new Ray(m_targetTransform.position, direction.normalized);
-            collsionRayDebug = ray;
-            if (Physics.Raycast(ray, out hit, targetDistance, m_gameLayer.propsGroundLayerMask))
-            {
-                float distance = Vector3.Distance(m_targetTransform.position, hit.point) - 0.3f;
-                return distance;
-            }
-
-            return m_distanceToTarget;
-        }
-
 
         private Vector3 GetForwardDirection(Vector3 normal)
         {
@@ -327,54 +210,6 @@ namespace Render.Camera
             return Vector3.SignedAngle(rotTest * Vector3.forward, direction, Vector3.right);
         }
 
-        public IEnumerator DeZoomCamera()
-        {
-
-            // Setup a bool 
-            m_isDezoomingAutomatily = true;
-//m_isZoomBlock = true;
-            float zoonDelta = m_currentLerpValue - m_maxZoomBlock;
-            float speed = zoonDelta * (1.0f / m_transitionDuration);
-            while (m_currentLerpValue >= m_maxZoomBlock)
-            {
-                m_currentLerpValue -= speed * Time.deltaTime;
-                yield return Time.deltaTime;
-            }
-            m_isDezoomingAutomatily = false;
-            isZoomActive = false;
-           // m_isZoomBlock = false;
-            //Reset bool
-
-        }
-
-        IEnumerator ZoomCloseCamera()
-        {
-            m_isDezoomingAutomatily = true;
-            float zoonDelta = m_minZoomBlock - m_currentLerpValue;
-            float speed = zoonDelta * (1.0f / m_transitionDuration);
-            while (m_currentLerpValue < m_minZoomBlock)
-            {
-                m_currentLerpValue += speed * Time.deltaTime;
-                yield return Time.deltaTime;
-            }
-            m_isDezoomingAutomatily = false;
-        }
-
-        public void BlockZoom(bool state)
-        {
-            if (state == m_isZoomBlock) return;
-
-            m_isZoomBlock = state;
-
-            //Debug.Log("Zoom");
-            if (!m_isZoomBlock || !m_isActiveAutomaticDezoom) return;
-
-            StartCoroutine(DeZoomCamera());
-
-        }
-
-
-        #endregion
 
         public float GetAngle()
         {
@@ -523,7 +358,7 @@ namespace Render.Camera
             if (deltaInputDirecton.magnitude > .1f)
             {
                 m_targetOrientedInputValue = -stickDir3D;
-                Vector3 cameraBaseDirection = new Vector3(0.0f, 0.0f, m_cameraDirection.z);
+                Vector3 cameraBaseDirection = new Vector3(0.0f, 0.0f, m_directionCamera.z);
 
                 m_startOrientedInputValue = m_orientedCameraQuat * cameraBaseDirection.normalized;
                 m_startOrientedInputAngle = Vector3.SignedAngle(-Vector3.forward,m_startOrientedInputValue, Vector3.up);
@@ -610,9 +445,9 @@ namespace Render.Camera
             RaycastHit hit2 = new RaycastHit();
 
             Vector3 direction = (transform.position+ Vector3.down) - m_targetTransform.position;
-            Vector3 dir2 = (m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down) - m_targetTransform.position;
+            Vector3 dir2 = (m_targetTransform.position +  m_directionCamera.normalized * m_distanceToTarget + Vector3.down) - m_targetTransform.position;
 
-            bool hasHit2 =    Physics.Raycast(m_targetTransform.position + m_cameraDirection.normalized * m_distanceToTarget + Vector3.down, -dir2, out hit2, m_distanceToTarget + 5f, m_gameLayer.groundLayerMask);
+            bool hasHit2 =    Physics.Raycast(m_targetTransform.position + m_directionCamera.normalized * m_distanceToTarget + Vector3.down, -dir2, out hit2, m_distanceToTarget + 5f, m_gameLayer.groundLayerMask);
             bool hasHit = Physics.Raycast(m_targetTransform.position, direction, out hit, m_distanceToTarget + 5f, m_gameLayer.groundLayerMask);
             if (hasHit && (hit2.point -hit.point).magnitude >0.5f /*|| hasHit && !hasHit2*/)
             {
@@ -628,13 +463,14 @@ namespace Render.Camera
 
             if (!m_isOrientedCamera)
             {
-                m_finalRotation = m_baseAngle + Vector3.Lerp(m_prevRot, m_nextRot, m_lerpTimer / m_lerpTime);
+                m_finalRotation = m_angleCamera + Vector3.Lerp(m_prevRot, m_nextRot, m_lerpTimer / m_lerpTime);
             }
             else
             {
-                m_finalRotation = m_baseAngle + m_orientedAngle;
+                m_finalRotation = m_angleCamera + m_orientedAngle;
             }
 
+            if (cameraEffects == null) return;
             for (int i = 0; i < cameraEffects.Length; i++)
             {
                 m_finalRotation += cameraEffects[i].GetEffectRot();
@@ -650,15 +486,15 @@ namespace Render.Camera
                 {
                     distance = modifyTargetDistance;
                 }
-                m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_cameraDirection.normalized * distance;
-                if (cameraMode == CameraMode.THIRD_VIEW) m_finalPosition += m_baseOffset;
+                m_finalPosition += Quaternion.Euler(0.0f, Mathf.Lerp(m_prevAngle, m_nextAngle, m_lerpTimer / m_lerpTime), 0.0f) * m_directionCamera.normalized * distance;
+                //if (cameraMode == CameraMode.THIRD_VIEW) m_finalPosition += m_baseOffset;
             }
             else
             {
                 m_finalPosition = m_targetTransform.position;
-                m_finalPosition += m_orientedCameraQuat * m_cameraDirection.normalized * m_distanceToTarget;
+                m_finalPosition += m_orientedCameraQuat * m_directionCamera.normalized * m_distanceToTarget;
             }
-
+            if (cameraEffects == null) return;
             for (int i = 0; i < cameraEffects.Length; i++)
             {
                 m_finalPosition += cameraEffects[i].GetEffectPos();
@@ -675,6 +511,7 @@ namespace Render.Camera
                 return;
             }
             transform.rotation = Quaternion.Euler(m_finalRotation);
+            transform.position += m_offsetCamera;
         }
 
         public void UpdateSettingRotationSpeed(float sensibility)
@@ -697,7 +534,16 @@ namespace Render.Camera
 
         public void ChangeLerpForTP()
         {
-            m_currentLerpValue = 0.36f;
+           
+        }
+
+
+        public void OnValidate()
+        {
+            SetCameraRotation();
+            SetCameraPosition();
+            Apply();
+            m_directionCamera = m_directionCamera.normalized;
         }
     }
 

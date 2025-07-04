@@ -5572,15 +5572,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99b741e59653484bb9dbd502d4521db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSpeed: 80
-  combatSpeed: 40
-  combatState: 0
-  ratioSmoothMouvement: 10
+  runningSpeed: 80
+  m_runningSpeedAccelerationDuration: 0.1
+  m_rotationDurationOnRun: 0.15
+  m_mouvementLagChangeDirection: 3
+  m_durationRotationToCursor: 0.3
+  m_slopeMaxGainSpeedRunning: 20
+  m_slopeRunningGainSpeedLimit: 40
+  m_slopeRunningLoseSpeedLimit: 20
+  m_combatReductionSpeedPercent: 0.45
+  m_slidingThreshold: 100
+  m_slidingBrake: 100
+  m_slidingMaxSpeed: 200
+  m_angularSpeed: 200
+  m_slidingAcceleration: {fileID: 11400000, guid: 6588427e7a89da146b3f79909052d153,
+    type: 2}
+  m_combatSpeedTransitionDuration: 1
+  m_slidingBaseSpeedEnter: 120
   m_CharacterAnim: {fileID: 699862458290668006}
   m_BookAnim: {fileID: 2250799611024702229}
-  m_slidingEffect: {fileID: 447607226454398398}
-  m_slidingEffectVfx: {fileID: 447607227169203168}
+  m_slidingEffect: {fileID: 8569786574664994871}
+  m_slidingEffectVfx: {fileID: 0}
   m_SpeedReduce: 1
+  distanceDetectObstacle: 3
   m_lastTimeShot: 0
   activeCombatModeConstant: 1
   isSliding: 0
@@ -5635,7 +5649,7 @@ MonoBehaviour:
     Path: event:/Player/Mouvement
   mouvementState: 0
   m_avatarTransform: {fileID: 6632142262200979151}
-  m_activeDebug: 0
+  m_activeMouvementDebug: 0
   updateProfilStateSpeedDebug: 0
 --- !u!114 &1983534965
 MonoBehaviour:
@@ -6607,6 +6621,11 @@ MonoBehaviour:
   spellEquip: 
   maxSpellIndex: 0
   spellIndexGeneral: 
+  spellAttribution:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   m_currentIndexCapsule: 0
   m_spellManger: {fileID: 0}
   avatarTransform: {fileID: 6632142262200979151}
@@ -6657,6 +6676,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  combatPlayerState: 0
 --- !u!114 &1983534971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6679,6 +6699,7 @@ MonoBehaviour:
   vfxCastEnd: {fileID: 3289980399486179237}
   lastRawPosition: {x: 0, y: 0, z: 0}
   basePosition: {fileID: 0}
+  m_lifeTargetUI: {fileID: 0}
 --- !u!114 &1983534969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6871,24 +6892,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ef0adcfb2e543b4cb966b88b13535dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterStatPreset: {fileID: 0}
   stats:
-    baseStat:
-      healthMax: 0
-      speed: 0
-      armor: 0
-      regeneration: 0
-      damage: 0
-    attrackness: 50
-    luck: 1
+    healthMax:
+      statsValue: 0
+      modificatorPercent: 0
+    runSpeed:
+      statsValue: 0
+      modificatorPercent: 0
+    combatSpeed:
+      statsValue: 0
+      modificatorPercent: 0
+    armor:
+      statsValue: 0
+      modificatorPercent: 0
+    regeneration:
+      statsValue: 0
+      modificatorPercent: 0
+    baseDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    airDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    waterDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    fireDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    earthDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    attrackness:
+      statsValue: 0
+      modificatorPercent: 0
+    luck:
+      statsValue: 0
+      modificatorPercent: 0
   m_baseStat:
-    baseStat:
-      healthMax: 0
-      speed: 0
-      armor: 0
-      regeneration: 0
-      damage: 0
-    attrackness: 0
-    luck: 0
+    healthMax:
+      statsValue: 0
+      modificatorPercent: 0
+    runSpeed:
+      statsValue: 0
+      modificatorPercent: 0
+    combatSpeed:
+      statsValue: 0
+      modificatorPercent: 0
+    armor:
+      statsValue: 0
+      modificatorPercent: 0
+    regeneration:
+      statsValue: 0
+      modificatorPercent: 0
+    baseDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    airDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    waterDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    fireDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    earthDamage:
+      statsValue: 0
+      modificatorPercent: 0
+    attrackness:
+      statsValue: 0
+      modificatorPercent: 0
+    luck:
+      statsValue: 0
+      modificatorPercent: 0
   m_pauseMenuObject: {fileID: 0}
   m_CustomPassSeeThrough: {fileID: 0}
 --- !u!114 &83947686645128913
@@ -6942,12 +7020,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radiusInteraction: 50
+  currentInteractibleObject: {fileID: 0}
   m_lastHintAnimator: {fileID: 0}
   m_lastArtefactAnimator: {fileID: 0}
   lastArtefact: {fileID: 0}
+  CanvasRect: {fileID: 0}
   currentInteractibleObjectActive: {fileID: 0}
   bandeDiscussion: {fileID: 0}
   hintInputInteraction: {fileID: 0}
+  interactionAction_Txt: {fileID: 0}
+  hintInputInteraction_Detail: {fileID: 0}
+  hintAnimator: {fileID: 0}
+  costCristal: {fileID: 0}
 --- !u!114 &1983534984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7190,6 +7274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cristalCount: 00000000000000000000000000000000
   hasEnoughCristalToSpawn: 0
+  dissonanceCout: 0
 --- !u!114 &5369098428598219176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7391,6 +7476,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  m_colorFraction:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  m_imageFraction: []
 --- !u!114 &6427973256731412273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7405,7 +7494,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectifAnimator: {fileID: 0}
   txtPro_Objectif: {fileID: 0}
+  txtPro_Objectif_Count: {fileID: 0}
   img_Objectif: {fileID: 0}
+  optional_objectifAnimator: {fileID: 0}
+  optional_txtPro_Objectif: {fileID: 0}
+  optional_txtPro_Objectif_Count: {fileID: 0}
+  optional_img_Objectif: {fileID: 0}
   rewardAnimator: {fileID: 0}
   img_Reward: {fileID: 0}
   currentRoomManager: {fileID: 0}
@@ -7447,6 +7541,7 @@ MonoBehaviour:
   apparitionVFX: {fileID: 8849445704412923751}
   disparitionVFX: {fileID: 3702050839109649407}
   isTimePassing: 0
+  specialRoomID: -1
   eventHolder: {fileID: 0}
   dayTimeController: {fileID: 0}
 --- !u!114 &6695158059545031928
@@ -10563,12 +10658,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2681883890577952938}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &447607226454398398 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2522525238085518612, guid: c6ad81311f7daab48a3c4571fe430553,
-    type: 3}
-  m_PrefabInstance: {fileID: 2681883890577952938}
-  m_PrefabAsset: {fileID: 0}
 --- !u!2083052967 &447607227169203168 stripped
 VisualEffect:
   m_CorrespondingSourceObject: {fileID: 2522525237747954506, guid: c6ad81311f7daab48a3c4571fe430553,
@@ -12031,6 +12120,12 @@ PrefabInstance:
 --- !u!4 &8569786574664994867 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2522525238085518608, guid: c6ad81311f7daab48a3c4571fe430553,
+    type: 3}
+  m_PrefabInstance: {fileID: 6191376548815836451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8569786574664994871 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2522525238085518612, guid: c6ad81311f7daab48a3c4571fe430553,
     type: 3}
   m_PrefabInstance: {fileID: 6191376548815836451}
   m_PrefabAsset: {fileID: 0}

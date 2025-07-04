@@ -108,7 +108,7 @@ namespace Artefact
         {
             DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
             int indexElement = GeneralTools.GetElementalArrayIndex(m_artefactData.element,true);
-            if (targetHealthComponent !=null) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, indexElement, (int)CharacterProfile.instance.stats.baseStat.damage);
+            if (targetHealthComponent !=null) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, indexElement, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
         }
 
         private void DestroyObject()

@@ -16,16 +16,16 @@ namespace GuerhoubaTools.Curves
 
 #if UNITY_EDITOR
 
-        [SerializeField] private Object csvfile;
+       [HideInInspector] [SerializeField] private Object csvfile;
 
-        [SerializeField] private bool m_maxLength;
-        [SerializeField] private int m_lineTimeIndex=0;
-        [SerializeField] private int m_columnTimeStart=0;
+        [HideInInspector][SerializeField] private bool m_maxLength;
+        [HideInInspector][SerializeField] private int m_lineTimeIndex=0;
+        [HideInInspector][SerializeField] private int m_columnTimeStart=0;
 
-        [SerializeField] private int m_lineValueIndex = 0;
-        [SerializeField] private int m_columnValueStart = 0;
+        [HideInInspector][SerializeField] private int m_lineValueIndex = 0;
+        [HideInInspector][SerializeField] private int m_columnValueStart = 0;
 
-        [SerializeField] private int m_dataRangeSize = 0;
+        [HideInInspector][SerializeField] private int m_dataRangeSize = 0;
 
 
 

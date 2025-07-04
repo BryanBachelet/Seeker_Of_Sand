@@ -113,11 +113,12 @@ public class CameraFadeFunction : MonoBehaviour
     {
         fadeInActivation = stateFade;
         m_fadeInSecond = speedFade;
+        Debug.Log("Launch Fade in " + stateFade);
     }
 
     public void LaunchFadeOut(bool stateFade, float speedFade)
     {
-
+        Debug.Log("Launch Fade out " + stateFade);
         fadeOutActivation = stateFade;
         m_fadeInSecond = speedFade;
     }

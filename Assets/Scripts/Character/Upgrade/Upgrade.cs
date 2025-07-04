@@ -54,8 +54,8 @@ public class UpgradeCharacter : Upgrade
     public override void Apply(ref CharacterStat playerStat)
     {
         base.Apply(ref playerStat);
-        playerStat.baseStat.healthMax += gain.characterStats.baseStat.healthMax;
-        playerStat.baseStat.speed += gain.characterStats.baseStat.speed;
+        playerStat.healthMax += gain.characterStats.healthMax;
+        playerStat.runSpeed += gain.characterStats.runSpeed;
         playerStat.attrackness += gain.characterStats.attrackness;
         playerStat.luck += gain.characterStats.luck;
     }

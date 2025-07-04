@@ -59,7 +59,7 @@ public class Lighting : ProjectileExplosif
                         return;
                     }
                     DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power,-1, (int)CharacterProfile.instance.stats.baseStat.damage);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power,-1, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                 }
             }
             m_baseTime = m_timerBeforeExplosion;

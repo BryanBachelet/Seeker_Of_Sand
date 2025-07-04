@@ -550,7 +550,7 @@ namespace Enemies
             while (delaySpawn > 0)
             {
                 delaySpawn -= Time.deltaTime;
-                Debug.Log("Delay remain : " + delaySpawn);
+                //Debug.Log("Delay remain : " + delaySpawn);
             }
             Debug.Log("Active spawn Mob");
             enemyObjectPull = m_pullingSystem.GetEnemy((EnemyType)enemyIndexChoose);
@@ -923,8 +923,7 @@ namespace Enemies
             if (CanActiveSpawnPhase() != spawningPhase)
             {
                 ChangeSpawningPhase(!spawningPhase);
-                if (spawningPhase == true) { StartCoroutine(m_cameraBehavior.DeZoomCamera()); }
-                else { m_cameraBehavior.isZoomActive = true; }
+              
             }
         }
 

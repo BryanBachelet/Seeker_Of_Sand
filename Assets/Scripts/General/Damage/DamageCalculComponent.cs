@@ -24,7 +24,7 @@ namespace GuerhoubaGames
     [System.Serializable]
     public class DamageCalculData
     {
-       
+
         public int damage;
         public int tempDamage;
         public int bonusDamage;
@@ -58,7 +58,7 @@ namespace GuerhoubaGames
     [System.Serializable]
     public class DamageStats
     {
-        
+
 
         [HideInInspector] private DamageCalculData m_airDamage;
         [HideInInspector] private DamageCalculData m_fireDamage;
@@ -84,6 +84,19 @@ namespace GuerhoubaGames
 
             m_damageCalculDatas = new DamageCalculData[] { m_airDamage, m_fireDamage, m_waterDamage, m_earthDamage };
         }
+
+        public void AddModificator(float modificator, GameElement gameElement, DamageType damageType)
+        {
+            for (int i = 0; i < m_damageCalculDatas.Length; i++)
+            {
+                if (gameElement == m_damageCalculDatas[i].element)
+                {
+                    m_damageCalculDatas[i].modificator += modificator;
+                }
+            }
+
+        }
+
 
         /// <summary>
         /// Add Damage to the element damage data
@@ -113,7 +126,7 @@ namespace GuerhoubaGames
 
                             break;
                     }
-                    
+
                 }
             }
         }
@@ -141,7 +154,7 @@ namespace GuerhoubaGames
             List<DamageCalculData> damageCalc = new List<DamageCalculData>();
             for (int i = 0; i < m_damageCalculDatas.Length; i++)
             {
-                if (m_damageCalculDatas[i].damage  > 0 || m_damageCalculDatas[i].tempDamage > 0)
+                if (m_damageCalculDatas[i].damage > 0 || m_damageCalculDatas[i].tempDamage > 0)
                 {
                     damageCalc.Add(m_damageCalculDatas[i]);
                 }
@@ -157,6 +170,15 @@ namespace GuerhoubaGames
                 m_damageCalculDatas[i].tempDamage = 0;
             }
             damageTemporaireGeneral = 0;
+        }
+
+        public void ResetBonusDamage()
+        {
+            for (int i = 0; i < m_damageCalculDatas.Length; i++)
+            {
+                m_damageCalculDatas[i].bonusDamage = 0;
+            }
+            damageBonusGeneral = 0;
         }
     }
 
@@ -179,7 +201,7 @@ namespace GuerhoubaGames
             damageStats += playerDamageComponent.m_damageStats;
             m_characterShoot = characterShoot;
             m_characterArtefacts = characterShoot.GetComponent<CharacterArtefact>();
-            
+
         }
 
         public DamageStatData[] CalculDamage(GameElement element, CharacterObjectType typeObj, GameObject target, SpellSystem.SpellProfil spellProfil)
@@ -196,7 +218,7 @@ namespace GuerhoubaGames
             {
                 allElement = allElement | damageCalculDataArray[i].element;
                 int totalDamage = damageCalculDataArray[i].damage + damageCalculDataArray[i].tempDamage + damageCalculDataArray[i].bonusDamage + damageStats.damageBonusGeneral + damageStats.damageTemporaireGeneral;
-                totalDamage = Mathf.RoundToInt(totalDamage *  (1.0f + damageCalculDataArray[i].modificator + damageStats.generalModificator));
+                totalDamage = Mathf.RoundToInt(totalDamage * (1.0f + damageCalculDataArray[i].modificator + damageStats.generalModificator));
                 damageStatDatas[i] = new DamageStatData(totalDamage, typeObj);
                 damageStatDatas[i].element = damageCalculDataArray[i].element;
                 damageCalculDataArray[i].tempDamage = 0;
@@ -205,7 +227,7 @@ namespace GuerhoubaGames
             if (damageStats.OnHit) m_characterShoot.ActiveOnHit(target.transform.position, EntitiesTrigger.Enemies, target, allElement);
             if (damageStats.OnContact) m_characterArtefacts.ActiveOnContact(target.transform.position, EntitiesTrigger.Enemies, target, allElement);
             if (damageStats.OnDeath) m_characterArtefacts.ActiveOnDeath(target.transform.position, EntitiesTrigger.Enemies, target, Vector3.Distance(m_characterShoot.transform.position, target.transform.position));
-            
+
             return damageStatDatas;
         }
 
