@@ -78,7 +78,7 @@ public class spell_Attribution : MonoBehaviour
         if(generateTexture)
         {
             Texture2D texture = (Texture2D)materialUse.GetTexture("_Symbole");
-            imageSpell.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+            //imageSpell.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
         }
         //UpdateSpellLevel(spell);
         if(this.gameObject.activeSelf) { StartCoroutine(UpdateSpellLevelDelay(spell)); }
