@@ -7,6 +7,7 @@ using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
 using GuerhoubaGames.UI;
 using GuerhoubaGames;
+using Enemies;
 namespace Character
 {
 
@@ -75,6 +76,10 @@ namespace Character
         private GameObject m_closestEnemy;
         [SerializeField] private UI_LifeTarget m_lifeTargetUI;
 
+        private SkinnedMeshRenderer m_lastObjectPointed;
+        private GameObject m_GO_lastObject;
+        public int pointedObject = 20;
+        private int previewMask;
         private void Start()
         {
             Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
@@ -334,12 +339,16 @@ namespace Character
             if (m_closestEnemy != null)
             {
                 IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
-               if(damageReceiver != null)
+                if (damageReceiver != null)
+                {
                     m_lifeTargetUI.ActiveLifeTarget(damageReceiver.GetLifeRatio(), damageReceiver.GetName());
+                    ActiveOutlineForEnemi();
+                }
             }
             else
             {
                 m_lifeTargetUI.DeactiveLifeTarget();
+                ResetOutlineForEnemi();
             }
             if (search) search = false;
         }
@@ -535,6 +544,28 @@ namespace Character
                     Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
                 }
             }
+        }
+
+        public void ActiveOutlineForEnemi()
+        {
+            if (m_GO_lastObject != null)
+            {
+                ResetOutlineForEnemi();
+            }
+            m_GO_lastObject = m_closestEnemy;
+            m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_SkinMeshRenderer;
+            previewMask = (int)m_lastObjectPointed.gameObject.layer;
+            m_lastObjectPointed.gameObject.layer = (int)pointedObject;
+        }
+
+        public void ResetOutlineForEnemi()
+        {
+            if (m_lastObjectPointed != null) 
+            { 
+                m_lastObjectPointed.gameObject.layer = previewMask; 
+            }
+            m_GO_lastObject = null;
+            m_lastObjectPointed = null;
         }
 
     }

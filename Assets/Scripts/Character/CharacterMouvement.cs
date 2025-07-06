@@ -298,7 +298,7 @@ namespace Character
             m_CharacterAnim.SetBool("Running", true);
             m_BookAnim.SetBool("Running", true);
             m_CharacterAnim.SetBool("Casting", false);
-            m_BookAnim.SetBool("Running", false);
+            m_BookAnim.SetBool("Casting", false);
             m_isSlideInputActive = true;
             m_timerToAccelerate = 0.0f;
 
@@ -310,11 +310,10 @@ namespace Character
             m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
             //m_characterShoot.gsm.CanalisationParameterStop();
             // SlideActivation(true);
-            m_CharacterAnim.SetBool("Running", true);
-            m_BookAnim.SetBool("Running", true);
-            m_CharacterAnim.SetBool("Casting", false);
-
+            m_CharacterAnim.SetBool("Running", false);
             m_BookAnim.SetBool("Running", false);
+            m_CharacterAnim.SetBool("Casting", false);
+            m_BookAnim.SetBool("Casting", false);
             m_isSlideInputActive = true;
             m_timerToAccelerate = 0.0f;
             m_timerBeforeSliding = 0.0f;

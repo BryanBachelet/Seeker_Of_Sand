@@ -15,6 +15,7 @@ using SeekerOfSand.Tools;
 using GuerhoubaGames;
 using Render.Camera;
 using System;
+using GuerhoubaGames.SaveData;
 
 namespace Character
 {
@@ -180,12 +181,21 @@ namespace Character
         public Action OnCombatStarting;
         public Action OnCombatEnding;
 
+
+        #region playerFeedback(Cape)
+        public SkinnedMeshRenderer skinedMeshRender;
+        public Material m_Mat_capeSkinedMesh;
+        public int indexMat;
+        [ColorUsage(true, true)] public Color[] capColorByElement = new Color[3];
+        #endregion
         #region Unity Functions
 
         private void Awake()
         {
             m_spellCouroutine = new Coroutine[100];
             m_initialPreviewDecal = currentPreviewDecalTexture;
+            skinedMeshRender = avatarTransform.GetComponentInChildren<SkinnedMeshRenderer>();
+            m_Mat_capeSkinedMesh = skinedMeshRender.materials[indexMat]; //Feedback Cape Color Element
         }
 
 
@@ -1085,6 +1095,8 @@ namespace Character
 
             lastElement = currentCloneSpellProfil.tagData.element;
             currentCloneSpellProfil = spellProfils[m_currentIndexCapsule].Clone();
+            m_Mat_capeSkinedMesh.SetColor("_SelfLitColor", capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.tagData.element)]);        //Feedback Cape Color Element
+            m_Mat_capeSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex]);                                                               //Feedback Cape Color Element
             ChangeVfxElement(((int)lastElement));
             if (!m_shootInput)
             {
@@ -1257,11 +1269,13 @@ namespace Character
                     //m_uiPlayerInfos.UpdateStackingObjects(i, m_currentStack[i]);
                     if (m_currentStack[i] == maxStack) m_stackingClock[i].DeactivateClock();
                 }
+
                 ////else
                 //{
                 //    // Setup UI Display
                 //}
             }
+            m_Mat_capeSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex] + m_stackingClock[m_currentRotationIndex].GetRatio()); //Feedback Cape Color Element
         }
 
         public void AddSpellStack()
