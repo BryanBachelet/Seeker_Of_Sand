@@ -62,6 +62,7 @@ namespace Character
         [SerializeField] private CurveObject m_slidingAcceleration;
         [SerializeField] private float m_combatSpeedTransitionDuration;
         [SerializeField] private float m_slidingBaseSpeedEnter = 120;
+        [SerializeField] private float m_slideLimitSpeed = 0.0f;
 
         private float m_speedLimit;
         private float m_currentSpeed;
@@ -694,6 +695,10 @@ namespace Character
 
             if (m_characterShoot.IsCombatMode())
             {
+                if(mouvementState == MouvementState.Slide)
+                {
+                    m_slideLimitSpeed = m_currentSpeed;
+                }
                 isSliding = false;
                 ChangeState(MouvementState.Classic);
                 Move(newDir);
@@ -1157,7 +1162,7 @@ namespace Character
                     if (m_characterShoot.IsCombatMode())
                     {
                         timeSlideTransition += Time.deltaTime * 0.5f;
-                        result = (runningSpeed * m_combatReductionSpeedPercent + Mathf.Clamp(m_slidingMaxSpeed * ((m_combatSpeedTransitionDuration - timeSlideTransition) / m_combatSpeedTransitionDuration), 0, 200) );
+                        result = Mathf.Clamp(runningSpeed * m_combatReductionSpeedPercent + m_slideLimitSpeed * ((m_combatSpeedTransitionDuration - timeSlideTransition) / m_combatSpeedTransitionDuration), runningSpeed * m_combatReductionSpeedPercent, m_slideLimitSpeed) ;
                     }
 
                     break;

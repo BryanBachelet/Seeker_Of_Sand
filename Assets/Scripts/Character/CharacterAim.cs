@@ -553,9 +553,16 @@ namespace Character
                 ResetOutlineForEnemi();
             }
             m_GO_lastObject = m_closestEnemy;
-            m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_SkinMeshRenderer;
-            previewMask = (int)m_lastObjectPointed.gameObject.layer;
-            m_lastObjectPointed.gameObject.layer = (int)pointedObject;
+            if(m_closestEnemy.GetComponent<NpcHealthComponent>())
+            {
+                m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_SkinMeshRenderer;
+            }
+            if (m_lastObjectPointed)
+            {
+                previewMask = (int)m_lastObjectPointed.gameObject.layer;
+                m_lastObjectPointed.gameObject.layer = (int)pointedObject;
+            }
+           
         }
 
         public void ResetOutlineForEnemi()

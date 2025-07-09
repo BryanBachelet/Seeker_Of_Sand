@@ -174,7 +174,7 @@ namespace SpellSystem
 
         public void ApplyAreaDamage()
         {
-            Collider[] collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask);
+            Collider[] collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask + GameLayer.instance.interactibleLayerMask);
 
             if (collider.Length == 0) return;
 
@@ -182,6 +182,7 @@ namespace SpellSystem
             {
                 for (int i = 0; i < collider.Length; i++)
                 {
+                   
                     IDamageReceiver npcHealthComponent = collider[i].GetComponent<IDamageReceiver>();
                     Vector3 direction = collider[i].transform.position - transform.position;
                     if (npcHealthComponent != null)

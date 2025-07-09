@@ -489,7 +489,7 @@ namespace Character
                 //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
                 SetCombatMode(CombatPlayerState.NONE);
-                m_CharacterMouvement.ActiveSlide();
+                //m_CharacterMouvement.ActiveSlide();
             }
         }
         #endregion

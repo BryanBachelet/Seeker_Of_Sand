@@ -107,7 +107,7 @@ namespace SpellSystem
             Collider[] collider = new Collider[0];
 
 
-            if (areaType == AreaType.CIRCLE) collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask);
+            if (areaType == AreaType.CIRCLE) collider = Physics.OverlapSphere(transform.position, m_sizeArea, GameLayer.instance.enemisLayerMask + GameLayer.instance.interactibleLayerMask);
             if (areaType == AreaType.RECT)
             {
                 Vector3 halfArea = new Vector3(
@@ -118,7 +118,7 @@ namespace SpellSystem
 
                 Vector3 position = transform.position + transform.forward * halfArea.z;
 
-                collider = Physics.OverlapBox(position, halfArea, transform.rotation, GameLayer.instance.enemisLayerMask);
+                collider = Physics.OverlapBox(position, halfArea, transform.rotation, GameLayer.instance.enemisLayerMask + GameLayer.instance.interactibleLayerMask);
             }
 
             for (int i = 0; i < collider.Length; i++)
