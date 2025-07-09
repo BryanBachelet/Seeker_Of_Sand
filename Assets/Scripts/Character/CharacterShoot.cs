@@ -43,7 +43,7 @@ namespace Character
         [Header("Spell Composition Parameters")]
         [HideInInspector] public int[] spellEquip;
         [HideInInspector] public int maxSpellIndex = 4;
-        [HideInInspector] public List<int> spellIndexGeneral;
+         public List<int> spellIndexGeneral;
         [HideInInspector] private List<int> spellIndexSpecific = new List<int>(4);
         [SerializeField] private spell_Attribution[] spellAttribution = new spell_Attribution[4];
 
@@ -280,9 +280,9 @@ namespace Character
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell) return;
 
 
-            ShotCanalisation();
+            bool isValidCanalisation = ShotCanalisation();
             if (!m_shootInputActive) m_CharacterMouvement.m_SpeedReduce = 1;
-            if (IsRealoadingSpellRotation || !m_shootInputActive) return;
+            if (IsRealoadingSpellRotation || !m_shootInputActive || !hasCanalise) return;
 
             InitShot();
 
@@ -561,8 +561,9 @@ namespace Character
                 currentPreviewDecalTexture = currentCloneSpellProfil.previewDecal_mat;
                 currentPreviewDecalEndTexture = currentCloneSpellProfil.previewDecalEnd_mat;
                 ChangeDecalTexture(currentCloneSpellProfil.tagData.element);
-
-                if (m_canalisationTimer >= currentCloneSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
+                hasCanalise = false;
+                float canalisationDuration = currentCloneSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime;
+                if (m_canalisationTimer >= canalisationDuration)
                 {
                     //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                     m_activeSpellLoad = false;
