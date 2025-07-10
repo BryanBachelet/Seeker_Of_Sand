@@ -12,7 +12,9 @@ public class FragmentChoose : MonoBehaviour
     public Transform m_playerTransform;
 
     public FragmentUIView fragmentUIView1;
+    public Artefact_UI_View artefactUIView1;
     public FragmentUIView fragmentUIView2;
+    public Artefact_UI_View artefactUIView2;
 
     public GameObject fonduAuNoir;
 
@@ -31,7 +33,9 @@ public class FragmentChoose : MonoBehaviour
         fonduAuNoir.SetActive(true);
         artefactInfoCurrent = artefactInfo;
         fragmentUIView1.UpdateInteface(artefactInfo[0]);
+        artefactUIView1.UpdateInteface(artefactInfo[0]);
         fragmentUIView2.UpdateInteface(artefactInfo[1]);
+        artefactUIView2.UpdateInteface(artefactInfo[1]);
         descriptionTmp_Text[0].text = artefactInfo[0].name + "<br>" + artefactInfo[0].description;
         descriptionTmp_Text[1].text = artefactInfo[1].name + "<br>" + artefactInfo[1].description;
         m_animator.SetBool("OpenChoose", true);

@@ -18597,7 +18597,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1024476002124945650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32940,13 +32940,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfaaa30b3c16dd046b63c05d0d804fcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  indexSpellBar: 3
   spellInBar:
   - {fileID: 6942960904717244799}
   - {fileID: 1987772780043523770}
   - {fileID: 2518450739391102423}
   - {fileID: 5866315170828945431}
+  fillNextTierRankPoint: {fileID: 0}
+  currentSpellSelected: {fileID: 0}
+  currentspellSelected_NextRank: {fileID: 0}
   spellUpgradeFocus: {fileID: 5932133610972185413}
+  spellCurrentTierFocus: {fileID: 0}
+  spellNextTierFocus: {fileID: 0}
+  cadreCurrentTier: {fileID: 0}
+  cadreNextTier: {fileID: 0}
   spellChoseUpgrade:
   - {fileID: 3067352079519909391}
   - {fileID: 3539065378354305067}
@@ -32956,6 +32962,15 @@ MonoBehaviour:
   - {fileID: 7046236216794095455}
   - {fileID: 394253872599066211}
   - {fileID: 7284137700200299892}
+  upgradeSelectableDescription:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spellTier:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   eventSystem: {fileID: 0}
   m_upgradeManager: {fileID: 0}
   m_imageBandeau:
@@ -32991,6 +33006,21 @@ MonoBehaviour:
   - {fileID: 1336503542838554067}
   rerollText: {fileID: 0}
   firstObjectSelect: {fileID: 9192886710618958882}
+  panelUI: {fileID: 0}
+  spellProfils: []
+  spellBook: {fileID: 0}
+  skillUiHolder:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  referenceSkill:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skillUiHolderTemp: []
+  prefabRank: {fileID: 0}
 --- !u!1 &3683701460317428722
 GameObject:
   m_ObjectHideFlags: 0
@@ -56416,8 +56446,13 @@ MonoBehaviour:
   offset: {x: 100, y: 100}
   header: Reroll
   content: Allow you to reroll the upgrade
-  tooltipEventData:
+  TooltipEventData:
     index: 0
+  additionnalDatas: []
+  IsActive: 0
+  tooltip_Image: {fileID: 0}
+  associated_Image_Bool: 0
+  offSet_Image: {x: 0, y: 0}
 --- !u!1 &6054424202719498940
 GameObject:
   m_ObjectHideFlags: 0
@@ -58086,17 +58121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b725cd402ab5f4eac779009a1c5186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vfxChooseSpell:
-  - {fileID: 3605836457001332621, guid: 00c031336c6fb6a46bd0a15eee0e9e7f, type: 3}
-  - {fileID: 6625445618956399292, guid: 9134412ca2708364daaa9466463f2098, type: 3}
-  - {fileID: 60001631399751856, guid: 14601b0faa529b14891f86be7f73bb54, type: 3}
-  - {fileID: 2852767588073858986, guid: 2f706b6c3b05f0f41abf9c461fbcd6f1, type: 3}
-  randomSpellToChoose: 000000000000000000000000
-  spellManager: {fileID: 0}
-  newSpell:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   vfxSpell:
   - {fileID: 4178101133138932823}
   - {fileID: 8827675980655698584}
@@ -58109,44 +58133,25 @@ MonoBehaviour:
   - {fileID: 5786715474180658972}
   - {fileID: 382319076027351248}
   - {fileID: 709486556596275877}
-  nextSpellName:
-  - 
-  - 
-  - 
   m_imageBandeau:
   - {fileID: 5816856307690234574}
   - {fileID: 2919061926090710053}
   - {fileID: 5420812290864639780}
-  m_materialBandeauDissolve:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   decorationHolder:
   - {fileID: 604430046994612854}
   - {fileID: 6182886043066072273}
   - {fileID: 8526678485464332644}
-  timeSolve: 1
-  activeGeneration: 0
-  vfxHolder:
-  - {fileID: 7332173571522572815}
-  - {fileID: 7036216349941607934}
-  - {fileID: 8729654953365084411}
-  vfxLastChooseSpell: []
-  popupFunction:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   spellName: {fileID: 8002416975940044722}
   spellDescription: {fileID: 4812233144066614909}
   iconSpell: {fileID: 6028648615114816948}
   descriptionHolder: {fileID: 7404636494881566863}
+  descriptionHolderAnimator: {fileID: 0}
   tagText:
   - {fileID: 7089861769912618417}
   - {fileID: 2995441628800312659}
   - {fileID: 960732412232935470}
   - {fileID: 5556258576048289098}
   - {fileID: 6010984004840017866}
-  overable: 0
   textSpellFeedback: {fileID: 8184980172550734423}
   m_upgradeManagerComponenet: {fileID: 0}
   FirstObjectSelect: {fileID: 894339804640903815}
@@ -58156,6 +58161,20 @@ MonoBehaviour:
   - 75
   - 50
   - 25
+  rankSpell_Preview:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spellTier1Image: {fileID: 0}
+  spellTier2Image: {fileID: 0}
+  spellTier3Image: {fileID: 0}
+  cadreTier1Image: {fileID: 0}
+  cadreTier2Image: {fileID: 0}
+  cadreTier3Image: {fileID: 0}
+  tooltipNextTier:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &6209453608876901282
 GameObject:
   m_ObjectHideFlags: 0
@@ -87023,6 +87042,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4299901466802140116, guid: 695633fbad37912439ee4821596cb761,
         type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299901466802140116, guid: 695633fbad37912439ee4821596cb761,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 8cb8d581a10997f4c86f7aea1e54284e, type: 2}
@@ -95493,6 +95517,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8417361359673230750, guid: 8d930491c362bf047a4ee2b1b8e04ff8,
         type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8417361359673230750, guid: 8d930491c362bf047a4ee2b1b8e04ff8,
+        type: 3}
       propertyPath: m_DynamicOccludee
       value: 1
       objectReference: {fileID: 0}
@@ -101441,6 +101470,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8417361359673230750, guid: 23b9e0113e35d2243846a820d6e24574,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8417361359673230750, guid: 23b9e0113e35d2243846a820d6e24574,
         type: 3}

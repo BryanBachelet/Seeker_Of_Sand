@@ -139,6 +139,7 @@ namespace Render.Camera
 
         private bool setupAutoCam;
 
+        static public Vector3 mousePositionOnScreen;
         // Start is called before the first frame update
         void Start()
         {
@@ -545,6 +546,8 @@ namespace Render.Camera
             Apply();
             m_directionCamera = m_directionCamera.normalized;
         }
+
+
     }
 
 }

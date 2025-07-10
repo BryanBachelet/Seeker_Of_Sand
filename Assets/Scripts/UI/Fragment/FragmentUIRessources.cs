@@ -9,7 +9,7 @@ public class FragmentUIRessources : MonoBehaviour
     public Sprite[] backgroundSprite;
     public Sprite[] raretySprite;
     public Sprite[] elementSprite;
-
+    [ColorUsage(true, true)] public Color[] colorBackground;
     public string[] prefixElementNamesArray;
 
     public GameObject fragmentHolder_Prefab;

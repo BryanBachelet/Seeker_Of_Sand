@@ -169,6 +169,8 @@ public class AnvilBehavior : InteractionInterface
         indexCurrentFragmentMergeArray[indexReceptacle] = indexFragment;
         m_uiInventory.fragmentUIViews[indexFragment].ActiveModeRestreint(true);
         m_uiInventory.fragmentUIViews[indexFragment].GetComponent<DragObjectUI>().isLock = true;
+        m_uiInventory.artefactUIView[indexFragment].ActiveModeRestreint(true);
+        m_uiInventory.artefactUIView[indexFragment].GetComponent<DragObjectUI>().isLock = true;
     }
 
     public bool UnlockFragment(int indexFragment, int indexReceptacle)
@@ -182,6 +184,8 @@ public class AnvilBehavior : InteractionInterface
 
         m_uiInventory.fragmentUIViews[indexFragment].ActiveModeRestreint(false);
         m_uiInventory.fragmentUIViews[indexFragment].GetComponent<DragObjectUI>().isLock = false;
+        m_uiInventory.artefactUIView[indexFragment].ActiveModeRestreint(false);
+        m_uiInventory.artefactUIView[indexFragment].GetComponent<DragObjectUI>().isLock = false;
 
         if (GetMergeFragmentCount() == 0)
         {
