@@ -184,9 +184,14 @@ namespace Character
 
         #region playerFeedback(Cape)
         public SkinnedMeshRenderer skinedMeshRender;
-        public Material m_Mat_capeSkinedMesh;
+        private Material m_Mat_capeSkinedMesh;
+        private Material m_Mat_capucheSkinedMesh;
+        private Material[] m_Mat_Cape_Flamme = new Material[2];
         public int indexMat;
+        public int indexMatCapuche;
+        public int[] indexMat_Cape_Flame = new int[2];
         [ColorUsage(true, true)] public Color[] capColorByElement = new Color[3];
+        [ColorUsage(true, true)] public Color[] capFalmeColorByElement = new Color[3];
         #endregion
         #region Unity Functions
 
@@ -196,6 +201,9 @@ namespace Character
             m_initialPreviewDecal = currentPreviewDecalTexture;
             skinedMeshRender = avatarTransform.GetComponentInChildren<SkinnedMeshRenderer>();
             m_Mat_capeSkinedMesh = skinedMeshRender.materials[indexMat]; //Feedback Cape Color Element
+            m_Mat_Cape_Flamme[0] = skinedMeshRender.materials[10];
+            m_Mat_Cape_Flamme[1] = skinedMeshRender.materials[11];
+            m_Mat_capucheSkinedMesh = skinedMeshRender.materials[indexMatCapuche];
         }
 
 
@@ -1096,8 +1104,18 @@ namespace Character
 
             lastElement = currentCloneSpellProfil.tagData.element;
             currentCloneSpellProfil = spellProfils[m_currentIndexCapsule].Clone();
-            m_Mat_capeSkinedMesh.SetColor("_SelfLitColor", capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.tagData.element)]);        //Feedback Cape Color Element
+            Color colToUse = capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.tagData.element)];
+            Color colFlameToUse = capFalmeColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.tagData.element)];
+            m_Mat_capeSkinedMesh.SetColor("_SelfLitColor", colToUse);        //Feedback Cape Color Element
             m_Mat_capeSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex]);                                                               //Feedback Cape Color Element
+            m_Mat_Cape_Flamme[0].SetColor("_Color01", colFlameToUse);
+            m_Mat_Cape_Flamme[0].SetColor("_Color02", colFlameToUse);
+            m_Mat_Cape_Flamme[0].SetColor("_Color03", colFlameToUse);
+            m_Mat_Cape_Flamme[1].SetColor("_Color01", colFlameToUse);
+            m_Mat_Cape_Flamme[1].SetColor("_Color02", colFlameToUse);
+            m_Mat_Cape_Flamme[1].SetColor("_Color03", colFlameToUse);
+            m_Mat_capucheSkinedMesh.SetColor("_SelfLitColor", capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.tagData.element)]);
+            m_Mat_capucheSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex]);
             ChangeVfxElement(((int)lastElement));
             if (!m_shootInput)
             {
@@ -1277,6 +1295,7 @@ namespace Character
                 //}
             }
             m_Mat_capeSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex] + m_stackingClock[m_currentRotationIndex].GetRatio()); //Feedback Cape Color Element
+            m_Mat_capucheSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex] + m_stackingClock[m_currentRotationIndex].GetRatio());
         }
 
         public void AddSpellStack()

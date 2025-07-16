@@ -92,6 +92,7 @@ namespace Enemies
         private Object_HealthDisplay m_objectHealthDisplay;
         public TrailRenderer m_trailRenderer;
         public GameObject lastDissonanceInstantiated;
+        public AfflictionManager m_afflictionManager;
 
         void Awake()
         {
@@ -104,6 +105,7 @@ namespace Enemies
             m_npcInfo = GetComponent<NpcMetaInfos>();
             m_entityAnimator = GetComponentInChildren<Animator>(false);
             m_objectHealthDisplay = GetComponentInChildren<Object_HealthDisplay>();
+            m_afflictionManager = GetComponent<AfflictionManager>();
             _propBlock = new MaterialPropertyBlock();
             if (!isMassed)
             {

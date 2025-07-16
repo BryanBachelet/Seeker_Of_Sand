@@ -86,7 +86,7 @@ public class Projectile : MonoBehaviour
     protected DamageCalculComponent m_damageCalculComponent;
 
    [HideInInspector] public GameObject ObjectToSpawn;
-    [HideInInspector] private Animator animator;
+   [HideInInspector] private Animator animator;
 
   public  void Update()
     {
@@ -314,6 +314,7 @@ public class Projectile : MonoBehaviour
 
             for (int i = 0; i < damageStatDatas.Length; i++)
             {
+                enemyTouch.m_afflictionManager.AddAfflictions(spellProfil.tagData.afflictionTypes.ToArray());
                 enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
 

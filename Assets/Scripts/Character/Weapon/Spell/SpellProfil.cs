@@ -23,6 +23,7 @@ public struct TagData
     public SpellParticualarity spellParticualarity2;
     public MouvementBehavior mouvementBehaviorType;
     public UpgradeSensitivity upgradeSensitivityType;
+    public List<AfflictionType> afflictionTypes;
 
 
     public string GetValueTag(SpellTagOrder spellTagOrder)

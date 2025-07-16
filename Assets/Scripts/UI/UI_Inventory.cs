@@ -36,6 +36,7 @@ public class UI_Inventory : MonoBehaviour
     #region Objects variables
 
     public FragmentUIView[] fragmentUIViews = new FragmentUIView[0];
+    public Artefact_UI_View[] artefactUIView = new Artefact_UI_View[0];
     #endregion
 
     #region Spell variables
@@ -88,6 +89,8 @@ public class UI_Inventory : MonoBehaviour
             {
                 fragmentUIViews[i].ActiveModeRestreint(true);
                 fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = true;
+                artefactUIView[i].ActiveModeRestreint(true);
+                artefactUIView[i].GetComponent<DragObjectUI>().isLock = true;
             }
         }
 
@@ -98,7 +101,9 @@ public class UI_Inventory : MonoBehaviour
         for (int i = 0; i < m_characterArtefact.artefactsList.Count; i++)
         {
                 fragmentUIViews[i].ActiveModeRestreint(false);
-                fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = false; 
+                fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = false;
+                artefactUIView[i].ActiveModeRestreint(true);
+                artefactUIView[i].GetComponent<DragObjectUI>().isLock = true;
         }
 
     }
@@ -183,6 +188,8 @@ public class UI_Inventory : MonoBehaviour
     {
         fragmentUIViews[index].gameObject.SetActive(true);
         fragmentUIViews[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
+        artefactUIView[index].gameObject.SetActive(true);
+        artefactUIView[index].UpdateInteface(m_characterArtefact.artefactsList[index]);
         m_characterArtefact.uiFragmentTooltip.SelectElement(m_fragmentToolTip.fragment_List[index], m_characterArtefact.artefactsList[index]);
 
 
@@ -192,6 +199,8 @@ public class UI_Inventory : MonoBehaviour
     {
         fragmentUIViews[index].gameObject.SetActive(false);
         fragmentUIViews[index].ResetFragmentUIView();
+        artefactUIView[index].gameObject.SetActive(false);
+        artefactUIView[index].ResetFragmentUIView();
     }
 
 

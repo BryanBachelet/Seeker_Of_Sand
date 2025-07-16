@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &1359228697925034838
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +147,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 1
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!114 &4553260941449639338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +311,7 @@ GameObject:
   - component: {fileID: 1119150907244813963}
   - component: {fileID: 5777481123272941854}
   - component: {fileID: 1181010164736189775}
+  - component: {fileID: -2561135758423999126}
   m_Layer: 6
   m_Name: Mis
   m_TagString: Enemy
@@ -727,6 +732,7 @@ MonoBehaviour:
   isHealthDisplay: 0
   m_trailRenderer: {fileID: 765718672552953198}
   lastDissonanceInstantiated: {fileID: 0}
+  m_afflictionManager: {fileID: 0}
 --- !u!114 &4435284738777021273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1047,6 +1053,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priorityTarget: 0
+--- !u!114 &-2561135758423999126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45403c43c783f74d886f3ae3480a9ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_afflictionProfil: {fileID: 11400000, guid: 8dd4c1c0ce9e70a4a87adf5441d88c4c, type: 2}
+  m_activeAfflictionInfo: 1
 --- !u!1 &3613807817890412387
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,6 +1321,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &7560438145119078591
 GameObject:
   m_ObjectHideFlags: 0
@@ -1433,6 +1455,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1001 &105517998707912369
 PrefabInstance:
   m_ObjectHideFlags: 0

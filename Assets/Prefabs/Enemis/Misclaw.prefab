@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &2217678341916136200
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,6 +157,7 @@ GameObject:
   - component: {fileID: 852114777670516340}
   - component: {fileID: 4523480540794086140}
   - component: {fileID: 5882784020445561924}
+  - component: {fileID: -3820550823694075222}
   m_Layer: 6
   m_Name: Misclaw
   m_TagString: Enemy
@@ -642,6 +645,7 @@ MonoBehaviour:
   isHealthDisplay: 0
   m_trailRenderer: {fileID: 0}
   lastDissonanceInstantiated: {fileID: 0}
+  m_afflictionManager: {fileID: 0}
 --- !u!114 &-3186308383320918057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -991,6 +995,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priorityTarget: 1
+--- !u!114 &-3820550823694075222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45403c43c783f74d886f3ae3480a9ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_afflictionProfil: {fileID: 11400000, guid: 8dd4c1c0ce9e70a4a87adf5441d88c4c, type: 2}
+  m_activeAfflictionInfo: 1
 --- !u!1 &4063191210908749132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1038,6 +1056,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 1
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!114 &8527406928448524810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1225,6 +1245,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &6334304738928253758
 GameObject:
   m_ObjectHideFlags: 0
@@ -1510,6 +1532,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &8291774482455464969
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,6 @@ namespace GuerhoubaGames.UI
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (isLock) return;
-            
             DragManager.instance.ActiveDragDrop(objectType, index, eventData.position);
         }
 

@@ -30,12 +30,14 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHATEST_ON
+  - _DISABLE_DECALS
+  - _DISABLE_SSR
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2475
+  m_CustomRenderQueue: 2450
   stringTagMap:
     MotionVector: User
     RenderType: TransparentCutout
@@ -50,7 +52,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Alpha:
-        m_Texture: {fileID: 2800000, guid: 5059ddec0c7128b489ca2058fe3749bf, type: 3}
+        m_Texture: {fileID: 2800000, guid: 198ee32234b36d1449120a43fd9fc100, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _AnisotropyMap:
@@ -172,7 +174,7 @@ Material:
     - _ATDistance: 1
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
-    - _AlphaClipping: 0.816
+    - _AlphaClipping: 0.037
     - _AlphaCutoff: 0.5
     - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
@@ -243,7 +245,7 @@ Material:
     - _PPDPrimitiveLength: 1
     - _PPDPrimitiveWidth: 1
     - _RayTracing: 0
-    - _ReceivesSSR: 1
+    - _ReceivesSSR: 0
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
     - _RenderQueueType: 1
@@ -256,17 +258,17 @@ Material:
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
     - _StencilRef: 0
-    - _StencilRefDepth: 8
+    - _StencilRefDepth: 0
     - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 10
-    - _StencilRefMV: 40
+    - _StencilRefGBuffer: 2
+    - _StencilRefMV: 32
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 9
     - _StencilWriteMaskDistortionVec: 4
     - _StencilWriteMaskGBuffer: 15
     - _StencilWriteMaskMV: 41
     - _SubsurfaceMask: 1
-    - _SupportDecals: 1
+    - _SupportDecals: 0
     - _SurfaceType: 0
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
@@ -293,7 +295,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color1: {r: 0.24366552, g: 16.858936, b: 51.656967, a: 1}
+    - _Color1: {r: 0.05652992, g: 3.91124, b: 11.984314, a: 1}
     - _Color2: {r: 7.9999995, g: 7.176514, b: 0, a: 0}
     - _Color3: {r: 0, g: 2.362187, b: 3.9999998, a: 0}
     - _Color4: {r: 0.5729796, g: 3.2830188, b: 0.9621944, a: 0}

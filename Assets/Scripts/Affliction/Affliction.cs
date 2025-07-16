@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Affliction Type enum
 public enum AfflictionType
 {
     NONE =0 ,
-    BLEEDING= 1 ,
-    DEEP_BLEEDING =2,
+    LACERATION= 1 ,
+    BLEEDING =2,
     BURN =3,
-    COMBUSTION =4,
-    FROSTBITE =5,
+    BLAZE =4,
+    CHILL =5,
     FREEZE = 6,
     POISON = 7,
     INTOXICATE = 8,
+    ELECTRIFIED = 9,
+    ELECTROCUTE = 10,
+    SCARE = 11,
+    TERRIFY = 12,
 
 }
 
@@ -22,9 +27,4 @@ public class Affliction
     public int stackCount;
     public AfflictionType type;
 
-    // Stats special
-    public float damage;
-    public float slowness;
-    public bool freeze;
-    public float damageIncrease;
 }
