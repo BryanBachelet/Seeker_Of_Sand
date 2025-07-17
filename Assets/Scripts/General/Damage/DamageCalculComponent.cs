@@ -13,6 +13,10 @@ namespace GuerhoubaGames
         public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal);
         public float GetLifeRatio();
         public string GetName();
+        public AfflictionManager GetAfflictionManager();
+        public GameObject GetGameObject();
+        public bool IsDead();
+    
     }
     public enum DamageType
     {

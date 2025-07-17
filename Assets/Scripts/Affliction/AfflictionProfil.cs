@@ -14,7 +14,7 @@ public class AfflictionData
 {
     public AfflictionType type;
     public float duration;
-    public float stackMax;
+    public int stackMax;
 }
 
 
@@ -120,20 +120,8 @@ public class AfflictionProfil : ScriptableObject
     public TerrifyData terrifyData;
 
 
-    [HideInInspector] public AfflictionData[] afflictionData = new AfflictionData[12];
-    public void OnInit()
-    {
-        afflictionData[0] = lacerateData;
-        afflictionData[1] = bleedingData;
-        afflictionData[2] = burnData;
-        afflictionData[3] = blazeData;
-        afflictionData[4] = chillData;
-        afflictionData[5] = freezeData;
-        afflictionData[6] = poisonData;
-        afflictionData[7] = intoxicateData;
-        afflictionData[8] = electrifyData;
-        afflictionData[9] = electrocuteData;
-        afflictionData[10] = scareData;
-        afflictionData[11] = terrifyData;
-    }
+ 
+
+
+ 
 }

@@ -207,6 +207,8 @@ namespace Enemies
             GetDestroy(direction, power);
         }
 
+        
+
         public void GetDestroy(Vector3 direction, float power)
         {
             if (m_npcInfo.state == NpcState.DEATH) return;
@@ -363,6 +365,21 @@ namespace Enemies
         public string GetName()
         {
             return m_npcInfo.nameNpc;
+        }
+
+        public AfflictionManager GetAfflictionManager()
+        {
+            return m_afflictionManager;
+        }
+
+        public GameObject GetGameObject()
+        {
+            return gameObject;
+        }
+
+        public bool IsDead()
+        {
+            return m_npcInfo.state == NpcState.DEATH ;
         }
     }
 }

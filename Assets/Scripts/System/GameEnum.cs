@@ -9,6 +9,7 @@ namespace GuerhoubaGames.GameEnum
     {
         SPELL = 0,
         FRAGMENT = 1,
+        AFFLICTION = 2,
     }
 
     public enum SpellLevelType

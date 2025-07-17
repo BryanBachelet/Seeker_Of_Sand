@@ -1,4 +1,5 @@
 using Character;
+using Enemies;
 using GuerhoubaGames;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,13 +50,21 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     private SpawnerBehavior spawnerbehavior; //A RETIRER A TERME, N'A RIEN A FAIRE LA
     public GameObject miniMap_Icon;
+
+
+    private AfflictionManager m_afflictionManager;
+
+
     private void Start()
     {
+
+      
         GameState.AddObject(state);
         healthManager = GameState.m_enemyManager.GetComponent<HealthManager>();
         healthSystem = new HealthSystem();
         maxLife = (int)maxHealthEvolution.Evaluate(healthManager.characterShoot.GetComponent<CharacterUpgrade>().avatarUpgradeList.Count);
         healthSystem.Setup(maxLife);
+        m_afflictionManager = GetComponent<AfflictionManager>();
         if (miniMap_Icon) miniMap_Icon.SetActive(true);
         if (m_meshRender != null) _matAssociated = m_meshRender.material;
     }
@@ -167,5 +176,20 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public string GetName()
     {
        return nameObject;
+    }
+
+    public AfflictionManager GetAfflictionManager()
+    {
+        return m_afflictionManager;
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
+    public bool IsDead()
+    {
+        return eventState != EventObjectState.Active;
     }
 }

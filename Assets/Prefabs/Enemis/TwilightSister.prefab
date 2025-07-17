@@ -1845,6 +1845,8 @@ GameObject:
   - component: {fileID: 8056349823282169993}
   - component: {fileID: 1480183017902568212}
   - component: {fileID: 957940569792382224}
+  - component: {fileID: -3947907892108024811}
+  - component: {fileID: -3288162182326083770}
   m_Layer: 6
   m_Name: TwilightSister
   m_TagString: Enemy
@@ -2272,6 +2274,7 @@ MonoBehaviour:
   isHealthDisplay: 0
   m_trailRenderer: {fileID: 0}
   lastDissonanceInstantiated: {fileID: 0}
+  m_afflictionManager: {fileID: 0}
 --- !u!114 &7774953131793964524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2316,6 +2319,7 @@ MonoBehaviour:
   lastTimeCheck: 0
   lastPosCheck: {x: 0, y: 0, z: 0}
   replaceDelta: Infinity
+  isAlreadyPlace: 0
 --- !u!114 &7064744184375119970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2808,6 +2812,34 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-3947907892108024811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45403c43c783f74d886f3ae3480a9ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_afflictionProfil: {fileID: 11400000, guid: 8dd4c1c0ce9e70a4a87adf5441d88c4c, type: 2}
+  m_activeAfflictionInfo: 0
+--- !u!114 &-3288162182326083770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897375566322654638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37a76a141e2563340bc448e14eab87c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bleedingDamage: 0
+  m_activeEnityModifierDebug: 1
 --- !u!1 &1926249773738274090
 GameObject:
   m_ObjectHideFlags: 0
@@ -3866,6 +3898,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 1
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!114 &8486634610342764044
 MonoBehaviour:
   m_ObjectHideFlags: 0
