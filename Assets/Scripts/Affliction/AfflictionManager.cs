@@ -177,7 +177,7 @@ public class AfflictionManager : MonoBehaviour
         affliction.stackCount = 0;
         affliction.duration = 0;
         affliction.type = AfflictionType.NONE;
-        // 3. Update Entity modifier
+        UpdateEntityModiferRemove(affliction);
         // 4. Update UI and feedback
 
     }
