@@ -65,7 +65,7 @@ public class EntityModifier : MonoBehaviour
             DamageStatData damageStatData = new DamageStatData();
             damageStatData.characterObjectType = CharacterObjectType.AFFLICTION;
             damageStatData.element = GameElement.NONE;
-            damageStatData.damage = (m_damageReceiver.GetLastingLife();
+            damageStatData.damage = (m_damageReceiver.GetLastingLife());
 
             m_damageReceiver.ReceiveDamage("Execute intoxicate affliction", damageStatData, Vector3.zero, 0, -1, 0);
 
@@ -211,6 +211,8 @@ public class EntityModifier : MonoBehaviour
             Debug.Log("Affliction : Poison Damage apply " + bleedingDamage);
         }
     }
+
+    public bool IsObjectifTarget() { return m_damageReceiver.IsObjectifTarget(); }
 
 
 

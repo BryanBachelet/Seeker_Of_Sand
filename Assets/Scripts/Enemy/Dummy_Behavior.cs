@@ -58,4 +58,9 @@ public class Dummy_Behavior : MonoBehaviour, IDamageReceiver
     {
         return (int)m_healthSystem.health;
     }
+
+    public bool IsObjectifTarget()
+    {
+        return false;
+    }
 }

@@ -16,6 +16,7 @@ namespace GuerhoubaGames
         public AfflictionManager GetAfflictionManager();
         public GameObject GetGameObject();
         public bool IsDead();
+        public bool IsObjectifTarget();
         public int GetLastingLife();
     
     }

@@ -118,9 +118,4 @@ public class AfflictionProfil : ScriptableObject
     public ScareData scareData;
     public TerrifyData terrifyData;
 
-
- 
-
-
- 
 }

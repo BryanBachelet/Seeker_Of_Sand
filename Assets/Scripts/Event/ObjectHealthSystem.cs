@@ -53,7 +53,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
 
     private AfflictionManager m_afflictionManager;
-
+    [SerializeField] private bool m_isObjectifEvent;
 
     private void Start()
     {
@@ -195,5 +195,10 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public int GetLastingLife()
     {
         return (int)healthSystem.health;
+    }
+
+    public bool IsObjectifTarget()
+    {
+        return m_isObjectifEvent;
     }
 }

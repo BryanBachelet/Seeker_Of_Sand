@@ -341,6 +341,7 @@ namespace Character
                 IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
                 if (damageReceiver != null)
                 {
+                    damageReceiver.GetAfflictionManager().ShowAfflictionUI();
                     m_lifeTargetUI.ActiveLifeTarget(damageReceiver.GetLifeRatio(), damageReceiver.GetName());
                     ActiveOutlineForEnemi();
                 }
