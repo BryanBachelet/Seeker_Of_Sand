@@ -381,5 +381,10 @@ namespace Enemies
         {
             return m_npcInfo.state == NpcState.DEATH ;
         }
+
+        public int GetLastingLife()
+        {
+            return (int)m_healthSystem.health;
+        }
     }
 }

@@ -192,4 +192,8 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     {
         return eventState != EventObjectState.Active;
     }
+    public int GetLastingLife()
+    {
+        return (int)healthSystem.health;
+    }
 }

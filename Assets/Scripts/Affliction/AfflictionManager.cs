@@ -69,7 +69,7 @@ public class AfflictionManager : MonoBehaviour
             }
             if (afflictionArray[i].duration <= 0)
             {
-                RemoveAffliction(afflictionArray[i]);
+                RemoveAffliction(afflictionArray[i].type);
             }
         }
 
@@ -109,6 +109,7 @@ public class AfflictionManager : MonoBehaviour
         }
         else
         {
+            currentAffliction.type = affliction.type;
             currentAffliction.duration = affliction.duration;
             currentAffliction.stackCount += affliction.stackCount;
         }
@@ -126,7 +127,7 @@ public class AfflictionManager : MonoBehaviour
 
     private Affliction TranformAffliction(Affliction currentAffliction)
     {
-        if (currentAffliction.stackCount < GetAfflictionData((currentAffliction.type)).stackMax)
+        if (currentAffliction.stackCount < GetAfflictionData((currentAffliction.type)).stackToTranform)
             return currentAffliction;
 
 
@@ -142,7 +143,29 @@ public class AfflictionManager : MonoBehaviour
                 AddAffliction(bleedingAffliction);
                 return currentAffliction;
             break;
-         
+
+            case AfflictionType.BURN:
+
+                Affliction blazeAffliction = new Affliction();
+                blazeAffliction.type = AfflictionType.BLAZE;
+                blazeAffliction.duration = GetAfflictionData(AfflictionType.BLAZE).duration;
+                blazeAffliction.stackCount = 1;
+                AddAffliction(blazeAffliction);
+                return currentAffliction;
+
+                break;
+            case AfflictionType.POISON:
+
+                Affliction intoxicateAffliction = new Affliction();
+                intoxicateAffliction.type = AfflictionType.INTOXICATE;
+                intoxicateAffliction.duration = GetAfflictionData(AfflictionType.INTOXICATE).duration;
+                intoxicateAffliction.stackCount++;
+                RemoveStack(AfflictionType.POISON, GetAfflictionData((currentAffliction.type)).stackToTranform);
+                AddAffliction(intoxicateAffliction);
+                return currentAffliction;
+
+            break;
+
             default:
                 break;
         }
@@ -157,27 +180,60 @@ public class AfflictionManager : MonoBehaviour
             case (AfflictionType.LACERATION):
                 m_entityModifier.bleedingDamage = m_afflictionProfil.lacerateData.damagerPerStack * affliction.stackCount;
                 if (m_activeAfflictionInfo)
-                    Debug.Log("Affliction : Apply lacerate damage");
+                    Debug.Log("Affliction : Apply lacerate affliction stats");
                 break;
+
             case AfflictionType.BLEEDING:
                 
-                m_entityModifier.increaseBleedingDamage = m_afflictionProfil.bleedingData.increaseDamageBleeding;
+                m_entityModifier.multiplierPercentBleedingDamage = m_afflictionProfil.bleedingData.increaseDamageBleeding;
                 m_entityModifier.distanceProcBleeding = m_afflictionProfil.bleedingData.movementQuantityToReduceHitCooldown;
                 m_entityModifier.ActiveBleedingState();
 
                 if (m_activeAfflictionInfo)
-                    Debug.Log("Affliction : Apply bleeding damage");
+                    Debug.Log("Affliction : Apply bleeding affliction stats");
+                break;
+
+            case AfflictionType.BURN:
+                m_entityModifier.burningDamage = m_afflictionProfil.burnData.damagePerStack * affliction.stackCount;
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply burning affliction stats");
+                break;
+
+            case AfflictionType.BLAZE:
+                m_entityModifier.effectRemovePerHit = m_afflictionProfil.blazeData.effectRemovePerDamage ;
+                m_entityModifier.multiplierPercentBurningDamage = m_afflictionProfil.blazeData.damageIncreasePercentage ;
+                m_entityModifier.tickDurationBlazingDamage = m_afflictionProfil.blazeData.timeBetweenTick ;
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply blaze affliction stats");
+                break;
+            case AfflictionType.POISON:
+
+                m_entityModifier.poisonDamage = m_afflictionProfil.poisonData.dammagePoisonPerStack * affliction.stackCount;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Poison affliction stats");
+
+                break;
+
+            case AfflictionType.INTOXICATE:
+
+                m_entityModifier.multiplierPercentPoisonDamage = m_afflictionProfil.intoxicateData.multiplerPoisonDamage;
+                m_entityModifier.intoxicateExecuteThreshold = m_afflictionProfil.intoxicateData.exectutionPercentPerStack * affliction.stackCount;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Intoxicate affliction stats");
+
                 break;
         }
 
     }
 
-    public void RemoveAffliction(Affliction affliction)
+    public void RemoveAffliction(AfflictionType type)
     {
-        affliction.stackCount = 0;
-        affliction.duration = 0;
-        affliction.type = AfflictionType.NONE;
-        UpdateEntityModiferRemove(affliction);
+        afflictionArray[(int)type].stackCount = 0;
+        afflictionArray[(int)type].duration = 0;
+        UpdateEntityModiferRemove(afflictionArray[(int)type]);
+        afflictionArray[(int)type].type = AfflictionType.NONE;
         // 4. Update UI and feedback
 
     }
@@ -191,16 +247,47 @@ public class AfflictionManager : MonoBehaviour
             case (AfflictionType.LACERATION):
                 m_entityModifier.bleedingDamage = 0;
                 if (m_activeAfflictionInfo)
-                    Debug.Log("Affliction : Remove lacerate damage");
+                    Debug.Log("Affliction : Remove lacerate  affliction stats");
                 break;
 
             case AfflictionType.BLEEDING:
 
-                m_entityModifier.increaseBleedingDamage = 0.0f;
+                m_entityModifier.multiplierPercentBleedingDamage = 0.0f;
                 m_entityModifier.distanceProcBleeding = 0.0f;
 
                 if (m_activeAfflictionInfo)
-                    Debug.Log("Affliction : Remove bleeding damage");
+                    Debug.Log("Affliction : Remove bleeding  affliction stats");
+                break;
+
+            case AfflictionType.BURN:
+                m_entityModifier.burningDamage = 0;
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Remove burning affliction stats");
+                break;
+
+            case AfflictionType.BLAZE:
+                m_entityModifier.effectRemovePerHit = 0;
+                m_entityModifier.multiplierPercentBurningDamage = 0;
+                m_entityModifier.tickDurationBlazingDamage = 0;
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Remove blaze affliction stats");
+                break;
+
+            case AfflictionType.POISON:
+                m_entityModifier.poisonDamage = 0;
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Remove Poison affliction stats");
+
+                break;
+
+            case AfflictionType.INTOXICATE:
+
+                m_entityModifier.multiplierPercentPoisonDamage = 0;
+                m_entityModifier.intoxicateExecuteThreshold = 0;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Remove Intoxicate affliction stats");
+
                 break;
 
         }
@@ -209,8 +296,14 @@ public class AfflictionManager : MonoBehaviour
 
     public bool IsCarryAffliction(AfflictionType afflictionType)
     {
-        return afflictionArray[(int)afflictionType] != null;
+        return afflictionArray[(int)afflictionType] != null && afflictionArray[(int)afflictionType].type != AfflictionType.NONE;
     }
 
-
+    public int RemoveStack(AfflictionType type, int stackRemove)
+    {
+        afflictionArray[(int)type].stackCount -= stackRemove;
+        afflictionArray[(int)type].stackCount = Mathf.Clamp(afflictionArray[(int)type].stackCount,0, int.MaxValue);
+        UpdateEntityModiferAdd(afflictionArray[(int)type]);
+        return afflictionArray[(int)type].stackCount;
+    }
 }
