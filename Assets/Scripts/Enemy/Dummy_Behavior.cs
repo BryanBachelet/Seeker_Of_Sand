@@ -39,4 +39,18 @@ public class Dummy_Behavior : MonoBehaviour, IDamageReceiver
     {
         return "Dummy";
     }
+
+    public AfflictionManager GetAfflictionManager()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+    public bool IsDead()
+    {
+        return false;
+    }
 }

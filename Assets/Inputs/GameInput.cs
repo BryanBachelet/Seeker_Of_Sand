@@ -260,6 +260,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Potion"",
+                    ""type"": ""Button"",
+                    ""id"": ""31228554-2a67-4c74-bb0e-b9047586e008"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1008,6 +1017,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ZoomOut"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4f13b41-f6c7-461f-baf6-2e60161e19d8"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Potion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -2645,6 +2665,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_ChooseUpgrade = m_Player.FindAction("ChooseUpgrade", throwIfNotFound: true);
         m_Player_ZoomIn = m_Player.FindAction("ZoomIn", throwIfNotFound: true);
         m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
+        m_Player_Potion = m_Player.FindAction("Potion", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -2780,6 +2801,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ChooseUpgrade;
     private readonly InputAction m_Player_ZoomIn;
     private readonly InputAction m_Player_ZoomOut;
+    private readonly InputAction m_Player_Potion;
     public struct PlayerActions
     {
         private @GameInput m_Wrapper;
@@ -2810,6 +2832,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         public InputAction @ChooseUpgrade => m_Wrapper.m_Player_ChooseUpgrade;
         public InputAction @ZoomIn => m_Wrapper.m_Player_ZoomIn;
         public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
+        public InputAction @Potion => m_Wrapper.m_Player_Potion;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2897,6 +2920,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ZoomOut.started += instance.OnZoomOut;
             @ZoomOut.performed += instance.OnZoomOut;
             @ZoomOut.canceled += instance.OnZoomOut;
+            @Potion.started += instance.OnPotion;
+            @Potion.performed += instance.OnPotion;
+            @Potion.canceled += instance.OnPotion;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -2979,6 +3005,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ZoomOut.started -= instance.OnZoomOut;
             @ZoomOut.performed -= instance.OnZoomOut;
             @ZoomOut.canceled -= instance.OnZoomOut;
+            @Potion.started -= instance.OnPotion;
+            @Potion.performed -= instance.OnPotion;
+            @Potion.canceled -= instance.OnPotion;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -3541,6 +3570,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         void OnChooseUpgrade(InputAction.CallbackContext context);
         void OnZoomIn(InputAction.CallbackContext context);
         void OnZoomOut(InputAction.CallbackContext context);
+        void OnPotion(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

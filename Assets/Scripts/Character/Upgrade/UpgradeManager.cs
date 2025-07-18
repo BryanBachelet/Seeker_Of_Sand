@@ -317,12 +317,14 @@ public class UpgradeManager : MonoBehaviour
     public void CloseSpellChoiceUI()
     {
 
+        Debug.Log("Close spell 1");
+
         if (book_Animator != null) book_Animator.SetBool("BookOpen", false);
         float time = Time.time;
         float timeToClose = book_Animator.GetCurrentAnimatorStateInfo(0).length;
         m_chooseSpellManagerComponent.CloseSpellChoiceUI();
 
-        StartCoroutine(CloseUIWithDelay(timeToClose));
+        StartCoroutine(CloseUIWithDelay(0));
 
     }
 

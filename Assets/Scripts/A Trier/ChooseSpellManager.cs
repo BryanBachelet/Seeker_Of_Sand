@@ -96,17 +96,17 @@ public class ChooseSpellManager : MonoBehaviour
             if (m_hasChooseSpell)
             {
                 m_hasChooseSpell = false;
-                textSpellFeedback.alpha = 0;
+                //textSpellFeedback.alpha = 0;
 
-                for (int i = 0; i < 3; i++)
-                {
-                    //vfxHolder[i].SetActive(false);
-                    spellHolder[i].SetActive(false);
-                    vfxSpell[i].enabled = false;
-                    vfxSpell[i].sprite = null;
-                    m_materialBandeauDissolve[i].SetFloat("_Fade_Step", -0.5f);
-                }
-                m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    //vfxHolder[i].SetActive(false);
+                //    spellHolder[i].SetActive(false);
+                //    vfxSpell[i].enabled = false;
+                //    vfxSpell[i].sprite = null;
+                //    m_materialBandeauDissolve[i].SetFloat("_Fade_Step", -0.5f);
+                //}
+                //m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
 
             }
         }
@@ -230,6 +230,19 @@ public class ChooseSpellManager : MonoBehaviour
         }
         m_indexSpellChoose = indexChoice;
         countSpellDraw = 0;
+
+        // Close the UI
+        textSpellFeedback.alpha = 0;
+
+        for (int i = 0; i < 3; i++)
+        {
+            //vfxHolder[i].SetActive(false);
+            spellHolder[i].SetActive(false);
+            vfxSpell[i].enabled = false;
+            vfxSpell[i].sprite = null;
+            m_materialBandeauDissolve[i].SetFloat("_Fade_Step", -0.5f);
+        }
+        m_upgradeManagerComponenet.SendSpell(newSpell[m_indexSpellChoose]);
 
     }
 

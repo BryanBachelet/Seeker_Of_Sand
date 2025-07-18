@@ -86,7 +86,7 @@ public class Projectile : MonoBehaviour
     protected DamageCalculComponent m_damageCalculComponent;
 
    [HideInInspector] public GameObject ObjectToSpawn;
-    [HideInInspector] private Animator animator;
+   [HideInInspector] private Animator animator;
 
   public  void Update()
     {
@@ -303,17 +303,18 @@ public class Projectile : MonoBehaviour
             other.GetComponent<DestructibleObject>().SetupDestruction(m_power, other.transform.position - transform.position);
             return;
         }
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Object")
         {
-            Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
+            IDamageReceiver enemyTouch = other.GetComponent<IDamageReceiver>();
 
             m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
-            DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType,enemyTouch.gameObject,spellProfil);
+            DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType,enemyTouch.GetGameObject(),spellProfil);
 
-            if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
+            if (IsEntityActive(other.gameObject.tag,enemyTouch)) return;
 
             for (int i = 0; i < damageStatDatas.Length; i++)
             {
+                enemyTouch.GetAfflictionManager().AddAfflictions(spellProfil.tagData.afflictionTypes.ToArray());
                 enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
 
@@ -341,31 +342,6 @@ public class Projectile : MonoBehaviour
 
                 ApplyExplosion();
             }
-        }
-        else if (other.gameObject.tag == "Object")
-        {
-            ObjectHealthSystem enemyTouch = other.GetComponent<ObjectHealthSystem>();
-            m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
-            DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType, enemyTouch.gameObject, spellProfil);
-
-            if (enemyTouch.eventState != EventObjectState.Active) return;
-
-            for (int i = 0; i < damageStatDatas.Length; i++)
-            {
-                enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
-            }
-
-            PiercingUpdate();
-            if (piercingCount >= m_piercingMax)
-            {
-
-                //Destroy(this.gameObject);
-                m_lifeTimer = m_lifeTime;
-                m_collider.enabled = false;
-                //willDestroy = true;
-            }
-
-
         }
         else if (other.gameObject.tag == "DPSCheck")
         {
@@ -412,6 +388,21 @@ public class Projectile : MonoBehaviour
 
 
 
+    }
+
+    private bool IsEntityActive(string tag, IDamageReceiver damageReceiver)
+    {
+        if(tag == "Enemy")
+        {
+            NpcHealthComponent npcHealthComponent = (NpcHealthComponent)damageReceiver;
+            return npcHealthComponent.m_npcInfo.state == Enemies.NpcState.DEATH;
+        }
+        else
+        {
+            ObjectHealthSystem objectHealth = (ObjectHealthSystem)damageReceiver;
+            return objectHealth.eventState != EventObjectState.Active;
+        }
+       
     }
 
     protected void ApplyExplosion()

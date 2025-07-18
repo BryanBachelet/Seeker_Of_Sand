@@ -92,6 +92,7 @@ namespace Enemies
         private Object_HealthDisplay m_objectHealthDisplay;
         public TrailRenderer m_trailRenderer;
         public GameObject lastDissonanceInstantiated;
+        public AfflictionManager m_afflictionManager;
 
         void Awake()
         {
@@ -104,6 +105,7 @@ namespace Enemies
             m_npcInfo = GetComponent<NpcMetaInfos>();
             m_entityAnimator = GetComponentInChildren<Animator>(false);
             m_objectHealthDisplay = GetComponentInChildren<Object_HealthDisplay>();
+            m_afflictionManager = GetComponent<AfflictionManager>();
             _propBlock = new MaterialPropertyBlock();
             if (!isMassed)
             {
@@ -204,6 +206,8 @@ namespace Enemies
 
             GetDestroy(direction, power);
         }
+
+        
 
         public void GetDestroy(Vector3 direction, float power)
         {
@@ -361,6 +365,21 @@ namespace Enemies
         public string GetName()
         {
             return m_npcInfo.nameNpc;
+        }
+
+        public AfflictionManager GetAfflictionManager()
+        {
+            return m_afflictionManager;
+        }
+
+        public GameObject GetGameObject()
+        {
+            return gameObject;
+        }
+
+        public bool IsDead()
+        {
+            return m_npcInfo.state == NpcState.DEATH ;
         }
     }
 }

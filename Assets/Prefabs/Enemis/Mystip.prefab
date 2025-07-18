@@ -23,6 +23,8 @@ GameObject:
   - component: {fileID: 7557893455594236240}
   - component: {fileID: 5316137111859089345}
   - component: {fileID: -8915635967056712896}
+  - component: {fileID: 8346715502277793138}
+  - component: {fileID: 1815833765819296348}
   m_Layer: 6
   m_Name: Mystip
   m_TagString: Enemy
@@ -443,6 +445,7 @@ MonoBehaviour:
   isHealthDisplay: 1
   m_trailRenderer: {fileID: 0}
   lastDissonanceInstantiated: {fileID: 0}
+  m_afflictionManager: {fileID: 0}
 --- !u!114 &-4669882926715339747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -780,6 +783,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priorityTarget: 1
+--- !u!114 &8346715502277793138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45403c43c783f74d886f3ae3480a9ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_afflictionProfil: {fileID: 11400000, guid: 8dd4c1c0ce9e70a4a87adf5441d88c4c, type: 2}
+  m_activeAfflictionInfo: 1
+--- !u!114 &1815833765819296348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3294013781257085869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37a76a141e2563340bc448e14eab87c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bleedingDamage: 0
+  m_activeEnityModifierDebug: 1
 --- !u!1 &4137397693849288937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,6 +1038,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &5519160084212913393
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,6 +1087,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 1
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!114 &3948854499527717205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1261,6 +1296,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &6760674650398345259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,6 +1430,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1001 &174373379107677542
 PrefabInstance:
   m_ObjectHideFlags: 0

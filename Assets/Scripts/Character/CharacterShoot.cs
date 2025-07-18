@@ -43,7 +43,7 @@ namespace Character
         [Header("Spell Composition Parameters")]
         [HideInInspector] public int[] spellEquip;
         [HideInInspector] public int maxSpellIndex = 4;
-        [HideInInspector] public List<int> spellIndexGeneral;
+         public List<int> spellIndexGeneral;
         [HideInInspector] private List<int> spellIndexSpecific = new List<int>(4);
         [SerializeField] private spell_Attribution[] spellAttribution = new spell_Attribution[4];
 
@@ -155,7 +155,7 @@ namespace Character
         [HideInInspector] private CanalisationBarType m_canalisationType;
         private float m_totalCanalisationDuration;
         private float m_totalLaunchingDuration;
-        private float m_spellTimer;
+        private float m_canalisationTimer;
         private float m_spellLaunchTime;
         private float m_deltaTimeFrame;
         private bool m_test;
@@ -256,7 +256,6 @@ namespace Character
             if (IsCombatMode())
             {
                 UpdateAvatarModels();
-                AutomaticAimMode();
             }
             UpdateFullControlAimMode();
             UpdateStackingSystem();
@@ -266,6 +265,7 @@ namespace Character
 
         #endregion
 
+        // Update the avatar model rotation
         private void UpdateAvatarModels()
         {
             if (m_aimModeState == AimMode.Automatic && !m_characterAim.HasCloseTarget()) return;
@@ -277,27 +277,8 @@ namespace Character
         }
 
         #region Aim Mode Functions
-        private void AutomaticAimMode()
-        {
-            if (m_aimModeState == AimMode.FullControl) return;
 
-            if (!m_isShooting)
-                Shoot();
-            if (m_isShooting)
-            {
-                if (m_timerBetweenShoot > currentCloneSpellProfil.GetFloatStat(StatType.TimeBetweenShot))
-                {
-                    Shoot();
-                    m_CharacterMouvement.m_lastTimeShot = Time.time;
-                    m_timerBetweenShoot = 0.0f;
-                }
-                else
-                {
-                    m_timerBetweenShoot += Time.deltaTime;
-                }
-            }
-        }
-
+       
         private void UpdateFullControlAimMode()
         {
             if (m_aimModeState != AimMode.FullControl) return;
@@ -307,9 +288,9 @@ namespace Character
             if (m_CharacterMouvement.mouvementState == CharacterMouvement.MouvementState.SpecialSpell) return;
 
 
-            ShotCanalisation();
+            bool isValidCanalisation = ShotCanalisation();
             if (!m_shootInputActive) m_CharacterMouvement.m_SpeedReduce = 1;
-            if (IsRealoadingSpellRotation || !m_shootInputActive) return;
+            if (IsRealoadingSpellRotation || !m_shootInputActive || !hasCanalise) return;
 
             InitShot();
 
@@ -516,7 +497,7 @@ namespace Character
                 //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                 m_CharacterMouvement.m_SpeedReduce = 1;
                 SetCombatMode(CombatPlayerState.NONE);
-                m_CharacterMouvement.ActiveSlide();
+                //m_CharacterMouvement.ActiveSlide();
             }
         }
         #endregion
@@ -538,7 +519,7 @@ namespace Character
 
         public void DeactivateCanalisation()
         {
-            m_spellTimer = 0.0f;
+            m_canalisationTimer = 0.0f;
             //gsm.CanalisationParameterStop();
             m_uiPlayerInfos.DeactiveSpellCanalisation();
             isCasting = false;
@@ -546,7 +527,7 @@ namespace Character
 
         public void ActivateCanalisation()
         {
-            m_spellTimer = m_totalCanalisationDuration;
+            m_canalisationTimer = m_totalCanalisationDuration;
             SpellSystem.SpellProfil spellProfil = spellProfils[m_currentRotationIndex];
             int maxStack = GetMaxStack(spellProfil);
             UpdateCanalisationBar(m_totalCanalisationDuration);
@@ -562,7 +543,24 @@ namespace Character
             UpdateCanalisationBar(m_totalCanalisationDuration);
 
 
+            bool isLightCanalisation = currentCloneSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION;
             bool highCanalisationTest = currentCloneSpellProfil.tagData.canalisationType == CanalisationType.HEAVY_CANALISATION && m_shootInputActive;
+
+            if(isLightCanalisation)
+            {
+                // Decal changes 
+                currentPreviewDecalTexture = currentCloneSpellProfil.previewDecal_mat;
+                currentPreviewDecalEndTexture = currentCloneSpellProfil.previewDecalEnd_mat;
+                ChangeDecalTexture(currentCloneSpellProfil.tagData.element);
+
+                m_activeSpellLoad = false;
+                m_isShooting = false;
+                m_canalisationTimer = m_totalCanalisationDuration;
+
+                hasCanalise = true;
+                return true;
+            }
+
 
             if (highCanalisationTest)
             {
@@ -571,24 +569,14 @@ namespace Character
                 currentPreviewDecalTexture = currentCloneSpellProfil.previewDecal_mat;
                 currentPreviewDecalEndTexture = currentCloneSpellProfil.previewDecalEnd_mat;
                 ChangeDecalTexture(currentCloneSpellProfil.tagData.element);
-            }
-            else
-            {
-                m_CharacterMouvement.m_SpeedReduce = 1;
-            }
-
-            if (highCanalisationTest || currentCloneSpellProfil.tagData.canalisationType == CanalisationType.LIGHT_CANALISATION)
-            {
-
-                currentPreviewDecalTexture = currentCloneSpellProfil.previewDecal_mat;
-                currentPreviewDecalEndTexture = currentCloneSpellProfil.previewDecalEnd_mat;
-                ChangeDecalTexture(currentCloneSpellProfil.tagData.element);
-                if (m_spellTimer >= currentCloneSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime)
+                hasCanalise = false;
+                float canalisationDuration = currentCloneSpellProfil.GetFloatStat(StatType.SpellCanalisation) + baseCanalisationTime;
+                if (m_canalisationTimer >= canalisationDuration)
                 {
                     //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).tagData.element - 0.01f);
                     m_activeSpellLoad = false;
                     m_isShooting = false;
-                    m_spellTimer = m_totalCanalisationDuration;
+                    m_canalisationTimer = m_totalCanalisationDuration;
                     UpdateCanalisationBar(m_totalCanalisationDuration);
 
                     hasCanalise = true;
@@ -597,7 +585,7 @@ namespace Character
                 }
                 else
                 {
-                    m_spellTimer += Time.deltaTime;
+                    m_canalisationTimer += Time.deltaTime;
 
                     return false;
                 }
@@ -605,15 +593,18 @@ namespace Character
             }
             else
             {
-                m_spellTimer = 0.0f;
+                m_CharacterMouvement.m_SpeedReduce = 1;
+                m_canalisationTimer = 0.0f;
                 return false;
             }
+
+           
 
         }
 
         private void UpdateCanalisationBar(float maxValue)
         {
-            float ratio = m_spellTimer / maxValue;
+            float ratio = m_canalisationTimer / maxValue;
             m_uiPlayerInfos.UpdateSpellCanalisationUI(ratio, (m_currentStack[m_currentRotationIndex]));
             m_characterAim.vfxCast.SetFloat("Progress", ratio);
             m_characterAim.vfxCastEnd.SetFloat("Progress", ratio);
@@ -1089,7 +1080,7 @@ namespace Character
             m_characterAim.vfxCastEnd.SendEvent("EndShoot");
             m_characterAim.vfxCast.SetFloat("Progress", 0);
             m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
-            m_spellTimer = 0.0f;
+            m_canalisationTimer = 0.0f;
             m_spellLaunchTime = 0.0f;
             m_CharacterMouvement.m_SpeedReduce = 1;
             m_uiPlayerInfos.DeactiveSpellCanalisation();
@@ -1148,7 +1139,7 @@ namespace Character
             if (m_canalisationType == CanalisationBarType.ByPart)
                 m_totalLaunchingDuration = (m_currentStack[m_currentRotationIndex]);
 
-            m_spellTimer = 0.0f;
+            m_canalisationTimer = 0.0f;
             m_activeSpellLoad = true;
             hasCanalise = false;
             hasStartShoot = false;
@@ -1349,9 +1340,8 @@ namespace Character
             m_CharacterAnimator.SetBool("Shooting", false);
             m_BookAnimator.SetBool("Shooting", false);
             m_CharacterMouvement.m_SpeedReduce = 1;
-            float totalShootTime = baseTimeBetweenSpell;
 
-            if (m_timerBetweenSpell > totalShootTime)
+            if (m_timerBetweenSpell > baseTimeBetweenSpell)
             {
 
                 // Update Spell bar
@@ -1366,7 +1356,7 @@ namespace Character
             {
                 m_timerBetweenSpell += Time.deltaTime;
                 // Update Spell bar 
-                UpdatingSpellBarUI(totalShootTime);
+                UpdatingSpellBarUI(baseTimeBetweenSpell);
             }
         }
 
@@ -1432,6 +1422,10 @@ namespace Character
         #endregion
 
 
+
+        /// <summary>
+        /// Start casting is the function launch when shoot input is done
+        /// </summary>
         public void StartCasting()
         {
             if (isCasting) return;

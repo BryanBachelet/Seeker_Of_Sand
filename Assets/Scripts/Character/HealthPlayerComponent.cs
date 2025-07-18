@@ -14,6 +14,8 @@ public struct AttackDamageInfo
     public int damage;
     public Vector3 position;
     public bool bIsHeavy;
+
+  
 }
 
 public class HealthPlayerComponent : MonoBehaviour
@@ -274,7 +276,7 @@ public class HealthPlayerComponent : MonoBehaviour
         //InitializedHealthData();
     }
 
-    public void RestoreQuarter()
+    public void RestoreQuarter(bool nextQuarter =false)
     {
         if (m_QuarterHealthQuantity == 0 || m_QuarterNumber == 0) return;
 
@@ -282,6 +284,7 @@ public class HealthPlayerComponent : MonoBehaviour
         if (m_CurrentHealth % m_QuarterHealthQuantity == 0)
         {
             indexQuarter = (int)m_CurrentHealth / (int)m_QuarterHealthQuantity;
+            indexQuarter = nextQuarter ? indexQuarter + 1 : indexQuarter;
         }
         else
         {
