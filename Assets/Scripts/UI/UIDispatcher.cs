@@ -15,10 +15,14 @@ public class UIDispatcher : MonoBehaviour
     public GuerhoubaGames.UI.AnvilUIView anvilUIView;
     public PauseMenu pauseMenu;
      public GameObject bandenoir;
+    public Affliction_UI_Manager afflictionUIManager;
 
     public GameObject[] uiMouvementObject = new GameObject[2];
     public GameObject uiFragmentPrefab;
     public List<Tool_UiMovement> lastObjectCreated = new List<Tool_UiMovement>();
+
+
+
     public void ActiveUIElement()
     {
         uiInventory.InitComponent();

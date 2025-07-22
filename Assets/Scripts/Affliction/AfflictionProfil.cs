@@ -12,10 +12,9 @@ using UnityEngine;
 [Serializable]
 public class AfflictionData
 {
-    public Sprite icon;
     public AfflictionType type;
     public float duration;
-    public int stackMax;
+    public int stackToTranform;
 }
 
 
@@ -33,14 +32,13 @@ public class FreezeData : AfflictionData
 [Serializable]
 public class BurnData : AfflictionData
 {
-    public int stackToTranform;
     public int damagePerStack;
 }
 
 [Serializable]
 public class BlazeData : AfflictionData
 {
-    public float effectRemovePerDamage;
+    public int effectRemovePerDamage;
     public float damageIncreasePercentage;
     public float timeBetweenTick;
 }
@@ -68,7 +66,7 @@ public class PoisonData : AfflictionData
 [Serializable]
 public class IntoxicateData : AfflictionData
 {
-
+    public float multiplerPoisonDamage;
     public float exectutionPercentPerStack;
 }
 [Serializable]

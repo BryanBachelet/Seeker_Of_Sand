@@ -92,7 +92,12 @@ namespace Enemies
         private Object_HealthDisplay m_objectHealthDisplay;
         public TrailRenderer m_trailRenderer;
         public GameObject lastDissonanceInstantiated;
+
+        public bool IsObjectifEvent = false;
+        [Header("Affliction Variables")]
         public AfflictionManager m_afflictionManager;
+
+        
 
         void Awake()
         {
@@ -380,6 +385,16 @@ namespace Enemies
         public bool IsDead()
         {
             return m_npcInfo.state == NpcState.DEATH ;
+        }
+
+        public int GetLastingLife()
+        {
+            return (int)m_healthSystem.health;
+        }
+
+        public bool IsObjectifTarget()
+        {
+            return IsObjectifEvent;
         }
     }
 }
