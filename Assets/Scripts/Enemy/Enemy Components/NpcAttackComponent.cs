@@ -128,6 +128,11 @@ namespace Enemies
 
         public void Update()
         {
+            if(m_npcMetaInfos.state == NpcState.FREEZE)
+            {
+                return;
+            }
+
             if (m_hasToActiveGeneralCooldown)
             {
                 if (m_generalCooldownFrameCounter > m_generalCooldownFrameCount)

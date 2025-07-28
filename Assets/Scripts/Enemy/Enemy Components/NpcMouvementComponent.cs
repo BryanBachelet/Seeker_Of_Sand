@@ -7,7 +7,7 @@ namespace Enemies
 {
     public class NpcMouvementComponent : MonoBehaviour
     {
-        #region variables
+
         public bool selected = false;
         private const float slowSpeed = .7f;
         private const int facingAngle = 4;
@@ -65,7 +65,8 @@ namespace Enemies
 
         public bool isAlreadyPlace = false;
 
-        #endregion
+        private EntityModifier m_entityModifier;
+
         public void Start()
         {
             InitComponent();
@@ -80,6 +81,7 @@ namespace Enemies
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_navMeshAgent = GetComponent<NavMeshAgent>();
             m_npcInfo = GetComponent<NpcMetaInfos>();
+            m_entityModifier = GetComponent<EntityModifier>();
         }
 
         public void SetTarget(TargetData target)
@@ -105,6 +107,8 @@ namespace Enemies
 
         public void Update()
         {
+
+            m_navMeshAgent.speed = m_baseSpeed * (1.0f - m_entityModifier.slownessPercent);
             if (m_npcInfo.state == NpcState.PAUSE)
             {
                 if (!m_isPauseActive)
@@ -115,10 +119,12 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-            if(m_npcInfo.state == NpcState.IDLE)
+            if(m_npcInfo.state == NpcState.IDLE || m_npcInfo.state == NpcState.FREEZE)
             {
                 StopMouvement();
             }
+
+        
             if (m_npcInfo.state == NpcState.MOVE )
             {
                 if(m_npcInfo.type != EnemyType.TWILIGHT_SISTER)
@@ -429,6 +435,7 @@ namespace Enemies
         public void Move(Vector3 position)
         {
             m_navMeshAgent.enabled = true;
+        
             if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(position);
             if (!m_navMeshAgent.hasPath)
             {

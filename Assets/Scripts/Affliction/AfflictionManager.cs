@@ -1,3 +1,4 @@
+using GuerhoubaGames.Resources;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,9 @@ public class AfflictionManager : MonoBehaviour
 {
     [SerializeField] private AfflictionProfil m_afflictionProfil;
     public Affliction[] afflictionArray;
+
+    
+
     [Header("Debug Infos")]
     public bool m_activeAfflictionInfo;
 
@@ -172,6 +176,24 @@ public class AfflictionManager : MonoBehaviour
 
                 break;
 
+            case AfflictionType.CHILL:
+                Affliction freezeAffliction = new Affliction();
+                freezeAffliction.type = AfflictionType.FREEZE;
+                freezeAffliction.duration = GetAfflictionData(AfflictionType.FREEZE).duration;
+                freezeAffliction.stackCount++;
+                RemoveStack(AfflictionType.CHILL, GetAfflictionData((currentAffliction.type)).stackToTranform);
+                AddAffliction(freezeAffliction);
+
+                break;
+            case AfflictionType.ELECTRIFIED:
+                Affliction electrocuteAffliction= new Affliction();
+                electrocuteAffliction.type = AfflictionType.ELECTROCUTE;
+                electrocuteAffliction.stackCount++;
+                RemoveStack(AfflictionType.ELECTRIFIED, GetAfflictionData((currentAffliction.type)).stackToTranform);
+                AddAffliction(electrocuteAffliction);
+
+                break;
+
             default:
                 break;
         }
@@ -228,8 +250,38 @@ public class AfflictionManager : MonoBehaviour
 
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Intoxicate affliction stats");
-
                 break;
+            case AfflictionType.CHILL:
+
+                m_entityModifier.slownessPercent = m_afflictionProfil.chillData.slowPerStack * affliction.stackCount;   
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Chill affliction stats");
+                break;
+
+            case AfflictionType.FREEZE:
+
+                m_entityModifier.ApplyFreeze();
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Freeze affliction stats");
+                break;
+            case AfflictionType.ELECTRIFIED:
+
+                m_entityModifier.electrifyPercent = m_afflictionProfil.electrifyData.increaseDamagePercentPerStack * affliction.stackCount;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Electrified affliction stats");
+                break;
+            case AfflictionType.ELECTROCUTE:
+
+                SpawnElectrocuteEffect(this.transform.position, m_afflictionProfil.electrocuteData.eletrocuteStrikeSpawner);
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Electrocute affliction stats");
+                break;
+          
+
         }
 
     }
@@ -295,6 +347,27 @@ public class AfflictionManager : MonoBehaviour
                     Debug.Log("Affliction : Remove Intoxicate affliction stats");
 
                 break;
+            case AfflictionType.CHILL:
+
+                m_entityModifier.slownessPercent =0;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Removes Chill affliction stats");
+                break;
+
+            case AfflictionType.FREEZE:
+
+                m_entityModifier.FinishFreeze();
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Removes Freeze affliction stats");
+                break;
+            case AfflictionType.ELECTRIFIED:
+                m_entityModifier.electrifyPercent =  0;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Removes Electrified affliction stats");
+                break;
 
         }
 
@@ -311,6 +384,33 @@ public class AfflictionManager : MonoBehaviour
         afflictionArray[(int)type].stackCount = Mathf.Clamp(afflictionArray[(int)type].stackCount, 0, int.MaxValue);
         UpdateEntityModiferAdd(afflictionArray[(int)type]);
         return afflictionArray[(int)type].stackCount;
+    }
+
+
+    public void SpawnElectrocuteEffect(Vector3 position, GameObject objectToSpawn)
+    {
+        GameObject instance = GamePullingSystem.SpawnObject(objectToSpawn, position, Quaternion.identity);
+        AttackSpellSpawnerBehavior attackSpellSpawnerBehavior = instance.GetComponent<AttackSpellSpawnerBehavior>();
+        if (attackSpellSpawnerBehavior != null)
+        {
+            attackSpellSpawnerBehavior.InitializeObject(
+                m_afflictionProfil.electrocuteData.duration,
+                m_afflictionProfil.electrocuteData.frequenceLightningStrike,
+                m_afflictionProfil.electrocuteData.radiusElectrocute,
+                m_afflictionProfil.electrocuteData.electrocuteStrike
+                );
+
+            attackSpellSpawnerBehavior.InitializeAreaData(
+                GuerhoubaGames.GameEnum.GameElement.AIR,
+                m_afflictionProfil.electrocuteData.radiusLightning,
+                m_afflictionProfil.electrocuteData.dammagePerLightning
+                );
+        }
+
+        if (m_activeAfflictionInfo)
+        {
+            Debug.Log("Affliction : Electrocute object spawn");
+        }
     }
 
 

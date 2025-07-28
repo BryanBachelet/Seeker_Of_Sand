@@ -16,6 +16,7 @@ namespace Enemies
         RECUPERATION,
         SPECIAL_CAPACITIES,
         SPECIAL_ACTION,
+        FREEZE,
         DEATH,
         PAUSE,
     }
@@ -36,6 +37,8 @@ namespace Enemies
         public ObjectState m_objectGameState;
         private int m_previousNpcState;
 
+        private EntityModifier m_entityModifier;
+
         public  Action OnStart;
         public void Awake()
         {
@@ -44,6 +47,9 @@ namespace Enemies
             attackComponent = GetComponent<NpcAttackComponent>();
             specialCapacities = GetComponent<NpcSpecialCapacities>();
             behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
+            m_entityModifier = GetComponent<EntityModifier>();
+
+            
         }
 
         public void Start()
@@ -51,6 +57,9 @@ namespace Enemies
           
             m_objectGameState = new ObjectState();
             GameState.AddObject(m_objectGameState);
+            
+            m_entityModifier.OnStartFreeze += ActivateFreezeState;
+            m_entityModifier.EndFreeze += DeactivateFreezeState;
 
             if (behaviorTreeComponent && m_objectGameState.isPlaying)
             {
@@ -71,6 +80,7 @@ namespace Enemies
             {
                 RemovePauseState(); 
             }
+         
         }
 
         public void RestartEnemy()
@@ -116,5 +126,28 @@ namespace Enemies
         {
             manager.TeleportEnemyOut(this);
         }
+
+        public void ActivateFreezeState()
+        {
+            m_previousNpcState = (int)state;
+            state = NpcState.FREEZE;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+            }
+
+        }
+
+        private void DeactivateFreezeState()
+        {
+            state = (NpcState) m_previousNpcState;
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = true;
+            }
+        }
+
+       
     }
 }

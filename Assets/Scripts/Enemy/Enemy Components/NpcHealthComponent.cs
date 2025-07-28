@@ -96,6 +96,7 @@ namespace Enemies
         public bool IsObjectifEvent = false;
         [Header("Affliction Variables")]
         public AfflictionManager m_afflictionManager;
+        public EntityModifier m_entityModifier;
 
         
 
@@ -111,6 +112,7 @@ namespace Enemies
             m_entityAnimator = GetComponentInChildren<Animator>(false);
             m_objectHealthDisplay = GetComponentInChildren<Object_HealthDisplay>();
             m_afflictionManager = GetComponent<AfflictionManager>();
+            m_entityModifier = GetComponent<EntityModifier>();
             _propBlock = new MaterialPropertyBlock();
             if (!isMassed)
             {
@@ -191,13 +193,16 @@ namespace Enemies
             m_enemyManager = enemyManager;
         }
 
-        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal)
+        public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnalDamage)
         {
-            m_healthSystem.ChangeCurrentHealth(-damageStat.damage);
+            float allDamage = (damageStat.damage + additionnalDamage)* m_entityModifier.GetDamageIncreasePercent();
+
+            damageStat.damage = Mathf.RoundToInt(allDamage);
+            m_healthSystem.ChangeCurrentHealth(-allDamage);
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
             Vector3 positionOnScreen = transform.position + new Vector3(0,5,0);
-            m_healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
+            m_healthManager.CallDamageEvent(positionOnScreen, allDamage, element);
             if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
 
             GameObject vfxHitInstance = GamePullingSystem.SpawnObject(m_vfxHitFeedback, transform.position, Quaternion.identity);

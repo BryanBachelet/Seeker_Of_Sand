@@ -13,75 +13,74 @@ MonoBehaviour:
   m_Name: Affliction Profil
   m_EditorClassIdentifier: 
   chillData:
-    icon: {fileID: 21300000, guid: 4efc4a243e800ab4eaba63b6ac88542d, type: 3}
     type: 5
     duration: 8
-    stackMax: 20
-    slowPerStack: 1
+    stackToTranform: 20
+    slowPerStack: 0.01
+  freezeData:
+    type: 6
+    duration: 2
+    stackToTranform: 1
+    antiFreezeDuration: 10
   burnData:
-    icon: {fileID: 21300000, guid: d58500118818ff941a744b34ac044606, type: 3}
     type: 3
     duration: 8
-    stackMax: 20
     stackToTranform: 20
     damagePerStack: 1
   blazeData:
-    icon: {fileID: 21300000, guid: 13b64216023cc4a48b09bf95afb608d6, type: 3}
     type: 4
     duration: 10
-    stackMax: 1
+    stackToTranform: 0
     effectRemovePerDamage: 2
     damageIncreasePercentage: 1
     timeBetweenTick: 1
   electrifyData:
-    icon: {fileID: 21300000, guid: d2c547d06f7c0db479f29c4ebfc8d171, type: 3}
     type: 9
     duration: 8
-    stackMax: 25
-    increaseDamagePercentPerStack: 2
+    stackToTranform: 20
+    increaseDamagePercentPerStack: 0.02
   electrocuteData:
-    icon: {fileID: 21300000, guid: 1aa7f497f80f14a48aef3ec01a86777f, type: 3}
     type: 10
     duration: 8
-    stackMax: 1
-    radiusElectrocute: 15
+    stackToTranform: 1
+    radiusLightning: 15
+    radiusElectrocute: 40
     dammagePerLightning: 1
     frequenceLightningStrike: 1
+    electrocuteStrike: {fileID: 8757006509529770181, guid: bf6e0c17b9cc3d1419fab44ba4503772,
+      type: 3}
+    eletrocuteStrikeSpawner: {fileID: 5158643479704658636, guid: 1259dd495b0fa8c4eb11ac620ebd37a8,
+      type: 3}
   poisonData:
-    icon: {fileID: 21300000, guid: daed5c2d234b91043abe6421b53d9981, type: 3}
     type: 7
     duration: 8
-    stackMax: 20
+    stackToTranform: 0
     dammagePoisonPerStack: 1
   intoxicateData:
-    icon: {fileID: 21300000, guid: 79af7e1e4243fc746928ec19526ce138, type: 3}
     type: 8
     duration: 8
-    stackMax: 3
+    stackToTranform: 0
+    multiplerPoisonDamage: 0
     exectutionPercentPerStack: 10
   lacerateData:
-    icon: {fileID: 21300000, guid: c68a99d661933eb4da48a6dd73c06019, type: 3}
     type: 1
     duration: 8
-    stackMax: 20
+    stackToTranform: 0
     damagerPerStack: 1
   bleedingData:
-    icon: {fileID: 21300000, guid: 6fe95650d1678014693fe7d95b95e648, type: 3}
     type: 2
     duration: 8
     stackToTranform: 0
     increaseDamageBleeding: 0.2
     movementQuantityToReduceHitCooldown: 50
   scareData:
-    icon: {fileID: 21300000, guid: 14097734faed2f646bfa9ececbbd377e, type: 3}
     type: 11
     duration: 8
-    stackMax: 25
+    stackToTranform: 0
     stackMaxToTranformTerrify: 25
     reduceDamagePerStack: 2
   terrifyData:
-    icon: {fileID: 21300000, guid: 2de9d7bb1ae0b084a904ebbffe5fd5b0, type: 3}
     type: 12
     duration: 8
-    stackMax: 1
+    stackToTranform: 0
     mouvementSpeedIncreasePercent: 5

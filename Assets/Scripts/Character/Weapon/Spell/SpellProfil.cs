@@ -734,7 +734,7 @@ namespace SpellSystem
 
         }
 
-        private void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
+        public void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
         {
             for (int i = 0; i < statDatas.Count; i++)
             {
