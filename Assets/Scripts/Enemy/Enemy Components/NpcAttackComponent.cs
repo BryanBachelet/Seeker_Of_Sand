@@ -108,7 +108,7 @@ namespace Enemies
             InitComponent();
             if (m_NPCEnemiAnimation)
             {
-                OnPrepAttack += m_NPCEnemiAnimation.CallCloseAnimation;
+                //OnPrepAttack += m_NPCEnemiAnimation.CallCloseAnimation;
                 OnPrepAttack += m_NPCEnemiAnimation.CallAnimPrepAttack;
                 //for(int i = 0; i < attackEnemiesObjectsArr.Length; i++)
                 //{
@@ -121,7 +121,7 @@ namespace Enemies
 
 
                 OnRecoverAttack += m_NPCEnemiAnimation.ResetAnimAttack;
-                OnRecoverAttack += m_NPCEnemiAnimation.ResetCloseAnimation;
+                //OnRecoverAttack += m_NPCEnemiAnimation.ResetCloseAnimation;
             }
 
         }

@@ -17,7 +17,6 @@ namespace Enemies
         public Vector3 positionAttack;
         public Transform target;
         public AreaType areaType;
-
         public bool isDelayValid;
         
     }
@@ -25,7 +24,9 @@ namespace Enemies
 
     public class NPCAttackFeedbackComponent : MonoBehaviour
     {
+        [SerializeField] private Animator m_animator;
         public AttackFeedbackData[] attackFeedbackDataArr = new AttackFeedbackData[0];
+        [SerializeField] private int attackTriggerNumber;
 
         public void SpawnFeedbacks(AttackInfoData attackInfoData)
         {
@@ -38,6 +39,7 @@ namespace Enemies
 
                 if (currFeedbackData.feedbackType == FeedbackType.VISUAL) SpawnVisualFeedback(currFeedbackData,attackInfoData);
                 if (currFeedbackData.feedbackType == FeedbackType.SOUND) SpawnSoundFeedback(currFeedbackData,attackInfoData);
+                if (currFeedbackData.attackTrigger != -1) ChangeAnimationTrigger(currFeedbackData.attackTrigger);
 
 
             }
@@ -53,6 +55,20 @@ namespace Enemies
             GlobalSoundManager.PlayOneShot(attackFeedbackData.sfxIndex, transform.position);
         }
 
+        private void ChangeAnimationTrigger(int triggerNumber)
+        {
+            for(int i = 0; i < attackTriggerNumber; i++)
+            {
+                if(triggerNumber == i)
+                {
+                    m_animator.SetTrigger("" + triggerNumber);
+                }
+                else
+                {
+                    m_animator.ResetTrigger("" + i);
+                }
+            }
+        }
         private void SpawnVisualFeedback(AttackFeedbackData attackFeedbackData,AttackInfoData attackInfoData)
         {
             GameObject vfx = null;

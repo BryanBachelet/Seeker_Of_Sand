@@ -10,6 +10,8 @@ public class moveForward : MonoBehaviour
     public float range;
 
     public LayerMask layerMask;
+
+    public Vector3 targetPosition = Vector3.zero;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,7 +49,7 @@ public class moveForward : MonoBehaviour
 
     public void ChooseNextPosition()
     {
-        Vector3 newPosition = Random.insideUnitSphere * range;
+        Vector3 newPosition = targetPosition + Random.insideUnitSphere * range;
         nextPosition = startingPos + new Vector3(newPosition.x, startingPos.y, newPosition.z);
 
     }
