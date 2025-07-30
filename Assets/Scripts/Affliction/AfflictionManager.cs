@@ -1,4 +1,6 @@
+using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
+using SpellSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,10 +9,22 @@ using UnityEngine;
 
 public class AfflictionManager : MonoBehaviour
 {
+
+    /// <summary>
+    ///  Nested struct of affliction data
+    /// </summary>
+    public struct AfflictionDrawData
+    {
+        public AfflictionType typeArray;
+        public int stackCount;
+    }
+
+
+
     [SerializeField] private AfflictionProfil m_afflictionProfil;
     public Affliction[] afflictionArray;
 
-    
+
 
     [Header("Debug Infos")]
     public bool m_activeAfflictionInfo;
@@ -81,15 +95,15 @@ public class AfflictionManager : MonoBehaviour
 
     }
 
-    public void AddAfflictions(AfflictionType[] afflictionTypes)
+    public void AddAfflictions(AfflictionDrawData[] afflictionTypes)
     {
         for (int i = 0; i < afflictionTypes.Length; i++)
         {
 
             Affliction affliction = new Affliction();
-            affliction.type = afflictionTypes[i];
+            affliction.type = afflictionTypes[i].typeArray  ;
             affliction.duration = GetAfflictionData(affliction.type).duration;
-            affliction.stackCount = 1;
+            affliction.stackCount = afflictionTypes[i].stackCount;
             AddAffliction(affliction);
             if (m_activeAfflictionInfo)
             {
@@ -105,7 +119,7 @@ public class AfflictionManager : MonoBehaviour
 
     public void AddAffliction(Affliction affliction)
     {
-        Affliction currentAffliction = afflictionArray[(int)affliction.type];
+        Affliction currentAffliction = afflictionArray[(int)affliction.type - 1];
 
         if (currentAffliction == null)
         {
@@ -123,7 +137,7 @@ public class AfflictionManager : MonoBehaviour
         }
 
         currentAffliction = TranformAffliction(currentAffliction);
-        afflictionArray[(int)affliction.type] = currentAffliction;
+        afflictionArray[(int)affliction.type - 1] = currentAffliction;
         if (m_activeAfflictionInfo)
         {
             Debug.Log("Affliction : Set " + affliction.type);
@@ -186,7 +200,7 @@ public class AfflictionManager : MonoBehaviour
 
                 break;
             case AfflictionType.ELECTRIFIED:
-                Affliction electrocuteAffliction= new Affliction();
+                Affliction electrocuteAffliction = new Affliction();
                 electrocuteAffliction.type = AfflictionType.ELECTROCUTE;
                 electrocuteAffliction.stackCount++;
                 RemoveStack(AfflictionType.ELECTRIFIED, GetAfflictionData((currentAffliction.type)).stackToTranform);
@@ -253,7 +267,7 @@ public class AfflictionManager : MonoBehaviour
                 break;
             case AfflictionType.CHILL:
 
-                m_entityModifier.slownessPercent = m_afflictionProfil.chillData.slowPerStack * affliction.stackCount;   
+                m_entityModifier.slownessPercent = m_afflictionProfil.chillData.slowPerStack * affliction.stackCount;
 
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Chill affliction stats");
@@ -280,7 +294,21 @@ public class AfflictionManager : MonoBehaviour
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Electrocute affliction stats");
                 break;
-          
+            case AfflictionType.SCARE:
+
+                m_entityModifier.demoralizedPercent = m_afflictionProfil.scareData.reduceDamagePerStack * affliction.stackCount;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Scare affliction stats");
+                break;
+            case AfflictionType.TERRIFY:
+
+                m_entityModifier.increaseSpeedMovement = m_afflictionProfil.terrifyData.mouvementSpeedIncreasePercent;
+                m_entityModifier.ApplyTerrify();
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Apply Scare affliction stats");
+                break;
 
         }
 
@@ -288,10 +316,10 @@ public class AfflictionManager : MonoBehaviour
 
     public void RemoveAffliction(AfflictionType type)
     {
-        afflictionArray[(int)type].stackCount = 0;
-        afflictionArray[(int)type].duration = 0;
-        UpdateEntityModiferRemove(afflictionArray[(int)type]);
-        afflictionArray[(int)type].type = AfflictionType.NONE;
+        afflictionArray[(int)type - 1].stackCount = 0;
+        afflictionArray[(int)type - 1].duration = 0;
+        UpdateEntityModiferRemove(afflictionArray[(int)type - 1]);
+        afflictionArray[(int)type - 1].type = AfflictionType.NONE;
 
 
     }
@@ -349,7 +377,7 @@ public class AfflictionManager : MonoBehaviour
                 break;
             case AfflictionType.CHILL:
 
-                m_entityModifier.slownessPercent =0;
+                m_entityModifier.slownessPercent = 0;
 
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Removes Chill affliction stats");
@@ -363,10 +391,24 @@ public class AfflictionManager : MonoBehaviour
                     Debug.Log("Affliction : Removes Freeze affliction stats");
                 break;
             case AfflictionType.ELECTRIFIED:
-                m_entityModifier.electrifyPercent =  0;
+                m_entityModifier.electrifyPercent = 0;
 
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Removes Electrified affliction stats");
+                break;
+            case AfflictionType.SCARE:
+
+                m_entityModifier.demoralizedPercent = 0;
+
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Removes Scare affliction stats");
+                break;
+            case AfflictionType.TERRIFY:
+
+                m_entityModifier.increaseSpeedMovement = 0;
+                m_entityModifier.FinishTerrifyState();
+                if (m_activeAfflictionInfo)
+                    Debug.Log("Affliction : Removes Scare affliction stats");
                 break;
 
         }
@@ -414,8 +456,36 @@ public class AfflictionManager : MonoBehaviour
     }
 
 
+    #region Static Functions 
+
+
+
+    public static AfflictionDrawData[] DrawAfflictionApplication(SpellProfil spell)
+    {
+        List<AfflictionDrawData> afflictionTypesSend = new List<AfflictionDrawData>();
+
+        for (int i = 0; i < spell.tagData.afflictionTypes.Count; i++)
+        {
+            float draw = UnityEngine.Random.Range(0.0f, 1.0f);
+            float valueToProcAffliction = spell.GetFloatStat(StatType.AfflictionProbility, spell.GetAfflictionName(spell.tagData.afflictionTypes[i]));
+            if (draw < valueToProcAffliction)
+            {
+                AfflictionDrawData data = new AfflictionDrawData();
+                data.typeArray = spell.tagData.afflictionTypes[i];
+                data.stackCount = spell.GetIntStat(StatType.AfflictionStack, spell.GetAfflictionName(spell.tagData.afflictionTypes[i]));
+                afflictionTypesSend.Add(data);
+            }
+        }
+
+
+        return afflictionTypesSend.ToArray();
+    }
+
+    #endregion
+
+
     #region UI Functions
-       
+
     public void ShowAfflictionUI()
     {
         m_afflictionUI.CleanTargetAfflictionDisplay();

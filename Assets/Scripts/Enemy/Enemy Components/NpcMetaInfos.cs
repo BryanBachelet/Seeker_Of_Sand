@@ -19,6 +19,7 @@ namespace Enemies
         FREEZE,
         DEATH,
         PAUSE,
+        TERRIFY,
     }
     /// <summary>
     /// This class is the interface between enemy and the rest of the game
@@ -60,6 +61,8 @@ namespace Enemies
             
             m_entityModifier.OnStartFreeze += ActivateFreezeState;
             m_entityModifier.EndFreeze += DeactivateFreezeState;
+            m_entityModifier.OnStartTerrify += ActivateTerrifyState;
+            m_entityModifier.OnEndTerrify += DeactivateTerrifyState;
 
             if (behaviorTreeComponent && m_objectGameState.isPlaying)
             {
@@ -68,6 +71,14 @@ namespace Enemies
                 OnStart?.Invoke();
             }
             
+        }
+
+        public void OnDestroy()
+        {
+            m_entityModifier.OnStartFreeze -= ActivateFreezeState;
+            m_entityModifier.EndFreeze -= DeactivateFreezeState;
+            m_entityModifier.OnStartTerrify -= ActivateFreezeState;
+            m_entityModifier.OnEndTerrify -= DeactivateFreezeState;
         }
 
         public void Update()
@@ -148,6 +159,30 @@ namespace Enemies
             }
         }
 
-       
+        public void ActivateTerrifyState()
+        {
+            m_previousNpcState = (int)state;
+            state = NpcState.TERRIFY;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+            }
+
+        }
+
+        public void DeactivateTerrifyState()
+        {
+            m_previousNpcState = (int)state;
+            state = NpcState.TERRIFY;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+            }
+
+        }
+
+
     }
 }

@@ -122,9 +122,9 @@ namespace GuerhoubaGames.GameEnum
         SummonSimultanely = 1013,
         SpellCount =1014,
         AreaTargetSimulately = 1017,
-       
-        
-        
+        AfflictionStack = 1018,
+
+
         LifeTime = 2001,
         Range = 2002,
         CompleteShotTime = 2003,
@@ -152,6 +152,8 @@ namespace GuerhoubaGames.GameEnum
         AttackReload =2026,
         SizeExplosion = 2027,
         DirectionSpeed = 2028,
+        AfflictionProbility =2029,
+       
     }
 
     

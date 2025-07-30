@@ -108,7 +108,7 @@ namespace Enemies
         public void Update()
         {
 
-            m_navMeshAgent.speed = m_baseSpeed * (1.0f - m_entityModifier.slownessPercent);
+            m_navMeshAgent.speed = m_baseSpeed * ((1.0f - m_entityModifier.slownessPercent) + (m_entityModifier.increaseSpeedMovement));
             if (m_npcInfo.state == NpcState.PAUSE)
             {
                 if (!m_isPauseActive)
@@ -119,9 +119,34 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-            if(m_npcInfo.state == NpcState.IDLE || m_npcInfo.state == NpcState.FREEZE)
+            if (m_npcInfo.state == NpcState.IDLE || m_npcInfo.state == NpcState.FREEZE)
             {
                 StopMouvement();
+            }
+
+            if (m_npcInfo.state == NpcState.TERRIFY)
+            {
+                if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
+                if (isAffectedBySlope)
+                {
+                    m_navMeshAgent.speed = CalculateSlopeSpeed();
+                    if (isSlow) m_navMeshAgent.speed *= slowSpeed;
+                }
+                else
+                {
+                    m_navMeshAgent.speed = speed;
+                    if (isSlow) m_navMeshAgent.speed *= slowSpeed;
+                }
+
+                if (IsOutsideRange(awayDistance) && !IsFacingTarget())
+                {
+                    RotateToTarget();
+                }
+
+                // Compute the distance
+                ComputeFleePosition();
+                Move(fleePosition);
+                return;
             }
 
         
@@ -188,7 +213,7 @@ namespace Enemies
                     }
                     NavMeshPath path;
 
-                    if (isGoingAway)
+                    if (isGoingAway || m_npcInfo.state == NpcState.TERRIFY)
                     {
                         ComputeFleePosition();
                         path = MovePath(fleePosition);
@@ -202,7 +227,7 @@ namespace Enemies
                     return;
                 }
 
-                if (isGoingAway)
+                if (isGoingAway )
                 {
                     if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
                     if (isAffectedBySlope)

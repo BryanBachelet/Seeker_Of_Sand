@@ -32,7 +32,12 @@ public class EntityModifier : MonoBehaviour
     [HideInInspector] public float electrifyPercent = 0.0f;
     [HideInInspector] public float damageTakenIncrease = 1.0f;
 
+    [HideInInspector] public float demoralizedPercent = 0.0f;
+    [HideInInspector] public float reductionDamageInflict = 0.0f;
 
+    [HideInInspector] public float increaseSpeedMovement;
+
+    [HideInInspector] public bool isTerrify;
     [HideInInspector] public bool isFreeze;
 
 
@@ -48,6 +53,9 @@ public class EntityModifier : MonoBehaviour
 
     public Action OnStartFreeze;
     public Action EndFreeze;
+
+    public Action OnStartTerrify;
+    public Action OnEndTerrify;
 
     [Header("Debug Variables and Infos")]
     public bool m_activeEnityModifierDebug = false;
@@ -233,10 +241,23 @@ public class EntityModifier : MonoBehaviour
         OnStartFreeze?.Invoke();
     }
 
+
+
     public void FinishFreeze()
     {
         isFreeze = false;
         EndFreeze?.Invoke();
+    }
+
+    public void ApplyTerrify()
+    {
+        OnStartTerrify?.Invoke();
+        isTerrify = true;
+    }
+    public void FinishTerrifyState()
+    {
+        OnEndTerrify?.Invoke();
+        isTerrify = false;
     }
 
 
@@ -245,6 +266,11 @@ public class EntityModifier : MonoBehaviour
     public float GetDamageIncreasePercent()
     {
         return damageTakenIncrease + electrifyPercent;
+    }
+
+    public float GetReduceDamageInflicted()
+    {
+        return reductionDamageInflict;
     }
     #endregion
 }
