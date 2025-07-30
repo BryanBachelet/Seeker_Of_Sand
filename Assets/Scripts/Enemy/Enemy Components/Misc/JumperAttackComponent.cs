@@ -192,7 +192,7 @@ namespace Enemies
 
             Vector3 finalDashPos = Vector3.zero;
             RaycastHit hit = new RaycastHit();
-            m_animator.SetTrigger("Attacking");
+            //m_animator.SetTrigger("Attacking");
             m_direction = (m_target.position - m_basePlayer.position).normalized;
             if (Physics.Raycast(m_basePlayer.position, m_direction, out hit, jumpDistance, m_layerMask))
             {
@@ -241,7 +241,7 @@ namespace Enemies
             NavMesh.SamplePosition(transform.position, out hitTest, Mathf.Infinity, NavMesh.AllAreas);
 
 
-            m_animator.ResetTrigger("Attacking");
+            //m_animator.ResetTrigger("Attacking");
             m_capsuleCollider.isTrigger = false;
             m_npcMeta.state = NpcState.RECUPERATION;
             RaycastHit hit = new RaycastHit();

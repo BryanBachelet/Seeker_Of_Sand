@@ -136,19 +136,19 @@ namespace Enemies
         }
         public void Attack()
         {
-            animator.SetTrigger("Attacking");
+            //animator.SetTrigger("Attacking");
             GameObject projectileInstance = Instantiate(m_projectileThrow, m_targetTransform.position, Quaternion.identity);
      
             AttackTrainingArea attackObjectArea = projectileInstance.GetComponent<AttackTrainingArea>();
             attackObjectArea.playerTransform = m_targetTransform;
 
             m_npcMeta.state = NpcState.RECUPERATION;
-            animator.ResetTrigger("Attacking");
+            //animator.ResetTrigger("Attacking");
         }
 
         public void AttackOnPlayer()
         {
-            animator.SetTrigger("Attacking");
+            //animator.SetTrigger("Attacking");
             GameObject projectileInstance = Instantiate(m_projectileThrow, transform.position, Quaternion.identity);
             ProjectileCurveData data = new ProjectileCurveData();
             data.damage = damage;
@@ -165,7 +165,7 @@ namespace Enemies
             ProjectileMortar m_projectileMortar = projectileInstance.GetComponent<ProjectileMortar>();
             m_projectileMortar.InitProjectile(data);
             m_npcMeta.state = NpcState.RECUPERATION;
-            animator.ResetTrigger("Attacking");
+            //animator.ResetTrigger("Attacking");
         }
         public void OnDeath(Vector3 direction, float power)
         {

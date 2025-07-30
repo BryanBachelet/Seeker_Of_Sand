@@ -19,6 +19,7 @@ public class Enemi_Animation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         float distancePlayer = Vector3.Distance(transform.position, m_target.position);
         debugdistance = distancePlayer;
         if (distancePlayer < 100)
@@ -29,7 +30,7 @@ public class Enemi_Animation : MonoBehaviour
         {
             m_animator.SetBool("Close", false);
         }
-
+        
         if (distancePlayer < 15)
         {
             m_animator.SetTrigger("ActiveAttack");
@@ -39,5 +40,6 @@ public class Enemi_Animation : MonoBehaviour
         {
             m_animator.ResetTrigger("ActiveAttack");
         }
+        */
     }
 }

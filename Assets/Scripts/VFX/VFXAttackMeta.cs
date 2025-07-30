@@ -22,11 +22,13 @@ namespace GuerhoubaGames.VFX
     public class VFXAttackMeta : MonoBehaviour
     {
         [HideInInspector] public VfxAttackData vfxData;
+        [SerializeField] private VFXMovement_Forward moveBehavior;
         public System.Action OnStart;
         public void InitVFXObject(VfxAttackData vfxAttackData)
         {
             vfxData = vfxAttackData;
             if (OnStart != null) OnStart.Invoke();
+            if (moveBehavior) moveBehavior.targetPosition = vfxData.target.position;
         }
     }
 
