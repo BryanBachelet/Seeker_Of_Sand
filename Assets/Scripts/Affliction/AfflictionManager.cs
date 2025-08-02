@@ -463,6 +463,9 @@ public class AfflictionManager : MonoBehaviour
     public static AfflictionDrawData[] DrawAfflictionApplication(SpellProfil spell)
     {
         List<AfflictionDrawData> afflictionTypesSend = new List<AfflictionDrawData>();
+       
+        if (spell.tagData.afflictionTypes == null)
+            return afflictionTypesSend.ToArray();
 
         for (int i = 0; i < spell.tagData.afflictionTypes.Count; i++)
         {
