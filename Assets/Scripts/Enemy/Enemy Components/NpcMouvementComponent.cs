@@ -88,6 +88,7 @@ namespace Enemies
         {
             targetData = target;
             if (m_navMeshAgent == null) m_navMeshAgent = GetComponent<NavMeshAgent>();
+            if (!m_navMeshAgent.isOnNavMesh) return;
             m_navMeshAgent.enabled = true;
             bool state = m_navMeshAgent.SetDestination(targetData.target.position);
 
@@ -107,6 +108,7 @@ namespace Enemies
 
         public void Update()
         {
+            if (!m_navMeshAgent.isOnNavMesh) return; 
 
             m_navMeshAgent.speed = m_baseSpeed * ((1.0f - m_entityModifier.slownessPercent) + (m_entityModifier.increaseSpeedMovement));
             if (m_npcInfo.state == NpcState.PAUSE)
@@ -254,7 +256,8 @@ namespace Enemies
 
                 if (!IsInRange())
                 {
-                    if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
+                    if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped && m_navMeshAgent.isOnNavMesh) 
+                        m_navMeshAgent.isStopped = false;
 
                     if (isAffectedBySlope)
                     {
@@ -554,7 +557,7 @@ namespace Enemies
             SetTarget(m_npcHealthComponent.targetData);
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
-            m_navMeshAgent.destination = (targetData.target.position);
+           if(m_navMeshAgent.isOnNavMesh) m_navMeshAgent.destination = (targetData.target.position);
         }
 
         public void OnDrawGizmosSelected()

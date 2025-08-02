@@ -103,7 +103,7 @@ namespace Enemies
         void Awake()
         {
             InitComponent();
-            healthHolder.SetActive(isHealthDisplay);
+          if(healthHolder)  healthHolder.SetActive(isHealthDisplay);
         }
         private void InitComponent()
         {
@@ -357,7 +357,7 @@ namespace Enemies
                 if (clips[i].name == "Death")
                 {
                     deathStateDuration = clips[i].length;
-                    timeBeforeDestruction = deathStateDuration;
+                    //timeBeforeDestruction = deathStateDuration;
                 }
             }
         }
