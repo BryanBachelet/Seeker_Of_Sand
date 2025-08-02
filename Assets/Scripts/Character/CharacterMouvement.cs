@@ -204,6 +204,9 @@ namespace Character
         }
         #endregion
 
+        private float m_speedAtCombatStart;
+        private float m_timeSlideTransition;
+
         private void InitComponent()
         {
             if (state == null)
@@ -223,7 +226,7 @@ namespace Character
             if (m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
             if (cameraPlayer == null) { cameraPlayer = Camera.main.GetComponent<CameraBehavior>(); }
 
-            timeSlideTransition = m_combatSpeedTransitionDuration;
+            m_timeSlideTransition = m_combatSpeedTransitionDuration;
         }
 
         private void Start()
@@ -238,7 +241,7 @@ namespace Character
             }
 
 
-            m_characterShoot.OnCombatStarting += SetSpeedLimit;
+            m_characterShoot.OnCombatStarting += ActiveCombatMouvement;
             m_characterShoot.OnCombatEnding += SetSpeedLimit;
 
 
@@ -479,7 +482,7 @@ namespace Character
                     //m_slidingEffect.SetActive(false);
                     //  m_timerBeforeSliding = 0.0f;
                     if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 0);
-                    timeSlideTransition  = 0;
+                    m_timeSlideTransition  = 0;
                     break;
                 case MouvementState.Glide:
                     m_CharacterAnim.SetBool("Shooting", false);
@@ -1143,7 +1146,15 @@ namespace Character
             m_rigidbody.velocity = Vector3.zero;
         }
 
-        private float timeSlideTransition;
+      
+        public void ActiveCombatMouvement()
+        {
+
+            m_speedAtCombatStart = m_currentSpeed;
+            SetSpeedLimit();
+        }
+
+
 
         public void SetSpeedLimit()
         {
@@ -1161,8 +1172,8 @@ namespace Character
          
                     if (m_characterShoot.IsCombatMode())
                     {
-                        timeSlideTransition += Time.deltaTime * 0.5f;
-                        result = Mathf.Clamp(runningSpeed * m_combatReductionSpeedPercent + m_slideLimitSpeed * ((m_combatSpeedTransitionDuration - timeSlideTransition) / m_combatSpeedTransitionDuration), runningSpeed * m_combatReductionSpeedPercent, m_slideLimitSpeed) ;
+                        m_timeSlideTransition += Time.deltaTime * 0.5f;
+                        result = Mathf.Clamp(m_speedAtCombatStart * ((m_combatSpeedTransitionDuration - m_timeSlideTransition) / m_combatSpeedTransitionDuration), runningSpeed * m_combatReductionSpeedPercent, m_slideLimitSpeed) ;
                     }
 
                     break;
