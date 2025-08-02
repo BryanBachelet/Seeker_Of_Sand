@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FragmentChoose : MonoBehaviour
+public class FragmentChoiceUI : MonoBehaviour
 {
     public ArtefactsInfos[] artefactInfoCurrent;
     public TMP_Text[] descriptionTmp_Text;
