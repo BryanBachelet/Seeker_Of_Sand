@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c536489f91636f14abce8781c7468753, type: 3}
+  m_Name: Affliction Profil
+  m_EditorClassIdentifier: 
+  chillData:
+    type: 5
+    duration: 8
+    stackToTranform: 20
+    slowPerStack: 0.01
+  freezeData:
+    type: 6
+    duration: 2
+    stackToTranform: 1
+    antiFreezeDuration: 10
+  burnData:
+    type: 3
+    duration: 8
+    stackToTranform: 20
+    damagePerStack: 1
+  blazeData:
+    type: 4
+    duration: 10
+    stackToTranform: 0
+    effectRemovePerDamage: 2
+    damageIncreasePercentage: 1
+    timeBetweenTick: 1
+  electrifyData:
+    type: 9
+    duration: 8
+    stackToTranform: 20
+    increaseDamagePercentPerStack: 0.02
+  electrocuteData:
+    type: 10
+    duration: 8
+    stackToTranform: 1
+    radiusLightning: 15
+    radiusElectrocute: 40
+    dammagePerLightning: 1
+    frequenceLightningStrike: 1
+    electrocuteStrike: {fileID: 8757006509529770181, guid: bf6e0c17b9cc3d1419fab44ba4503772,
+      type: 3}
+    eletrocuteStrikeSpawner: {fileID: 5158643479704658636, guid: 1259dd495b0fa8c4eb11ac620ebd37a8,
+      type: 3}
+  poisonData:
+    type: 7
+    duration: 8
+    stackToTranform: 0
+    dammagePoisonPerStack: 1
+  intoxicateData:
+    type: 8
+    duration: 8
+    stackToTranform: 0
+    multiplerPoisonDamage: 0
+    exectutionPercentPerStack: 10
+  lacerateData:
+    type: 1
+    duration: 8
+    stackToTranform: 0
+    damagerPerStack: 1
+  bleedingData:
+    type: 2
+    duration: 8
+    stackToTranform: 0
+    increaseDamageBleeding: 0.2
+    movementQuantityToReduceHitCooldown: 50
+  scareData:
+    type: 11
+    duration: 8
+    stackToTranform: 20
+    stackMaxToTranformTerrify: 20
+    reduceDamagePerStack: 0.02
+  terrifyData:
+    type: 12
+    duration: 8
+    stackToTranform: 0
+    mouvementSpeedIncreasePercent: 0.05

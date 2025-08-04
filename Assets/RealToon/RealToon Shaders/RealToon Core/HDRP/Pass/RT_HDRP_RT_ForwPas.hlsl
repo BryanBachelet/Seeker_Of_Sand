@@ -45,7 +45,7 @@ void ClosestHitForward(inout RayIntersection rayIntersection : SV_RayPayload, At
 		const float biasSign = sign(dot(fragInput.tangentToWorld[2], incidentDirection));
 
 		RayDesc transmittedRay;
-		transmittedRay.Origin = pointWSPos + biasSign * fragInput.tangentToWorld[2] * _RaytracingRayBias;
+		transmittedRay.Origin = pointWSPos + biasSign * fragInput.tangentToWorld[2] * _RayTracingRayBias;
 		transmittedRay.Direction = incidentDirection;
 		transmittedRay.TMin = 0;
 		transmittedRay.TMax = _RaytracingRayMaxLength;
@@ -76,7 +76,7 @@ void ClosestHitForward(inout RayIntersection rayIntersection : SV_RayPayload, At
 		const float biasSign = sign(dot(fragInput.tangentToWorld[2], reflectedDir));
 
 		RayDesc reflectedRay;
-		reflectedRay.Origin = pointWSPos + biasSign * fragInput.tangentToWorld[2] * _RaytracingRayBias;
+		reflectedRay.Origin = pointWSPos + biasSign * fragInput.tangentToWorld[2] * _RayTracingRayBias;
 		reflectedRay.Direction = reflectedDir;
 		reflectedRay.TMin = 0;
 		reflectedRay.TMax = _RaytracingRayMaxLength;
@@ -137,6 +137,9 @@ void ClosestHitForward(inout RayIntersection rayIntersection : SV_RayPayload, At
 	context.shadowValue = 1;			
 	context.sampleReflection = 0;
 	context.splineVisibility = -1;
+#ifdef APPLY_FOG_ON_SKY_REFLECTIONS
+	context.positionWS = posInput.positionWS;
+#endif
 	
 	uint i=0;
 	uint i_en=0;
@@ -152,7 +155,11 @@ void ClosestHitForward(inout RayIntersection rayIntersection : SV_RayPayload, At
 		builtinData.shadowMask3 = shaMask.w;
 	#endif
 
-	builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#if UNITY_VERSION >= 202310
+		builtinData.renderingLayers = GetMeshRenderingLayerMask();
+	#else
+		builtinData.renderingLayers = _EnableLightLayers ? asuint(unity_RenderingLayer.x) : DEFAULT_LIGHT_LAYERS;
+	#endif
 
 	//=========//
 	//=========//
@@ -321,7 +328,7 @@ void ClosestHitForward(inout RayIntersection rayIntersection : SV_RayPayload, At
 
 	//RT_RELGI_SUB1
 	float ref_int_val;
-	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1( posInput ,RTD_GI_FS_OO , RTD_SHAT_COL , RTD_MCIALO , RTD_STIAL , RTD_RT_GI_Sha_FO , ref_int_val , (float3)0.0 , true);
+	float3 RTD_SL_OFF_OTHERS = RT_RELGI_SUB1(posInput, viewReflectDirection, viewDirection, RTD_GI_FS_OO , RTD_SHAT_COL , RTD_MCIALO , RTD_STIAL , RTD_RT_GI_Sha_FO , ref_int_val , (float3)0.0 , true);
 
 	//RT_SS
 	float RTD_SS = RT_SS( fragInput.color , RTD_NDOTL , attenuation , DirLigDim );
@@ -704,11 +711,8 @@ void AnyHitMain(inout RayIntersection rayIntersection : SV_RayPayload, Attribute
 	bool isVisible;
 
 	float4 objPos = mul ( GetObjectToWorldMatrix(), float4(0.0,0.0,0.0,1.0) );
-
 	float2 RTD_OB_VP_CAL = distance(objPos.xyz, GetCurrentViewPosition());
-
 	float2 RTD_TC_TP_OO = fragInput.texCoord0.xy;
-
 	float4 _MainTex_var = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex , TRANSFORM_TEX(RTD_TC_TP_OO, _MainTex) ); 
 
 	//RT_TRANS_CO

@@ -85,7 +85,7 @@ namespace FMODUnity
                 ReadEventCache();
                 forceRepaint = true;
             }
-            
+
             if (forceRepaint || (previewArea != null && previewArea.forceRepaint && nextRepaintTime < Time.realtimeSinceStartup))
             {
                 Repaint();
@@ -661,6 +661,11 @@ namespace FMODUnity
 
         private void OnGUI()
         {
+            if (!IsOpen)
+            {
+                return;
+            }
+
             AffirmResources();
 
             if (InChooserMode)
@@ -1132,7 +1137,7 @@ namespace FMODUnity
                 {
                     GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.1f);
                 }
-                
+
                 GUILayout.Label(arena, GUILayout.ExpandWidth(false));
 
                 if (Event.current.type == EventType.Repaint)
@@ -1312,7 +1317,7 @@ namespace FMODUnity
 
                 int meterHeight = minimized ? 86 : 128;
                 int meterWidth = (int)((128 / (float)meterOff.height) * meterOff.width);
-                
+
                 List<float> meterPositions = meterPositionsForSpeakerMode(speakerModeForChannelCount(metering.Length), meterWidth, 2, 6);
 
                 const int MeterCountMaximum = 16;
@@ -1329,7 +1334,7 @@ namespace FMODUnity
                     Rect meterRect = new Rect(baseX + meterPositions[i], fullRect.y, meterWidth, fullRect.height);
 
                     GUI.DrawTexture(meterRect, meterOff);
-                    
+
                     float db = 20.0f * Mathf.Log10(metering[i] * Mathf.Sqrt(2.0f));
                     db = Mathf.Clamp(db, -80.0f, 10.0f);
                     float visible = 0;
@@ -1614,20 +1619,25 @@ namespace FMODUnity
             searchField = new SearchField();
             treeView = new TreeView(treeViewState);
 
-            ReadEventCache();
-
-            searchField.downOrUpArrowKeyPressed += treeView.SetFocus;
-
-            SceneView.duringSceneGui += SceneUpdate;
-
-            EditorApplication.hierarchyWindowItemOnGUI += HierarchyUpdate;
-
-            if (isStandaloneWindow)
+			// Delay accessing the event cache as this will cause an error if window is opened on Unity start up.
+            EditorApplication.delayCall += () =>
             {
-                EditorUtils.LoadPreviewBanks();
-            }
+                ReadEventCache();
 
-            IsOpen = true;
+                searchField.downOrUpArrowKeyPressed += treeView.SetFocus;
+
+                SceneView.duringSceneGui += SceneUpdate;
+
+                EditorApplication.hierarchyWindowItemOnGUI += HierarchyUpdate;
+
+                if (isStandaloneWindow)
+                {
+                    EditorUtils.LoadPreviewBanks();
+                }
+
+                IsOpen = true;
+                Repaint();
+            };
         }
 
         public void OnDestroy()
@@ -1765,7 +1775,7 @@ namespace FMODUnity
             {
                 DragAndDrop.visualMode = DragAndDropVisualMode.Move;
                 DragAndDrop.AcceptDrag();
-                Event.current.Use(); 
+                Event.current.Use();
             }
         }
     }

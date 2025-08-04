@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CanEditMultipleObjects]
 [CustomEditor(typeof(CapsuleProfil))]
+[CanEditMultipleObjects()]
 public class CapsuleProfil_UI : Editor
 {
 
     SerializedProperty lifetimeProperty;
+    SerializedProperty elementTypeProperty;
     SerializedProperty travelTimeProperty;
     SerializedProperty useTravelTimeProperty;
     SerializedProperty speedProperty;
@@ -19,17 +20,24 @@ public class CapsuleProfil_UI : Editor
     SerializedProperty shootAngleProperty;
     SerializedProperty trajectoryProperty;
     SerializedProperty angleTrajectoryProperty;
+    SerializedProperty trajectoryTimerProperty;
     SerializedProperty shootNumberProperty;
     SerializedProperty TimeIntervalProperty;
     SerializedProperty sizeProperty;
     SerializedProperty sizeMultiplicatorFactorProperty;
     SerializedProperty piercingMaxProperty;
     SerializedProperty descriptionProperty;
+    SerializedProperty formSpellProperty;
+    SerializedProperty spellCanalisationProperty;
+    SerializedProperty stackDurationProperty;
+    SerializedProperty stackPerGainProperty;
+
 
     public void OnEnable()
     {
         rangeProperty = serializedObject.FindProperty("stats.range");
         lifetimeProperty = serializedObject.FindProperty("stats.lifetime");
+        elementTypeProperty = serializedObject.FindProperty("stats.elementType");
         travelTimeProperty = serializedObject.FindProperty("stats.travelTime");
         useTravelTimeProperty = serializedObject.FindProperty("stats.useTravelTime");
         speedProperty = serializedObject.FindProperty("stats.speed");
@@ -45,37 +53,52 @@ public class CapsuleProfil_UI : Editor
         sizeMultiplicatorFactorProperty = serializedObject.FindProperty("stats.sizeMultiplicatorFactor");
         piercingMaxProperty = serializedObject.FindProperty("stats.piercingMax");
         descriptionProperty = serializedObject.FindProperty("stats.description");
+        trajectoryTimerProperty = serializedObject.FindProperty("stats.trajectoryTimer");
+        formSpellProperty = serializedObject.FindProperty("stats.formType");
+        stackDurationProperty = serializedObject.FindProperty("stats.stackDuration");
+        stackPerGainProperty = serializedObject.FindProperty("stats.stackPerGain");
+        spellCanalisationProperty = serializedObject.FindProperty("stats.spellCanalisation");
+
+        
 
     }
 
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
-        CapsuleProfil m_capsuleProfile = (CapsuleProfil)target;
-        lifetimeProperty.floatValue = EditorGUILayout.FloatField(lifetimeProperty.displayName, lifetimeProperty.floatValue);
-       // useTravelTimeProperty.boolValue = EditorGUILayout.Toggle(useTravelTimeProperty.displayName, useTravelTimeProperty.boolValue);
-        EditorGUILayout.PropertyField(useTravelTimeProperty);
-        if (m_capsuleProfile.stats.useTravelTime)
-        {
-            travelTimeProperty.floatValue = EditorGUILayout.FloatField(travelTimeProperty.displayName, travelTimeProperty.floatValue);
-        }
-        speedProperty.floatValue = EditorGUILayout.FloatField(speedProperty.displayName, speedProperty.floatValue);
-        rangeProperty.floatValue = EditorGUILayout.FloatField(rangeProperty.displayName, rangeProperty.floatValue);
-        damageProperty.floatValue = EditorGUILayout.FloatField(damageProperty.displayName, damageProperty.floatValue);
-        projectileNumberProperty.floatValue = EditorGUILayout.FloatField(projectileNumberProperty.displayName, projectileNumberProperty.floatValue);
-        totalShotTimeProperty.floatValue = EditorGUILayout.FloatField(totalShotTimeProperty.displayName, totalShotTimeProperty.floatValue);
-        shootAngleProperty.floatValue = EditorGUILayout.FloatField(shootAngleProperty.displayName, shootAngleProperty.floatValue);
-        EditorGUILayout.PropertyField(trajectoryProperty);
-        if (m_capsuleProfile.stats.trajectory == TrajectoryType.CURVE)
-        {
-            angleTrajectoryProperty.floatValue = EditorGUILayout.FloatField(angleTrajectoryProperty.displayName, angleTrajectoryProperty.floatValue);
-        }
-        shootNumberProperty.floatValue = EditorGUILayout.FloatField(shootNumberProperty.displayName, shootNumberProperty.floatValue);
-        TimeIntervalProperty.floatValue = EditorGUILayout.FloatField(TimeIntervalProperty.displayName, TimeIntervalProperty.floatValue);
-        sizeProperty.floatValue = EditorGUILayout.FloatField(sizeProperty.displayName, sizeProperty.floatValue);
-        sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
-        piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
-        descriptionProperty.stringValue = EditorGUILayout.TextField(descriptionProperty.displayName, descriptionProperty.stringValue);
-        serializedObject.ApplyModifiedProperties();
+        // serializedObject.Update();
+
+        // CapsuleProfil m_capsuleProfile = (CapsuleProfil)target;
+        // m_capsuleProfile.stats.lifetime = EditorGUILayout.FloatField(lifetimeProperty.displayName, lifetimeProperty.floatValue);
+        // EditorGUILayout.PropertyField(elementTypeProperty);
+        //// useTravelTimeProperty.boolValue = EditorGUILayout.Toggle(useTravelTimeProperty.displayName, useTravelTimeProperty.boolValue);
+        // EditorGUILayout.PropertyField(useTravelTimeProperty);
+        // if (m_capsuleProfile.stats.useTravelTime)
+        // {
+        //     travelTimeProperty.floatValue = EditorGUILayout.FloatField(travelTimeProperty.displayName, travelTimeProperty.floatValue);
+        // }
+        // speedProperty.floatValue = EditorGUILayout.FloatField(speedProperty.displayName, speedProperty.floatValue);
+        // rangeProperty.floatValue = EditorGUILayout.FloatField(rangeProperty.displayName, rangeProperty.floatValue);
+        // damageProperty.floatValue = EditorGUILayout.FloatField(damageProperty.displayName, damageProperty.floatValue);
+        // projectileNumberProperty.intValue = EditorGUILayout.IntField(projectileNumberProperty.displayName, projectileNumberProperty.intValue);
+        // totalShotTimeProperty.floatValue = EditorGUILayout.FloatField(totalShotTimeProperty.displayName, totalShotTimeProperty.floatValue);
+        // shootAngleProperty.floatValue = EditorGUILayout.FloatField(shootAngleProperty.displayName, shootAngleProperty.floatValue);
+        // EditorGUILayout.PropertyField(trajectoryProperty);
+        // if (m_capsuleProfile.stats.trajectory == TrajectoryType.CURVE)
+        // {
+        //     angleTrajectoryProperty.floatValue = EditorGUILayout.FloatField(angleTrajectoryProperty.displayName, angleTrajectoryProperty.floatValue);
+        //     trajectoryTimerProperty.floatValue = EditorGUILayout.FloatField(trajectoryTimerProperty.displayName, trajectoryTimerProperty.floatValue);
+        // }
+        // shootNumberProperty.floatValue = EditorGUILayout.FloatField(shootNumberProperty.displayName, shootNumberProperty.floatValue);
+        // TimeIntervalProperty.floatValue = EditorGUILayout.FloatField(TimeIntervalProperty.displayName, TimeIntervalProperty.floatValue);
+        // sizeProperty.floatValue = EditorGUILayout.FloatField(sizeProperty.displayName, sizeProperty.floatValue);
+        // sizeMultiplicatorFactorProperty.floatValue = EditorGUILayout.FloatField(sizeMultiplicatorFactorProperty.displayName, sizeMultiplicatorFactorProperty.floatValue);
+        // piercingMaxProperty.intValue = EditorGUILayout.IntField(piercingMaxProperty.displayName, piercingMaxProperty.intValue);
+        // descriptionProperty.stringValue = EditorGUILayout.TextField(descriptionProperty.displayName, descriptionProperty.stringValue);
+        // EditorGUILayout.PropertyField(formSpellProperty);
+        // stackDurationProperty.floatValue = EditorGUILayout.FloatField(stackDurationProperty.displayName, stackDurationProperty.floatValue);
+        // stackPerGainProperty.intValue = EditorGUILayout.IntField(stackPerGainProperty.displayName, stackPerGainProperty.intValue);
+        // spellCanalisationProperty.floatValue = EditorGUILayout.FloatField(spellCanalisationProperty.displayName, spellCanalisationProperty.floatValue);
+        // serializedObject.ApplyModifiedProperties();
+        base.OnInspectorGUI();
     }
 }

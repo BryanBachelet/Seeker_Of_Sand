@@ -26,13 +26,15 @@ public class UpgradeUI : MonoBehaviour
     public GameObject[] SelectionIcon = new GameObject[3];
     private Animator[] selectionAnimator = new Animator[3];
     public Animator[] upgradeButton = new Animator[3];
-    [SerializeField] private CharacterUpgrade m_upgradeCharacter ;
+    [SerializeField] public Character.CharacterUpgrade m_upgradeCharacter ;
     public int lastUpgradeSelected = 0;
+
+    public Animator[] upgradeButtonAnimator = new Animator[3];
 
     public UpgradeUIDecal m_uiDecalUpdaterDisplay;
     private void Start()
     {
-        m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
+        //m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
         for (int i = 0; i < SelectionIcon.Length; i++)
         {
             selectionAnimator[i] = SelectionIcon[i].GetComponent<Animator>();
@@ -42,16 +44,18 @@ public class UpgradeUI : MonoBehaviour
     {
         if(!UiSpellGrimoire.bookDisplayRoot.activeSelf) { UiSpellGrimoire.bookDisplayRoot.SetActive(true); }
 
-        if (m_uiDecalUpdaterDisplay == null) { m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>(); }
+        //if (m_uiDecalUpdaterDisplay == null) { m_uiDecalUpdaterDisplay = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>(); }
         m_uiDecalUpdaterDisplay.UpdateUpgradeDisplay(upgrades);
         for (int i = 0; i < upgrades.Length; i++)
         {
-            m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
+            m_upgradeName[i].text = upgrades[i].gain.nameUpgrade;
             m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
-            m_uiDecalUpdaterDisplay.m_upgradeName[i].text = upgrades[i].gain.nameUgrade;
+            m_uiDecalUpdaterDisplay.m_upgradeName[i].text = upgrades[i].gain.nameUpgrade;
             m_uiDecalUpdaterDisplay.m_upgradeDescription[i].text = upgrades[i].gain.description;
             m_uiDecalUpdaterDisplay.m_upgradeIcon[i].sprite = upgrades[i].gain.icon_Associat;
+            m_uiDecalUpdaterDisplay.m_upgradMat[i].mainTexture = upgrades[i].gain.icon_Associat.texture;
+            m_uiDecalUpdaterDisplay.m_upgradeText[i] = upgrades[i].gain.icon_Associat.texture;
             //m_uiDecalUpdaterDisplay.capacityAffectedName.text = upgrades[i].gain.nameUgrade;
             switch (upgrades[i].gain.type)
             {
@@ -72,7 +76,9 @@ public class UpgradeUI : MonoBehaviour
 
     public void ChooseUpgrade(int index, int number)
     {
-        m_upgradeCharacter.ChooseUpgrade(index,number);
+        //m_upgradeCharacter.ChooseUpgrade(index,number);
+        upgradeButtonAnimator[index].SetTrigger("Take");
+        GlobalSoundManager.PlayOneShot(31, transform.position);
     }
 
     public void UpdateCursorOver(int upgradeOvered)
@@ -94,7 +100,7 @@ public class UpgradeUI : MonoBehaviour
 
                 SelectionIcon[i].SetActive(true);
                 m_uiDecalUpdaterDisplay.capacityAffectedName.text = m_upgradeDescription[i].text;
-                m_uiDecalUpdaterDisplay.capacityAffectedIcon.sprite = m_upgradeIcon[i].sprite;
+                m_uiDecalUpdaterDisplay.capacityAffectedIcon.mainTexture = m_upgradeIcon[i].mainTexture;
                 Debug.Log(m_uiDecalUpdaterDisplay.capacityAffectedName.text);
                 //selectionAnimator[i].SetBool("Selected", true);
                 //upgradeButton[i].SetBool("Selected", true);

@@ -7,34 +7,37 @@ using System;
 
 public class DamageHealthFD : MonoBehaviour
 {
-    [SerializeField] private Vector3 m_startPosition;
-    [SerializeField] private bool m_active;
-    [SerializeField] private TMP_Text m_text;
-    [SerializeField] private Animation m_animation;
-    [SerializeField] private float m_speed = 2;
+    [HideInInspector] private Vector3 m_startPosition;
+    [HideInInspector] private bool m_active;
+    [HideInInspector] private TMP_Text m_text;
+    [HideInInspector] private Animator m_animation;
     [SerializeField] private float m_animationDuration = 1;
+    [HideInInspector] public Camera m_cameraToLook;
 
-    private HealthManager m_healthManager;
-    private float m_animationTimer;
+    [HideInInspector] private HealthManager healthManager;
+    [HideInInspector] private float m_animationTimer;
 
     public void SetupText(HealthManager healthManager)
     {
-        m_healthManager = healthManager;
+        this.healthManager = healthManager;
+        if (m_animation == null) { m_animation = this.GetComponent<Animator>(); }
+        if (m_text == null) { m_text = this.GetComponentInChildren<TMP_Text>(); }
         m_startPosition = transform.position;
     }
 
     #region Component Function
 
-    public void StartDamageFeeback(Vector3 position, float damage)
+    public void StartDamageFeeback(Vector3 position, float damage, Color color)
     {
         m_active = true;
 
         gameObject.SetActive(true);
+        m_animation.SetTrigger("SendDamage");
         gameObject.transform.position = position;
-        gameObject.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+        gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
         m_text.text = damage.ToString("F0");
-
-        m_animation.Play();
+        m_text.color = color;
+      
         StartCoroutine(Animation());
     }
 
@@ -42,7 +45,7 @@ public class DamageHealthFD : MonoBehaviour
     {
         while (m_animationTimer< m_animationDuration)
         {
-            m_text.rectTransform.anchoredPosition += Vector2.up * m_speed * Time.deltaTime;
+            gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
             m_animationTimer += Time.deltaTime;
             yield return Time.deltaTime;
         }
@@ -55,9 +58,10 @@ public class DamageHealthFD : MonoBehaviour
         m_animationTimer = 0;
 
         gameObject.SetActive(false);
+        m_animation.ResetTrigger("SendDamage");
         gameObject.transform.position = m_startPosition;
 
-        m_healthManager.FinishDamageEvent(this);
+        healthManager.FinishDamageEvent(this);
     }
 
     #endregion

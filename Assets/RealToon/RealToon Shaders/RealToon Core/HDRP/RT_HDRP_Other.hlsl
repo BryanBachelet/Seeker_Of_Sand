@@ -1,6 +1,9 @@
 ﻿//RealToon HDRP - Other
 //MJQStudioWorks
 
+#ifndef REALTOON_HDRP_OTHER_HLSL
+#define REALTOON_HDRP_OTHER_HLSL
+
 float4 ComputeScreenPos(float4 positionCS)
 {
 	float4 o = positionCS * 0.5f;
@@ -137,7 +140,7 @@ float3 RT_RELGI( float3 RTD_SON )
 }
 
 //RT_NFD
-void RT_NFD(float4 positionCS)
+void RT_NFD(float2 positionCS)
 {
 	#if UNITY_UV_STARTS_AT_TOP
 		float2 PixelPositions = float2(positionCS.x, (_ProjectionParams.x < 0) ? (_ScreenParams.y - positionCS.y) : positionCS.y);
@@ -157,4 +160,6 @@ void RT_NFD(float4 positionCS)
 }
 
 //=========================
+
+#endif
 

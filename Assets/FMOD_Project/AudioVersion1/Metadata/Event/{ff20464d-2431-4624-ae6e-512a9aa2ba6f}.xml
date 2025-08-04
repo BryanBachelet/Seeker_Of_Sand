@@ -53,10 +53,17 @@
 			<destination>{1fd8d0e0-e7b1-416c-bbab-951b3a72c3f3}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{01c4e95a-f29c-4f25-8e52-d1c03adde702}</destination>
+			<destination>{05095c63-600a-4b9e-bcee-cc93f92410b3}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{1cd03733-4637-4f47-877f-807165f9171a}" />
+	<object class="EventAutomatableProperties" id="{1cd03733-4637-4f47-877f-807165f9171a}">
+		<property name="maxVoices">
+			<value>5</value>
+		</property>
+		<property name="triggerCooldown">
+			<value>80</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{4a8a7d9c-8bae-49ba-8f8c-9ca180272a09}" />
 	<object class="GroupTrack" id="{aba0ce74-71d0-4a11-a1b4-7a0f471d4faf}">
 		<relationship name="modules">
@@ -101,11 +108,14 @@
 	</object>
 	<object class="EventMixerGroup" id="{6a20afef-9c25-429a-943e-e4c4c70be081}">
 		<property name="volume">
-			<value>-18.5</value>
+			<value>-11</value>
 		</property>
 		<property name="name">
 			<value>Audio 2</value>
 		</property>
+		<relationship name="modulators">
+			<destination>{cb246718-ad4f-4a3f-8c2b-110e4f033611}</destination>
+		</relationship>
 		<relationship name="effectChain">
 			<destination>{1c0822cc-24ae-4cf3-8633-920475f1e814}</destination>
 		</relationship>
@@ -123,6 +133,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{67e07bcf-6f29-46f8-9210-2222f4cc9d79}" />
 	<object class="MixerBusFader" id="{1ce41239-b1d1-4e26-b1c6-cee4237aea1b}" />
+	<object class="RandomizerModulator" id="{cb246718-ad4f-4a3f-8c2b-110e4f033611}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>volume</value>
+		</property>
+		<property name="amount">
+			<value>12</value>
+		</property>
+	</object>
 	<object class="MixerBusEffectChain" id="{1c0822cc-24ae-4cf3-8633-920475f1e814}">
 		<relationship name="effects">
 			<destination>{62224059-dd0a-4ec6-96fc-5720c7119842}</destination>
@@ -161,9 +179,6 @@
 		</property>
 	</object>
 	<object class="TremoloEffect" id="{21a4d10c-a0fa-46a0-a789-b793864a4115}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
 		<property name="frequency">
 			<value>7.5</value>
 		</property>

@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace FMODUnity
 {
@@ -6,11 +7,13 @@ namespace FMODUnity
     [CanEditMultipleObjects]
     public class StudioListenerEditor : Editor
     {
-        public SerializedProperty attenuationObject;
+        private SerializedProperty attenuationObject;
+        private SerializedProperty nonRigidbodyVelocity;
 
         private void OnEnable()
         {
             attenuationObject = serializedObject.FindProperty("attenuationObject");
+            nonRigidbodyVelocity = serializedObject.FindProperty("nonRigidbodyVelocity");
         }
 
         public override void OnInspectorGUI()
@@ -22,6 +25,7 @@ namespace FMODUnity
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.PropertyField(attenuationObject);
+            EditorGUILayout.PropertyField(nonRigidbodyVelocity, new GUIContent("Non-Rigidbody Velocity"));
             serializedObject.ApplyModifiedProperties();
         }
     }

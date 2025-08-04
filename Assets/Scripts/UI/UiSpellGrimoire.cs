@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 public class UiSpellGrimoire : MonoBehaviour
 {
     public Character.CharacterShoot m_characterShoot;
+    public Character.CharacterSpellBook m_characterInventory;
     public GameObject m_inGameUIObj;
     public GameObject mainUIObject;
     public GameObject spellGalerieObj;
@@ -49,24 +50,28 @@ public class UiSpellGrimoire : MonoBehaviour
 
     public Scene sceneUIBook;
     static public GameObject bookDisplayRoot;
-
+    public GameObject bookDisplayRootDisplay;
     private UpgradeUIDecal m_uiDecalUpdaterDisplay;
 
-
+    public ClicOnBook clicOnBook;
     public void Start()
     {
-        sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
-        GameObject[] otherSceneGameObject = sceneUIBook.GetRootGameObjects();
-        for (int i = 0; i < otherSceneGameObject.Length; i++)
-        {
-           if(otherSceneGameObject[i].name  == "UIBookDisplay")
-            {
-                bookDisplayRoot = otherSceneGameObject[i];
-                break;
-            }
-
-        }
-        Debug.Assert(bookDisplayRoot != null);
+        //sceneUIBook = SceneManager.GetSceneByBuildIndex(1);
+        //if (sceneUIBook != null)
+        //{
+        //    GameObject[] otherSceneGameObject = sceneUIBook.GetRootGameObjects();
+        //}
+        bookDisplayRoot = bookDisplayRootDisplay;
+        //for (int i = 0; i < otherSceneGameObject.Length; i++)
+        //{
+        //   if(otherSceneGameObject[i].name  == "UIBookDisplay")
+        //    {
+        //        bookDisplayRoot = otherSceneGameObject[i];
+        //        break;
+        //    }
+        //
+        //}
+        //Debug.Assert(bookDisplayRoot != null);
 
         bookDisplayRoot.SetActive(true);
         m_uiDecalUpdaterDisplay = bookDisplayRoot.GetComponent<UpgradeUIDecal>();
@@ -74,8 +79,8 @@ public class UiSpellGrimoire : MonoBehaviour
         spellEquipObj = GameObject.FindWithTag("SpellBar");
         FindUIElement();
         SetupSpellButtonFunction();
-        m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
-        bookDisplayRoot.SetActive(false);
+        if (m_uiDecalUpdaterDisplay) m_uiDecalUpdaterDisplay.ChangeStateDisplay(false);
+        if (bookDisplayRoot) bookDisplayRoot.SetActive(false);
 
     }
 
@@ -102,11 +107,11 @@ public class UiSpellGrimoire : MonoBehaviour
     // This function is here to find all the UI Element to use
     private void FindUIElement()
     {
-        m_spellsOwnImage = spellGalerieObj.GetComponentsInChildren<Image>();
-        m_playerSpellEquip = spellEquipObj.GetComponentsInChildren<Image>();
-        m_imageComponentDragAndDrop = imageDragAndDrop.GetComponent<Image>();
-        m_iconSpellSelected = spellDescriptionObj.GetComponentInChildren<Image>();
-        m_textDescription = spellDescriptionObj.GetComponentsInChildren<TMP_Text>();
+        if(spellGalerieObj) m_spellsOwnImage = spellGalerieObj.GetComponentsInChildren<Image>();
+        if (spellEquipObj) m_playerSpellEquip = spellEquipObj.GetComponentsInChildren<Image>();
+        if (imageDragAndDrop) m_imageComponentDragAndDrop = imageDragAndDrop.GetComponent<Image>();
+        if (spellDescriptionObj) m_iconSpellSelected = spellDescriptionObj.GetComponentInChildren<Image>();
+        if (spellDescriptionObj) m_textDescription = spellDescriptionObj.GetComponentsInChildren<TMP_Text>();
     }
 
     // Function to open the spell book ui
@@ -120,7 +125,7 @@ public class UiSpellGrimoire : MonoBehaviour
         mainUIObject.SetActive(true);
         bookDisplayRoot.SetActive(true);
         m_uiDecalUpdaterDisplay.ChangeStateDisplay(true);
-
+        GlobalSoundManager.PlayOneShot(6, transform.position);
 
         isOpen = true;
         m_currentSpritsSpell = spriteSpell;
@@ -160,7 +165,7 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         spellDescriptionObj.SetActive(true);
         m_iconSpellSelected.sprite = m_currentSpritsSpell[m_offset + index];
-        CapsuleSystem.Capsule info = m_characterShoot.GetCapsuleInfo(index);
+        SpellSystem.SpellProfil info = m_characterInventory.GetSpecificSpell(index);
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
         m_uiDecalUpdaterDisplay.SpellFocusDisplay(info);
@@ -169,8 +174,8 @@ public class UiSpellGrimoire : MonoBehaviour
     {
         spellDescriptionObj.SetActive(true);
         int index = m_characterShoot.GetIndexFromSpellBar(indexSpellSlot);
-        CapsuleSystem.Capsule info = m_characterShoot.GetCapsuleInfo(index);
-        m_iconSpellSelected.sprite = info.sprite;
+        SpellSystem.SpellProfil info = m_characterInventory.GetSpecificSpell(index);
+        m_iconSpellSelected.sprite = info.spell_Icon;
         m_textDescription[0].text = info.name;
         m_textDescription[1].text = info.description;
     }
@@ -187,7 +192,7 @@ public class UiSpellGrimoire : MonoBehaviour
 
     public void GetMouseLeftClick(InputAction.CallbackContext ctx)
     {
-        if (ctx.canceled)
+        if (ctx.canceled && isOpen)
         {
             m_isSpellSelected = false;
             m_imageComponentDragAndDrop.enabled = false;
@@ -230,6 +235,7 @@ public class UiSpellGrimoire : MonoBehaviour
         arrowDown.SetActive(false);
         m_inGameUIObj.SetActive(true);
         m_maxPage = m_currentPage = 0;
+        GlobalSoundManager.PlayOneShot(30, transform.position);
     }
 
 
@@ -285,5 +291,11 @@ public class UiSpellGrimoire : MonoBehaviour
 
     #endregion
 
-
+    public void ClicInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            clicOnBook.getClicEffect(Input.mousePosition);
+        }
+    }
 }

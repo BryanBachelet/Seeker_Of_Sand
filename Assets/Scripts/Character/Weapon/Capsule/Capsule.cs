@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GuerhoubaGames.GameEnum;
 
-namespace CapsuleSystem
+namespace SpellSystem
 {
     [Serializable]
     public struct CapsuleAttackInfo
@@ -15,7 +16,8 @@ namespace CapsuleSystem
         public GameObject vfx;
         public CapsuleProfil stats;
         public Sprite sprite;
-
+        public GameElement element;
+        public Material materialToUse;
     }
 
     [Serializable]
@@ -28,6 +30,7 @@ namespace CapsuleSystem
         public float duration;
         public Sprite sprite;
         public GameObject vfx;
+        public Material materialToUse;
 
     }
 
@@ -39,6 +42,7 @@ namespace CapsuleSystem
        BUFF
     }
 
+   
     [Serializable]
     public class Capsule 
     {
@@ -46,7 +50,9 @@ namespace CapsuleSystem
         [TextArea]
         public string description;
         public CapsuleType type;
+        public GameElement elementType;
         public Sprite sprite;
+        public Material materialToUse;
     }
     [Serializable]
     public class CapsuleAttack: Capsule
@@ -56,16 +62,20 @@ namespace CapsuleSystem
             name = info.name;
             description = info.description;
             projectile = info.projectile;
-            stats = info.stats;
+            profil = info.stats;
             sprite = info.sprite;
             vfx = info.vfx;
-            
+            elementType = info.element;
+            materialToUse = info.materialToUse;
+
+
         }
        
         public GameObject projectile;
         public GameObject vfx;
-        public CapsuleProfil stats;
-
+        public CapsuleProfil profil;
+        public GameElement element;
+        public Material material;
     }
     [Serializable]
     public class CapsuleBuff : Capsule
@@ -79,6 +89,7 @@ namespace CapsuleSystem
             duration = info.duration;
             sprite = info.sprite;
             vfx = info.vfx;
+            materialToUse = info.materialToUse;
 
         }
         

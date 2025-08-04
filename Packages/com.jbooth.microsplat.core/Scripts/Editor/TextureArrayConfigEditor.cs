@@ -1282,12 +1282,13 @@ namespace JBooth.MicroSplat
                     {
                         {
                             Material clearNonNormalMat = new Material(Shader.Find("Hidden/MicroSplat/ClearNonNormalData"));
-                            RenderTexture tmp = RenderTexture.GetTemporary(normalSAORT.descriptor);
+                            RenderTexture tmp = new RenderTexture(normalSAORT.descriptor);
 
                             Graphics.Blit(normalSAORT, tmp);
                             var tmp2 = normalSAORT;
                             normalSAORT = tmp;
-                            RenderTexture.ReleaseTemporary(tmp2);
+                            RenderTexture.active = null;
+                            tmp2.Release();
                         }
                         // generate missing maps for smoothness
                         if (e.normal == null)
@@ -1313,12 +1314,13 @@ namespace JBooth.MicroSplat
                         {
                             Material clearNonNormalMat = new Material(Shader.Find("Hidden/MicroSplat/ClearNonNormalData"));
                             clearNonNormalMat.SetFloat("_Swizzle", 1);
-                            RenderTexture tmp = RenderTexture.GetTemporary(smoothAORT.descriptor);
+                            RenderTexture tmp = new RenderTexture(smoothAORT.descriptor);
 
                             Graphics.Blit(smoothAORT, tmp);
                             var tmp2 = smoothAORT;
                             smoothAORT = tmp;
-                            RenderTexture.ReleaseTemporary(tmp2);
+                            RenderTexture.active = null;
+                            tmp2.Release();
                         }
 
                         // merge in data if provided
@@ -1573,17 +1575,6 @@ namespace JBooth.MicroSplat
             {
                 return (TextureFormat.ETC2_RGBA8);
             }
-            else if (cmp == TextureArrayConfig.Compression.ForcePVR)
-            {
-                if (q == TextureArrayConfig.CompressionQuality.High || q == TextureArrayConfig.CompressionQuality.Medium)
-                {
-                    return (TextureFormat.PVRTC_RGBA4);
-                }
-                else
-                {
-                    return TextureFormat.PVRTC_RGBA2;
-                }
-            }
             else if (cmp == TextureArrayConfig.Compression.ForceASTC)
             {
                 if (q == TextureArrayConfig.CompressionQuality.High)
@@ -1617,22 +1608,8 @@ namespace JBooth.MicroSplat
             }
 
             var platform = EditorUserBuildSettings.activeBuildTarget;
-            if (platform == BuildTarget.Android)
-            {
-                if (q == TextureArrayConfig.CompressionQuality.High)
-                {
-                    return (TextureFormat.ASTC_4x4);
-                }
-                else if (q == TextureArrayConfig.CompressionQuality.Medium)
-                {
-                    return TextureFormat.ASTC_6x6;
-                }
-                else
-                {
-                    return TextureFormat.ASTC_8x8;
-                }
-            }
-            else if (platform == BuildTarget.iOS)
+            if (platform == BuildTarget.Android || platform == BuildTarget.iOS ||
+                platform == BuildTarget.tvOS)
             {
                 if (q == TextureArrayConfig.CompressionQuality.High)
                 {
@@ -1678,9 +1655,6 @@ namespace JBooth.MicroSplat
             Graphics.Blit(src, resRT, genMat);
             GL.sRGBWrite = false;
 
-            RenderTexture.active = null;
-            resRT.Release();
-            DestroyImmediate(resRT);
             GameObject.DestroyImmediate(genMat);
             return resRT;
         }

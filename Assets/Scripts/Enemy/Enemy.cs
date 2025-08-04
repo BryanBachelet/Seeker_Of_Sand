@@ -109,14 +109,15 @@ namespace Enemies
             m_healthManager = healthManager;
         }
 
-        public void HitEnemy(float damage, Vector3 direction,float power)
+        public void HitEnemy(float damage, Vector3 direction,float power, int element)
         {
             Instantiate(m_hitVfx, transform.position, Quaternion.identity);
             GlobalSoundManager.PlayOneShot(12, transform.position);
             myAnimator.SetTrigger("TakeDamage");
             damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);
-            m_healthManager.CallDamageEvent(transform.position + Vector3.up * 1.5f,damage);
+            Vector3 positionOnScreen = transform.position;
+            m_healthManager.CallDamageEvent(positionOnScreen, damage, element);
 
 
             if (m_healthSystem.health > 0) return;
@@ -168,12 +169,14 @@ namespace Enemies
 
 
             m_isDestroy = true;
+
+            Debug.Log("Call False on refresh serie !");
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             //m_enemyManager.DestroyEnemy(this);
         }
     }

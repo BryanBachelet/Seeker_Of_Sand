@@ -1,0 +1,127 @@
+#node-border {
+    background-color: rgb(56, 56, 56);
+    border-left-color: rgb(37, 37, 37);
+    border-right-color: rgb(37, 37, 37);
+    border-top-color: rgb(37, 37, 37);
+    border-bottom-color: rgb(37, 37, 37);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+#input {
+    align-items: center;
+}
+
+#output {
+    align-items: center;
+}
+
+#selection-border {
+    border-left-color: rgb(15, 145, 250);
+    border-right-color: rgb(15, 145, 250);
+    border-top-color: rgb(15, 145, 250);
+    border-bottom-color: rgb(15, 145, 250);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+:hover > #selection-border {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+:selected > #selection-border {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+:hover:selected > #selection-border {
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+}
+
+.node {
+    min-width: 150px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+#title {
+    -unity-font-style: bold;
+    font-size: 16px;
+}
+
+#description {
+    max-width: 150px;
+}
+
+#divider {
+    background-color: rgb(84, 84, 84);
+    min-height: 1px;
+}
+
+.action #input {
+    background-color: rgb(143, 183, 87);
+}
+
+.composite #input {
+    background-color: rgb(209, 152, 78);
+}
+
+.decorator #input {
+    background-color: rgb(160, 171, 248);
+}
+
+.root #input {
+    background-color: rgb(243, 102, 102);
+    min-height: 20px;
+}
+
+#node-state {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.running #node-state {
+    background-color: rgba(238, 163, 10, 0.57);
+}
+
+.failure #node-state {
+    background-color: rgba(233, 34, 34, 0.64);
+}
+
+.success #node-state {
+    background-color: rgba(61, 202, 3, 0.6);
+}
