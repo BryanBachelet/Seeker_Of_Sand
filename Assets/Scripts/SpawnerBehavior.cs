@@ -15,6 +15,7 @@ public class SpawnerBehavior : MonoBehaviour
     [SerializeField] private GameObject dissonancePrefabObject;
     public void SendSpawnerDesactivation()
     {
+        gameObject.SetActive(false);
         m_enemyManager.DesactiveSpawner(this.gameObject);
         GameObject dissonanceInstance = GamePullingSystem.SpawnObject(dissonancePrefabObject, transform.position, transform.rotation);
         ExperienceMouvement ExperienceMove = dissonanceInstance.GetComponent<ExperienceMouvement>();
