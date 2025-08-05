@@ -48,7 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
+  faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &1278518001253408458
 GameObject:
   m_ObjectHideFlags: 0
@@ -63,6 +65,7 @@ GameObject:
   - component: {fileID: 1422817764646249996}
   - component: {fileID: 8240917812127822276}
   - component: {fileID: 6846487013225012650}
+  - component: {fileID: 111516688344819774}
   m_Layer: 7
   m_Name: RewardGive
   m_TagString: Drop
@@ -157,8 +160,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 2.57
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 2.6189456
+  m_Center: {x: -1.0261827, y: 0, z: 0.9772377}
 --- !u!114 &8240917812127822276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,14 +176,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_playerPosition: {fileID: 0}
   GroundPosition: {x: 0, y: 0, z: 0}
-  m_speed: 30
-  m_speedUp: 80
+  m_speed: 100
+  m_speedOverTime: 0
+  m_speedUp: 160
   m_trail: {fileID: 6268820045213260168}
   timeBeforeDestruction: 3
   quantity: 0
   cristalType: 0
   m_destruction: 0
   m_durationOfCuve: 1
+  dissonanceValue: 0
 --- !u!114 &6846487013225012650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,9 +208,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 32b4e1fcda1003441af0955a064c94b8, type: 3}
   - {fileID: 2800000, guid: 0a1c0ffbf7c46cb449176d10774653d5, type: 3}
   mat: {fileID: 0}
-  meshDisplayReward: {fileID: 2576719077864745861}
+  meshDisplayReward: {fileID: 3686150301871228354}
   healthReward: 0
-  rewardAnimator: {fileID: 0}
+  rewardAnimator: {fileID: 418625043115908291}
   m_skinMeshRender: {fileID: 0}
   rootBoneHolder: {fileID: 0}
   meshToChangeMaterial: {fileID: 3686150301871228354}
@@ -223,12 +228,17 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0e652489c4a278e418c2ea55c663ddeb, type: 2}
   - {fileID: 2100000, guid: feb4f45b06685e54e8d18873137f550a, type: 2}
   m_materialRewardTypeCristals:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  color_Elem_Portal: []
+  - {fileID: 2100000, guid: 73ab9c27be622a6488bc153d5dffef2f, type: 2}
+  - {fileID: 2100000, guid: 0b6b9cb5b3195594f9e5b5db8aab3669, type: 2}
+  - {fileID: 2100000, guid: 15e1b56a22626044b80046fed2d90f58, type: 2}
+  - {fileID: 2100000, guid: f63d380cb520c6e45b7f46ab9cbce7bb, type: 2}
+  - {fileID: 2100000, guid: c185177bffcd7b345b9373f95f62af3f, type: 2}
+  color_Elem_Portal:
+  - {r: 1.0498539, g: 1.0498539, b: 1.0498539, a: 1}
+  - {r: 0.5286309, g: 0.60864383, b: 4.2370954, a: 1}
+  - {r: 1.0476608, g: 0.11091868, b: 2.1185472, a: 1}
+  - {r: 2.9960783, g: 0.8350947, b: 0.1568627, a: 1}
+  - {r: 0.58407414, g: 1.0686448, b: 0.055949975, a: 1}
   elementIndex: 0
   element: 0
   goDestroy:
@@ -239,13 +249,38 @@ MonoBehaviour:
   materialRewardChange: {fileID: 2100000, guid: 8394b85b329b04943ad5aefc533a9bf3,
     type: 2}
   materialsRewardChange:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  materialRewardColor: {fileID: 0}
-  rewardPoint: 10
+  - {fileID: 2100000, guid: 8394b85b329b04943ad5aefc533a9bf3, type: 2}
+  - {fileID: 2100000, guid: eeefa07a18e4a3a47ad5773ae18f80cd, type: 2}
+  - {fileID: 2100000, guid: 1ae753b25dc65534bac909d4557b3275, type: 2}
+  - {fileID: 2100000, guid: 1ae753b25dc65534bac909d4557b3275, type: 2}
+  - {fileID: 2100000, guid: beba7f3e1fd8af648b461fafbca495e5, type: 2}
+  materialRewardColor: {fileID: 2100000, guid: dd8e9a5549c4ddd48926dbfdaba310c1, type: 2}
+  rewardPoint: 2
+  autoValidation: 0
+--- !u!114 &111516688344819774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278518001253408458}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fe9a320b0a1484e9edacf1bbbb18cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOpen: 0
+  hasClosePhase: 0
+  verbeInteraction: Interact
+  hasAdditionalDescription: 0
+  additionalDescription: Activate the object
+  cost: 0
+  cristalID: 4
+  m_rewardTypologie: {fileID: 0}
+  m_meshCristal: {fileID: 0}
+  animatorBall: {fileID: 0}
+  autoValidation: 1
+  xpMove: {fileID: 0}
 --- !u!1 &1556077032947353977
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +377,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
+  faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &1770460345300417926
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,7 +907,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
+  faceCameraAxis: 0
+  faceMouseAxis: 0
+  multiplyAxis: {x: 0, y: 0, z: 0}
 --- !u!1 &8397339587645249454
 GameObject:
   m_ObjectHideFlags: 0

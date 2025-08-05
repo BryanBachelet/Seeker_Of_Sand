@@ -19,16 +19,20 @@ public class Teleporter : MonoBehaviour
 
     [HideInInspector] public TeleporterFeebackController tpFeedbackController;
     [HideInInspector] public Animator animatorPortal;
+
+    private Animator m_animator;
+    static private CameraFadeFunction m_cameraFadeFonction;
     // Start is called before the first frame update
     void Awake()
     {
         if (socleMaterial == null) socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
-    
-        if(terrainGen == null)
+        if(m_animator == null) m_animator = this.GetComponent<Animator>();
+        if (terrainGen == null)
         {
             terrainGen = GameObject.Find("9-TerrainGenerator").GetComponent<TerrainGenerator>();
         }
         tpFeedbackController = gameObject.GetComponentInChildren<TeleporterFeebackController>();
+        if(m_cameraFadeFonction == null) m_cameraFadeFonction = Camera.main.GetComponent<CameraFadeFunction>();
     }
 
 
@@ -36,6 +40,7 @@ public class Teleporter : MonoBehaviour
     {
         teleportorIsActive = true;
         tpFeedbackController.activeChange = true;
+        m_animator.SetBool("Open", true);
         if (socleMaterial == null)
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
 
@@ -55,10 +60,17 @@ public class Teleporter : MonoBehaviour
     {
         if(other.tag == "Player"  && teleportorIsActive && !isReceiver)
         {
+            RenderTexture cuustomTexture = m_cameraFadeFonction.renderCam.targetTexture;
+            terrainGen.GetTexturePreviousMap(cuustomTexture);
+            m_animator.SetTrigger("PlayerEnter");
             enemyManager.DestroyAllEnemy();
             terrainGen.SelectTerrain(TeleporterNumber);
+
+
             usedTeleporter = true;
-           
+            
+
+
         }
     }
 }

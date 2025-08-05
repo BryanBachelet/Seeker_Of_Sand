@@ -10,6 +10,8 @@ public class TeleporterFeebackController : MonoBehaviour
     public VisualEffect[] vfx_elecPortal;
     [ColorUsage(true, true)]
     public Color[] color_Elem_Portal;
+    [GradientUsage(true)]
+    public Gradient[] gradient_Elem_Portal;
 
     [Range(0, 6)]
     [HideInInspector] public int rewardToUse = 0;
@@ -52,11 +54,13 @@ public class TeleporterFeebackController : MonoBehaviour
     public void SetColorVfx(int color, int ID)
     {
         Color colorElec = color_Elem_Portal[color];
+        Gradient gradientToUse = gradient_Elem_Portal[color];
         for (int i = 0; i < vfx_elecPortal.Length; i++)
         {
-            vfx_elecPortal[i].SetVector4("Color_I", colorElec);
-            vfx_elecPortal[i].SetVector4("Color_II", colorElec);
-            vfx_elecPortal[i].SetVector4("Color_III", colorElec);
+            //  vfx_elecPortal[i].SetVector4("Color_I", colorElec);
+            //  vfx_elecPortal[i].SetVector4("Color_II", colorElec);
+            //  vfx_elecPortal[i].SetVector4("Color_III", colorElec);
+            vfx_elecPortal[i].SetGradient("Gradient_I", gradientToUse);
         }
     }
     public void ChangeColorVFX(int color)

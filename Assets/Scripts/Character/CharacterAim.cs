@@ -66,6 +66,7 @@ namespace Character
         private bool m_exitCombatState = false;
         private Vector3 v3Ref = new Vector3(1, 0, 0);
 
+        public VisualEffect vfxStartShot;
         public VisualEffect vfxCast;
         public GameObject gameObject_vfxCastEnd;
         [HideInInspector] public VisualEffect vfxCastEnd;

@@ -69,6 +69,7 @@ public class ExperienceMouvement : MonoBehaviour
 
     void Update()
     {
+        if (!GameState.IsPlaying()) return;
         if (!m_isGrounded && GroundPosition != Vector3.zero)
         {
             MoveGround();

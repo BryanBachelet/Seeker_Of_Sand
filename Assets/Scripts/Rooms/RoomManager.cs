@@ -99,6 +99,7 @@ public class RoomManager : MonoBehaviour
     public LayerMask groundLayer;
 
     public TeleporterFeebackController teleporterFeedback;
+    public MeshRenderer portalPrevious;
     [SerializeField] private int specialRoomID = -1;
 
     public bool delayUpdate = true;
@@ -143,7 +144,7 @@ public class RoomManager : MonoBehaviour
 
         ResetObjectifData();
 
-
+        StartCoroutine(CloseEnterPortal(3.5f));
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
 
@@ -212,6 +213,11 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    public IEnumerator CloseEnterPortal(float time)
+    {
+        yield return new WaitForSeconds(time);
+        teleporterFeedback.GetComponentInParent<Animator>().SetBool("Open", false);
+    }
     public void DeactivateRoom()
     {
         if (onDeactivateRoom != null) onDeactivateRoom.Invoke(currentRoomType, rewardType);
