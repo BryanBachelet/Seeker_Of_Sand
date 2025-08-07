@@ -15,7 +15,7 @@ namespace SpellSystem
             CharacterDamageComponent characterDamageComponent =  player.GetComponent<CharacterDamageComponent>();
             if (characterDamageComponent != null)
             {
-                characterDamageComponent.m_damageStats.AddDamage(damageGain, ownerProfil.tagData.element, GuerhoubaGames.DamageType.TEMPORAIRE);
+                characterDamageComponent.m_damageStats.AddDamage(damageGain, ownerProfil.TagList.element, GuerhoubaGames.DamageType.TEMPORAIRE);
             }
 
 

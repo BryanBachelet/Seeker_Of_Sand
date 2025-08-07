@@ -10,41 +10,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82f8de8f12bf1914bbf93c672c8ee8c6, type: 3}
-  m_Name: RotatingBlades_Fire
+  m_Name: Ice_Tempest
   m_EditorClassIdentifier: 
-  name: Rotating Blades
-  id: 28
-  idFamily: 3
-  description: <size=140%><#FFFFFF> Create multiple blade that rotate around the
-    Seeker <size=100%><br>
-  spell_Icon: {fileID: 21300000, guid: f006c7fe78b26eb409cbe04c2cbce3b0, type: 3}
-  objectToSpawn: {fileID: 7659398128959048071, guid: 7f8149f6bb21d054ea53f1168285bf38,
+  name: Ice Tempest
+  id: 48
+  idFamily: 0
+  description: <size=140%><#FFFFFF> Create an area that shot water arrow on ground
+    during few seconde <size=100%><br>
+  spell_Icon: {fileID: 21300000, guid: c01e2015e21d27c43bda5ba96141c2ff, type: 3}
+  objectToSpawn: {fileID: 6333615331467375570, guid: d8c5477d961122640b70ec54c9fe0e0a,
     type: 3}
   angleRotation: {x: 0, y: 0, z: 0}
-  VFX: {fileID: 3258966444288658613, guid: 2469fee97cec8524c96cdfe23600dac2, type: 3}
-  matToUse: {fileID: 2100000, guid: bebb21452e7047744bd5eb964bc1784e, type: 2}
-  previewDecal_mat: {fileID: 2800000, guid: b6e63e425acbbe5448ace8a4a771eaf5, type: 3}
-  previewDecalEnd_mat: {fileID: 2800000, guid: 9d2f858153fe60b48bd13a50fc88abb2, type: 3}
+  VFX: {fileID: 6293336267289721315, guid: 6b08e42b29d8f064da85d448af250c90, type: 3}
+  matToUse: {fileID: 2100000, guid: 1eabd1dc58d7b9d4a9471433350a7a3a, type: 2}
+  previewDecal_mat: {fileID: 2800000, guid: 3e76e1fc5d63c9f4693d1e090c91766c, type: 3}
+  previewDecalEnd_mat: {fileID: 2800000, guid: 31b5e604428441746b13ba6b27819754, type: 3}
   currentSpellTier: 0
   spellExp: 0
   levelSpellsProfiles:
-  - {fileID: 11400000, guid: 6af6b5f9b2bef8748bfac26e657e9014, type: 2}
-  - {fileID: 11400000, guid: 5f9c930db0c334d46b8f3bcc8f492d2a, type: 2}
-  - {fileID: 11400000, guid: c2e19f0084b261c4dbb8626533683525, type: 2}
+  - {fileID: 11400000, guid: 4444672ec84a7f64b97055bb3a679d4d, type: 2}
+  - {fileID: 11400000, guid: 6b79e90e96097f94b9ed071dd3079d6d, type: 2}
+  - {fileID: 11400000, guid: e3f10c88607af684ea87a155a470bc13, type: 2}
   OnContact: 0
   OnDeath: 0
   OnHit: 0
   m_SpellAttributionAssociated: {fileID: 0}
   gameEffectStats:
     tagData:
-      element: 4
+      element: 1
       type: 1
       spellNatureType: 5
       spellNatureType1: 3
       spellNatureType2: 0
       spellProjectileTrajectory: 0
       canalisationType: 1
-      spellMovementBehavior: 2
+      spellMovementBehavior: 0
       damageTriggerType: 0
       spellParticualarity: 0
       spellParticualarity1: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
       valueType: 0
       nameStat: 
       val_int: 0
-      val_float: 37.5
+      val_float: 30
       val_string: 
       val_bool: 0
       isVisible: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
       val_float: 1
       val_string: 
       val_bool: 0
-      isVisible: 1
+      isVisible: 0
       isShowMultiply: 0
       multiply: 0
     - stat: 2010
@@ -90,13 +90,13 @@ MonoBehaviour:
       val_float: 0.5
       val_string: 
       val_bool: 0
-      isVisible: 0
+      isVisible: 1
       isShowMultiply: 0
       multiply: 0
     - stat: 1009
       valueType: 0
       nameStat: 
-      val_int: 8
+      val_int: 4
       val_float: 0
       val_string: 
       val_bool: 0
@@ -117,7 +117,7 @@ MonoBehaviour:
       valueType: 0
       nameStat: 
       val_int: 0
-      val_float: 5
+      val_float: 3
       val_string: 
       val_bool: 0
       isVisible: 0

@@ -17,44 +17,53 @@ MonoBehaviour:
   nameLevelUprade: <u>Rank 1</u>
   description: <u>Rank 1</u><br><br><b>after impaling an enemy</b>, create a <i>trail
     of the spell element</i>
-  tagDataToChange:
-    element: 0
-    type: 0
-    spellNatureType: 0
-    spellNatureType1: 3
-    spellNatureType2: 5
-    spellProjectileTrajectory: 0
-    canalisationType: 0
-    spellMovementBehavior: 0
-    damageTriggerType: 0
-    spellParticualarity: 0
-    spellParticualarity1: 0
-    spellParticualarity2: 0
-    mouvementBehaviorType: 0
-    upgradeSensitivityType: 0
-  statDatas:
-  - stat: 1009
-    valueType: 0
-    val_int: 4
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-    multiply: 0
-  - stat: 2010
-    valueType: 0
-    val_int: 0
-    val_float: 0.5
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-    multiply: 0
-  - stat: 2007
-    valueType: 0
-    val_int: 0
-    val_float: 15
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-    multiply: 0
+  gameEffectStats:
+    tagData:
+      element: 0
+      type: 0
+      spellNatureType: 0
+      spellNatureType1: 3
+      spellNatureType2: 5
+      spellProjectileTrajectory: 0
+      canalisationType: 0
+      spellMovementBehavior: 0
+      damageTriggerType: 0
+      spellParticualarity: 0
+      spellParticualarity1: 0
+      spellParticualarity2: 0
+      mouvementBehaviorType: 0
+      upgradeSensitivityType: 0
+      afflictionTypes: 
+    statDatas:
+    - stat: 1009
+      valueType: 0
+      nameStat: 
+      val_int: 4
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+      isShowMultiply: 1
+      multiply: 0
+    - stat: 2010
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 0.5
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+      isShowMultiply: 1
+      multiply: 0
+    - stat: 2007
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 15
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+      isShowMultiply: 1
+      multiply: 0
+    statTypes: 
   customStatBehavior: {fileID: 11400000, guid: 28f357d5c6520874fbffd7047ed6b135, type: 2}

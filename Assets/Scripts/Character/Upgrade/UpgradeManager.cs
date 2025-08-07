@@ -174,12 +174,12 @@ public class UpgradeManager : MonoBehaviour
         {
 
             listAray.Clear();
-            int[] validTagValue = spellProfils[i].tagData.GetValidTag();
+            int[] validTagValue = spellProfils[i].TagList.GetValidTag();
 
             int countTagValue = 0;
             for (int j = 0; j < validTagValue.Length; j++)
             {
-                string spellTagString = Regex.Replace(((SpellTagOrder)j).ToString(), @"[\d-]", string.Empty);
+                string spellTagString = Regex.Replace(((SpellTagOrder)(Math.Pow(2,j))).ToString(), @"[\d-]", string.Empty);
                 Type enumType = Type.GetType("GuerhoubaGames.GameEnum." + spellTagString.ToString());
                 int myEnumMemberCount = enumType.GetEnumNames().Length - 1;
                 if (validTagValue[j] <= 0)
@@ -540,7 +540,7 @@ namespace UpgradeData
             UpgradeDataSort upgradeDataSort = new UpgradeDataSort();
             for (int i = 0; i < myEnumMemberCount; i++)
             {
-                upgradeDataSort = SortByEnum(arrayUpgrade, (SpellTagOrder)i);
+                upgradeDataSort = SortByEnum(arrayUpgrade, (SpellTagOrder)(Math.Pow(2, i)));
                 upgradeDataSort.indexArray[0] = upgradeList.Count;
                 upgradeList.AddRange(upgradeDataSort.upgradeArray);
                 indexList.AddRange(upgradeDataSort.indexArray);
@@ -568,7 +568,7 @@ namespace UpgradeData
                 indexEnum[i] = 0;
                 for (int j = 0; j < arrayUpgrade.Length; j++)
                 {
-                    if (enumValue[i] == arrayUpgrade[j].tagData.GetValueTag(spellTagOrder))
+                    if (enumValue[i] == arrayUpgrade[j].gameEffectStats.tagData.GetValueTag(spellTagOrder))
                     {
                         indexEnum[i]++;
                         tempArray.Add(arrayUpgrade[j]);
@@ -594,7 +594,7 @@ namespace UpgradeData
                 indexEnum[i] = 0;
                 for (int j = 0; j < arrayUpgrade.Length; j++)
                 {
-                    if (enumValue[i] == arrayUpgrade[j].tagData.element.ToString())
+                    if (enumValue[i] == arrayUpgrade[j].gameEffectStats.tagData.element.ToString())
                     {
                         indexEnum[i]++;
                         indexEnum[0]++;

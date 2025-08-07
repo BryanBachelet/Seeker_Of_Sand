@@ -9,21 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9489da611aba9b4fa56c8ebe51dccbc, type: 3}
-  m_Name: DoubleRandomProjectile
+  m_Script: {fileID: 11500000, guid: 1bd0fbc46958acc4f99443ab0dfb0350, type: 3}
+  m_Name: StackUp_Upgrade
   m_EditorClassIdentifier: 
-  LevelType: 0
-  isPermanent: 0
-  nameLevelUprade: 
-  description: 
+  name: Stack Up
+  id: 1
+  description: Increase stack of the spell by 1.
+  spell_Icon: {fileID: 0}
+  indexSpellLink: 0
+  IsMultiTagUpgrade: 0
+  IsAddingTag: 0
+  TagToGive: 0
   gameEffectStats:
     tagData:
       element: 0
-      type: 0
+      type: 1
       spellNatureType: 0
       spellNatureType1: 0
       spellNatureType2: 0
-      spellProjectileTrajectory: 4
+      spellProjectileTrajectory: 0
       canalisationType: 0
       spellMovementBehavior: 0
       damageTriggerType: 0
@@ -34,15 +38,14 @@ MonoBehaviour:
       upgradeSensitivityType: 0
       afflictionTypes: 
     statDatas:
-    - stat: 1002
+    - stat: 1004
       valueType: 0
       nameStat: 
-      val_int: 0
+      val_int: 1
       val_float: 0
       val_string: 
       val_bool: 0
       isVisible: 0
-      isShowMultiply: 1
-      multiply: 2
-    statTypes: ea030000
-  customStatBehavior: {fileID: 0}
+      isShowMultiply: 0
+      multiply: 0
+    statTypes: ec030000
