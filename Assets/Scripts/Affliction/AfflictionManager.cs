@@ -248,6 +248,7 @@ public class AfflictionManager : MonoBehaviour
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply blaze affliction stats");
                 break;
+
             case AfflictionType.POISON:
 
                 m_entityModifier.poisonDamage = m_afflictionProfil.poisonData.dammagePoisonPerStack * affliction.stackCount;
@@ -265,6 +266,7 @@ public class AfflictionManager : MonoBehaviour
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Intoxicate affliction stats");
                 break;
+
             case AfflictionType.CHILL:
 
                 m_entityModifier.slownessPercent = m_afflictionProfil.chillData.slowPerStack * affliction.stackCount;
@@ -280,13 +282,19 @@ public class AfflictionManager : MonoBehaviour
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Freeze affliction stats");
                 break;
+
             case AfflictionType.ELECTRIFIED:
 
                 m_entityModifier.electrifyPercent = m_afflictionProfil.electrifyData.increaseDamagePercentPerStack * affliction.stackCount;
+                m_entityModifier.isElectrify = true;
+                m_entityModifier.timeApplyElectrify = m_afflictionProfil.electrifyData.timerBetweenTick;
+                m_entityModifier.electrifyDamage = m_afflictionProfil.electrifyData.damage;
+                m_entityModifier.electrifyRadius = m_afflictionProfil.electrifyData.radius;
 
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Electrified affliction stats");
                 break;
+
             case AfflictionType.ELECTROCUTE:
 
                 SpawnElectrocuteEffect(this.transform.position, m_afflictionProfil.electrocuteData.eletrocuteStrikeSpawner);
@@ -294,6 +302,7 @@ public class AfflictionManager : MonoBehaviour
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Electrocute affliction stats");
                 break;
+
             case AfflictionType.SCARE:
 
                 m_entityModifier.demoralizedPercent = m_afflictionProfil.scareData.reduceDamagePerStack * affliction.stackCount;
@@ -301,6 +310,7 @@ public class AfflictionManager : MonoBehaviour
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Apply Scare affliction stats");
                 break;
+
             case AfflictionType.TERRIFY:
 
                 m_entityModifier.increaseSpeedMovement = m_afflictionProfil.terrifyData.mouvementSpeedIncreasePercent;
@@ -322,6 +332,18 @@ public class AfflictionManager : MonoBehaviour
         afflictionArray[(int)type - 1].type = AfflictionType.NONE;
 
 
+    }
+
+    public  void RemoveAllAffliction()
+    {
+
+        for (int i = 0; i < afflictionArray.Length; i++)
+        {
+            afflictionArray[i].stackCount = 0;
+            afflictionArray[i].duration = 0;
+            UpdateEntityModiferRemove(afflictionArray[i]);
+            afflictionArray[i].type = AfflictionType.NONE;
+        }
     }
 
 
@@ -392,7 +414,10 @@ public class AfflictionManager : MonoBehaviour
                 break;
             case AfflictionType.ELECTRIFIED:
                 m_entityModifier.electrifyPercent = 0;
-
+                m_entityModifier.isElectrify = false;
+                m_entityModifier.timeApplyElectrify = 0;
+                m_entityModifier.electrifyDamage = 0;
+                m_entityModifier.electrifyRadius = 0;
                 if (m_activeAfflictionInfo)
                     Debug.Log("Affliction : Removes Electrified affliction stats");
                 break;
@@ -467,7 +492,7 @@ public class AfflictionManager : MonoBehaviour
         if (spell.TagList.afflictionTypes == null || spell.TagList.afflictionTypes.Count == 0)
             return afflictionTypesSend.ToArray();
 
-        GameEffectStats<StatData> gameEffectStats = spell.gameEffectStats;
+        PlayerEffectStats<StatData> gameEffectStats = spell.gameEffectStats;
 
         for (int i = 0; i < spell.TagList.afflictionTypes.Count; i++)
         {

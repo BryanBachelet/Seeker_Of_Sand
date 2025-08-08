@@ -47,7 +47,9 @@ public class BlazeData : AfflictionData
 [Serializable]
 public class ElectrifyData : AfflictionData
 {
-
+    public float radius;
+    public int damage;
+    public float timerBetweenTick;
     public float increaseDamagePercentPerStack;
 }
 

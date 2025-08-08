@@ -29,6 +29,11 @@ public class EntityModifier : MonoBehaviour
 
     [HideInInspector] public float slownessPercent = 0.0f;
 
+    [HideInInspector] public bool isElectrify =false;
+    [HideInInspector] public float electrifyRadius = 0.0f;
+    [HideInInspector] public int electrifyDamage = 0;
+    [HideInInspector] public float timeApplyElectrify;
+    [HideInInspector] private float timerApplyElectrify;
     [HideInInspector] public float electrifyPercent = 0.0f;
     [HideInInspector] public float damageTakenIncrease = 1.0f;
 
@@ -59,6 +64,7 @@ public class EntityModifier : MonoBehaviour
 
     [Header("Debug Variables and Infos")]
     public bool m_activeEnityModifierDebug = false;
+    public bool m_debugElectrifyAffliction = false;
 
 
     #region Unity Functions
@@ -75,8 +81,9 @@ public class EntityModifier : MonoBehaviour
         CheckEntityMovement();
         ApplyBlazeEffect();
         ApplyIntoxicateEffect();
+        UpdateElectrify();
     }
-
+    #endregion
     private void ApplyIntoxicateEffect()
     {
        if(m_damageReceiver.GetLifeRatio() < intoxicateExecuteThreshold)
@@ -91,6 +98,42 @@ public class EntityModifier : MonoBehaviour
         }
     }
 
+    #region Electrify Function 
+    private void UpdateElectrify()
+    {
+        if(!isElectrify) return;
+
+        if(timerApplyElectrify > timeApplyElectrify)
+        {
+            ApplyElectrified();
+            timerApplyElectrify = 0;
+        }
+        else
+        {
+            timerApplyElectrify += Time.deltaTime;
+        }
+    }
+
+    private void ApplyElectrified()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, electrifyRadius, GameLayer.instance.enemisLayerMask + GameLayer.instance.interactibleLayerMask);
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider col = colliders[i];
+            if (col.gameObject == gameObject) continue;
+
+             IDamageReceiver damageReceiverInstance =  col.GetComponent<IDamageReceiver>();
+            if(damageReceiverInstance == null) continue;
+
+            DamageStatData damageStatData = new DamageStatData();
+            damageStatData.characterObjectType = CharacterObjectType.AFFLICTION;
+            damageStatData.element = GameElement.AIR;
+            damageStatData.damage = electrifyDamage;
+            damageReceiverInstance.ReceiveDamage("Execute Electrify attack", damageStatData, Vector3.zero, 0, -1, 0);
+        }
+    }
+   
     #endregion
 
 
@@ -273,4 +316,13 @@ public class EntityModifier : MonoBehaviour
         return reductionDamageInflict;
     }
     #endregion
+
+    public void OnDrawGizmos()
+    {
+        if(isElectrify && m_debugElectrifyAffliction)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position,electrifyRadius);
+        }
+    }
 }

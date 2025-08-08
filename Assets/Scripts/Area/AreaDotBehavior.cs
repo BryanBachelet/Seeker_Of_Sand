@@ -68,7 +68,7 @@ namespace SpellSystem
         {
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
             profil = m_areaMeta.areaData.spellProfil;
-            GameEffectStats<StatData> gameEffectStats = profil.gameEffectStats;
+            PlayerEffectStats<StatData> gameEffectStats = profil.gameEffectStats;
             if (gameEffectStats.tagData.EqualsSpellNature(SpellNature.SUMMON))
                 m_summonMeta = GetComponent<SummonsMeta>();
 

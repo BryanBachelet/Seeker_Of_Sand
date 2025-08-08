@@ -819,7 +819,7 @@ namespace Character
 
 
                 SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
-            GameEffectStats<StatData> stats = spellProfil.gameEffectStats;
+            PlayerEffectStats<StatData> stats = spellProfil.gameEffectStats;
             BehaviorLevel[] behaviorLevels;
             {
                 BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();
@@ -970,7 +970,7 @@ namespace Character
         private bool ShootSummon(int capsuleIndex)
         {
             SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
-            GameEffectStats<StatData> stats = spellProfil.gameEffectStats;
+            PlayerEffectStats<StatData> stats = spellProfil.gameEffectStats;
 
             BehaviorLevel[] behaviorLevels;
             {

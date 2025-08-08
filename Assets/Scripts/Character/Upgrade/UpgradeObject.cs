@@ -21,7 +21,7 @@ public class UpgradeObject : ScriptableObject
     public bool IsAddingTag;
     public SpellTagOrder TagToGive;
 
-    public GameEffectStats<StatDataUpgrade> gameEffectStats;
+    public PlayerEffectStats<StatDataUpgrade> gameEffectStats;
 
     public UpgradeObject Clone()
     {

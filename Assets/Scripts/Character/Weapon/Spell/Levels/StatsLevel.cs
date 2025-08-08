@@ -22,7 +22,7 @@ namespace SpellSystem
         //public List<StatDataLevel> statDatas = new List<StatDataLevel>();
         //private StatType[] statTypes = new StatType[0];
 
-        public GameEffectStats<StatDataLevel> gameEffectStats;
+        public PlayerEffectStats<StatDataLevel> gameEffectStats;
 
         public BehaviorLevel customStatBehavior;
 

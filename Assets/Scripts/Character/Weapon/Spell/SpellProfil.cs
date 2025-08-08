@@ -369,7 +369,7 @@ namespace SpellSystem
 
 
     [System.Serializable]
-    public class GameEffectStats<T> where T : StatData
+    public class PlayerEffectStats<T> where T : StatData
     {
 
         [Header("Tag Parameters")]
@@ -381,9 +381,9 @@ namespace SpellSystem
 
 
 
-        public GameEffectStats<T> Clone()
+        public PlayerEffectStats<T> Clone()
         {
-            GameEffectStats<T> stats = new GameEffectStats<T>();
+            PlayerEffectStats<T> stats = new PlayerEffectStats<T>();
             stats.statTypes = new StatType[statDatas.Count];
             stats.statDatas = new List<T>(statDatas.Count);
             for (int i = 0; i < stats.statTypes.Length; i++)
@@ -947,17 +947,17 @@ namespace SpellSystem
 
         #endregion
 
-        public bool IsAllTagMatching(GameEffectStats<StatData> gameEffectStats)
+        public bool IsAllTagMatching(PlayerEffectStats<StatData> gameEffectStats)
         {
             return tagData.HasAllTagSimilar(gameEffectStats.tagData);
         }
 
-        public bool IsValidUpgrade(GameEffectStats<StatData> gameEffectStats)
+        public bool IsValidUpgrade(PlayerEffectStats<StatData> gameEffectStats)
         {
             return tagData.HasOneTagSimilar(gameEffectStats.tagData);
         }
 
-        public void ChangeStats<T>( GameEffectStats<T> gameEffectStats) where T : StatDataLevel
+        public void ChangeStats<T>( PlayerEffectStats<T> gameEffectStats) where T : StatDataLevel
         {
 
             for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
@@ -990,7 +990,7 @@ namespace SpellSystem
 
         
 
-        public void ChangeStats(GameEffectStats<StatDataUpgrade> gameEffectStats, bool isAdd = false)
+        public void ChangeStats(PlayerEffectStats<StatDataUpgrade> gameEffectStats, bool isAdd = false)
         {
             for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
             {
@@ -1069,7 +1069,7 @@ namespace SpellSystem
 
         [HideInInspector] public spell_Attribution m_SpellAttributionAssociated;
 
-        public GameEffectStats<StatData> gameEffectStats;
+        public PlayerEffectStats<StatData> gameEffectStats;
 
         public TagData TagList { get { return gameEffectStats.tagData; } set { } }
 

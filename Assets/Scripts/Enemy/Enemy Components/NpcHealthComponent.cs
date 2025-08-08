@@ -230,7 +230,7 @@ namespace Enemies
 
             }
             m_npcInfo.state = NpcState.DEATH;
-
+            m_afflictionManager.RemoveAllAffliction();
             m_npcInfo.behaviorTreeComponent.isActivate = false;
 
             if (!isMassed)
