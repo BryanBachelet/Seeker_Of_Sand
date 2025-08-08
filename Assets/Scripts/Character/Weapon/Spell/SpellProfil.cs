@@ -1043,6 +1043,7 @@ namespace SpellSystem
         public Material matToUse;
         public Texture previewDecal_mat;
         public Texture previewDecalEnd_mat;
+        public GameObject hit_VFX;
 
         public int currentSpellTier;
         [HideInInspector] public int spellExp;

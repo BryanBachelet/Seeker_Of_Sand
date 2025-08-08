@@ -18,7 +18,7 @@ namespace Render.Camera
     {
         [SerializeField] private Character.CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;  
-        [SerializeField] private float m_distanceToTarget = 80;
+        [SerializeField] public float m_distanceToTarget = 80;
         [SerializeField] private Vector3 m_directionCamera;
         [SerializeField] private Vector3 m_angleCamera;
         [SerializeField] private Vector3 m_offsetCamera;

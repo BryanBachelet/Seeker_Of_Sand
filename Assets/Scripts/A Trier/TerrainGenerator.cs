@@ -60,6 +60,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public MiniMapControl miniMapControl;
     public MiniMapControl miniMap_IconControl;
+    public Texture lastTextureCreated;
     public void Start()
     {
         dayController.dayStartEvent += ResetRoomAtNewDay;
@@ -357,7 +358,8 @@ public class TerrainGenerator : MonoBehaviour
         RoomManager roomManager = terrainInstantiated[selectedTerrain].GetComponentInChildren<RoomManager>();
         if (roomManager.currentRoomType == RoomType.Enemy) { roomManager.currentRoomType = RoomType.Event; }
         playerTeleportorBehavior.nextTerrainNumber = selectedTerrain;
-        cameraFadeFunction.LaunchFadeIn(true, 1);
+        roomManager.portalPrevious.material = currentRoomManager.m_materialPreviewTRT;
+        cameraFadeFunction.LaunchFadeIn(true, 0.5f);
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
         cameraFadeFunction.tpBehavior.specialRoomID = roomManager.specialID;
@@ -371,6 +373,11 @@ public class TerrainGenerator : MonoBehaviour
 
     }
 
+
+    public void GetTexturePreviousMap(Texture texture)
+    {
+        lastTextureCreated = texture;
+    }
     public void ActiveGenerationTerrain(int selectedTerrainNumber)
     {
         if (oldTerrain.Count > 0)

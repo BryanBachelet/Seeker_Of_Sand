@@ -1,3 +1,4 @@
+using Render.Camera;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,9 +25,13 @@ public class CameraFadeFunction : MonoBehaviour
 
     [SerializeField] public GameTutorialView gameTutorialView;
     private bool m_isFirstTime = false;
+
+    public CameraBehavior cameraBehavior;
+    public Camera renderCam;
     // Start is called before the first frame update
     void Start()
     {
+        if(cameraBehavior == null) this.gameObject.GetComponent<CameraBehavior>();
         fadeMat = m_fadeObject.material;
         LaunchFadeOut(true, 0.5f);
     }
@@ -77,6 +82,8 @@ public class CameraFadeFunction : MonoBehaviour
             }
             else
             {
+                m_fadeObject.gameObject.SetActive(false);
+                renderCam.gameObject.SetActive(false);
                 fadeProgress = 0;
                 fadeOutActive = false;
                 dayTextObj.SetActive(false);
@@ -107,10 +114,19 @@ public class CameraFadeFunction : MonoBehaviour
     private void ChangeFadeAlpha(float alphaValue)
     {
         fadeMat.SetColor("_UnlitColor", new Color(0, 0, 0, alphaValue));
-    }
+        if (fadeInActive)
+        {
+            cameraBehavior.m_distanceToTarget = Mathf.Lerp(150, 15, alphaValue);
+        }
+        else if (fadeOutActive)
+        {
+            cameraBehavior.m_distanceToTarget = Mathf.Lerp(150, 450, alphaValue);
+        }
 
+    }
     public void LaunchFadeIn(bool stateFade, float speedFade)
     {
+
         fadeInActivation = stateFade;
         m_fadeInSecond = speedFade;
         Debug.Log("Launch Fade in " + stateFade);
@@ -119,6 +135,8 @@ public class CameraFadeFunction : MonoBehaviour
     public void LaunchFadeOut(bool stateFade, float speedFade)
     {
         Debug.Log("Launch Fade out " + stateFade);
+        renderCam.gameObject.SetActive(true);
+        m_fadeObject.gameObject.SetActive(true);
         fadeOutActivation = stateFade;
         m_fadeInSecond = speedFade;
     }

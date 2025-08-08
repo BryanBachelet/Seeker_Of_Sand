@@ -123,7 +123,7 @@ class TIPS_2 : CustomPass
         if (mesh != null && tipsMeshMaterial != null && EnemyManager.currentAltarBehavior != null)
         {
             Transform cameraTransform = ctx.hdCamera.camera.transform;
-            Matrix4x4 trs = Matrix4x4.TRS(EnemyManager.currentAltarBehavior.transform.position + new Vector3(0,10,0), Quaternion.Euler(0f, Time.realtimeSinceStartup * rotationSpeed, 0f/*Time.realtimeSinceStartup * rotationSpeed * 0.5f*/), Vector3.one * size);
+            Matrix4x4 trs = Matrix4x4.TRS(EnemyManager.currentAltarBehavior.transform.position + new Vector3(0,-2,0), Quaternion.Euler(0f, Time.realtimeSinceStartup * rotationSpeed, 0f/*Time.realtimeSinceStartup * rotationSpeed * 0.5f*/), Vector3.one * size);
             tipsMeshMaterial.SetFloat("_Intensity", 10);
             tipsMeshMaterial.SetColor("_Color", glowColor);
             ctx.cmd.DrawMesh(mesh, trs, tipsMeshMaterial, 0, tipsMeshMaterial.FindPass("ForwardOnly"));

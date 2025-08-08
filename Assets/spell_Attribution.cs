@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine.Rendering;
 using GuerhoubaGames.UI;
 using Character;
+using SeekerOfSand.Tools;
 public class spell_Attribution : MonoBehaviour
 {
     [SerializeField] private int preLeveledDisplay = 0;
@@ -22,10 +23,12 @@ public class spell_Attribution : MonoBehaviour
 
     [Header("Component In Child")]
     [SerializeField] public Image imageSpell;
+    [SerializeField] public Image backgroundSpell;
     [SerializeField] private TMP_Text nameSpell;
     [SerializeField] private Image rankSpell_material;
     [SerializeField] private Image tabSpell_material;
     [SerializeField] private Animator animatorSpell;
+    [ColorUsage(true, true)][SerializeField] private Color[] colorbackground;
 
     [SerializeField] private Image[] levelDisplayObject = new Image[13];
     [SerializeField] private Material[] materialLevel = new Material[2];
@@ -71,6 +74,10 @@ public class spell_Attribution : MonoBehaviour
         spellProfil.m_SpellAttributionAssociated = this;
         materialUse = spell.matToUse;
         imageSpell.material = materialUse;
+        Color colorBackgroundToUse = colorbackground[(int)GeneralTools.GetElementalArrayIndex(spell.TagList.element)];
+        Material tempMat = new Material(backgroundSpell.material);
+        tempMat.SetColor("_Color", colorBackgroundToUse);
+        backgroundSpell.material = tempMat;
         spell_name = spell.name;
         description = spell.description;
         nameSpell.text = spell_name;

@@ -103,10 +103,10 @@ public class RewardTypologie : MonoBehaviour
         materialRewardColor.SetColor("_MainColor", color_Elem_Portal[elementIndex]);
         materialRewardChange.SetColor("_Color_A", color_Elem_Portal[elementIndex]);
         m_skinMeshRender.material.SetColor("_Color", color_Elem_Portal[elementIndex]);
-        for (int i = 0; i < rootBoneHolder.transform.childCount; i++)
-        {
-            m_bones[i] = rootBoneHolder.transform.GetChild(i).GetComponent<ExperienceMouvement>();
-        }
+        //for (int i = 0; i < rootBoneHolder.transform.childCount; i++)
+        //{
+        //    m_bones[i] = rootBoneHolder.transform.GetChild(i).GetComponent<ExperienceMouvement>();
+        //}
     }
 
     private void OnTriggerEnter(Collider other)
@@ -157,10 +157,10 @@ public class RewardTypologie : MonoBehaviour
     public void ActivationDistribution()
     {
         rewardAnimator.enabled = false;
-        for (int i = 0; i < m_bones.Length; i++)
-        {
-            m_bones[i].ActiveExperienceParticule(xpMovement.m_playerPosition);
-        }
+        //for (int i = 0; i < m_bones.Length; i++)
+        //{
+        //    m_bones[i].ActiveExperienceParticule(xpMovement.m_playerPosition);
+        //}
     }
 
     private void DestroyAssociateObject()

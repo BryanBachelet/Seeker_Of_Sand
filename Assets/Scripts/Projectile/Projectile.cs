@@ -297,7 +297,7 @@ public class Projectile : MonoBehaviour
     {
 
         if (!this.enabled) return;
-
+        if(spellProfil.hit_VFX != null) { Instantiate(spellProfil.hit_VFX, other.transform.position, Quaternion.identity); }
         if (other.gameObject.tag == "DecorDes")
         {
             other.GetComponent<DestructibleObject>().SetupDestruction(m_power, other.transform.position - transform.position);

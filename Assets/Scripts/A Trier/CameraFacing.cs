@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class CameraFacing : MonoBehaviour
 {
     static public Camera mainCamera;
+    public Camera debugCamera;
     //public GameObject player;
     //public Vector3 lookVector;
     // Start is called before the first frame update
@@ -13,14 +14,19 @@ public class CameraFacing : MonoBehaviour
     public bool faceCameraAxis = false;
     public bool faceMouseAxis = false;
 
-
+    public bool moveToCamera = false;
 
     static public Vector3 mousePosition;
     
     public Vector3 multiplyAxis;
+
+    public float speed;
+    private float step;
     void Start()
     {
         if(mainCamera == null) { mainCamera = Camera.main; }
+        debugCamera = mainCamera;
+        step = speed * Time.deltaTime;
     }
 
     // Update is called once per frame
@@ -44,6 +50,7 @@ public class CameraFacing : MonoBehaviour
             else
             {
                 mainCamera = Camera.main;
+                debugCamera = mainCamera;
             }
         }
         else if (faceMouseAxis)
@@ -53,6 +60,12 @@ public class CameraFacing : MonoBehaviour
             transform.LookAt(positionToLook , multiplyAxis);
         }
         
+        if(moveToCamera)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, Camera.main.transform.position, step);
+        }
 
     }
+
+
 }

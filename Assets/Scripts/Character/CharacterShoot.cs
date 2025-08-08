@@ -1116,6 +1116,8 @@ namespace Character
             currentCloneSpellProfil = spellProfils[m_currentIndexCapsule].Clone();
             Color colToUse = capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.TagList.element)];
             Color colFlameToUse = capFalmeColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.TagList.element)];
+
+            m_characterAim.vfxStartShot.SetVector4("ColorBeam", colToUse);
             m_Mat_capeSkinedMesh.SetColor("_SelfLitColor", colToUse);        //Feedback Cape Color Element
             m_Mat_capeSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex]);                                                               //Feedback Cape Color Element
             m_Mat_Cape_Flamme[0].SetColor("_Color01", colFlameToUse);
@@ -1828,6 +1830,7 @@ namespace Character
         {
             if (newState == combatPlayerState) return;
             combatPlayerState = newState;
+            return;
             if (combatPlayerState == CombatPlayerState.COMBAT)
             {
                
