@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using GuerhoubaGames.GameEnum;
 public class Affliction_UI_Display : MonoBehaviour
 {
     [SerializeField] private GameObject m_displayHolder;

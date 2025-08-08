@@ -17,7 +17,7 @@ MonoBehaviour:
   idFamily: 3
   description: <size=140%><#FFFFFF> Shot water whirling Saw that inflict damage while
     charging and follow the ground after <size=100%><br>
-  spell_Icon: {fileID: 21300000, guid: 13214510ef4842542afb134d08e8c81c, type: 3}
+  spell_Icon: {fileID: 21300000, guid: 3ed9739dfd1d68a429c5a6586a915b9a, type: 3}
   objectToSpawn: {fileID: 1943712460548226353, guid: cebd9d3a821aad14c8ee71d9f769dc48,
     type: 3}
   angleRotation: {x: 0, y: 0, z: 0}
@@ -25,7 +25,7 @@ MonoBehaviour:
   matToUse: {fileID: 2100000, guid: b907a0e8637f2ec46839c1dbeca86439, type: 2}
   previewDecal_mat: {fileID: 2800000, guid: 611cd7d25795cb54eb1837c97050afbb, type: 3}
   previewDecalEnd_mat: {fileID: 2800000, guid: 64d1969e6b43eca4baca732532ec9f05, type: 3}
-  hit_VFX: {fileID: 5620231842038810943, guid: 47e1593a5b681c349bd41fa558be1409, type: 3}
+  hit_VFX: {fileID: 0}
   currentSpellTier: 0
   spellExp: 0
   levelSpellsProfiles:
@@ -35,117 +35,103 @@ MonoBehaviour:
   OnContact: 0
   OnDeath: 0
   OnHit: 1
-  tagData:
-    element: 1
-    type: 1
-    spellNatureType: 2
-    spellNatureType1: 0
-    spellNatureType2: 0
-    spellProjectileTrajectory: 1
-    canalisationType: 1
-    spellMovementBehavior: 0
-    damageTriggerType: 0
-    spellParticualarity: 3
-    spellParticualarity1: 0
-    spellParticualarity2: 0
-    mouvementBehaviorType: 0
-    upgradeSensitivityType: 0
-    afflictionTypes: 
-  statDatas:
-  - stat: 1001
-    valueType: 0
-    nameStat: 
-    val_int: 1
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 1002
-    valueType: 0
-    nameStat: 
-    val_int: 1
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 1004
-    valueType: 0
-    nameStat: 
-    val_int: 5
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 2001
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 3
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 1005
-    valueType: 0
-    nameStat: 
-    val_int: 3
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 2002
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 150
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2022
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 40
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2021
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 0.5
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2003
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2005
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 0.5
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2004
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 1.5
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 1007
-    valueType: 0
-    nameStat: 
-    val_int: 1
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 0
   m_SpellAttributionAssociated: {fileID: 0}
+  gameEffectStats:
+    tagData:
+      element: 1
+      type: 1
+      spellNatureType: 2
+      spellNatureType1: 0
+      spellNatureType2: 0
+      spellProjectileTrajectory: 1
+      canalisationType: 1
+      spellMovementBehavior: 0
+      damageTriggerType: 0
+      spellParticualarity: 3
+      spellParticualarity1: 0
+      spellParticualarity2: 0
+      mouvementBehaviorType: 0
+      upgradeSensitivityType: 0
+      afflictionTypes: 
+    statDatas:
+    - stat: 1001
+      valueType: 0
+      nameStat: 
+      val_int: 10
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2001
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 1
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 1002
+      valueType: 0
+      nameStat: 
+      val_int: 1
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 1004
+      valueType: 0
+      nameStat: 
+      val_int: 5
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2022
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 40
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 2021
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 0.5
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 1005
+      valueType: 0
+      nameStat: 
+      val_int: 3
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2004
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 1.5
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 1007
+      valueType: 0
+      nameStat: 
+      val_int: 1
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 2002
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 150
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    statTypes: e9030000d1070000ea030000ec030000e6070000e5070000ed030000d4070000ef030000d2070000

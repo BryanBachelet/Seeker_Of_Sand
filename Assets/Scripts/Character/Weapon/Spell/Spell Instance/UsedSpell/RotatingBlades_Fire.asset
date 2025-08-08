@@ -17,7 +17,7 @@ MonoBehaviour:
   idFamily: 3
   description: <size=140%><#FFFFFF> Create multiple blade that rotate around the
     Seeker <size=100%><br>
-  spell_Icon: {fileID: 21300000, guid: 8f1fce9c797dbfd409f1869481753632, type: 3}
+  spell_Icon: {fileID: 21300000, guid: f006c7fe78b26eb409cbe04c2cbce3b0, type: 3}
   objectToSpawn: {fileID: 7659398128959048071, guid: 7f8149f6bb21d054ea53f1168285bf38,
     type: 3}
   angleRotation: {x: 0, y: 0, z: 0}
@@ -25,7 +25,7 @@ MonoBehaviour:
   matToUse: {fileID: 2100000, guid: c55e077fee4bbdc4a951bf2bb6887bba, type: 2}
   previewDecal_mat: {fileID: 2800000, guid: b6e63e425acbbe5448ace8a4a771eaf5, type: 3}
   previewDecalEnd_mat: {fileID: 2800000, guid: 9d2f858153fe60b48bd13a50fc88abb2, type: 3}
-  hit_VFX: {fileID: 6343956455056438871, guid: 3e204392b5eb2c745945f4d1a6b0c4ac, type: 3}
+  hit_VFX: {fileID: 0}
   currentSpellTier: 0
   spellExp: 0
   levelSpellsProfiles:
@@ -35,101 +35,95 @@ MonoBehaviour:
   OnContact: 0
   OnDeath: 0
   OnHit: 0
-  tagData:
-    element: 4
-    type: 1
-    spellNatureType: 5
-    spellNatureType1: 3
-    spellNatureType2: 0
-    spellProjectileTrajectory: 0
-    canalisationType: 1
-    spellMovementBehavior: 2
-    damageTriggerType: 0
-    spellParticualarity: 0
-    spellParticualarity1: 0
-    spellParticualarity2: 0
-    mouvementBehaviorType: 0
-    upgradeSensitivityType: 0
-    afflictionTypes: 
-  statDatas:
-  - stat: 1001
-    valueType: 0
-    nameStat: 
-    val_int: 2
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 2007
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 25
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 2008
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 1
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 1009
-    valueType: 0
-    nameStat: 
-    val_int: 3
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 1
-  - stat: 2005
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2004
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 5
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 1007
-    valueType: 0
-    nameStat: 
-    val_int: 1
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2002
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 100
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 2010
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 1
-    val_string: 
-    val_bool: 0
-    isVisible: 0
-  - stat: 1017
-    valueType: 0
-    nameStat: 
-    val_int: 0
-    val_float: 0
-    val_string: 
-    val_bool: 0
-    isVisible: 0
   m_SpellAttributionAssociated: {fileID: 0}
+  gameEffectStats:
+    tagData:
+      element: 4
+      type: 1
+      spellNatureType: 5
+      spellNatureType1: 3
+      spellNatureType2: 0
+      spellProjectileTrajectory: 0
+      canalisationType: 1
+      spellMovementBehavior: 2
+      damageTriggerType: 0
+      spellParticualarity: 0
+      spellParticualarity1: 0
+      spellParticualarity2: 0
+      mouvementBehaviorType: 0
+      upgradeSensitivityType: 0
+      afflictionTypes: 
+    statDatas:
+    - stat: 1001
+      valueType: 0
+      nameStat: 
+      val_int: 8
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2007
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 37.5
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2008
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 1
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2010
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 0.5
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 1009
+      valueType: 0
+      nameStat: 
+      val_int: 8
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 1017
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 1
+    - stat: 2004
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 5
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 1007
+      valueType: 0
+      nameStat: 
+      val_int: 1
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    - stat: 2002
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 100
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+    statTypes: e9030000d7070000d8070000da070000f1030000f9030000d4070000ef030000d2070000

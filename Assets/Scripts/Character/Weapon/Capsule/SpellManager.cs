@@ -39,7 +39,7 @@ public class SpellManager : MonoBehaviour
             int indexSpell = m_spellPool[i];
             Debug.LogWarning("Index Spell draw  :" + indexSpell + " and size spell profil :" + instance.spellProfils.Length);
             SpellSystem.SpellProfil spellProfil = instance.spellProfils[indexSpell];
-            if (spellProfil.tagData.element == element)
+            if (spellProfil.TagList.element == element)
             {
                 m_capsuleElementQuantity.Add(m_spellPool[i]);
             }
@@ -90,7 +90,7 @@ public class SpellManager : MonoBehaviour
         for (int i = 0; i < m_spellPool.Count; i++)
         {
             SpellSystem.SpellProfil spellProfil = instance.spellProfils[m_spellPool[i]];
-            if (spellProfil.tagData.element != element)
+            if (spellProfil.TagList.element != element)
             {
                 m_capsuleElementQuantity.Add(m_spellPool[i]);
             }

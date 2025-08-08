@@ -52,7 +52,7 @@ namespace Character
             for (int i = 0; i < gameElements.Length; i++)
             {
                 if (m_spellsRotationArray[i] != null)
-                    gameElements[i] = m_spellsRotationArray[i].tagData.element;
+                    gameElements[i] = m_spellsRotationArray[i].TagList.element;
                 else
                     gameElements[i] = GameElement.NONE;
 
@@ -134,7 +134,7 @@ namespace Character
 
         public void TradeSpellWithCristal()
         {
-            int Indexelement = GeneralTools.GetElementalArrayIndex(tempSpell.tagData.element);
+            int Indexelement = GeneralTools.GetElementalArrayIndex(tempSpell.TagList.element);
             m_cristalInventory.AddCristalCount(Indexelement, 30);
         }
         #endregion

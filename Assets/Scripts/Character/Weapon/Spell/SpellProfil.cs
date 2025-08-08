@@ -6,6 +6,12 @@ using GuerhoubaGames.GameEnum;
 using System.Globalization;
 using Unity.VisualScripting;
 using NUnit.Framework.Internal;
+using SpellSystem;
+using static UnityEngine.Rendering.DebugUI;
+using System;
+
+
+
 
 [System.Serializable]
 public struct TagData
@@ -27,7 +33,7 @@ public struct TagData
     public List<AfflictionType> afflictionTypes;
 
 
-    public string GetValueTag(SpellTagOrder spellTagOrder)
+    public string GetValueTag(SpellTagOrder spellTagOrder, int index = 0)
     {
         switch (spellTagOrder)
         {
@@ -64,13 +70,20 @@ public struct TagData
             case SpellTagOrder.UpgradeSensitivity:
                 return upgradeSensitivityType.ToString();
                 break;
+
+            case SpellTagOrder.AfflictionType:
+                if (afflictionTypes == null || afflictionTypes.Count >= index)
+                    return "";
+
+                return afflictionTypes[index].ToString();
+                break;
             default:
                 return "";
                 break;
         }
     }
 
-    public int GetIndexTagValue(SpellTagOrder spellTagOrder)
+    public int GetIndexTagValue(SpellTagOrder spellTagOrder, int index = 0)
     {
         switch (spellTagOrder)
         {
@@ -116,14 +129,27 @@ public struct TagData
             case SpellTagOrder.UpgradeSensitivity:
                 return (int)upgradeSensitivityType;
                 break;
+
+            case SpellTagOrder.AfflictionType:
+                if (afflictionTypes == null || afflictionTypes.Count <= index) return 0;
+                return (int)afflictionTypes[index];
+                break;
             default:
                 return -1;
                 break;
         }
     }
 
-    public void SetIndexTagValue(SpellTagOrder spellTagOrder, int value)
+    public bool HasAlreadyTheValue(SpellTagOrder order, int value, int index = 0)
     {
+        return GetIndexTagValue(order, index) == value;
+    }
+
+    public void SetIndexTagValue(SpellTagOrder spellTagOrder, int value, int index = 0)
+    {
+       
+     
+
         switch (spellTagOrder)
         {
             case SpellTagOrder.GameElement:
@@ -168,6 +194,12 @@ public struct TagData
             case SpellTagOrder.UpgradeSensitivity:
                 upgradeSensitivityType = (UpgradeSensitivity)value;
                 break;
+            case SpellTagOrder.AfflictionType:
+                if(afflictionTypes.Count <=  0) 
+                    afflictionTypes.Add((AfflictionType)value);
+                else
+                  afflictionTypes[index] = (AfflictionType)value;
+                break;
             default:
 
                 break;
@@ -181,7 +213,7 @@ public struct TagData
 
         for (int i = 0; i < tagCount; i++)
         {
-            int tagIndex = GetIndexTagValue((SpellTagOrder)i);
+            int tagIndex = GetIndexTagValue((SpellTagOrder)(Math.Pow(2, i)));
             indexTagValue[i] = tagIndex;
         }
         return indexTagValue;
@@ -228,11 +260,60 @@ public struct TagData
         {
             if (indexValueArray[i] != 0)
             {
-                SetIndexTagValue((SpellTagOrder)i, indexValueArray[i]);
+                SetIndexTagValue((SpellTagOrder)(Math.Pow(2, i)), indexValueArray[i]);
             }
         }
     }
 
+
+    public bool HasOneTagSimilar(TagData tagDataCompare)
+    {
+        if (tagDataCompare.element == element) return true;
+        if (tagDataCompare.type == type) return true;
+        if (tagDataCompare.EqualsSpellNature(spellNatureType)) return true;
+        if (tagDataCompare.EqualsSpellNature(spellNatureType1)) return true;
+        if (tagDataCompare.spellProjectileTrajectory == spellProjectileTrajectory) return true;
+        if (tagDataCompare.canalisationType == canalisationType) return true;
+        if (tagDataCompare.spellMovementBehavior == spellMovementBehavior) return true;
+        if (tagDataCompare.damageTriggerType == damageTriggerType) return true;
+        if (tagDataCompare.EqualsSpellParticularity(spellParticualarity)) return true;
+        if (tagDataCompare.EqualsSpellParticularity(spellParticualarity1)) return true;
+        if (tagDataCompare.EqualsSpellParticularity(spellParticualarity2)) return true;
+        if (tagDataCompare.mouvementBehaviorType == mouvementBehaviorType) return true;
+
+        for (int i = 0; i < afflictionTypes.Count; i++)
+        {
+            if (afflictionTypes[i].Equals(tagDataCompare.afflictionTypes[i]))
+                return true;
+        }
+
+        return false;
+
+    }
+
+    public bool HasAllTagSimilar(TagData tagDataCompare)
+    {
+        if ((int)element != 0 && tagDataCompare.element != element) return false;
+        if ((int)type != 0 && tagDataCompare.type != type) return false;
+        if ((int)spellNatureType != 0 && !EqualsSpellNature(spellNatureType)) return false;
+        if ((int)spellNatureType1 != 0 && !tagDataCompare.EqualsSpellNature(spellNatureType1)) return false;
+        if ((int)spellProjectileTrajectory != 0 && tagDataCompare.spellProjectileTrajectory != spellProjectileTrajectory) return false;
+        if ((int)canalisationType != 0 && tagDataCompare.canalisationType != canalisationType) return false;
+        if ((int)spellMovementBehavior != 0 && tagDataCompare.spellMovementBehavior != spellMovementBehavior) return false;
+        if ((int)damageTriggerType != 0 && tagDataCompare.damageTriggerType != damageTriggerType) return false;
+        if ((int)spellParticualarity != 0 && !tagDataCompare.EqualsSpellParticularity(spellParticualarity)) return false;
+        if ((int)spellParticualarity1 != 0 && !tagDataCompare.EqualsSpellParticularity(spellParticualarity1)) return false;
+        if ((int)spellParticualarity2 != 0 && !(tagDataCompare.EqualsSpellParticularity(spellParticualarity2))) return false;
+        if ((int)mouvementBehaviorType != 0 && tagDataCompare.mouvementBehaviorType != mouvementBehaviorType) return false;
+
+        for (int i = 0; i < afflictionTypes.Count; i++)
+        {
+            if (!afflictionTypes[i].Equals(tagDataCompare.afflictionTypes[i]))
+                return false;
+        }
+
+        return true;
+    }
 }
 
 
@@ -242,23 +323,709 @@ namespace SpellSystem
 
 
     [System.Serializable]
-    public class StatData
+    public class StatData : ICloneable
     {
         public StatType stat;
-        public ValueType valueType;
+        public GuerhoubaGames.GameEnum.ValueType valueType;
         public string nameStat;
         public int val_int;
         public float val_float;
         public string val_string;
         public bool val_bool;
         public bool isVisible;
+
+        public virtual StatData Clone()
+        {
+            return (StatData)this.MemberwiseClone();
+        }
+
+        object ICloneable.Clone() => this.Clone();
+       
     }
 
     [System.Serializable]
     public class StatDataLevel : StatData
     {
         public float multiply;
+
+        public override StatData Clone() 
+        {
+            return (StatDataLevel)this.MemberwiseClone();
+        }
+
     }
+
+    [System.Serializable]
+    public class StatDataUpgrade : StatData
+    {
+        public bool isOnlyAddWithTag;
+
+        public override StatData Clone()
+        {
+            return (StatDataUpgrade)this.MemberwiseClone();
+        }
+    }
+
+
+
+    [System.Serializable]
+    public class GameEffectStats<T> where T : StatData
+    {
+
+        [Header("Tag Parameters")]
+        public TagData tagData;
+
+        [Space]
+        public List<T> statDatas = new List<T>();
+        [HideInInspector] public StatType[] statTypes = new StatType[0];
+
+
+
+        public GameEffectStats<T> Clone()
+        {
+            GameEffectStats<T> stats = new GameEffectStats<T>();
+            stats.statTypes = new StatType[statDatas.Count];
+            stats.statDatas = new List<T>(statDatas.Count);
+            for (int i = 0; i < stats.statTypes.Length; i++)
+            {
+                stats.statTypes[i] = statDatas[i].stat;
+                T statDataInstance = (T)statDatas[i].Clone();
+                stats.statDatas.Add(statDataInstance);
+            }
+
+            stats.tagData = new TagData();
+            stats.tagData = tagData;
+            stats.tagData.afflictionTypes = new List<AfflictionType>();
+            return stats;
+        }
+
+        public bool IsStatBool(StatType statsType)
+        {
+            return (int)statsType - ((0 * 1000)) < 1000;
+        }
+        public bool IsStatInt(StatType statsType)
+        {
+            return (int)statsType - ((1 * 1000)) < 1000;
+        }
+        public bool IsStatFloat(StatType statsType)
+        {
+            return (int)statsType - ((2 * 1000)) < 1000;
+        }
+        public bool IsStatString(StatType statsType)
+        {
+            return (int)statsType - ((3 * 1000)) < 1000;
+        }
+
+        public bool HasStats(StatType statsType)
+        {
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int GetStats(StatType statsType)
+        {
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public int GetIntStat(StatType statsType)
+        {
+            if (!IsStatInt(statsType))
+            {
+                Debug.LogError("This stats isn't an integer");
+                return -1;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return statDatas[i].val_int;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return -1;
+        }
+
+        public int GetIntStat(StatType statsType, string nameStatToChange)
+        {
+            if (!IsStatInt(statsType))
+            {
+                Debug.LogError("This stats isn't an integer");
+                return -1;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
+                {
+                    return statDatas[i].val_int;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return -1;
+        }
+
+        public float GetFloatStat(StatType statsType)
+        {
+            if (!IsStatFloat(statsType))
+            {
+                Debug.LogError("This stats isn't an float");
+                return -1;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return statDatas[i].val_float;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return -1;
+        }
+        public float GetFloatStat(StatType statsType, string nameStatToChange)
+        {
+            if (!IsStatFloat(statsType))
+            {
+                Debug.LogError("This stats isn't an float");
+                return -1;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
+                {
+                    return statDatas[i].val_float;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return -1;
+        }
+
+        public bool GetBoolStat(StatType statsType)
+        {
+            if (!IsStatBool(statsType))
+            {
+                Debug.LogError("This stats isn't an bool");
+                return false; ;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return statDatas[i].val_bool;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return false;
+        }
+        public string GetStringStat(StatType statsType)
+        {
+            if (!IsStatString(statsType))
+            {
+                Debug.LogError("This stats isn't an string");
+                return "";
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    return statDatas[i].val_string;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return "";
+        }
+
+        public void AddToIntStats(StatType statsType, int val, float multiplier = 1)
+        {
+            if (!IsStatInt(statsType))
+            {
+                Debug.LogError("This stats isn't an integer");
+                return;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_int += val;
+                    if (multiplier != 0) statData.val_int = (int)(statData.val_int * multiplier);
+                    statDatas[i] = (T)statData;
+                    return;
+                }
+            }
+        }
+        public void AddToFloatStats(StatType statsType, float val, float multiplier = 1)
+        {
+
+            if (!IsStatFloat(statsType))
+            {
+                Debug.LogError("This stats isn't an float");
+                return;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_float += val;
+                    if (multiplier != 0) statData.val_float *= multiplier;
+                    statDatas[i] = (T)statData;
+                    return;
+                }
+            }
+        }
+        public void ChangBoolValue(StatType statsType, bool val)
+        {
+            if (!IsStatBool(statsType))
+            {
+                Debug.LogError("This stats isn't an bool");
+                return;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_bool = val;
+                    statDatas[i] = (T)statData;
+                    return;
+                }
+            }
+        }
+        public void ChangeStringStats(StatType statsType, string val)
+        {
+            if (!IsStatString(statsType))
+            {
+                Debug.LogError("This stats isn't an string");
+                return;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_string = val;
+                    statDatas[i] = (T)statData;
+                    return;
+                }
+            }
+        }
+        public string GetStatValueToString(StatType statsType)
+        {
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i])
+                {
+                    if (IsStatBool(statsType)) return statDatas[i].val_bool.ToString();
+                    if (IsStatInt(statsType)) return statDatas[i].val_int.ToString();
+                    if (IsStatFloat(statsType)) return statDatas[i].val_float.ToString();
+                    if (IsStatString(statsType)) return statDatas[i].val_string.ToString();
+                }
+
+
+            }
+
+            return "";
+        }
+        public string DebugStat()
+        {
+            string debugStatString = "";
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+
+                if (!statDatas[i].isVisible) continue;
+                if (IsStatBool(statTypes[i]))
+                {
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_bool.ToString() + " </b> \n";
+                    continue;
+                }
+
+                if (IsStatInt(statTypes[i]))
+                {
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_int.ToString() + " </b> \n";
+                    continue;
+                }
+
+                if (IsStatFloat(statTypes[i]))
+                {
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_float.ToString() + " </b> \n";
+                    continue;
+                }
+
+                if (IsStatString(statTypes[i]))
+                {
+                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_string + " </b> \n";
+                    continue;
+                }
+            }
+
+            return debugStatString;
+        }
+
+        #region Stats setup Functions
+        public void UpdateStatistics()
+        {
+
+            bool testResult = tagData.type == BuffType.DAMAGE_SPELL;
+            ManageStat(StatType.Damage, testResult, true);
+
+
+            SetupSpellNatureStats(tagData.spellNatureType, tagData.spellNatureType1);
+            SetupUpgradeSensitivity();
+            SetupSpellParaticularity();
+            SetupCanalisationType();
+            SetupMovementType();
+            SetupSpellMouvement();
+            SetupAfflictionStats(tagData.afflictionTypes.ToArray());
+
+            ManageStat(StatType.StackDuration, true);
+            ManageStat(StatType.GainPerStack, true);
+            ManageStat(StatType.Range, true);
+
+            statTypes = new StatType[statDatas.Count];
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                statTypes[i] = statDatas[i].stat;
+            }
+
+
+        }
+
+        public void UpdateOnlyTag()
+        {
+            SetupSpellNatureStats(tagData.spellNatureType, tagData.spellNatureType1);
+            SetupUpgradeSensitivity();
+            SetupSpellParaticularity();
+            SetupCanalisationType();
+            SetupMovementType();
+            SetupSpellMouvement();
+            SetupAfflictionStats(tagData.afflictionTypes.ToArray());
+
+            statTypes = new StatType[statDatas.Count];
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                statTypes[i] = statDatas[i].stat;
+            }
+
+        }
+
+        public void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
+        {
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                if (statDatas[i].stat == statToCheck)
+                {
+                    if (!isAdd)
+                    {
+                        statDatas.RemoveAt(i);
+                        i--;
+                    }
+                    return;
+                }
+            }
+
+            if (isAdd)
+            {
+                StatData statData = new StatData();
+                statData.stat = statToCheck;
+                statData.isVisible = isVisible;
+                statDatas.Add((T)statData);
+            }
+
+            return;
+        }
+
+        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false)
+        {
+            string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
+            nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                if (statDatas[i].stat == statToCheck && statDatas[i].nameStat == nameAffliction)
+                {
+                    if (!isAdd)
+                    {
+                        statDatas.RemoveAt(i);
+                        i--;
+                    }
+                    return;
+                }
+            }
+
+            if (isAdd)
+            {
+                StatData statData = new StatData();
+                statData.stat = statToCheck;
+                statData.nameStat = nameAffliction;
+                statData.isVisible = isVisible;
+                statDatas.Add((T)statData);
+            }
+
+            return;
+        }
+
+        private void CheckAfflictionStat()
+        {
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                if (statDatas[i].stat == StatType.AfflictionProbility || statDatas[i].stat == StatType.AfflictionStack)
+                {
+                    bool hasToBeRemove = true;
+                    for (int j = 0; j < tagData.afflictionTypes.Count; j++)
+                    {
+                        string nameStat = statDatas[i].nameStat.ToUpper();
+                        if (nameStat == tagData.afflictionTypes[j].ToString())
+                        {
+                            hasToBeRemove = false;
+                        }
+
+                    }
+
+                    if (hasToBeRemove)
+                    {
+                        statDatas.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+        }
+
+        private void SetupSpellMouvement()
+        {
+            bool testResult = tagData.spellMovementBehavior == SpellMovementBehavior.FollowPlayer;
+            ManageStat(StatType.Proximity, testResult);
+            ManageStat(StatType.SpeedFollow, testResult);
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Return;
+            ManageStat(StatType.SpeedReturn, testResult);
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Fix;
+            ManageStat(StatType.OffsetDistance, testResult);
+
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Direction;
+            ManageStat(StatType.DirectionSpeed, testResult);
+
+            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse;
+            ManageStat(StatType.DirectionSpeed, testResult);
+        }
+
+        private void SetupMovementType()
+        {
+            bool testResult = tagData.mouvementBehaviorType == MouvementBehavior.Dash;
+            ManageStat(StatType.DistanceDash, testResult);
+            ManageStat(StatType.MouvementTravelTime, testResult);
+            ManageStat(StatType.Invunerability, testResult);
+        }
+
+        private void SetupCanalisationType()
+        {
+            bool testResult = tagData.canalisationType == CanalisationType.LIGHT_CANALISATION;
+            ManageStat(StatType.SpellCanalisation, testResult);
+
+
+            testResult = tagData.canalisationType == CanalisationType.HEAVY_CANALISATION;
+            ManageStat(StatType.SpellCanalisation, testResult);
+            ManageStat(StatType.SpeedReduce, testResult);
+
+        }
+
+        private void SetupSpellParaticularity()
+        {
+            bool testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Explosion);
+            ManageStat(StatType.SizeExplosion, testResult, true);
+            ManageStat(StatType.DamageAdditionel, testResult, true);
+
+            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Delayed);
+            ManageStat(StatType.TimeDelay, testResult, true);
+
+            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Piercing);
+            ManageStat(StatType.Piercing, testResult, true);
+
+            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Bouncing);
+            ManageStat(StatType.BounceNumber, testResult, true);
+
+
+        }
+
+        private void SetupUpgradeSensitivity()
+        {
+            bool testResult = tagData.upgradeSensitivityType == UpgradeSensitivity.HighScale;
+            ManageStat(StatType.ScaleRate, testResult);
+            if (testResult) return;
+
+            testResult = tagData.upgradeSensitivityType == UpgradeSensitivity.LowScale;
+            ManageStat(StatType.ScaleRate, testResult);
+        }
+
+        private void SetupSpellNatureStats(SpellNature type, SpellNature type2)
+        {
+            bool testResult;
+            testResult = tagData.EqualsSpellNature(SpellNature.PROJECTILE);
+            ManageStat(StatType.LifeTime, testResult);
+            ManageStat(StatType.Projectile, testResult, true);
+            ManageStat(StatType.ShootNumber, testResult, true);
+            ManageStat(StatType.ShootAngle, testResult);
+            ManageStat(StatType.TimeBetweenShot, testResult);
+
+
+            bool testResult2 = tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE;
+            ManageStat(StatType.AngleTrajectory, testResult2 && testResult);
+            ManageStat(StatType.TrajectoryTimer, testResult2 && testResult);
+
+            testResult = tagData.spellNatureType == SpellNature.AREA;
+            ManageStat(StatType.SpellCount, testResult, true);
+            ManageStat(StatType.SpellFrequency, testResult);
+
+            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA);
+            ManageStat(StatType.Size, testResult, true);
+            ManageStat(StatType.SizeMuplitiplicator, testResult);
+
+
+            testResult = tagData.EqualsSpellNature(SpellNature.SUMMON);
+            ManageStat(StatType.MaxSummon, testResult, true);
+            ManageStat(StatType.SummonSimultanely, testResult, true);
+            ManageStat(StatType.LifeTimeSummon, testResult, true);
+
+            testResult = tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
+            ManageStat(StatType.HitFrequency, testResult);
+            ManageStat(StatType.HitNumber, testResult, true);
+
+            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
+            ManageStat(StatType.AreaTargetSimulately, testResult, true);
+
+            testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);
+            ManageStat(StatType.AttackReload, testResult, true);
+
+        }
+
+        void SetupAfflictionStats(AfflictionType[] typeAffliction)
+        {
+            for (int i = 0; i < typeAffliction.Length; i++)
+            {
+                ManageAfflictionStat(StatType.AfflictionProbility, true, typeAffliction[i], true);
+                ManageAfflictionStat(StatType.AfflictionStack, true, typeAffliction[i], true);
+            }
+
+            CheckAfflictionStat();
+        }
+
+        public string GetAfflictionName(AfflictionType type)
+        {
+            string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
+            nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
+            return nameAffliction;
+        }
+
+        #endregion
+
+        public bool IsAllTagMatching(GameEffectStats<StatData> gameEffectStats)
+        {
+            return tagData.HasAllTagSimilar(gameEffectStats.tagData);
+        }
+
+        public bool IsValidUpgrade(GameEffectStats<StatData> gameEffectStats)
+        {
+            return tagData.HasOneTagSimilar(gameEffectStats.tagData);
+        }
+
+        public void ChangeStats<T>( GameEffectStats<T> gameEffectStats) where T : StatDataLevel
+        {
+
+            for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
+            {
+                if (IsStatBool(gameEffectStats.statTypes[i]))
+                {
+                    ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
+                    continue;
+                }
+
+
+                if (IsStatInt(gameEffectStats.statTypes[i]))
+                {
+                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int);
+                    continue;
+                }
+                if (IsStatFloat(gameEffectStats.statTypes[i]))
+                {
+                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float);
+                    continue;
+                }
+
+                if (IsStatString(gameEffectStats.statTypes[i]))
+                {
+                    ChangeStringStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_string);
+                    continue;
+                }
+            }
+        }
+
+        
+
+        public void ChangeStats(GameEffectStats<StatDataUpgrade> gameEffectStats, bool isAdd = false)
+        {
+            for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
+            {
+                bool IsAddingStat = (gameEffectStats.statDatas[i].isOnlyAddWithTag && isAdd) || !gameEffectStats.statDatas[i].isOnlyAddWithTag;
+
+                if (IsStatBool(gameEffectStats.statTypes[i]) && IsAddingStat)
+                {
+                    ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
+                    continue;
+                }
+
+
+                if (IsStatInt(gameEffectStats.statTypes[i]) && IsAddingStat)
+                {
+                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int);
+                    continue;
+                }
+                if (IsStatFloat(gameEffectStats.statTypes[i]) && IsAddingStat)
+                {
+                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float);
+                    continue;
+                }
+
+                if (IsStatString(gameEffectStats.statTypes[i]) && IsAddingStat)
+                {
+                    ChangeStringStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_string);
+                    continue;
+                }
+            }
+        }
+
+
+    }
+
+
 
 
     [CreateAssetMenu(fileName = "Spell Profil", menuName = "Spell/Spell Profil")]
@@ -293,28 +1060,26 @@ namespace SpellSystem
         public bool OnDeath = false;
         public bool OnHit = true;
 
-        [Header("Tag Parameters")]
-        public TagData tagData;
 
+        //[Header("Tag Parameters")]
+        //public TagData tagData;
 
-
-        [Space]
-        public List<StatData> statDatas = new List<StatData>();
-        private StatType[] statTypes = new StatType[0];
-
+        //[Space]
+        //public List<StatData> statDatas = new List<StatData>();
+        //[HideInInspector] public StatType[] statTypes = new StatType[0];
 
         [HideInInspector] public spell_Attribution m_SpellAttributionAssociated;
+
+        public GameEffectStats<StatData> gameEffectStats;
+
+        public TagData TagList { get { return gameEffectStats.tagData; } set { } }
+
 
         public SpellProfil Clone(bool isSetup = false)
         {
             SpellProfil spellProfil = Instantiate(this);
 
-
-            spellProfil.statTypes = new StatType[spellProfil.statDatas.Count];
-            for (int i = 0; i < spellProfil.statTypes.Length; i++)
-            {
-                spellProfil.statTypes[i] = spellProfil.statDatas[i].stat;
-            }
+            spellProfil.gameEffectStats = gameEffectStats.Clone();
 
             if (isSetup)
             {
@@ -412,14 +1177,14 @@ namespace SpellSystem
 
         public float GetSize()
         {
-            if (!HasStats(StatType.Size))
+            if (!gameEffectStats.HasStats(StatType.Size))
                 return 1;
 
-            if (tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+            if (gameEffectStats.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
-                return GetFloatStat(StatType.SizeExplosion);
+                return gameEffectStats.GetFloatStat(StatType.SizeExplosion);
             }
-            return GetFloatStat(StatType.Size);
+            return gameEffectStats.GetFloatStat(StatType.Size);
         }
 
         public void GainLevel(int index)
@@ -467,528 +1232,20 @@ namespace SpellSystem
 
         #endregion
 
-        private bool IsStatBool(StatType statsType)
-        {
-            return (int)statsType - ((0 * 1000)) < 1000;
-        }
-        private bool IsStatInt(StatType statsType)
-        {
-            return (int)statsType - ((1 * 1000)) < 1000;
-        }
-        private bool IsStatFloat(StatType statsType)
-        {
-            return (int)statsType - ((2 * 1000)) < 1000;
-        }
-        private bool IsStatString(StatType statsType)
-        {
-            return (int)statsType - ((3 * 1000)) < 1000;
-        }
-
-        public bool HasStats(StatType statsType)
-        {
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public int GetIntStat(StatType statsType)
-        {
-            if (!IsStatInt(statsType))
-            {
-                Debug.LogError("This stats isn't an integer");
-                return -1;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    return statDatas[i].val_int;
-                }
-            }
-
-            Debug.LogError("Didn't find this stat on the spell ");
-            return -1;
-        }
-
-        public int GetIntStat(StatType statsType,string nameStatToChange)
-        {
-            if (!IsStatInt(statsType))
-            {
-                Debug.LogError("This stats isn't an integer");
-                return -1;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
-                {
-                    return statDatas[i].val_int;
-                }
-            }
-
-            Debug.LogError("Didn't find this stat on the spell ");
-            return -1;
-        }
-
-        public float GetFloatStat(StatType statsType)
-        {
-            if (!IsStatFloat(statsType))
-            {
-                Debug.LogError("This stats isn't an float");
-                return -1;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    return statDatas[i].val_float;
-                }
-            }
-
-            Debug.LogError("Didn't find this stat on the spell ");
-            return -1;
-        }
-         public float GetFloatStat(StatType statsType,string nameStatToChange)
-        {
-            if (!IsStatFloat(statsType))
-            {
-                Debug.LogError("This stats isn't an float");
-                return -1;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
-                {
-                    return statDatas[i].val_float;
-                }
-            }
-
-            Debug.LogError("Didn't find this stat on the spell ");
-            return -1;
-        }
-
-        public bool GetBoolStat(StatType statsType)
-        {
-            if (!IsStatBool(statsType))
-            {
-                Debug.LogError("This stats isn't an bool");
-                return false; ;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    return statDatas[i].val_bool;
-                }
-            }
-
-            Debug.LogError("Didn't find this stat on the spell ");
-            return false;
-        }
-        public string GetStringStat(StatType statsType)
-        {
-            if (!IsStatString(statsType))
-            {
-                Debug.LogError("This stats isn't an string");
-                return "";
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    return statDatas[i].val_string;
-                }
-            }
-
-            Debug.LogError("Didn't find this stat on the spell ");
-            return "";
-        }
-
-        public void AddToIntStats(StatType statsType, int val, float multiplier = 1)
-        {
-            if (!IsStatInt(statsType))
-            {
-                Debug.LogError("This stats isn't an integer");
-                return;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    StatData statData = statDatas[i];
-                    statData.val_int += val;
-                    if (multiplier != 0) statData.val_int = (int)(statData.val_int * multiplier);
-                    statDatas[i] = statData;
-                    return;
-                }
-            }
-        }
-        public void AddToFloatStats(StatType statsType, float val, float multiplier = 1)
-        {
-
-            if (!IsStatFloat(statsType))
-            {
-                Debug.LogError("This stats isn't an float");
-                return;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    StatData statData = statDatas[i];
-                    statData.val_float += val;
-                    if (multiplier != 0) statData.val_float *= multiplier;
-                    statDatas[i] = statData;
-                    return;
-                }
-            }
-        }
-        public void ChangBoolValue(StatType statsType, bool val)
-        {
-            if (!IsStatBool(statsType))
-            {
-                Debug.LogError("This stats isn't an bool");
-                return;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    StatData statData = statDatas[i];
-                    statData.val_bool = val;
-                    statDatas[i] = statData;
-                    return;
-                }
-            }
-        }
-        public void ChangeStringStats(StatType statsType, string val)
-        {
-            if (!IsStatString(statsType))
-            {
-                Debug.LogError("This stats isn't an string");
-                return;
-            }
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    StatData statData = statDatas[i];
-                    statData.val_string = val;
-                    statDatas[i] = statData;
-                    return;
-                }
-            }
-        }
-
-
-        public string GetStatValueToString(StatType statsType)
-        {
-
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (statsType == statTypes[i])
-                {
-                    if (IsStatBool(statsType)) return statDatas[i].val_bool.ToString();
-                    if (IsStatInt(statsType)) return statDatas[i].val_int.ToString();
-                    if (IsStatFloat(statsType)) return statDatas[i].val_float.ToString();
-                    if (IsStatString(statsType)) return statDatas[i].val_string.ToString();
-                }
-
-
-            }
-
-            return "";
-        }
-
-        public string DebugStat()
-        {
-            string debugStatString = "";
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-
-                if (!statDatas[i].isVisible) continue;
-                if (IsStatBool(statTypes[i]))
-                {
-                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_bool.ToString() + " </b> \n";
-                    continue;
-                }
-
-                if (IsStatInt(statTypes[i]))
-                {
-                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_int.ToString() + " </b> \n";
-                    continue;
-                }
-
-                if (IsStatFloat(statTypes[i]))
-                {
-                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_float.ToString() + " </b> \n";
-                    continue;
-                }
-
-                if (IsStatString(statTypes[i]))
-                {
-                    debugStatString += "<u>" + statTypes[i].ToString() + " </u> : <b>" + statDatas[i].val_string + " </b> \n";
-                    continue;
-                }
-            }
-
-            return debugStatString;
-        }
-
-
-        #region Stats setup Functions
         public void UpdateStatistics()
         {
 
-            bool testResult = tagData.type == BuffType.DAMAGE_SPELL;
-            ManageStat(StatType.Damage, testResult, true);
-
-
-            SetupSpellNatureStats(tagData.spellNatureType, tagData.spellNatureType1);
-            SetupUpgradeSensitivity();
-            SetupSpellParaticularity();
-            SetupCanalisationType();
-            SetupMovementType();
-            SetupSpellMouvement();
-            SetupAfflictionStats(tagData.afflictionTypes.ToArray());
-
-            ManageStat(StatType.StackDuration, true);
-            ManageStat(StatType.GainPerStack, true);
-            ManageStat(StatType.Range, true);
-
-            statTypes = new StatType[statDatas.Count];
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                statTypes[i] = statDatas[i].stat;
-            }
-
-
+            gameEffectStats.UpdateStatistics();
         }
 
-        public void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
+        internal float GetFloatStat(StatType stat)
         {
-            for (int i = 0; i < statDatas.Count; i++)
-            {
-                if (statDatas[i].stat == statToCheck)
-                {
-                    if (!isAdd)
-                    {
-                        statDatas.RemoveAt(i);
-                        i--;
-                    }
-                    return;
-                }
-            }
-
-            if (isAdd)
-            {
-                StatData statData = new StatData();
-                statData.stat = statToCheck;
-                statData.isVisible = isVisible;
-                statDatas.Add(statData);
-            }
-
-            return;
+            return gameEffectStats.GetFloatStat(stat);
         }
 
-        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false)
+        internal int GetIntStat(StatType stat)
         {
-            string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
-            nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
-            for (int i = 0; i < statDatas.Count; i++)
-            {
-                if (statDatas[i].stat == statToCheck && statDatas[i].nameStat == nameAffliction)
-                {
-                    if (!isAdd)
-                    {
-                        statDatas.RemoveAt(i);
-                        i--;
-                    }
-                    return;
-                }
-            }
-
-            if (isAdd)
-            {
-                StatData statData = new StatData();
-                statData.stat = statToCheck;
-                statData.nameStat = nameAffliction;
-                statData.isVisible = isVisible;
-                statDatas.Add(statData);
-            }
-
-            return;
+            return gameEffectStats.GetIntStat(stat);
         }
-
-        private void CheckAfflictionStat()
-        {
-            for (int i = 0; i < statDatas.Count; i++)
-            {
-                if (statDatas[i].stat == StatType.AfflictionProbility || statDatas[i].stat == StatType.AfflictionStack )
-                {
-                    bool hasToBeRemove =true;
-                    for (int j = 0; j < tagData.afflictionTypes.Count; j++)
-                    {
-                        string nameStat = statDatas[i].nameStat.ToUpper();
-                        if (nameStat == tagData.afflictionTypes[j].ToString())
-                        {
-                            hasToBeRemove = false;
-                        }
-
-                    }
-
-                    if (hasToBeRemove)
-                    {
-                        statDatas.RemoveAt(i);
-                        i--;
-                    }
-                }
-            }
-        }
-
-
-        private void SetupSpellMouvement()
-        {
-            bool testResult = tagData.spellMovementBehavior == SpellMovementBehavior.FollowPlayer;
-            ManageStat(StatType.Proximity, testResult);
-            ManageStat(StatType.SpeedFollow, testResult);
-
-            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Return;
-            ManageStat(StatType.SpeedReturn, testResult);
-
-            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Fix;
-            ManageStat(StatType.OffsetDistance, testResult);
-
-
-            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.Direction;
-            ManageStat(StatType.DirectionSpeed, testResult);
-
-            testResult = tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse;
-            ManageStat(StatType.DirectionSpeed, testResult);
-        }
-
-        private void SetupMovementType()
-        {
-            bool testResult = tagData.mouvementBehaviorType == MouvementBehavior.Dash;
-            ManageStat(StatType.DistanceDash, testResult);
-            ManageStat(StatType.MouvementTravelTime, testResult);
-            ManageStat(StatType.Invunerability, testResult);
-        }
-
-        private void SetupCanalisationType()
-        {
-            bool testResult = tagData.canalisationType == CanalisationType.LIGHT_CANALISATION;
-            ManageStat(StatType.SpellCanalisation, true);
-
-
-            testResult = tagData.canalisationType == CanalisationType.HEAVY_CANALISATION;
-            ManageStat(StatType.SpellCanalisation, true);
-            ManageStat(StatType.SpeedReduce, testResult);
-
-        }
-
-        private void SetupSpellParaticularity()
-        {
-            bool testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Explosion);
-            ManageStat(StatType.SizeExplosion, testResult, true);
-            ManageStat(StatType.DamageAdditionel, testResult, true);
-
-            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Delayed);
-            ManageStat(StatType.TimeDelay, testResult, true);
-
-            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Piercing);
-            ManageStat(StatType.Piercing, testResult, true);
-
-            testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Bouncing);
-            ManageStat(StatType.BounceNumber, testResult, true);
-
-
-        }
-
-        private void SetupUpgradeSensitivity()
-        {
-            bool testResult = tagData.upgradeSensitivityType == UpgradeSensitivity.HighScale;
-            ManageStat(StatType.ScaleRate, testResult);
-            if (testResult) return;
-
-            testResult = tagData.upgradeSensitivityType == UpgradeSensitivity.LowScale;
-            ManageStat(StatType.ScaleRate, testResult);
-        }
-
-        private void SetupSpellNatureStats(SpellNature type, SpellNature type2)
-        {
-            bool testResult;
-            testResult = tagData.EqualsSpellNature(SpellNature.PROJECTILE);
-            ManageStat(StatType.LifeTime, testResult);
-            ManageStat(StatType.Projectile, testResult, true);
-            ManageStat(StatType.ShootNumber, testResult, true);
-            ManageStat(StatType.ShootAngle, testResult);
-            ManageStat(StatType.TimeBetweenShot, testResult);
-
-
-            bool testResult2 = tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE;
-            ManageStat(StatType.AngleTrajectory, testResult2 && testResult);
-            ManageStat(StatType.TrajectoryTimer, testResult2 && testResult);
-
-            testResult = tagData.spellNatureType == SpellNature.AREA;
-            ManageStat(StatType.SpellCount, testResult, true);
-            ManageStat(StatType.SpellFrequency, testResult);
-
-            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA);
-            ManageStat(StatType.Size, testResult, true);
-            ManageStat(StatType.SizeMuplitiplicator, testResult);
-
-
-            testResult = tagData.EqualsSpellNature(SpellNature.SUMMON);
-            ManageStat(StatType.MaxSummon, testResult, true);
-            ManageStat(StatType.SummonSimultanely, testResult, true);
-            ManageStat(StatType.LifeTimeSummon, testResult, true);
-
-            testResult = tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
-            ManageStat(StatType.HitFrequency, testResult);
-            ManageStat(StatType.HitNumber, testResult, true);
-
-            testResult = tagData.EqualsSpellNature(SpellNature.AREA) || tagData.EqualsSpellNature(SpellNature.AURA) || tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA);
-            ManageStat(StatType.AreaTargetSimulately, testResult, true);
-
-            testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);
-            ManageStat(StatType.AttackReload, testResult, true);
-
-        }
-
-        void SetupAfflictionStats(AfflictionType[] typeAffliction)
-        {
-            for (int i = 0; i < typeAffliction.Length; i++)
-            {
-                ManageAfflictionStat(StatType.AfflictionProbility, true, typeAffliction[i], true);
-                ManageAfflictionStat(StatType.AfflictionStack, true, typeAffliction[i], true);
-            }
-
-            CheckAfflictionStat();
-        }
-
-        public string GetAfflictionName(AfflictionType type)
-        {
-            string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
-            nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
-            return nameAffliction;
-        }
-
-
-        #endregion
     }
 }

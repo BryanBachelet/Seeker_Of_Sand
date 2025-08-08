@@ -41,14 +41,14 @@ namespace GuerhoubaGames.VFX
             if (m_lifeTimer.GetRatio() > 0.98f)
             {
                 vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(0));
-                vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(0) * 0.9f);
-                vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(0) * 0.65f);
+                //vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(0) * 0.9f);
+                //vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(0) * 0.65f);
             }
             else
             {
                 vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()));
-                vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.9f);
-                vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.65f);
+                //vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.9f);
+                //vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.65f);
             }
 
 

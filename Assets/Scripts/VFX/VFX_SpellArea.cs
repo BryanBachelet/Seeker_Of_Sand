@@ -18,7 +18,7 @@ namespace GuerhoubaGames.VFX
         {
             areaMeta = GetComponentInParent<SpellSystem.AreaMeta>();
             vfx.SetFloat("Size", areaMeta.areaData.spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.Size));
-            if (areaMeta.areaData.spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+            if (areaMeta.areaData.spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 vfx.SetFloat("Size", areaMeta.areaData.spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion));
             }

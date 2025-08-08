@@ -74,7 +74,7 @@ public class spell_Attribution : MonoBehaviour
         spellProfil.m_SpellAttributionAssociated = this;
         materialUse = spell.matToUse;
         imageSpell.material = materialUse;
-        Color colorBackgroundToUse = colorbackground[(int)GeneralTools.GetElementalArrayIndex(spell.tagData.element)];
+        Color colorBackgroundToUse = colorbackground[(int)GeneralTools.GetElementalArrayIndex(spell.TagList.element)];
         Material tempMat = new Material(backgroundSpell.material);
         tempMat.SetColor("_Color", colorBackgroundToUse);
         backgroundSpell.material = tempMat;

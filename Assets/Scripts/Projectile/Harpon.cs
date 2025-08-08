@@ -157,9 +157,9 @@ public class Harpon : Projectile
                 Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
                 if(enemyTouch.m_npcInfo.type == Enemies.EnemyType.TWILIGHT_SISTER)
                 {
-                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
+                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.TagList.element);
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
-                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.tagData.element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
+                    enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, enemyTouch.transform.position - transform.position, m_power, (int)spellProfil.TagList.element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                     return;
                 }
 
@@ -167,7 +167,7 @@ public class Harpon : Projectile
 
                 if (m_impaleCount < impaleCountMaximum && m_currentDistance < m_minRangeToImpale)
                 {
-                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
+                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.TagList.element);
                     m_damageCalculComponent.damageStats.AddDamage((int)(m_damage * m_impalementDamageRatio), (GameElement)elementIndex, DamageType.TEMPORAIRE);
                     DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType, enemyTouch.gameObject, spellProfil);
 
@@ -190,7 +190,7 @@ public class Harpon : Projectile
                 // Other Element
                 if (m_impaleCount >= impaleCountMaximum || m_currentDistance > m_minRangeToImpale)
                 {
-                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.tagData.element);
+                    m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.TagList.element);
                     m_damageCalculComponent.damageStats.AddDamage((int)(m_damage ), (GameElement)elementIndex, DamageType.TEMPORAIRE);
                     DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType, enemyTouch.gameObject, spellProfil);
 

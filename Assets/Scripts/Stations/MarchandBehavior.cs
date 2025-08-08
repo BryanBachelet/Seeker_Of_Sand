@@ -96,7 +96,7 @@ public class MarchandBehavior : InteractionInterface
             spellItemData[i].index = spellIndex;
             spellItemData[i].price = spellPrice;
             spellItemData[i].type = CharacterObjectType.SPELL;
-            spellItemData[i].element = m_capsuleManager.spellProfils[spellIndex].tagData.element;
+            spellItemData[i].element = m_capsuleManager.spellProfils[spellIndex].TagList.element;
             spellItemData[i].hasBeenBuy = false;
             spellItemData[i].isBuyable = m_cristalInventory.HasEnoughCristal(spellItemData[i].price, spellItemData[i].element, merchandItemData.spellData[i].name);
         }

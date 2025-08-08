@@ -123,14 +123,14 @@ public class Projectile : MonoBehaviour
         m_damage = spellProfil.GetIntStat(StatType.Damage);
         m_destination = data.destination;
 
-        if (spellProfil.tagData.spellParticualarity == SpellParticualarity.Piercing)
+        if (spellProfil.TagList.spellParticualarity == SpellParticualarity.Piercing)
             m_piercingMax = spellProfil.GetIntStat(StatType.Piercing);
 
         m_shootNumber = spellProfil.GetIntStat(StatType.ShootNumber);
         m_salveNumber = spellProfil.GetIntStat(StatType.Projectile);
         m_size = 1;
 
-        if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+        if (spellProfil.TagList.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
             m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer);
 
         m_sizeMultiplicateurFactor = 1;
@@ -143,7 +143,7 @@ public class Projectile : MonoBehaviour
 
         if (vFXObject != null) vFXObject.transform.rotation *= Quaternion.Euler(spellProfil.angleRotation);
         damageSourceName = spellProfil.name;
-        elementIndex = (int)spellProfil.tagData.element;
+        elementIndex = (int)spellProfil.TagList.element;
 
         m_damageCalculComponent = GetComponent<DamageCalculComponent>();
         if (objectType == CharacterObjectType.FRAGMENT)
@@ -409,7 +409,7 @@ public class Projectile : MonoBehaviour
     protected void ApplyExplosion()
     {
         // Active Explosion
-        if (objectType == CharacterObjectType.SPELL && spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+        if (objectType == CharacterObjectType.SPELL && spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Explosion))
         {
             float sizeArea = spellProfil.GetFloatStat(StatType.SizeExplosion);
             Collider[] collider = new Collider[0];
@@ -439,7 +439,7 @@ public class Projectile : MonoBehaviour
 
     protected virtual void PiercingUpdate()
     {
-        if (spellProfil && spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Piercing))
+        if (spellProfil && spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Piercing))
             piercingCount++;
     }
     protected virtual void UpdateTravelTime()

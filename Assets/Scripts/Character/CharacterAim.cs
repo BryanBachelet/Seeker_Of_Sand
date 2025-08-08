@@ -190,7 +190,7 @@ namespace Character
         /// </summary>
         private Vector3 VerifyAimTrajectory(SpellSystem.SpellProfil spellProfil)
         {
-            if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+            if (spellProfil.TagList.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
             {
                 m_aimPoint = CheckCurveTrajectory();
                 SnapAimFinalPoint();
@@ -420,8 +420,8 @@ namespace Character
             for (int i = 1; i < m_numberOfPointForCurveTrajectory + 1; i++)
             {
                 Vector3 newPos = Vector3.zero;
-                newPos = dir.normalized * GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Cos(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad) * ratio; // Angle
-                newPos += normalDirection * (-GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil) * ratio * i + GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad)) * ratio;
+                newPos = dir.normalized * GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Cos(spellProfil.gameEffectStats.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad) * ratio; // Angle
+                newPos += normalDirection * (-GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil) * ratio * i + GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.gameEffectStats.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad)) * ratio;
                 m_lineRenderer.SetPosition(i, position + newPos);
                 position += newPos;
             }
@@ -519,7 +519,7 @@ namespace Character
             if (Application.isPlaying)
             {
                 SpellSystem.SpellProfil spellProfil = m_characterShoot.GetSpellProfil();
-                if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+                if (spellProfil.TagList.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
                 {
                     float speed = GetSpeed(m_aimPointToPlayerDistance, spellProfil) * Mathf.Sin(spellProfil.GetFloatStat(StatType.AngleTrajectory) * Mathf.Deg2Rad); // TODO 
                     float gravity = GetGravitySpeed(0, m_aimPointToPlayerDistance, spellProfil);

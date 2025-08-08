@@ -199,9 +199,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 0
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!1 &3198910311277267369
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,188 +577,188 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 5.0083284
+      value: 45.00187
       inSlope: 0
-      outSlope: 0.5022453
+      outSlope: 5.002823
       tangentMode: 69
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 4
-      value: 7.0173097
-      inSlope: 0.5022453
-      outSlope: 0.89021736
+      value: 65.01316
+      inSlope: 5.002823
+      outSlope: 8.867366
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 8.018467
-      value: 10.594619
-      inSlope: 0.89021736
-      outSlope: 0.8530962
+      value: 100.64638
+      inSlope: 8.867366
+      outSlope: 8.497607
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 12.036934
-      value: 14.022758
-      inSlope: 0.8530962
-      outSlope: 0.499325
+      value: 134.79373
+      inSlope: 8.497607
+      outSlope: 4.97372
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 16
-      value: 16.001616
-      inSlope: 0.499325
-      outSlope: 0.954824
+      value: 154.50491
+      inSlope: 4.97372
+      outSlope: 9.51091
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 20
-      value: 19.820911
-      inSlope: 0.954824
-      outSlope: 0.7956867
+      value: 192.54855
+      inSlope: 9.51091
+      outSlope: 7.9257584
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 24
-      value: 23.003658
-      inSlope: 0.7956867
-      outSlope: 0.954824
+      value: 224.25159
+      inSlope: 7.9257584
+      outSlope: 9.51091
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 28
-      value: 26.822954
-      inSlope: 0.954824
-      outSlope: 1.1139607
+      value: 262.29523
+      inSlope: 9.51091
+      outSlope: 11.096054
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 32
-      value: 31.278797
-      inSlope: 1.1139607
-      outSlope: 1.4322367
+      value: 306.67944
+      inSlope: 11.096054
+      outSlope: 14.26635
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 36
-      value: 37.007744
-      inSlope: 1.4322367
-      outSlope: 1.273099
+      value: 363.74484
+      inSlope: 14.26635
+      outSlope: 12.681229
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 40
-      value: 42.10014
-      inSlope: 1.273099
-      outSlope: 1.273099
+      value: 414.46976
+      inSlope: 12.681229
+      outSlope: 12.681221
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 44
-      value: 47.192535
-      inSlope: 1.273099
-      outSlope: 1.273097
+      value: 465.19464
+      inSlope: 12.681221
+      outSlope: 12.681183
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 48
-      value: 52.284924
-      inSlope: 1.273097
-      outSlope: 1.4322367
+      value: 515.9194
+      inSlope: 12.681183
+      outSlope: 14.266388
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 52
-      value: 58.01387
-      inSlope: 1.4322367
-      outSlope: 1.273099
+      value: 572.9849
+      inSlope: 14.266388
+      outSlope: 12.681198
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 56
-      value: 63.106266
-      inSlope: 1.273099
-      outSlope: 1.5913725
+      value: 623.7097
+      inSlope: 12.681198
+      outSlope: 15.851501
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 60
-      value: 69.471756
-      inSlope: 1.5913725
-      outSlope: 1.7505112
+      value: 687.1157
+      inSlope: 15.851501
+      outSlope: 17.436676
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 64
-      value: 76.4738
-      inSlope: 1.7505112
-      outSlope: 1.9096489
+      value: 756.8624
+      inSlope: 17.436676
+      outSlope: 19.02182
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 68
-      value: 84.1124
-      inSlope: 1.9096489
-      outSlope: 1.7505112
+      value: 832.9497
+      inSlope: 19.02182
+      outSlope: 17.436676
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 72
-      value: 91.11444
-      inSlope: 1.7505112
-      outSlope: 2.387062
+      value: 902.6964
+      inSlope: 17.436676
+      outSlope: 23.777283
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 76
-      value: 100.66269
-      inSlope: 2.387062
-      outSlope: 0.025159836
+      value: 997.80554
+      inSlope: 23.777283
+      outSlope: 0.2505951
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 80
-      value: 100.76333
-      inSlope: 0.025159836
+      value: 998.8079
+      inSlope: 0.2505951
       outSlope: 0
       tangentMode: 69
       weightedMode: 0
@@ -776,7 +779,9 @@ MonoBehaviour:
   isHealthDisplay: 1
   m_trailRenderer: {fileID: 0}
   lastDissonanceInstantiated: {fileID: 0}
+  IsObjectifEvent: 0
   m_afflictionManager: {fileID: 0}
+  m_entityModifier: {fileID: 0}
 --- !u!114 &530845482973330017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -960,6 +965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4257606a34631de49af0e013b05bfb82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_animator: {fileID: 0}
   attackFeedbackDataArr:
   - feedbackType: 0
     areaSpawnType: 0
@@ -977,6 +983,7 @@ MonoBehaviour:
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
     isDelayed: 0
+    attackTrigger: 0
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -993,6 +1000,8 @@ MonoBehaviour:
     attackPhase: 1
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
     isDelayed: 0
+    attackTrigger: 0
+  attackTriggerNumber: 0
 --- !u!114 &2230807567131238627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1111,6 +1120,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_afflictionProfil: {fileID: 11400000, guid: 8dd4c1c0ce9e70a4a87adf5441d88c4c, type: 2}
   m_activeAfflictionInfo: 1
+  afflictionData:
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
 --- !u!114 &-8202302637691473691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1124,6 +1170,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bleedingDamage: 0
+  multiplierPercentBleedingDamage: 0
+  burningDamage: 0
+  multiplierPercentBurningDamage: 0
+  effectRemovePerHit: 0
+  tickDurationBlazingDamage: 0
+  poisonDamage: 0
+  multiplierPercentPoisonDamage: 0
+  intoxicateExecuteThreshold: 0
+  slownessPercent: 0
+  electrifyPercent: 0
+  damageTakenIncrease: 1
+  demoralizedPercent: 0
+  reductionDamageInflict: 0
+  increaseSpeedMovement: 0
+  isTerrify: 0
+  isFreeze: 0
+  distanceProcBleeding: 50
   m_activeEnityModifierDebug: 1
 --- !u!1 &3395471884089847497
 GameObject:
@@ -1340,9 +1403,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 0
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!1 &5382761927510735852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,9 +1674,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 1
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!114 &8561092222333850588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1763,9 +1832,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 0
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!1 &8656990864706420996
 GameObject:
   m_ObjectHideFlags: 0

@@ -191,7 +191,7 @@ namespace Character
             if (isDebugActive)
             {
 
-                spellProfil.DebugStat();
+                spellProfil.gameEffectStats.DebugStat();
             }
 
             upgradeChoose.Apply(spellProfil);
@@ -199,7 +199,7 @@ namespace Character
             avatarUpgradeList.Add(upgradeChoose);
             if (isDebugActive)
             {
-                spellProfil.DebugStat();
+                spellProfil.gameEffectStats.DebugStat();
             }
             if (m_UiPlayerInfo)
             {

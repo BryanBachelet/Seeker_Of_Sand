@@ -222,10 +222,10 @@ public class UpgradeChoosing : MonoBehaviour
         //}
 
         string textStatUpgrade = "";
-        for (int i = 0; i < spellProfil.statDatas.Count; i++)
+        for (int i = 0; i < spellProfil.gameEffectStats.statDatas.Count; i++)
         {
-            SpellSystem.StatData statData = spellProfil.statDatas[i];
-            if (statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.GetStatValueToString(statData.stat) + "\n";
+            SpellSystem.StatData statData = spellProfil.gameEffectStats.statDatas[i];
+            if (statData.isVisible) textStatUpgrade += statData.stat.ToString() + " : " + spellProfil.gameEffectStats.GetStatValueToString(statData.stat) + "\n";
         }
         //ChangeTierCadre(spellProfil);
         upgradeTextStatBase[0].text = textStatUpgrade;
@@ -241,15 +241,26 @@ public class UpgradeChoosing : MonoBehaviour
 
         GlobalSoundManager.PlayOneShot(58, Vector3.zero);
         string textStatUpgrade = "";
-        for (int i = 0; i < spellProfil.statDatas.Count; i++)
+        for (int i = 0; i < stats.gameEffectStats.statDatas.Count; i++)
         {
 
-            SpellSystem.StatData statDataSpell = spellProfil.statDatas[i];
+            SpellSystem.StatData statDataUpgrade = stats.gameEffectStats.statDatas[i];
+            int indexStatSpell = spellProfil.gameEffectStats.GetStats(statDataUpgrade.stat);
 
-            if (stats.HasThisStat(statDataSpell.stat))
+            if (indexStatSpell != -1)
             {
-                textStatUpgrade += "" + stats.PrewiewApplyValue(statDataSpell) + "\n";
+                if(stats.IsAddingTag && stats.gameEffectStats.statDatas[i].isOnlyAddWithTag)
+                {
+                    continue;
+                }
+                SpellSystem.StatData statDataSpell = spellProfil.gameEffectStats.statDatas[indexStatSpell];
+
+                textStatUpgrade += "" + stats.PreviewApplyValue(statDataSpell) + "\n";
                 stateStat[0] = true;
+            }
+            else if(stats.IsAddingTag)
+            {
+                textStatUpgrade += "" + stats.PreviewNewValue(i) + "\n";
             }
             else textStatUpgrade += "";
         }

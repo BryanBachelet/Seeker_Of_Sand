@@ -1,7 +1,9 @@
+using ExcelLibrary.BinaryFileFormat;
 using GuerhoubaGames.GameEnum;
 using SpellSystem;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -12,23 +14,25 @@ namespace SpellSystem
     public class StatsLevel : LevelSpell
     {
 
-        [Header("Tag to Change")]
-        public TagData tagDataToChange;
+        //[Header("Tag to Change")]
+        //public TagData tagDataToChange;
 
-        [Header("Stats to Change")]
-        [Space]
-        public List<StatDataLevel> statDatas = new List<StatDataLevel>();
-        private StatType[] statTypes = new StatType[0];
+        //[Space]
+        //[Header("Stats to Change")]
+        //public List<StatDataLevel> statDatas = new List<StatDataLevel>();
+        //private StatType[] statTypes = new StatType[0];
+
+        public GameEffectStats<StatDataLevel> gameEffectStats;
 
         public BehaviorLevel customStatBehavior;
 
         public void SetupStatLevel()
         {
-            statTypes = new StatType[statDatas.Count];
+            gameEffectStats.statTypes = new StatType[gameEffectStats.statDatas.Count];
 
-            for (int i = 0; i < statDatas.Count; i++)
+            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
             {
-                statTypes[i] = statDatas[i].stat;
+                gameEffectStats.statTypes[i] = gameEffectStats.statDatas[i].stat;
             }
         }
 
@@ -52,34 +56,10 @@ namespace SpellSystem
         public void Apply(SpellSystem.SpellProfil spellProfil)
         {
 
-            spellProfil.tagData.ChangeTag(tagDataToChange);
+            spellProfil.gameEffectStats.tagData.ChangeTag(gameEffectStats.tagData);
             spellProfil.UpdateStatistics();
 
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                if (IsStatBool(statTypes[i]))
-                {
-                    spellProfil.ChangBoolValue(statTypes[i], statDatas[i].val_bool);
-                    continue;
-                }
-
-                if (IsStatInt(statTypes[i]))
-                {
-                    spellProfil.AddToIntStats(statTypes[i], statDatas[i].val_int, statDatas[i].multiply);
-                    continue;
-                }
-                if (IsStatFloat(statTypes[i]))
-                {
-                    spellProfil.AddToFloatStats(statTypes[i], statDatas[i].val_float, statDatas[i].multiply);
-                    continue;
-                }
-
-                if (IsStatString(statTypes[i]))
-                {
-                    spellProfil.ChangeStringStats(statTypes[i], statDatas[i].val_string);
-                    continue;
-                }
-            }
+            spellProfil.gameEffectStats.ChangeStats(gameEffectStats);
 
             if (customStatBehavior != null)
             {
@@ -91,5 +71,16 @@ namespace SpellSystem
         {
             LevelType = SpellLevelType.STATS;
         }
+        public void OnValidate()
+        { 
+
+            //gameEffectStats.tagData = tagDataToChange;
+            //gameEffectStats.statDatas = new List<StatData>(statDatas);
+            //gameEffectStats.statTypes = statTypes;
+            EditorUtility.SetDirty(this);
+
+        }
     }
+
+
 }

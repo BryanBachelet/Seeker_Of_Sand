@@ -75,13 +75,13 @@ public class AttackSpellSpawnerBehavior : MonoBehaviour
     {
 
         attackProfil = new SpellProfil();
-        attackProfil.tagData.element = element;
-        attackProfil.tagData.spellNatureType = SpellNature.AREA;
-        attackProfil.tagData.spellMovementBehavior = SpellMovementBehavior.Fix;
+        attackProfil.gameEffectStats.tagData.element = element;
+        attackProfil.gameEffectStats.tagData.spellNatureType = SpellNature.AREA;
+        attackProfil.gameEffectStats.tagData.spellMovementBehavior = SpellMovementBehavior.Fix;
         attackProfil.UpdateStatistics();
 
-        attackProfil.AddToIntStats(StatType.Damage, damage);
-        attackProfil.AddToFloatStats(StatType.Size, radius);
+        attackProfil.gameEffectStats.AddToIntStats(StatType.Damage, damage);
+        attackProfil.gameEffectStats.AddToFloatStats(StatType.Size, radius);
 
 
     }

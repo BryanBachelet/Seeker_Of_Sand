@@ -10,7 +10,7 @@ public class StatsSpellDrawer : PropertyDrawer
     {
 
         label = EditorGUI.BeginProperty(position, label, property);
-        BaseDisplay(position, property,label);
+        BaseDisplay(position, property, label);
         EditorGUI.EndProperty();
 
 
@@ -26,10 +26,10 @@ public class StatsSpellDrawer : PropertyDrawer
 
         GUIContent guiContent = new GUIContent();
         guiContent.text = property.FindPropertyRelative("nameStat").stringValue;
-        EditorGUIUtility.labelWidth =  EditorStyles.label.CalcSize(guiContent).x;
-     
-
-        EditorGUI.PropertyField(position, property.FindPropertyRelative("stat"), guiContent);
+        EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(guiContent).x;
+        GUIContent guiContent2 = new GUIContent();
+        SerializedProperty statsProperty = property.FindPropertyRelative("stat");
+        EditorGUI.PropertyField(position, statsProperty, guiContent);
 
         position.width -= 10;
         position.x += position.width + 20;
@@ -50,16 +50,22 @@ public class StatsSpellDrawer : PropertyDrawer
         position.x += position.width + 10;
         GUIContent label2 = new GUIContent();
         label2.text = "V";
+        EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
         EditorGUI.PrefixLabel(position, label2);
         position.x += 10;
         EditorGUI.PropertyField(position, property.FindPropertyRelative("isVisible"), GUIContent.none);
         position.width += 10;
+      
+
+
 
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 20.0f;
+
+       return 20.0f;
+
     }
 }
 
@@ -76,6 +82,7 @@ public class StatsSpellLevelDrawer : StatsSpellDrawer
 
         BaseDisplay(position, property, label);
         label2.text = "Multiplier";
+        EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
         basePosition.y += 20;
         basePosition.width *= 0.5f;
         basePosition.height = 18.0f;
@@ -87,6 +94,40 @@ public class StatsSpellLevelDrawer : StatsSpellDrawer
         basePosition.width *= 2f;
         basePosition.width *= 0.4f;
         EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("multiply"), GUIContent.none);
+        EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return 50.0f;
+    }
+}
+
+
+[CustomPropertyDrawer(typeof(StatDataUpgrade))]
+public class StatsSpellUpgradeDrawer : StatsSpellDrawer
+{
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        Rect basePosition = position;
+
+        GUIContent label2 = new GUIContent();
+
+        BaseDisplay(position, property, label);
+        label2.text = "isOnlyAddWithTag";
+        EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
+        basePosition.y += 20;
+        basePosition.width = EditorStyles.label.CalcSize(label2).x + 25f;
+        basePosition.height = 18.0f;
+
+        label = EditorGUI.BeginProperty(basePosition, label, property);
+        EditorGUI.PrefixLabel(basePosition, label2);
+        basePosition.width -= 10;
+        basePosition.x += basePosition.width + 20;
+        basePosition.width *= 2f;
+        basePosition.width *= 0.4f;
+        EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("isOnlyAddWithTag"), GUIContent.none);
         EditorGUI.EndProperty();
     }
 

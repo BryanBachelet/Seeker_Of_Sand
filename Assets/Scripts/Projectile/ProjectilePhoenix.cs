@@ -74,7 +74,7 @@ public class ProjectilePhoenix : Projectile
 
         if (isStartToMove)
         {
-            if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Piercing))
+            if (spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Piercing))
                 piercingCount++;
         }
     }
