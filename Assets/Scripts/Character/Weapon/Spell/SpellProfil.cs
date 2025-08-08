@@ -5,6 +5,7 @@ using UnityEditor;
 using GuerhoubaGames.GameEnum;
 using System.Globalization;
 using Unity.VisualScripting;
+using NUnit.Framework.Internal;
 
 [System.Serializable]
 public struct TagData
@@ -245,6 +246,7 @@ namespace SpellSystem
     {
         public StatType stat;
         public ValueType valueType;
+        public string nameStat;
         public int val_int;
         public float val_float;
         public string val_string;
@@ -272,7 +274,7 @@ namespace SpellSystem
         public Vector3 angleRotation;
         public GameObject VFX;
         public Material matToUse;
-        public Texture previewDecal_mat; 
+        public Texture previewDecal_mat;
         public Texture previewDecalEnd_mat;
         public GameObject hit_VFX;
 
@@ -455,9 +457,9 @@ namespace SpellSystem
         public bool AddSpellExpPoint(int points)
         {
             spellExp += points;
-            if(m_SpellAttributionAssociated != null) { m_SpellAttributionAssociated.StartCoroutine(m_SpellAttributionAssociated.UpdateSpellLevelDelay(this)); }
+            if (m_SpellAttributionAssociated != null) { m_SpellAttributionAssociated.StartCoroutine(m_SpellAttributionAssociated.UpdateSpellLevelDelay(this)); }
             bool isLevelUp = spellExp >= spellExpNextLevel;
-            if(spellExp >= 13) isLevelUp = false;
+            if (spellExp >= 13) isLevelUp = false;
 
 
             return isLevelUp;
@@ -513,6 +515,27 @@ namespace SpellSystem
             Debug.LogError("Didn't find this stat on the spell ");
             return -1;
         }
+
+        public int GetIntStat(StatType statsType,string nameStatToChange)
+        {
+            if (!IsStatInt(statsType))
+            {
+                Debug.LogError("This stats isn't an integer");
+                return -1;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
+                {
+                    return statDatas[i].val_int;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return -1;
+        }
+
         public float GetFloatStat(StatType statsType)
         {
             if (!IsStatFloat(statsType))
@@ -532,6 +555,26 @@ namespace SpellSystem
             Debug.LogError("Didn't find this stat on the spell ");
             return -1;
         }
+         public float GetFloatStat(StatType statsType,string nameStatToChange)
+        {
+            if (!IsStatFloat(statsType))
+            {
+                Debug.LogError("This stats isn't an float");
+                return -1;
+            }
+
+            for (int i = 0; i < statTypes.Length; i++)
+            {
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
+                {
+                    return statDatas[i].val_float;
+                }
+            }
+
+            Debug.LogError("Didn't find this stat on the spell ");
+            return -1;
+        }
+
         public bool GetBoolStat(StatType statsType)
         {
             if (!IsStatBool(statsType))
@@ -721,6 +764,7 @@ namespace SpellSystem
             SetupCanalisationType();
             SetupMovementType();
             SetupSpellMouvement();
+            SetupAfflictionStats(tagData.afflictionTypes.ToArray());
 
             ManageStat(StatType.StackDuration, true);
             ManageStat(StatType.GainPerStack, true);
@@ -735,7 +779,7 @@ namespace SpellSystem
 
         }
 
-        private void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
+        public void ManageStat(StatType statToCheck, bool isAdd, bool isVisible = false)
         {
             for (int i = 0; i < statDatas.Count; i++)
             {
@@ -759,6 +803,61 @@ namespace SpellSystem
             }
 
             return;
+        }
+
+        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false)
+        {
+            string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
+            nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                if (statDatas[i].stat == statToCheck && statDatas[i].nameStat == nameAffliction)
+                {
+                    if (!isAdd)
+                    {
+                        statDatas.RemoveAt(i);
+                        i--;
+                    }
+                    return;
+                }
+            }
+
+            if (isAdd)
+            {
+                StatData statData = new StatData();
+                statData.stat = statToCheck;
+                statData.nameStat = nameAffliction;
+                statData.isVisible = isVisible;
+                statDatas.Add(statData);
+            }
+
+            return;
+        }
+
+        private void CheckAfflictionStat()
+        {
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                if (statDatas[i].stat == StatType.AfflictionProbility || statDatas[i].stat == StatType.AfflictionStack )
+                {
+                    bool hasToBeRemove =true;
+                    for (int j = 0; j < tagData.afflictionTypes.Count; j++)
+                    {
+                        string nameStat = statDatas[i].nameStat.ToUpper();
+                        if (nameStat == tagData.afflictionTypes[j].ToString())
+                        {
+                            hasToBeRemove = false;
+                        }
+
+                    }
+
+                    if (hasToBeRemove)
+                    {
+                        statDatas.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
         }
 
 
@@ -869,6 +968,24 @@ namespace SpellSystem
             testResult = tagData.spellNatureType == SpellNature.SUMMON && tagData.EqualsSpellNature(SpellNature.PROJECTILE);
             ManageStat(StatType.AttackReload, testResult, true);
 
+        }
+
+        void SetupAfflictionStats(AfflictionType[] typeAffliction)
+        {
+            for (int i = 0; i < typeAffliction.Length; i++)
+            {
+                ManageAfflictionStat(StatType.AfflictionProbility, true, typeAffliction[i], true);
+                ManageAfflictionStat(StatType.AfflictionStack, true, typeAffliction[i], true);
+            }
+
+            CheckAfflictionStat();
+        }
+
+        public string GetAfflictionName(AfflictionType type)
+        {
+            string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
+            nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
+            return nameAffliction;
         }
 
 

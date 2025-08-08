@@ -31,7 +31,7 @@ public class Chosereward : MonoBehaviour
     public bool IsDebugActive=false;
 
     [SerializeField] private GameObject chooseFragmentUI;
-    [HideInInspector] private FragmentChoose m_fragmentChoose;
+    [HideInInspector] private FragmentChoiceUI m_fragmentChoose;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,7 +48,7 @@ public class Chosereward : MonoBehaviour
             isStart = false;
             DayCyclecontroller.choosingArtefactStart = false;
         }
-        m_fragmentChoose = chooseFragmentUI.GetComponent<FragmentChoose>();
+        m_fragmentChoose = chooseFragmentUI.GetComponent<FragmentChoiceUI>();
     }
 
     // Update is called once per frame

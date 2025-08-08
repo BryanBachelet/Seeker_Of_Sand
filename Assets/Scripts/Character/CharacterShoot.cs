@@ -73,6 +73,8 @@ namespace Character
         private Animator m_CharacterAnimator;
         private Animator m_BookAnimator;
 
+        public Vector3 m_spawnPointSpell;
+
 
         [Header("Shoot Infos")]
         [HideInInspector] public GameElement lastElement;
@@ -829,7 +831,7 @@ namespace Character
                 Transform transformUsed = transform;
 
 
-                Vector3 position = transformUsed.position + m_characterAim.GetTransformHead().forward * 10 + new Vector3(0, 4, 0);
+                Vector3 position = transformUsed.position + Quaternion.AngleAxis(transform.rotation.eulerAngles.y ,transform.up) * m_spawnPointSpell;
                 Quaternion rot = m_characterAim.GetTransformHead().rotation * Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up);
 
                 if (spellProfil.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
@@ -1839,6 +1841,13 @@ namespace Character
         }
         #endregion
 
+        public void OnDrawGizmosSelected()
+        {
+
+            Vector3 gizmoPosition = transform.position + Quaternion.AngleAxis(transform.rotation.eulerAngles.y, transform.up) * m_spawnPointSpell;
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(gizmoPosition, .3f);
+        }
 
     }
 

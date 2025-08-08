@@ -34,6 +34,7 @@ namespace Character
         [SerializeField] private RectTransform m_cursor;
         [SerializeField] private LineRenderer m_lineRenderer;
         [HideInInspector] private bool m_hasCloseTarget = false;
+        public Vector2 offsetCursor;
 
         private PlayerInput m_playerInput;
         private CharacterShoot m_characterShoot;
@@ -83,7 +84,7 @@ namespace Character
         private int previewMask;
         private void Start()
         {
-            Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
+            //Cursor.SetCursor(m_cursorTex, Vector2.zero, CursorMode.ForceSoftware);
             m_playerInput = GetComponent<PlayerInput>();
             m_characterShoot = GetComponent<CharacterShoot>();
             m_characterMouvement = GetComponent<CharacterMouvement>();
@@ -352,6 +353,7 @@ namespace Character
                 m_lifeTargetUI.DeactiveLifeTarget();
                 ResetOutlineForEnemi();
             }
+            UpdateCursorPosition();
             if (search) search = false;
         }
 
@@ -360,7 +362,7 @@ namespace Character
         {
             if (m_cursor != null)
             {
-                m_cursor.position = m_aimInputValue;
+                m_cursor.localPosition = m_aimInputValue + offsetCursor;
             }
         }
 

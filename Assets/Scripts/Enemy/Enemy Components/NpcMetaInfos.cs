@@ -16,8 +16,10 @@ namespace Enemies
         RECUPERATION,
         SPECIAL_CAPACITIES,
         SPECIAL_ACTION,
+        FREEZE,
         DEATH,
         PAUSE,
+        TERRIFY,
     }
     /// <summary>
     /// This class is the interface between enemy and the rest of the game
@@ -36,6 +38,8 @@ namespace Enemies
         public ObjectState m_objectGameState;
         private int m_previousNpcState;
 
+        private EntityModifier m_entityModifier;
+
         public  Action OnStart;
         public void Awake()
         {
@@ -44,6 +48,9 @@ namespace Enemies
             attackComponent = GetComponent<NpcAttackComponent>();
             specialCapacities = GetComponent<NpcSpecialCapacities>();
             behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
+            m_entityModifier = GetComponent<EntityModifier>();
+
+            
         }
 
         public void Start()
@@ -51,6 +58,11 @@ namespace Enemies
           
             m_objectGameState = new ObjectState();
             GameState.AddObject(m_objectGameState);
+            
+            m_entityModifier.OnStartFreeze += ActivateFreezeState;
+            m_entityModifier.EndFreeze += DeactivateFreezeState;
+            m_entityModifier.OnStartTerrify += ActivateTerrifyState;
+            m_entityModifier.OnEndTerrify += DeactivateTerrifyState;
 
             if (behaviorTreeComponent && m_objectGameState.isPlaying)
             {
@@ -59,6 +71,14 @@ namespace Enemies
                 OnStart?.Invoke();
             }
             
+        }
+
+        public void OnDestroy()
+        {
+            m_entityModifier.OnStartFreeze -= ActivateFreezeState;
+            m_entityModifier.EndFreeze -= DeactivateFreezeState;
+            m_entityModifier.OnStartTerrify -= ActivateFreezeState;
+            m_entityModifier.OnEndTerrify -= DeactivateFreezeState;
         }
 
         public void Update()
@@ -71,6 +91,7 @@ namespace Enemies
             {
                 RemovePauseState(); 
             }
+         
         }
 
         public void RestartEnemy()
@@ -116,5 +137,52 @@ namespace Enemies
         {
             manager.TeleportEnemyOut(this);
         }
+
+        public void ActivateFreezeState()
+        {
+            m_previousNpcState = (int)state;
+            state = NpcState.FREEZE;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+            }
+
+        }
+
+        private void DeactivateFreezeState()
+        {
+            state = (NpcState) m_previousNpcState;
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = true;
+            }
+        }
+
+        public void ActivateTerrifyState()
+        {
+            m_previousNpcState = (int)state;
+            state = NpcState.TERRIFY;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+            }
+
+        }
+
+        public void DeactivateTerrifyState()
+        {
+            m_previousNpcState = (int)state;
+            state = NpcState.TERRIFY;
+
+            if (behaviorTreeComponent)
+            {
+                behaviorTreeComponent.isActivate = false;
+            }
+
+        }
+
+
     }
 }

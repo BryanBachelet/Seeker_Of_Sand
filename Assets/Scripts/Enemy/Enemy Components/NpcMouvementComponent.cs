@@ -7,7 +7,7 @@ namespace Enemies
 {
     public class NpcMouvementComponent : MonoBehaviour
     {
-        #region variables
+
         public bool selected = false;
         private const float slowSpeed = .7f;
         private const int facingAngle = 4;
@@ -65,7 +65,8 @@ namespace Enemies
 
         public bool isAlreadyPlace = false;
 
-        #endregion
+        private EntityModifier m_entityModifier;
+
         public void Start()
         {
             InitComponent();
@@ -80,12 +81,14 @@ namespace Enemies
             m_npcHealthComponent = GetComponent<NpcHealthComponent>();
             m_navMeshAgent = GetComponent<NavMeshAgent>();
             m_npcInfo = GetComponent<NpcMetaInfos>();
+            m_entityModifier = GetComponent<EntityModifier>();
         }
 
         public void SetTarget(TargetData target)
         {
             targetData = target;
             if (m_navMeshAgent == null) m_navMeshAgent = GetComponent<NavMeshAgent>();
+            if (!m_navMeshAgent.isOnNavMesh) return;
             m_navMeshAgent.enabled = true;
             bool state = m_navMeshAgent.SetDestination(targetData.target.position);
 
@@ -105,6 +108,9 @@ namespace Enemies
 
         public void Update()
         {
+            if (!m_navMeshAgent.isOnNavMesh) return; 
+
+            m_navMeshAgent.speed = m_baseSpeed * ((1.0f - m_entityModifier.slownessPercent) + (m_entityModifier.increaseSpeedMovement));
             if (m_npcInfo.state == NpcState.PAUSE)
             {
                 if (!m_isPauseActive)
@@ -115,10 +121,37 @@ namespace Enemies
                 return;
             }
             m_isPauseActive = false;
-            if(m_npcInfo.state == NpcState.IDLE)
+            if (m_npcInfo.state == NpcState.IDLE || m_npcInfo.state == NpcState.FREEZE)
             {
                 StopMouvement();
             }
+
+            if (m_npcInfo.state == NpcState.TERRIFY)
+            {
+                if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
+                if (isAffectedBySlope)
+                {
+                    m_navMeshAgent.speed = CalculateSlopeSpeed();
+                    if (isSlow) m_navMeshAgent.speed *= slowSpeed;
+                }
+                else
+                {
+                    m_navMeshAgent.speed = speed;
+                    if (isSlow) m_navMeshAgent.speed *= slowSpeed;
+                }
+
+                if (IsOutsideRange(awayDistance) && !IsFacingTarget())
+                {
+                    RotateToTarget();
+                }
+
+                // Compute the distance
+                ComputeFleePosition();
+                Move(fleePosition);
+                return;
+            }
+
+        
             if (m_npcInfo.state == NpcState.MOVE )
             {
                 if(m_npcInfo.type != EnemyType.TWILIGHT_SISTER)
@@ -182,7 +215,7 @@ namespace Enemies
                     }
                     NavMeshPath path;
 
-                    if (isGoingAway)
+                    if (isGoingAway || m_npcInfo.state == NpcState.TERRIFY)
                     {
                         ComputeFleePosition();
                         path = MovePath(fleePosition);
@@ -196,7 +229,7 @@ namespace Enemies
                     return;
                 }
 
-                if (isGoingAway)
+                if (isGoingAway )
                 {
                     if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
                     if (isAffectedBySlope)
@@ -223,7 +256,8 @@ namespace Enemies
 
                 if (!IsInRange())
                 {
-                    if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped) m_navMeshAgent.isStopped = false;
+                    if (m_navMeshAgent.isActiveAndEnabled && m_navMeshAgent.isStopped && m_navMeshAgent.isOnNavMesh) 
+                        m_navMeshAgent.isStopped = false;
 
                     if (isAffectedBySlope)
                     {
@@ -429,6 +463,7 @@ namespace Enemies
         public void Move(Vector3 position)
         {
             m_navMeshAgent.enabled = true;
+        
             if (m_navMeshAgent.isOnNavMesh) m_navMeshAgent.SetDestination(position);
             if (!m_navMeshAgent.hasPath)
             {
@@ -522,7 +557,7 @@ namespace Enemies
             SetTarget(m_npcHealthComponent.targetData);
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
             m_navMeshAgent.speed = m_baseSpeed;
-            m_navMeshAgent.destination = (targetData.target.position);
+           if(m_navMeshAgent.isOnNavMesh) m_navMeshAgent.destination = (targetData.target.position);
         }
 
         public void OnDrawGizmosSelected()

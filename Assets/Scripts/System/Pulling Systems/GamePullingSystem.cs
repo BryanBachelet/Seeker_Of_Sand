@@ -294,6 +294,8 @@ namespace GuerhoubaGames.Resources
             if(id == -1)
             {
                 if (!isErrorRemove) Debug.LogError("This object" + instance.name + " don't have a valid id");
+                instance.SetActive(false);
+                return; 
             }
             PullObjects pullObjects = m_listObjectToPull[m_idList.IndexOf(id)];
             instance.SetActive(false);

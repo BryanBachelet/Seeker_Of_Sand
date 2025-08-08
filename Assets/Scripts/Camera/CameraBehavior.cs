@@ -530,7 +530,10 @@ namespace Render.Camera
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(collsionRayDebug.origin, collsionRayDebug.direction * 100);
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(m_targetTransform.position, directionDebug * m_distanceToTarget);
+            if (m_targetTransform != null)
+            {
+                Gizmos.DrawRay(m_targetTransform.position, directionDebug * m_distanceToTarget);
+            }
         }
 
         public void ChangeLerpForTP()
@@ -541,6 +544,8 @@ namespace Render.Camera
 
         public void OnValidate()
         {
+            if (m_targetTransform == null)
+                return;
             SetCameraRotation();
             SetCameraPosition();
             Apply();

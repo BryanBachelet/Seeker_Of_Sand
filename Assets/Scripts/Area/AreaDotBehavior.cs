@@ -192,6 +192,8 @@ namespace SpellSystem
 
                         for (int j = 0; j < damageStatDatas.Length; j++)
                         {
+                            AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(m_areaMeta.areaData.spellProfil);
+                            npcHealthComponent.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
                             npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[j].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                         }
                         if (m_DotMeta.OnDamage != null) m_DotMeta.OnDamage.Invoke(collider[i].transform.position);
@@ -216,6 +218,8 @@ namespace SpellSystem
 
                         for (int j = 0; j < damageStatDatas.Length; j++)
                         {
+                            AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(m_areaMeta.areaData.spellProfil);
+                            npcHealthComponent.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
                             npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                         }
                         m_DotMeta.OnDamage.Invoke(colliderDraw[index].transform.position);

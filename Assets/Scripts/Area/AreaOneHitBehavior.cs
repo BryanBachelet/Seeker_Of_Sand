@@ -136,6 +136,8 @@ namespace SpellSystem
                     if (collider[i] == null)
                         return;
 
+                    AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(m_areaMeta.areaData.spellProfil);
+                    npcHealthComponent.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
                     npcHealthComponent.ReceiveDamage(profil.name, damageStatDatas[j], collider[i].transform.position - transform.position, 10, (int)damageStatDatas[j].element, (int)CharacterProfile.instance.stats.baseDamage.totalValue);
                 }
 

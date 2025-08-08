@@ -21,9 +21,9 @@ public class AfflictionData
 [Serializable]
 public class ChillData : AfflictionData
 {
-    public int slowPerStack;
+    public float slowPerStack;
 }
-
+[Serializable]
 public class FreezeData : AfflictionData
 {
     public float antiFreezeDuration;
@@ -53,10 +53,12 @@ public class ElectrifyData : AfflictionData
 [Serializable]
 public class ElectrocuteData : AfflictionData
 {
-
+    public float radiusLightning;
     public float radiusElectrocute;
     public int dammagePerLightning;
     public float frequenceLightningStrike;
+    public GameObject electrocuteStrike;
+    public GameObject eletrocuteStrikeSpawner;
 }
 [Serializable]
 public class PoisonData : AfflictionData

@@ -20,10 +20,16 @@ public class StatsSpellDrawer : PropertyDrawer
 
     public void BaseDisplay(Rect position, SerializedProperty property, GUIContent label)
     {
-        EditorGUI.PrefixLabel(position, label);
+        //EditorGUI.PrefixLabel(position, label);
         position.width *= 0.5f;
         position.height = 18.0f;
-        EditorGUI.PropertyField(position, property.FindPropertyRelative("stat"), GUIContent.none);
+
+        GUIContent guiContent = new GUIContent();
+        guiContent.text = property.FindPropertyRelative("nameStat").stringValue;
+        EditorGUIUtility.labelWidth =  EditorStyles.label.CalcSize(guiContent).x;
+     
+
+        EditorGUI.PropertyField(position, property.FindPropertyRelative("stat"), guiContent);
 
         position.width -= 10;
         position.x += position.width + 20;

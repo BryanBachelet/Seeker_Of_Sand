@@ -54,6 +54,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     private AfflictionManager m_afflictionManager;
     [SerializeField] private bool m_isObjectifEvent;
+    private EntityModifier m_entityModifier;
 
     private void Start()
     {
@@ -65,6 +66,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         maxLife = (int)maxHealthEvolution.Evaluate(healthManager.characterShoot.GetComponent<CharacterUpgrade>().avatarUpgradeList.Count);
         healthSystem.Setup(maxLife);
         m_afflictionManager = GetComponent<AfflictionManager>();
+        m_entityModifier = GetComponent<EntityModifier>();
         if (miniMap_Icon) miniMap_Icon.SetActive(true);
         if (m_meshRender != null) _matAssociated = m_meshRender.material;
     }
@@ -74,10 +76,12 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         InvicibleCountdown();
     }
 
-    public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnal)
+    public void ReceiveDamage(string nameDamage, DamageStatData damageStat, Vector3 direction, float power, int element, int additionnalDamage)
     {
+        float allDamage = (damageStat.damage + additionnalDamage) * m_entityModifier.GetDamageIncreasePercent();
 
-        healthSystem.ChangeCurrentHealth(-damageStat.damage);
+        damageStat.damage = Mathf.RoundToInt(allDamage);
+        healthSystem.ChangeCurrentHealth(-allDamage);
         GameStats.instance.AddDamageSource(nameDamage, damageStat);
         animatorAssociated.SetTrigger("TakeHit");
         m_invicibleTimer = 0;
@@ -85,7 +89,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         ratioLife = healthSystem.percentHealth;
         // VfX feedback
         Vector3 positionOnScreen = transform.position + offset_DisplayDamage;
-        healthManager.CallDamageEvent(positionOnScreen, damageStat.damage + additionnal, element);
+        healthManager.CallDamageEvent(positionOnScreen, allDamage, element);
 
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using Enemies;
+using System;
 
 
 public class EntityModifier : MonoBehaviour
@@ -26,6 +27,18 @@ public class EntityModifier : MonoBehaviour
 
     [HideInInspector] public float intoxicateExecuteThreshold = 0.0f;
 
+    [HideInInspector] public float slownessPercent = 0.0f;
+
+    [HideInInspector] public float electrifyPercent = 0.0f;
+    [HideInInspector] public float damageTakenIncrease = 1.0f;
+
+    [HideInInspector] public float demoralizedPercent = 0.0f;
+    [HideInInspector] public float reductionDamageInflict = 0.0f;
+
+    [HideInInspector] public float increaseSpeedMovement;
+
+    [HideInInspector] public bool isTerrify;
+    [HideInInspector] public bool isFreeze;
 
 
     //Check the entity movement 
@@ -37,6 +50,12 @@ public class EntityModifier : MonoBehaviour
     [HideInInspector] private IDamageReceiver m_damageReceiver;
     [HideInInspector] private AfflictionManager m_afflictionManager;
 
+
+    public Action OnStartFreeze;
+    public Action EndFreeze;
+
+    public Action OnStartTerrify;
+    public Action OnEndTerrify;
 
     [Header("Debug Variables and Infos")]
     public bool m_activeEnityModifierDebug = false;
@@ -86,6 +105,7 @@ public class EntityModifier : MonoBehaviour
     {
         m_prevPosition = transform.position;
     }
+
 
 
     private void ApplyBlazeEffect()
@@ -214,6 +234,43 @@ public class EntityModifier : MonoBehaviour
 
     public bool IsObjectifTarget() { return m_damageReceiver.IsObjectifTarget(); }
 
+    
+    public void ApplyFreeze()
+    {
+        isFreeze = true;
+        OnStartFreeze?.Invoke();
+    }
 
 
+
+    public void FinishFreeze()
+    {
+        isFreeze = false;
+        EndFreeze?.Invoke();
+    }
+
+    public void ApplyTerrify()
+    {
+        OnStartTerrify?.Invoke();
+        isTerrify = true;
+    }
+    public void FinishTerrifyState()
+    {
+        OnEndTerrify?.Invoke();
+        isTerrify = false;
+    }
+
+
+
+    #region Get Functions
+    public float GetDamageIncreasePercent()
+    {
+        return damageTakenIncrease + electrifyPercent;
+    }
+
+    public float GetReduceDamageInflicted()
+    {
+        return reductionDamageInflict;
+    }
+    #endregion
 }

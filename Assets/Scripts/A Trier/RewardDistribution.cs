@@ -23,11 +23,11 @@ public class RewardDistribution : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyUp(KeyCode.U))
-        {
+        //if (Input.GetKeyUp(KeyCode.U))
+        //{
 
-            GiveReward(RewardType.SPELL, transform.position + transform.forward * 50f, HealthReward.QUARTER, GameElement.FIRE);
-        }
+        //    GiveReward(RewardType.SPELL, transform.position + transform.forward * 50f, HealthReward.QUARTER, GameElement.FIRE);
+        //}
     }
 
     public void GiveReward(RewardType rewardType, Transform positionReward,HealthReward healthReward, GameElement roomElementColor)

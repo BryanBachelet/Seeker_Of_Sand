@@ -94,8 +94,10 @@ namespace Enemies
         public bool isInAttackSequence;
         public int sequenceIndex = -1;
 
-        public bool DebugSpecificItem;
+        public bool DebugSpecificItem; 
        [HideInInspector] public bool isStopRotationFirstFrame;
+
+        private EntityModifier  m_entityModifier;
 
         #region MonoBehavior Functions
         public void Awake()
@@ -103,6 +105,7 @@ namespace Enemies
             m_npcMetaInfos = GetComponent<NpcMetaInfos>();
             m_mouvementComponent = GetComponent<NpcMouvementComponent>();
             m_NPCEnemiAnimation = GetComponent<NPCEnemiAnimation>();
+            m_entityModifier = GetComponent<EntityModifier>();
             m_NPCAttackFeedbackComponent = GetComponent<NPCAttackFeedbackComponent>();
             currentAttackState = AttackPhase.NONE;
             InitComponent();
@@ -128,6 +131,11 @@ namespace Enemies
 
         public void Update()
         {
+            if (m_npcMetaInfos.state == NpcState.FREEZE || m_npcMetaInfos.state == NpcState.TERRIFY)
+            {
+                return;
+            }
+
             if (m_hasToActiveGeneralCooldown)
             {
                 if (m_generalCooldownFrameCounter > m_generalCooldownFrameCount)
@@ -656,12 +664,13 @@ namespace Enemies
 
         public void LaunchAttack()
         {
+            int finalDamage = Mathf.RoundToInt(currentAttackData.damage * m_entityModifier.GetReduceDamageInflicted());
 
             if (currentAttackData.typeAttack == AttackType.COLLIDER_OBJ)
             {
                 colliderAttackArray[currentAttackData.indexCollider].gameObject.SetActive(true);
                 CloseAttackComponent closeAttackComponent = colliderAttackArray[currentAttackData.indexCollider].gameObject.GetComponent<CloseAttackComponent>();
-                closeAttackComponent.damage = currentAttackData.damage;
+                closeAttackComponent.damage = finalDamage;
                 closeAttackComponent.attackName = currentAttackData.nameAttack;
             }
             if (currentAttackData.typeAttack == AttackType.PROJECTILE_OBJ)
@@ -683,7 +692,7 @@ namespace Enemies
                 {
                     instance.transform.rotation = baseTransform.rotation;
                     NPCAttackProjectile npcAttackProjectile = instance.GetComponent<NPCAttackProjectile>();
-                    npcAttackProjectile.damage = currentAttackData.damage;
+                    npcAttackProjectile.damage = finalDamage;
                     npcAttackProjectile.direction = transform.forward;
                     npcAttackProjectile.duration = currentAttackData.durationProjectile;
                     npcAttackProjectile.range = currentAttackData.rangeProjectile;
@@ -703,7 +712,7 @@ namespace Enemies
                     attackObjMetaData.target = m_mouvementComponent.targetData.baseTarget;
                     attackObjMetaData.size = currentAttackData.radius;
                     attackObjMetaData.typeArea = currentAttackData.shapeType;
-                    attackObjMetaData.damage = currentAttackData.damage;
+                    attackObjMetaData.damage = finalDamage;
                     attackObjMetaData.nameAttack = currentAttackData.nameAttack;
                     attackObjMetaData.isOneShoot = true;
                     attackObjMetaData.isHeavy = currentAttackData.isHeavyAttack;
@@ -725,7 +734,7 @@ namespace Enemies
                         HealthPlayerComponent healthPlayer = m_Hit.collider.GetComponent<HealthPlayerComponent>();
                         AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
                         attackDamageInfo.attackName = currentAttackData.nameAttack;
-                        attackDamageInfo.damage = currentAttackData.damage;
+                        attackDamageInfo.damage = finalDamage;
                         attackDamageInfo.position = m_Hit.point - directionTarget * 1;
                         attackDamageInfo.bIsHeavy = currentAttackData.isHeavyAttack;
                         healthPlayer.ApplyDamage(attackDamageInfo);
@@ -741,7 +750,7 @@ namespace Enemies
                                 HealthPlayerComponent healthPlayer = colliders[i].GetComponent<HealthPlayerComponent>();
                                 AttackDamageInfo attackDamageInfo = new AttackDamageInfo();
                                 attackDamageInfo.attackName = currentAttackData.nameAttack;
-                                attackDamageInfo.damage = currentAttackData.damage;
+                                attackDamageInfo.damage = finalDamage;
                                 attackDamageInfo.position = m_Hit.point - directionTarget * 1;
                                 attackDamageInfo.bIsHeavy = currentAttackData.isHeavyAttack;
                                 healthPlayer.ApplyDamage(attackDamageInfo);
@@ -764,7 +773,7 @@ namespace Enemies
         {
             CustomAttackData customAttackData = new CustomAttackData();
             customAttackData.name = attackNPCData.nameAttack;
-            customAttackData.damage = attackNPCData.damage;
+            customAttackData.damage = Mathf.RoundToInt(attackNPCData.damage * m_entityModifier.GetReduceDamageInflicted());
             customAttackData.attackIndex = attackIndex;
             customAttackData.npcAttackFeedback = m_NPCAttackFeedbackComponent;
             customAttackData.npcAttacksComp = this;

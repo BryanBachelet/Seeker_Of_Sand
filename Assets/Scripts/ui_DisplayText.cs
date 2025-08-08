@@ -14,6 +14,8 @@ public class ui_DisplayText : MonoBehaviour
     private float tempsEcoule = 0;
     private bool active = false;
     private bool oldAnimationTransition = false;
+
+
     // Start is called before the first frame update
     void Start()
     {

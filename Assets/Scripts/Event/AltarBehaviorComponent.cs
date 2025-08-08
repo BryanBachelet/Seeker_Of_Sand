@@ -322,7 +322,7 @@ public class AltarBehaviorComponent : InteractionInterface
         eventHolder.SpawnAreaVFX(eventElementType, transform.position);
 
         SetMeshesEventIntensity(0.33f * (1 + 1));
-        m_visualEffectActivation.Play();
+      //  m_visualEffectActivation.Play();
         m_distortionWave.SendEvent("Activation");
 
         GlobalSoundManager.PlayOneShot(13, transform.position);
