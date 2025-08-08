@@ -59,7 +59,7 @@ namespace SpellSystem
             spellProfil.gameEffectStats.tagData.ChangeTag(gameEffectStats.tagData);
             spellProfil.UpdateStatistics();
 
-            gameEffectStats.ChangeStats(gameEffectStats);
+            spellProfil.gameEffectStats.ChangeStats(gameEffectStats);
 
             if (customStatBehavior != null)
             {
@@ -77,10 +77,6 @@ namespace SpellSystem
             //gameEffectStats.tagData = tagDataToChange;
             //gameEffectStats.statDatas = new List<StatData>(statDatas);
             //gameEffectStats.statTypes = statTypes;
-            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
-            {
-                gameEffectStats.statDatas[i].isShowMultiply = true;
-            }
             EditorUtility.SetDirty(this);
 
         }

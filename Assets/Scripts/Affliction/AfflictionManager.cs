@@ -464,18 +464,20 @@ public class AfflictionManager : MonoBehaviour
     {
         List<AfflictionDrawData> afflictionTypesSend = new List<AfflictionDrawData>();
        
-        if (spell.tagData.afflictionTypes == null)
+        if (spell.TagList.afflictionTypes == null || spell.TagList.afflictionTypes.Count == 0)
             return afflictionTypesSend.ToArray();
 
-        for (int i = 0; i < spell.tagData.afflictionTypes.Count; i++)
+        GameEffectStats<StatData> gameEffectStats = spell.gameEffectStats;
+
+        for (int i = 0; i < spell.TagList.afflictionTypes.Count; i++)
         {
             float draw = UnityEngine.Random.Range(0.0f, 1.0f);
-            float valueToProcAffliction = spell.GetFloatStat(StatType.AfflictionProbility, spell.GetAfflictionName(spell.tagData.afflictionTypes[i]));
+            float valueToProcAffliction = gameEffectStats.GetFloatStat(StatType.AfflictionProbility, gameEffectStats.GetAfflictionName(spell.TagList.afflictionTypes[i]));
             if (draw < valueToProcAffliction)
             {
                 AfflictionDrawData data = new AfflictionDrawData();
-                data.typeArray = spell.tagData.afflictionTypes[i];
-                data.stackCount = spell.GetIntStat(StatType.AfflictionStack, spell.GetAfflictionName(spell.tagData.afflictionTypes[i]));
+                data.typeArray = spell.TagList.afflictionTypes[i];
+                data.stackCount = gameEffectStats.GetIntStat(StatType.AfflictionStack, gameEffectStats.GetAfflictionName(spell.TagList.afflictionTypes[i]));
                 afflictionTypesSend.Add(data);
             }
         }

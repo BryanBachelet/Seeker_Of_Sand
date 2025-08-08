@@ -49,19 +49,19 @@ public class ProjectileExplosif : Projectile
         m_characterProfil = charaProfil;
         base.SetProjectile(data, m_characterProfil);
 
-        if (spellProfil.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
+        if (spellProfil.TagList.spellProjectileTrajectory == SpellProjectileTrajectory.CURVE)
         {
             m_travelTime = spellProfil.GetFloatStat(StatType.TrajectoryTimer);
             m_angleTrajectory = spellProfil.GetIntStat(StatType.AngleTrajectory);
         }
 
-        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Delayed))
+        if (spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Delayed))
         {
             m_timeBeforeExplosion = spellProfil.GetFloatStat(StatType.TimeDelay);
         }
 
-        if (spellProfil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
-        {
+        if (spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Explosion))
+        {   
             m_explosionSize = spellProfil.GetFloatStat(GuerhoubaGames.GameEnum.StatType.SizeExplosion);
             m_damage = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.DamageAdditionel);
         }

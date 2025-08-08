@@ -45,7 +45,7 @@ namespace SpellSystem
 
         public void Attack()
         {
-            if (m_summonsMeta.summonData.spellProfil.tagData.EqualsSpellNature(GuerhoubaGames.GameEnum.SpellNature.PROJECTILE))
+            if (m_summonsMeta.summonData.spellProfil.TagList.EqualsSpellNature(GuerhoubaGames.GameEnum.SpellNature.PROJECTILE))
             {
                 if (!projectileLauncher.CanShoot()) 
                     return;
@@ -59,7 +59,7 @@ namespace SpellSystem
 
         public void AttackSpecial()
         {
-            if (m_summonsMeta.summonData.spellProfil.tagData.EqualsSpellNature(GuerhoubaGames.GameEnum.SpellNature.PROJECTILE))
+            if (m_summonsMeta.summonData.spellProfil.TagList.EqualsSpellNature(GuerhoubaGames.GameEnum.SpellNature.PROJECTILE))
             {
                 projectileLauncher.targetList = FindTarget(projectileLauncher.shootPerAttack);
                 for (int i = 0; i < projectileLauncher.targetList.Length; i++)

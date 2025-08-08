@@ -172,23 +172,45 @@ namespace GuerhoubaGames.GameEnum
     // For each tag the value None need to be in higher case : NONE
     // and need to be add index zero 
 
+    [Flags]
     public enum SpellTagOrder
     {
-        GameElement = 0,
-        BuffType = 1,
-        SpellNature = 2,
-        SpellNature1 = 3,
-        SpellNature2 = 4,
-        SpellProjectileTrajectory = 5,
-        CanalisationType = 6,
-        SpellMovementBehavior = 7,
-        DamageTrigger = 8,
-        SpellParticualarity = 9,
-        SpellParticualarity1 = 10,
-        SpellParticualarity2 = 11,
-        MouvementBehavior = 12,
-        UpgradeSensitivity = 13,
+        GameElement = 1,
+        BuffType = 2,
+        SpellNature = 4,
+        SpellNature1 = 8,
+        SpellNature2 = 16,
+        SpellProjectileTrajectory = 32,
+        CanalisationType = 64,
+        SpellMovementBehavior = 128,
+        DamageTrigger = 256,
+        SpellParticualarity = 512,
+        SpellParticualarity1 = 1024,
+        SpellParticualarity2 = 2048,
+        MouvementBehavior = 4096,
+        UpgradeSensitivity = 8192,
+        AfflictionType= 16384, 
     }
+
+    // Affliction Type enum
+    public enum AfflictionType
+    {
+        NONE = 0,
+        LACERATION = 1,
+        BLEEDING = 2,
+        BURN = 3,
+        BLAZE = 4,
+        CHILL = 5,
+        FREEZE = 6,
+        POISON = 7,
+        INTOXICATE = 8,
+        ELECTRIFIED = 9,
+        ELECTROCUTE = 10,
+        SCARE = 11,
+        TERRIFY = 12,
+
+    }
+
 
     [System.Serializable]
     [Flags]

@@ -54,9 +54,9 @@ namespace SpellSystem
             profil = m_areaMeta.areaData.spellProfil;
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
-            m_element = profil.tagData.element;
+            m_element = profil.TagList.element;
            
-;            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+;            if (profil.TagList.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 m_sizeArea = profil.GetFloatStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
@@ -124,9 +124,11 @@ namespace SpellSystem
             for (int i = 0; i < collider.Length; i++)
             {
                 if (collider[i] == null) 
-                    return;
+                    continue;
 
                 IDamageReceiver npcHealthComponent = collider[i].GetComponent<IDamageReceiver>();
+                if (npcHealthComponent == null)
+                    continue;
                 Vector3 direction = collider[i].transform.position - transform.position;
                 m_damageCalculComponent.damageStats.AddDamage(m_damage, m_element, DamageType.TEMPORAIRE);
                 DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage(m_element, m_areaMeta.areaData.objectType, collider[i].gameObject, m_areaMeta.areaData.spellProfil);
@@ -134,7 +136,7 @@ namespace SpellSystem
                 for (int j = 0; j < damageStatDatas.Length; j++)
                 {
                     if (collider[i] == null)
-                        return;
+                        continue;
 
                     AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(m_areaMeta.areaData.spellProfil);
                     npcHealthComponent.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);

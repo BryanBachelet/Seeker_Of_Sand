@@ -296,7 +296,7 @@ namespace Character
 
         public void ActiveSlide()
         {
-            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).TagList.element - 0.01f);
             //m_characterShoot.gsm.CanalisationParameterStop();
             SlideActivation(true);
             m_CharacterAnim.SetBool("Running", true);
@@ -311,7 +311,7 @@ namespace Character
 
         public void ResetRun()
         {
-            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+            m_characterShoot.gsm.CanalisationParameterLaunch(1f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).TagList.element - 0.01f);
             //m_characterShoot.gsm.CanalisationParameterStop();
             // SlideActivation(true);
             m_CharacterAnim.SetBool("Running", false);
@@ -409,7 +409,7 @@ namespace Character
                 m_characterShoot.DeactivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", false);
                 m_BookAnim.SetBool("Casting", false);
-                m_characterShoot.gsm.CanalisationParameterLaunch(1, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+                m_characterShoot.gsm.CanalisationParameterLaunch(1, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).TagList.element - 0.01f);
                 MatchRotationAndDirection();
                 if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
                 //  cameraPlayer.BlockZoom(false);
@@ -422,7 +422,10 @@ namespace Character
                 m_characterShoot.ActivateCanalisation();
                 m_CharacterAnim.SetBool("Casting", true);
                 m_BookAnim.SetBool("Casting", true);
-                m_characterShoot.gsm.CanalisationParameterLaunch(0.01f, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).tagData.element - 0.01f);
+                m_characterShoot.gsm.CanalisationParameterLaunch(
+                    0.01f, 
+                    (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).TagList.element - 0.01f
+                    );
 
                 if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
                 //DisplayNewCurrentState(0);

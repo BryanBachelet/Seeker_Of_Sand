@@ -77,7 +77,7 @@ namespace SeekerOfSand
                 if (spellprofil.currentSpellTier == 1)
                 {
                     tierUpEffect.SetActive(true);
-                    int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.tagData.element, true);
+                    int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.TagList.element, true);
                     //for (int i = 0; i < vfxTierUp.Length; i++)
                     //{
                     //    vfxTierUp[i].SetGradient("Gradient1", gradient1vfx[indexElement]);

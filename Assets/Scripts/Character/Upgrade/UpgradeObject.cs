@@ -21,7 +21,7 @@ public class UpgradeObject : ScriptableObject
     public bool IsAddingTag;
     public SpellTagOrder TagToGive;
 
-    public GameEffectStats<StatDataLevel> gameEffectStats;
+    public GameEffectStats<StatDataUpgrade> gameEffectStats;
 
     public UpgradeObject Clone()
     {
@@ -35,17 +35,19 @@ public class UpgradeObject : ScriptableObject
 
     public void Apply(SpellSystem.SpellProfil spellProfil)
     {
+        bool isTagAdd = false;
         if (IsAddingTag)
         {
+            isTagAdd = !spellProfil.gameEffectStats.tagData.HasAlreadyTheValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive));
             spellProfil.gameEffectStats.tagData.SetIndexTagValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive));
             spellProfil.gameEffectStats.UpdateStatistics();
         }
-        gameEffectStats.ChangeStats(spellProfil.gameEffectStats);
+        spellProfil.gameEffectStats.ChangeStats(gameEffectStats, isTagAdd);
     }
 
     public bool IsValidUpgrade(SpellSystem.SpellProfil spellProfil)
     {
-        return   gameEffectStats.tagData.HasOneTagSimilar(spellProfil.gameEffectStats.tagData);
+        return gameEffectStats.tagData.HasOneTagSimilar(spellProfil.gameEffectStats.tagData);
     }
 
     public bool IsAllTagMatching(SpellSystem.SpellProfil spellProfil)
@@ -81,7 +83,7 @@ public class UpgradeObject : ScriptableObject
         return false;
     }
 
-    public string PrewiewApplyValue(StatData statData)
+    public string PreviewApplyValue(StatData statData)
     {
         for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
         {
@@ -95,17 +97,42 @@ public class UpgradeObject : ScriptableObject
 
                 if (gameEffectStats.IsStatInt(gameEffectStats.statTypes[i]))
                 {
-                    return (statData.val_int + "-->"+ (statData.val_int + gameEffectStats.statDatas[i].val_int)).ToString();
+                    return (statData.val_int + "-->" + (statData.val_int + gameEffectStats.statDatas[i].val_int)).ToString();
                 }
+
 
 
                 if (gameEffectStats.IsStatFloat(gameEffectStats.statTypes[i]))
                 {
-                    return (statData.val_float + "-->" +(statData.val_float + gameEffectStats.statDatas[i].val_float)).ToString();
+                    return (statData.val_float + "-->" + (statData.val_float + gameEffectStats.statDatas[i].val_float)).ToString();
                 }
             }
+
+
+
+
         }
 
+        return "";
+    }
+
+    public string PreviewNewValue(int index)
+    {
+
+        if (gameEffectStats.IsStatBool(gameEffectStats.statTypes[index]))
+        {
+            return (gameEffectStats.statDatas[index].val_bool).ToString();
+        }
+
+        if (gameEffectStats.IsStatInt(gameEffectStats.statTypes[index]))
+        {
+            return (0 + "-->" + (gameEffectStats.statDatas[index].val_int)).ToString();
+        }
+
+        if (gameEffectStats.IsStatFloat(gameEffectStats.statTypes[index]))
+        {
+            return (0 + "-->" + (gameEffectStats.statDatas[index].val_float)).ToString();
+        }
         return "";
     }
 

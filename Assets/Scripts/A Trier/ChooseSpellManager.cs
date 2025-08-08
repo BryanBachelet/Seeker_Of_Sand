@@ -162,10 +162,10 @@ public class ChooseSpellManager : MonoBehaviour
             //vfxHolder[i].SetActive(true);
             spellHolder[i].SetActive(true);
             vfxSpell[i].enabled = true;
-            newSpell[i].tagData.element = spellManager.spellProfils[randomSpellToChoose[i]].tagData.element;
+            newSpell[i].gameEffectStats.tagData.element = spellManager.spellProfils[randomSpellToChoose[i]].TagList.element;
             nextSpellName[i] = newSpell[i].name;
             textObject[i].text = nextSpellName[i];
-            int indexVFX = (int)GeneralTools.GetElementalArrayIndex( newSpell[i].tagData.element);
+            int indexVFX = (int)GeneralTools.GetElementalArrayIndex( newSpell[i].TagList.element);
             indexVFX = Mathf.Clamp(indexVFX, 0, 100);
             //GameObject lastVFx = Instantiate(vfxChooseSpell[indexVFX], vfxHolder[i].transform.position, vfxHolder[i].transform.rotation, vfxHolder[i].transform);
             //vfxLastChooseSpell.Add(lastVFx);
@@ -254,12 +254,12 @@ public class ChooseSpellManager : MonoBehaviour
         if (descriptionHolderAnimator != null) { descriptionHolderAnimator.SetBool("Open", true); }
         lastSpell = popup;
         spellName.text = newSpell[spellIndex].name;
-        string[] tagLines = newSpell[spellIndex].tagData.GetUIInfosValue();
+        string[] tagLines = newSpell[spellIndex].TagList.GetUIInfosValue();
         for (int i = 0; i < tagText.Length; i++)
         {
             tagText[i].text = tagLines[i];
         }
-        spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].DebugStat();
+        spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].gameEffectStats.DebugStat();
         Material materialSpell = newSpell[spellIndex].matToUse;
         iconSpell.material = materialSpell;
         for(int i = 0; i < rankSpell_Preview.Length; i++)

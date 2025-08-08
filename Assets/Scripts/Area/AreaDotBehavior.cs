@@ -68,26 +68,27 @@ namespace SpellSystem
         {
             GlobalSoundManager.PlayOneShot(indexSFX, transform.position);
             profil = m_areaMeta.areaData.spellProfil;
-            if (profil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            GameEffectStats<StatData> gameEffectStats = profil.gameEffectStats;
+            if (gameEffectStats.tagData.EqualsSpellNature(SpellNature.SUMMON))
                 m_summonMeta = GetComponent<SummonsMeta>();
 
             m_sizeArea = profil.GetFloatStat(StatType.Size);
             m_damage = profil.GetIntStat(StatType.Damage);
-            m_element = profil.tagData.element;
+            m_element = gameEffectStats.tagData.element;
             m_damageCalculComponent = GetComponent<DamageCalculComponent>();
-            if (profil.tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA))
+            if (gameEffectStats.tagData.EqualsSpellNature(SpellNature.MULTI_HIT_AREA))
             {
                 m_hitFrequencyTime = profil.GetFloatStat(StatType.HitFrequency);
                 m_hitMaxCount = m_DotMeta.dotData.currentMaxHitCount;
             }
 
-            if (profil.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
+            if (gameEffectStats.tagData.EqualsSpellParticularity(SpellParticualarity.Explosion))
             {
                 m_sizeArea = profil.GetFloatStat(StatType.SizeExplosion);
                 m_damage += profil.GetIntStat(StatType.DamageAdditionel);
             }
 
-            if (profil.tagData.EqualsSpellNature(SpellNature.SUMMON))
+            if (gameEffectStats.tagData.EqualsSpellNature(SpellNature.SUMMON))
             {
                 m_hitMaxCount = (int)(profil.GetFloatStat(StatType.LifeTimeSummon) / m_hitFrequencyTime);
                 m_summonMeta.OnSpecialSkill += ApplyAreaDamage;
@@ -138,12 +139,12 @@ namespace SpellSystem
 
         public void AreaMouvement()
         {
-            if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.OnSelf)
+            if (profil.TagList.spellMovementBehavior == SpellMovementBehavior.OnSelf)
             {
                 transform.position = m_areaMeta.areaData.characterShoot.transform.position + new Vector3(0, 10, 0);
             }
 
-            if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.Direction || profil.tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
+            if (profil.TagList.spellMovementBehavior == SpellMovementBehavior.Direction || profil.TagList.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
             {
                 RaycastHit hit = new RaycastHit();
 
@@ -160,9 +161,9 @@ namespace SpellSystem
                 }
 
 
-                if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.Direction)
+                if (profil.TagList.spellMovementBehavior == SpellMovementBehavior.Direction)
                     transform.position += m_areaMeta.areaData.direction.normalized * profil.GetFloatStat(StatType.DirectionSpeed) * Time.deltaTime;
-                if (profil.tagData.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
+                if (profil.TagList.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
                 {
                     Character.CharacterAim characterAim = m_areaMeta.areaData.characterShoot.GetComponent<Character.CharacterAim>();
                     Vector3 direction = characterAim.lastRawPosition - transform.position;
