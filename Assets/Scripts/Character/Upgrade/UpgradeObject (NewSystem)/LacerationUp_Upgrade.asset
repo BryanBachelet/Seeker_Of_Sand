@@ -9,18 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9489da611aba9b4fa56c8ebe51dccbc, type: 3}
-  m_Name: T3_Ball_Explosion
+  m_Script: {fileID: 11500000, guid: 1bd0fbc46958acc4f99443ab0dfb0350, type: 3}
+  m_Name: LacerationUp_Upgrade
   m_EditorClassIdentifier: 
-  LevelType: 0
-  isPermanent: 1
-  nameLevelUprade: <u>Rank 3</u>
-  description: <u>Rank 3</u><br><br>Projectile now <i>explode</i> at <b>impact</b>
-    (Give acces to explosion size)
+  name: Laceration Up
+  id: 16
+  description: Add tag Laceration and increase probability to apply it Laceration
+  spell_Icon: {fileID: 0}
+  indexSpellLink: 0
+  IsMultiTagUpgrade: 0
+  IsAddingTag: 1
+  TagToGive: 16384
   gameEffectStats:
     tagData:
       element: 0
-      type: 0
+      type: 1
       spellNatureType: 0
       spellNatureType1: 0
       spellNatureType2: 0
@@ -29,29 +32,28 @@ MonoBehaviour:
       spellMovementBehavior: 0
       damageTriggerType: 0
       spellParticualarity: 0
-      spellParticualarity1: 2
+      spellParticualarity1: 0
       spellParticualarity2: 0
       mouvementBehaviorType: 0
       upgradeSensitivityType: 0
-      afflictionTypes: 
+      afflictionTypes: 01000000
     statDatas:
-    - stat: 2027
+    - stat: 1018
       valueType: 0
       nameStat: 
-      val_int: 5
-      val_float: 10
-      val_string: 
-      val_bool: 0
-      isVisible: 0
-      multiply: 0
-    - stat: 1010
-      valueType: 0
-      nameStat: 
-      val_int: 10
+      val_int: 1
       val_float: 0
       val_string: 
       val_bool: 0
       isVisible: 0
-      multiply: 0
-    statTypes: eb070000f2030000
-  customStatBehavior: {fileID: 0}
+      isOnlyAddWithTag: 1
+    - stat: 2029
+      valueType: 0
+      nameStat: 
+      val_int: 0
+      val_float: 0.05
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+      isOnlyAddWithTag: 0
+    statTypes: 
