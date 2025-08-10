@@ -60,8 +60,11 @@ public class Teleporter : MonoBehaviour
     {
         if(other.tag == "Player"  && teleportorIsActive && !isReceiver)
         {
-            RenderTexture cuustomTexture = m_cameraFadeFonction.renderCam.targetTexture;
-            terrainGen.GetTexturePreviousMap(cuustomTexture);
+            if (m_cameraFadeFonction && m_cameraFadeFonction.renderCam)
+            {
+                RenderTexture cuustomTexture = m_cameraFadeFonction.renderCam.targetTexture;
+                terrainGen.GetTexturePreviousMap(cuustomTexture);
+            }
             m_animator.SetTrigger("PlayerEnter");
             enemyManager.DestroyAllEnemy();
             terrainGen.SelectTerrain(TeleporterNumber);

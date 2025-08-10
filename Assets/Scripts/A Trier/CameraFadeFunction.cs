@@ -83,7 +83,8 @@ public class CameraFadeFunction : MonoBehaviour
             else
             {
                 m_fadeObject.gameObject.SetActive(false);
-                renderCam.gameObject.SetActive(false);
+              if(renderCam)
+                    renderCam.gameObject.SetActive(false);
                 fadeProgress = 0;
                 fadeOutActive = false;
                 dayTextObj.SetActive(false);
@@ -113,6 +114,9 @@ public class CameraFadeFunction : MonoBehaviour
 
     private void ChangeFadeAlpha(float alphaValue)
     {
+        if (cameraBehavior == null)
+            return;
+
         fadeMat.SetColor("_UnlitColor", new Color(0, 0, 0, alphaValue));
         if (fadeInActive)
         {

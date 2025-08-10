@@ -45,7 +45,7 @@ namespace Character
         [HideInInspector] public int maxSpellIndex = 4;
          public List<int> spellIndexGeneral;
         [HideInInspector] private List<int> spellIndexSpecific = new List<int>(4);
-        [SerializeField] private spell_Attribution[] spellAttribution = new spell_Attribution[4];
+        [SerializeField] private SpellAttribution[] spellAttribution = new SpellAttribution[4];
 
         [HideInInspector] public int m_currentIndexCapsule = 0;
         private int m_currentRotationIndex = 0;

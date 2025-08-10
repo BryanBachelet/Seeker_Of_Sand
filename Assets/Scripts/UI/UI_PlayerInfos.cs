@@ -41,7 +41,7 @@ namespace SeekerOfSand
             [SerializeField] private TMP_Text textTier;
             [SerializeField] private GameObject tierUpEffect;
             [SerializeField] private Animator tierUpAnimation;
-            [SerializeField] private spell_Attribution spellAttribution;
+            [SerializeField] private SpellAttribution spellAttribution;
             [HideInInspector] private VisualEffect[] vfxTierUp = new VisualEffect[4];
             [GradientUsage(true)]
             [HideInInspector] private Gradient[] gradient1vfx = new Gradient[4];

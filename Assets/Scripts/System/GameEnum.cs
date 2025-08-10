@@ -153,6 +153,7 @@ namespace GuerhoubaGames.GameEnum
         SizeExplosion = 2027,
         DirectionSpeed = 2028,
         AfflictionProbility =2029,
+        BounceRadius =2030,
        
     }
 

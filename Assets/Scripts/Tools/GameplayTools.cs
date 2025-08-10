@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.VisualScripting.Member;
 
 namespace GuerhoubaTools.Gameplay
 {
@@ -75,8 +77,8 @@ namespace GuerhoubaTools.Gameplay
 
     public static class Tools
     {
-        public static bool IsBelongToLayer(int layerIndex,GameObject obj)
-        { 
+        public static bool IsBelongToLayer(int layerIndex, GameObject obj)
+        {
             return layerIndex == obj.layer;
         }
 
@@ -101,6 +103,22 @@ namespace GuerhoubaTools.Gameplay
         public static float RandomThreshold(float baseNumber, float range)
         {
             return UnityEngine.Random.Range(baseNumber - range, baseNumber + range);
+        }
+
+        public static T[] RemoveObjectArray<T>(T[] array, T element)
+        {
+            int index = Array.IndexOf(array, element);
+            if (index == -1)
+                return array;
+
+            T[] dest = new T[array.Length - 1];
+            if (index > 0)
+                Array.Copy(array, 0, dest, 0, index);
+
+            if (index < array.Length - 1)
+                Array.Copy(array, index + 1, dest, index, array.Length - index - 1);
+
+            return dest;
         }
 
 

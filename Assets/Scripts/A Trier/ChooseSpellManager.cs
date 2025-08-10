@@ -46,7 +46,7 @@ public class ChooseSpellManager : MonoBehaviour
     [SerializeField] private float[] percentForUpgradeMatchingElementRoom = new float[4] { 100, 75, 50, 25 };
     [HideInInspector] private int countSpellDraw = 0;
 
-    [SerializeField] private spell_Attribution[] rankSpell_Preview = new spell_Attribution[3];
+    [SerializeField] private SpellAttribution[] rankSpell_Preview = new SpellAttribution[3];
     [SerializeField] private Image spellTier1Image;
     [SerializeField] private Image spellTier2Image;
     [SerializeField] private Image spellTier3Image;

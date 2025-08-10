@@ -9,7 +9,8 @@ using UnityEngine.Rendering;
 using GuerhoubaGames.UI;
 using Character;
 using SeekerOfSand.Tools;
-public class spell_Attribution : MonoBehaviour
+
+public class SpellAttribution : MonoBehaviour
 {
     [SerializeField] private int preLeveledDisplay = 0;
 
@@ -73,7 +74,7 @@ public class spell_Attribution : MonoBehaviour
         spellProfil = spell;
         spellProfil.m_SpellAttributionAssociated = this;
         materialUse = spell.matToUse;
-        imageSpell.material = materialUse;
+        imageSpell.material = materialUse; 
         Color colorBackgroundToUse = colorbackground[(int)GeneralTools.GetElementalArrayIndex(spell.TagList.element)];
         Material tempMat = new Material(backgroundSpell.material);
         tempMat.SetColor("_Color", colorBackgroundToUse);
@@ -82,7 +83,7 @@ public class spell_Attribution : MonoBehaviour
         description = spell.description;
         nameSpell.text = spell_name;
 
-        if(generateTexture)
+        if (generateTexture)
         {
             Texture2D texture = (Texture2D)materialUse.GetTexture("_Symbole");
             //imageSpell.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));

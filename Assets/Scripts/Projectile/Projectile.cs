@@ -10,6 +10,9 @@ using SpellSystem;
 using UnityEngine.Profiling;
 using GuerhoubaGames;
 using UnityEngine.SearchService;
+using Unity.VisualScripting;
+using System.Linq;
+using GuerhoubaTools.Gameplay;
 
 public struct ProjectileData
 {
@@ -52,6 +55,13 @@ public class Projectile : MonoBehaviour
     protected float m_lifeTimer;
     public int m_piercingMax;
     protected int piercingCount;
+
+    [HideInInspector] public bool isBouncing;
+    protected IDamageReceiver p_targetBounce;
+    protected Collider p_targetBounceCollider;
+    [HideInInspector] public float bounceRadius;
+    [HideInInspector] public int bounceMax;
+    [HideInInspector] protected int p_bounceCount;
 
     protected float m_travelTime;
     protected float m_travelTimer;
@@ -126,6 +136,12 @@ public class Projectile : MonoBehaviour
         if (spellProfil.TagList.spellParticualarity == SpellParticualarity.Piercing)
             m_piercingMax = spellProfil.GetIntStat(StatType.Piercing);
 
+        if (spellProfil.TagList.spellParticualarity == SpellParticualarity.Bouncing)
+        {
+            bounceMax = spellProfil.GetIntStat(StatType.BounceNumber);
+            bounceRadius = spellProfil.GetFloatStat(StatType.BounceRadius);
+        }
+
         m_shootNumber = spellProfil.GetIntStat(StatType.ShootNumber);
         m_salveNumber = spellProfil.GetIntStat(StatType.Projectile);
         m_size = 1;
@@ -191,8 +207,18 @@ public class Projectile : MonoBehaviour
             hitPoint = hit.point;
 
             SetSlopeRotation(hit.normal);
+        }
 
+        if (p_targetBounce != null &&  p_targetBounce.IsDead()) 
+            p_targetBounce = null;
 
+        if (isBouncing && p_targetBounce != null && !p_targetBounce.IsDead())
+        {
+
+            Vector3 dir = (p_targetBounce.GetGameObject().transform.position - transform.position).normalized;
+            transform.rotation *= Quaternion.Euler(0f, Vector3.SignedAngle(transform.forward, dir,Vector3.up), 0f);
+            transform.position += dir * m_speed * Time.deltaTime;
+            return;
         }
         transform.position += transform.forward * m_speed * Time.deltaTime;
     }
@@ -226,6 +252,7 @@ public class Projectile : MonoBehaviour
         if (m_collider) m_collider.enabled = true;
         checkSpawnTime = false;
         piercingCount = 0;
+        p_bounceCount = 0;
         m_travelTimer = 0.0f;
         transform.localScale = m_initialScale;
         isStartToMove = false;
@@ -319,30 +346,15 @@ public class Projectile : MonoBehaviour
                 enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
 
+            BouncingUpdate();
             PiercingUpdate();
-            if (piercingCount >= m_piercingMax)
-            {
-
-                //Destroy(this.gameObject);
-                m_lifeTimer = m_lifeTime;
-                if (m_collider) { m_collider.enabled = false; }
-
-                //willDestroy = true;
-            }
+            
         }
         else if (other.gameObject.tag == "Cristal")
         {
             other.GetComponent<CristalHealth>().ReceiveHit((int)m_damage);
             PiercingUpdate();
-            if (piercingCount >= m_piercingMax)
-            {
-
-                //Destroy(this.gameObject);
-                m_lifeTimer = m_lifeTime + m_timeBeforeDestruction;
-                //willDestroy = true;
-
-                ApplyExplosion();
-            }
+           
         }
         else if (other.gameObject.tag == "DPSCheck")
         {
@@ -353,13 +365,7 @@ public class Projectile : MonoBehaviour
             enemyTouch.currentHP -= m_damage;
 
             PiercingUpdate();
-            if (piercingCount >= m_piercingMax)
-            {
-
-                //Destroy(this.gameObject);
-                //willDestroy = true;
-                m_lifeTimer = m_lifeTime;
-            }
+          
         }
         else if (other.gameObject.tag == "Dummy")
         {
@@ -376,14 +382,7 @@ public class Projectile : MonoBehaviour
 
 
             PiercingUpdate();
-            if (piercingCount >= m_piercingMax)
-            {
-
-                //Destroy(this.gameObject);
-                //willDestroy = true;
-                m_lifeTimer = m_lifeTime;
-                ApplyExplosion();
-            }
+           
         }
         else return;
 
@@ -437,10 +436,38 @@ public class Projectile : MonoBehaviour
         }
     }
 
+
+    protected virtual void BouncingUpdate()
+    {
+        if (spellProfil && spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Bouncing))
+            p_bounceCount++;
+
+       Collider[] collider = Physics.OverlapSphere(transform.position, bounceRadius, GameLayer.instance.enemisLayerMask + GameLayer.instance.interactibleLayerMask);
+        collider = Tools.RemoveObjectArray(collider, p_targetBounceCollider);
+        if (collider.Length != 0)
+        {
+           
+            Collider colliderSelect = collider[UnityEngine.Random.Range(0, collider.Length)];
+            p_targetBounce = colliderSelect.GetComponent<IDamageReceiver>();
+            p_targetBounceCollider = colliderSelect;
+        }
+       
+
+        if (p_bounceCount >= bounceMax)
+        {
+            m_lifeTimer = m_lifeTime;
+        }
+    }
+
     protected virtual void PiercingUpdate()
     {
         if (spellProfil && spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Piercing))
             piercingCount++;
+
+        if (piercingCount >= m_piercingMax)
+        {
+            m_lifeTimer = m_lifeTime;
+        }
     }
     protected virtual void UpdateTravelTime()
     {

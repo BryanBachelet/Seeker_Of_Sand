@@ -23,7 +23,7 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private GameObject fixeElement;
     [SerializeField] private int m_spelltDisplayCount = 4;
     [SerializeField] private GameObject[] m_spellDetail = new GameObject[4];
-    [SerializeField] private spell_Attribution[] m_spellAttribution = new spell_Attribution[4];
+    [SerializeField] private SpellAttribution[] m_spellAttribution = new SpellAttribution[4];
     [SerializeField] private TMP_Text[] m_spellDetailUpgrades = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailTier = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailDamages = new TMP_Text[4];

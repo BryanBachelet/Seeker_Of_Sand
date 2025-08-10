@@ -17,8 +17,8 @@ public class UpgradeChoosing : MonoBehaviour
     [Header("UI Object")]
     [SerializeField] private Image[] spellInBar = new Image[4];
     [SerializeField] private Image fillNextTierRankPoint;
-    public spell_Attribution currentSpellSelected;
-    public spell_Attribution currentspellSelected_NextRank;
+    public SpellAttribution currentSpellSelected;
+    public SpellAttribution currentspellSelected_NextRank;
     public Image spellUpgradeFocus;
     public Image spellCurrentTierFocus;
     public Image spellNextTierFocus;
@@ -245,7 +245,7 @@ public class UpgradeChoosing : MonoBehaviour
         {
 
             SpellSystem.StatData statDataUpgrade = stats.gameEffectStats.statDatas[i];
-            int indexStatSpell = spellProfil.gameEffectStats.GetStats(statDataUpgrade.stat);
+            int indexStatSpell = spellProfil.gameEffectStats.GetStats(statDataUpgrade.stat,statDataUpgrade.nameStat);
 
             if (indexStatSpell != -1)
             {

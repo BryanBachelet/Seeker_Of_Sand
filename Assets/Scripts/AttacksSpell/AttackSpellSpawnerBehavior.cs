@@ -81,7 +81,7 @@ public class AttackSpellSpawnerBehavior : MonoBehaviour
         attackProfil.UpdateStatistics();
 
         attackProfil.gameEffectStats.AddToIntStats(StatType.Damage, damage);
-        attackProfil.gameEffectStats.AddToFloatStats(StatType.Size, radius);
+        attackProfil.gameEffectStats.AddToFloatStats(StatType.Size, radius,"");
 
 
     }

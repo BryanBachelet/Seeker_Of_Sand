@@ -9,6 +9,7 @@ using NUnit.Framework.Internal;
 using SpellSystem;
 using static UnityEngine.Rendering.DebugUI;
 using System;
+using UnityEngine.Assertions.Must;
 
 
 
@@ -428,11 +429,11 @@ namespace SpellSystem
             return false;
         }
 
-        public int GetStats(StatType statsType)
+        public int GetStats(StatType statsType, string nameAddional)
         {
             for (int i = 0; i < statTypes.Length; i++)
             {
-                if (statsType == statTypes[i])
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAddional)
                 {
                     return i;
                 }
@@ -558,7 +559,7 @@ namespace SpellSystem
             return "";
         }
 
-        public void AddToIntStats(StatType statsType, int val, float multiplier = 1)
+        public void AddToIntStats(StatType statsType, int val, string nameAdditional="" ,float multiplier = 1)
         {
             if (!IsStatInt(statsType))
             {
@@ -568,7 +569,7 @@ namespace SpellSystem
 
             for (int i = 0; i < statTypes.Length; i++)
             {
-                if (statsType == statTypes[i])
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
                 {
                     StatData statData = statDatas[i];
                     statData.val_int += val;
@@ -578,7 +579,7 @@ namespace SpellSystem
                 }
             }
         }
-        public void AddToFloatStats(StatType statsType, float val, float multiplier = 1)
+        public void AddToFloatStats(StatType statsType, float val,string nameAdditional, float multiplier = 1)
         {
 
             if (!IsStatFloat(statsType))
@@ -589,7 +590,7 @@ namespace SpellSystem
 
             for (int i = 0; i < statTypes.Length; i++)
             {
-                if (statsType == statTypes[i])
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
                 {
                     StatData statData = statDatas[i];
                     statData.val_float += val;
@@ -872,6 +873,7 @@ namespace SpellSystem
 
             testResult = tagData.EqualsSpellParticularity(SpellParticualarity.Bouncing);
             ManageStat(StatType.BounceNumber, testResult, true);
+            ManageStat(StatType.BounceRadius, testResult, true);
 
 
         }
@@ -971,12 +973,12 @@ namespace SpellSystem
 
                 if (IsStatInt(gameEffectStats.statTypes[i]))
                 {
-                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int);
+                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
                     continue;
                 }
                 if (IsStatFloat(gameEffectStats.statTypes[i]))
                 {
-                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float);
+                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
                     continue;
                 }
 
@@ -1005,12 +1007,12 @@ namespace SpellSystem
 
                 if (IsStatInt(gameEffectStats.statTypes[i]) && IsAddingStat)
                 {
-                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int);
+                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
                     continue;
                 }
                 if (IsStatFloat(gameEffectStats.statTypes[i]) && IsAddingStat)
                 {
-                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float);
+                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
                     continue;
                 }
 
@@ -1068,7 +1070,7 @@ namespace SpellSystem
         //public List<StatData> statDatas = new List<StatData>();
         //[HideInInspector] public StatType[] statTypes = new StatType[0];
 
-        [HideInInspector] public spell_Attribution m_SpellAttributionAssociated;
+        [HideInInspector] public SpellAttribution m_SpellAttributionAssociated;
 
         public PlayerEffectStats<StatData> gameEffectStats;
 

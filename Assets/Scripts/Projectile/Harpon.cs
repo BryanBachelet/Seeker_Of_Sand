@@ -235,14 +235,7 @@ public class Harpon : Projectile
                 }
 
                 PiercingUpdate();
-                if (piercingCount >= m_piercingMax)
-                {
-
-                    //Destroy(this.gameObject);
-                    m_lifeTimer = m_lifeTime;
-                    m_collider.enabled = false;
-                    //willDestroy = true;
-                }
+                
             }
 
                 if (other.tag == "Cristal")

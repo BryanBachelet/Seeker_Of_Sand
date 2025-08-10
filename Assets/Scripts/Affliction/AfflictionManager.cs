@@ -336,9 +336,12 @@ public class AfflictionManager : MonoBehaviour
 
     public  void RemoveAllAffliction()
     {
+        if (afflictionArray == null) return;
 
         for (int i = 0; i < afflictionArray.Length; i++)
         {
+            if (afflictionArray[i] == null || afflictionArray[i].type != AfflictionType.NONE) continue;
+
             afflictionArray[i].stackCount = 0;
             afflictionArray[i].duration = 0;
             UpdateEntityModiferRemove(afflictionArray[i]);
