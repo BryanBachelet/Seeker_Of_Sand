@@ -362,7 +362,7 @@ public class AltarBehaviorComponent : InteractionInterface
 
         int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
         SpawnAltarReward(rewardIndex);
-
+        m_enemyManager.m_dayController.GetComponent<DayTimeController>().UpdateNextPhase();
         StartCoroutine(ResetEventWithDelay(1.5f));
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);

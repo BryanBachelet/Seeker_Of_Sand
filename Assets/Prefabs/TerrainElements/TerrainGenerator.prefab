@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db14c240a5a0ffd4c87adcde3efdf49d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gsm: {fileID: 0}
   lastTerrainPlay: {fileID: 0}
+  rewardFirstRoom: 1
   teleporterPrefab: {fileID: 3080841102947368892, guid: b271ba0874d549041a99241c89aecf4b,
     type: 3}
   groundLayer:
@@ -52,29 +54,31 @@ MonoBehaviour:
     m_Bits: 8
   terrainPool:
   - {fileID: 7895294214849959462, guid: 4d1a70b637e61d84a979a83f31e818d7, type: 3}
-  - {fileID: 4378672271349744173, guid: bd6e627a2cd7bb6459bf0658cbcc76db, type: 3}
-  - {fileID: 4047020803318881055, guid: cd4a5e4388713a94689ead5ec0e11185, type: 3}
-  - {fileID: 4757709575616189678, guid: 3cc314157ad660543b9518cb8c667c0b, type: 3}
-  - {fileID: 8069046266284306667, guid: 70c7aecc07061004487ac7914b1e2596, type: 3}
-  - {fileID: 4202369924034093536, guid: 844ce834137b7324ba551cc9dc6c382a, type: 3}
-  - {fileID: 4191165698267989146, guid: ea97a3cf6823f65409c619cfa9cd71be, type: 3}
-  - {fileID: 1215297399745317347, guid: 871752156105ef84d9c4746adb7ce443, type: 3}
-  - {fileID: 8072557978217841672, guid: 8fa8de419502224499c22844e8cfd6ef, type: 3}
-  - {fileID: 4907415842170687763, guid: 2574c41160a554f4bb35ce6559d7a74d, type: 3}
-  - {fileID: 2667816726671606106, guid: f294eefd61531524e9e649748c45b122, type: 3}
-  - {fileID: 5429504369421933936, guid: f9252ecf8ee227e4db3fd855799c04ac, type: 3}
-  - {fileID: 5836780021576294767, guid: 505750d0f95f6a445a923286c3580750, type: 3}
-  terrainInstantiated:
-  - {fileID: 0}
+  - {fileID: 1215297399745317347, guid: 26bdd1ee3612c8846a673e8d7f448a53, type: 3}
+  - {fileID: 1215297399745317347, guid: 4dd46616098826d4eb5fb70f1277f208, type: 3}
+  - {fileID: 1215297399745317347, guid: dce0df40cb48fae42b90c8e313e4959c, type: 3}
+  - {fileID: 1215297399745317347, guid: eb0a9ec181d30e84595d985e0850f5ba, type: 3}
+  - {fileID: 1215297399745317347, guid: bf3f2fbcdc259754e90a48935679c32c, type: 3}
+  - {fileID: 1215297399745317347, guid: fd01511efd30558488bcdcc242b67a9e, type: 3}
+  BossTerrain: {fileID: 5192687354765248034, guid: f2c68dcc980e8f643a5c8f9caee828ba,
+    type: 3}
+  terrainInstantiated: []
   previousTerrain: []
   oldTerrain: []
   teleporter: []
   poolNumber: 0
-  countRoomGeneration: 1
+  countRoomGeneration: -1
   generateNewTerrain: 0
   selectedTerrain: 0
+  hasMerchantAppear: 0
   player: {fileID: 0}
   cameraFadeFunction: {fileID: 0}
+  currentRoomManager: {fileID: 0}
   roomInfoUI: {fileID: 0}
   dayController: {fileID: 0}
+  dayTimeController: {fileID: 0}
   roomGeneration_text: {fileID: 0}
+  isOnlyBoss: 0
+  miniMapControl: {fileID: 0}
+  miniMap_IconControl: {fileID: 0}
+  lastTextureCreated: {fileID: 0}

@@ -64,7 +64,7 @@ public class TeleporterBehavior : MonoBehaviour
         if (isTimePassing)
         {
             //dayController.UpdateTimeByStep();
-            dayTimeController.UpdateNextPhase();
+            //dayTimeController.UpdateNextPhase();
 
         }
         if(specialRoomID >= 0)

@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5700871986932274496}
-  - component: {fileID: 2280368212631330756}
   - component: {fileID: 4346821421306539946}
   - component: {fileID: 2914477687408260579}
   - component: {fileID: 8478372955876290196}
@@ -17,6 +16,7 @@ GameObject:
   - component: {fileID: 2567231330266389121}
   - component: {fileID: 5853200556856407365}
   - component: {fileID: 6079262416430878840}
+  - component: {fileID: 6390655577907465920}
   - component: {fileID: 6103316918639081543}
   m_Layer: 0
   m_Name: UI Manager
@@ -40,46 +40,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2280368212631330756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4983271985109556603}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7c12cfcee6421c4cb7e6974e9df00a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_punketoneLifeBar:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_punketoneLifeBarfill:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_punketonLifeRemain:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_imageLifeEvents:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_imageLifeEventsObj:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_textProgressEvent:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_sliderProgressEvent:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &4346821421306539946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,18 +55,28 @@ MonoBehaviour:
   m_canalisationBar: {fileID: 0}
   m_canalisationBarSegment: {fileID: 0}
   m_canalisationSpell: {fileID: 0}
-  m_stackingText: []
-  m_stackingImageClock: []
+  m_stackingText:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  m_stackingImageClock:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   levelTaken: {fileID: 0}
   canalisationBarDisplay: {fileID: 0}
   canalisationBarreSprites:
-  - {fileID: 534722557, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
-  - {fileID: 1652845402, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
-  - {fileID: 1127548752, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
-  - {fileID: -164477732, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
-  - {fileID: 225446857, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
-  - {fileID: -1150098371, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
-  - {fileID: -12758804, guid: d8dcd4b22b92e354a9deac61b525a1f4, type: 3}
+  - {fileID: 1885324339, guid: 00401254e01eff948a95f710d385f821, type: 3}
+  - {fileID: 1105755465, guid: 00401254e01eff948a95f710d385f821, type: 3}
+  - {fileID: -445220845, guid: 00401254e01eff948a95f710d385f821, type: 3}
+  - {fileID: 1183383249, guid: 00401254e01eff948a95f710d385f821, type: 3}
+  - {fileID: -1019999867, guid: 00401254e01eff948a95f710d385f821, type: 3}
+  - {fileID: 1495867512, guid: 00401254e01eff948a95f710d385f821, type: 3}
+  - {fileID: -1608242464, guid: 00401254e01eff948a95f710d385f821, type: 3}
   upgradeScreenAnimator: {fileID: 0}
   textTier: {fileID: 0}
   tierUpEffect: {fileID: 0}
@@ -152,20 +122,22 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   spriteType:
-  - {fileID: 21300000, guid: c19226dc6e280614e8a3857dc7cef40f, type: 3}
-  - {fileID: 21300000, guid: db174c5479ea68045a83b6df23881dfa, type: 3}
-  - {fileID: 21300000, guid: 8ef7ed7c79a16fa448d4608b315ff7ad, type: 3}
-  - {fileID: 21300000, guid: 986019dff41b5104097311552b30df09, type: 3}
+  - {fileID: 21300000, guid: 30a82acc6e456b24c8ff80efbd742513, type: 3}
+  - {fileID: 21300000, guid: 27eafb4a4f2c9e94696c6d18fb4ad24e, type: 3}
+  - {fileID: 21300000, guid: 87119744b1937bd49b3030a4d08631d1, type: 3}
+  - {fileID: 21300000, guid: 5308c53632913b44897ae5df70b59fdc, type: 3}
   fragment_Type:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 423fa494323dd794dbf169a5ff7caad0, type: 3}
+  - {fileID: 21300000, guid: 2ee5f1af3cfe3634abfd15ae37e9fc47, type: 3}
+  - {fileID: 21300000, guid: b0e34c2b8ef4ba94783f471ce50ea87d, type: 3}
+  - {fileID: 21300000, guid: fdf747d933b9c41498d9942c65be99de, type: 3}
   fragment_Rarity:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 13925dd274ba77f4b95e74d683557887, type: 3}
+  - {fileID: 21300000, guid: 7be3302d2dc3fbb40aeb5e80d2c1f262, type: 3}
+  - {fileID: 21300000, guid: 51327adaf6cf493459adec6ec0a28546, type: 3}
   tooltipTrigger: []
   imageFragmentTooltip: []
   fragmentTypeBackground: []
@@ -174,11 +146,11 @@ MonoBehaviour:
   fragmentInfo: []
   currentFragmentNumber: 0
   colorOutlineByElement:
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
+  - {r: 0.3254717, g: 0.4495328, b: 1, a: 1}
+  - {r: 0.88667995, g: 0.32549024, b: 1, a: 1}
+  - {r: 1, g: 0.48526722, b: 0.32549024, a: 1}
+  - {r: 0.52414644, g: 1, b: 0.32549024, a: 1}
 --- !u!114 &8455633817009065430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,14 +175,14 @@ MonoBehaviour:
   m_objectifTextArray:
   - Active altar
   - Destroy enemis
-  - Find teleportor
+  - Find teleporter
   - Trade or find teleportor
   - Beat Twilight Sister
   m_rewardSpriteArray:
   - {fileID: 21300000, guid: d0836275160effc4d85cd9eedbcdbade, type: 3}
-  - {fileID: 21300000, guid: 32b4e1fcda1003441af0955a064c94b8, type: 3}
   - {fileID: 21300000, guid: f0fd32109dd2f7541b5628c65529d7ba, type: 3}
   - {fileID: 21300000, guid: cb9d2d6578b6a7343ac33f3a2b0b978b, type: 3}
+  - {fileID: 21300000, guid: 32b4e1fcda1003441af0955a064c94b8, type: 3}
   - {fileID: 21300000, guid: 0a1c0ffbf7c46cb449176d10774653d5, type: 3}
   m_objectifText: {fileID: 0}
   m_objectifRemain: {fileID: 0}
@@ -219,12 +191,12 @@ MonoBehaviour:
   majorGoalGO: {fileID: 0}
   m_majorGoalSprite: {fileID: 0}
   m_majorGoalSpriteDelay: {fileID: 0}
-  timeBeforeDecreaseDelay: 0.5
-  decreaseSpeed: 0.1
+  timeBeforeDecreaseDelay: 1
+  decreaseSpeed: 0.3
   currentRoomManager: {fileID: 0}
   colorUI:
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 0.8843252, b: 0.28773582, a: 1}
+  - {r: 0.8867924, g: 0.09620863, b: 0.09930891, a: 1}
   flareGameObject: {fileID: 0}
   transformsProgression:
   - {fileID: 0}
@@ -252,11 +224,12 @@ MonoBehaviour:
   anvilUIView: {fileID: 0}
   pauseMenu: {fileID: 0}
   bandenoir: {fileID: 0}
-  afflictionUIManager: {fileID: 0}
+  afflictionUIManager: {fileID: 6079262416430878840}
   uiMouvementObject:
   - {fileID: 0}
   - {fileID: 0}
-  uiFragmentPrefab: {fileID: 0}
+  uiFragmentPrefab: {fileID: 7310759746948393379, guid: 1816bb17ced4a1442bf7597f4e8d0210,
+    type: 3}
   lastObjectCreated: []
 --- !u!114 &5853200556856407365
 MonoBehaviour:
@@ -318,6 +291,19 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6ab43b0042bffa04486c3a3e95536c39, type: 3}
   - {fileID: 21300000, guid: 14097734faed2f646bfa9ececbbd377e, type: 3}
   - {fileID: 21300000, guid: 2de9d7bb1ae0b084a904ebbffe5fd5b0, type: 3}
+--- !u!114 &6390655577907465920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4983271985109556603}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40df8f32370eb2d4ca434b41a23d01d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Deactivate: 0
 --- !u!114 &6103316918639081543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,15 +335,35 @@ MonoBehaviour:
   - {fileID: 21300000, guid: eeafb1401b4531741acbb17811857bb7, type: 3}
   raretySprite:
   - {fileID: 21300000, guid: 169310b26c6116b4f857a3f1bfda066e, type: 3}
+  - {fileID: 21300000, guid: a29bad41a03173b45bea239c53a1ac02, type: 3}
   - {fileID: 21300000, guid: 7b3a00e8572581547bedb24e99b789e7, type: 3}
-  - {fileID: 21300000, guid: a818b3d2688e89949950c8365a63ed1e, type: 3}
   - {fileID: 21300000, guid: a818b3d2688e89949950c8365a63ed1e, type: 3}
   elementSprite:
   - {fileID: 21300000, guid: aa9dc83b9aa6dc94f9b757b4edad68e9, type: 3}
   - {fileID: 21300000, guid: 30a82acc6e456b24c8ff80efbd742513, type: 3}
   - {fileID: 21300000, guid: 27eafb4a4f2c9e94696c6d18fb4ad24e, type: 3}
   - {fileID: 21300000, guid: 87119744b1937bd49b3030a4d08631d1, type: 3}
-  - {fileID: 21300000, guid: 5308c53632913b44897ae5df70b59fdc, type: 3}
-  colorBackground: []
-  prefixElementNamesArray: []
+  colorBackground:
+  - {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+  - {r: 0.1779548, g: 0.68597937, b: 0.8773585, a: 1}
+  - {r: 0.8784314, g: 0.1764706, b: 0.4496588, a: 1}
+  - {r: 0.8784314, g: 0.3702628, b: 0.1764706, a: 1}
+  - {r: 0.8784314, g: 0.3702628, b: 0.1764706, a: 1}
+  prefixElementNamesArray:
+  - None
+  - Water
+  - Aerial
+  - Mist
+  - Fire
+  - Steam
+  - Tempest
+  - Eruption
+  - Earth
+  - Mud
+  - Sand
+  - Swanp
+  - Lava
+  - Obsidian
+  - Ash
+  - Chaos
   fragmentHolder_Prefab: {fileID: 0}
