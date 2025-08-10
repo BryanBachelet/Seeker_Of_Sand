@@ -13,6 +13,7 @@ using UnityEngine.SearchService;
 using Unity.VisualScripting;
 using System.Linq;
 using GuerhoubaTools.Gameplay;
+using BorsalinoTools;
 
 public struct ProjectileData
 {
@@ -140,6 +141,9 @@ public class Projectile : MonoBehaviour
         {
             bounceMax = spellProfil.GetIntStat(StatType.BounceNumber);
             bounceRadius = spellProfil.GetFloatStat(StatType.BounceRadius);
+
+            ScreenDebuggerTool.AddMessage("Add Bouncing Data");
+
         }
 
         m_shootNumber = spellProfil.GetIntStat(StatType.ShootNumber);
@@ -209,8 +213,11 @@ public class Projectile : MonoBehaviour
             SetSlopeRotation(hit.normal);
         }
 
-        if (p_targetBounce != null &&  p_targetBounce.IsDead()) 
+        if (p_targetBounce != null && p_targetBounce.IsDead())
+        {
             p_targetBounce = null;
+            isBouncing = false;
+        }
 
         if (isBouncing && p_targetBounce != null && !p_targetBounce.IsDead())
         {
@@ -450,6 +457,7 @@ public class Projectile : MonoBehaviour
             Collider colliderSelect = collider[UnityEngine.Random.Range(0, collider.Length)];
             p_targetBounce = colliderSelect.GetComponent<IDamageReceiver>();
             p_targetBounceCollider = colliderSelect;
+            isBouncing = true;
         }
        
 
