@@ -487,25 +487,41 @@ namespace Character
         #region Inputs Functions
         public void ShootInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed && state.isPlaying)
+            if (ctx.performed)
             {
-                StartCasting();
-                //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
-                m_shootInput = true;
-                m_shootInputActive = true;
-                m_lastTimeShot = Time.time;
-                m_hasCancel = false;
-                SetCombatMode(CombatPlayerState.COMBAT);
+                if (state.isPlaying)
+                {
+                    StartCasting();
+                    //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
+                    m_shootInput = true;
+                    m_shootInputActive = true;
+                    m_lastTimeShot = Time.time;
+                    m_hasCancel = false;
+                    SetCombatMode(CombatPlayerState.COMBAT);
+                }
+                else
+                {
+                    m_cameraBehavior.ChangeCursorDisplay(0, true);
+                }
+
             }
-            if (ctx.canceled && state.isPlaying)
+            if (ctx.canceled)
             {
-                m_shootInput = false;
-                m_shootInputActive = false;
-                CancelShoot();
-                //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
-                m_CharacterMouvement.m_SpeedReduce = 1;
-                SetCombatMode(CombatPlayerState.NONE);
-                //m_CharacterMouvement.ActiveSlide();
+                if(state.isPlaying)
+                {
+                    m_shootInput = false;
+                    m_shootInputActive = false;
+                    CancelShoot();
+                    //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
+                    m_CharacterMouvement.m_SpeedReduce = 1;
+                    SetCombatMode(CombatPlayerState.NONE);
+                    //m_CharacterMouvement.ActiveSlide();
+                }
+                else
+                {
+                    m_cameraBehavior.ChangeCursorDisplay(1, true);
+                }
+
             }
         }
         #endregion
