@@ -10,6 +10,9 @@ using SpellSystem;
 using static UnityEngine.Rendering.DebugUI;
 using System;
 using UnityEngine.Assertions.Must;
+using BorsalinoTools;
+using OpenCover.Framework.Model;
+using static MagicaCloth2.TeamManager;
 
 
 
@@ -143,13 +146,24 @@ public struct TagData
 
     public bool HasAlreadyTheValue(SpellTagOrder order, int value, int index = 0)
     {
-        return GetIndexTagValue(order, index) == value;
+        switch (order)
+        {
+            case SpellTagOrder.AfflictionType:
+
+                for (int i = 0; i < afflictionTypes.Count; i++)
+                {
+                    bool val = GetIndexTagValue(order, i) == value;
+                    if (val) return true;
+                }
+                return false;
+
+            default:
+                return GetIndexTagValue(order, index) == value;
+        }
     }
 
-    public void SetIndexTagValue(SpellTagOrder spellTagOrder, int value, int index = 0)
+    public void SetIndexTagValue(SpellTagOrder spellTagOrder, int value, bool toAdd = false, int index = 0)
     {
-       
-     
 
         switch (spellTagOrder)
         {
@@ -196,10 +210,15 @@ public struct TagData
                 upgradeSensitivityType = (UpgradeSensitivity)value;
                 break;
             case SpellTagOrder.AfflictionType:
-                if(afflictionTypes.Count <=  0) 
+                if (toAdd)
+                {
                     afflictionTypes.Add((AfflictionType)value);
+                    ScreenDebuggerTool.AddMessage("Add Tag affliction " + ((AfflictionType)value).ToString());
+                }
                 else
-                  afflictionTypes[index] = (AfflictionType)value;
+                {
+                    afflictionTypes[index] = (AfflictionType)value;
+                }
                 break;
             default:
 
@@ -321,10 +340,14 @@ public struct TagData
 namespace SpellSystem
 {
 
+    public interface IStatInterface
+    {
+        public void ConvertStat(StatData data);
+    }
 
 
     [System.Serializable]
-    public class StatData : ICloneable
+    public class StatData : ICloneable, IStatInterface
     {
         public StatType stat;
         public GuerhoubaGames.GameEnum.ValueType valueType;
@@ -335,29 +358,107 @@ namespace SpellSystem
         public bool val_bool;
         public bool isVisible;
 
+
+        public StatData()
+        {
+            val_int = 0;
+            val_float = 0.0f;
+            val_string = null;
+            val_bool = false;
+            isVisible = false;
+            nameStat = null;
+            stat = 0;
+            valueType = 0;
+        }
+
+        public StatData(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+        }
+
         public virtual StatData Clone()
         {
             return (StatData)this.MemberwiseClone();
         }
 
+        public virtual void ConvertStat(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+        }
+
+
+        public virtual StatData ConvertStat(StatData data, Type t)
+        {
+            if (t ==  typeof(StatDataUpgrade))
+            {
+                return new StatDataUpgrade(data);
+            }
+            if (t == typeof(StatDataLevel))
+            {
+                return new StatDataLevel(data);
+            }
+
+            return this;
+            
+        }
+
         object ICloneable.Clone() => this.Clone();
-       
+
     }
 
     [System.Serializable]
-    public class StatDataLevel : StatData
+    public class StatDataLevel : StatData , IStatInterface
     {
         public float multiply;
 
-        public override StatData Clone() 
+        public override StatData Clone()
         {
             return (StatDataLevel)this.MemberwiseClone();
         }
 
+        public StatDataLevel(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+            multiply = 0;
+        }
+
+        public override void ConvertStat(StatData data) 
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+
+        }
     }
 
     [System.Serializable]
-    public class StatDataUpgrade : StatData
+    public class StatDataUpgrade : StatData, IStatInterface
     {
         public bool isOnlyAddWithTag;
 
@@ -365,12 +466,37 @@ namespace SpellSystem
         {
             return (StatDataUpgrade)this.MemberwiseClone();
         }
+
+        public StatDataUpgrade(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+            isOnlyAddWithTag = false;
+        }
+
+        public override void ConvertStat(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+        }
     }
 
 
 
     [System.Serializable]
-    public class PlayerEffectStats<T> where T : StatData
+    public class PlayerEffectStats<T> where T : StatData, IStatInterface
     {
 
         [Header("Tag Parameters")]
@@ -396,7 +522,7 @@ namespace SpellSystem
 
             stats.tagData = new TagData();
             stats.tagData = tagData;
-            stats.tagData.afflictionTypes = new List<AfflictionType>();
+            stats.tagData.afflictionTypes = new List<AfflictionType>(tagData.afflictionTypes);
             return stats;
         }
 
@@ -559,7 +685,7 @@ namespace SpellSystem
             return "";
         }
 
-        public void AddToIntStats(StatType statsType, int val, string nameAdditional="" ,float multiplier = 1)
+        public void AddToIntStats(StatType statsType, int val, string nameAdditional = "", float multiplier = 1)
         {
             if (!IsStatInt(statsType))
             {
@@ -579,7 +705,7 @@ namespace SpellSystem
                 }
             }
         }
-        public void AddToFloatStats(StatType statsType, float val,string nameAdditional, float multiplier = 1)
+        public void AddToFloatStats(StatType statsType, float val, string nameAdditional, float multiplier = 1)
         {
 
             if (!IsStatFloat(statsType))
@@ -764,7 +890,7 @@ namespace SpellSystem
             return;
         }
 
-        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false)
+        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false) 
         {
             string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
             nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
@@ -787,7 +913,11 @@ namespace SpellSystem
                 statData.stat = statToCheck;
                 statData.nameStat = nameAffliction;
                 statData.isVisible = isVisible;
-                statDatas.Add((T)statData);
+
+
+                statDatas.Add((T)statData.ConvertStat(statData, typeof(T)));
+             
+
             }
 
             return;
@@ -933,6 +1063,7 @@ namespace SpellSystem
         {
             for (int i = 0; i < typeAffliction.Length; i++)
             {
+
                 ManageAfflictionStat(StatType.AfflictionProbility, true, typeAffliction[i], true);
                 ManageAfflictionStat(StatType.AfflictionStack, true, typeAffliction[i], true);
             }
@@ -947,6 +1078,9 @@ namespace SpellSystem
             return nameAffliction;
         }
 
+
+
+
         #endregion
 
         public bool IsAllTagMatching(PlayerEffectStats<StatData> gameEffectStats)
@@ -959,7 +1093,7 @@ namespace SpellSystem
             return tagData.HasOneTagSimilar(gameEffectStats.tagData);
         }
 
-        public void ChangeStats<T>( PlayerEffectStats<T> gameEffectStats) where T : StatDataLevel
+        public void ChangeStats<U>(PlayerEffectStats<U> gameEffectStats) where U : StatDataLevel
         {
 
             for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
@@ -990,7 +1124,7 @@ namespace SpellSystem
             }
         }
 
-        
+
 
         public void ChangeStats(PlayerEffectStats<StatDataUpgrade> gameEffectStats, bool isAdd = false)
         {

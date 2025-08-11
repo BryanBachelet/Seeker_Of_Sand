@@ -140,9 +140,7 @@ public class Projectile : MonoBehaviour
         if (spellProfil.TagList.spellParticualarity == SpellParticualarity.Bouncing)
         {
             bounceMax = spellProfil.GetIntStat(StatType.BounceNumber);
-            bounceRadius = spellProfil.GetFloatStat(StatType.BounceRadius);
-
-            ScreenDebuggerTool.AddMessage("Add Bouncing Data");
+            bounceRadius = spellProfil.GetFloatStat(StatType.BounceRadius); 
 
         }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using SpellSystem;
 using UnityEditor;
+using BorsalinoTools;
+using Unity.VisualScripting;
 
 
 
@@ -25,8 +27,7 @@ public class UpgradeObject : ScriptableObject
 
     public UpgradeObject Clone()
     {
-        UpgradeObject upgradeObject = ScriptableObject.CreateInstance<UpgradeObject>();
-        upgradeObject = this;
+        UpgradeObject upgradeObject = Instantiate(this);
 
         upgradeObject.gameEffectStats = gameEffectStats.Clone();
 
@@ -39,8 +40,12 @@ public class UpgradeObject : ScriptableObject
         if (IsAddingTag)
         {
             isTagAdd = !spellProfil.gameEffectStats.tagData.HasAlreadyTheValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive));
-            spellProfil.gameEffectStats.tagData.SetIndexTagValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive));
-            spellProfil.gameEffectStats.UpdateStatistics();
+            ScreenDebuggerTool.AddMessage(isTagAdd ? "Dont have the tag " : "Have the tag");
+            if (isTagAdd)
+            {
+                spellProfil.gameEffectStats.tagData.SetIndexTagValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive),true);
+                spellProfil.gameEffectStats.UpdateStatistics();
+            }
         }
         spellProfil.gameEffectStats.ChangeStats(gameEffectStats, isTagAdd);
     }

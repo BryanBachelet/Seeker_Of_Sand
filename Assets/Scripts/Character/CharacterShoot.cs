@@ -818,7 +818,7 @@ namespace Character
             }
 
 
-                SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
+             SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
             PlayerEffectStats<StatData> stats = spellProfil.gameEffectStats;
             BehaviorLevel[] behaviorLevels;
             {

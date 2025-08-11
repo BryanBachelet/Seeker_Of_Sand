@@ -86,7 +86,7 @@ public class FPSTexture : MonoBehaviour
     {
         if (Event.current.type != EventType.Repaint || !activeDebug) return;
 
-        Graphics.DrawTexture(m_rect, m_fpsTexture);
+       // Graphics.DrawTexture(m_rect, m_fpsTexture);
     }
 
 }

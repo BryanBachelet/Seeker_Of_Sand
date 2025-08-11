@@ -174,9 +174,15 @@ public class Harpon : Projectile
                     for (int i = 0; i < damageStatDatas.Length; i++)
                     {
                         enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
+                        AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(spellProfil);
+                        enemyTouch.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
+
                     }
 
                     if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
+
+
+                    
 
                     m_enemyImpales[m_impaleCount] = enemyTouch;
                     if (spellProfil.currentSpellTier >= 1)
@@ -231,6 +237,8 @@ public class Harpon : Projectile
 
                 for (int i = 0; i < damageStatDatas.Length; i++)
                 {
+                    AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(spellProfil);
+                    enemyTouch.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
                     enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
                 }
 
