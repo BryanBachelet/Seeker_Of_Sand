@@ -120,10 +120,7 @@ namespace Enemies
                 m_npcHealthComponent.m_hasChangeTarget = false;
             }
         }
-        public void OnDrawGizmos()
-        {
-            Gizmos.DrawWireSphere(m_monsterBodyTransform.position, radiusOfAttack);
-        }
+       
 
         public void OnDeath( Vector3 direction,float power)
         {

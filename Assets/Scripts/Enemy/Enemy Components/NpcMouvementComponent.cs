@@ -560,10 +560,7 @@ namespace Enemies
            if(m_navMeshAgent.isOnNavMesh) m_navMeshAgent.destination = (targetData.target.position);
         }
 
-        public void OnDrawGizmosSelected()
-        {
-
-        }
+       
 
         public bool IsVisibleFrom(Renderer renderer, Camera camera)
         {

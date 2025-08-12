@@ -86,16 +86,7 @@ namespace Enemies
             m_isLowLifeState = true;
         }
 
-        public void OnDrawGizmos()
-        {
-            if(m_isLowLifeState)
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireCube(transform.position, new Vector3(5, 10.0f, 5));
-
-            }
-
-        }
+      
 
     }
 }

@@ -213,7 +213,7 @@ public struct TagData
                 if (toAdd)
                 {
                     afflictionTypes.Add((AfflictionType)value);
-                    ScreenDebuggerTool.AddMessage("Add Tag affliction " + ((AfflictionType)value).ToString());
+                    
                 }
                 else
                 {

@@ -143,9 +143,5 @@ namespace Enemies
             return canBeLaunch;
         }
 
-        public void OnDrawGizmosSelected()
-        {
-            if (activeDebug) Gizmos.DrawWireSphere(centerRing, radius);
-        }
     }
 }

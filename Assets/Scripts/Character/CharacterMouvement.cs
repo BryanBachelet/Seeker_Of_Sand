@@ -1193,10 +1193,6 @@ namespace Character
             m_speedLimit = result;
         }
 
-        public void OnDrawGizmosSelected()
-        {
-            Gizmos.DrawRay(transform.position, -Vector3.up * m_groundDistance);
-        }
 
         public void UpdateDebug()
         {

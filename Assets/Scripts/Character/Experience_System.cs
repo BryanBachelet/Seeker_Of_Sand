@@ -137,12 +137,7 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_characterUpgrade.GainLevel();
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, m_RadiusPickupXp);
-    }
-
+  
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Experience")

@@ -65,11 +65,5 @@ public class MapGeneration_Assignation : MonoBehaviour
         return elementPerMap[elementAssigne];
     }
 
-    private void OnDrawGizmos()
-    {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            Gizmos.DrawWireSphere(transform.GetChild(i).transform.position, radius);
-        }
-    }
+    
 }

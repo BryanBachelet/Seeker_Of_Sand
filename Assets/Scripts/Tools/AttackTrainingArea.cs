@@ -90,13 +90,4 @@ public class AttackTrainingArea : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        if (positionOnDestroy != Vector3.zero)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(positionOnDestroy, rangeHit);
-        }
-
-    }
 }

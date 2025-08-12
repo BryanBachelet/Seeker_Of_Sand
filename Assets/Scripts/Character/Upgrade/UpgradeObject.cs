@@ -40,7 +40,7 @@ public class UpgradeObject : ScriptableObject
         if (IsAddingTag)
         {
             isTagAdd = !spellProfil.gameEffectStats.tagData.HasAlreadyTheValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive));
-            ScreenDebuggerTool.AddMessage(isTagAdd ? "Dont have the tag " : "Have the tag");
+            
             if (isTagAdd)
             {
                 spellProfil.gameEffectStats.tagData.SetIndexTagValue(TagToGive, gameEffectStats.tagData.GetIndexTagValue(TagToGive),true);

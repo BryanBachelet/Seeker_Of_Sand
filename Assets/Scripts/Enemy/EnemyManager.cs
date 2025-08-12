@@ -443,16 +443,7 @@ namespace Enemies
 
 
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(m_playerTranform.position, m_minimumRadiusOfSpawn);
-            Gizmos.DrawWireSphere(m_playerTranform.position, m_maximumRadiusOfSpawn);
-            for (int i = 0; i < posspawn.Count; i++)
-            {
-                Gizmos.DrawSphere(posspawn[i], 1);
-            }
-        }
+     
 
         private int FindValidTypeEnemyToSpawn()
         {

@@ -166,13 +166,6 @@ public class AttaqueZoneSimulation : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        if (areaSize.Length > 0)
-        {
-            for (int i = 0; i < areaSize.Length; i++)
-            {
-                Gizmos.color = new Vector4(0.8f / i + 1, 0, 0, 1);
-                Gizmos.DrawWireSphere(Vector3.zero, areaSize[i]);
-            }
-        }
+       
     }
 }

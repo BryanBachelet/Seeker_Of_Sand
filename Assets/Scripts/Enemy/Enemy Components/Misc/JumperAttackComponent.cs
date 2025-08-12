@@ -264,11 +264,7 @@ namespace Enemies
         }
 
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, m_agent.destination);
-        }
+       
 
     }
 }

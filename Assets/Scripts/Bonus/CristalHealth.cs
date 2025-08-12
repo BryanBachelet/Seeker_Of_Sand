@@ -79,10 +79,7 @@ public class CristalHealth : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, radiusPlayerCollect);
-    }
+  
 
     private void OnTriggerEnter(Collider other)
     {

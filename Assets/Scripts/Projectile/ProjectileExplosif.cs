@@ -206,8 +206,7 @@ public class ProjectileExplosif : Projectile
 
     public void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, m_destination);
+        
     }
     protected virtual void Explosion()
     {

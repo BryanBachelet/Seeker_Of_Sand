@@ -1855,13 +1855,7 @@ namespace Character
         }
         #endregion
 
-        public void OnDrawGizmosSelected()
-        {
-
-            Vector3 gizmoPosition = transform.position + Quaternion.AngleAxis(transform.rotation.eulerAngles.y, transform.up) * m_spawnPointSpell;
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(gizmoPosition, .3f);
-        }
+      
 
     }
 

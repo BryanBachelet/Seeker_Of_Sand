@@ -56,6 +56,6 @@ public class moveForward : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, range);
+        ;
     }
 }

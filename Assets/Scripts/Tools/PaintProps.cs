@@ -39,10 +39,7 @@ public class PaintProps : MonoBehaviour
 
     public void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(nextPaint, range);
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(newPaint, range);
+        
     }
 
     public void GenerateNewThings(Vector3 position)

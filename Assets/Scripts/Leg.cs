@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 
 public class Leg : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class Leg : MonoBehaviour
     public float tipMoveDistDebug;
     public bool animatingDebug;
     public bool moveableDebug;
+    public bool gizmoDebug = false;
 
     private void Awake()
     {
@@ -124,7 +126,8 @@ public class Leg : MonoBehaviour
     }
 
     private void OnDrawGizmos()
-    {
+    { 
+        if(!gizmoDebug) return; 
         Gizmos.color = Color.magenta;
         Gizmos.DrawSphere(RaycastTipPos, 1f);
 

@@ -478,16 +478,7 @@ public class RoomManager : MonoBehaviour
     }
 
 
-    private void OnDrawGizmosSelected()
-    {
-        if (isActiveStartRotation)
-        {
-            Vector3 position = Quaternion.Euler(0, spawnAngle, 0) * Vector3.forward * -24 + teleporterSpawn.transform.position + Vector3.up * 10;
-            Gizmos.DrawCube(position, new Vector3(7, 7, 7));
-
-            Gizmos.DrawRay(position, (teleporterSpawn.transform.position - position).normalized * 100);
-        }
-    }
+    
 
     public void GenerateSpawner()
     {
@@ -527,11 +518,7 @@ public class RoomManager : MonoBehaviour
     {
         teleporterFeedback.previewMeshPlane.material = materialPreview;
     }
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, rangeSpawner);
-        Gizmos.DrawWireSphere(transform.position, rangeSpawner_Min);
-    }
+ 
 
     public Vector3 FindCorruptSpawnerPosition(float rangeMin, float rangeMax)
     {

@@ -220,9 +220,7 @@ public class Locomotive : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(new Vector3(0, 0, 0), new Vector3(m_X_Border.x - m_X_Border.y, 25, m_Y_Border.x - m_Y_Border.y));
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(m_destination, 25);
+        
     }
 }
 

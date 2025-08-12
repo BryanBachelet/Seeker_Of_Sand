@@ -220,11 +220,7 @@ namespace Klak.Motion
         }
 
         public bool activeGizmo = false;
-        private void OnDrawGizmos()
-        {
-            if (!activeGizmo) return;
-
-        }
+       
         #endregion
 
         public void ChangeForBook(bool activeOffSet)

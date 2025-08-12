@@ -530,12 +530,7 @@ public class AltarBehaviorComponent : InteractionInterface
     #region Debug Functions
     public void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, radiusEjection);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, rangeEvent);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, radiusEventActivePlayer);
+        
     }
     #endregion
 

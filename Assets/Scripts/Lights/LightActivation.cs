@@ -41,9 +41,5 @@ public class LightActivation : MonoBehaviour
         }
     }
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, rangeActivation);
-    }
-
+  
 }

@@ -524,17 +524,7 @@ namespace Render.Camera
         {
             m_angleSpeed = angleSpeed;
         }
-        public void OnDrawGizmosSelected()
-        {
-            Gizmos.DrawRay(hitPoint, normalDebug * 100);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(collsionRayDebug.origin, collsionRayDebug.direction * 100);
-            Gizmos.color = Color.red;
-            if (m_targetTransform != null)
-            {
-                Gizmos.DrawRay(m_targetTransform.position, directionDebug * m_distanceToTarget);
-            }
-        }
+        
 
         public void ChangeLerpForTP()
         {

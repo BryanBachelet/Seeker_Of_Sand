@@ -59,19 +59,5 @@ public class DetectWater : MonoBehaviour
         }
     }
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(this.transform.position, radiusDetectionWater);
-        if(hitBack.point != Vector3.zero)
-        {
-            Gizmos.DrawLine(transform.position + new Vector3(0, 30, 0), hitBack.point);
-            Gizmos.color = Color.blue;
-        }
-        else
-        {
-            Gizmos.DrawLine(transform.position + new Vector3(0, 30, 0), transform.TransformDirection(Vector3.down) * 100);
-            Gizmos.color = Color.gray;
-        }
 
-    }
 }

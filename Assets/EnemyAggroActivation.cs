@@ -30,10 +30,4 @@ public class EnemyAggroActivation : MonoBehaviour
             }
         }
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, rangeAggro);
-    }
 }

@@ -83,24 +83,6 @@ public class TerrainDropGeneration : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        //Vector2 rnd = Random.insideUnitCircle * rangeFromCenter;
-        RaycastHit hit;
-        Vector3 newPosition = transform.position + new Vector3(0, 100, 0);
-        if (Physics.Raycast(newPosition, raycastdirection * 150, out hit, Mathf.Infinity, groundLayer))
-        {
-            Debug.DrawRay(newPosition, raycastdirection * hit.distance, Color.cyan);
-            Gizmos.DrawRay(newPosition, raycastdirection * hit.distance);
-            m_DropAreaPosition = hit.point + new Vector3(0, -5, 0);
-            //Instantiate(cristalDropObject[randomCristalType], m_DropAreaPosition, transform.rotation);
-
-        }
-        else
-        {
-            Debug.DrawRay(newPosition, raycastdirection * 1000, Color.white);
-
-        }
-    }
+   
     // Update is called once per frame
 }

@@ -86,10 +86,7 @@ public class Tool_PositionningTerrain : MonoBehaviour
     }
 
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawRay(transform.GetChild(0).position, directionPosition);
-    }
+  
 
 
 
