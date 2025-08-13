@@ -129,6 +129,7 @@ public class TerrainGenerator : MonoBehaviour
         currentRoomManager.currentRoomType = RoomType.Free;
         currentRoomManager.rewardType = rewardFirstRoom;
         currentRoomManager.isRoomHasBeenDeactivated = true;
+        currentRoomManager.hasEndReward = true;
 
         currentRoomManager.roomInfoUI = roomInfoUI;
         roomInfoUI.currentRoomManager = currentRoomManager;

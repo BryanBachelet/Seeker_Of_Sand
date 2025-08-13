@@ -90,6 +90,7 @@ public class RoomManager : MonoBehaviour
     private TerrainActivationManager m_terrainActivation;
 
     public int[] rewardAssociated;
+    public bool hasEndReward;
 
     public DissonanceHeartBehavior dissonanceHeartBehavior;
 
@@ -348,13 +349,12 @@ public class RoomManager : MonoBehaviour
         ActivateRoomAfterDistanceTP();
         if (delayUpdate) return;
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
-        if (!rewardGenerated) GiveRoomReward(); rewardGenerated = true;
-        if (playerRewardDistribution.isRewardSend && !isTeleporterActive)
+        if (hasEndReward && !rewardGenerated) GiveRoomReward(); rewardGenerated = true;
+        if ((hasEndReward && playerRewardDistribution.isRewardSend || !hasEndReward)&& !isTeleporterActive)
         {
             if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
             else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
 
-            //HEREEEE
             for (int i = 0; i < teleporterArray.Length; i++)
             {
                 SetupTeleporter(teleporterArray[i].TeleporterNumber);
