@@ -31,22 +31,22 @@ public class ObjectReward : MonoBehaviour
             {
                 charaprofil.stats.baseDamage.statsValue += 15;
                 charaprofil.gameObject.GetComponent<HealthPlayerComponent>().AugmenteMaxHealth(15);
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Water bonus acquiered", ressources.textureGradient_Ornement[0]);
+                TerrainGenerator.s_currentRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Water bonus acquiered", ressources.textureGradient_Ornement[0]);
             }
             else if (element == GameElement.AIR)
             {
                 charaprofil.stats.runSpeed.statsValue += 5;
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Aerial bonus acquiered", ressources.textureGradient_Ornement[1]);
+                TerrainGenerator.s_currentRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Aerial bonus acquiered", ressources.textureGradient_Ornement[1]);
             }
             else if (element == GameElement.FIRE)
             {
                 other.gameObject.GetComponent<CharacterDamageComponent>().m_damageStats.damageBonusGeneral += 1;
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Fire bonus acquiered", ressources.textureGradient_Ornement[2]);
+                TerrainGenerator.s_currentRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Fire bonus acquiered", ressources.textureGradient_Ornement[2]);
             }
             else if (element == GameElement.EARTH)
             {
                 charaprofil.stats.armor.statsValue += 1;
-                TerrainGenerator.staticRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Earth bonus acquiered", ressources.textureGradient_Ornement[3]);
+                TerrainGenerator.s_currentRoomManager.m_enemyManager.m_mainInformationDisplay.DisplayMessage("Earth bonus acquiered", ressources.textureGradient_Ornement[3]);
             }
 
         }

@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 
 
@@ -20,11 +24,16 @@ namespace BorsalinoTools
         public string memberName;
         public string filepath;
         public int lineNumber;
+        public int key;
+        public bool isEmpty;
 
         public override bool Equals(object obj)
         {
             DebugMessageMetaData b = (DebugMessageMetaData)obj;
-            return (filepath == b.filepath) && (lineNumber == b.lineNumber) && (memberName == b.memberName);
+            if (b.key == -1)
+                return false;
+
+            return key == b.key;
         }
 
     }
@@ -45,7 +54,7 @@ namespace BorsalinoTools
         private bool m_enableScreenMessage = true;
 #endif 
 
-        public static void AddMessage(string text, float duration = 2, Color color = new Color(), [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+        public static void AddMessage(string text, int key = -1, float duration = 2, Color color = new Color(), [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
                                                     [System.Runtime.CompilerServices.CallerFilePath] string filePath = "",
                                                     [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
         {
@@ -54,42 +63,46 @@ namespace BorsalinoTools
 
             DebugMessageData messageData;
             messageData = new DebugMessageData();
-            messageData.duration = 2;
+            messageData.duration = duration;
             messageData.text = text;
             messageData.color = color == m_noColor ? Color.white : color;
+            messageData.key = key;
 
             DebugMessageMetaData messageMetaData = new DebugMessageMetaData();
             messageMetaData.memberName = membName;
             messageMetaData.filepath = filePath;
             messageMetaData.lineNumber = lineNumber;
+            messageMetaData.key = key;
 
-            if (!debugMessageMetaDataList.Contains(messageMetaData))
+            if (key > 100 || !debugMessageMetaDataList.Contains(messageMetaData))
             {
                 debugMessageDataList.Add(messageData);
                 debugMessageMetaDataList.Add(messageMetaData);
             }
             else
             {
-                int indexMessageData = debugMessageMetaDataList.IndexOf(messageMetaData);
-                debugMessageDataList[indexMessageData].duration = 2;
-                debugMessageDataList[indexMessageData].text = text;
+                debugMessageDataList[messageData.key].duration = duration;
+                debugMessageDataList[messageData.key].text = text;
             }
 #endif 
 
         }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
+        public void Awake()
+        {
+            debugMessageDataList.AddRange(Enumerable.Repeat(new DebugMessageData(), 100));
+            debugMessageMetaDataList.AddRange(Enumerable.Repeat(new DebugMessageMetaData(), 100));
+        }
+
         public void Start()
         {
-              CommandsConsole.logAction += SetScreenDebugStateCommand;
-
+            CommandsConsole.logAction += SetScreenDebugStateCommand;
+           
         }
         public string inputText = "";
         public void Update()
         {
-            // Temp Test --------------
-            //AddMessage("Mouse Position" + Input.mousePosition.ToString());
-            // ----------------------
 
             for (int i = 0; i < debugMessageDataList.Count; i++)
             {

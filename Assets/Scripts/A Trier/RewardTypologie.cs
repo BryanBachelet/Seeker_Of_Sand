@@ -44,7 +44,7 @@ public class RewardTypologie : MonoBehaviour
     public void Update()
     {
 
-        if(TerrainGenerator.staticRoomManager.isRoomHasBeenValidate|| autoValidation)
+        if(TerrainGenerator.s_currentRoomManager.isRoomHasBeenValidate|| autoValidation)
         {
             vfxMesh.material = materialRewardChange;
             meshToChangeMaterial.material = materialRewardColor;

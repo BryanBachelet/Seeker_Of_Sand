@@ -428,7 +428,7 @@ public class InteractionEvent : MonoBehaviour
     {
         Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.artefactLayerMask);
         colliderProche = col;
-        if (col.Length > 0 && TerrainGenerator.staticRoomManager.isRoomHasBeenValidate)
+        if (col.Length > 0 && TerrainGenerator.s_currentRoomManager.isRoomHasBeenValidate)
         {
             for (int i = 0; i < col.Length; i++)
             {

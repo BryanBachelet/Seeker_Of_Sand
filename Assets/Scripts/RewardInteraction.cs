@@ -33,7 +33,7 @@ public class RewardInteraction : InteractionInterface
 
     public override void OnInteractionStart(GameObject player)
     {
-        if (TerrainGenerator.staticRoomManager.isRoomHasBeenValidate || autoValidation)
+        if (TerrainGenerator.s_currentRoomManager.isRoomHasBeenValidate || autoValidation)
         {
             StartCoroutine(distributeWithDelay());
             if (m_rewardTypologie)

@@ -71,7 +71,7 @@ public class TeleporterBehavior : MonoBehaviour
         {
             dayTimeController.ChangeNextRoomSpecialStatut(specialRoomID, false);
         }
-        terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
+   //     terrainGen.ActiveGenerationTerrain(nextTerrainNumber);
         cameraFadeFunction.LaunchFadeOut(true, 0.38f);
         //if (dayController.newDay)
         //{

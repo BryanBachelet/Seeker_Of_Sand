@@ -597,7 +597,7 @@ namespace Character
             {
                 if (m_activeMouvementDebug)
                 {
-                    ScreenDebuggerTool.AddMessage(" Cancel Speed Obstacle ", 2, Color.red);
+                    ScreenDebuggerTool.AddMessage(" Cancel Speed Obstacle ", -1, 2, Color.red);
                 }
 
                 m_currentSpeed = 0;
@@ -612,7 +612,7 @@ namespace Character
             {
                 if (m_activeMouvementDebug)
                 {
-                    ScreenDebuggerTool.AddMessage("On Glide ", 2, Color.red);
+                    ScreenDebuggerTool.AddMessage("On Glide ", -1, 2, Color.red);
                 }
                 ChangeState(MouvementState.Glide);
                 AirMove(inputDirection);
@@ -625,7 +625,7 @@ namespace Character
                 {
                     if (m_activeMouvementDebug)
                     {
-                        ScreenDebuggerTool.AddMessage("Replacement ", 2, Color.red);
+                        ScreenDebuggerTool.AddMessage("Replacement ", -1, 2, Color.red);
                     }
                     transform.position += -Vector3.up * (Vector3.Distance(hit.point, transform.position) - 7);
                 }
@@ -654,7 +654,7 @@ namespace Character
                 m_timerBeforeSliding = 0;
                 if (m_activeMouvementDebug)
                 {
-                    ScreenDebuggerTool.AddMessage("Cancel Speed Slope ", 2, Color.red);
+                    ScreenDebuggerTool.AddMessage("Cancel Speed Slope ",-1, 2, Color.red);
                 }
                 ChangeState(MouvementState.None);
                 return;
@@ -672,7 +672,7 @@ namespace Character
             {
                 if (m_activeMouvementDebug)
                 {
-                    ScreenDebuggerTool.AddMessage("Cancel Speed Input ", 2, Color.red);
+                    ScreenDebuggerTool.AddMessage("Cancel Speed Input ",-1, 2, Color.red);
                 }
                 m_currentSpeed = 0;
                 m_timerBeforeSliding = 0;

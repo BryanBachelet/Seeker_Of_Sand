@@ -112,7 +112,7 @@ public class RoomManager : MonoBehaviour
     [Header("Debug Variables")]
     [HideInInspector] public bool activeRoomManagerDebug;
 
-    public void RetriveComponent()
+    public void InitComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
         isRoomHasBeenValidate = false;
@@ -352,22 +352,28 @@ public class RoomManager : MonoBehaviour
         if (hasEndReward && !rewardGenerated) GiveRoomReward(); rewardGenerated = true;
         if ((hasEndReward && playerRewardDistribution.isRewardSend || !hasEndReward)&& !isTeleporterActive)
         {
-            if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
-            else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
-
-            for (int i = 0; i < teleporterArray.Length; i++)
-            {
-                SetupTeleporter(teleporterArray[i].TeleporterNumber);
-            }
-
-
-          //  terrainGenerator.GenerateTerrain();
-            ActivateTeleporters();
-            
-            isTeleporterActive = true;
+            OpenPortals();
         }
 
 
+    }
+
+    public void OpenPortals()
+    {
+        // Restor player life
+        if (currentRoomType != RoomType.Boss) playerGO.GetComponent<HealthPlayerComponent>().RestoreQuarter();
+        else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
+
+        terrainGenerator.GenerateMap();
+       
+
+        for (int i = 0; i < teleporterArray.Length; i++)
+        {
+            SetupTeleporter(teleporterArray[i].TeleporterNumber);
+        }
+        ActivateTeleporters();
+
+        isTeleporterActive = true;
     }
 
 
