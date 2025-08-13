@@ -1,5 +1,7 @@
+using BorsalinoTools;
 using Character;
 using Enemies;
+using GuerhoubaGames;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,16 +55,24 @@ public class DayTimeController : MonoBehaviour
 
     public bool[] nextRoomIsSpecial = { false, false }; //0 = Merchand, 1 = Boss
     // Start is called before the first frame update
+
+    [Header("Debugs Variables")]
+    [SerializeField] private bool m_activeDayTimeControllerDebug;
     void Start()
     {
         isNight = false;
         isDay = true;
         dayCount = 1;
         currentPhase = -1;
-        //currentHour = hourPerPhase[currentPhase];
         m_Player = GameObject.Find("Player");
-        //UpdateNextPhase();
-        //UpdateTime(currentHour);
+
+        RunManager.instance.OnRemoveHoursPoint += IncreaseHours;
+
+    }
+
+    private void OnDisable()
+    {
+        RunManager.instance.OnRemoveHoursPoint -= IncreaseHours;
     }
 
     // Update is called once per frame
@@ -73,50 +83,57 @@ public class DayTimeController : MonoBehaviour
             debugTime =false;
             Debug.Log("Debug time Controller");  
 
-            UpdateNextPhase();
+            IncreaseHours();
         }
     }
 
-    public void UpdateNextPhase()
+    public void IncreaseHours()
     {
-        if (currentPhase + 1 > hourPerPhase.Length -1)
-        {
-            currentPhase = 0;
-            currentHour = hourPerPhase[currentPhase];
-            //Launch boss in next room
-        }
-        else
-        {
-            currentPhase = currentPhase + 1;
-            currentHour = hourPerPhase[currentPhase];
-            
-        }
-        if (isNight)
-        {
-            if (currentHour > 5 && currentHour < 18)
-            {
-                isNight = false;
-                isDay = true;
-                StartDay();
-            }
-        }
-        else if (isDay)
-        {
-            if (currentHour < 5 || currentHour > 18)
-            {
-                isNight = true;
-                isDay = false;
-                StartNight();
-            }
-        }
-        if(currentPhase == 2)
-        {
-            ChangeNextRoomSpecialStatut(0, true);
-        }
-        else if(currentPhase == 3)
-        {
-            ChangeNextRoomSpecialStatut(1, true);
-        }
+        //if (currentPhase + 1 > hourPerPhase.Length -1)
+        //{
+        //    currentPhase = 0;
+        //    currentHour = hourPerPhase[currentPhase];
+        //    //Launch boss in next room
+        //}
+        //else
+        //{
+        //    currentPhase = currentPhase + 1;
+        //    currentHour = hourPerPhase[currentPhase];
+
+        //}
+        //if (isNight)
+        //{
+        //    if (currentHour > 5 && currentHour < 18)
+        //    {
+        //        isNight = false;
+        //        isDay = true;
+        //        StartDay();
+        //    }
+        //}
+        //else if (isDay)
+        //{
+        //    if (currentHour < 5 || currentHour > 18)
+        //    {
+        //        isNight = true;
+        //        isDay = false;
+        //        StartNight();
+        //    }
+        //}
+        //if(currentPhase == 2)
+        //{
+        //    ChangeNextRoomSpecialStatut(0, true);
+        //}
+        //else if(currentPhase == 3)
+        //{
+        //    ChangeNextRoomSpecialStatut(1, true);
+        //}
+
+        currentPhase++;
+        currentHour = hourPerPhase[currentPhase];
+
+        if (m_activeDayTimeControllerDebug)
+            ScreenDebuggerTool.AddMessage("Current Hour : " + currentHour);
+
         UpdateTime(currentHour);
     }
 

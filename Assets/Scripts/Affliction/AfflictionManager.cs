@@ -445,15 +445,19 @@ public class AfflictionManager : MonoBehaviour
 
     public bool IsCarryAffliction(AfflictionType afflictionType)
     {
-        return afflictionArray[(int)afflictionType] != null && afflictionArray[(int)afflictionType].type != AfflictionType.NONE;
+        return afflictionArray[(int)afflictionType-1] != null && afflictionArray[(int)afflictionType - 1].type != AfflictionType.NONE;
     }
 
     public int RemoveStack(AfflictionType type, int stackRemove)
     {
-        afflictionArray[(int)type].stackCount -= stackRemove;
-        afflictionArray[(int)type].stackCount = Mathf.Clamp(afflictionArray[(int)type].stackCount, 0, int.MaxValue);
-        UpdateEntityModiferAdd(afflictionArray[(int)type]);
-        return afflictionArray[(int)type].stackCount;
+        int indexArray = (int)type - 1;
+        if (afflictionArray == null || afflictionArray[indexArray] == null)
+
+       
+        afflictionArray[indexArray].stackCount -= stackRemove;
+        afflictionArray[indexArray].stackCount = Mathf.Clamp(afflictionArray[indexArray].stackCount, 0, int.MaxValue);
+        UpdateEntityModiferAdd(afflictionArray[indexArray]);
+        return afflictionArray[indexArray].stackCount;
     }
 
 

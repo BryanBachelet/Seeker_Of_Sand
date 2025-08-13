@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7238425286336144971}
   - component: {fileID: 8996630440212108746}
   - component: {fileID: 6382890040606705355}
+  - component: {fileID: 1781546109858395534}
+  - component: {fileID: 9035743513501713186}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -40,17 +42,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7853360029193348325}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0341f933d7af314b94d04650fe23c1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profileName: Bryan
+  profileName: Titouan
   FieldNameProfile: {fileID: 0}
   m_aimModeChoose: 2
+  m_textName: {fileID: 0}
+  m_placeHolderName: {fileID: 0}
   m_layoutSelectedFeedback:
   - {fileID: 21300000, guid: 94ffd8a4dfc69f743bebe9c9f2e19804, type: 3}
   - {fileID: 21300000, guid: 314e05afe9a7bbf4c851d449535d3692, type: 3}
+  alwaysNewSave: 0
+  alwaysNormalSave: 1
 --- !u!114 &6382890040606705355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,3 +70,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDebugActive: 0
+--- !u!114 &1781546109858395534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7853360029193348325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8fe2bbdfbd6d4498c0574b62397e9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_cameraBehavior: {fileID: 0}
+  mouseRotationSpeed: 0.8
+  m_textValueRotSpeed: {fileID: 0}
+  angleRotationSpeed: 0.5
+  m_textValueAngleSpeed: {fileID: 0}
+--- !u!114 &9035743513501713186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7853360029193348325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a4a8951bc0799e40ab3a56376a8fd53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHoursPointPerDay: 8
+  nightDurationSeconds: 300
+  dissonanceHeartBroken: 0
+  dayStep: 0
+  m_isRunManagerDebugActive: 0

@@ -48,25 +48,7 @@ namespace Character
         [HideInInspector] public GameElement lastRoomElement;
 
         #region Input Functions
-        public void UpgradeWindowInput(InputAction.CallbackContext ctx)
-        {
-            if (ctx.started)
-            {
-                if (upgradePoint == 0 || isSpellUpgradeWindowOpen)
-                    return;
-
-                if (!isUpgradeWindowOpen)
-                {
-                    ShowUpgradeWindow();
-                    return;
-                }
-                if (isUpgradeWindowOpen)
-                {
-                    CloseUpgradeWindow();
-                    return;
-                }
-            }
-        }
+       
 
         public void ChooseUpgradeInput(InputAction.CallbackContext ctx)
         {
@@ -211,56 +193,24 @@ namespace Character
                     spellProfil.GainLevel();
                     m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil);
                 }
-                else
+
+                if (upgradePoint == 0 && isUpgradeWindowOpen)
                 {
-                    if (upgradePoint == 0 && isUpgradeWindowOpen)
-                    {
 
-                        CloseUpgradeWindow();
+                    CloseUpgradeWindow();
 
-                    }
                 }
             }
 
 
 
         }
-
-        public void OpenTierUpObject()
-        {
-
-        }
-
-        public void CloseTierUpObject()
-        {
-            if (upgradePoint == 0 && isUpgradeWindowOpen)
-            {
-
-                CloseUpgradeWindow();
-            }
-        }
-
         #endregion
 
-        public void GainLevel()
-        {
-            return;
-            upgradePoint++;
-            upgradePointTextDisplay.text = upgradePoint.ToString();
-            if (baseSpellIndex < spellUpgradeConfigs.Length && spellUpgradeConfigs[baseSpellIndex].levelToGainSpell <= experience.GetCurrentLevel())
-            {
-                ShowSpellChoiceInteface();
-                ChangeBaseInterfaceDisplay(false);
-                baseSpellIndex++;
-
-            }
-
-        }
 
         public void GiveUpgradePoint(int upgradeNumber)
         {
             upgradePoint += upgradeNumber;
-            //upgradePointTextDisplay.text = upgradePoint.ToString();
         }
 
         public void ChangeBaseInterfaceDisplay(bool willBeAble)

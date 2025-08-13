@@ -73,10 +73,11 @@ namespace SeekerOfSand
             public void UpdateLevelSpell(int index, SpellProfil spellprofil)
             {
                 //imgSpriteSpell.material = spellprofil.matToUse;
+                tierUpEffect.SetActive(true);
                 spellAttribution.AcquireSpellData(spellprofil);
                 if (spellprofil.currentSpellTier == 1)
                 {
-                    tierUpEffect.SetActive(true);
+                    
                     int indexElement = GeneralTools.GetElementalArrayIndex(spellprofil.TagList.element, true);
                     //for (int i = 0; i < vfxTierUp.Length; i++)
                     //{

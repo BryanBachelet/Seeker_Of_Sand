@@ -8,6 +8,8 @@ using GuerhoubaGames.GameEnum;
 using SeekerOfSand.Tools;
 using JetBrains.Annotations;
 using Character;
+using System;
+using GuerhoubaGames;
 
 public class AltarBehaviorComponent : InteractionInterface
 {
@@ -107,6 +109,9 @@ public class AltarBehaviorComponent : InteractionInterface
     private int currentQuarter;
     public GameObject corruptedRoot;
     public AnimationCurve corruptedRootScale;
+
+    public Action OnEventEnd;
+
     #region Unity Functions
     void Start()
     {
@@ -154,7 +159,7 @@ public class AltarBehaviorComponent : InteractionInterface
         {
             if (m_isWaveCanSpawn)
             {
-                Vector2 rndPosition = Random.insideUnitSphere * 350;
+                Vector2 rndPosition = UnityEngine.Random.insideUnitSphere * 350;
                 m_enemyManager.SpawEnemiesGroupCustom(transform.position + new Vector3(rndPosition.x, 0, rndPosition.y), groupSize);
                 m_enemyManager.ActiveMobAggro();
                 m_distortionWave.SendEvent("Activation");
@@ -333,6 +338,8 @@ public class AltarBehaviorComponent : InteractionInterface
         m_hasEventActivate = false;
         m_isEventOccuring = true;
 
+        OnEventEnd += RunManager.instance.RemoveHourPoint;
+
     }
 
 
@@ -362,10 +369,14 @@ public class AltarBehaviorComponent : InteractionInterface
 
         int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
         SpawnAltarReward(rewardIndex);
-        m_enemyManager.m_dayController.GetComponent<DayTimeController>().UpdateNextPhase();
         StartCoroutine(ResetEventWithDelay(1.5f));
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
+
+        //m_enemyManager.m_dayController.GetComponent<DayTimeController>().UpdateNextPhase();
+
+        OnEventEnd?.Invoke();
+        OnEventEnd -= RunManager.instance.RemoveHourPoint;
 
         //transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
 

@@ -329,7 +329,7 @@ public class Projectile : MonoBehaviour
     {
 
         if (!this.enabled) return;
-        if(spellProfil.hit_VFX != null) { Instantiate(spellProfil.hit_VFX, other.transform.position, Quaternion.identity); }
+        if(spellProfil && spellProfil.hit_VFX != null) { Instantiate(spellProfil.hit_VFX, other.transform.position, Quaternion.identity); }
         if (other.gameObject.tag == "DecorDes")
         {
             other.GetComponent<DestructibleObject>().SetupDestruction(m_power, other.transform.position - transform.position);
@@ -339,6 +339,8 @@ public class Projectile : MonoBehaviour
         {
             IDamageReceiver enemyTouch = other.GetComponent<IDamageReceiver>();
 
+            if (enemyTouch == null) return;
+                
             m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
             DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType, enemyTouch.GetGameObject(), spellProfil);
 
@@ -346,8 +348,12 @@ public class Projectile : MonoBehaviour
 
             for (int i = 0; i < damageStatDatas.Length; i++)
             {
-                AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(spellProfil);
-                enemyTouch.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
+                if(objectType == CharacterObjectType.SPELL)
+                {
+                    AfflictionManager.AfflictionDrawData[] afflictionToApplyArray = AfflictionManager.DrawAfflictionApplication(spellProfil);
+                    enemyTouch.GetAfflictionManager().AddAfflictions(afflictionToApplyArray);
+                }
+            
                 enemyTouch.ReceiveDamage(damageSourceName, damageStatDatas[i], other.transform.position - transform.position, m_power, (int)damageStatDatas[i].element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }
 

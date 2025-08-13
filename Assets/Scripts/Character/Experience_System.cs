@@ -98,7 +98,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         if (m_NumberEnemyKilled > levelProgress)
         {
             m_CurrentLevel += 1;
-            GetUpgradePoint(m_CurrentLevel);
             m_NumberEnemyKilled = 0;
             levelUpEffect.Play();
             GlobalSoundManager.PlayOneShot(7, Vector3.zero);
@@ -131,11 +130,6 @@ public class Experience_System : MonoBehaviour, CharacterComponent
         m_worldExp.Clear();
     }
 
-    public void GetUpgradePoint(int level)
-    {
-        //Debug.Log("Add new upgrade : " + level);
-        m_characterUpgrade.GainLevel();
-    }
 
   
     private void OnTriggerEnter(Collider collision)
