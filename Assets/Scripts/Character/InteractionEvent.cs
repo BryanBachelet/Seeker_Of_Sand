@@ -63,8 +63,8 @@ public class InteractionEvent : MonoBehaviour
     {
         lastInteractionCheck = 0;
         m_characterMouvement = GetComponent<Character.CharacterMouvement>();
-        if(m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
-        if(mainCamera == null) {mainCamera = Camera.main; }
+        if (m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
+        if (mainCamera == null) { mainCamera = Camera.main; }
         interactionDetail_Txt = hintInputInteraction_Detail.GetComponentInChildren<TMP_Text>();
         m_gameRessources = GameResources.instance;
         m_CristalInventory = this.gameObject.GetComponent<CristalInventory>();
@@ -78,14 +78,14 @@ public class InteractionEvent : MonoBehaviour
         {
             Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.interactibleLayerMask);
             FindInteractiveElementAround(col);
-            if (currentInteractibleObjectActive == null) 
+            if (currentInteractibleObjectActive == null)
             {
-              if (col.Length > 0) 
+                if (col.Length > 0)
                 { NearPossibleInteraction(col); }
             }
             NearTrader();
             NearArtefact();
-            if(col.Length <= 0)
+            if (col.Length <= 0)
             {
                 if (hintInputInteraction.activeSelf)
                 {
@@ -123,16 +123,8 @@ public class InteractionEvent : MonoBehaviour
 
         GameObject interactiveObject = FindClosestElement(col);
 
-        //selection_Feedback selection = currentInteractibleObject.GetComponent<selection_Feedback>();
-        //if (selection != null) { selection.ChangeLayerToSelection(); }
         InteractionInterface interactionInterface = interactiveObject.GetComponent<InteractionInterface>();
-        if (interactionInterface == null)
-        {
-            Debug.LogWarning("This object " + interactiveObject.name + " don't have an InteractionInterface component");
-            currentInteractionInterface = null;
-
-            return;
-        }
+     
 
         currentInteractionInterface = interactionInterface;
     }
@@ -146,7 +138,13 @@ public class InteractionEvent : MonoBehaviour
         for (int i = 0; i < col.Length; i++)
         {
             float tempDistance = Vector3.Distance(transform.position, col[i].transform.position);
-            if (tempDistance < distance)
+            InteractionInterface interactionInterface = col[i].GetComponent<InteractionInterface>();
+            if (interactionInterface == null)
+            {
+                Debug.LogWarning("This object " + interactionInterface.name + " don't have an InteractionInterface component");
+                continue;
+            }
+            if (interactionInterface.isInteractable && tempDistance < distance)
             {
                 distance = tempDistance;
                 colliderIndex = i;
@@ -170,9 +168,9 @@ public class InteractionEvent : MonoBehaviour
                     hintInputInteraction_Detail.SetActive(true);
                     hintAnimator.SetBool("OpenHintDetail", true);
                     interactionDetail_Txt.text = currentInteractionInterface.additionalDescription;
-                    if(currentInteractionInterface.cost > 0)
+                    if (currentInteractionInterface.cost > 0)
                     {
-                        if(hintDetailCost != null) { Destroy(hintDetailCost); }
+                        if (hintDetailCost != null) { Destroy(hintDetailCost); }
 
                         hintDetailCost = Instantiate(m_gameRessources.costPrefab[currentInteractionInterface.cristalID], costCristal.transform.position, costCristal.transform.rotation, costCristal.transform);
                         TMP_Text textCost = hintDetailCost.GetComponentInChildren<TMP_Text>();
@@ -236,14 +234,14 @@ public class InteractionEvent : MonoBehaviour
                     {
                         currentInteractibleObject = col[i].transform.gameObject;
                         GameObject socle = GameObject.Find("low_Socle");
-                       if(socle) m_socleTransform = socle.transform;
+                        if (socle) m_socleTransform = socle.transform;
                         nearest = newDistance;
                     }
                 }
             }
 
             Selection_Feedback selection = currentInteractibleObject.GetComponent<Selection_Feedback>();
-            if(currentInteractibleObject.GetComponent<AltarBehaviorComponent>())
+            if (currentInteractibleObject.GetComponent<AltarBehaviorComponent>())
             {
                 if (selection != null && !currentInteractibleObject.GetComponent<AltarBehaviorComponent>().hasBeenActivate) { selection.ChangeLayerToSelection(); }
             }
@@ -265,7 +263,7 @@ public class InteractionEvent : MonoBehaviour
 
                 if (!currentInteractionInterface.hasAdditionalDescription)
                 {
-                    
+
                     hintAnimator.SetBool("OpenHintDetail", false);
                     interactionDetail_Txt.text = "";
                 }
@@ -333,7 +331,7 @@ public class InteractionEvent : MonoBehaviour
     {
         if (ctx.performed)
         {
-            
+
 
             if (currentInteractionInterface != null && !currentInteractionInterface.isOpen)
             {

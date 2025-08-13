@@ -54,13 +54,14 @@ public class TerrainGenerator : MonoBehaviour
     public TMPro.TMP_Text roomGeneration_text;
 
     private bool isHealthBossRoom;
-
-    [Header("Debug Parameter")]
-    public bool isOnlyBoss;
-
     public MiniMapControl miniMapControl;
     public MiniMapControl miniMap_IconControl;
     public Texture lastTextureCreated;
+
+    [Header("Debug Parameter")]
+    public bool isOnlyBoss;
+    [SerializeField] private bool m_activeRoomMangerDebug;
+
     public void Start()
     {
         dayController.dayStartEvent += ResetRoomAtNewDay;
@@ -165,6 +166,10 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.healthReward = HealthReward.FULL;
             roomManager.isTimingPassing = false;
             roomManager.roomInfoUI = roomInfoUI;
+            if(m_activeRoomMangerDebug)
+            {
+                roomManager.activeRoomManagerDebug = true;           
+            }
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + " and the reward is " + roomManager.rewardType.ToString());
             isHealthBossRoom = true;

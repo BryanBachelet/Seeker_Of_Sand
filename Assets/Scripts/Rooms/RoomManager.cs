@@ -85,10 +85,13 @@ public class RoomManager : MonoBehaviour
     private NavMeshData m_navMesh;
     private CameraBehavior m_cameraBehavior;
 
-    public int eventNumber = 0;
+    public const int maxEventActive = 3;
+    public int eventActive = 0;
     private TerrainActivationManager m_terrainActivation;
 
     public int[] rewardAssociated;
+
+    public DissonanceHeartBehavior dissonanceHeartBehavior;
 
     #region spawner Parameter
     public GameObject spawnerPrefab;
@@ -104,6 +107,10 @@ public class RoomManager : MonoBehaviour
 
     public bool delayUpdate = true;
     #endregion
+
+    [Header("Debug Variables")]
+    [HideInInspector] public bool activeRoomManagerDebug;
+
     public void RetriveComponent()
     {
         if (onCreateRoom != null) onCreateRoom.Invoke(currentRoomType, rewardType);
@@ -137,6 +144,7 @@ public class RoomManager : MonoBehaviour
         }
         delayUpdate = false;
     }
+    
     public void ActivateRoom(Material previousMat)
     {
         if(m_terrainActivation == null) { m_terrainActivation = this.GetComponent<TerrainActivationManager>(); }
@@ -184,6 +192,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.countEnemySpawnMaximum = 0;
 
     }
+
     public void ActivateRoomAfterDistanceTP()
     {
         NavMeshHit hit;
@@ -270,8 +279,8 @@ public class RoomManager : MonoBehaviour
             case RoomType.Event:
 
                 AltarBehaviorComponent[] obj = transform.parent.GetComponentsInChildren<AltarBehaviorComponent>();
-                eventNumber = obj.Length;
-
+                eventActive = obj.Length;
+                dissonanceHeartBehavior.roomManager = this;
                 for (int i = 0; i < obj.Length; i++)
                 {
                     if (obj[i] != null)
@@ -360,6 +369,13 @@ public class RoomManager : MonoBehaviour
 
 
     }
+
+
+    public void FinishAllEvent()
+    {
+        dissonanceHeartBehavior.RemoveProtection();
+    }
+
     public void ValidateRoom()
     {
         if (isRoomHasBeenValidate) return;
@@ -434,24 +450,23 @@ public class RoomManager : MonoBehaviour
 
     public int CheckEventSucceded() //Temp Function
     {
-        int eventIndex = eventNumber;
-        eventNumber--;
+        eventActive--;
         dropGenerator.GenerateCristal(this.transform);
-        int[] dataObjectif = { (3-eventNumber), 3 };
+        int[] dataObjectif = { (maxEventActive - eventActive), maxEventActive };
         roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
-        if (eventNumber <= 0)
+        if (eventActive <= 0)
         {
-            ValidateRoom() ;
+            FinishAllEvent() ;
         }
         else
         {
             ResetObjectifData();
         }
-        return rewardAssociated[eventNumber];
+        return rewardAssociated[eventActive];
     }
     public int CheckEventNumber()
     {
-        int data = 3 - eventNumber;
+        int data = 3 - eventActive;
 
         return data;
     }
