@@ -8,6 +8,8 @@ using GuerhoubaTools;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.AI;
 using Render.Camera;
+using GuerhoubaGames;
+using BorsalinoTools;
 
 
 
@@ -92,9 +94,14 @@ public class RoomManager : MonoBehaviour
     public int[] rewardAssociated;
     public bool hasEndReward;
 
+    [Header("Object Rooms Variables")]
+    public AltarBehaviorComponent[] altarBehaviorComponents = new AltarBehaviorComponent[3];
     public DissonanceHeartBehavior dissonanceHeartBehavior;
+    public PedestalRoomBehavior pedestalRoomBehavior;
 
-    #region spawner Parameter
+
+    #region Spawner Parameter
+    [Header("Spawner Parameter")]
     public GameObject spawnerPrefab;
     public float rangeSpawner;
     public float rangeSpawner_Min;
@@ -111,6 +118,7 @@ public class RoomManager : MonoBehaviour
 
     [Header("Debug Variables")]
     [HideInInspector] public bool activeRoomManagerDebug;
+    [HideInInspector] public bool activeFastRoom;
 
     public void InitComponent()
     {
@@ -120,7 +128,7 @@ public class RoomManager : MonoBehaviour
         isTeleporterActive = false;
         m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
         playerGO = GameObject.Find("Player");
-        if(dropGenerator == null && transform.parent.GetComponentInChildren<TerrainDropGeneration>())
+        if (dropGenerator == null && transform.parent.GetComponentInChildren<TerrainDropGeneration>())
         {
             dropGenerator = transform.parent.GetComponentInChildren<TerrainDropGeneration>();
         }
@@ -133,7 +141,7 @@ public class RoomManager : MonoBehaviour
         {
             m_characterUpgrade = playerGO.GetComponent<Character.CharacterUpgrade>();
         }
-        if(m_cameraBehavior == null)
+        if (m_cameraBehavior == null)
         {
             m_cameraBehavior = Camera.main.GetComponent<CameraBehavior>();
         }
@@ -145,11 +153,10 @@ public class RoomManager : MonoBehaviour
         }
         delayUpdate = false;
     }
-    
+
     public void ActivateRoom(Material previousMat)
     {
-        if(m_terrainActivation == null) { m_terrainActivation = this.GetComponent<TerrainActivationManager>(); }
-        m_terrainActivation.ActiveEvent();
+        ActivateEvents();
 
         ResetObjectifData();
 
@@ -157,6 +164,8 @@ public class RoomManager : MonoBehaviour
 
         if (onActivateRoom != null) onActivateRoom.Invoke(currentRoomType, rewardType);
 
+        if (pedestalRoomBehavior)
+            pedestalRoomBehavior.roomManager = this;
 
         if (isActiveStartRotation)
         {
@@ -166,7 +175,7 @@ public class RoomManager : MonoBehaviour
         m_isStartActivation = true;
         m_startRoomChallengeTime = DateTime.Now;
         baseRoomType = currentRoomType;
-        if (quantitySpawner > 0) { GenerateSpawner(); } 
+        if (quantitySpawner > 0) { GenerateSpawner(); }
         //if (currentRoomType == RoomType.Enemy)
         //{
         //    m_enemyManager.OnDeathSimpleEvent += CountEnemy;
@@ -188,7 +197,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.ResetAllSpawingPhasse();
         m_enemyManager.ResetSpawnStat();
         progress = 0;
-       
+
         currentCountOfEnemy = 0;
         m_enemyManager.countEnemySpawnMaximum = 0;
 
@@ -204,7 +213,7 @@ public class RoomManager : MonoBehaviour
             if ((teleporterSpawn.transform.position - playerGO.transform.position).magnitude > distanceBeforeActivatingRooom)
             {
 
-               
+
                 roomInfoUI.ActiveMajorGoalInterface();
                 m_startRoomChallengeTime = DateTime.Now;
                 baseRoomType = currentRoomType;
@@ -228,6 +237,7 @@ public class RoomManager : MonoBehaviour
         yield return new WaitForSeconds(time);
         teleporterFeedback.GetComponentInParent<Animator>().SetBool("Open", false);
     }
+
     public void DeactivateRoom()
     {
         if (onDeactivateRoom != null) onDeactivateRoom.Invoke(currentRoomType, rewardType);
@@ -245,6 +255,7 @@ public class RoomManager : MonoBehaviour
         }
 
     }
+
     public void AddTeleporter(Teleporter newInstance)
     {
         newInstance.DesactivationTeleportor();
@@ -261,7 +272,6 @@ public class RoomManager : MonoBehaviour
         m_currentTeleporterCount++;
 
     }
-
 
     public void SetupRoomType()
     {
@@ -320,24 +330,23 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-
     public int[] GenerateRewardForRoom()
     {
         rewardAssociated = new int[3];
-        for(int i = 0; i < rewardAssociated.Length; i++)
+        for (int i = 0; i < rewardAssociated.Length; i++)
         {
             int randomReward = UnityEngine.Random.Range(0, 100);
-            if(randomReward < 50)
+            if (randomReward < 50)
             {
                 rewardAssociated[i] = 0;
             }
-            else if(randomReward >= 50 && randomReward < 75)
+            else if (randomReward >= 50 && randomReward < 75)
             {
                 rewardAssociated[i] = 2;
             }
             else
             {
-                rewardAssociated[i] =2;
+                rewardAssociated[i] = 2;
             }
         }
         return rewardAssociated;
@@ -350,7 +359,7 @@ public class RoomManager : MonoBehaviour
         if (delayUpdate) return;
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
         if (hasEndReward && !rewardGenerated) GiveRoomReward(); rewardGenerated = true;
-        if ((hasEndReward && playerRewardDistribution.isRewardSend || !hasEndReward)&& !isTeleporterActive)
+        if ((hasEndReward && playerRewardDistribution.isRewardSend || !hasEndReward) && !isTeleporterActive)
         {
             OpenPortals();
         }
@@ -365,7 +374,7 @@ public class RoomManager : MonoBehaviour
         else playerGO.GetComponent<HealthPlayerComponent>().RestoreFullLife();
 
         terrainGenerator.GenerateMap();
-       
+
 
         for (int i = 0; i < teleporterArray.Length; i++)
         {
@@ -376,31 +385,33 @@ public class RoomManager : MonoBehaviour
         isTeleporterActive = true;
     }
 
-
     public void FinishAllEvent()
     {
-        dissonanceHeartBehavior.RemoveProtection();
+        if (dissonanceHeartBehavior.dissonanceHeartState == DissonanceHeartBehavior.DissonanceHeartState.PROTECTED)
+            dissonanceHeartBehavior.RemoveProtection();
+        else
+            ValidateRoom();
     }
 
     public void ValidateRoom()
     {
         if (isRoomHasBeenValidate) return;
 
-        //GiveRoomReward();
+        if (pedestalRoomBehavior)
+            pedestalRoomBehavior.ActivatePedestal();
+
         if ((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
         roomInfoUI.DeactivateMajorGoalInterface();
-        //m_enemyManager.isStopSpawn = true;
+
         m_enemyManager.DestroyAllEnemy();
         isRoomHasBeenValidate = true;
-      
-        //if(dropGenerator != null) dropGenerator.DistributeCristalAtTheEnd();
+
         m_EndRoomChallengeTime = DateTime.Now;
         m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
-        LogSystem.LogMsg("Duration of the room is " + timeSpan.ToString());
 
-        //m_cameraBehavior.isZoomActive = true;
+
     }
 
     #region Room Validation Functions
@@ -415,13 +426,11 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward,element);
-
+        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward, element);
     }
 
 
     #endregion
-
 
     public void DeactivateAltar() // Temp function 
     {
@@ -442,7 +451,6 @@ public class RoomManager : MonoBehaviour
             if (progress >= 1)
             {
                 ValidateRoom();
-
             }
             else
             {
@@ -454,37 +462,39 @@ public class RoomManager : MonoBehaviour
 
     }
 
-    public int CheckEventSucceded() //Temp Function
+    public int EventValidate() //Temp Function
     {
         eventActive--;
+
         dropGenerator.GenerateCristal(this.transform);
-        int[] dataObjectif = { (maxEventActive - eventActive), maxEventActive };
+
+        int[] dataObjectif =
+        {
+            (maxEventActive - eventActive),
+            maxEventActive
+        };
         roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
+
         if (eventActive <= 0)
         {
-            FinishAllEvent() ;
+            FinishAllEvent();
+            return rewardAssociated[eventActive];
         }
-        else
-        {
-            ResetObjectifData();
-        }
+
+        ResetObjectifData();
         return rewardAssociated[eventActive];
+
     }
+
     public int CheckEventNumber()
     {
-        int data = 3 - eventActive;
+        int data = maxEventActive - eventActive;
 
         return data;
     }
 
-    public void UpdateMajorInfo()
-    {
-
-    }
     public IEnumerator RoomDeactivation(int frameCount)
-
     {
-
         int framePassed = 0;
 
         while (framePassed < frameCount)
@@ -498,9 +508,7 @@ public class RoomManager : MonoBehaviour
         transform.parent.gameObject.SetActive(false);
     }
 
-
-    
-
+    #region Spawner Functions
     public void GenerateSpawner()
     {
 
@@ -512,7 +520,7 @@ public class RoomManager : MonoBehaviour
             RaycastHit hit;
             Vector3 positionVariant = FindCorruptSpawnerPosition(radiusMin, radius);
 
-            if (Physics.Raycast(this.transform.position + new Vector3(0,150,0) + positionVariant, -Vector3.up, out hit, 250, groundLayer))
+            if (Physics.Raycast(this.transform.position + new Vector3(0, 150, 0) + positionVariant, -Vector3.up, out hit, 250, groundLayer))
             {
                 GameObject lastSpawnerCreated = Instantiate(spawnerPrefab, hit.point, Quaternion.identity, this.transform);
                 SpawnerBehavior lastSpawnerBehavior = lastSpawnerCreated.GetComponent<SpawnerBehavior>();
@@ -539,7 +547,6 @@ public class RoomManager : MonoBehaviour
     {
         teleporterFeedback.previewMeshPlane.material = materialPreview;
     }
- 
 
     public Vector3 FindCorruptSpawnerPosition(float rangeMin, float rangeMax)
     {
@@ -549,7 +556,7 @@ public class RoomManager : MonoBehaviour
         {
             position = new Vector3(UnityEngine.Random.Range(rangeMin, rangeMax), 0, UnityEngine.Random.Range(rangeMin, rangeMax));
         }
-        else if(randomPosition == 1)
+        else if (randomPosition == 1)
         {
             position = new Vector3(-UnityEngine.Random.Range(rangeMin, rangeMax), 0, UnityEngine.Random.Range(rangeMin, rangeMax));
         }
@@ -563,5 +570,53 @@ public class RoomManager : MonoBehaviour
         }
         return position;
     }
+    #endregion
+
+    #region Event Functions
+
+    public void ActivateEvents()
+    {
+        for (int i = 0; i < altarBehaviorComponents.Length; i++)
+        {
+            altarBehaviorComponents[i].isFastEvent = activeFastRoom;
+            altarBehaviorComponents[i].LaunchInit();
+        }
+
+    }
+
+    public void ResetEvents()
+    {
+        if (activeRoomManagerDebug)
+            ScreenDebuggerTool.AddMessage("Event Reset");
+
+        // Close portal 
+        for (int i = 0; i < m_currentTeleporterCount; i++)
+        {
+            teleporterArray[i].DesactivationTeleportor();
+        }
+        isTeleporterActive = false;
+        isRoomHasBeenValidate = false;
+
+        // Remove all map generate
+        terrainGenerator.ClearMapGenerate();
+        currentRoomType = RoomType.Event;
+       
+        eventActive = altarBehaviorComponents.Length;
+        int[] dataObjectif =
+        {
+            (maxEventActive - eventActive),
+            maxEventActive
+        };
+        roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
+        //roomInfoUI.ActualizeRoomInfoInterface();
+        //roomInfoUI.DeactivateMajorGoalInterface();
+
+        for (int i = 0; i < altarBehaviorComponents.Length; i++)
+        {
+            altarBehaviorComponents[i].ResetAltarEvent();
+        }
+    }
+
+    #endregion
 
 }

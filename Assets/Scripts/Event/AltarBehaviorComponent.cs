@@ -112,6 +112,9 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public Action OnEventEnd;
 
+    [Header("Debug Altar")]
+    public bool isFastEvent = false;
+
     #region Unity Functions
     void Start()
     {
@@ -121,6 +124,7 @@ public class AltarBehaviorComponent : InteractionInterface
     public void LaunchInit()
     {
         InitComponent();
+        this.enabled = true;
         ownNumber = altarCount;
         altarCount++;
 
@@ -172,21 +176,14 @@ public class AltarBehaviorComponent : InteractionInterface
             m_isWaveCanSpawn = true;
         }
 
-        
+
 
         progression = 1.0f - m_objectHealthSystem.healthSystem.percentHealth;
         //m_eventProgressionSlider.fillAmount = progression;
         roomInfoUI.ActualizeMajorGoalProgress(progression);
         //corruptedRoot.transform.localScale = Vector3.one * (corruptedRootScale.Evaluate(progression));
         roomInfoUI.UpdateTextProgression((int)m_objectHealthSystem.healthSystem.maxHealth - (int)m_objectHealthSystem.healthSystem.health, (int)m_objectHealthSystem.healthSystem.maxHealth);
-        //Debug.Log("Progression : " + progression + "(" + this.name + ")");
 
-        //m_eventProgressionSlider.fillAmount = progression; // Update event UI
-
-        //if (DestroyCondition())
-        //{
-        //    DestroyAltar();
-        //}
     }
 
     #endregion
@@ -220,7 +217,7 @@ public class AltarBehaviorComponent : InteractionInterface
         socleMesh.material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
-            if(i == 1)
+            if (i == 1)
             {
                 matEvent = altarAllMesh[i].material;
             }
@@ -235,7 +232,6 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         yield return new WaitForSeconds(2.0f);
         m_idSpellReward = SpellManager.GetRandomSpellIndex();
-        GenerateNextReward(resetNumber);
     }
     #endregion
 
@@ -288,25 +284,30 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         if (hasBeenActivate) return;
 
+        isInteractable = false;
         hasBeenActivate = true;
 
         m_interactionEvent = GameState.s_playerGo.GetComponent<InteractionEvent>();
         m_objectHealthSystem.Setup((int)m_objectHealthSystem.maxHealthEvolution.Evaluate(m_enemyManager.m_characterUpgrade.avatarUpgradeList.Count));
         lostLifeToSpawnWave = (int)(m_objectHealthSystem.healthSystem.maxHealth / 3);
 
-        //m_enemiesCountConditionToWin = (int)(25 * (resetNumber + 1) + (m_enemyManager.m_maxUnittotal * 0.25f));
+
         m_enemyManager.ActiveEvent(transform);
 
 
         sphereCollider.enabled = true;
 
 
-        m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
+        if (!isFastEvent)
+        {
+            m_enemyManager.SpawEnemiesGroupCustom(transform.position, groupSize);
+        }
         m_isWaveCanSpawn = false;
         currentQuarter = (int)(m_objectHealthSystem.healthSystem.health) / lostLifeToSpawnWave;
         progression = 0;
 
         m_myAnimator.SetBool("ActiveEvent", true);
+        m_myAnimator.SetBool("Reset", false);
         m_selectionFeedback.ChangeLayerToDefault();
         if (resetNumber == 0)
         {
@@ -322,12 +323,12 @@ public class AltarBehaviorComponent : InteractionInterface
             //area.element = eventElementType;
             //lastItemInstantiate.SetActive(true);
         }
-        AltarAttackComponent  altarAttackComponent = GetComponent<AltarAttackComponent>();
+        AltarAttackComponent altarAttackComponent = GetComponent<AltarAttackComponent>();
         altarAttackComponent.ActivateAltarAttack(eventHolder.GetAltarAttackData(eventElementType, altarDone), m_myAnimator.transform.position);
         eventHolder.SpawnAreaVFX(eventElementType, transform.position);
 
         SetMeshesEventIntensity(0.33f * (1 + 1));
-      //  m_visualEffectActivation.Play();
+        //  m_visualEffectActivation.Play();
         m_distortionWave.SendEvent("Activation");
 
         GlobalSoundManager.PlayOneShot(13, transform.position);
@@ -340,6 +341,11 @@ public class AltarBehaviorComponent : InteractionInterface
 
         OnEventEnd += RunManager.instance.RemoveHourPoint;
 
+        if (isFastEvent)
+        {
+            SucceedEvent();
+        }
+
     }
 
 
@@ -347,15 +353,17 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         sphereCollider.enabled = false;
         roomInfoUI.DeactivateMajorGoalInterface();
-        //corruptedRoot.transform.localScale = Vector3.one * (0.01f);
+
         m_isEventOccuring = false;
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");
         progression = 0;
-        //ObjectifAndReward_Ui_Function.StopEventDisplay();
+
+
         m_myAnimator.SetBool("ActiveEvent", false);
         m_myAnimator.SetBool("IsDone", true);
         m_interactionEvent.currentInteractibleObjectActive = null;
+
         // Update Enemies Manager  ==> Create One functions from the enemyManager
         m_enemyManager.altarSuccessed++;
         m_enemyManager.DeactiveEvent(transform);
@@ -367,44 +375,34 @@ public class AltarBehaviorComponent : InteractionInterface
         altarAttackComponent.DeactivateAltarAttack();
         eventHolder.ActiveEndEvent();
 
-        int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().CheckEventSucceded();
+        int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().EventValidate();
         SpawnAltarReward(rewardIndex);
-        StartCoroutine(ResetEventWithDelay(1.5f));
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
-        //m_enemyManager.m_dayController.GetComponent<DayTimeController>().UpdateNextPhase();
-
         OnEventEnd?.Invoke();
         OnEventEnd -= RunManager.instance.RemoveHourPoint;
-
-        //transform.parent.GetComponentInChildren<RoomManager>().ValidateRoom();
 
 
         if (lastItemInstantiate != null)
             Destroy(lastItemInstantiate);
     }
 
-    public IEnumerator ResetEventWithDelay(float time)
-    {
-        yield return new WaitForSeconds(time);
-        ResetAltarEvent();
-    }
 
     public void ResetAltarEvent()
     {
         resetNumber++;
-        GenerateNextReward(resetNumber);
 
-        m_hasEventActivate = true;
+        isInteractable = true;
+        m_hasEventActivate = false;
         m_isEventOccuring = false;
+        hasBeenActivate = false;
+        m_myAnimator.SetBool("ActiveEvent", false);
+        m_myAnimator.SetBool("IsDone", false);
+        m_myAnimator.SetBool("Reset", true);
+        isOpen = false;
 
-        m_CurrentKillCount = 0;
-        float maxHealth = 100;
-
-        //m_objectHealthSystem.SetMaxHealth((int)maxHealth);
-        //m_objectHealthSystem.ResetCurrentHealth();
-
+        m_objectHealthSystem.ResetCurrentHealth();
     }
 
     #endregion 
@@ -415,98 +413,6 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         RewardDistribution rewardDistributionComponent = m_playerTransform.GetComponent<RewardDistribution>();
         rewardDistributionComponent.GiveReward((RewardType)(indexReward), piedestalTranformPosition, HealthReward.QUARTER, eventElementType);
-
-        return;
-        //for (int i = 0; i < nextReward; i++)
-        //{
-        //    Vector3 randomRadiusPosition = new Vector3(Random.Range(-radiusEjection, radiusEjection), 0, Random.Range(-radiusEjection, radiusEjection));
-
-        //    GameObject rewardObject = Instantiate(nextRewardObject, transform.position, Quaternion.identity, this.transform);
-
-        //    if (nextRewardTypologie == 2)
-        //    {
-        //        //rewardObject.GetComponent<CapsuleContainer>().capsuleIndex = m_idSpellReward;
-        //        if (rewardManagerReference) rewardManagerReference.GenerateNewArtefactReward(this.transform);
-
-        //    }
-
-        //    ExperienceMouvement expMouvementComponent = rewardObject.GetComponent<ExperienceMouvement>();
-        //    expMouvementComponent.ActiveExperienceParticule(m_playerTransform);
-        //    expMouvementComponent.GroundPosition = m_DropAreaPosition + randomRadiusPosition;
-        //    StartCoroutine(expMouvementComponent.MoveToGround());
-        //}
-
-    }
-
-    public string[] GetAltarData()
-    {
-        int RewardTypologie = nextRewardTypologie; // 0 = Cristal element; 1 = Experience quantit�; 2 = Specific spell; 3 = Health quarter
-        string[] dataToSend = new string[5];
-        dataToSend[0] = RewardTypologie.ToString();
-        dataToSend[1] = instructionOnActivation;
-        if (RewardTypologie == 0)
-        {
-            dataToSend[2] = nextReward.ToString();
-            dataToSend[3] = eventElementType.ToString();
-        }
-        else if (RewardTypologie == 1)
-        {
-            dataToSend[2] = nextReward.ToString();
-            dataToSend[3] = "123"; //1234 = Aucun element car la r�compense est de l'experience
-        }
-        else if (RewardTypologie == 2)
-        {
-            dataToSend[2] = "-1"; // -1 = Aucune quantit� particuli�re car la r�compense est unique
-            dataToSend[3] = m_idSpellReward.ToString(); // A remplac� par une variable randomis� au d�marrage
-        }
-        /*  else if (RewardTypologie == 3)
-          {
-              dataToSend[2] = "-1"; // -1 = valeur par defaut signifiant 1 quarter de vie. Pourrait etre augment� sous condition sp�cifique
-              dataToSend[3] = "ID de la ressource (vie, mana, autre ?) associ� au gain"; 
-          }*/
-        dataToSend[4] = "" + progression;
-
-        return dataToSend;
-    }
-
-    public void GenerateNextReward(int repeatNumber)
-    {
-        if (repeatNumber == 0)
-        {
-            nextRewardTypologie = 2;
-            nextRewardObject = rewardObject[6];
-            nextReward = 1;
-        }
-        else if (repeatNumber == 1)
-        {
-            nextRewardTypologie = 1;
-            nextReward = (int)(100 + Time.timeSinceLevelLoad);
-            nextRewardObject = rewardObject[0];
-        }
-        else if (repeatNumber == 2)
-        {
-            nextRewardTypologie = 0;
-            nextReward = 30;
-            nextRewardObject = rewardObject[(int)eventElementType];
-        }
-        else if (repeatNumber == 3)
-        {
-            nextRewardTypologie = 3;
-            nextReward = 1;
-            nextRewardObject = rewardObject[5];
-        }
-        else if (repeatNumber == 4)
-        {
-            nextRewardTypologie = 0;
-            nextReward = 70;
-            nextRewardObject = rewardObject[(int)eventElementType];
-        }
-
-    }
-
-    public void GetDamage(int damage)
-    {
-
     }
 
     #endregion
@@ -535,15 +441,9 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public override void OnInteractionEnd(GameObject player)
     {
-
+        return;
     }
 
-    #region Debug Functions
-    public void OnDrawGizmos()
-    {
-        
-    }
-    #endregion
 
 
 

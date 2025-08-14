@@ -40,6 +40,7 @@ public class Teleporter : MonoBehaviour
     {
         teleportorIsActive = true;
         tpFeedbackController.activeChange = true;
+        m_animator.SetBool("Close", false);
         m_animator.SetBool("Open", true);
         if (socleMaterial == null)
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
@@ -51,7 +52,9 @@ public class Teleporter : MonoBehaviour
     public void DesactivationTeleportor()
     {
         teleportorIsActive = false;
-        if(socleMaterial == null)
+        m_animator.SetBool("Open", false);
+        m_animator.SetBool("Close", true);
+        if (socleMaterial == null)
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
         socleMaterial.SetFloat("_TEXMCOLINT", -200f);
 

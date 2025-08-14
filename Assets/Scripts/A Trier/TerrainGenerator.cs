@@ -66,7 +66,8 @@ public class TerrainGenerator : MonoBehaviour
 
     [Header("Debug Parameter")]
     public bool isOnlyBoss;
-    [SerializeField] private bool m_activeRoomMangerDebug;
+    [SerializeField] private bool m_activeRoomManagerDebug;
+    [SerializeField] private bool m_activeFastRoom;
     [SerializeField] private bool m_activateTerrainGeneratorDebug;
 
     public void Start()
@@ -172,7 +173,7 @@ public class TerrainGenerator : MonoBehaviour
         roomManager.healthReward = HealthReward.FULL;
         roomManager.isTimingPassing = false;
         roomManager.roomInfoUI = roomInfoUI;
-        if (m_activeRoomMangerDebug)
+        if (m_activeRoomManagerDebug)
         {
             roomManager.activeRoomManagerDebug = true;
         }
@@ -201,8 +202,8 @@ public class TerrainGenerator : MonoBehaviour
         int offsetXNewMaps = 3000 * postionOffsetMap + mapInstantiated.Count;
 
 
-        List<GameObject> mapList = terrainPool;
-        if (currentRoomManager.terrainIndex != -1 && currentRoomManager.terrainIndex < mapList.Count) 
+        List<GameObject> mapList = new List<GameObject>(terrainPool);
+        if (currentRoomManager.terrainIndex != -1 && currentRoomManager.terrainIndex < mapList.Count)
             mapList.RemoveAt(currentRoomManager.terrainIndex);
 
         for (int i = 0; i < mapCountToGenerate; i++)
@@ -212,10 +213,10 @@ public class TerrainGenerator : MonoBehaviour
 
             int randomTerrain = Random.Range(0, mapList.Count);
 
-            
+
             GameObject mapInstance = Instantiate(mapList[randomTerrain], transform.position + new Vector3(offsetXNewMaps, 500, 1500 * i), transform.rotation);
             idMap = terrainPool.IndexOf(mapList[randomTerrain]);
-            
+
             mapList.RemoveAt(randomTerrain);
             mapInstantiated.Add(mapInstance);
 
@@ -227,6 +228,11 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.terrainIndex = idMap;
             roomManager.hasEndReward = false;
             roomManager.isTimingPassing = true;
+            if (m_activeRoomManagerDebug)
+            {
+                roomManager.activeRoomManagerDebug = true;
+            }
+            if (m_activeFastRoom) roomManager.activeFastRoom = true;
 
             // Setup the preview texture
             roomManager.previewCamera.gameObject.SetActive(true);
@@ -234,9 +240,9 @@ public class TerrainGenerator : MonoBehaviour
             roomManager.m_CRT.Initialize();
             roomManager.m_CRT.Update();
 
-            if(m_activateTerrainGeneratorDebug)
+            if (m_activateTerrainGeneratorDebug)
             {
-                ScreenDebuggerTool.AddMessage("Next map  : " + mapInstance.name,i,6);
+                ScreenDebuggerTool.AddMessage("Next map  : " + mapInstance.name, i, 6);
             }
 
             GuerhoubaTools.LogSystem.LogMsg("New room with the type " + roomManager.currentRoomType.ToString() + "with map : " + mapInstance.name);
@@ -245,6 +251,14 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         countRoomGeneration++;
+        roomGeneration_Static = countRoomGeneration;
+    }
+
+    public void ClearMapGenerate()
+    {
+        previousMapList.Clear();
+        mapInstantiated.Clear();
+        countRoomGeneration--;
         roomGeneration_Static = countRoomGeneration;
     }
 
@@ -278,7 +292,12 @@ public class TerrainGenerator : MonoBehaviour
             RoomManager roomManagerNextMap = mapInstantiated[i].GetComponentInChildren<RoomManager>();
             roomManagerNextMap.rewardAssociated = GenerateRoomReward();
 
-            TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
+            if(currentRoomManager.teleporterArray[i].tpFeedbackController == null)
+            {
+                currentRoomManager.teleporterArray[i].tpFeedbackController = currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
+            }
+            
+            TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[i].tpFeedbackController;
             tpFeedback.rewardToUse = (int)roomManagerNextMap.rewardType;
             tpFeedback.eventReward = roomManagerNextMap.rewardAssociated;
             tpFeedback.ChangeRewardID(tpFeedback.rewardToUse, roomManagerNextMap.m_materialPreviewTRT);

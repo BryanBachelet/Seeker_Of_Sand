@@ -16,7 +16,7 @@ public class InteractionEvent : MonoBehaviour
     [SerializeField] private float radiusInteraction;
     [HideInInspector] private GameLayer m_gameLayer;
     [HideInInspector] private float lastInteractionCheck = 0.5f;
-    [HideInInspector] private float intervalCheckInteraction = 0.5f;
+    [HideInInspector] private float intervalCheckInteraction = 0.2f;
     [SerializeField] private GameObject currentInteractibleObject;
     private Transform m_socleTransform;
 
@@ -57,6 +57,9 @@ public class InteractionEvent : MonoBehaviour
 
     private GameObject hintDetailCost;
 
+    private bool m_hasNewInteractibleElement;
+    private bool m_hasInteractibleElementNear;
+
     #region Unity Functions
     // Start is called before the first frame update
     void Start()
@@ -78,36 +81,18 @@ public class InteractionEvent : MonoBehaviour
         {
             Collider[] col = Physics.OverlapSphere(transform.position, radiusInteraction, m_gameLayer.interactibleLayerMask);
             FindInteractiveElementAround(col);
-            if (currentInteractibleObjectActive == null)
-            {
-                if (col.Length > 0)
-                { NearPossibleInteraction(col); }
-            }
-            NearTrader();
-            NearArtefact();
-            if (col.Length <= 0)
-            {
-                if (hintInputInteraction.activeSelf)
-                {
-                    interactionAction_Txt.text = "";
-                    hintInputInteraction_Detail.SetActive(false);
-                    hintInputInteraction.SetActive(false);
-                    hintAnimator.SetBool("OpenHintDetail", false);
-                    interactionDetail_Txt.text = "";
 
-                }
+            if (currentInteractionInterface && m_hasNewInteractibleElement && currentInteractionInterface.isInteractable)
+            {
+                UpdateInteraction();
+            }
+
+            if (col.Length == 0 && currentInteractionInterface || currentInteractionInterface && !currentInteractionInterface.isInteractable || currentInteractionInterface == null && hintInputInteraction.activeSelf)
+            {
+                RemoveInteraction();
+                currentInteractionInterface = null;
             }
             lastInteractionCheck = Time.time;
-        }
-
-        if (currentInteractibleObject != null)
-        {
-            CalculateWorldPosition(currentInteractibleObject);
-        }
-
-        else if (lastArtefact != null)
-        {
-            CalculateWorldPosition(lastArtefact.gameObject);
         }
     }
     #endregion
@@ -117,21 +102,102 @@ public class InteractionEvent : MonoBehaviour
     {
         if (col.Length == 0)
         {
-            currentInteractionInterface = null;
             return;
         }
 
         GameObject interactiveObject = FindClosestElement(col);
 
-        InteractionInterface interactionInterface = interactiveObject.GetComponent<InteractionInterface>();
-     
+        if (interactiveObject == null)
+        {
+            return;
+        }
 
+        InteractionInterface interactionInterface = interactiveObject.GetComponent<InteractionInterface>();
+
+        if (currentInteractionInterface != interactionInterface) m_hasNewInteractibleElement = true;
+        currentInteractibleObject = interactiveObject;
         currentInteractionInterface = interactionInterface;
     }
 
+    public void UpdateInteraction()
+    {
+        m_hasNewInteractibleElement = false;
+        interactionAction_Txt.text = currentInteractionInterface.verbeInteraction;
+        hintInputInteraction.SetActive(true);
+        if (currentInteractionInterface.hasAdditionalDescription)
+        {
+            hintInputInteraction_Detail.SetActive(true);
+            hintAnimator.SetBool("OpenHintDetail", true);
+            interactionDetail_Txt.text = currentInteractionInterface.additionalDescription;
+            if (currentInteractionInterface.cost > 0)
+            {
+                if (hintDetailCost != null) { Destroy(hintDetailCost); }
+
+                hintDetailCost = Instantiate(m_gameRessources.costPrefab[currentInteractionInterface.cristalID], costCristal.transform.position, costCristal.transform.rotation, costCristal.transform);
+                TMP_Text textCost = hintDetailCost.GetComponentInChildren<TMP_Text>();
+                if (currentInteractionInterface.cristalID < 4) //On regarde la nature du cristal (si < 4, le cristal est élémentaire
+                {
+                    if (currentInteractionInterface.cost > m_CristalInventory.cristalCount[currentInteractionInterface.cristalID]) { textCost.color = Color.red; }
+                    else { textCost.color = Color.white; }
+                }
+                else if (currentInteractionInterface.cristalID == 4) //On regarde la nature du cristal (si == 4, le cristal est dissonance
+                {
+                    if (currentInteractionInterface.cost > m_CristalInventory.dissonanceCout) { textCost.color = Color.red; }
+                    else { textCost.color = Color.white; }
+                }
+                textCost.text = "x " + currentInteractionInterface.cost;
+            }
+        }
+
+        Selection_Feedback selection = currentInteractibleObject.GetComponent<Selection_Feedback>();
+        if (currentInteractibleObject.GetComponent<AltarBehaviorComponent>())
+        {
+            if (selection != null && !currentInteractibleObject.GetComponent<AltarBehaviorComponent>().hasBeenActivate) { selection.ChangeLayerToSelection(); }
+        }
+        else
+        {
+            if (selection != null)
+            {
+                selection.ChangeLayerToSelection();
+            }
+        }
+    }
+
+    private void RemoveInteraction()
+    {
+        if (hintInputInteraction.activeSelf)
+        {
+            interactionAction_Txt.text = "";
+
+            if (currentInteractionInterface && !currentInteractionInterface.hasAdditionalDescription)
+            {
+
+                hintAnimator.SetBool("OpenHintDetail", false);
+                interactionDetail_Txt.text = "";
+            }
+            hintInputInteraction_Detail.SetActive(false);
+            hintInputInteraction.SetActive(false);
+        }
+        //bandeDiscussion.SetBool("NearNPC", false);
+        m_hasNewInteractibleElement = false;
+        m_hasInteractibleElementNear = false;
+
+        if (currentInteractibleObject == null) return;
+        Selection_Feedback selection = currentInteractibleObject.GetComponent<Selection_Feedback>();
+        if (selection != null) { selection.ChangeLayerToDefault(); }
+        currentInteractibleObject = null;
+        m_socleTransform = null;
+    }
+
+
     private GameObject FindClosestElement(Collider[] col)
     {
-        if (col.Length == 1) return col[0].gameObject;
+        if (col.Length == 1)
+        {
+            if (col[0].GetComponent<InteractionInterface>().isInteractable)
+                return col[0].gameObject;
+            else return null;
+        }
 
         int colliderIndex = 0;
         float distance = 1000;
@@ -144,7 +210,7 @@ public class InteractionEvent : MonoBehaviour
                 Debug.LogWarning("This object " + interactionInterface.name + " don't have an InteractionInterface component");
                 continue;
             }
-            if (interactionInterface.isInteractable && tempDistance < distance)
+            if (tempDistance < distance)
             {
                 distance = tempDistance;
                 colliderIndex = i;
@@ -187,40 +253,6 @@ public class InteractionEvent : MonoBehaviour
                         textCost.text = "x " + currentInteractionInterface.cost;
                     }
                 }
-            }
-            if (currentInteractibleObject != col[0].transform.gameObject)
-            {
-                currentInteractibleObject = col[0].transform.gameObject;
-                AltarBehaviorComponent altarBehaviorComponent = currentInteractibleObject.GetComponent<AltarBehaviorComponent>();
-                if (!altarBehaviorComponent) return;
-
-                m_socleTransform = GameObject.Find("low_Socle").transform;
-                //eventDataInfo = altarBehaviorComponent.GetAltarData();
-
-                // Removing the event animation
-                //m_lastHintAnimator.SetBool("InteractionOn", true);
-
-                //if (eventDataInfo[0] == "0")
-                //{
-                //    img_ImageReward.sprite = sprite_List[int.Parse(eventDataInfo[3])]; //Cristal Associated
-                //}
-                //else if (eventDataInfo[0] == "1")
-                //{
-                //    img_ImageReward.sprite = sprite_List[4]; // Experience Icon
-                //}
-                //else if (eventDataInfo[0] == "2")
-                //{
-                //
-                //    img_ImageReward.sprite = SpellManager.instance.spellProfils[int.Parse(eventDataInfo[3])].spell_Icon;
-                //    //Trouver methode pour récupérer le sprite du sort obtenu
-                //}
-                //else if (eventDataInfo[0] == "3")
-                //{
-                //    img_ImageReward.sprite = sprite_List[5]; //Health Quarter icon
-                //}
-                //txt_ObjectifDescription.text = eventDataInfo[1];
-                //txt_RewardDescription.text = eventDataInfo[2] + "x";
-                //img_progressionBar.fillAmount = float.Parse(eventDataInfo[4]);
             }
 
 
@@ -412,17 +444,11 @@ public class InteractionEvent : MonoBehaviour
             if (hintInputInteraction.activeSelf)
             {
                 hintInputInteraction.SetActive(false);
-            }
-
-            lastTrader.SetBool("StandUp", false);
-            m_lastHintAnimator.SetBool("InteractionOn", false);
-            txt_ObjectifDescription.text = "";
-            txt_ObjectifDescriptionPnj.text = "";
-            lastTrader = null;
-            StartCoroutine(CloseUIWithDelay(2));
-            */
+            }*/
         }
     }
+
+    // TODO : Delete 
 
     public void NearArtefact()
     {
@@ -485,12 +511,12 @@ public class InteractionEvent : MonoBehaviour
     #region UI Functions
     public IEnumerator CloseUIWithDelay(float time)
     {
-        //m_lastHintAnimator.SetBool("InteractionOn", false);
+        ;
         if (m_lastArtefactAnimator != null) { m_lastArtefactAnimator.SetBool("PlayerProxi", false); }
 
         txt_ObjectifDescriptionPnj.text = "";
         yield return new WaitForSeconds(time);
-        //ui_HintInteractionObject.SetActive(false);
+
         m_hintInteractionManager.ActivateAutelData(false);
         m_hintInteractionManager.ActivatePnjData(false);
         m_hintInteractionManager.ActiveArtefactData(false);
@@ -503,8 +529,7 @@ public class InteractionEvent : MonoBehaviour
         ((ViewportPosition.x * CanvasRect.sizeDelta.x) - (CanvasRect.sizeDelta.x * 0.5f)),
         ((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * 0.5f)));
 
-        //now you can set the position of the ui element
-        //parentHintTransform.anchoredPosition = WorldObject_ScreenPosition + offsetPopUpDisplay;
+
     }
 
 
