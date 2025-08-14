@@ -25,7 +25,7 @@ namespace BorsalinoTools
         public string filepath;
         public int lineNumber;
         public int key;
-        public bool isEmpty;
+        public bool isEmpty = true;
 
         public override bool Equals(object obj)
         {
@@ -73,16 +73,20 @@ namespace BorsalinoTools
             messageMetaData.filepath = filePath;
             messageMetaData.lineNumber = lineNumber;
             messageMetaData.key = key;
+            messageMetaData.isEmpty = false;
 
-            if (key > 100 || !debugMessageMetaDataList.Contains(messageMetaData))
+            if (!debugMessageMetaDataList.Contains(messageMetaData))
             {
                 debugMessageDataList.Add(messageData);
                 debugMessageMetaDataList.Add(messageMetaData);
+
             }
             else
             {
-                debugMessageDataList[messageData.key].duration = duration;
-                debugMessageDataList[messageData.key].text = text;
+               int indexArray = debugMessageMetaDataList.IndexOf(messageMetaData);
+                debugMessageDataList[indexArray].duration = duration;
+                debugMessageDataList[indexArray].text = text;
+                debugMessageMetaDataList[indexArray].isEmpty = false;
             }
 #endif 
 
@@ -91,14 +95,13 @@ namespace BorsalinoTools
 
         public void Awake()
         {
-            debugMessageDataList.AddRange(Enumerable.Repeat(new DebugMessageData(), 100));
-            debugMessageMetaDataList.AddRange(Enumerable.Repeat(new DebugMessageMetaData(), 100));
+          
         }
 
         public void Start()
         {
             CommandsConsole.logAction += SetScreenDebugStateCommand;
-           
+
         }
         public string inputText = "";
         public void Update()
@@ -153,7 +156,8 @@ namespace BorsalinoTools
             for (int i = 0; i < debugMessageDataList.Count; i++)
             {
                 DebugMessageData messageData = debugMessageDataList[i];
-                if (messageData != null)
+                DebugMessageMetaData metaData = debugMessageMetaDataList[i];
+                if (!metaData.isEmpty)
                 {
                     GUIStyle style1 = new GUIStyle();
                     style1.normal.textColor = messageData.color;
