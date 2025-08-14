@@ -14,7 +14,7 @@ public class HitEffectHighLight : MonoBehaviour
     [SerializeField] private Color[] colorsUsed = new Color[2];
     [SerializeField] private float[] colorsIntensity = new float[2];
 
-    [SerializeField] private SkinnedMeshRenderer m_meshRenderer;
+    [SerializeField] private Renderer m_meshRenderer;
     [SerializeField] private int indexMatAffected = 0;
     [SerializeField] private Material m_materialAffected;
     private MaterialPropertyBlock _propBlock;

@@ -206,13 +206,13 @@ public class AltarBehaviorComponent : InteractionInterface
         eventLight.color = colorEvent[(int)eventElementType];
         meshPointLight.material.SetColor("_MainColor", colorEventTab[(int)eventElementType]);
 
-        socleMesh.material = materialEvent[(int)eventElementType];
+        //socleMesh.material = materialEvent[(int)eventElementType];
 
         m_visualEffectActivation.GetComponentInChildren<VisualEffect>();
         m_visualEffectActivation.SetVector4("ColorEvent", colorEvent[(int)eventElementType]);
 
 
-        socleMesh.material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
+        //socleMesh.material.SetColor("_SelfLitColor", colorEventTab[(int)eventElementType]);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
             if(i == 1)
@@ -504,7 +504,7 @@ public class AltarBehaviorComponent : InteractionInterface
 
     private void SetMeshesEventIntensity(float intensity)
     {
-        socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
+        //socleMesh.material.SetFloat("_SelfLitIntensity", intensity);
         for (int i = 0; i < altarAllMesh.Length; i++)
         {
             altarAllMesh[i].material.SetColor("_SelfLitColor", colorEventTab[GeneralTools.GetElementalArrayIndex(eventElementType, true)]);

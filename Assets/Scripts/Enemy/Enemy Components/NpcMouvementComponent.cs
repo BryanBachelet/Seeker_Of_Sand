@@ -157,7 +157,7 @@ namespace Enemies
                 if(m_npcInfo.type != EnemyType.TWILIGHT_SISTER)
                 {
                     float time = Time.time;
-                    if (time > lastTimeCheck + 3 && IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main))
+                    if (time > lastTimeCheck + 3 && IsVisibleFrom(m_npcHealthComponent.m_Renderer, Camera.main))
                     {
                         lastTimeSeen = time;
                         lastTimeCheck = time;
@@ -184,7 +184,7 @@ namespace Enemies
                     }
                     else if (time > lastTimeSeen + replaceDelta)
                     {
-                        if (!IsVisibleFrom(m_npcHealthComponent.m_SkinMeshRenderer, Camera.main) || Vector3.Distance(transform.position, lastPosCheck) < 10)
+                        if (!IsVisibleFrom(m_npcHealthComponent.m_Renderer, Camera.main) || Vector3.Distance(transform.position, lastPosCheck) < 10)
                         {
                             lastTimeCheck = time;
                             lastTimeSeen = time;

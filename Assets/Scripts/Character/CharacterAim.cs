@@ -78,7 +78,7 @@ namespace Character
         private GameObject m_closestEnemy;
         [SerializeField] private UI_LifeTarget m_lifeTargetUI;
 
-        private SkinnedMeshRenderer m_lastObjectPointed;
+        private GameObject m_lastObjectPointed;
         private GameObject m_GO_lastObject;
         public int pointedObject = 20;
         private int previewMask;
@@ -559,7 +559,8 @@ namespace Character
             m_GO_lastObject = m_closestEnemy;
             if(m_closestEnemy.GetComponent<NpcHealthComponent>())
             {
-                m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_SkinMeshRenderer;
+                m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_entityAnimator.gameObject;
+                
             }
             if (m_lastObjectPointed)
             {

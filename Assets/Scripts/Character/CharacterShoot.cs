@@ -1144,7 +1144,7 @@ namespace Character
             m_Mat_Cape_Flamme[1].SetColor("_Color03", colFlameToUse);
             m_Mat_capucheSkinedMesh.SetColor("_SelfLitColor", capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.TagList.element)]);
             m_Mat_capucheSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex]);
-            ChangeVfxElement(((int)lastElement));
+            //ChangeVfxElement(((int)lastElement));
             if (!m_shootInput)
             {
                 m_shootInputActive = false;
@@ -1852,14 +1852,14 @@ namespace Character
                
                 OnCombatStarting?.Invoke();
 
-                bookSmoothFollow.ChangeForBook(true);
+                //bookSmoothFollow.ChangeForBook(true);
             }
             if(combatPlayerState == CombatPlayerState.NONE)
             {
                 
                 OnCombatEnding?.Invoke();
 
-                bookSmoothFollow.ChangeForBook(false);
+                //bookSmoothFollow.ChangeForBook(false);
             }
 
             

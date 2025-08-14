@@ -436,7 +436,7 @@ public class RoomManager : MonoBehaviour
     {
         int eventIndex = eventNumber;
         eventNumber--;
-        dropGenerator.GenerateCristal(this.transform);
+        //dropGenerator.GenerateCristal(this.transform);
         int[] dataObjectif = { (3-eventNumber), 3 };
         roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
         if (eventNumber <= 0)
