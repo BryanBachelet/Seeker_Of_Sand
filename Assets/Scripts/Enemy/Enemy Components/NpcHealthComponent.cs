@@ -54,7 +54,8 @@ namespace Enemies
 
 
 
-        public SkinnedMeshRenderer m_SkinMeshRenderer;
+        public Renderer m_Renderer;
+
         [SerializeField] private List<Material> m_materialList = new List<Material>();        // Hit damage
         public int[] materialCutout;
         public int[] materialEmissive;
@@ -98,7 +99,7 @@ namespace Enemies
         public AfflictionManager m_afflictionManager;
         public EntityModifier m_entityModifier;
 
-        
+        private GameObject test;
 
         void Awake()
         {
@@ -121,11 +122,12 @@ namespace Enemies
                 moveSoundInstance.setVolume(0);
                 //moveSoundInstance.setVolume(0);
             }
-            if (m_SkinMeshRenderer != null)
+
+            if (m_Renderer != null)
             {
-                for (int i = 0; i < m_SkinMeshRenderer.materials.Length; i++)
+                for (int i = 0; i < m_Renderer.materials.Length; i++)
                 {
-                    m_materialList.Add(m_SkinMeshRenderer.materials[i]);
+                    m_materialList.Add(m_Renderer.materials[i]);
                 }
 
             }

@@ -411,7 +411,7 @@ namespace Character
                 m_BookAnim.SetBool("Casting", false);
                 m_characterShoot.gsm.CanalisationParameterLaunch(1, (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).TagList.element - 0.01f);
                 MatchRotationAndDirection();
-                if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
+                //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(false); }
                 //  cameraPlayer.BlockZoom(false);
                 //DisplayNewCurrentState(1);
 
@@ -427,7 +427,7 @@ namespace Character
                     (float)m_characterShoot.m_characterSpellBook.GetSpecificSpell(m_characterShoot.m_currentIndexCapsule).TagList.element - 0.01f
                     );
 
-                if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
+                //if (bookSmoothFollow) { bookSmoothFollow.ChangeForBook(true); }
                 //DisplayNewCurrentState(0);
                 //  cameraPlayer.BlockZoom(true);
                 //SetCombatMode(true);

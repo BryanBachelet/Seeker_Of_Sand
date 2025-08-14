@@ -487,25 +487,41 @@ namespace Character
         #region Inputs Functions
         public void ShootInput(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed && state.isPlaying)
+            if (ctx.performed)
             {
-                StartCasting();
-                //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
-                m_shootInput = true;
-                m_shootInputActive = true;
-                m_lastTimeShot = Time.time;
-                m_hasCancel = false;
-                SetCombatMode(CombatPlayerState.COMBAT);
+                if (state.isPlaying)
+                {
+                    StartCasting();
+                    //gsm.CanalisationParameterLaunch(0.01f, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
+                    m_shootInput = true;
+                    m_shootInputActive = true;
+                    m_lastTimeShot = Time.time;
+                    m_hasCancel = false;
+                    SetCombatMode(CombatPlayerState.COMBAT);
+                }
+                else
+                {
+                    m_cameraBehavior.ChangeCursorDisplay(0, true);
+                }
+
             }
-            if (ctx.canceled && state.isPlaying)
+            if (ctx.canceled)
             {
-                m_shootInput = false;
-                m_shootInputActive = false;
-                CancelShoot();
-                //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
-                m_CharacterMouvement.m_SpeedReduce = 1;
-                SetCombatMode(CombatPlayerState.NONE);
-                //m_CharacterMouvement.ActiveSlide();
+                if(state.isPlaying)
+                {
+                    m_shootInput = false;
+                    m_shootInputActive = false;
+                    CancelShoot();
+                    //gsm.CanalisationParameterLaunch(1, (float)m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).TagList.element - 0.01f);
+                    m_CharacterMouvement.m_SpeedReduce = 1;
+                    SetCombatMode(CombatPlayerState.NONE);
+                    //m_CharacterMouvement.ActiveSlide();
+                }
+                else
+                {
+                    m_cameraBehavior.ChangeCursorDisplay(1, true);
+                }
+
             }
         }
         #endregion
@@ -1128,7 +1144,7 @@ namespace Character
             m_Mat_Cape_Flamme[1].SetColor("_Color03", colFlameToUse);
             m_Mat_capucheSkinedMesh.SetColor("_SelfLitColor", capColorByElement[(int)GeneralTools.GetElementalArrayIndex(currentCloneSpellProfil.TagList.element)]);
             m_Mat_capucheSkinedMesh.SetFloat("_SelfLitPower", (float)m_currentStack[m_currentRotationIndex]);
-            ChangeVfxElement(((int)lastElement));
+            //ChangeVfxElement(((int)lastElement));
             if (!m_shootInput)
             {
                 m_shootInputActive = false;
@@ -1836,14 +1852,14 @@ namespace Character
                
                 OnCombatStarting?.Invoke();
 
-                bookSmoothFollow.ChangeForBook(true);
+                //bookSmoothFollow.ChangeForBook(true);
             }
             if(combatPlayerState == CombatPlayerState.NONE)
             {
                 
                 OnCombatEnding?.Invoke();
 
-                bookSmoothFollow.ChangeForBook(false);
+                //bookSmoothFollow.ChangeForBook(false);
             }
 
             

@@ -296,19 +296,16 @@ namespace Render.Camera
             if (ctx.performed && m_mouseInputActivate)
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                //Cursor.visible = false;
-                Cursor.SetCursor(m_cursorTex[0], Vector2.zero, CursorMode.ForceSoftware);
+                ChangeCursorDisplay(0, false);
                 m_isRotationInputPress = true;
                 m_registerMousePositionRotation = Mouse.current.position.value;
 
             }
             if (ctx.canceled && m_mouseInputActivate)
             {
-                Cursor.SetCursor(m_cursorTex[1], Vector2.zero, CursorMode.ForceSoftware);
+                ChangeCursorDisplay(1, true);
                 m_isRotationInputPress = false;
                 Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
                 Mouse.current.WarpCursorPosition(m_registerMousePositionRotation);
             }
 
@@ -542,6 +539,11 @@ namespace Render.Camera
             m_directionCamera = m_directionCamera.normalized;
         }
 
+        public void ChangeCursorDisplay(int displayNumber, bool displayState)
+        {
+            Cursor.SetCursor(m_cursorTex[displayNumber], Vector2.zero, CursorMode.ForceSoftware);
+            Cursor.visible = displayState;
+        }
 
     }
 
