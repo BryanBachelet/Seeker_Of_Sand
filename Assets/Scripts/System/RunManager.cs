@@ -25,7 +25,7 @@ namespace GuerhoubaGames
 
         [Header("Night Variables")]
         public float nightDurationSeconds = 0;
-        public float currentNightTimeCountdown { get { return currentNightTimeCountdown; } private set { } }
+        public float currentNightTimeCountdown { get; private set; } 
 
         [Header("Dissonance Heart")]
         public int dissonanceHeartBroken = 0;

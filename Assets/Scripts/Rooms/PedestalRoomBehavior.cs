@@ -17,6 +17,7 @@ namespace GuerhoubaGames
         {
             roomManager.ResetEvents();
             isInteractable = false;
+            isOpen = false;
         }
 
         public void Start()

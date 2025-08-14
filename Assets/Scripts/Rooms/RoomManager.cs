@@ -253,6 +253,11 @@ public class RoomManager : MonoBehaviour
             teleporterArray[i].gameObject.SetActive(true);
             teleporterArray[i].enemyManager = m_enemyManager;
         }
+        for (int i = m_currentTeleporterCount; i < teleporterArray.Length; i++)
+        {
+            teleporterArray[i].gameObject.SetActive(false);
+            teleporterArray[i].enemyManager = m_enemyManager;
+        }
 
     }
 
@@ -376,9 +381,9 @@ public class RoomManager : MonoBehaviour
         terrainGenerator.GenerateMap();
 
 
-        for (int i = 0; i < teleporterArray.Length; i++)
+        for (int i = 0; i < terrainGenerator.mapInstantiated.Count; i++)
         {
-            SetupTeleporter(teleporterArray[i].TeleporterNumber);
+            SetupTeleporter(terrainGenerator.mapInstantiated.Count);
         }
         ActivateTeleporters();
 

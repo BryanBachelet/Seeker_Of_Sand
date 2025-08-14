@@ -26,13 +26,13 @@ public class Teleporter : MonoBehaviour
     void Awake()
     {
         if (socleMaterial == null) socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
-        if(m_animator == null) m_animator = this.GetComponent<Animator>();
+        if (m_animator == null) m_animator = this.GetComponent<Animator>();
         if (terrainGen == null)
         {
             terrainGen = GameObject.Find("9-TerrainGenerator").GetComponent<TerrainGenerator>();
         }
         tpFeedbackController = gameObject.GetComponentInChildren<TeleporterFeebackController>();
-        if(m_cameraFadeFonction == null) m_cameraFadeFonction = Camera.main.GetComponent<CameraFadeFunction>();
+        if (m_cameraFadeFonction == null) m_cameraFadeFonction = Camera.main.GetComponent<CameraFadeFunction>();
     }
 
 
@@ -40,7 +40,8 @@ public class Teleporter : MonoBehaviour
     {
         teleportorIsActive = true;
         tpFeedbackController.activeChange = true;
-        m_animator.SetBool("Close", false);
+        if (!tpFeedbackController.gameObject.activeSelf) 
+            tpFeedbackController.gameObject.SetActive(true);
         m_animator.SetBool("Open", true);
         if (socleMaterial == null)
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
@@ -53,7 +54,6 @@ public class Teleporter : MonoBehaviour
     {
         teleportorIsActive = false;
         m_animator.SetBool("Open", false);
-        m_animator.SetBool("Close", true);
         if (socleMaterial == null)
             socleMaterial = this.GetComponentInChildren<MeshRenderer>().material;
         socleMaterial.SetFloat("_TEXMCOLINT", -200f);
@@ -61,7 +61,7 @@ public class Teleporter : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player"  && teleportorIsActive && !isReceiver)
+        if (other.tag == "Player" && teleportorIsActive && !isReceiver)
         {
             if (m_cameraFadeFonction && m_cameraFadeFonction.renderCam)
             {
@@ -74,7 +74,7 @@ public class Teleporter : MonoBehaviour
 
 
             usedTeleporter = true;
-            
+
 
 
         }
