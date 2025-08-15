@@ -99,6 +99,10 @@ namespace Enemies
         public AfflictionManager m_afflictionManager;
         public EntityModifier m_entityModifier;
 
+        [Header("Champion Variables")]
+        public float percentGainHealthAdd = 100;
+        public float percentGainSize = 100;
+
         private GameObject test;
 
         void Awake()
@@ -265,6 +269,14 @@ namespace Enemies
             m_enemyManager.DeathEnemy();
             death = true;
             deathTimer = 0;
+
+            if (m_npcInfo.isChampion)
+            {
+                transform.localScale = Tools.ApplyIncreasePercent(transform.localScale, (100 / (100+percentGainSize)));
+            }
+
+
+
             if (!isMassed)
             {
                 moveSoundInstance.setVolume(0);
@@ -319,6 +331,14 @@ namespace Enemies
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
             m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
             death = false;
+
+            if(m_npcInfo.isChampion)
+            {
+                m_healthSystem.Setup(Tools.ApplyIncreasePercent(maxHealthEvolution.Evaluate(playerLevel) ,percentGainHealthAdd));
+                transform.localScale = Tools.ApplyIncreasePercent(transform.localScale, percentGainSize);
+            }
+
+
             if (hasDeathAnimation)
             {
                 m_EnemyAnimatorDissolve.SetBool("DeathBool", false);

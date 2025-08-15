@@ -1,4 +1,6 @@
+using BorsalinoTools;
 using Character;
+using GuerhoubaGames;
 using GuerhoubaGames.AI;
 using GuerhoubaGames.Resources;
 using GuerhoubaGames.UI;
@@ -16,8 +18,11 @@ public class BossRoom : MonoBehaviour
     [HideInInspector] public RoomInfoUI roomInfoUI;
     DayCyclecontroller dayCyclecontroller;
     // Boss components 
-   private Enemies.NpcHealthComponent m_bossHealth;
+    private Enemies.NpcHealthComponent m_bossHealth;
     private BossCamera bossCamera;
+
+
+
     public void Start()
     {
         enemyManager = roomManager.m_enemyManager;
@@ -55,16 +60,21 @@ public class BossRoom : MonoBehaviour
         {
             float bossHealth_float = m_bossHealth.GetCurrentLife();
             roomInfoUI.ActualizeMajorGoalProgress(1.0f-(bossHealth_float / m_bossHealth.maxLife));
-            roomInfoUI.UpdateTextProgression((int)bossHealth_float, (int)m_bossHealth.maxLife);
+            roomInfoUI.UpdateTextProgression((int)(m_bossHealth.maxLife-bossHealth_float), (int)m_bossHealth.maxLife);
         }
     }
 
     public void EndRoomBoss()
     {
+        if (roomManager.activeRoomManagerDebug)
+            ScreenDebuggerTool.AddMessage("End Boss room");
+
+        roomInfoUI.DeactivateMajorGoalInterface();
         roomManager.ValidateRoom();
         dayCyclecontroller.UpdateDepthOfField(true);
         DayCyclecontroller.m_nightCountGlobal++;
         enemyManager.gsm.UpdateParameter(0.1f, "Intensity");
         enemyManager.m_mainInformationDisplay.DisplayMessage("Twilight sister eradicated", GameResources.instance.textureGradient_Ornement[4]);
+        RunManager.instance.StartDay();
     }
 }

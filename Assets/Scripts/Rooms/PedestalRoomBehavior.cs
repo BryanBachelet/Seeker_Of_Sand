@@ -7,7 +7,7 @@ namespace GuerhoubaGames
     public class PedestalRoomBehavior : InteractionInterface
     {
         [HideInInspector] public RoomManager roomManager;
-        
+
         public override void OnInteractionEnd(GameObject player)
         {
             return;
@@ -23,10 +23,27 @@ namespace GuerhoubaGames
         public void Start()
         {
             isInteractable = false;
+            RunManager runManagerInstance = RunManager.instance;
+            runManagerInstance.OnNightStart += DeactivePedestal;
         }
+
+        public void OnDestroy()
+        {
+            RunManager runManagerInstance = RunManager.instance;
+            runManagerInstance.OnNightStart -= DeactivePedestal;
+        }
+
         public void ActivatePedestal()
         {
-            isInteractable = true;
+            if (RunManager.instance.dayStep == DayStep.DAY)
+                isInteractable = true;
+        }
+
+        public void DeactivePedestal()
+        {
+            isInteractable = false;
+            isOpen = false;
+
         }
     }
 }

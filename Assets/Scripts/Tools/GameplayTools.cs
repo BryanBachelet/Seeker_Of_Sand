@@ -121,9 +121,27 @@ namespace GuerhoubaTools.Gameplay
             return dest;
         }
 
+        #region Percent Functions
+        public static float ApplyPercent(float target , float percent)
+        {
+            return target * (percent / 100);
+        }
+
+        public static float ApplyIncreasePercent(float target, float percent)
+        {
+            return target * ((100 +percent) / 100);
+        }
+
+        public static Vector3 ApplyIncreasePercent(Vector3 target, float percent)
+        {
+           return  target * ((100 + percent) / 100);
+        }
+
+            #endregion
 
 
-    }
+
+        }
 
 
 

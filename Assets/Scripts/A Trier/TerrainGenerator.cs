@@ -8,9 +8,12 @@ using SeekerOfSand.Tools;
 using UnityEditor.EditorTools;
 using UnityEngine.Rendering;
 using BorsalinoTools;
+using GuerhoubaGames;
 
 public class TerrainGenerator : MonoBehaviour
 {
+
+    public static TerrainGenerator instance;
     public GlobalSoundManager gsm;
 
     private const int maxPlayerSpell = 4;
@@ -48,10 +51,12 @@ public class TerrainGenerator : MonoBehaviour
     public RoomInfoUI roomInfoUI;
     public DayCyclecontroller dayController;
     public DayTimeController dayTimeController;
+    [HideInInspector] private RunManager m_runManager;
     private int lastNightCount = -1;
 
     private List<RewardType> rewardList = new List<RewardType>();
     private List<RoomType> roomTypeList = new List<RoomType>();
+    private RoomType currentRoomType = RoomType.Event;
 
     public TMPro.TMP_Text roomGeneration_text;
 
@@ -59,6 +64,8 @@ public class TerrainGenerator : MonoBehaviour
     public MiniMapControl miniMapControl;
     public MiniMapControl miniMap_IconControl;
     public Texture lastTextureCreated;
+
+    private bool m_activeFistNightRoom = false;
 
     [Header("Room Rewards variable")]
     [SerializeField] private float m_upgradeRewardPercent = 50;
@@ -70,11 +77,38 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private bool m_activeFastRoom;
     [SerializeField] private bool m_activateTerrainGeneratorDebug;
 
+
+    #region Unity Functions
+
+    public void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
     public void Start()
     {
         dayController.dayStartEvent += ResetRoomAtNewDay;
         dayTimeController.dayStartEvent += ResetRoomAtNewDay;
+
+        RunManager.instance.OnDayStart += OnDayStart;
+        RunManager.instance.OnNightStart += OnNightStart;
+        m_runManager = RunManager.instance;
+
     }
+
+    public void OnDestroy()
+    {
+        dayController.dayStartEvent -= ResetRoomAtNewDay;
+        dayTimeController.dayStartEvent -= ResetRoomAtNewDay;
+
+        RunManager.instance.OnDayStart -= OnDayStart;
+        RunManager.instance.OnNightStart -= OnNightStart;
+    }
+
+
+    #endregion
+
 
     public void ResetRoomAtNewDay()
     {
@@ -149,13 +183,23 @@ public class TerrainGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        GenerateTerrain();
-        AssociateNewReward();
+        if (m_runManager.countRoomDone == m_runManager.maxRoomPerDay)
+        {
+            GenerateBossMap(false);
+            AssociateNewReward();
+        }
+        else
+        {
+            GenerateTerrain();
+            AssociateNewReward();
+        }
+
     }
 
 
-    public void GenerateBossMap()
+    public void GenerateBossMap(bool isPlayerTeleport)
     {
+        mapInstantiated.Clear();
         int postionOffsetMap = TerrainGenerator.roomGeneration_Static % 2;
         int positionNewTerrain = 3000 * postionOffsetMap + mapInstantiated.Count;
 
@@ -182,7 +226,9 @@ public class TerrainGenerator : MonoBehaviour
         isHealthBossRoom = true;
         roomManager.m_CRT.Initialize();
         roomManager.m_CRT.Update();
-        StartCoroutine(roomManager.RoomDeactivation(3));
+        if (!isPlayerTeleport) StartCoroutine(roomManager.RoomDeactivation(3));
+        else roomManager.isRoomHasBeenDeactivated = true;
+
 
     }
 
@@ -223,7 +269,7 @@ public class TerrainGenerator : MonoBehaviour
             RoomManager roomManager = mapInstance.GetComponentInChildren<RoomManager>();
             roomManager.InitComponent();
             roomManager.terrainGenerator = this;
-            roomManager.currentRoomType = RoomType.Event;
+            roomManager.currentRoomType = currentRoomType;
             roomManager.healthReward = HealthReward.QUARTER;
             roomManager.terrainIndex = idMap;
             roomManager.hasEndReward = false;
@@ -292,11 +338,11 @@ public class TerrainGenerator : MonoBehaviour
             RoomManager roomManagerNextMap = mapInstantiated[i].GetComponentInChildren<RoomManager>();
             roomManagerNextMap.rewardAssociated = GenerateRoomReward();
 
-            if(currentRoomManager.teleporterArray[i].tpFeedbackController == null)
+            if (currentRoomManager.teleporterArray[i].tpFeedbackController == null)
             {
                 currentRoomManager.teleporterArray[i].tpFeedbackController = currentRoomManager.teleporterArray[i].GetComponentInChildren<TeleporterFeebackController>();
             }
-            
+
             TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[i].tpFeedbackController;
             tpFeedback.rewardToUse = (int)roomManagerNextMap.rewardType;
             tpFeedback.eventReward = roomManagerNextMap.rewardAssociated;
@@ -329,9 +375,21 @@ public class TerrainGenerator : MonoBehaviour
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         RoomManager roomManager = mapInstantiated[selectedMapIndex].GetComponentInChildren<RoomManager>();
 
+        if (m_runManager.dayStep == DayStep.NIGHT && !m_activeFistNightRoom)
+        {
+            currentRoomManager.isFirstNightRoom = true;
+            m_activeFistNightRoom = true;
+        }
+        if (m_runManager.countRoomDone == m_runManager.maxRoomPerDay)
+        {
+            m_runManager.dayStep = DayStep.BOSS;
+            m_runManager.StartBossPhase(false);
+        }
+        m_runManager.countRoomDone++;
 
         playerTeleportorBehavior.nextTerrainNumber = selectedMapIndex;
         roomManager.portalPrevious.material = currentRoomManager.m_materialPreviewTRT;
+
         cameraFadeFunction.LaunchFadeIn(true, 0.5f);
         cameraFadeFunction.tpBehavior.disparitionVFX.Play();
         cameraFadeFunction.tpBehavior.isTimePassing = roomManager.isTimingPassing;
@@ -351,7 +409,9 @@ public class TerrainGenerator : MonoBehaviour
 
         if (m_activateTerrainGeneratorDebug)
         {
-            ScreenDebuggerTool.AddMessage(" map Selected : " + mapInstantiated[selectedMapIndex].name);
+            ScreenDebuggerTool.AddMessage(" Map Selected : " + mapInstantiated[selectedMapIndex].name);
+            ScreenDebuggerTool.AddMessage(" Room Count : " + m_runManager.countRoomDone);
+
         }
 
     }
@@ -369,6 +429,18 @@ public class TerrainGenerator : MonoBehaviour
         {
             Destroy(previousMapList[i]);
         }
+    }
+
+    public void OnNightStart()
+    {
+        currentRoomType = RoomType.Enemy;
+    }
+
+    public void OnDayStart()
+    {
+        currentRoomType = RoomType.Event;
+        m_activeFistNightRoom = false;
+
     }
 
 }

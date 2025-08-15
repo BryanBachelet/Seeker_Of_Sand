@@ -63,12 +63,16 @@ namespace Enemies
         public void ResetOnDeath()
         {
             canBeLaunch = true;
-            allRingVFX = ringInstance.GetComponentsInChildren<VisualEffect>();
-            for (int i = 0; i < allRingVFX.Length; i++)
+            if (ringInstance != null)
             {
-                Destroy(allRingVFX[i].gameObject);
+                allRingVFX = ringInstance.GetComponentsInChildren<VisualEffect>();
+                for (int i = 0; i < allRingVFX.Length; i++)
+                {
+                    if (allRingVFX[i] != null)
+                    Destroy(allRingVFX[i].gameObject);
+                }
+                Destroy(ringInstance);
             }
-            Destroy(ringInstance);
         }
 
         public void UpgradeRingVisual()
@@ -102,7 +106,7 @@ namespace Enemies
 
         public void UpdateRingSkill()
         {
-            if (canBeLaunch ||  m_npcMetaInfo.state == NpcState.ATTACK || m_npcMetaInfo.state == NpcState.SPECIAL_CAPACITIES || m_npcAttackComponent.isInAttackSequence== true)    return;
+            if (canBeLaunch || m_npcMetaInfo.state == NpcState.ATTACK || m_npcMetaInfo.state == NpcState.SPECIAL_CAPACITIES || m_npcAttackComponent.isInAttackSequence == true) return;
 
             Vector3 pos = playerGO.transform.position;
             pos.y = centerRing.y;

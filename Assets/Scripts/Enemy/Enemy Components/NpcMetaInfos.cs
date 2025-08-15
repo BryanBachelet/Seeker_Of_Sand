@@ -39,8 +39,10 @@ namespace Enemies
         private int m_previousNpcState;
 
         private EntityModifier m_entityModifier;
+        public Action OnStart;
 
-        public  Action OnStart;
+        public bool isChampion;
+
         public void Awake()
         {
             m_healthComponent = GetComponent<NpcHealthComponent>();
@@ -50,15 +52,15 @@ namespace Enemies
             behaviorTreeComponent = GetComponent<GuerhoubaGames.AI.BehaviorTreeComponent>();
             m_entityModifier = GetComponent<EntityModifier>();
 
-            
+
         }
 
         public void Start()
         {
-          
+
             m_objectGameState = new ObjectState();
             GameState.AddObject(m_objectGameState);
-            
+
             m_entityModifier.OnStartFreeze += ActivateFreezeState;
             m_entityModifier.EndFreeze += DeactivateFreezeState;
             m_entityModifier.OnStartTerrify += ActivateTerrifyState;
@@ -70,7 +72,7 @@ namespace Enemies
                 behaviorTreeComponent.behaviorTree.blackboard.moveToObject = moveComponent.targetData.baseTarget.gameObject;
                 OnStart?.Invoke();
             }
-            
+
         }
 
         public void OnDestroy()
@@ -83,15 +85,15 @@ namespace Enemies
 
         public void Update()
         {
-            if(!m_objectGameState.isPlaying && state != NpcState.PAUSE)
+            if (!m_objectGameState.isPlaying && state != NpcState.PAUSE)
             {
                 SetPauseState();
             }
             if (m_objectGameState.isPlaying && state == NpcState.PAUSE)
             {
-                RemovePauseState(); 
+                RemovePauseState();
             }
-         
+
         }
 
         public void RestartEnemy()
@@ -99,7 +101,7 @@ namespace Enemies
             attackComponent.ResetComponent();
             m_healthComponent.ResetTrail();
             transform.rotation = Quaternion.identity;
-            if(behaviorTreeComponent.isFirstSpawn)
+            if (behaviorTreeComponent.isFirstSpawn)
             {
                 behaviorTreeComponent.Init();
             }
@@ -108,6 +110,10 @@ namespace Enemies
                 behaviorTreeComponent.isActivate = true;
             }
 
+        }
+        public void OnDeathState()
+        {
+            isChampion = false;
         }
 
         public void SetPauseState()
@@ -119,7 +125,7 @@ namespace Enemies
             {
 
                 behaviorTreeComponent.isActivate = false;
-                
+
             }
         }
         public void RemovePauseState()
@@ -135,6 +141,7 @@ namespace Enemies
 
         public void TeleportToPool()
         {
+            OnDeathState();
             manager.TeleportEnemyOut(this);
         }
 
@@ -152,7 +159,7 @@ namespace Enemies
 
         private void DeactivateFreezeState()
         {
-            state = (NpcState) m_previousNpcState;
+            state = (NpcState)m_previousNpcState;
             if (behaviorTreeComponent)
             {
                 behaviorTreeComponent.isActivate = true;

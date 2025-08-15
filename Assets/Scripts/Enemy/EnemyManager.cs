@@ -133,8 +133,11 @@ namespace Enemies
         public event OnDeath OnDeathEvent = delegate { };
         public delegate void OnDeathSimple();
         public event OnDeathSimple OnDeathSimpleEvent = delegate { };
+        public delegate void OnChampionDeath();
+        public event OnChampionDeath OnChampionDeathEvent = delegate { };
 
-        [HideInInspector] private EnemiesPullingSystem m_pullingSystem;
+
+       [HideInInspector] private EnemiesPullingSystem m_pullingSystem;
 
         [HideInInspector] public UIDispatcher uiDispatcher;
 
@@ -442,6 +445,11 @@ namespace Enemies
         }
 
 
+        public void SpawnChampion(Vector3 position)
+        {
+            SpawnDirectEnemy(position, 0,true);
+        }
+
 
      
 
@@ -640,7 +648,7 @@ namespace Enemies
             }
         }
 
-        private void SpawnDirectEnemy(Vector3 position, int enemyType)
+        private void SpawnDirectEnemy(Vector3 position, int enemyType, bool isChampion = false)
         {
             GameObject enemyObjectPull = null;
             NpcHealthComponent npcHealth = null;
@@ -652,10 +660,19 @@ namespace Enemies
             enemyTypeStats[enemyType].instanceSpawnPerRoom += 1;
             enemyObjectPull.transform.position = position;
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
-            enemyObjectPull.GetComponent<NavMeshAgent>().Warp(position);
+            NavMeshHit hit = new NavMeshHit();
+            NavMesh.SamplePosition(position, out hit, 20, NavMesh.AllAreas);
+       
+          
+
+            NavMeshAgent tempNavMesh = enemyObjectPull.GetComponent<NavMeshAgent>();
+            tempNavMesh.updatePosition = true;
+            tempNavMesh.Warp(hit.position);
+            tempNavMesh.enabled = true;
 
             npcInfo = enemyObjectPull.GetComponent<NpcMetaInfos>();
             npcInfo.manager = this;
+            npcInfo.isChampion = isChampion;
 
             npcMove = enemyObjectPull.GetComponent<NpcMouvementComponent>();
             npcMove.enabled = true;
@@ -826,6 +843,10 @@ namespace Enemies
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);
             OnDeathSimpleEvent();
+            if (npcMetaInfos.isChampion)
+            {
+                OnChampionDeathEvent();
+            }
         }
 
         public void TeleportEnemyOut(NpcMetaInfos npcInfos)

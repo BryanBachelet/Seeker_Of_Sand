@@ -114,6 +114,11 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private int specialRoomID = -1;
 
     public bool delayUpdate = true;
+
+    [HideInInspector] public bool isFirstNightRoom = false;
+     
+    private int m_currentChampionAlive;
+
     #endregion
 
     [Header("Debug Variables")]
@@ -156,7 +161,7 @@ public class RoomManager : MonoBehaviour
 
     public void ActivateRoom(Material previousMat)
     {
-        ActivateEvents();
+     
 
         ResetObjectifData();
 
@@ -214,12 +219,14 @@ public class RoomManager : MonoBehaviour
             {
 
 
-                roomInfoUI.ActiveMajorGoalInterface();
+                //roomInfoUI.ActiveMajorGoalInterface();
                 m_startRoomChallengeTime = DateTime.Now;
                 baseRoomType = currentRoomType;
+                if (isFirstNightRoom) RunManager.instance.LaunchNightCountdown();
                 if (currentRoomType == RoomType.Enemy)
                 {
-                    m_enemyManager.OnDeathSimpleEvent += CountEnemy;
+
+                    //m_enemyManager.OnDeathSimpleEvent += CountEnemy;
                     m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
                     //m_cameraBehavior.isZoomActive = false;
                 }
@@ -230,6 +237,8 @@ public class RoomManager : MonoBehaviour
 
             }
         }
+
+
     }
 
     public IEnumerator CloseEnterPortal(float time)
@@ -241,7 +250,15 @@ public class RoomManager : MonoBehaviour
     public void DeactivateRoom()
     {
         if (onDeactivateRoom != null) onDeactivateRoom.Invoke(currentRoomType, rewardType);
-        DeactivateAltar();
+        DeactiveEvents();
+        m_enemyManager.DestroyAllEnemy();
+        StartCoroutine(DestroyRoom());
+    }
+
+    IEnumerator DestroyRoom()
+    {
+        yield return new WaitForSeconds(3);
+        GameObject.Destroy(this.gameObject.transform.parent.gameObject);
     }
 
     // Setup room teleporter 
@@ -285,48 +302,49 @@ public class RoomManager : MonoBehaviour
         {
             case RoomType.Free:
                 ValidateRoom();
-                DeactivateAltar();
-
+                DeactiveEvents();
                 break;
             case RoomType.Merchant:
                 ValidateRoom();
-                DeactivateAltar();
+                DeactiveEvents();
                 break;
             case RoomType.Event:
-
-                AltarBehaviorComponent[] obj = transform.parent.GetComponentsInChildren<AltarBehaviorComponent>();
-                eventActive = obj.Length;
+                ActivateEvents();
+                eventActive = altarBehaviorComponents.Length;
                 dissonanceHeartBehavior.roomManager = this;
-                for (int i = 0; i < obj.Length; i++)
+                for (int i = 0; i < altarBehaviorComponents.Length; i++)
                 {
-                    if (obj[i] != null)
+                    if (altarBehaviorComponents[i] != null)
                     {
-                        obj[i].indexEvent = i;
-                        obj[i].ResetAltar();
+                        altarBehaviorComponents[i].indexEvent = i;
+                        altarBehaviorComponents[i].ResetAltar();
                         //obj.m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
-                        obj[i].eventElementType = element;
-                        obj[i].m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
-                        enemyMaxSpawnInRoon = enemyToKillCount = obj[i].m_enemiesCountConditionToWin;
-                        obj[i].roomInfoUI = roomInfoUI;
-                        roomInfoUI.UpdateTextProgression(obj[i].m_enemiesCountConditionToWin, obj[i].m_enemiesCountConditionToWin);
+                        altarBehaviorComponents[i].eventElementType = element;
+                        altarBehaviorComponents[i].m_enemiesCountConditionToWin = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
+                        enemyMaxSpawnInRoon = enemyToKillCount = altarBehaviorComponents[i].m_enemiesCountConditionToWin;
+                        altarBehaviorComponents[i].roomInfoUI = roomInfoUI;
+                        roomInfoUI.UpdateTextProgression(altarBehaviorComponents[i].m_enemiesCountConditionToWin, altarBehaviorComponents[i].m_enemiesCountConditionToWin);
 
 
                     }
+
                 }
+              
 
 
                 break;
             case RoomType.Enemy:
-                DeactivateAltar();
-
+                DeactiveEvents();
+                ActiveNightRoom();
+                dissonanceHeartBehavior.roomManager = this;
                 //int enemyCount = (int)enemyCountCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
-                //enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
-                enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
-                enemyMaxSpawnInRoon = enemyToKillCount;
-                roomInfoUI.UpdateTextProgression(enemyToKillCount, enemyToKillCount);
+                ////enemyToKillCount = UnityEngine.Random.Range(enemyCount / 2, enemyCount);
+                //enemyToKillCount = (int)enemyCountCurve.Evaluate(m_characterUpgrade.avatarUpgradeList.Count + (int)m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
+                //enemyMaxSpawnInRoon = enemyToKillCount;
+                //roomInfoUI.UpdateTextProgression(enemyToKillCount, enemyToKillCount);
                 break;
             case RoomType.Boss:
-                DeactivateAltar();
+                DeactiveEvents();
 
 
                 break;
@@ -437,37 +455,53 @@ public class RoomManager : MonoBehaviour
 
     #endregion
 
-    public void DeactivateAltar() // Temp function 
+
+
+    //private void CountEnemy()
+    //{
+    //    currentCountOfEnemy++;
+    //    progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
+    //    //Debug.Log("Enemy Count" + progress);
+    //    if (currentRoomType == RoomType.Enemy)
+    //    {
+    //        if (progress >= 1)
+    //        {
+    //            ValidateRoom();
+    //        }
+    //        else
+    //        {
+    //            roomInfoUI.ActualizeMajorGoalProgress(progress);
+    //            roomInfoUI.UpdateTextProgression(enemyToKillCount - currentCountOfEnemy, enemyToKillCount);
+    //        }
+    //    }
+
+
+    //}
+
+    private void CountChampionEliminate()
     {
-        AltarBehaviorComponent obj = transform.parent.GetComponentInChildren<AltarBehaviorComponent>();
-        if (obj != null)
+        m_currentChampionAlive--;
+
+        if (activeRoomManagerDebug)
+            ScreenDebuggerTool.AddMessage("Champion Eliminate. " + m_currentChampionAlive + " still alive");
+
+        int[] dataObjectif =
+{
+            (maxEventActive - m_currentChampionAlive),
+            maxEventActive
+        };
+        roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
+
+        if (m_currentChampionAlive<=0)
         {
-            obj.gameObject.SetActive(false);
+            FinishAllEvent();
+            m_enemyManager.OnChampionDeathEvent -= CountChampionEliminate;
+            return;
         }
+
     }
 
-    private void CountEnemy()
-    {
-        currentCountOfEnemy++;
-        progress = (float)currentCountOfEnemy / (float)enemyToKillCount;
-        //Debug.Log("Enemy Count" + progress);
-        if (currentRoomType == RoomType.Enemy)
-        {
-            if (progress >= 1)
-            {
-                ValidateRoom();
-            }
-            else
-            {
-                roomInfoUI.ActualizeMajorGoalProgress(progress);
-                roomInfoUI.UpdateTextProgression(enemyToKillCount - currentCountOfEnemy, enemyToKillCount);
-            }
-        }
-
-
-    }
-
-    public int EventValidate() //Temp Function
+    public int EventValidate() 
     {
         eventActive--;
 
@@ -483,6 +517,7 @@ public class RoomManager : MonoBehaviour
         if (eventActive <= 0)
         {
             FinishAllEvent();
+          
             return rewardAssociated[eventActive];
         }
 
@@ -516,6 +551,7 @@ public class RoomManager : MonoBehaviour
     #region Spawner Functions
     public void GenerateSpawner()
     {
+        return;
 
         float radius = rangeSpawner / 2;
         float radiusMin = rangeSpawner_Min / 2;
@@ -583,12 +619,33 @@ public class RoomManager : MonoBehaviour
     {
         for (int i = 0; i < altarBehaviorComponents.Length; i++)
         {
+            altarBehaviorComponents[i].gameObject.SetActive(true);
             altarBehaviorComponents[i].isFastEvent = activeFastRoom;
             altarBehaviorComponents[i].LaunchInit();
         }
 
+
     }
 
+    private void DeactiveEvents()
+    {
+        for (int i = 0; i < altarBehaviorComponents.Length; i++)
+        {
+            altarBehaviorComponents[i].gameObject.SetActive(false);
+        }
+    }
+
+    private void ActiveNightRoom()
+    {
+        if (RunManager.instance.dayStep != DayStep.NIGHT) return;
+        for (int i = 0; i < altarBehaviorComponents.Length; i++)
+        {
+            m_enemyManager.SpawnChampion(altarBehaviorComponents[i].transform.position);
+            m_currentChampionAlive++;
+        }
+
+        m_enemyManager.OnChampionDeathEvent += CountChampionEliminate;
+    }
     public void ResetEvents()
     {
         if (activeRoomManagerDebug)
@@ -605,7 +662,7 @@ public class RoomManager : MonoBehaviour
         // Remove all map generate
         terrainGenerator.ClearMapGenerate();
         currentRoomType = RoomType.Event;
-       
+
         eventActive = altarBehaviorComponents.Length;
         int[] dataObjectif =
         {

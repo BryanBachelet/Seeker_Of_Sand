@@ -1,4 +1,5 @@
 using BorsalinoTools;
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +10,8 @@ namespace GuerhoubaGames
     public enum DayStep
     {
         DAY = 0,
-        NIGHT =1,
-        BOSS =2,
+        NIGHT = 1,
+        BOSS = 2,
     }
 
     public class RunManager : MonoBehaviour
@@ -18,14 +19,14 @@ namespace GuerhoubaGames
         public static RunManager instance;
 
         [Header("Day Variables")]
-        public int maxHoursPointPerDay =0 ;
+        public int maxHoursPointPerDay = 0;
         public int currentHoursPoint { get; private set; }
         public Action OnRemoveHoursPoint;
         public Action<int> OnChangeHoursPoint;
 
         [Header("Night Variables")]
         public float nightDurationSeconds = 0;
-        public float currentNightTimeCountdown { get; private set; } 
+        public float currentNightTimeCountdown { get; private set; }
 
         [Header("Dissonance Heart")]
         public int dissonanceHeartBroken = 0;
@@ -35,12 +36,21 @@ namespace GuerhoubaGames
         // Variable Day step
         public DayStep dayStep;
         public int dayCount = 0;
+        public int maxRoomPerDay = 5;
+        [HideInInspector] public int countRoomDone = 0;
+
+
+        [HideInInspector] public bool isNightCountdownStarted = false;
         public Action OnDayStart;
         public Action OnNightStart;
         public Action OnBossStart;
 
+        private TerrainGenerator m_terrainGeneratorComponent;
+
         [Header("Debug variables")]
         [SerializeField] private bool m_isRunManagerDebugActive = false;
+        [SerializeField] private bool m_fastDay = false;
+
 
         #region Unity Functions
         public void Awake()
@@ -53,7 +63,13 @@ namespace GuerhoubaGames
 
         public void Start()
         {
-            StartDay();
+            m_terrainGeneratorComponent = TerrainGenerator.instance;
+            if (m_fastDay)
+            {
+                maxHoursPointPerDay = 3;
+            }
+            if (dayStep == DayStep.DAY) StartDay();
+
         }
 
         public void Update()
@@ -68,6 +84,8 @@ namespace GuerhoubaGames
             OnDayStart?.Invoke();
             OnChangeHoursPoint?.Invoke(currentHoursPoint);
             dissonanceHeartBroken = 0;
+            dayCount++;
+            countRoomDone = 0;
 
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Day Start");
@@ -84,8 +102,8 @@ namespace GuerhoubaGames
                 StartNight();
             }
 
-          if(m_isRunManagerDebugActive)
-                ScreenDebuggerTool.AddMessage("Remove point. Current point " +  currentHoursPoint);
+            if (m_isRunManagerDebugActive)
+                ScreenDebuggerTool.AddMessage("Remove point. Current point " + currentHoursPoint);
         }
 
         public void StartNight()
@@ -98,20 +116,36 @@ namespace GuerhoubaGames
 
         public void UpdateNight()
         {
-            if (dayStep != DayStep.NIGHT) return;
+            if (dayStep != DayStep.NIGHT || !isNightCountdownStarted) return;
 
+            ScreenDebuggerTool.AddMessage("Night Time " + currentNightTimeCountdown.ToString(), 10);
             currentNightTimeCountdown -= Time.deltaTime;
             if (currentNightTimeCountdown <= 0)
             {
                 dayStep = DayStep.BOSS;
-                StartBoss();
+                StartBossPhase(true);
             }
         }
 
+        public void LaunchNightCountdown()
+        {
+            if (dayStep != DayStep.NIGHT) return;
 
-        public void StartBoss()
+            isNightCountdownStarted = true;
+            currentNightTimeCountdown = nightDurationSeconds;
+        }
+
+
+        public void StartBossPhase(bool isNightEnd)
         {
             OnBossStart?.Invoke();
+            isNightCountdownStarted = false;
+
+            if (isNightEnd)
+            {
+                m_terrainGeneratorComponent.GenerateBossMap(true);
+                m_terrainGeneratorComponent.SelectTerrain(0);
+            }
 
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Boss Start");
@@ -122,7 +156,7 @@ namespace GuerhoubaGames
             dissonanceHeartBroken++;
             OnDissonanceHeartBroken?.Invoke(dissonanceHeartBroken);
         }
-    
+
 
     }
 }
