@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using GuerhoubaGames.AI;
-using Enemies;
+using UnityEngine;
 
 public class IsHealthInferiorTo : DecoratorNode
 {

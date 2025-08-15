@@ -1,3 +1,4 @@
+using GuerhoubaGames.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +11,11 @@ public class LayoyutDiksplayPause : MonoBehaviour
     [SerializeField] private Image m_keyboardLayoutDisplay;
     [SerializeField] private TMPro.TMP_Text m_gamepadText;
     [SerializeField] private TMPro.TMP_Text m_keyboardText;
-    private Character.CharacterShoot m_characterShoot;
+    private CharacterShoot m_characterShoot;
     // Start is called before the first frame update
     void Start()
     {
-        m_characterShoot = GameObject.Find("Player").GetComponent<Character.CharacterShoot>();
+        m_characterShoot = GameObject.Find("Player").GetComponent<CharacterShoot>();
     }
 
     // Update is called once per frame

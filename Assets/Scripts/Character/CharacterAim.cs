@@ -1,14 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
+using GuerhoubaGames.Enemies;
+using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Linq;
-using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
-using GuerhoubaGames.UI;
-using GuerhoubaGames;
-using Enemies;
-namespace Character
+
+namespace GuerhoubaGames.Character
 {
 
     public enum AimMode

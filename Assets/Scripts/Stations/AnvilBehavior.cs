@@ -1,11 +1,8 @@
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
-using UnityEngine.Rendering;
-using System;
+using UnityEngine;
 
 public struct AnvilInfos
 {

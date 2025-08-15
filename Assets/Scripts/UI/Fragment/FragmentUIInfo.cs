@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.UI;
-using Character;
+using UnityEngine;
 
 public class FragmentUIInfo : MonoBehaviour
 {

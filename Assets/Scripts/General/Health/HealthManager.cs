@@ -1,6 +1,5 @@
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
-using SeekerOfSand.Tools;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,14 +15,14 @@ public class HealthManager : MonoBehaviour
 
     [HideInInspector] private Camera m_cameraReference;
 
-    [HideInInspector] public Character.CharacterShoot characterShoot;
+    [HideInInspector] public CharacterShoot characterShoot;
 
     [SerializeField] private Color[] elementDamageColor = new Color[4];
     private void Start()
     {
         m_cameraReference = Camera.main;
         GetDamageHealthFDObject(m_healthUiFeedbackHolder);
-        characterShoot = GameObject.Find("Player").GetComponent<Character.CharacterShoot>();
+        characterShoot = GameObject.Find("Player").GetComponent<CharacterShoot>();
     }
 
 

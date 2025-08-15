@@ -5,6 +5,7 @@ using UnityEngine;
 using GuerhoubaGames.UI;
 using TMPro;
 using UnityEngine.VFX;
+using GuerhoubaGames.Character;
 
 public class UIEndScreen : MonoBehaviour
 {
@@ -48,7 +49,7 @@ public class UIEndScreen : MonoBehaviour
 
     [Range(1, 10)] public float tempsDisplay = 3;
 
-    public Character.CharacterShoot characterShoot;
+    public CharacterShoot characterShoot;
 
     private int[] spellDamaged = new int[4];
     int spellCount = 0;

@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GuerhoubaGames.Character;
 
 namespace SpellSystem
 {
     public struct MultiHitAreaData
     {
-        public Character.CharacterShoot characterShoot;
+        public CharacterShoot characterShoot;
         public SpellProfil spellProfil;
         public int currentMaxHitCount;
     }

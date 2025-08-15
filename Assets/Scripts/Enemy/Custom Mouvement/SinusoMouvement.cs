@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Enemies.Movement
+namespace GuerhoubaGames.Enemies.Movement
 {
     [CreateAssetMenu(fileName = "Sinusoidale Move", menuName = "Enemmis/Move/Custom/Sinusoidale Movement", order = 1)]
     public class SinusoMouvement : NpcCustomMouvement

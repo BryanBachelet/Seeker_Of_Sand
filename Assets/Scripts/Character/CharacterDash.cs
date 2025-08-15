@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Character
+namespace GuerhoubaGames.Character
 {
     public class CharacterDash : MonoBehaviour
     {

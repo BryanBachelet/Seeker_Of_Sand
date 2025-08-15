@@ -1,15 +1,13 @@
+using GuerhoubaGames;
+using GuerhoubaGames.Enemies;
+using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.UI;
+using SeekerOfSand.Tools;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
-using GuerhoubaGames.UI;
-using GuerhoubaGames.GameEnum;
-using SeekerOfSand.Tools;
-using JetBrains.Annotations;
-using Character;
-using System;
-using GuerhoubaGames;
 
 public class AltarBehaviorComponent : InteractionInterface
 {
@@ -69,7 +67,7 @@ public class AltarBehaviorComponent : InteractionInterface
     private int nextReward;
     private int nextRewardTypologie = 0;
 
-    private Enemies.EnemyManager m_enemyManager;
+    private EnemyManager m_enemyManager;
     private Vector3 m_DropAreaPosition;
 
     private GameObject lastItemInstantiate;
@@ -193,7 +191,7 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         m_objectHealthSystem = GetComponent<ObjectHealthSystem>();
         m_objectHealthSystem.animatorAssociated = m_myAnimator;
-        m_enemyManager = GameObject.FindAnyObjectByType<Enemies.EnemyManager>();
+        m_enemyManager = GameObject.FindAnyObjectByType<EnemyManager>();
         m_selectionFeedback = this.GetComponent<Selection_Feedback>();
     }
 
@@ -411,8 +409,7 @@ public class AltarBehaviorComponent : InteractionInterface
 
     public void SpawnAltarReward(int indexReward)
     {
-        RewardDistribution rewardDistributionComponent = m_playerTransform.GetComponent<RewardDistribution>();
-        rewardDistributionComponent.GiveReward((RewardType)(indexReward), piedestalTranformPosition, HealthReward.QUARTER, eventElementType);
+        RunManager.SpawnReward((RewardType)(indexReward), piedestalTranformPosition.position, eventElementType);
     }
 
     #endregion

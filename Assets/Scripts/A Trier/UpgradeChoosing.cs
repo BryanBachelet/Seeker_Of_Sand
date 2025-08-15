@@ -9,6 +9,7 @@ using GuerhoubaGames.UI;
 using SpellSystem;
 using Unity.VisualScripting;
 using static UnityEngine.Rendering.DebugUI;
+using GuerhoubaGames.Character;
 
 
 public class UpgradeChoosing : MonoBehaviour
@@ -62,7 +63,7 @@ public class UpgradeChoosing : MonoBehaviour
 
     public GameObject panelUI;
     [HideInInspector] public SpellProfil[] spellProfils;
-    public Character.CharacterSpellBook spellBook;
+    public CharacterSpellBook spellBook;
     public GameObject[] skillUiHolder = new GameObject[4];
     public GameObject[] referenceSkill = new GameObject[4];
     public List<GameObject> skillUiHolderTemp;

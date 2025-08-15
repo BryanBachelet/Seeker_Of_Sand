@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     // Create a struct of data for Custom Movement
     public struct CustomMovementData

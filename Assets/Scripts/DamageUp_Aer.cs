@@ -1,6 +1,5 @@
-using Artefact;
-using System.Collections;
-using System.Collections.Generic;
+using GuerhoubaGames.Artefact;
+using GuerhoubaGames.Enemies;
 using UnityEngine;
 
 public class DamageUp_Aer : MonoBehaviour
@@ -25,7 +24,7 @@ public class DamageUp_Aer : MonoBehaviour
     {
         if (!m_artefactData.agent) return;
 
-        Enemies.NpcHealthComponent healthComponent = m_artefactData.agent.GetComponent<Enemies.NpcHealthComponent>();
+        NpcHealthComponent healthComponent = m_artefactData.agent.GetComponent<NpcHealthComponent>();
         ApplyEffect(healthComponent);
     }
 
@@ -41,7 +40,7 @@ public class DamageUp_Aer : MonoBehaviour
 
         int indexEnemy = Random.Range(0, enemies.Length);
 
-        Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
+        NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<NpcHealthComponent>();
         ApplyEffect(healthComponent);
     }
 
@@ -73,11 +72,11 @@ public class DamageUp_Aer : MonoBehaviour
         }
 
 
-        Enemies.NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<Enemies.NpcHealthComponent>();
+        NpcHealthComponent healthComponent = enemies[indexEnemy].GetComponent<NpcHealthComponent>();
         ApplyEffect(healthComponent);
     }
 
-    private void ApplyEffect(Enemies.NpcHealthComponent targetHealthComponent)
+    private void ApplyEffect(NpcHealthComponent targetHealthComponent)
     {
         DamageStatData damageStatData = new DamageStatData(m_artefactData.damageToApply, m_artefactData.objectType);
         if (targetHealthComponent) targetHealthComponent.ReceiveDamage(m_artefactData.nameArtefact, damageStatData, Vector3.up, 1, element, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);

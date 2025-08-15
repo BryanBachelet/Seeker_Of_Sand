@@ -1,12 +1,12 @@
+using GuerhoubaGames.Character;
+using GuerhoubaGames.GameEnum;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using Character;
-using GuerhoubaGames.GameEnum;
-using System.Text.RegularExpressions;
-using System;
 
 public struct UpgradeLevelingData
 {

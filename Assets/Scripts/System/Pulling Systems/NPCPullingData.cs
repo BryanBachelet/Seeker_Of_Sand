@@ -1,8 +1,6 @@
-using System.Collections;
+using GuerhoubaGames.Enemies;
 using System.Collections.Generic;
 using UnityEngine;
-using Enemies;
-using System;
 
 namespace GuerhoubaGames.Resources
 {

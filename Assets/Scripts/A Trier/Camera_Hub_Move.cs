@@ -1,13 +1,11 @@
+using GuerhoubaGames.Character;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using System;
 
 public class Camera_Hub_Move : MonoBehaviour
 {
     public GameObject playerRef;
-    private Character.CharacterMouvement m_characterMove;
+    private CharacterMouvement m_characterMove;
     public Transform playPositionTrain;
     public bool activeFollow;
     public bool inputDebut = false;
@@ -20,7 +18,7 @@ public class Camera_Hub_Move : MonoBehaviour
     public SceneSwaper sceneSwaper;
     private void Start()
     {
-        m_characterMove = playerRef.GetComponent<Character.CharacterMouvement>();
+        m_characterMove = playerRef.GetComponent<CharacterMouvement>();
         m_cameraScript = GetComponent<Render.Camera.CameraBehavior>();
         m_animatorTrain = trainRef.GetComponent<Animator>();
 

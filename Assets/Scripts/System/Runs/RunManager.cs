@@ -1,4 +1,5 @@
 using BorsalinoTools;
+using GuerhoubaGames.GameEnum;
 using JetBrains.Annotations;
 using System;
 using System.Collections;
@@ -46,6 +47,14 @@ namespace GuerhoubaGames
         public Action OnBossStart;
 
         private TerrainGenerator m_terrainGeneratorComponent;
+
+        [Header("Reward Variables")]
+        public GameObject rewardLootPrefab;
+
+        [Header("Important Object")]
+        public GameObject playerInstance;
+
+
 
         [Header("Debug variables")]
         [SerializeField] private bool m_isRunManagerDebugActive = false;
@@ -135,7 +144,6 @@ namespace GuerhoubaGames
             currentNightTimeCountdown = nightDurationSeconds;
         }
 
-
         public void StartBossPhase(bool isNightEnd)
         {
             OnBossStart?.Invoke();
@@ -157,6 +165,55 @@ namespace GuerhoubaGames
             OnDissonanceHeartBroken?.Invoke(dissonanceHeartBroken);
         }
 
+
+        #region Player Functions
+
+        public static Vector3 GetPlayerPosition()
+        {
+            return instance.playerInstance.transform.position;
+        }
+
+        public static Quaternion GetPlayerRotation()
+        {
+            return instance.playerInstance.transform.rotation;
+        }
+
+        public static GameObject GetPlayerObject()
+        {
+            return instance.playerInstance;
+        }
+
+        public static Transform GetPlayerTransform()
+        {
+            return instance.playerInstance.transform;
+        }
+
+        #endregion
+
+
+        #region Reward Functions
+        public static GameObject SpawnReward(RewardType rewardType, Vector3 position, GameElement elementReward)
+        {
+           return instance._SpawnReward(rewardType, position, elementReward);
+        }
+
+        public static void SpawnRandomReward(Vector3 position)
+        {
+            
+        }
+
+        private GameObject _SpawnReward(RewardType rewardType, Vector3 position, GameElement elementReward)
+        {
+            GameObject instance = GameObject.Instantiate(rewardLootPrefab, position, Quaternion.identity);
+
+            RewardInteraction rewardInteraction = instance.GetComponent<RewardInteraction>();
+            rewardInteraction.rewardElement = elementReward;
+            rewardInteraction.rewardType = rewardType;  
+
+            return instance;
+        }
+
+        #endregion
 
     }
 }

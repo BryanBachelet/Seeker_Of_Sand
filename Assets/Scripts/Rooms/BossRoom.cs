@@ -1,11 +1,10 @@
 using BorsalinoTools;
-using Character;
 using GuerhoubaGames;
 using GuerhoubaGames.AI;
+using GuerhoubaGames.Character;
+using GuerhoubaGames.Enemies;
 using GuerhoubaGames.Resources;
 using GuerhoubaGames.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossRoom : MonoBehaviour
@@ -13,12 +12,12 @@ public class BossRoom : MonoBehaviour
     public Transform centerTransform;
     public RoomManager roomManager;
     private GameObject m_bossInstance;
-    [HideInInspector] public Enemies.EnemyManager enemyManager;
+    [HideInInspector] public EnemyManager enemyManager;
     public int bossLife = 200;
     [HideInInspector] public RoomInfoUI roomInfoUI;
     DayCyclecontroller dayCyclecontroller;
     // Boss components 
-    private Enemies.NpcHealthComponent m_bossHealth;
+    private NpcHealthComponent m_bossHealth;
     private BossCamera bossCamera;
 
 
@@ -33,10 +32,10 @@ public class BossRoom : MonoBehaviour
     public void SpawnBossInstance()
     {
         GameState.ChangeState();
-        GameObject bossInstance = enemyManager.SpawnBoss(centerTransform.position, Enemies.EnemyType.TWILIGHT_SISTER);
+        GameObject bossInstance = enemyManager.SpawnBoss(centerTransform.position, EnemyType.TWILIGHT_SISTER);
         dayCyclecontroller = enemyManager.m_dayController;
         dayCyclecontroller.UpdateDepthOfField(false);
-        m_bossHealth = bossInstance.GetComponent<Enemies.NpcHealthComponent>();
+        m_bossHealth = bossInstance.GetComponent<NpcHealthComponent>();
         m_bossHealth.SetupLife(bossLife + 30 * enemyManager.m_characterUpgrade.avatarUpgradeList.Count + (int)enemyManager.m_characterUpgrade.GetComponent<CharacterArtefact>().artefactsList.Count * 3f);
         bossInstance.GetComponent<BehaviorTreeComponent>().isActivate = false;
         bossCamera.StartCamera(Camera.main,bossInstance.transform.GetChild(0), centerTransform.position);

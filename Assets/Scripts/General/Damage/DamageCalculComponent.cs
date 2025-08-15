@@ -1,10 +1,7 @@
-using Character;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
-using SpellSystem;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GuerhoubaGames.DamageCalculData;
 namespace GuerhoubaGames
 {
 
@@ -194,9 +191,9 @@ namespace GuerhoubaGames
 
         public DamageStats damageStats;
 
-        private Character.CharacterShoot m_characterShoot;
+        private CharacterShoot m_characterShoot;
         private CharacterArtefact m_characterArtefacts;
-        public void Init(Character.CharacterDamageComponent playerDamageComponent, Character.CharacterShoot characterShoot, SpellSystem.SpellProfil spellProfil)
+        public void Init(CharacterDamageComponent playerDamageComponent, Character.CharacterShoot characterShoot, SpellSystem.SpellProfil spellProfil)
         {
             damageStats = new DamageStats();
 

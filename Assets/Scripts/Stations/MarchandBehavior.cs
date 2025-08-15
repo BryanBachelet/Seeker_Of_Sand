@@ -4,6 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
+using GuerhoubaGames.Character;
 
 public struct ItemData
 {
@@ -134,7 +135,7 @@ public class MarchandBehavior : InteractionInterface
 
         merchandItemData.itemSpellData[index].hasBeenBuy = true;
         // Add Spell to the player inventory
-        Character.CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
+        CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<CharacterShoot>();
         int spellIndex = merchandItemData.itemSpellData[index].index;
         characterShoot.AddSpell(spellIndex);
         CheckPlayerBuyCapacity();
@@ -173,7 +174,7 @@ public class MarchandBehavior : InteractionInterface
     public void AcquiereRandomNewSpell( DragData dragData)
     {
         int spellIndex = Random.Range(0, m_capsuleManager.spellProfils.Length);
-        Character.CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
+        CharacterShoot characterShoot = GameState.s_playerGo.GetComponent<CharacterShoot>();
         characterShoot.RemoveSpell(dragData.indexObj);
         characterShoot.AddSpell(spellIndex);
         m_uiInventory.ActualizeInventory();

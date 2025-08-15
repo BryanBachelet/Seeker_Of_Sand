@@ -1,3 +1,4 @@
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using System.Collections;

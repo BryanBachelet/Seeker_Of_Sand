@@ -1,3 +1,4 @@
+using GuerhoubaGames.Enemies;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,14 @@ using UnityEngine;
 public class Enemi_Animation : MonoBehaviour
 {
     public Animator m_animator;
-    private Enemies.NpcHealthComponent m_npcHealth;
+    private NpcHealthComponent m_npcHealth;
     private Transform m_target;
 
     public float debugdistance;
     // Start is called before the first frame update
     void Start()
     {
-        m_npcHealth = this.GetComponent<Enemies.NpcHealthComponent>();
+        m_npcHealth = this.GetComponent<NpcHealthComponent>();
         m_target = m_npcHealth.targetData.target;
     }
 

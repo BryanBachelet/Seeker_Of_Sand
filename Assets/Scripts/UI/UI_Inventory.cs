@@ -1,10 +1,9 @@
-using System.Collections;
+using GuerhoubaGames.Character;
+using GuerhoubaGames.UI;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using GuerhoubaGames.UI;
-using Character;
 public class UI_Inventory : MonoBehaviour
 {
     public bool isOpen;
@@ -22,8 +21,8 @@ public class UI_Inventory : MonoBehaviour
     [SerializeField] private TMP_Text tmpText_TradeButton;
     public bool hasSomethingInPanier = false;
 
-    private Character.CharacterSpellBook m_characterSpellBool;
-    private Character.CharacterShoot m_characterShoot;
+    private CharacterSpellBook m_characterSpellBool;
+    private CharacterShoot m_characterShoot;
     [HideInInspector] public CharacterArtefact m_characterArtefact;
     private UI_Fragment_Tooltip m_fragmentToolTip;
 
@@ -66,8 +65,8 @@ public class UI_Inventory : MonoBehaviour
         tmpText_CurrentCristal = m_marchandUiView.GetCristalCount_TmpText;
 
         m_cristalInventory = GameState.s_playerGo.GetComponent<CristalInventory>();
-        m_characterSpellBool = GameState.s_playerGo.GetComponent<Character.CharacterSpellBook>();
-        m_characterShoot = GameState.s_playerGo.GetComponent<Character.CharacterShoot>();
+        m_characterSpellBool = GameState.s_playerGo.GetComponent<CharacterSpellBook>();
+        m_characterShoot = GameState.s_playerGo.GetComponent<CharacterShoot>();
         m_characterArtefact = GameState.s_playerGo.GetComponent<CharacterArtefact>();
         m_fragmentToolTip = GameState.m_uiManager.GetComponent<UI_Fragment_Tooltip>();
     }
@@ -100,10 +99,10 @@ public class UI_Inventory : MonoBehaviour
     {
         for (int i = 0; i < m_characterArtefact.artefactsList.Count; i++)
         {
-                fragmentUIViews[i].ActiveModeRestreint(false);
-                fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = false;
-                artefactUIView[i].ActiveModeRestreint(true);
-                artefactUIView[i].GetComponent<DragObjectUI>().isLock = true;
+            fragmentUIViews[i].ActiveModeRestreint(false);
+            fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = false;
+            artefactUIView[i].ActiveModeRestreint(true);
+            artefactUIView[i].GetComponent<DragObjectUI>().isLock = true;
         }
 
     }
@@ -130,7 +129,7 @@ public class UI_Inventory : MonoBehaviour
         List<GameObject> tempFragment = m_fragmentToolTip.fragment_List;
         for (int i = 0; i < tempFragment.Count; i++)
         {
-            if (i < m_fragmentToolTip.currentFragmentNumber) 
+            if (i < m_fragmentToolTip.currentFragmentNumber)
                 SetupFragmentImage(m_fragmentToolTip, i);
             if (i >= m_fragmentToolTip.currentFragmentNumber)
                 ClearFragmentImage(m_fragmentToolTip, i);
@@ -161,12 +160,12 @@ public class UI_Inventory : MonoBehaviour
             return;
         }
 
-        
+
         if (!inventoryContainer.activeSelf)
         {
             ActualizeInventory();
             ActivateInventoryInterface();
-            if(m_isFirstTimeOpen && GameManager.instance.generalSaveData.IsFirstTime)
+            if (m_isFirstTimeOpen && GameManager.instance.generalSaveData.IsFirstTime)
             {
                 gameTutorialView.StartTutoriel();
                 m_isFirstTimeOpen = false;

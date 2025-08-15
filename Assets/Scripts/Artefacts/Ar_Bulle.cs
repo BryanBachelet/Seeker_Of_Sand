@@ -1,8 +1,9 @@
+using GuerhoubaGames.Artefact;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Artefact
+namespace GuerhoubaGames.Artefact
 {
 
     public class Ar_Bulle : MonoBehaviour

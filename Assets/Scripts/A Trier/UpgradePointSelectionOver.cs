@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using GuerhoubaGames.Character;
 
 public class UpgradePointSelectionOver : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class UpgradePointSelectionOver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Character.CharacterUpgrade.upgradePoint < upgradePointCost)
+        if (CharacterUpgrade.upgradePoint < upgradePointCost)
         {
             upgradePointAssociated.color = Color.red;
         }

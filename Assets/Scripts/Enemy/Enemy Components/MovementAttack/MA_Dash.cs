@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using GuerhoubaTools.Gameplay;
 
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     public struct NPCMoveAttData
     {

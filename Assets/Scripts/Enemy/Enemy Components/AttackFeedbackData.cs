@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     [System.Serializable]
     public struct AttackFeedbackData 

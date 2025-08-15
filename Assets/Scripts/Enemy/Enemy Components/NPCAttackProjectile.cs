@@ -4,7 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.Resources;
 using UnityEngine.VFX;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
 
     public class NPCAttackProjectile : MonoBehaviour

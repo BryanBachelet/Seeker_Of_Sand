@@ -9,7 +9,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-namespace Enemies
+
+namespace GuerhoubaGames.Enemies
 {
 
     [System.Serializable]

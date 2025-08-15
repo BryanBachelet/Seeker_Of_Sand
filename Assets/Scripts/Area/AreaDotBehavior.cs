@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GuerhoubaGames;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.VFX;
-using Enemies;
-using GuerhoubaGames;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace SpellSystem
 {
@@ -165,7 +164,7 @@ namespace SpellSystem
                     transform.position += m_areaMeta.areaData.direction.normalized * profil.GetFloatStat(StatType.DirectionSpeed) * Time.deltaTime;
                 if (profil.TagList.spellMovementBehavior == SpellMovementBehavior.FollowMouse)
                 {
-                    Character.CharacterAim characterAim = m_areaMeta.areaData.characterShoot.GetComponent<Character.CharacterAim>();
+                    CharacterAim characterAim = m_areaMeta.areaData.characterShoot.GetComponent<CharacterAim>();
                     Vector3 direction = characterAim.lastRawPosition - transform.position;
                     transform.position += direction.normalized * profil.GetFloatStat(StatType.DirectionSpeed) * Time.deltaTime;
                 }

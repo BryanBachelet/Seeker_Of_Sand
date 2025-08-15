@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using Unity.VisualScripting;
+using GuerhoubaGames.Character;
 using Save;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public string profileName;
     public TMP_InputField FieldNameProfile;
-    public Character.AimMode m_aimModeChoose;
+    public AimMode m_aimModeChoose;
     [SerializeField] public TMP_Text m_textName;
     [SerializeField] public TMP_Text m_placeHolderName;
     public static GameManager instance;
@@ -145,7 +143,7 @@ public class GameManager : MonoBehaviour
     public void ChangeAimMode(int aimModeIndex)
     {
         aimModeNumber = aimModeIndex;
-        m_aimModeChoose = (Character.AimMode)aimModeIndex;
+        m_aimModeChoose = (AimMode)aimModeIndex;
     }
     public void ChangeAimFeedback(Image newLayout)
     {

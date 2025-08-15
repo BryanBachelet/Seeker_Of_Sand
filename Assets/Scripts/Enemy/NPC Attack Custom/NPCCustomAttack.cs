@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     public struct CustomAttackData
     {

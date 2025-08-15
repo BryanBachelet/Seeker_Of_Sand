@@ -4,6 +4,7 @@ using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine.UI;
+using GuerhoubaGames.Enemies;
 
 public class ShadowFunction : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class ShadowFunction : MonoBehaviour
     public EventReference activationShadowDetection_Attribution;
 
     public bool IsDebugActive = false;
-    public Enemies.EnemyManager enemyManager;
+    public EnemyManager enemyManager;
 
     public Sprite[] spritesEyes;
     public AnimationCurve spriteAnimation;

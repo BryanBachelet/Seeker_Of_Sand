@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using GuerhoubaGames.Character;
 using UnityEngine;
 
 namespace Render.Camera
@@ -8,7 +7,7 @@ namespace Render.Camera
     public class CameraAimOffset : CameraEffect
     {
 
-        [SerializeField] private Character.CharacterAim m_characterAim;
+        [SerializeField] private CharacterAim m_characterAim;
 
 
         private Vector3 m_offsetAim;

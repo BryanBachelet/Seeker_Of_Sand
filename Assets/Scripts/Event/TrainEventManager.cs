@@ -1,3 +1,4 @@
+using GuerhoubaGames.Enemies;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,13 +11,13 @@ public class TrainEventManager : MonoBehaviour
     [SerializeField] private bool m_isEventActive;
     [SerializeField] private DayCyclecontroller m_dayCycleScript;
 
-    private Enemies.EnemyManager m_enemiesManager;
+    private EnemyManager m_enemiesManager;
     private int m_pilarActive = 0;
 
     public void Start()
     {
         SetDayCycleEvent();
-        m_enemiesManager = GetComponent<Enemies.EnemyManager>();
+        m_enemiesManager = GetComponent<EnemyManager>();
     }
 
     private void SetDayCycleEvent()

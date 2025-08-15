@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using SeekerOfSand.Tools;
 using GuerhoubaGames;
 using UnityEngine.VFX;
+using GuerhoubaGames.Artefact;
 
 public enum ArtefactType
 {
@@ -193,7 +194,7 @@ public class ArtefactsInfos : ScriptableObject
             }
             if (!CanApplyOnHit()) return;
             GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
-            Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
+            ArtefactData artefactData = obj.GetComponent<ArtefactData>();
             SetupArtefactData(artefactData, objectPre);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
@@ -202,7 +203,7 @@ public class ArtefactsInfos : ScriptableObject
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {
                 GameObject objEffect = GamePullingSystem.SpawnObject(additionalEffectToSpawn[i], position, Quaternion.identity);
-                artefactData = objEffect.GetComponent<Artefact.ArtefactData>();
+                artefactData = objEffect.GetComponent<ArtefactData>();
                 SetupArtefactData(artefactData, objectPre);
                 artefactData.OnSpawn?.Invoke();
             }
@@ -224,7 +225,7 @@ public class ArtefactsInfos : ScriptableObject
         {
             if (isDebugActive) Debug.Log("Artefact in launch");
             GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
-            Artefact.ArtefactData artefactData = obj.GetComponent<Artefact.ArtefactData>();
+            ArtefactData artefactData = obj.GetComponent<ArtefactData>();
             SetupArtefactData(artefactData, agent);
             artefactData.OnSpawn?.Invoke();
             activationCount++;
@@ -233,14 +234,14 @@ public class ArtefactsInfos : ScriptableObject
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {
                 GameObject objEffect = GamePullingSystem.SpawnObject(additionalEffectToSpawn[i], position, Quaternion.identity);
-                artefactData = objEffect.GetComponent<Artefact.ArtefactData>();
+                artefactData = objEffect.GetComponent<ArtefactData>();
                 SetupArtefactData(artefactData, agent);
                 artefactData.OnSpawn?.Invoke();
             }
         }
     }
 
-    public void SetupArtefactData(Artefact.ArtefactData artefactData, GameObject agent)
+    public void SetupArtefactData(ArtefactData artefactData, GameObject agent)
     {
         artefactData.agent = agent;
         artefactData.entitiesTargetSystem = entitiesTargetSystem;

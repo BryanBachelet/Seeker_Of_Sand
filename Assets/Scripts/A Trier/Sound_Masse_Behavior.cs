@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
+using GuerhoubaGames.Enemies;
 
 public class Sound_Masse_Behavior : MonoBehaviour
 {
@@ -54,9 +55,9 @@ public class Sound_Masse_Behavior : MonoBehaviour
         lastTimeDetection = Time.time;
         foreach (Collider item in nearEnemi)
         {
-            if (item.GetComponent<Enemies.NpcMetaInfos>())
+            if (item.GetComponent<NpcMetaInfos>())
             {
-                Enemies.NpcMetaInfos metaObserved = item.GetComponent<Enemies.NpcMetaInfos>();
+                NpcMetaInfos metaObserved = item.GetComponent<NpcMetaInfos>();
                 if((int)metaObserved.type == typeEnemyObserved || typeEnemyObserved == -1)
                 {
                     //Debug.Log("EnemiAdd");

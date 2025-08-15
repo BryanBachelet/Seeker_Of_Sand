@@ -5,6 +5,7 @@ using UnityEngine.VFX;
 using SeekerOfSand.Tools;
 using TMPro;
 using GuerhoubaGames.Resources;
+using GuerhoubaGames.Character;
 
 namespace GuerhoubaGames.UI
 {

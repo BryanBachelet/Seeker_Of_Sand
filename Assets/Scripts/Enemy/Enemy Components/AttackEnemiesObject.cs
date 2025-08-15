@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 
 {
     [CreateAssetMenu(fileName = "AttackData", menuName = "Enemmis/Attack/NpcAttackData", order = 5)]

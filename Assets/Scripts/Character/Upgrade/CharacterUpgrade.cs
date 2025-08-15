@@ -5,7 +5,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using GuerhoubaTools;
 using GuerhoubaGames.GameEnum;
-namespace Character
+using GuerhoubaGames.Character;
+
+namespace GuerhoubaGames.Character
 {
     [System.Serializable]
     public struct SpellUpgradeConfig
@@ -17,6 +19,7 @@ namespace Character
     public class CharacterUpgrade : MonoBehaviour
     {
         [Header("Upgrades Base Infos")]
+        public int upgradePointPerReward = 2;
         public List<UpgradeObject> avatarUpgradeList;
         public static int upgradePoint = 0;
         private int presetUpgradePoint = 0;
@@ -34,8 +37,8 @@ namespace Character
         // Useful Components
         [HideInInspector] public UpgradeManager upgradeManager;
         private SpellManager m_spellManager;
-        [HideInInspector] public Character.CharacterShoot m_characterShoot;
-        [HideInInspector] public Character.CharacterSpellBook m_characterInventory;
+        [HideInInspector] public CharacterShoot m_characterShoot;
+        [HideInInspector] public CharacterSpellBook m_characterInventory;
         private Experience_System experience;
 
         private bool isUpgradeWindowOpen;
@@ -81,8 +84,8 @@ namespace Character
         {
             upgradeManager = FindObjectOfType<UpgradeManager>();
             m_spellManager = upgradeManager.GetComponent<SpellManager>();
-            m_characterShoot = GetComponent<Character.CharacterShoot>();
-            m_characterInventory = GetComponent<Character.CharacterSpellBook>();
+            m_characterShoot = GetComponent<CharacterShoot>();
+            m_characterInventory = GetComponent<CharacterSpellBook>();
             experience = GetComponent<Experience_System>();
             if (!m_UiPlayerInfo) m_UiPlayerInfo = GameObject.Find("UI_Manager").GetComponent<SeekerOfSand.UI.UI_PlayerInfos>();
             // m_UpgradeUiDecal = UiSpellGrimoire.bookDisplayRoot.GetComponent<UpgradeUIDecal>();
@@ -93,11 +96,11 @@ namespace Character
         public GameTutorialView gameTutorialView;
         private bool m_isFirstTime = true;
 
-        public void ShowSpellChoiceInteface()
+        public void ShowSpellChoiceInteface(GameElement element)
         {
             if (upgradeManager)
             {
-                upgradeManager.OpenSpellChoiceUI(lastRoomElement);
+                upgradeManager.OpenSpellChoiceUI(element);
                
 
                 GameState.SetState(false);
@@ -123,7 +126,7 @@ namespace Character
         }
 
         #region Upgrade Functions
-        public void ShowUpgradeWindow()
+        public void ShowUpgradeWindow(GameElement element)
         {
             if (!m_characterShoot) return;
             isUpgradeWindowOpen = true;
@@ -138,9 +141,9 @@ namespace Character
             data.materialIconSpell = m_characterShoot.GetSpellMaterial();
             data.capsuleIndex = m_characterShoot.spellIndexGeneral.ToArray();
             data.upgradePoint = upgradePoint;
-            data.roomElement = lastRoomElement;
+            data.roomElement = element;
             upgradeManager.OpenUpgradeUI(data);
-
+            GameState.ChangeState();
 
             //GlobalSoundManager.PlayOneShot(6, Vector3.zero); // Play Sound
             //GameState.ChangeState(); // Set Game in pause
@@ -208,10 +211,13 @@ namespace Character
         #endregion
 
 
-        public void GiveUpgradePoint(int upgradeNumber)
+        public void ApplyUpgradeReward(GameElement element)
         {
-            upgradePoint += upgradeNumber;
+            upgradePoint += upgradePointPerReward;
+            ShowUpgradeWindow(element);    
         }
+
+     
 
         public void ChangeBaseInterfaceDisplay(bool willBeAble)
         {

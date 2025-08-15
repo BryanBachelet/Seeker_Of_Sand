@@ -1,7 +1,6 @@
 using GuerhoubaGames;
+using GuerhoubaGames.Enemies;
 using GuerhoubaGames.GameEnum;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Harpon : Projectile
@@ -10,7 +9,7 @@ public class Harpon : Projectile
     [Range(0, 100)]
     [SerializeField] private float m_minRangeToImpale = 20.0f;
     [SerializeField] private float m_impalementDamageRatio = 1.5f;
-    private Enemies.NpcHealthComponent[] m_enemyImpales;
+    private NpcHealthComponent[] m_enemyImpales;
     private int m_impaleCount;
     private float m_currentDistance;
 
@@ -28,11 +27,11 @@ public class Harpon : Projectile
     {
         if(spellProfil.currentSpellTier == 3)
         {
-            m_enemyImpales =  new Enemies.NpcHealthComponent[impaleCountUpgrade];
+            m_enemyImpales =  new NpcHealthComponent[impaleCountUpgrade];
         }
         else
         {
-            m_enemyImpales = new Enemies.NpcHealthComponent[1];
+            m_enemyImpales = new NpcHealthComponent[1];
         }
         impaleCountMaximum = m_enemyImpales.Length;
         timerBeforeSpawnArea = timeBeforeSpawnArea;
@@ -77,7 +76,7 @@ public class Harpon : Projectile
         // Check for impales status
         for (int i = 0; i < m_impaleCount; i++)
         {
-            if (m_enemyImpales[i].m_npcInfo.state == Enemies.NpcState.DEATH)
+            if (m_enemyImpales[i].m_npcInfo.state == NpcState.DEATH)
             {
                 m_enemyImpales[i] = null;
                 m_impaleCount--;
@@ -91,11 +90,11 @@ public class Harpon : Projectile
 
             for (int i = 0; i < m_impaleCount; i++)
             {
-                if ( m_enemyImpales[i].m_npcInfo.state != Enemies.NpcState.DEATH)
+                if ( m_enemyImpales[i].m_npcInfo.state != NpcState.DEATH)
                 {
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
                     m_enemyImpales[i].ReceiveDamage(spellProfil.name, damageStatData, m_enemyImpales[i].transform.position - transform.position, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
-                    m_enemyImpales[i].m_npcInfo.state = Enemies.NpcState.PAUSE;
+                    m_enemyImpales[i].m_npcInfo.state = NpcState.PAUSE;
                    
                 }
             }
@@ -113,7 +112,7 @@ public class Harpon : Projectile
 
         for (int i = 0; i < m_impaleCount; i++)
         {
-            if (m_enemyImpales[i].m_npcInfo.type != Enemies.EnemyType.TWILIGHT_SISTER)
+            if (m_enemyImpales[i].m_npcInfo.type != EnemyType.TWILIGHT_SISTER)
                 m_enemyImpales[i].transform.position = transform.position;
         }
 
@@ -134,11 +133,11 @@ public class Harpon : Projectile
 
         if (spellProfil.currentSpellTier == 3)
         {
-            m_enemyImpales = new Enemies.NpcHealthComponent[impaleCountUpgrade];
+            m_enemyImpales = new NpcHealthComponent[impaleCountUpgrade];
         }
         else
         {
-            m_enemyImpales = new Enemies.NpcHealthComponent[1];
+            m_enemyImpales = new NpcHealthComponent[1];
         }
     }
 
@@ -154,8 +153,8 @@ public class Harpon : Projectile
             GlobalSoundManager.PlayOneShot(9, transform.position);
             if (other.tag == "Enemy" )
             {
-                Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
-                if(enemyTouch.m_npcInfo.type == Enemies.EnemyType.TWILIGHT_SISTER)
+                NpcHealthComponent enemyTouch = other.GetComponent<NpcHealthComponent>();
+                if(enemyTouch.m_npcInfo.type == EnemyType.TWILIGHT_SISTER)
                 {
                     m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.TagList.element);
                     DamageStatData damageStatData = new DamageStatData((int)(m_damage * m_impalementDamageRatio), objectType);
@@ -163,7 +162,7 @@ public class Harpon : Projectile
                     return;
                 }
 
-                if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
+                if (enemyTouch.m_npcInfo.state == NpcState.DEATH) return;
 
                 if (m_impaleCount < impaleCountMaximum && m_currentDistance < m_minRangeToImpale)
                 {
@@ -179,7 +178,7 @@ public class Harpon : Projectile
 
                     }
 
-                    if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
+                    if (enemyTouch.m_npcInfo.state == NpcState.DEATH) return;
 
 
                     
@@ -189,7 +188,7 @@ public class Harpon : Projectile
                     {
                         m_IsTraineeBehaviorActive = true;
                     }
-                    m_enemyImpales[m_impaleCount].m_npcInfo.state = Enemies.NpcState.PAUSE;
+                    m_enemyImpales[m_impaleCount].m_npcInfo.state = NpcState.PAUSE;
                     m_impaleCount++;
                 }
 

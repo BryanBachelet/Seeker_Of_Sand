@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
+using GuerhoubaGames.Character;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UiSpellGrimoire : MonoBehaviour
 {
-    public Character.CharacterShoot m_characterShoot;
-    public Character.CharacterSpellBook m_characterInventory;
+    public CharacterShoot m_characterShoot;
+    public CharacterSpellBook m_characterInventory;
     public GameObject m_inGameUIObj;
     public GameObject mainUIObject;
     public GameObject spellGalerieObj;

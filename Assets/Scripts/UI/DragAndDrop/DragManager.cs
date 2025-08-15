@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Character;
 
 namespace GuerhoubaGames.UI
 {

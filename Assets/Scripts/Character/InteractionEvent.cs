@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using GuerhoubaGames.Resources;
 using GuerhoubaGames.UI;
+using GuerhoubaGames.Character;
 
 
 /// <summary>
@@ -52,7 +53,7 @@ public class InteractionEvent : MonoBehaviour
 
     [HideInInspector] private GameResources m_gameRessources;
 
-    private Character.CharacterMouvement m_characterMouvement;
+    private CharacterMouvement m_characterMouvement;
     private CristalInventory m_CristalInventory;
 
     private GameObject hintDetailCost;
@@ -65,7 +66,7 @@ public class InteractionEvent : MonoBehaviour
     void Start()
     {
         lastInteractionCheck = 0;
-        m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        m_characterMouvement = GetComponent<CharacterMouvement>();
         if (m_gameLayer == null) { m_gameLayer = GameLayer.instance; }
         if (mainCamera == null) { mainCamera = Camera.main; }
         interactionDetail_Txt = hintInputInteraction_Detail.GetComponentInChildren<TMP_Text>();

@@ -1,9 +1,6 @@
-using Character;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObjectReward : MonoBehaviour

@@ -1,11 +1,10 @@
+using GuerhoubaGames.Enemies;
 using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
-using TMPro;
-using Character;
 
 public class DayCyclecontroller : MonoBehaviour
 {
@@ -35,7 +34,7 @@ public class DayCyclecontroller : MonoBehaviour
     [SerializeField] static public float durationDay;
     [SerializeField] static public float durationNight;
     [SerializeField] private Volume m_LocalNightVolume;
-    [SerializeField] private Enemies.EnemyManager m_EnemyManager;
+    [SerializeField] private EnemyManager m_EnemyManager;
     [SerializeField] private float time;
     [SerializeField] public TMP_Text m_DayPhases;
     [SerializeField] public TMP_Text m_Instruction;

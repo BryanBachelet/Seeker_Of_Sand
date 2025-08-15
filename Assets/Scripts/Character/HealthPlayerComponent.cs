@@ -8,6 +8,7 @@ using UnityEngine.Rendering.HighDefinition;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaTools.Gameplay;
 using TMPro;
+using GuerhoubaGames.Character;
 public struct AttackDamageInfo
 {
     public string attackName;
@@ -68,7 +69,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     [Header("Object Parameters")]
     public GameState gameStateObject;
-    private Character.CharacterMouvement m_characterMouvement;
+    private CharacterMouvement m_characterMouvement;
 
 
 
@@ -94,7 +95,7 @@ public class HealthPlayerComponent : MonoBehaviour
     {
         InitializedHealthData();
 
-        m_characterMouvement = GetComponent<Character.CharacterMouvement>();
+        m_characterMouvement = GetComponent<CharacterMouvement>();
         m_Profil = this.GetComponent<CharacterProfile>();
         AugmenteMaxHealth((int)m_Profil.stats.healthMax.totalValue);
         m_cameraUsed = Camera.main;

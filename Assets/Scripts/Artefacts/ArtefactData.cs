@@ -12,7 +12,7 @@ public class CustomArrayName : PropertyAttribute
 }
 
 
-namespace Artefact
+namespace GuerhoubaGames.Artefact
 {
     public class ArtefactData : MonoBehaviour
     {

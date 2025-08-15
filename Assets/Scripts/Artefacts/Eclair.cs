@@ -1,4 +1,4 @@
-using Character;
+using GuerhoubaGames.Character;
 using GuerhoubaGames;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Artefact
+namespace GuerhoubaGames.Artefact
 {
     public class Eclair : MonoBehaviour
     {

@@ -1,14 +1,15 @@
+using GuerhoubaGames.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Artefact
+namespace GuerhoubaGames.Artefact
 {
     public class SpellLauncher : MonoBehaviour
     {
         private ArtefactData m_artefactData;
-        private Character.CharacterShoot m_characterShoot ;
+        private CharacterShoot m_characterShoot ;
         private float radiusEffect;
         public LayerMask enemyMask;
         public int spellOffset = 0;

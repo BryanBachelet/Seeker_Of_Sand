@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
 using System.IO;
-using Character;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.Resources;
+
 public class Experience_System : MonoBehaviour, CharacterComponent
 {
     [SerializeField] private AnimationCurve m_ExperienceQuantity;

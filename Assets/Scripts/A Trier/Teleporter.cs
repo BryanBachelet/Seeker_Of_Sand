@@ -1,3 +1,4 @@
+using GuerhoubaGames.Enemies;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class Teleporter : MonoBehaviour
 
     static private TerrainGenerator terrainGen;
     [HideInInspector] public AltarBehaviorComponent altarBehavior;
-    [HideInInspector] public Enemies.EnemyManager enemyManager;
+    [HideInInspector] public EnemyManager enemyManager;
 
     [HideInInspector] public TeleporterFeebackController tpFeedbackController;
     [HideInInspector] public Animator animatorPortal;

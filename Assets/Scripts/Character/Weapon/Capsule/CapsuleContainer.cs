@@ -1,3 +1,4 @@
+using GuerhoubaGames.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,7 +34,7 @@ public class CapsuleContainer : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            other.GetComponent<Character.CharacterShoot>().AddSpell(capsuleIndex);
+            other.GetComponent<CharacterShoot>().AddSpell(capsuleIndex);
             other.GetComponent<DropInventory>().AddNewItem(capsuleIndex);
             Destroy(gameObject);
 

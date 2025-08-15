@@ -1,23 +1,21 @@
-using System.Collections.Generic;
+using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Resources;
+using GuerhoubaTools.Gameplay;
+using Klak.Motion;
+using Render.Camera;
+using SeekerOfSand.Tools;
+using SeekerOfSand.UI;
+using SpellSystem;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using TMPro;
-using SeekerOfSand.UI;
-using GuerhoubaTools.Gameplay;
-using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
-using SpellSystem;
-using GuerhoubaGames.Resources;
-using Klak.Motion;
-using SeekerOfSand.Tools;
-using GuerhoubaGames;
-using Render.Camera;
-using System;
-using GuerhoubaGames.SaveData;
 
-namespace Character
+namespace GuerhoubaGames.Character
 {
     public enum CombatPlayerState
     {

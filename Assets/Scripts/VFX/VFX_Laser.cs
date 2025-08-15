@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using GuerhoubaGames.Enemies;
 using UnityEngine;
-using Enemies;
 using GuerhoubaTools.Gameplay;
 using UnityEngine.VFX;
 namespace GuerhoubaGames.VFX

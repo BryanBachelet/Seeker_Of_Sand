@@ -4,7 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.Resources;
 using SeekerOfSand.Tools;
 
-namespace Artefact
+namespace GuerhoubaGames.Artefact
 {
     public class Ar_Fireball : MonoBehaviour
     {

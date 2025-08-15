@@ -7,7 +7,7 @@ using SpellSystem;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 
-namespace Character
+namespace GuerhoubaGames.Character
 {
     public class CharacterSpellBook : MonoBehaviour
     {

@@ -1,9 +1,8 @@
-using System.Collections;
+using GuerhoubaGames.Enemies;
+using GuerhoubaGames.Resources;
 using System.Collections.Generic;
 using UnityEngine;
-using Enemies;
 using UnityEngine.AI;
-using GuerhoubaGames.Resources;
 
 [System.Serializable]
 public struct EnemyPullingInfo

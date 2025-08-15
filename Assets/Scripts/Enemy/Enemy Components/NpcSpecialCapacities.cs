@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using GuerhoubaGames.AI;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     [System.Serializable]
     public class SpecialCapacity : MonoBehaviour

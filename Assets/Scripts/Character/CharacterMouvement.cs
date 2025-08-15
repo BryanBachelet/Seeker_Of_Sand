@@ -1,20 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
-using UnityEngine.InputSystem;
+using BorsalinoTools;
 using FMOD.Studio;
 using FMODUnity;
-using Klak.Motion;
-using UnityEngine.Profiling;
-using Render.Camera;
-using BorsalinoTools;
-using UnityEditor;
 using GuerhoubaTools.Curves;
-using static Character.CharacterMouvement;
-using UnityEditor.Rendering;
+using Klak.Motion;
+using Render.Camera;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace Character
+namespace GuerhoubaGames.Character
 {
 
     public struct SlopeData
@@ -235,11 +228,8 @@ namespace Character
             profile = this.GetComponent<CharacterProfile>();
             m_speedLimit = 0;
             m_currentDirection = Vector3.zero;
-            if (state == null)
-            {
-                InitComponent();
-            }
-
+            InitComponent();
+        
 
             m_characterShoot.OnCombatStarting += ActiveCombatMouvement;
             m_characterShoot.OnCombatEnding += SetSpeedLimit;
@@ -537,7 +527,7 @@ namespace Character
                     //m_slidingEffect.SetActive(true);\
                     m_characterAim.vfxCast.SetFloat("Progress", 0);
                     m_characterAim.vfxCastEnd.SetFloat("Progress", 0);
-                    if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
+                 //   if (m_slidingEffectVfx.HasFloat("Rate")) m_slidingEffectVfx.SetFloat("Rate", 100);
 
 
 

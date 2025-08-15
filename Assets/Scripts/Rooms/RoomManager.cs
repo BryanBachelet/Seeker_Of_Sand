@@ -1,15 +1,15 @@
+using BorsalinoTools;
+using GuerhoubaGames;
+using GuerhoubaGames.Character;
+using GuerhoubaGames.Enemies;
+using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.UI;
+using Render.Camera;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GuerhoubaGames.UI;
-using GuerhoubaGames.GameEnum;
-using GuerhoubaTools;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.AI;
-using Render.Camera;
-using GuerhoubaGames;
-using BorsalinoTools;
 
 
 
@@ -39,14 +39,12 @@ public class RoomManager : MonoBehaviour
     public Teleporter[] teleporterArray = new Teleporter[3];
     private int m_currentTeleporterCount = 0;
 
-    [HideInInspector] public Enemies.EnemyManager m_enemyManager;
+    [HideInInspector] public EnemyManager m_enemyManager;
     public bool isRoomHasBeenValidate = true;
     private bool isTeleporterActive = true;
     [HideInInspector] public TerrainGenerator terrainGenerator;
 
     [HideInInspector] public RoomInfoUI roomInfoUI;
-
-    static RewardDistribution playerRewardDistribution;
 
 
     public bool isActiveStartRotation;
@@ -80,7 +78,7 @@ public class RoomManager : MonoBehaviour
     private bool m_isStartActivation = false;
     private bool m_isDistanceActivationDone = false;
 
-    private Character.CharacterUpgrade m_characterUpgrade;
+    private CharacterUpgrade m_characterUpgrade;
 
     static public int enemyMaxSpawnInRoon;
 
@@ -131,20 +129,16 @@ public class RoomManager : MonoBehaviour
         isRoomHasBeenValidate = false;
         previewCamera = transform.parent.GetComponentInChildren<Camera>();
         isTeleporterActive = false;
-        m_enemyManager = FindAnyObjectByType<Enemies.EnemyManager>();
+        m_enemyManager = FindAnyObjectByType<EnemyManager>();
         playerGO = GameObject.Find("Player");
         if (dropGenerator == null && transform.parent.GetComponentInChildren<TerrainDropGeneration>())
         {
             dropGenerator = transform.parent.GetComponentInChildren<TerrainDropGeneration>();
         }
-        if (playerRewardDistribution == null)
-        {
-            playerRewardDistribution = playerGO.GetComponent<RewardDistribution>();
 
-        }
         if (m_characterUpgrade == null)
         {
-            m_characterUpgrade = playerGO.GetComponent<Character.CharacterUpgrade>();
+            m_characterUpgrade = playerGO.GetComponent<CharacterUpgrade>();
         }
         if (m_cameraBehavior == null)
         {
@@ -227,7 +221,7 @@ public class RoomManager : MonoBehaviour
                 {
 
                     //m_enemyManager.OnDeathSimpleEvent += CountEnemy;
-                    m_enemyManager.ActiveSpawnPhase(true, Enemies.EnemySpawnCause.DEBUG);
+                    m_enemyManager.ActiveSpawnPhase(true,   EnemySpawnCause.DEBUG);
                     //m_cameraBehavior.isZoomActive = false;
                 }
                 m_isDistanceActivationDone = true;
@@ -382,7 +376,7 @@ public class RoomManager : MonoBehaviour
         if (delayUpdate) return;
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
         if (hasEndReward && !rewardGenerated) GiveRoomReward(); rewardGenerated = true;
-        if ((hasEndReward && playerRewardDistribution.isRewardSend || !hasEndReward) && !isTeleporterActive)
+        if ((hasEndReward || !hasEndReward) && !isTeleporterActive)
         {
             OpenPortals();
         }
@@ -431,7 +425,7 @@ public class RoomManager : MonoBehaviour
         isRoomHasBeenValidate = true;
 
         m_EndRoomChallengeTime = DateTime.Now;
-        m_enemyManager.ActiveSpawnPhase(false, Enemies.EnemySpawnCause.DEBUG);
+        m_enemyManager.ActiveSpawnPhase(false, EnemySpawnCause.DEBUG);
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
 
 
@@ -449,7 +443,7 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        playerRewardDistribution.GiveReward(rewardType, rewardPosition, healthReward, element);
+        RunManager.SpawnReward(rewardType, rewardPosition.position, element);
     }
 
 

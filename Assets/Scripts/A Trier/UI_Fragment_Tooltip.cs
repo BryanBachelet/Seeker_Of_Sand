@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.UI;
-using UnityEngine.UI;
-using GuerhoubaGames.GameEnum;
+using System.Collections.Generic;
 using TMPro;
-using SeekerOfSand.Tools;
+using UnityEngine;
+using UnityEngine.UI;
+
 public class UI_Fragment_Tooltip : MonoBehaviour
 {
     public List<GameObject> fragment_List = new List<GameObject>();

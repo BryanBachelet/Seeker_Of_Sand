@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.AI;
 using GuerhoubaTools.Gameplay;
-namespace Enemies
+
+namespace GuerhoubaGames.Enemies
 {
 
     public class NPC_TSCustomComponent : MonoBehaviour

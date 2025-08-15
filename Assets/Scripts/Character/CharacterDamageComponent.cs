@@ -4,7 +4,7 @@ using UnityEngine;
 using GuerhoubaGames;
 using GuerhoubaGames.GameEnum;
 
-namespace Character
+namespace GuerhoubaGames.Character
 {
 
     public class CharacterDamageComponent : MonoBehaviour, CharacterComponent

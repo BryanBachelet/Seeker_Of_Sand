@@ -5,7 +5,7 @@ using GuerhoubaGames.GameEnum;
 using UnityEngine.VFX;
 using GuerhoubaGames.Resources;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
 
     public struct AttackInfoData

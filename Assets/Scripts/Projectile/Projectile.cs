@@ -1,19 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GuerhoubaGames;
+using GuerhoubaGames.Character;
+using GuerhoubaGames.Enemies;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
-using UnityEngine.VFX;
-using SeekerOfSand.Tools;
-using Enemies;
-using SpellSystem;
-using UnityEngine.Profiling;
-using GuerhoubaGames;
-using UnityEngine.SearchService;
-using Unity.VisualScripting;
-using System.Linq;
 using GuerhoubaTools.Gameplay;
-using BorsalinoTools;
+using SpellSystem;
+using UnityEngine;
+using UnityEngine.VFX;
 
 public struct ProjectileData
 {
@@ -30,7 +23,7 @@ public struct ProjectileData
     public float sizeFactor;
     public float size;
     public SpellSystem.SpellProfil spellProfil;
-    public Character.CharacterShoot characterShoot;
+    public CharacterShoot characterShoot;
     public CharacterObjectType objectType;
     public int element;
     public string nameFragment;
@@ -72,7 +65,7 @@ public class Projectile : MonoBehaviour
     protected float m_sizeMultiplicateurFactor;
 
     protected SpellSystem.SpellProfil spellProfil;
-    protected Character.CharacterShoot m_characterShoot;
+    protected CharacterShoot m_characterShoot;
 
     private float spawnTime;
     private bool checkSpawnTime = false;
@@ -406,7 +399,7 @@ public class Projectile : MonoBehaviour
         if (tag == "Enemy")
         {
             NpcHealthComponent npcHealthComponent = (NpcHealthComponent)damageReceiver;
-            return npcHealthComponent.m_npcInfo.state == Enemies.NpcState.DEATH;
+            return npcHealthComponent.m_npcInfo.state == NpcState.DEATH;
         }
         else
         {

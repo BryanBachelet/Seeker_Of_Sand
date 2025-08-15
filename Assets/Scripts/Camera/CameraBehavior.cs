@@ -1,4 +1,5 @@
 using FMODUnity;
+using GuerhoubaGames.Character;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Render.Camera
 
     public class CameraBehavior : MonoBehaviour
     {
-        [SerializeField] private Character.CharacterMouvement playerMove;
+        [SerializeField] private CharacterMouvement playerMove;
         [SerializeField] private Transform m_targetTransform;  
         [SerializeField] public float m_distanceToTarget = 80;
         [SerializeField] private Vector3 m_directionCamera;
@@ -124,7 +125,7 @@ namespace Render.Camera
         private float m_mouseDeltaValue;
 
         private PlayerInput m_playerInputComponent;
-        private Character.CharacterShoot m_characterShootComponent;
+        private CharacterShoot m_characterShootComponent;
         private bool m_isActiveAutomaticDezoom = false;
 
         private Vector2 m_registerMousePositionRotation = Vector3.zero;
@@ -147,7 +148,7 @@ namespace Render.Camera
             m_gameLayer = GameLayer.instance;
 
             m_playerInputComponent = m_targetTransform.GetComponent<PlayerInput>();
-            m_characterShootComponent = m_targetTransform.GetComponent<Character.CharacterShoot>();
+            m_characterShootComponent = m_targetTransform.GetComponent<CharacterShoot>();
 
             initialAngularSpeed = m_angularSpeed;
            
@@ -163,7 +164,7 @@ namespace Render.Camera
 
         void Update()
         {
-            if (playerMove.mouvementState != Character.CharacterMouvement.MouvementState.Train)
+            if (playerMove.mouvementState != CharacterMouvement.MouvementState.Train)
             {
                 if (m_isLerping)
                 {

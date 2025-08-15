@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
+using GuerhoubaGames.Character;
+using SeekerOfSand.Tools;
+using SpellSystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using SpellSystem;
 using UnityEngine.VFX;
-using SeekerOfSand.Tools;
-using System.Threading.Tasks;
+
 namespace SeekerOfSand
 {
     namespace UI
@@ -14,7 +13,7 @@ namespace SeekerOfSand
         public class UI_PlayerInfos : MonoBehaviour
         {
             [HideInInspector] private GameObject playerTarget;
-            [HideInInspector] private Character.CharacterShoot m_characterShoot;
+            [HideInInspector] private CharacterShoot m_characterShoot;
 
             [Header("Spell Canalisation Objects")]
             [SerializeField] private Image m_canalisationBar;
@@ -51,7 +50,7 @@ namespace SeekerOfSand
             void Start()
             {
                 playerTarget = GameObject.Find("Player");
-                m_characterShoot = playerTarget.GetComponent<Character.CharacterShoot>();
+                m_characterShoot = playerTarget.GetComponent<CharacterShoot>();
                 canalisationBarDisplay = m_canalisationBar.transform.parent.GetComponent<Animator>();
                 //InitStackingObjects();
                 m_level = 0;

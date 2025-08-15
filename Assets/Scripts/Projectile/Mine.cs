@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Enemies;
+using GuerhoubaGames.Character;
 public class Mine : ProjectileExplosif
 {
 
@@ -138,15 +140,15 @@ public class Mine : ProjectileExplosif
 
             if (enemies[i].tag == "Player")
             {
-                enemies[i].GetComponent<Character.CharacterMouvement>().Projection((Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized * powerPlayerProjection, ForceMode.VelocityChange);
+                enemies[i].GetComponent<CharacterMouvement>().Projection((Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized * powerPlayerProjection, ForceMode.VelocityChange);
                 Debug.Log("Player explosion fonction");
                 continue;
             }
             else if (enemies[i].tag == "Enemy")
             {
-                Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
+                NpcHealthComponent enemyTouch = enemies[i].GetComponent<NpcHealthComponent>();
 
-                if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) continue;
+                if (enemyTouch.m_npcInfo.state == NpcState.DEATH) continue;
                 DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
                 enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (Vector3.up + (enemies[i].transform.position - transform.position).normalized).normalized, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);
             }

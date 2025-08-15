@@ -8,7 +8,7 @@ using GuerhoubaGames.Resources;
 using GuerhoubaTools.Gameplay;
 using GuerhoubaGames;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
 
 

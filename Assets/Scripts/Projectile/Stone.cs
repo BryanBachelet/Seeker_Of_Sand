@@ -1,3 +1,4 @@
+using GuerhoubaGames.Enemies;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,9 +72,9 @@ public class Stone : Projectile
     {
         if (other.gameObject.tag != "Enemy") return;
         //GlobalSoundManager.PlayOneShot(10, transform.position);
-        Enemies.NpcHealthComponent enemyTouch = other.GetComponent<Enemies.NpcHealthComponent>();
+        NpcHealthComponent enemyTouch = other.GetComponent<NpcHealthComponent>();
         m_characterShoot.ActiveOnHit(other.transform.position, EntitiesTrigger.Enemies, other.gameObject, spellProfil.TagList.element);
-        if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH) return;
+        if (enemyTouch.m_npcInfo.state == NpcState.DEATH) return;
 
         DamageStatData damageStatData = new DamageStatData((int)(m_rigidbody.velocity.magnitude * m_damage), objectType);
         enemyTouch.ReceiveDamage(spellProfil.name, damageStatData, (other.transform.position - transform.position).normalized, m_power, (int)m_characterShoot.lastElement, (int)CharacterProfile.GetCharacterStat().baseDamage.totalValue);

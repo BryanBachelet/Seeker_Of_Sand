@@ -1,10 +1,7 @@
 using GuerhoubaGames;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using GuerhoubaGames.GameEnum;
-using Enemies;
 using System;
+using UnityEngine;
 
 
 public class EntityModifier : MonoBehaviour

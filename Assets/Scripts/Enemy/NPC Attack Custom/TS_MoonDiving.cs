@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     [CreateAssetMenu(fileName = "CustomAttackData", menuName = "Enemmis/Attack/Custom/TS Moon Diving", order = 1)]
     public class TS_MoonDiving : NPCCustomAttack

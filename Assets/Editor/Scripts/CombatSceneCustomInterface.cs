@@ -15,8 +15,8 @@ public class CombatSceneCustomInterface : Editor
         serializedObject.Update();
         mobCountProperty = serializedObject.FindProperty("mobCount");
         CombatSceneManager m_capsuleProfile = (CombatSceneManager)target;
-        Enemies.EnemyType enemyType;
-        int count = Enemies.EnemyType.GetNames(typeof(Enemies.EnemyType)).Length;
+        GuerhoubaGames.Enemies.EnemyType enemyType;
+        int count = GuerhoubaGames.Enemies.EnemyType.GetNames(typeof(GuerhoubaGames.Enemies.EnemyType)).Length;
 
        if(mobCountProperty.arraySize != count) mobCountProperty.arraySize = count;
         serializedObject.ApplyModifiedProperties();
@@ -36,12 +36,12 @@ public class CombatSceneCustomInterface : Editor
         titleStyle.normal.textColor = new Color(200f / 255, 200f / 255, 200f / 255, 1);
 
         EditorGUILayout.LabelField("Enemis Squad Preset", titleStyle);
-  
 
-        Enemies.EnemyType enemyType;
+
+        GuerhoubaGames.Enemies.EnemyType enemyType;
         for (int i = 0; i < mobCountProperty.arraySize; i++)
         {
-            enemyType = (Enemies.EnemyType)i;
+            enemyType = (GuerhoubaGames.Enemies.EnemyType)i;
             string value = enemyType.ToString();
             value = value[0] + value.Substring(1).ToLower();
             mobCountProperty.GetArrayElementAtIndex(i).intValue = EditorGUILayout.IntField(value, mobCountProperty.GetArrayElementAtIndex(i).intValue);

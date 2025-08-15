@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.IO;
+using GuerhoubaGames.Enemies;
+using GuerhoubaGames.Character;
 
 public class ObjectState
 {
@@ -160,7 +162,7 @@ public struct EndInfoStats
 public class GameState : MonoBehaviour
 {
     // Static Element
-    public static Enemies.EnemyManager m_enemyManager;
+    public static EnemyManager m_enemyManager;
     public static GameObject m_uiManager;
     public static GameObject s_playerGo;
 
@@ -197,7 +199,7 @@ public class GameState : MonoBehaviour
 
     public void Awake()
     {
-        m_enemyManager = GetComponent<Enemies.EnemyManager>();
+        m_enemyManager = GetComponent<EnemyManager>();
         m_uiManager = uiManagerGO;
         s_playerGo = playerGo;
         m_playerInput = playerGo.GetComponent<PlayerInput>();
@@ -221,7 +223,7 @@ public class GameState : MonoBehaviour
             profileName = m_gmComponent.profileName;
             if (m_enemyManager)
             {
-                Character.CharacterShoot charaShoot = playerGo.GetComponent<Character.CharacterShoot>();
+                CharacterShoot charaShoot = playerGo.GetComponent<CharacterShoot>();
                 charaShoot.m_aimModeState = m_gmComponent.m_aimModeChoose;
                 charaShoot.UpdateFeedbackAimLayout();
             }

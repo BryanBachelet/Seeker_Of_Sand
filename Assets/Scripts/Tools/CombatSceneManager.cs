@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using GuerhoubaGames.Enemies;
 using UnityEngine;
 
 [System.Serializable]
@@ -14,7 +13,7 @@ public class CombatSceneManager : MonoBehaviour
     public bool stopPlayerExperience;
     public bool specialEnemisSquad;
 
-    private Enemies.EnemyManager m_enemyManager;
+    private EnemyManager m_enemyManager;
     private Experience_System m_experienceSystem;
     [HideInInspector] public int[] mobCount = new int[3];
 
@@ -23,7 +22,7 @@ public class CombatSceneManager : MonoBehaviour
     public void Start()
     {
         m_experienceSystem = player.GetComponent<Experience_System>();
-        m_enemyManager = enemisManager.GetComponent<Enemies.EnemyManager>();
+        m_enemyManager = enemisManager.GetComponent<EnemyManager>();
         SetupEnemyManagerParameters();
         SetupPlayerParameters();
     }
@@ -44,7 +43,7 @@ public class CombatSceneManager : MonoBehaviour
 
     public void OnValidate()
     {
-        m_enemyManager = enemisManager.GetComponent<Enemies.EnemyManager>();
+        m_enemyManager = enemisManager.GetComponent<EnemyManager>();
         if (specialEnemisSquad)
             m_enemyManager.SetSpawnSquad(mobCount);
     }

@@ -1,19 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.UI;
-using Character;
+using UnityEngine;
 
 public class SpellBarInfoUI : MonoBehaviour
 {
     public TooltipTrigger[] m_spellTooltipArray = new TooltipTrigger[4];
-    private Character.CharacterShoot m_characterShoot;
+    private CharacterShoot m_characterShoot;
 
     private string[] spellText = { "Damage :", "Size :", "Speed", "Projectile:", "ShootProjectile", "PiercingMax" };
     // Start is called before the first frame update
     void Start()
     {
-        m_characterShoot = FindAnyObjectByType<Character.CharacterShoot>();
+        m_characterShoot = FindAnyObjectByType<CharacterShoot>();
         if (m_spellTooltipArray[0] == null)
         {
             m_spellTooltipArray = GetComponentsInChildren<TooltipTrigger>();

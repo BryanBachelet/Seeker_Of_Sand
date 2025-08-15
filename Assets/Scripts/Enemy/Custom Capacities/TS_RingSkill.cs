@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     public class TS_RingSkill : SpecialCapacity
     {

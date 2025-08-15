@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
 using System;
+using UnityEngine;
+
 namespace SpellSystem
 {
     public struct AreaData
     {
-        public Character.CharacterShoot characterShoot;
+        public CharacterShoot characterShoot;
         public SpellProfil spellProfil;
         public Vector3 destination;
         public Vector3 direction;

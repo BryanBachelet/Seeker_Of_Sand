@@ -1,7 +1,5 @@
-using Enemies;
+using GuerhoubaGames.Enemies;
 using GuerhoubaGames.Resources;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnerBehavior : MonoBehaviour

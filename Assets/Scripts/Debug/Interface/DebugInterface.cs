@@ -1,3 +1,4 @@
+using GuerhoubaGames.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,13 +12,13 @@ public class DebugInterface : MonoBehaviour
     [SerializeField] private GameObject m_playerInterfaceCanvas;
     [SerializeField] private InputField m_moveInputField;
     [SerializeField] private InputField m_bulletNumberInputField;
-    private Character.CharacterMouvement m_characterMouvement;
-    private Character.CharacterShoot m_characterShoot;
+    private CharacterMouvement m_characterMouvement;
+    private CharacterShoot m_characterShoot;
 
     private void Awake()
     {
-        m_characterMouvement = m_player.GetComponent<Character.CharacterMouvement>();
-        m_characterShoot = m_player.GetComponent<Character.CharacterShoot>();
+        m_characterMouvement = m_player.GetComponent<CharacterMouvement>();
+        m_characterShoot = m_player.GetComponent<CharacterShoot>();
 
         m_playerButton.onClick.AddListener(ActivePlayerPanel);
         m_moveInputField.onValueChanged.AddListener(ModifyPlayerSpeed);

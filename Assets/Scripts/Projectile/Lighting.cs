@@ -1,3 +1,4 @@
+using GuerhoubaGames.Enemies;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -50,10 +51,10 @@ public class Lighting : ProjectileExplosif
             {
                 for (int j = 0; j < m_salveNumber; j++)
                 {
-                    Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
+                    NpcHealthComponent enemyTouch = enemies[i].GetComponent<NpcHealthComponent>();
                     if (enemyTouch == null) continue;
 
-                    if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH)
+                    if (enemyTouch.m_npcInfo.state == NpcState.DEATH)
                     {
                         Destroy(this.gameObject);
                         return;

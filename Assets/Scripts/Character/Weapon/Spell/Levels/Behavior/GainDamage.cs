@@ -1,7 +1,8 @@
-using Character;
+using GuerhoubaGames.Character;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace SpellSystem
 {
     [CreateAssetMenu(fileName = "Target Projectile Level", menuName = "Spell/Gain Damage Level")]

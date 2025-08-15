@@ -1,8 +1,5 @@
-using Character;
-using Enemies;
 using GuerhoubaGames;
-using System.Collections;
-using System.Collections.Generic;
+using GuerhoubaGames.Character;
 using UnityEngine;
 using UnityEngine.UI;
 

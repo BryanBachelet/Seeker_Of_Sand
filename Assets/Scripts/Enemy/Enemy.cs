@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     public class Enemy : MonoBehaviour
     {

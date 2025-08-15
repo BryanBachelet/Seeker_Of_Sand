@@ -4,7 +4,7 @@ using UnityEngine;
 using GuerhoubaGames.VFX;
 
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
 
     [System.Serializable]

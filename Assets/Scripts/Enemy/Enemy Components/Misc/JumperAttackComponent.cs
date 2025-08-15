@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-namespace Enemies
+namespace GuerhoubaGames.Enemies
 {
     public class JumperAttackComponent : MonoBehaviour
     {

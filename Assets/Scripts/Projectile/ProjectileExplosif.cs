@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.Enemies;
 
 public class ProjectileExplosif : Projectile
 {
@@ -213,16 +214,16 @@ public class ProjectileExplosif : Projectile
         if (m_stickTransform != null)
         {
 
-            Enemies.NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<Enemies.NpcHealthComponent>();
+            NpcHealthComponent stickyEnemy = m_stickTransform.GetComponent<NpcHealthComponent>();
             Collider[] enemies = Physics.OverlapSphere(transform.position, m_explosionSize, m_explosionMask);
             GlobalSoundManager.PlayOneShot(indexSFXExplosion, transform.position);
              DamageStatData damageStatData = new DamageStatData(m_damage, objectType);
             for (int i = 0; i < enemies.Length; i++)
             {
-                Enemies.NpcHealthComponent enemyTouch = enemies[i].GetComponent<Enemies.NpcHealthComponent>();
+                NpcHealthComponent enemyTouch = enemies[i].GetComponent<NpcHealthComponent>();
                 if (enemyTouch == null) continue;
 
-                if (enemyTouch.m_npcInfo.state == Enemies.NpcState.DEATH)
+                if (enemyTouch.m_npcInfo.state == NpcState.DEATH)
                 {
                     Destroy(this.gameObject);
                     return;
