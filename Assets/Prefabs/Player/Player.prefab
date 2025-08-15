@@ -2314,7 +2314,6 @@ GameObject:
   - component: {fileID: 8160340498062522489}
   - component: {fileID: 8970270734321681260}
   - component: {fileID: 6427973256731412273}
-  - component: {fileID: 6567554259978687270}
   - component: {fileID: 7572387518113370639}
   - component: {fileID: 6695158059545031928}
   - component: {fileID: 8154175994360953483}
@@ -2325,6 +2324,7 @@ GameObject:
   - component: {fileID: 2771311674158311850}
   - component: {fileID: 9084065457948155721}
   - component: {fileID: 1375713105457026656}
+  - component: {fileID: 3415953211691791742}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -3907,6 +3907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06bf697e4350dd4cb0b52ea5071dcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  upgradePointPerReward: 2
   avatarUpgradeList: []
   spellUpgradeConfigs:
   - levelToGainSpell: 99
@@ -4432,23 +4433,6 @@ MonoBehaviour:
   fill_Progress: {fileID: 0}
   fill_ProgressDelay: {fileID: 0}
   enemyManager: {fileID: 0}
---- !u!114 &6567554259978687270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6959514789458403795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95460ff69f54fe745a07f8c43aa063f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rewardHolderPrefan: {fileID: 7685096825173259423, guid: dca53bbc5a6c97047b28164565203524,
-    type: 3}
-  rewardType: 0
-  isRewardSend: 0
-  vfxactiveLoot: {fileID: 2434371613667220087}
 --- !u!114 &7572387518113370639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4660,6 +4644,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeAggro: 275
   colliderInRange: []
+--- !u!114 &3415953211691791742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959514789458403795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc8baa5e99b55f946baf02446639e564, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7139065991139147233
 GameObject:
   m_ObjectHideFlags: 0
