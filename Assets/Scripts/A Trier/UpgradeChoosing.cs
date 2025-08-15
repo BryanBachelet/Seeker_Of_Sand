@@ -82,7 +82,7 @@ public class UpgradeChoosing : MonoBehaviour
         //    }
         //}
 
-        m_upgradeManager = GameState.m_enemyManager.GetComponent<UpgradeManager>();
+        if(m_upgradeManager == null) m_upgradeManager = GameState.m_enemyManager.GetComponent<UpgradeManager>();
     }
 
     public void Start()
