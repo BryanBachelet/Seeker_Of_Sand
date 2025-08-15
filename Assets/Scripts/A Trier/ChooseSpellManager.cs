@@ -257,7 +257,7 @@ public class ChooseSpellManager : MonoBehaviour
         string[] tagLines = newSpell[spellIndex].TagList.GetUIInfosValue();
         for (int i = 0; i < tagText.Length; i++)
         {
-            tagText[i].text = tagLines[i];
+            tagText[i].text = "[" + tagLines[i] + "]";
         }
         spellDescription.text = newSpell[spellIndex].description + "\n" + newSpell[spellIndex].gameEffectStats.DebugStat();
         Material materialSpell = newSpell[spellIndex].matToUse;

@@ -418,8 +418,9 @@ public class UpgradeManager : MonoBehaviour
         {
             book_Animator.SetBool("BookOpen", false);
             float timeToClose = book_Animator.GetNextAnimatorStateInfo(0).length;
-            StartCoroutine(CloseUIWithDelay(timeToClose));
+            
         }
+        StartCoroutine(CloseUIWithDelay(0.25f));
 
         Debug.Log("Close Upgrade interface");
     }

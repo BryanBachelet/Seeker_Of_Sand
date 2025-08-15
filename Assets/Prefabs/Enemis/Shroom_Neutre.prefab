@@ -199,9 +199,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 0
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!1 &3198910311277267369
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +287,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &3294013781257085869
@@ -496,7 +499,7 @@ MonoBehaviour:
   m_entityAnimator: {fileID: 0}
   m_EnemyAnimatorDissolve: {fileID: 4199860508448805657}
   m_DeathTagState: Death
-  m_SkinMeshRenderer: {fileID: 709670281529732723}
+  m_Renderer: {fileID: 0}
   m_materialList: []
   materialCutout: 00000000
   materialEmissive: 0000000002000000
@@ -777,7 +780,9 @@ MonoBehaviour:
   isHealthDisplay: 1
   m_trailRenderer: {fileID: 0}
   lastDissonanceInstantiated: {fileID: 0}
+  IsObjectifEvent: 0
   m_afflictionManager: {fileID: 0}
+  m_entityModifier: {fileID: 0}
 --- !u!114 &530845482973330017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -961,6 +966,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4257606a34631de49af0e013b05bfb82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_animator: {fileID: 0}
   attackFeedbackDataArr:
   - feedbackType: 0
     areaSpawnType: 0
@@ -978,6 +984,7 @@ MonoBehaviour:
     attackPhase: 0
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
     isDelayed: 0
+    attackTrigger: 0
   - feedbackType: 0
     areaSpawnType: 0
     isSpawn: 1
@@ -994,6 +1001,8 @@ MonoBehaviour:
     attackPhase: 1
     offsetSpawnPosition: {x: 0, y: 0, z: 0}
     isDelayed: 0
+    attackTrigger: 0
+  attackTriggerNumber: 0
 --- !u!114 &2230807567131238627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1112,6 +1121,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_afflictionProfil: {fileID: 11400000, guid: 8dd4c1c0ce9e70a4a87adf5441d88c4c, type: 2}
   m_activeAfflictionInfo: 0
+  afflictionData:
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
+  - type: 0
+    duration: 0
+    stackToTranform: 0
 --- !u!114 &4241219003604624868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1125,7 +1171,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bleedingDamage: 0
+  multiplierPercentBleedingDamage: 0
+  burningDamage: 0
+  multiplierPercentBurningDamage: 0
+  effectRemovePerHit: 0
+  tickDurationBlazingDamage: 0
+  poisonDamage: 0
+  multiplierPercentPoisonDamage: 0
+  intoxicateExecuteThreshold: 0
+  slownessPercent: 0
+  isElectrify: 0
+  electrifyRadius: 0
+  electrifyDamage: 0
+  timeApplyElectrify: 0
+  electrifyPercent: 0
+  damageTakenIncrease: 1
+  demoralizedPercent: 0
+  reductionDamageInflict: 0
+  increaseSpeedMovement: 0
+  isTerrify: 0
+  isFreeze: 0
+  distanceProcBleeding: 50
   m_activeEnityModifierDebug: 0
+  m_debugElectrifyAffliction: 0
 --- !u!1 &3395471884089847497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1341,9 +1409,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 0
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!1 &5382761927510735852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,9 +1680,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 1
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!114 &8561092222333850588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1764,9 +1838,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d7ad68abe0e8549994fb2d453ae9ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCamera: {fileID: 0}
   faceCameraAxis: 0
   faceMouseAxis: 0
+  moveToCamera: 0
   multiplyAxis: {x: 0, y: 0, z: 0}
+  speed: 0
 --- !u!1 &8656990864706420996
 GameObject:
   m_ObjectHideFlags: 0
