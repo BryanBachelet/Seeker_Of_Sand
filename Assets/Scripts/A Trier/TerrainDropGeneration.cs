@@ -58,8 +58,8 @@ public class TerrainDropGeneration : MonoBehaviour
                 //{
                 //    Debug.DrawRay(newPosition, raycastdirection * hit.distance, Color.cyan);
                   //  m_DropAreaPosition = hit.point + new Vector3(0, -5, 0);
-                    GameObject cristalHealth = Instantiate(cristalDropObject[indexElement], this.transform.position, transform.rotation, transform.parent);
-                    cristalHealths.Add(cristalHealth.GetComponent<CristalHealth>());
+                    //GameObject cristalHealth = Instantiate(cristalDropObject[indexElement], this.transform.position, transform.rotation, transform.parent);
+                    //cristalHealths.Add(cristalHealth.GetComponent<CristalHealth>());
 
                 //}
                 //else

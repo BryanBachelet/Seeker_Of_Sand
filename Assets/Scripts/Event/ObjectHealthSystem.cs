@@ -47,6 +47,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     private SpawnerBehavior spawnerbehavior; //A RETIRER A TERME, N'A RIEN A FAIRE LA
     public GameObject miniMap_Icon;
+    private SpriteRenderer spriteRenderer;
 
 
     private AfflictionManager m_afflictionManager;
@@ -65,6 +66,8 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         m_afflictionManager = GetComponent<AfflictionManager>();
         m_entityModifier = GetComponent<EntityModifier>();
         if (miniMap_Icon) miniMap_Icon.SetActive(true);
+        if(miniMap_Icon) spriteRenderer = miniMap_Icon.GetComponentInChildren<SpriteRenderer>();
+        spriteRenderer.color = Color.red;
         if (m_meshRender != null) _matAssociated = m_meshRender.material;
     }
 
@@ -99,6 +102,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
         eventState = EventObjectState.Death;
         if (miniMap_Icon) miniMap_Icon.SetActive(false);
+        spriteRenderer.color = new Color(0.35f,0.26f,0.26f);
         animatorAssociated.SetBool("ActiveEvent", false);
         if (this.GetComponent<SpawnerBehavior>() != null) 
         {
