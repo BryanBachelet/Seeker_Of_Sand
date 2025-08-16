@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -92,10 +93,9 @@ namespace GuerhoubaGames.Enemies
         [HideInInspector] private List<Transform> m_altarTransform = new List<Transform>();
         [HideInInspector] private List<AltarBehaviorComponent> m_altarList = new List<AltarBehaviorComponent>();
 
-        [HideInInspector] private bool spawningPhase = true;
 
         [HideInInspector] public GlobalSoundManager gsm;
-        [HideInInspector] private List<Vector3> posspawn = new List<Vector3>();
+        [HideInInspector] private List<Vector3> posSpawnArrray = new List<Vector3>();
 
         [HideInInspector] public Character.CharacterUpgrade m_characterUpgrade;
 
@@ -138,7 +138,7 @@ namespace GuerhoubaGames.Enemies
         public event OnChampionDeath OnChampionDeathEvent = delegate { };
 
 
-       [HideInInspector] private EnemiesPullingSystem m_pullingSystem;
+        [HideInInspector] private EnemiesPullingSystem m_pullingSystem;
 
         [HideInInspector] public UIDispatcher uiDispatcher;
 
@@ -146,8 +146,6 @@ namespace GuerhoubaGames.Enemies
         [HideInInspector] private int remainEnemy = 0;
 
         [HideInInspector] public bool isStopSpawn;
-        // Spawn Cause Variable
-        [HideInInspector] private bool[] m_spawnCauseState = new bool[4];
 
         [HideInInspector] private int comboCount;
         [HideInInspector] private int maxComboValue;
@@ -169,10 +167,23 @@ namespace GuerhoubaGames.Enemies
         private int enemyTypeNumber;
 
         static public AltarBehaviorComponent currentAltarBehavior = null;
+        public static EnemyManager instance;
 
         public GameObject tips2_CustomPass_Object = null;
+
+        [Header("Constant Spawn Variables")]
+        [SerializeField] private ConstantSpawnData m_constantSpawnData;
+        private bool m_isConstantSpawnActive = false;
+        private float m_spawnTimeCount = 0;
+        private float spawnRateTime = 0;
+
+
         public void Awake()
         {
+
+            if(instance==null)
+                instance = this;    
+
             m_gameLayer = this.GetComponent<GameLayer>();
             m_healthManager = this.GetComponent<HealthManager>();
             NavMesh.pathfindingIterationsPerFrame = 400;
@@ -183,7 +194,6 @@ namespace GuerhoubaGames.Enemies
             action.performed += InputSpawnSquad;
 #endif
 
-            TestReadDataSheet();
             state = new ObjectState();
             GameState.AddObject(state);
             m_enemyKillRatio = GetComponent<EnemyKillRatio>();
@@ -212,14 +222,6 @@ namespace GuerhoubaGames.Enemies
         }
 
 
-        public void DebugInit()
-        {
-#if UNITY_EDITOR
-            if (activeTestPhase)
-                ActiveSpawnPhase(activeSpawnConstantDebug, EnemySpawnCause.DEBUG);
-#endif
-
-        }
 
         public void OnApplicationQuit()
         {
@@ -248,12 +250,7 @@ namespace GuerhoubaGames.Enemies
             {
                 //m_tmpTextEnemyRemain.text = "<size=130%>" + 0 + "<voffset=0.2em> \n<size=100%>Remain";
             }
-            if (spawningPhase)
-            {
-
-                //m_maxUnittotal = (int)m_MaxUnitControl.Evaluate(TerrainGenerator.roomGeneration_Static + (3 - TerrainGenerator.staticRoomManager.eventNumber));
-                //SpawnCooldown();
-            }
+            UpdateConstantSpawn();
 
             if (debugSpawningPerPosition)
             {
@@ -271,7 +268,7 @@ namespace GuerhoubaGames.Enemies
         {
             if (ctx.performed)
             {
-                SpawEnemiesGroup(true);
+                SpawEnemiesGroup();
             }
         }
 #endif
@@ -367,7 +364,6 @@ namespace GuerhoubaGames.Enemies
             return Vector3.zero;
         }
 
-
         public bool ReplaceFarEnemy(GameObject enemy)
         {
             if (/*m_characterMouvement.GetCurrentSpeed() > m_minimumSpeedToRepositing ||*/ repositionningCount >= repositionningLimit)
@@ -382,6 +378,7 @@ namespace GuerhoubaGames.Enemies
             tempNPCHealth.ResetTrail();
             return true;
         }
+
         private float GetTimeSpawn()
         {
             return (m_spawnTime + (m_spawnTime * ((Mathf.Sin(m_timeOfGame / 2.0f)) + 1.3f) / 2.0f));
@@ -397,13 +394,10 @@ namespace GuerhoubaGames.Enemies
             return number;
         }
 
-
-
-        private void SpawEnemiesGroup(bool isDebug = false)
+        private void SpawEnemiesGroup()
         {
-            if (!isDebug && isStopSpawn) return;
             position = FindPosition();
-            posspawn.Add(position);
+            posSpawnArrray.Add(position);
 
 #if UNITY_EDITOR
             if (activeSpecialSquad)
@@ -413,25 +407,43 @@ namespace GuerhoubaGames.Enemies
             }
 #endif
 
-            if (remainEnemy < RoomManager.enemyMaxSpawnInRoon)
+
+            for (int i = 0; i < m_groupEnemySize; i++)
             {
-                for (int i = 0; i < m_groupEnemySize; i++)
-                {
-                    SpawnEnemyByPool(position + Random.insideUnitSphere * 5f, position);
+                SpawnEnemyByPool(position + Random.insideUnitSphere * 5f, position);
 
-                }
-                InstantiateSpawnFeedback();
             }
+            InstantiateSpawnFeedback();
+        }
+
+        private void SpawEnemiesGroup(int groupSize)
+        {
+
+            position = FindPosition();
+            posSpawnArrray.Add(position);
+
+#if UNITY_EDITOR
+            if (activeSpecialSquad)
+            {
+                SpawnSpecificSquad(position);
+                return;
+            }
+#endif
 
 
+            for (int i = 0; i < groupSize; i++)
+            {
+                SpawnEnemyByPool(position + Random.insideUnitSphere * 5f, position);
 
+            }
+            InstantiateSpawnFeedback();
         }
 
         public void SpawEnemiesGroupCustom(Vector3 positionCustom, int groupSize, bool isDebug = false)
         {
             if (!isDebug && isStopSpawn) return;
             position = FindPosition();
-            posspawn.Add(positionCustom);
+            posSpawnArrray.Add(positionCustom);
 
 
             for (int i = 0; i < groupSize; i++)
@@ -445,14 +457,10 @@ namespace GuerhoubaGames.Enemies
 
         }
 
-
         public void SpawnChampion(Vector3 position)
         {
-            SpawnDirectEnemy(position, 0,true);
+            SpawnDirectEnemy(position, 0, true);
         }
-
-
-     
 
         private int FindValidTypeEnemyToSpawn()
         {
@@ -460,8 +468,8 @@ namespace GuerhoubaGames.Enemies
             int countTentative = 0;
             while (countTentative < m_tryCountToSpawnEnemy)
             {
-                countTentative++; 
-                enemyIndex = Random.Range(0, enemyTypeNumber -1);
+                countTentative++;
+                enemyIndex = Random.Range(0, enemyTypeNumber - 1);
 
                 if (!CanEnemySpawn(enemyIndex))
                 {
@@ -627,6 +635,7 @@ namespace GuerhoubaGames.Enemies
 
             m_enemiesArray.Add(npcInfo);
         }
+
         public void SetSpawnSquad(int[] mobCount)
         {
             specialSquadSelect = mobCount;
@@ -636,6 +645,7 @@ namespace GuerhoubaGames.Enemies
                 m_squadCount += specialSquadSelect[i];
             }
         }
+
         private void SpawnSpecificSquad(Vector3 positionSpawn)
         {
             for (int i = 0; i < specialSquadSelect.Length; i++)
@@ -663,8 +673,8 @@ namespace GuerhoubaGames.Enemies
             enemyObjectPull.GetComponent<NavMeshAgent>().updatePosition = true;
             NavMeshHit hit = new NavMeshHit();
             NavMesh.SamplePosition(position, out hit, 20, NavMesh.AllAreas);
-       
-          
+
+
 
             NavMeshAgent tempNavMesh = enemyObjectPull.GetComponent<NavMeshAgent>();
             tempNavMesh.updatePosition = true;
@@ -688,7 +698,6 @@ namespace GuerhoubaGames.Enemies
 
             m_enemiesArray.Add(npcInfo);
         }
-
 
         private bool CanEnemySpawn(int enemyType)
         {
@@ -772,9 +781,9 @@ namespace GuerhoubaGames.Enemies
         }
 
 
+        // **Rework**
         public void ActiveEvent(Transform target)
         {
-            ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
             ActiveMobAggro();
             m_targetList.Add(target.GetComponent<ObjectHealthSystem>());
             int indexTargetList = m_targetList.Count - 1;
@@ -803,10 +812,10 @@ namespace GuerhoubaGames.Enemies
                 }
             }
         }
+        // **Rework**
         public void DeactiveEvent(Transform target)
         {
-            m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());
-            ActiveSpawnPhase(false, EnemySpawnCause.EVENT);
+            m_targetList.Remove(target.GetComponent<ObjectHealthSystem>());;
             ObjectHealthSystem healthSystem = target.GetComponent<ObjectHealthSystem>();
             healthSystem.ResetUIHealthBar();
             int indexTargetList = healthSystem.indexUIEvent;
@@ -819,16 +828,6 @@ namespace GuerhoubaGames.Enemies
 
         }
 
-        public void IncreseAlterEnemyCount(NpcHealthComponent npcHealth)
-        {
-            AltarBehaviorComponent nearestAltar = FindClosestAltar(npcHealth.transform.position);
-            if (nearestAltar != null)
-            {
-                nearestAltar.IncreaseKillCount();
-            }
-        }
-
-
         public void EnemyHasDied(NpcHealthComponent npcHealth, int xpCount)
         {
 
@@ -840,7 +839,6 @@ namespace GuerhoubaGames.Enemies
 
             Vector3 position = npcHealth.transform.position;
             //SpawnExp(position, xpCount, npcHealth.indexEnemy);
-            IncreseAlterEnemyCount(npcHealth);
             float distance = Vector3.Distance(m_playerTranform.position, npcHealth.transform.position);
             OnDeathEvent(position, EntitiesTrigger.Enemies, npcHealth.gameObject, distance);
             OnDeathSimpleEvent();
@@ -884,22 +882,6 @@ namespace GuerhoubaGames.Enemies
             comboCount++;
         }
 
-        public AltarBehaviorComponent FindClosestAltar(Vector3 position)
-        {
-            float closestDistance = 10000;
-            if (m_altarList.Count <= 0) return null;
-            AltarBehaviorComponent altarScript = m_altarList[0];
-            for (int i = 0; i < m_altarTransform.Count; i++)
-            {
-                float distanceAltar = Vector3.Distance(position, m_altarTransform[i].position);
-                if (distanceAltar < closestDistance)
-                {
-                    altarScript = m_altarList[i];
-                    closestDistance = distanceAltar;
-                }
-            }
-            return altarScript;
-        }
 
         public ObjectHealthSystem CheckDistanceTarget(Vector3 position)
         {
@@ -918,104 +900,44 @@ namespace GuerhoubaGames.Enemies
             return altarSript;
         }
 
-        private bool CanActiveSpawnPhase()
-        {
-            for (int i = 0; i < m_spawnCauseState.Length; i++)
-            {
-                if (m_spawnCauseState[i] == true)
-                    return true;
-            }
-            return false;
-        }
-        public void ActiveSpawnPhase(bool state, EnemySpawnCause spawnCause)
-        {
-            m_spawnCauseState[(int)spawnCause] = state;
-            if (CanActiveSpawnPhase() != spawningPhase)
-            {
-                ChangeSpawningPhase(!spawningPhase);
-              
-            }
-        }
 
-        public void ChangeSpawningPhase(bool spawning)
+      
+        public void ActiveConstantSpawn()
         {
-            spawningPhase = spawning;
+            m_isConstantSpawnActive = true;
+
+            spawnRateTime = 60.0f / m_constantSpawnData.spawnRate;
 
         }
 
-        public void CreateCurveSheet()
+        public void UpdateConstantSpawn()
         {
-            StreamReader strReader = new StreamReader("C:\\Projets\\Guerhouba\\K-TrainV1\\Assets\\Progression Demo - SpawnSheet.csv");
-            bool endOfFile = false;
-            while (!endOfFile)
+            if (!m_isConstantSpawnActive) return;
+
+            int countEnemyActive = m_enemiesArray.Count;
+
+            if (countEnemyActive < m_constantSpawnData.maxEnemySimultaneous)
             {
-                string data_String = strReader.ReadLine();
-                if (data_String == null)
+                if (m_spawnTimeCount > spawnRateTime)
                 {
-                    endOfFile = true;
-                    Debug.Log("Read done");
-                    break;
+                    int groupSize = Random.Range(m_constantSpawnData.groupMinSize, m_constantSpawnData.groupMaxSize);
+                    SpawEnemiesGroup(groupSize);
+                    m_spawnTimeCount = 0;
                 }
-                var data_values = data_String.Split(',');
-                for (int i = 0; i < data_values.Length; i++)
+                else
                 {
-                    Debug.Log("value: " + i.ToString() + " " + data_values[i].ToString());
-
+                    m_spawnTimeCount += Time.deltaTime;
                 }
-                //Debug.Log(data_values[0].ToString() + " " + data_values[1].ToString() + " " + data_values[2].ToString() + " ");
+            }
+            else
+            {
+                m_spawnTimeCount = 0.0f;
             }
         }
 
-        static string ReadSpecificLine(string filePath, int lineNumber)
+        public void DeactiveConstantSpawn()
         {
-            string content = null;
-
-            using (StreamReader file = new StreamReader(filePath))
-            {
-                for (int i = 1; i < lineNumber; i++)
-                {
-                    file.ReadLine();
-
-                    if (file.EndOfStream)
-                    {
-                        //Console.WriteLine($"End of file.  The file only contains {i} lines.");
-                        break;
-                    }
-                }
-                content = file.ReadLine();
-            }
-            return content;
-
-        }
-
-        public void TestReadDataSheet()
-        {
-            AnimationCurve tempAnimationCurve = new AnimationCurve();
-            string debugdata = "";
-
-#if UNITY_EDITOR
-            string filePath = Application.dataPath + "\\Game data use\\Progression Demo - SpawnSheet.csv";
-#else
-
-            string filePath = Application.dataPath + "\\Progression Demo -SpawnSheet.csv";
-#endif
-
-            int lineNumber = 5;
-
-            string lineContents = ReadSpecificLine(filePath, lineNumber);
-            string[] data_values = lineContents.Split(',');
-            long[] dataTransformed = new long[data_values.Length - 1];
-            for (int i = 0; i < dataTransformed.Length; i++)
-            {
-                if (data_values[i] == "") continue;
-                dataTransformed[i] = long.Parse(data_values[i]);
-                tempAnimationCurve.AddKey(i, dataTransformed[i]);
-                debugdata = debugdata + " , " + dataTransformed[i];
-
-            }
-            //m_MaxUnitControl = tempAnimationCurve;
-            //Debug.Log(debugdata);
-
+            m_isConstantSpawnActive = false;
         }
 
 
@@ -1038,10 +960,6 @@ namespace GuerhoubaGames.Enemies
             return endInfoStats;
         }
 
-        public void AddDataInPool(NpcHealthComponent npcHealth)
-        {
-
-        }
         public void CheckEndStat(EndInfoStats stats)
         {
 #if UNITY_EDITOR
@@ -1095,20 +1013,11 @@ namespace GuerhoubaGames.Enemies
             }
         }
 
-        public void ResetAllSpawingPhasse()
-        {
-            for (int i = 0; i < m_spawnCauseState.Length; i++)
-            {
-                m_spawnCauseState[i] = false;
-            }
-
-        }
+      
 
 
         public void DestroyAllEnemy()
         {
-
-            // ActiveSpawnPhase(false, EnemySpawnCause.SHADOW);
             for (int i = 0; i < m_enemiesArray.Count; i++)
             {
                 NpcMetaInfos npcHealth = m_enemiesArray[i];
@@ -1123,7 +1032,7 @@ namespace GuerhoubaGames.Enemies
 
                 m_pullingSystem.ResetEnemyNavMesh(npcHealth.gameObject, type);
             }
-            //m_enemiesArray.Clear();
+
         }
 
         public bool GenerateDissonance()

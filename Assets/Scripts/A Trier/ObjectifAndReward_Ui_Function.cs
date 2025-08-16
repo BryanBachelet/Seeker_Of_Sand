@@ -107,7 +107,6 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         }
             if (currentRoomManager.currentRoomType == RoomType.Enemy)
         {
-            enemyManager.ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
             img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[0];
             optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[0];
             txtPro_Objectif.text = m_gameRessources.text_Objectif[0];
@@ -122,7 +121,7 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
         }
         else if (currentRoomManager.currentRoomType == RoomType.Event)
         {
-            enemyManager.ActiveSpawnPhase(true, EnemySpawnCause.EVENT);
+;
             img_Objectif.sprite = m_gameRessources.spriteObjectif_tab[1];
             optional_img_Objectif.sprite = m_gameRessources.optional_spriteObjectif_tab[1];
             txtPro_Objectif.text = m_gameRessources.text_Objectif[1];
@@ -159,7 +158,6 @@ public class ObjectifAndReward_Ui_Function : MonoBehaviour
     {
 
         objectifAnimatorMajor.SetBool("MajorDisplay", false);
-        enemyManager.ActiveSpawnPhase(false, EnemySpawnCause.EVENT);
         objectifAnimator.ResetTrigger("ActiveDisplay");
         optional_objectifAnimator.ResetTrigger("ActiveDisplay");
         rewardAnimator.ResetTrigger("ActiveDisplay");

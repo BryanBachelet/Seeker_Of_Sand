@@ -38,7 +38,6 @@ public class CombatSceneManager : MonoBehaviour
         m_enemyManager.activeSpecialSquad = specialEnemisSquad;
         if (specialEnemisSquad)
             m_enemyManager.SetSpawnSquad(mobCount);
-        m_enemyManager.DebugInit();
     }
 
     public void OnValidate()

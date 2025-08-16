@@ -187,6 +187,12 @@ public class RoomManager : MonoBehaviour
         //m_enemyManager.isStopSpawn = true;
         //m_cameraBehavior.ResetZoom();
         SetupRoomType();
+
+        if (RunManager.instance.dayStep == DayStep.NIGHT)
+        {
+            EnemyManager.instance.ActiveConstantSpawn();
+        }
+
         teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
         if(previewCamera !=null)
             previewCamera.gameObject.SetActive(false);
@@ -194,7 +200,6 @@ public class RoomManager : MonoBehaviour
 
     public void ResetObjectifData()
     {
-        m_enemyManager.ResetAllSpawingPhasse();
         m_enemyManager.ResetSpawnStat();
         progress = 0;
 
@@ -221,8 +226,7 @@ public class RoomManager : MonoBehaviour
                 if (currentRoomType == RoomType.Enemy)
                 {
 
-                    //m_enemyManager.OnDeathSimpleEvent += CountEnemy;
-                    m_enemyManager.ActiveSpawnPhase(true,   EnemySpawnCause.DEBUG);
+                   
                     //m_cameraBehavior.isZoomActive = false;
                 }
                 m_isDistanceActivationDone = true;
@@ -426,7 +430,8 @@ public class RoomManager : MonoBehaviour
         isRoomHasBeenValidate = true;
 
         m_EndRoomChallengeTime = DateTime.Now;
-        m_enemyManager.ActiveSpawnPhase(false, EnemySpawnCause.DEBUG);
+
+      
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
 
 

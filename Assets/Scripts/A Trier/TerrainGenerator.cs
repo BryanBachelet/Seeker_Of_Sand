@@ -9,6 +9,7 @@ using UnityEditor.EditorTools;
 using UnityEngine.Rendering;
 using BorsalinoTools;
 using GuerhoubaGames;
+using GuerhoubaGames.Enemies;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -374,12 +375,18 @@ public class TerrainGenerator : MonoBehaviour
         Teleporter teleportorAssociated = mapInstantiated[selectedMapIndex].transform.GetComponentInChildren<Teleporter>();
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         RoomManager roomManager = mapInstantiated[selectedMapIndex].GetComponentInChildren<RoomManager>();
-
-        if (m_runManager.dayStep == DayStep.NIGHT && !m_activeFistNightRoom)
+        
+        if (m_runManager.dayStep == DayStep.NIGHT)
         {
-            currentRoomManager.isFirstNightRoom = true;
-            m_activeFistNightRoom = true;
+            EnemyManager.instance.DeactiveConstantSpawn();
+
+            if (!m_activeFistNightRoom)
+            {
+                currentRoomManager.isFirstNightRoom = true;
+                m_activeFistNightRoom = true;
+            }
         }
+
         if (m_runManager.countRoomDone == m_runManager.maxRoomPerDay)
         {
             m_runManager.dayStep = DayStep.BOSS;
