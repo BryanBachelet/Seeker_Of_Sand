@@ -525,14 +525,14 @@ public class AfflictionManager : MonoBehaviour
 
     public void ShowAfflictionUI()
     {
-        //m_afflictionUI.CleanTargetAfflictionDisplay();
-        //for (int i = 0; i < afflictionArray.Length; i++)
-        //{
-        //    if (afflictionArray[i] == null || afflictionArray[i].type == AfflictionType.NONE) continue;
+        m_afflictionUI.CleanTargetAfflictionDisplay();
+        for (int i = 0; i < afflictionArray.Length; i++)
+        {
+            if (afflictionArray[i] == null || afflictionArray[i].type == AfflictionType.NONE) continue;
 
-        //    m_afflictionUI.DisplayAffliction(afflictionArray[i], m_entityModifier.IsObjectifTarget());
+            m_afflictionUI.DisplayAffliction(afflictionArray[i], m_entityModifier.IsObjectifTarget());
 
-        //}
+        }
     }
 
     #endregion

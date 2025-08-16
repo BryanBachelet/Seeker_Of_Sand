@@ -11,6 +11,7 @@ public class Affliction_UI_Manager : MonoBehaviour
 
 
 
+
     #region Unity functions
 
     public void Start()

@@ -188,7 +188,8 @@ public class RoomManager : MonoBehaviour
         //m_cameraBehavior.ResetZoom();
         SetupRoomType();
         teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
-        previewCamera.gameObject.SetActive(false);
+        if(previewCamera !=null)
+            previewCamera.gameObject.SetActive(false);
     }
 
     public void ResetObjectifData()

@@ -1,6 +1,7 @@
 using BorsalinoTools;
 using GuerhoubaGames.GameEnum;
 using JetBrains.Annotations;
+using SeekerOfSand.Tools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -197,9 +198,9 @@ namespace GuerhoubaGames
            return instance._SpawnReward(rewardType, position, elementReward);
         }
 
-        public static void SpawnRandomReward(Vector3 position)
+        public static GameObject SpawnRandomReward(Vector3 position)
         {
-            
+            return instance._SpawnRandomReward(position);
         }
 
         private GameObject _SpawnReward(RewardType rewardType, Vector3 position, GameElement elementReward)
@@ -209,6 +210,20 @@ namespace GuerhoubaGames
             RewardInteraction rewardInteraction = instance.GetComponent<RewardInteraction>();
             rewardInteraction.rewardElement = elementReward;
             rewardInteraction.rewardType = rewardType;  
+
+            return instance;
+        }
+
+        private GameObject _SpawnRandomReward( Vector3 position)
+        {
+            GameObject instance = GameObject.Instantiate(rewardLootPrefab, position, Quaternion.identity);
+       
+            RewardType rewardType = (RewardType)UnityEngine.Random.Range(0, 3);
+            GameElement elementReward = GeneralTools.GetRandomBaseElement();
+
+            RewardInteraction rewardInteraction = instance.GetComponent<RewardInteraction>();
+            rewardInteraction.rewardElement = elementReward;
+            rewardInteraction.rewardType = rewardType;
 
             return instance;
         }

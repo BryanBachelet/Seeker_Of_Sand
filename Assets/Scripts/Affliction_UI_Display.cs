@@ -18,6 +18,7 @@ public class Affliction_UI_Display : MonoBehaviour
 
     [HideInInspector] public AfflictionType afflictionType;
 
+
     void Update()
     {
         if (!isAfflictionUIActive) return;

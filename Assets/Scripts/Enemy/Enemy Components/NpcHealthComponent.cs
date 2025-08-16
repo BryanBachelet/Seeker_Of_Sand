@@ -251,6 +251,11 @@ namespace GuerhoubaGames.Enemies
             OnDeathEvent?.Invoke();
             m_enemyManager.EnemyHasDied(this, xpToDrop);
 
+            if(m_npcInfo.isChampion)
+            {
+                RunManager.SpawnRandomReward(transform.position);
+            }
+
             if (!death)
             {
                 //deathTimer = Time.time;

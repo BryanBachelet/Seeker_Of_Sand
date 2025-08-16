@@ -68,7 +68,7 @@ namespace SeekerOfSand.Tools
         /// <returns></returns>
         public static GameElement GetRandomBaseElement()
         {
-            int randomIndex = Random.Range(0, 4);
+            int randomIndex = Random.Range(0, 3);
             int binaryNumber  = 1 << randomIndex;
             return (GameElement)binaryNumber;
         }
