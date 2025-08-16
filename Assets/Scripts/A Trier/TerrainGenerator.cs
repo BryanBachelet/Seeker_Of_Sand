@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.AI.Navigation;
-using GuerhoubaGames.UI;
-using GuerhoubaGames.GameEnum;
-using SeekerOfSand.Tools;
-using UnityEditor.EditorTools;
-using UnityEngine.Rendering;
 using BorsalinoTools;
 using GuerhoubaGames;
 using GuerhoubaGames.Enemies;
+using GuerhoubaGames.GameEnum;
+using GuerhoubaGames.UI;
+using SeekerOfSand.Tools;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {

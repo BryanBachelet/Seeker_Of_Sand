@@ -188,8 +188,8 @@ namespace GuerhoubaGames.Enemies
             m_healthManager = this.GetComponent<HealthManager>();
             NavMesh.pathfindingIterationsPerFrame = 400;
             m_playerTranform = GameObject.Find("Player").transform;
-#if UNITY_EDITOR
             playerInput = m_playerTranform.GetComponent<PlayerInput>();
+#if UNITY_EDITOR
             InputAction action = playerInput.actions.FindAction("SpawnEnemy");
             action.performed += InputSpawnSquad;
 #endif

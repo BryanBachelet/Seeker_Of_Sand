@@ -72,13 +72,14 @@ namespace SpellSystem
             LevelType = SpellLevelType.STATS;
         }
         public void OnValidate()
-        { 
+        {
 
             //gameEffectStats.tagData = tagDataToChange;
             //gameEffectStats.statDatas = new List<StatData>(statDatas);
             //gameEffectStats.statTypes = statTypes;
+#if UNITY_EDITOR
             EditorUtility.SetDirty(this);
-
+#endif
         }
     }
 

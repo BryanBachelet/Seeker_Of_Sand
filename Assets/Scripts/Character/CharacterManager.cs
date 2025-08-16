@@ -1,10 +1,5 @@
-using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Rendering.FilterWindow;
 
 
 namespace GuerhoubaGames.Character

@@ -66,7 +66,7 @@ public class UpgradeManager : MonoBehaviour
         m_sortUpgradeList = new List<UpgradeObject>(upgradeDataSort.upgradeArray);
         m_indexTagUpgradeArray = upgradeDataSort.indexArray;
         string path = Application.dataPath + "\\Resources\\UpgradeTable.csv";
-        LoadUpgradeTable(path);
+      //  LoadUpgradeTable(path);
 
         for (int i = 0; i < upgradeList.Length; i++)
         {

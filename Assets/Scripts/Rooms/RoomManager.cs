@@ -96,6 +96,10 @@ public class RoomManager : MonoBehaviour
     public AltarBehaviorComponent[] altarBehaviorComponents = new AltarBehaviorComponent[3];
     public DissonanceHeartBehavior dissonanceHeartBehavior;
     public PedestalRoomBehavior pedestalRoomBehavior;
+    public GameObject objectMerchantSpawnPosition;
+    [HideInInspector] public GameObject merchantCarvana;
+
+
 
 
     #region Spawner Parameter
@@ -114,7 +118,7 @@ public class RoomManager : MonoBehaviour
     public bool delayUpdate = true;
 
     [HideInInspector] public bool isFirstNightRoom = false;
-     
+
     private int m_currentChampionAlive;
 
     #endregion
@@ -155,7 +159,7 @@ public class RoomManager : MonoBehaviour
 
     public void ActivateRoom(Material previousMat)
     {
-     
+
 
         ResetObjectifData();
 
@@ -194,7 +198,7 @@ public class RoomManager : MonoBehaviour
         }
 
         teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
-        if(previewCamera !=null)
+        if (previewCamera != null)
             previewCamera.gameObject.SetActive(false);
     }
 
@@ -226,7 +230,7 @@ public class RoomManager : MonoBehaviour
                 if (currentRoomType == RoomType.Enemy)
                 {
 
-                   
+
                     //m_cameraBehavior.isZoomActive = false;
                 }
                 m_isDistanceActivationDone = true;
@@ -252,6 +256,8 @@ public class RoomManager : MonoBehaviour
         DeactiveEvents();
         m_enemyManager.DestroyAllEnemy();
         StartCoroutine(DestroyRoom());
+        Destroy(merchantCarvana);
+
     }
 
     IEnumerator DestroyRoom()
@@ -328,7 +334,7 @@ public class RoomManager : MonoBehaviour
                     }
 
                 }
-              
+
 
 
                 break;
@@ -422,6 +428,11 @@ public class RoomManager : MonoBehaviour
         if (pedestalRoomBehavior)
             pedestalRoomBehavior.ActivatePedestal();
 
+        if (RunManager.IsSpawningMerchantValid())
+        {
+            merchantCarvana = RunManager.SpawnMerchand(objectMerchantSpawnPosition.transform.position, objectMerchantSpawnPosition.transform.rotation);
+        }
+
         if ((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;
         roomInfoUI.ActualizeRoomInfoInterface();
         roomInfoUI.DeactivateMajorGoalInterface();
@@ -431,7 +442,7 @@ public class RoomManager : MonoBehaviour
 
         m_EndRoomChallengeTime = DateTime.Now;
 
-      
+
         timeSpan = m_EndRoomChallengeTime - m_startRoomChallengeTime;
 
 
@@ -492,7 +503,7 @@ public class RoomManager : MonoBehaviour
         };
         roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
 
-        if (m_currentChampionAlive<=0)
+        if (m_currentChampionAlive <= 0)
         {
             FinishAllEvent();
             m_enemyManager.OnChampionDeathEvent -= CountChampionEliminate;
@@ -501,7 +512,7 @@ public class RoomManager : MonoBehaviour
 
     }
 
-    public int EventValidate() 
+    public int EventValidate()
     {
         eventActive--;
 
@@ -517,7 +528,7 @@ public class RoomManager : MonoBehaviour
         if (eventActive <= 0)
         {
             FinishAllEvent();
-          
+
             return rewardAssociated[eventActive];
         }
 
@@ -679,6 +690,9 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Debug Functions
     #endregion
 
 }

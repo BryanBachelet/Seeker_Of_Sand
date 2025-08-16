@@ -17,12 +17,11 @@ namespace BorsalinoTools
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public void Update()
         {
-          if(Event.current!= null)
-                Debug.Log("Key code : " + Event.current.keyCode);
+          
 
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                Debug.Log("Test Input");
+               
                 m_showWindow = !m_showWindow;
                 if (m_showWindow) m_isFirstTimeTrigger = false;
             }

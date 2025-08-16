@@ -52,6 +52,11 @@ namespace GuerhoubaGames
         [Header("Reward Variables")]
         public GameObject rewardLootPrefab;
 
+        [Header("Merchant Variables")]
+        public GameObject merchandCaravanaPrefab;
+        [SerializeField] private int m_hoursSpendToSpawnMerchant = 0;
+
+
         [Header("Important Object")]
         public GameObject playerInstance;
 
@@ -229,6 +234,31 @@ namespace GuerhoubaGames
         }
 
         #endregion
+
+        #region Merchand Functions
+
+        public static bool IsSpawningMerchantValid()
+        {
+            return instance._IsSpawingMerchandValid();
+        }
+
+        private bool _IsSpawingMerchandValid()
+        {
+            return maxHoursPointPerDay - currentHoursPoint == m_hoursSpendToSpawnMerchant;
+        }
+
+        public static GameObject SpawnMerchand(Vector3 position, Quaternion rotation)
+        {
+            return instance._SpawnMerchant(position, rotation);
+        }
+
+        private GameObject _SpawnMerchant(Vector3 position, Quaternion rotation)
+        {
+            GameObject instance = GameObject.Instantiate(merchandCaravanaPrefab, position, rotation);
+            return instance;
+        }
+
+        #endregion 
 
     }
 }

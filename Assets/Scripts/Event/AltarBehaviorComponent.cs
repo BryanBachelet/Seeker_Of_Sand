@@ -373,13 +373,14 @@ public class AltarBehaviorComponent : InteractionInterface
         altarAttackComponent.DeactivateAltarAttack();
         eventHolder.ActiveEndEvent();
 
+        OnEventEnd?.Invoke();
+        OnEventEnd -= RunManager.instance.RemoveHourPoint;
+
         int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().EventValidate();
         SpawnAltarReward(rewardIndex);
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);
 
-        OnEventEnd?.Invoke();
-        OnEventEnd -= RunManager.instance.RemoveHourPoint;
 
 
         if (lastItemInstantiate != null)
