@@ -449,7 +449,7 @@ public class Projectile : MonoBehaviour
 
     protected virtual void BouncingUpdate()
     {
-       if (!spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Bouncing)) return;
+       if (spellProfil && !spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Bouncing)) return;
        
         if (spellProfil && spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Bouncing))
             p_bounceCount++;

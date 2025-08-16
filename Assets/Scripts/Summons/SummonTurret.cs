@@ -30,7 +30,7 @@ namespace SpellSystem
             ProjectileLauncherData projectileLauncherData = new ProjectileLauncherData();
             projectileLauncherData.projectilePerShoot = spellProfil.GetIntStat(StatType.Projectile);
             projectileLauncherData.shootPerAttack = spellProfil.GetIntStat(StatType.ShootNumber);
-            projectileLauncherData.timeBetweenShoot = spellProfil.GetFloatStat(StatType.TimeBetweenShot);
+            projectileLauncherData.timeBetweenShoot = Mathf.Clamp(spellProfil.GetFloatStat(StatType.TimeBetweenShot), 0.05f, 10);
             projectileLauncherData.angleTotal = spellProfil.GetFloatStat(StatType.ShootAngle);
             projectileLauncherData.reloadTime = spellProfil.GetFloatStat(StatType.AttackReload);
 
