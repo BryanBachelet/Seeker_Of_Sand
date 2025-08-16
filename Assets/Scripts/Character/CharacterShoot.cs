@@ -201,8 +201,8 @@ namespace GuerhoubaGames.Character
             m_initialPreviewDecal = currentPreviewDecalTexture;
             skinedMeshRender = avatarTransform.GetComponentInChildren<SkinnedMeshRenderer>();
             m_Mat_capeSkinedMesh = skinedMeshRender.materials[indexMat]; //Feedback Cape Color Element
-            m_Mat_Cape_Flamme[0] = skinedMeshRender.materials[10];
-            m_Mat_Cape_Flamme[1] = skinedMeshRender.materials[11];
+            m_Mat_Cape_Flamme[0] = skinedMeshRender.materials[indexMat_Cape_Flame[0]];
+            m_Mat_Cape_Flamme[1] = skinedMeshRender.materials[indexMat_Cape_Flame[1]];
             m_Mat_capucheSkinedMesh = skinedMeshRender.materials[indexMatCapuche];
         }
 
@@ -858,7 +858,7 @@ namespace GuerhoubaGames.Character
                 if (stats.tagData.spellMovementBehavior == SpellMovementBehavior.Fix)
                 {
                     position = m_characterAim.lastRawPosition + Mathf.Clamp(i, 0, 1) * (Quaternion.AngleAxis(angle * ((i + 1) / 2), transformUsed.up) * m_characterAim.GetTransformHead().forward * spellProfil.GetFloatStat(StatType.OffsetDistance));
-                    rot = m_characterAim.GetTransformHead().rotation; ;
+                    rot = m_characterAim.GetTransformHead().rotation;
                 }
 
                 if (stats.tagData.spellProjectileTrajectory == SpellProjectileTrajectory.RANDOM)
@@ -867,7 +867,7 @@ namespace GuerhoubaGames.Character
 
                 }
 
-                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
+                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot * spellProfil.objectToSpawn.transform.localRotation);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
                 DamageCalculComponent damageCalculComponent = projectileCreate.GetComponent<DamageCalculComponent>();
@@ -1076,7 +1076,16 @@ namespace GuerhoubaGames.Character
             m_hasBeenLoad = true;
             m_currentType = m_characterSpellBook.GetSpecificSpell(m_currentIndexCapsule).gameEffectStats.tagData.type;
             m_canEndShot = false;
-
+            if (currentCloneSpellProfil.GetChainEffects().Length > 0)
+            {
+                m_Mat_Cape_Flamme[0].SetFloat("_AlphaClip", 0);
+                m_Mat_Cape_Flamme[1].SetFloat("_AlphaClip", 0);
+            }
+            else
+            {
+                m_Mat_Cape_Flamme[0].SetFloat("_AlphaClip", 1);
+                m_Mat_Cape_Flamme[1].SetFloat("_AlphaClip", 1);
+            }
             ChainEffect[] chainEffectArray = currentCloneSpellProfil.GetChainEffects();
             for (int i = 0; i < chainEffectArray.Length; i++)
             {

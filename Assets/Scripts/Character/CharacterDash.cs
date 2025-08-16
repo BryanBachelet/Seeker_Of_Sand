@@ -31,6 +31,7 @@ namespace GuerhoubaGames.Character
 
         public GameObject[] characterModel;
         public GameObject vfxDash;
+        public Image image_dashcircleHoldder;
 
         [HideInInspector] private Material m_dashDecalFeedback;
         public UnityEngine.Rendering.HighDefinition.DecalProjector m_dashHolderDecal;
@@ -252,14 +253,14 @@ namespace GuerhoubaGames.Character
                     if (m_currentStack >= m_maxStack)
                     {
                         m_isActiveCooldown = false;
-                        if (m_dashUI != null) m_dashUI.fillAmount = 0;
+                        if (m_dashUI != null) m_dashUI.fillAmount = 0; image_dashcircleHoldder.color = Color.white;
                     }
 
                 }
                 else
                 {
                     m_dashCooldownTimer += Time.deltaTime;
-                    if (m_dashUI != null) m_dashUI.fillAmount = 1-dashFillFeedback;
+                    if (m_dashUI != null) m_dashUI.fillAmount = 1-dashFillFeedback; image_dashcircleHoldder.color = Color.Lerp(Color.white, Color.black, 1 - dashFillFeedback);
                 }
 
                 m_dashDecalFeedback.SetFloat("_Loading", dashFillFeedback);

@@ -29,7 +29,6 @@ public class UIEndScreen : MonoBehaviour
     [SerializeField] private TMP_Text[] m_spellDetailTier = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailDamages = new TMP_Text[4];
     [SerializeField] private TMP_Text[] m_spellDetailName = new TMP_Text[4];
-    [SerializeField] private Image[] m_spellDetailImage = new Image[4];
 
     [SerializeField] private int m_fragmentDisplayCount = 3;
     [SerializeField] private GameObject[] m_fragmentDetails = new GameObject[2];

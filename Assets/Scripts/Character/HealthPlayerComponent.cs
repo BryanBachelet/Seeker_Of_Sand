@@ -41,7 +41,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
 
     [Header("Heath Info")]
-    [HideInInspector] private float m_CurrentHealth = 50;
+    [SerializeField] private float m_CurrentHealth = 50;
     [HideInInspector] private int m_CurrentQuarter = 4;
 
     [Header("Death Info")]

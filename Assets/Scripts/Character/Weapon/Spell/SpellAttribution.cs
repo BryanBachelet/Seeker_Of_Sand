@@ -29,6 +29,8 @@ public class SpellAttribution : MonoBehaviour
 
     [SerializeField] private Image[] levelDisplayObject = new Image[13];
     [SerializeField] private Material[] materialLevel = new Material[2];
+    [SerializeField] private Color color_imageLevel_inactive;
+    [SerializeField] private Color[] color_imageLevel = new Color[2];
     [SerializeField] private Material[] materialRank = new Material[4];
     [SerializeField] private Texture[] textureRank = new Texture[4];
     [SerializeField] private bool[] animationBool = new bool[2]; //0 --> ImageOnly, correspond à l'affichage de sort dans le nom + bandeau //1 --> OpenTab, affichage avec le nom du sort + bandeau
@@ -115,14 +117,16 @@ public class SpellAttribution : MonoBehaviour
         rankSpell_material.material = materialRank[rank];
         for (int i = 0; i < levelDisplayObject.Length; i++)
         {
+            bool stateLevel = false;
             if (i <= level)
             {
-                levelDisplayObject[i].material = materialLevel[1];
+                stateLevel = true;
             }
             else
             {
-                levelDisplayObject[i].material = materialLevel[0];
+                stateLevel = false;
             }
+            ActivateLevelCristal(spell, i, stateLevel);
         }
     }
 
@@ -150,14 +154,16 @@ public class SpellAttribution : MonoBehaviour
         spellTab_cloneMaterial.SetTexture("_Gradient", textureRank[rank]);
         for (int i = 0; i < levelDisplayObject.Length; i++)
         {
+            bool stateLevel = false;
             if (i <= level)
             {
-                levelDisplayObject[i].material = materialLevel[1];
+                stateLevel = true;
             }
             else
             {
-                levelDisplayObject[i].material = materialLevel[0];
+                stateLevel = false;
             }
+            ActivateLevelCristal(spell, i, stateLevel);
             yield return new WaitForSeconds(0.10f);
         }
         UpdateToolTipInfo();
@@ -167,6 +173,19 @@ public class SpellAttribution : MonoBehaviour
         for (int i = 0; i < animationBool.Length; i++)
         {
             animatorSpell.SetBool("" + i, animationBool[i]);
+        }
+    }
+
+    public void ActivateLevelCristal(SpellProfil spell, int indexLevel, bool state)
+    {
+        if(state)
+        {
+            levelDisplayObject[indexLevel].transform.parent.gameObject.SetActive(true);
+            levelDisplayObject[indexLevel].color = color_imageLevel[(int)GeneralTools.GetElementalArrayIndex(spell.TagList.element)];
+        }
+        else
+        {
+            levelDisplayObject[indexLevel].color = color_imageLevel_inactive;
         }
     }
 }
