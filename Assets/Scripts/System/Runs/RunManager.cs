@@ -61,6 +61,9 @@ namespace GuerhoubaGames
         public GameObject playerInstance;
 
 
+        [Header("Tracking Stats")]
+        public int eventDone;
+
 
         [Header("Debug variables")]
         [SerializeField] private bool m_isRunManagerDebugActive = false;

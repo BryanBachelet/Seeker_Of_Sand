@@ -29,6 +29,7 @@ public class TerrainGenerator : MonoBehaviour
     public int mapPoolCount;
     public int countRoomGeneration = 1;
     public static int roomGeneration_Static = 1;
+   
 
     public bool generateNewTerrain;
 
