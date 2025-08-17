@@ -40,6 +40,8 @@ namespace GuerhoubaGames
         public int dayCount = 0;
         public int maxRoomPerDay = 5;
         [HideInInspector] public int countRoomDone = 0;
+        public DayTimeController m_daytimecontroller;
+
 
 
         [HideInInspector] public bool isNightCountdownStarted = false;
@@ -105,7 +107,8 @@ namespace GuerhoubaGames
             dissonanceHeartBroken = 0;
             dayCount++;
             countRoomDone = 0;
-
+            m_daytimecontroller.StartDay();
+            m_daytimecontroller.StartDay(); 
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Day Start");
         }
@@ -131,6 +134,7 @@ namespace GuerhoubaGames
         {
             OnNightStart?.Invoke();
             currentNightTimeCountdown = nightDurationSeconds;
+
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Night Start");
         }
@@ -144,7 +148,9 @@ namespace GuerhoubaGames
             if (currentNightTimeCountdown <= 0)
             {
                 dayStep = DayStep.BOSS;
+                
                 StartBossPhase(true);
+                m_daytimecontroller.ActiveBoss();
             }
         }
 
@@ -154,6 +160,7 @@ namespace GuerhoubaGames
 
             OnNightCountdownStart?.Invoke();
             isNightCountdownStarted = true;
+            m_daytimecontroller.StartNight();
             currentNightTimeCountdown = nightDurationSeconds;
         }
 
@@ -166,6 +173,8 @@ namespace GuerhoubaGames
             {
                 m_terrainGeneratorComponent.GenerateBossMap(true);
                 m_terrainGeneratorComponent.SelectTerrain(0);
+                m_daytimecontroller.currentHour = 3;
+                m_daytimecontroller.currentPhase = 0;
             }
 
             if (m_isRunManagerDebugActive)
@@ -283,7 +292,10 @@ namespace GuerhoubaGames
             return instance;
         }
 
-        #endregion 
+        #endregion
 
+        #region AstresMoving
+
+        #endregion
     }
 }

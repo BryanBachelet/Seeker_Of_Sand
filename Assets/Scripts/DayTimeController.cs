@@ -53,15 +53,22 @@ public class DayTimeController : MonoBehaviour
 
     [Header("Debugs Variables")]
     [SerializeField] private bool m_activeDayTimeControllerDebug;
+
+    public bool isChangingHour = false;
+    public float tempsEcouleChanging = 0;
+    public float tempsChanging = 2;
+
+    private RunManager m_runManager;
     void Start()
     {
         isNight = false;
         isDay = true;
         dayCount = 1;
-        currentPhase = -1;
+        currentPhase = 0;
         m_Player = GameObject.Find("Player");
 
         RunManager.instance.OnRemoveHoursPoint += IncreaseHours;
+        m_runManager = RunManager.instance;
 
     }
 
@@ -80,6 +87,31 @@ public class DayTimeController : MonoBehaviour
 
             IncreaseHours();
         }
+        if(isChangingHour)
+        {
+            if (tempsEcouleChanging + Time.deltaTime > tempsChanging)
+            {
+                tempsEcouleChanging = 0;
+                isChangingHour = false;
+                currentPhase++;
+                currentHour = hourPerPhase[currentPhase];
+                UpdateTime(currentHour);
+            }
+            else
+            {
+                tempsEcouleChanging += Time.deltaTime;
+                float ratio = tempsEcouleChanging / tempsChanging;
+                currentHour = Mathf.Lerp(hourPerPhase[currentPhase], hourPerPhase[currentPhase+1], ratio);
+                UpdateTime(currentHour);
+            }
+        }
+        if(isNight)
+        {
+            float ratio = 1 - m_runManager.currentNightTimeCountdown / m_runManager.nightDurationSeconds;
+            currentHour = Mathf.Lerp(hourPerPhase[hourPerPhase.Length-2], hourPerPhase[hourPerPhase.Length-1], ratio);
+            UpdateTime(currentHour);
+        }
+
     }
 
     public void IncreaseHours()
@@ -123,13 +155,12 @@ public class DayTimeController : MonoBehaviour
         //    ChangeNextRoomSpecialStatut(1, true);
         //}
 
-        currentPhase++;
-        currentHour = hourPerPhase[currentPhase];
 
+        isChangingHour = true;
         if (m_activeDayTimeControllerDebug)
             ScreenDebuggerTool.AddMessage("Current Hour : " + currentHour);
 
-        UpdateTime(currentHour);
+
     }
 
     public void UpdateTime(float Hour)
@@ -176,31 +207,38 @@ public class DayTimeController : MonoBehaviour
         }
     }
 
-    private void StartDay()
+    public void StartDay()
     {
         m_sun.gameObject.SetActive(true);
-        if (dayStartEvent != null) dayStartEvent.Invoke();
+        //if (dayStartEvent != null) dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
         m_moon.gameObject.SetActive(false);
-        dayCount++;
+        //dayCount++;
         //m_Player.GetComponent<CharacterDash>().gainDash(1, true);
-        dayText.text = "Day " + dayCount;
-        newDay = true;
+        //dayText.text = "Day " + dayCount;
+        //newDay = true;
         m_moon.enabled = false;
         m_sun.enabled = true;
+        isNight = false;
+        isDay = true;
+        currentHour = 7;
+        currentPhase = 0;
+        UpdateTime(currentHour);
 
     }
 
-    private void StartNight()
+    public void StartNight()
     {
         m_moon.gameObject.SetActive(true);
-        if (nightStartEvent != null) nightStartEvent.Invoke();
+        //if (nightStartEvent != null) nightStartEvent.Invoke();
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;
         m_sun.gameObject.SetActive(false);
         m_sun.enabled = false;
         m_moon.enabled = true;
+        isNight = true;
+        isDay = false;
 
     }
     public void ChangeNextRoomSpecialStatut(int specialRoomIndex, bool newState)
@@ -214,5 +252,11 @@ public class DayTimeController : MonoBehaviour
     public bool IsNextRoomIsMerchand()
     {
         return nextRoomIsSpecial[0];
+    }
+
+    public void ActiveBoss()
+    {
+        currentHour = hourPerPhase[hourPerPhase.Length - 1];
+        UpdateTime(currentHour);
     }
 }

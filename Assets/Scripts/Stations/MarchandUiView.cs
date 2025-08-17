@@ -31,6 +31,7 @@ public class MarchandUiView : MonoBehaviour
     public Image[] fragmentBackground;
     public Image[] fragmentElementIcon;
     public Image[] fragmentRarity;
+    public Artefact_UI_View[] artefactUiView = new Artefact_UI_View[4];
 
     [Header("Spells Elements")]
     public Image[] spellSpriteArray;
@@ -190,20 +191,21 @@ public class MarchandUiView : MonoBehaviour
         {
             fragmentSpriteArray[index].sprite = null;
             fragmentPriceTextArray[index].text = "Sold";
-            fragmentSpriteArray[index].color = new Color(1, 1, 1, 0);
+            //fragmentSpriteArray[index].color = new Color(1, 1, 1, 0);
         }
         else
         {
             fragmentSpriteArray[index].sprite = merchandItemData.fragmentData[index].icon;
             fragmentPriceTextArray[index].text = itemData.price.ToString();
-            ChangeFragmentCadre(merchandItemData.fragmentData[index], index);
+            artefactUiView[index].UpdateInteface(merchandItemData.fragmentData[index]);
+            //ChangeFragmentCadre(merchandItemData.fragmentData[index], index);
 
-           if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
-           else fragmentSpriteArray[index].color = noEnoughMoneyColor;
-            fragmentSpriteArray[index].color = new Color(1, 1, 1, 1);
+           //if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
+           //else fragmentSpriteArray[index].color = noEnoughMoneyColor;
+           // fragmentSpriteArray[index].color = new Color(1, 1, 1, 1);
         }
         int indexElement = GeneralTools.GetElementalArrayIndex(itemData.element);
-        cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[indexElement];
+        //cristalFragmentSpriteArray[index].sprite = GameResources.instance.cristalIconArray[indexElement];
     }
 
     public void ActualizeDescriptionInterface(int index, CharacterObjectType type)
@@ -224,7 +226,7 @@ public class MarchandUiView : MonoBehaviour
                 if (merchandItemData.itemFragmentData[index].hasBeenBuy) return;
                 description = merchandItemData.fragmentData[index].baseDescription;
                 name = merchandItemData.fragmentData[index].name;
-                image = merchandItemData.fragmentData[index].icon; ;
+                image = merchandItemData.fragmentData[index].icon;
                 break;
             default:
                 break;
@@ -255,7 +257,7 @@ public class MarchandUiView : MonoBehaviour
     {
         int elementIndex = GeneralTools.GetElementalArrayIndex(fragmentData.gameElement, true);
 
-        fragmentBackground[indexFragmentInShop].sprite = backgroundElement[elementIndex];
+        //fragmentBackground[indexFragmentInShop].sprite = backgroundElement[elementIndex];
         fragmentElementIcon[indexFragmentInShop].sprite = iconElement[elementIndex - 1];
         fragmentNameArray[indexFragmentInShop].text = fragmentData.nameArtefact;
         

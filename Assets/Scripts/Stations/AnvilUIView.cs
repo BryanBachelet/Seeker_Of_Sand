@@ -93,23 +93,23 @@ namespace GuerhoubaGames.UI
                 if (tempsEcouleClic > timeToValidate)
                 {
                     actionValidate = true;
-                    for (int i = 0; i < vfxReinforcement.Length; i++)
-                    {
-                        vfxReinforcement[i].SendEvent("Activation");
-
-                    }
+                    //for (int i = 0; i < vfxReinforcement.Length; i++)
+                    //{
+                    //    //vfxReinforcement[i].SendEvent("Activation");
+                    //
+                    //}
 
                     actionOnGoing = false;
                 }
                 else
                 {
                     float progress = tempsEcouleClic / timeToValidate;
-                    uiButton.fillAmount = progress;
-                    for (int i = 0; i < vfxReinforcement.Length; i++)
-                    {
-                        vfxReinforcement[i].SetInt("Rate", (int)(progress * 100));
-
-                    }
+                    //uiButton.fillAmount = progress;
+                    //for (int i = 0; i < vfxReinforcement.Length; i++)
+                    //{
+                    //    vfxReinforcement[i].SetInt("Rate", (int)(progress * 100));
+                    //
+                    //}
                 }
             }
         }
@@ -131,11 +131,11 @@ namespace GuerhoubaGames.UI
             {
                 actionOnGoing = true;
                 tempsEcouleClic = 0;
-                for (int i = 0; i < vfxReinforcement.Length; i++)
-                {
-                    vfxReinforcement[i].Play();
-
-                }
+                //for (int i = 0; i < vfxReinforcement.Length; i++)
+                //{
+                //    vfxReinforcement[i].Play();
+                //
+                //}
             }
             else return;
         }
