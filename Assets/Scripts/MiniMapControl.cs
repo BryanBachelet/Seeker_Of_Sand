@@ -9,7 +9,7 @@ public class MiniMapControl : MonoBehaviour
     [HideInInspector] private GameObject playerTarget;
     [SerializeField] private float[] y_distance;
     [HideInInspector] private int currentZoomLevel;
-    [HideInInspector] private Vector3 maxDezoomPosition = new Vector3(-11327.8096f, 570, -2150.37207f);
+    [HideInInspector] private Vector3 maxDezoomPosition = new Vector3(-11327.8096f, 600, -2150.37207f);
     [HideInInspector] private Camera cameraminimap;
 
     [HideInInspector] private Texture2D discoveryMap;

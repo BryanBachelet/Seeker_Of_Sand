@@ -108,7 +108,7 @@ namespace GuerhoubaGames
             dayCount++;
             countRoomDone = 0;
             m_daytimecontroller.StartDay();
-            m_daytimecontroller.StartDay(); 
+            m_daytimecontroller.StartDay();
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Day Start");
         }
@@ -123,7 +123,6 @@ namespace GuerhoubaGames
                 dayStep = DayStep.NIGHT;
                 StartNight();
             }
-
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Remove point. Current point " + currentHoursPoint);
         }
@@ -148,7 +147,7 @@ namespace GuerhoubaGames
             if (currentNightTimeCountdown <= 0)
             {
                 dayStep = DayStep.BOSS;
-                
+
                 StartBossPhase(true);
                 m_daytimecontroller.ActiveBoss();
             }
@@ -156,6 +155,8 @@ namespace GuerhoubaGames
 
         public void LaunchNightCountdown()
         {
+
+
             if (dayStep != DayStep.NIGHT) return;
 
             OnNightCountdownStart?.Invoke();
@@ -188,6 +189,25 @@ namespace GuerhoubaGames
         private bool _IsNight()
         {
             return dayStep == DayStep.NIGHT;
+        }
+
+        public static bool IsNightStarted()
+        {
+            return instance._IsNightStarted();
+        }
+
+        private bool _IsNightStarted()
+        {
+            return isNightCountdownStarted;
+        }
+
+        public static bool IsDay()
+        {
+            return instance._IsDay();
+        }
+        private bool _IsDay()
+        {
+            return dayStep == DayStep.DAY;
         }
 
         public void BrokeDissonanceHeart()

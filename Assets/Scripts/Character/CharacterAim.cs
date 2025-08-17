@@ -1,6 +1,8 @@
 using GuerhoubaGames.Enemies;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
+using NUnit.Framework;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
@@ -111,7 +113,7 @@ namespace GuerhoubaGames.Character
                 {
                     m_hasCloseTarget = true;
                     //m_characterMouvement.SetCombatMode(true);
-                    Vector3 nearestEnemyPos = NearestEnemy(col, position);
+                    Vector3 nearestEnemyPos = NearestEnemyPosition(col, position);
                     nearestEnemyPos = m_camera.WorldToScreenPoint(nearestEnemyPos);
                     Vector2 convertPos = new Vector2(nearestEnemyPos.x, nearestEnemyPos.y);
                     m_aimScreenPoint = convertPos;
@@ -212,14 +214,14 @@ namespace GuerhoubaGames.Character
                 m_aimFinalPointNormal = hit.normal;
                 Collider[] nearestAimedEnemy = Physics.OverlapSphere(m_aimPoint, aimClosetEnemyRadiusDetection, m_gameLayer.enemisLayerMask);
 
-                if (nearestAimedEnemy.Length > 0)
-                {
-                    m_aimFinalPointNormal = NearestEnemy(nearestAimedEnemy, m_aimFinalPointNormal);
-                }
-                else
-                {
-                    m_closestEnemy = null;
-                }
+                //if (nearestAimedEnemy.Length > 0)
+                //{
+                //    m_aimFinalPointNormal = NearestEnemyPosition(nearestAimedEnemy, m_aimFinalPointNormal);
+                //}
+                //else
+                //{
+                //    m_closestEnemy = null;
+                //}
             }
 
             return m_aimPoint;
@@ -334,7 +336,7 @@ namespace GuerhoubaGames.Character
             AimFeedback();
             //projectorVisorObject.transform.position = GetAimFinalPoint();
             prevAimPosition = GetAimFinalPoint();
-
+            NearestEnemy(m_aimFinalPoint);
             if (m_closestEnemy != null)
             {
                 IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
@@ -351,6 +353,7 @@ namespace GuerhoubaGames.Character
                 ResetOutlineForEnemi();
             }
             UpdateCursorPosition();
+
             if (search) search = false;
         }
 
@@ -452,11 +455,55 @@ namespace GuerhoubaGames.Character
 
 
 
-        public Vector3 NearestEnemy(Collider[] enemysPos, Vector3 position)
+        public Vector3 NearestEnemyPosition(Collider[] enemysPos, Vector3 position)
         {
             Vector3 closestPosition = Vector3.zero;
             float distance = 10000.0f;
             int highestPriority = -1;
+
+
+            for (int i = 0; i < enemysPos.Length; i++)
+            {
+                float currentDistance = Vector3.Distance(enemysPos[i].transform.position, position);
+
+                int currentPriority = 0;
+
+                DamageInfoObject damageInfoObject = enemysPos[i].GetComponent<DamageInfoObject>();
+                if (damageInfoObject)
+                    currentPriority = damageInfoObject.priorityTarget;
+
+                if (currentPriority >= highestPriority && currentDistance < distance)
+                {
+                    highestPriority = currentPriority;
+                    distance = currentDistance;
+                    closestPosition = enemysPos[i].transform.position;
+
+                }
+            }
+            return closestPosition;
+        }
+
+        public void NearestEnemy(Vector3 position)
+        {
+            Collider[] enemysPos = Physics.OverlapSphere(position, aimClosetEnemyRadiusDetection, m_gameLayer.enemisLayerMask);
+
+            if (m_closestEnemy)
+            {
+                int indexObj = Array.IndexOf(enemysPos, m_closestEnemy.GetComponent<Collider>());
+
+                if (indexObj != -1)
+                    return;
+            }
+
+            if (enemysPos.Length == 0)
+                m_closestEnemy = null;
+
+
+            Vector3 closestPosition = Vector3.zero;
+            float distance = 10000.0f;
+            int highestPriority = -1;
+
+
             for (int i = 0; i < enemysPos.Length; i++)
             {
                 float currentDistance = Vector3.Distance(enemysPos[i].transform.position, position);
@@ -475,8 +522,9 @@ namespace GuerhoubaGames.Character
                     m_closestEnemy = enemysPos[i].gameObject;
                 }
             }
-            return closestPosition;
         }
+
+
         private bool IsGamepad()
         {
             return m_playerInput.currentControlScheme == "Gamepad";
@@ -544,6 +592,7 @@ namespace GuerhoubaGames.Character
                     Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssistDistance);
                     Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
                 }
+
             }
         }
 
@@ -554,24 +603,24 @@ namespace GuerhoubaGames.Character
                 ResetOutlineForEnemi();
             }
             m_GO_lastObject = m_closestEnemy;
-            if(m_closestEnemy.GetComponent<NpcHealthComponent>())
+            if (m_closestEnemy.GetComponent<NpcHealthComponent>())
             {
                 m_lastObjectPointed = m_closestEnemy.GetComponent<NpcHealthComponent>().m_entityAnimator.gameObject;
-                
+
             }
             if (m_lastObjectPointed)
             {
                 previewMask = (int)m_lastObjectPointed.gameObject.layer;
                 m_lastObjectPointed.gameObject.layer = (int)pointedObject;
             }
-           
+
         }
 
         public void ResetOutlineForEnemi()
         {
-            if (m_lastObjectPointed != null) 
-            { 
-                m_lastObjectPointed.gameObject.layer = previewMask; 
+            if (m_lastObjectPointed != null)
+            {
+                m_lastObjectPointed.gameObject.layer = previewMask;
             }
             m_GO_lastObject = null;
             m_lastObjectPointed = null;

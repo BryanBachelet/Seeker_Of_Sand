@@ -446,7 +446,7 @@ public class RoomManager : MonoBehaviour
         if (pedestalRoomBehavior)
             pedestalRoomBehavior.ActivatePedestal();
 
-        if (RunManager.IsSpawningMerchantValid())
+        if (RunManager.IsSpawningMerchantValid() && !RunManager.IsNightStarted())
         {
             merchantCarvana = RunManager.SpawnMerchand(objectMerchantSpawnPosition.transform.position, objectMerchantSpawnPosition.transform.rotation);
         }
