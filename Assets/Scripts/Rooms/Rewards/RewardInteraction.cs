@@ -14,6 +14,7 @@ namespace GuerhoubaGames
         public GameElement rewardElement;
         public Action OnRewardTaken;
 
+        
        
         public override void OnInteractionStart(GameObject player)
         {
