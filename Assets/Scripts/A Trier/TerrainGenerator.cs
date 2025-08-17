@@ -6,6 +6,7 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 
@@ -215,10 +216,19 @@ public class TerrainGenerator : MonoBehaviour
         roomManager.InitComponent();
         roomManager.terrainGenerator = this;
         roomManager.currentRoomType = RoomType.Boss;
-        roomManager.rewardType = RewardType.SPELL;
         roomManager.healthReward = HealthReward.FULL;
         roomManager.isTimingPassing = false;
         roomManager.roomInfoUI = roomInfoUI;
+        CharacterSpellBook characterSpellBookComponent = player.GetComponent<CharacterSpellBook>();
+        if (characterSpellBookComponent.GetSpellCount() < 4)
+        {
+            roomManager.rewardType = RewardType.SPELL;
+        }
+        else
+        {
+            roomManager.rewardType = (RewardType)GenerateRewardType();
+        }
+        roomManager.hasEndReward = true;
         if (m_activeRoomManagerDebug)
         {
             roomManager.activeRoomManagerDebug = true;
@@ -330,6 +340,22 @@ public class TerrainGenerator : MonoBehaviour
         return rewardAssociated;
     }
 
+    private int GenerateRewardType()
+    {
+        int rewardGenerate = -1;
+        int drawPercent = UnityEngine.Random.Range(0, 100);
+        if (drawPercent < m_upgradeRewardPercent)
+        {
+            rewardGenerate = (int)RewardType.UPGRADE;
+            return rewardGenerate;
+        }
+        if (drawPercent > m_artefactRewardPercent)
+        {
+            rewardGenerate = (int)RewardType.ARTEFACT;
+        }
+        return rewardGenerate;
+    }
+
     public void AssociateNewReward()
     {
 
@@ -353,7 +379,7 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         CharacterSpellBook characterSpellBookComponent = player.GetComponent<CharacterSpellBook>();
-        if(characterSpellBookComponent.GetSpellCount() <3)
+        if (characterSpellBookComponent.GetSpellCount() < 3)
         {
             int mapIndex = Random.Range(0, mapInstantiated.Count);
             int eventIndex = Random.Range(0, 3);
