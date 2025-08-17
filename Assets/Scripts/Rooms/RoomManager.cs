@@ -202,6 +202,7 @@ public class RoomManager : MonoBehaviour
             EnemyManager.instance.DeactiveConstantSpawn();
         }
 
+
         teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
         if (previewCamera != null)
             previewCamera.gameObject.SetActive(false);
@@ -253,6 +254,7 @@ public class RoomManager : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         teleporterFeedback.GetComponentInParent<Animator>().SetBool("Open", false);
+        terrainGenerator.isTpTaken = false;
     }
 
     public void DeactivateRoom()
