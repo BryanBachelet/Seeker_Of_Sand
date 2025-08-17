@@ -137,7 +137,7 @@ namespace GuerhoubaGames
 
         public void UpdateNight()
         {
-            if (dayStep != DayStep.NIGHT || !isNightCountdownStarted) return;
+            if (dayStep != DayStep.NIGHT || !isNightCountdownStarted || !GameState.IsPlaying()) return;
 
             ScreenDebuggerTool.AddMessage("Night Time " + currentNightTimeCountdown.ToString(), 10);
             currentNightTimeCountdown -= Time.deltaTime;
