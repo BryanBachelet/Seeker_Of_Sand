@@ -4,13 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CharacterPotion : MonoBehaviour
 {
     [SerializeField] private int m_potionCharge = 3;
     [SerializeField] private int m_currentCharge = 3;
     [SerializeField] private float m_interactionDuration = 1.5f;
-   // [SerializeField] private float m_percentGain = .70f;
+    public Sprite[] potionsSprite = new Sprite[2];
+    public Image potionImage;
+    // [SerializeField] private float m_percentGain = .70f;
 
     [Header("Debug Parameters")]
     public bool m_activeDebugPotionMessage = false;
@@ -29,7 +32,8 @@ public class CharacterPotion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_playerHealth = GetComponent<HealthPlayerComponent>(); 
+        m_playerHealth = GetComponent<HealthPlayerComponent>();
+        potionImage.sprite = potionsSprite[1];
     }
 
     // Update is called once per frame
@@ -39,7 +43,7 @@ public class CharacterPotion : MonoBehaviour
     }
 
     #region Inputs Functions
-    
+
     public void InputPotionDrink(InputAction.CallbackContext ctx)
     {
         if (ctx.started)
@@ -60,7 +64,7 @@ public class CharacterPotion : MonoBehaviour
 
         m_interactionTimer += Time.deltaTime;
 
-        if(m_interactionTimer > m_interactionDuration)
+        if (m_interactionTimer > m_interactionDuration)
         {
             ValidatePotionDrink();
             m_interactionTimer = 0.0f;
@@ -71,8 +75,18 @@ public class CharacterPotion : MonoBehaviour
     private void ValidatePotionDrink()
     {
         if (m_activeDebugPotionMessage)
-            Debug.Log("Potion :  Potion has been drink, charge remaining  : "+   m_currentCharge  );
+            Debug.Log("Potion :  Potion has been drink, charge remaining  : " + m_currentCharge);
         m_currentCharge--;
+        if (m_currentCharge <= 0)
+        {
+            potionImage.sprite = potionsSprite[0];
+        }
+        else
+        {
+
+            potionImage.sprite = potionsSprite[1];
+
+        }
         m_playerHealth.RestoreQuarter(true);
         OnPotionDrink?.Invoke(m_currentCharge);
     }
@@ -84,7 +98,7 @@ public class CharacterPotion : MonoBehaviour
         if (m_activeDebugPotionMessage)
             Debug.Log("Potion :  Start to drink");
 
-        m_IsDrinkIsActive = true;  
+        m_IsDrinkIsActive = true;
         m_playerHealth.OnDamage += CancelDrinkPotion;
         OnPotionStartDrink?.Invoke(m_currentCharge);
     }
@@ -93,7 +107,7 @@ public class CharacterPotion : MonoBehaviour
     {
         if (!m_IsDrinkIsActive) return;
 
-        m_IsDrinkIsActive= false;
+        m_IsDrinkIsActive = false;
 
         if (m_activeDebugPotionMessage && info.damage != 0)
             Debug.Log("Potion : Potion drink cancel by hit");
@@ -106,7 +120,7 @@ public class CharacterPotion : MonoBehaviour
 
     public void RechargePotion(int quantity, bool isFullRecharge = false)
     {
-        if(isFullRecharge)
+        if (isFullRecharge)
         {
             m_currentCharge = m_potionCharge;
         }
@@ -114,7 +128,7 @@ public class CharacterPotion : MonoBehaviour
         {
             m_currentCharge++;
         }
-        
+        potionImage.sprite = potionsSprite[1];
         OnPotionRecharge?.Invoke(m_currentCharge);
     }
 
