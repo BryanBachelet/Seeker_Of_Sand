@@ -93,7 +93,7 @@ public class CharacterPotion : MonoBehaviour
 
     public void ActivePotionDrink()
     {
-        if (m_potionCharge <= 0)
+        if (m_currentCharge <= 0)
             return;
         if (m_activeDebugPotionMessage)
             Debug.Log("Potion :  Start to drink");
