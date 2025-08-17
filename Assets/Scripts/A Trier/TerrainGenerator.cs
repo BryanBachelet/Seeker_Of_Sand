@@ -1,10 +1,12 @@
 using BorsalinoTools;
 using GuerhoubaGames;
+using GuerhoubaGames.Character;
 using GuerhoubaGames.Enemies;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 using System.Collections.Generic;
+using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
@@ -15,6 +17,8 @@ public class TerrainGenerator : MonoBehaviour
 
     private const int maxPlayerSpell = 4;
     private const int frameCountBeforeDeactivation = 3;
+    private const int minMapGenerate = 2;
+    private const int maxMapGenerate = 4;
     public Transform lastMapPlay;
 
 
@@ -29,7 +33,7 @@ public class TerrainGenerator : MonoBehaviour
     public int mapPoolCount;
     public int countRoomGeneration = 1;
     public static int roomGeneration_Static = 1;
-   
+
 
     public bool generateNewTerrain;
 
@@ -239,7 +243,7 @@ public class TerrainGenerator : MonoBehaviour
         previousMapList = mapInstantiated;
         mapInstantiated.Clear();
 
-        int mapCountToGenerate = Random.Range(1, 4);
+        int mapCountToGenerate = Random.Range(minMapGenerate, maxMapGenerate);
 
         // Setup next position of the new terrain
         int postionOffsetMap = TerrainGenerator.roomGeneration_Static % 2;
@@ -348,6 +352,24 @@ public class TerrainGenerator : MonoBehaviour
             tpFeedback.ChangeColorVFX(GeneralTools.GetElementalArrayIndex(roomManagerNextMap.element, true));
         }
 
+        CharacterSpellBook characterSpellBookComponent = player.GetComponent<CharacterSpellBook>();
+        if(characterSpellBookComponent.GetSpellCount() <3)
+        {
+            int mapIndex = Random.Range(0, mapInstantiated.Count);
+            int eventIndex = Random.Range(0, 3);
+
+            RoomManager roomManagerNextMap = mapInstantiated[mapIndex].GetComponentInChildren<RoomManager>();
+            roomManagerNextMap.rewardAssociated[eventIndex] = 1;
+
+            TeleporterFeebackController tpFeedback = currentRoomManager.teleporterArray[mapIndex].tpFeedbackController;
+            tpFeedback.rewardToUse = (int)roomManagerNextMap.rewardType;
+            tpFeedback.eventReward = roomManagerNextMap.rewardAssociated;
+            tpFeedback.ChangeRewardID(tpFeedback.rewardToUse, roomManagerNextMap.m_materialPreviewTRT);
+            tpFeedback.ChangeColorVFX(GeneralTools.GetElementalArrayIndex(roomManagerNextMap.element, true));
+
+        }
+
+
 
     }
 
@@ -372,7 +394,7 @@ public class TerrainGenerator : MonoBehaviour
         Teleporter teleportorAssociated = mapInstantiated[selectedMapIndex].transform.GetComponentInChildren<Teleporter>();
         playerTeleportorBehavior.GetTeleportorData(teleportorAssociated);
         RoomManager roomManager = mapInstantiated[selectedMapIndex].GetComponentInChildren<RoomManager>();
-        
+
         if (m_runManager.dayStep == DayStep.NIGHT)
         {
             EnemyManager.instance.DeactiveConstantSpawn();
