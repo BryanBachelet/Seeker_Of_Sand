@@ -168,6 +168,15 @@ namespace GuerhoubaGames
                 ScreenDebuggerTool.AddMessage("Boss Start");
         }
 
+        public static bool IsNight()
+        {
+            return instance._IsNight();
+        }
+        private bool _IsNight()
+        {
+            return dayStep == DayStep.NIGHT;
+        }
+
         public void BrokeDissonanceHeart()
         {
             dissonanceHeartBroken++;
