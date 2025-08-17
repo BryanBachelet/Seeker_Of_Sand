@@ -85,7 +85,7 @@ namespace GuerhoubaGames.UI
             {
                 m_fragmentCorner = this.GetComponent<FragmentCornerElemental>();
             }
-            m_fragmentCorner.ChangeFragmentDisplay(artefactsInfos);
+            //m_fragmentCorner.ChangeFragmentDisplay(artefactsInfos);
             m_IconArtefact_Mesh.gameObject.SetActive(true);
             for (int i = 0; i < m_MainColor_mat.Length; i++)
             {

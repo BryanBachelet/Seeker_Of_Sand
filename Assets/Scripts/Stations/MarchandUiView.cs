@@ -31,6 +31,7 @@ public class MarchandUiView : MonoBehaviour
     public Image[] fragmentBackground;
     public Image[] fragmentElementIcon;
     public Image[] fragmentRarity;
+    public Artefact_UI_View[] artefactUiView = new Artefact_UI_View[4];
 
     [Header("Spells Elements")]
     public Image[] spellSpriteArray;
@@ -196,6 +197,7 @@ public class MarchandUiView : MonoBehaviour
         {
             fragmentSpriteArray[index].sprite = merchandItemData.fragmentData[index].icon;
             fragmentPriceTextArray[index].text = itemData.price.ToString();
+            artefactUiView[index].UpdateInteface(merchandItemData.fragmentData[index]);
             //ChangeFragmentCadre(merchandItemData.fragmentData[index], index);
 
            //if( itemData.isBuyable) fragmentSpriteArray[index].color =canBuyColor;
@@ -224,7 +226,7 @@ public class MarchandUiView : MonoBehaviour
                 if (merchandItemData.itemFragmentData[index].hasBeenBuy) return;
                 description = merchandItemData.fragmentData[index].baseDescription;
                 name = merchandItemData.fragmentData[index].name;
-                image = merchandItemData.fragmentData[index].icon; ;
+                image = merchandItemData.fragmentData[index].icon;
                 break;
             default:
                 break;

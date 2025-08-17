@@ -31,7 +31,7 @@ namespace GuerhoubaGames.UI
             if (isLock)
             {
                 m_backgroundColorImg.color = greyLockColor;
-                m_borderColorImg.color = greyLockColor;
+                //m_borderColorImg.color = greyLockColor;
                 m_spriteImg.color = greyLockColor;
                 m_nameImg.color = greyLockColor;
                 //m_elementImg.color = greyLockColor;
@@ -39,7 +39,7 @@ namespace GuerhoubaGames.UI
             else
             {
                 m_backgroundColorImg.color = Color.white;
-                m_borderColorImg.color = Color.white;
+                //m_borderColorImg.color = Color.white;
                 m_spriteImg.color = Color.white;
                 m_nameImg.color = Color.white; 
                 //m_elementImg.color = Color.white;
@@ -61,14 +61,14 @@ namespace GuerhoubaGames.UI
 
 
             //Debug.Assert(indexBaseElement != 0, "Artefact " + artefactsInfos.nameArtefact + " doesn't have element");
-            if(m_fragmentCorner == null)
-            {
-                m_fragmentCorner = this.GetComponent<FragmentCornerElemental>();
-            }
-            m_fragmentCorner.ChangeFragmentDisplay(artefactsInfos);
+            //if(m_fragmentCorner == null)
+            //{
+            //    m_fragmentCorner = this.GetComponent<FragmentCornerElemental>();
+            //}
+            //m_fragmentCorner.ChangeFragmentDisplay(artefactsInfos);
             m_backgroundColorImg.sprite = instanceResources.backgroundSprite[indexElement];
             //m_elementImg.sprite = instanceResources.elementSprite[indexBaseElement];
-            m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
+            //m_borderColorImg.sprite = instanceResources.raretySprite[(int)artefactsInfos.levelTierFragment];
             m_spriteImg.sprite = artefactsInfos.icon;
             m_spriteImg.color = Color.white;
             m_nameText.text = artefactsInfos.nameArtefact;

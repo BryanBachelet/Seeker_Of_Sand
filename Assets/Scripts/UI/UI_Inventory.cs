@@ -105,8 +105,8 @@ public class UI_Inventory : MonoBehaviour
         {
             fragmentUIViews[i].ActiveModeRestreint(false);
             fragmentUIViews[i].GetComponent<DragObjectUI>().isLock = false;
-            artefactUIView[i].ActiveModeRestreint(true);
-            artefactUIView[i].GetComponent<DragObjectUI>().isLock = true;
+            artefactUIView[i].ActiveModeRestreint(false);
+            artefactUIView[i].GetComponent<DragObjectUI>().isLock = false;
         }
 
     }
@@ -133,7 +133,7 @@ public class UI_Inventory : MonoBehaviour
         disCristalCount.text = "" + m_cristalInventory.dissonanceCout;
         tmpText_DisCurrentCristal.text = "" + m_cristalInventory.dissonanceCout;
         List<GameObject> tempFragment = m_fragmentToolTip.fragment_List;
-        for (int i = 0; i < tempFragment.Count; i++)
+        for (int i = 0; i < tempFragment.Count -1; i++)
         {
             if (i < m_fragmentToolTip.currentFragmentNumber)
                 SetupFragmentImage(m_fragmentToolTip, i);
@@ -209,7 +209,7 @@ public class UI_Inventory : MonoBehaviour
     }
 
 
-    public void CheckTradePossibility(int cristalElement)
+    public void CheckTradePossibility_x1(int cristalElement)
     {
         if (m_cristalInventory.dissonanceCout <= 1) return;
         else
@@ -257,7 +257,54 @@ public class UI_Inventory : MonoBehaviour
         if (hasSomethingInPanier) { tmpText_TradeButton.color = Color.white; }
         else { tmpText_TradeButton.color = Color.gray; }
     }
+    public void CheckTradePossibility_x10(int cristalElement)
+    {
+        if (m_cristalInventory.dissonanceCout <= 19) return;
+        else
+        {
+            m_panierTrade[cristalElement] += 10;
+            m_DispanierTrade -= 20;
+            hasSomethingInPanier = true;
 
+        }
+        #region oldTrade 
+        /*
+    if (cristalElement == 0)
+    {
+        if (m_cristalInventory.cristalCount[3] + m_panierTrade[3] < 2)
+        {
+            Debug.Log("Not enought cristal");
+            return;
+        }
+        else
+        {
+            m_panierTrade[cristalElement] += 1;
+            m_panierTrade[3] -= 2;
+            hasSomethingInPanier = true;
+
+        }
+
+    }
+    else
+    {
+        if (m_cristalInventory.cristalCount[cristalElement - 1] + m_panierTrade[cristalElement - 1] < 2)
+        {
+            Debug.Log("Not enought cristal");
+            return;
+        }
+        else
+        {
+            m_panierTrade[cristalElement] += 1;
+            m_panierTrade[cristalElement - 1] -= 2;
+            hasSomethingInPanier = true;
+        }
+    } 
+    */
+        #endregion
+        UpdateTradeDisplay();
+        if (hasSomethingInPanier) { tmpText_TradeButton.color = Color.white; }
+        else { tmpText_TradeButton.color = Color.gray; }
+    }
     public void UpdateTradeResult()
     {
         if (!hasSomethingInPanier) return;

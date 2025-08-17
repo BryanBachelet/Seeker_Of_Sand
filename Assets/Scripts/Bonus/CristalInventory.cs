@@ -54,15 +54,20 @@ public class CristalInventory : MonoBehaviour
         }
     }
 
-    public bool HasEnoughCristal(int value,GameElement   element, string name)
+    public bool HasEnoughCristal(int value,GameElement element, string name)
     {
         int indexCristal = GeneralTools.GetElementalArrayIndex(element);
         Debug.Log("Element :" + element.ToString());
         if(element == GameElement.NONE)
         {
             Debug.LogError("This element is None " + name);
+            return dissonanceCout >= value;
         }
-        return cristalCount[indexCristal ] >= value;
+        else
+        {
+            return cristalCount[indexCristal] >= value;
+        }
+
     }
 
     public void AddDissonanceCount(int cristalNumberAdd)

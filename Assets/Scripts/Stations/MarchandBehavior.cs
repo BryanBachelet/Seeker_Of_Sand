@@ -147,11 +147,11 @@ public class MarchandBehavior : InteractionInterface
 
     public BuyResult AcquiereNewFragment(int index)
     {
-        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[index].price, merchandItemData.itemFragmentData[index].element , merchandItemData.fragmentData[index].name);
+        bool canPay = m_cristalInventory.HasEnoughCristal(merchandItemData.itemFragmentData[index].price, GameElement.NONE , merchandItemData.fragmentData[index].name);
 
         if (!canPay || merchandItemData.itemFragmentData[index].hasBeenBuy) return BuyResult.NOT_ENOUGH_MONEY;
-        int mabiteElement = GeneralTools.GetElementalArrayIndex(merchandItemData.itemFragmentData[index].element);
-        m_cristalInventory.RemoveCristalCount(mabiteElement, -merchandItemData.itemFragmentData[index].price);
+        //int mabiteElement = GeneralTools.GetElementalArrayIndex(merchandItemData.itemFragmentData[index].element);
+        m_cristalInventory.RemoveDissonanceCount(-merchandItemData.itemFragmentData[index].price);
        
         merchandItemData.itemFragmentData[index].hasBeenBuy = true;
         m_fragmentManager.GiveArtefact(merchandItemData.itemFragmentData[index].index, GameState.s_playerGo);
