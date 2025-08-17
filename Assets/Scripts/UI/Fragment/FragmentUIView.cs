@@ -85,7 +85,7 @@ namespace GuerhoubaGames.UI
 
             m_backgroundColorImg.sprite = instanceResources.backgroundSprite[0];
             //m_elementImg.sprite = instanceResources.elementSprite[0];
-            m_borderColorImg.sprite = instanceResources.raretySprite[0];
+            //m_borderColorImg.sprite = instanceResources.raretySprite[0];
             m_spriteImg.sprite = null;
             m_nameText.text = "";
 

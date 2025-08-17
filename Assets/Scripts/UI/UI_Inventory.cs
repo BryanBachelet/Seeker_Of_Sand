@@ -18,6 +18,9 @@ public class UI_Inventory : MonoBehaviour
     [SerializeField] private int[] m_panierTrade = new int[4];
     [SerializeField] private TMP_Text[] tmpText_TradeCristal = new TMP_Text[4];
     [SerializeField] private TMP_Text[] tmpText_CurrentCristal = new TMP_Text[4];
+    [SerializeField] private int m_DispanierTrade;
+    [SerializeField] private TMP_Text tmpText_DisTradeCristal;
+    [SerializeField] private TMP_Text tmpText_DisCurrentCristal;
     [SerializeField] private TMP_Text tmpText_TradeButton;
     public bool hasSomethingInPanier = false;
 
@@ -29,6 +32,7 @@ public class UI_Inventory : MonoBehaviour
     #region Resources variables
     public List<Image> cristalImage = new List<Image>();
     public List<TMP_Text> cristalCount = new List<TMP_Text>();
+    public TMP_Text disCristalCount;
 
     #endregion
 
@@ -126,6 +130,8 @@ public class UI_Inventory : MonoBehaviour
             cristalCount[i].text = "" + m_cristalInventory.cristalCount[i];
             tmpText_CurrentCristal[i].text = "" + m_cristalInventory.cristalCount[i];
         }
+        disCristalCount.text = "" + m_cristalInventory.dissonanceCout;
+        tmpText_DisCurrentCristal.text = "" + m_cristalInventory.dissonanceCout;
         List<GameObject> tempFragment = m_fragmentToolTip.fragment_List;
         for (int i = 0; i < tempFragment.Count; i++)
         {
@@ -205,6 +211,16 @@ public class UI_Inventory : MonoBehaviour
 
     public void CheckTradePossibility(int cristalElement)
     {
+        if (m_cristalInventory.dissonanceCout <= 1) return;
+        else
+        {
+            m_panierTrade[cristalElement] += 1;
+            m_DispanierTrade -= 2;
+            hasSomethingInPanier = true;
+
+        }
+        #region oldTrade 
+            /*
         if (cristalElement == 0)
         {
             if (m_cristalInventory.cristalCount[3] + m_panierTrade[3] < 2)
@@ -234,7 +250,9 @@ public class UI_Inventory : MonoBehaviour
                 m_panierTrade[cristalElement - 1] -= 2;
                 hasSomethingInPanier = true;
             }
-        }
+        } 
+        */
+        #endregion
         UpdateTradeDisplay();
         if (hasSomethingInPanier) { tmpText_TradeButton.color = Color.white; }
         else { tmpText_TradeButton.color = Color.gray; }
@@ -251,6 +269,10 @@ public class UI_Inventory : MonoBehaviour
             tmpText_TradeCristal[i].color = Color.white;
             m_panierTrade[i] = 0;
         }
+        m_cristalInventory.dissonanceCout += m_DispanierTrade;
+        tmpText_DisTradeCristal.text = "";
+        tmpText_DisTradeCristal.color = Color.white;
+        m_DispanierTrade = 0;
         tmpText_TradeButton.color = Color.gray;
         ActualizeInventory();
     }
@@ -276,6 +298,17 @@ public class UI_Inventory : MonoBehaviour
             }
             //
         }
+        if(m_DispanierTrade == 0)
+        {
+            tmpText_DisTradeCristal.text = "";
+            tmpText_DisTradeCristal.color = Color.white;
+        }
+        else if (m_DispanierTrade < 0)
+        {
+            tmpText_DisTradeCristal.text = m_DispanierTrade + "";
+            tmpText_DisTradeCristal.color = Color.red;
+        }
+
     }
 
     public void CancelTrade()
@@ -288,6 +321,9 @@ public class UI_Inventory : MonoBehaviour
             tmpText_TradeCristal[i].text = "";
             tmpText_TradeCristal[i].color = Color.white;
         }
+        m_DispanierTrade = 0;
+        tmpText_DisTradeCristal.text = "";
+        tmpText_DisTradeCristal.color = Color.white;
         tmpText_TradeButton.color = Color.gray;
         UpdateTradeDisplay();
     }

@@ -867,7 +867,7 @@ namespace GuerhoubaGames.Character
 
                 }
 
-                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot * spellProfil.objectToSpawn.transform.localRotation);
+                GameObject projectileCreate = GamePullingSystem.SpawnObject(spellProfil.objectToSpawn, position, rot);
                 projectileCreate.transform.localScale = projectileCreate.transform.localScale;
 
                 DamageCalculComponent damageCalculComponent = projectileCreate.GetComponent<DamageCalculComponent>();
