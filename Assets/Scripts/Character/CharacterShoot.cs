@@ -319,9 +319,9 @@ namespace GuerhoubaGames.Character
 
                 if (currentCloneSpellProfil.TagList.spellNatureType == SpellNature.PROJECTILE)
                 {
-                    if (!isDirectSpellLaunchActivate) m_timerBetweenShoot = currentCloneSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+                    if (!isDirectSpellLaunchActivate) m_timerBetweenShoot = Mathf.Clamp( currentCloneSpellProfil.GetFloatStat(StatType.TimeBetweenShot),0.05f,10);
 
-                    if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * currentCloneSpellProfil.GetFloatStat(StatType.TimeBetweenShot);
+                    if (m_canalisationType == CanalisationBarType.Continious) m_totalLaunchingDuration = m_currentStack[m_currentRotationIndex] * Mathf.Clamp(currentCloneSpellProfil.GetFloatStat(StatType.TimeBetweenShot), 0.05f, 10); ;
 
                 }
 

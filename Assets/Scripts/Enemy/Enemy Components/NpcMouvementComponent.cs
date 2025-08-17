@@ -1,3 +1,4 @@
+using GuerhoubaTools.Gameplay;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -66,6 +67,8 @@ namespace GuerhoubaGames.Enemies
         public bool isAlreadyPlace = false;
 
         private EntityModifier m_entityModifier;
+
+        [SerializeField] private float m_percentGainSpeedAtNight = 25;
 
         public void Start()
         {
@@ -556,6 +559,9 @@ namespace GuerhoubaGames.Enemies
         {
             SetTarget(m_npcHealthComponent.targetData);
             m_baseSpeed = Random.Range(speed - speedThreshold, speed + speedThreshold);
+            if(RunManager.IsNight())
+                m_baseSpeed = Tools.ApplyIncreasePercent(m_baseSpeed, m_percentGainSpeedAtNight);
+
             m_navMeshAgent.speed = m_baseSpeed;
            if(m_navMeshAgent.isOnNavMesh) m_navMeshAgent.destination = (targetData.target.position);
         }

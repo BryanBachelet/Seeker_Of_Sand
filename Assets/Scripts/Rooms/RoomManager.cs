@@ -502,7 +502,7 @@ public class RoomManager : MonoBehaviour
             maxEventActive
         };
         roomInfoUI.UpdateRoomInfoDisplay(dataObjectif, null);
-
+        RunManager.instance.eventDone++;
         if (m_currentChampionAlive <= 0)
         {
             FinishAllEvent();
@@ -515,6 +515,7 @@ public class RoomManager : MonoBehaviour
     public int EventValidate()
     {
         eventActive--;
+        RunManager.instance.eventDone++;
 
         dropGenerator.GenerateCristal(this.transform);
 

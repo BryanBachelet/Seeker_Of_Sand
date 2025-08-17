@@ -701,7 +701,7 @@ namespace GuerhoubaGames.Enemies
 
         private bool CanEnemySpawn(int enemyType)
         {
-            float value = enemyTypeStats[enemyType].animationCurve.Evaluate(TerrainGenerator.roomGeneration_Static);
+            float value = enemyTypeStats[enemyType].animationCurve.Evaluate(RunManager.instance.eventDone);
             int maxInstance = Mathf.RoundToInt(value);
             if (DayCyclecontroller.m_nightCountGlobal == 0)
             {

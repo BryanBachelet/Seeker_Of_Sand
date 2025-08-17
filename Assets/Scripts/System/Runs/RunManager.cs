@@ -45,6 +45,7 @@ namespace GuerhoubaGames
         [HideInInspector] public bool isNightCountdownStarted = false;
         public Action OnDayStart;
         public Action OnNightStart;
+        public Action OnNightCountdownStart;
         public Action OnBossStart;
 
         private TerrainGenerator m_terrainGeneratorComponent;
@@ -60,6 +61,9 @@ namespace GuerhoubaGames
         [Header("Important Object")]
         public GameObject playerInstance;
 
+
+        [Header("Tracking Stats")]
+        public int eventDone;
 
 
         [Header("Debug variables")]
@@ -121,6 +125,8 @@ namespace GuerhoubaGames
                 ScreenDebuggerTool.AddMessage("Remove point. Current point " + currentHoursPoint);
         }
 
+   
+
         public void StartNight()
         {
             OnNightStart?.Invoke();
@@ -145,7 +151,8 @@ namespace GuerhoubaGames
         public void LaunchNightCountdown()
         {
             if (dayStep != DayStep.NIGHT) return;
-
+            
+            OnNightCountdownStart?.Invoke();
             isNightCountdownStarted = true;
             currentNightTimeCountdown = nightDurationSeconds;
         }
@@ -163,6 +170,15 @@ namespace GuerhoubaGames
 
             if (m_isRunManagerDebugActive)
                 ScreenDebuggerTool.AddMessage("Boss Start");
+        }
+
+        public static bool IsNight()
+        {
+            return instance._IsNight();
+        }
+        private bool _IsNight()
+        {
+            return dayStep == DayStep.NIGHT;
         }
 
         public void BrokeDissonanceHeart()

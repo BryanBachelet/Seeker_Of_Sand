@@ -250,11 +250,17 @@ public class Projectile : MonoBehaviour
         if (m_collider) m_collider.enabled = true;
         checkSpawnTime = false;
         piercingCount = 0;
-        p_bounceCount = 0;
         m_travelTimer = 0.0f;
         transform.localScale = m_initialScale;
         isStartToMove = false;
         VisualEffect visual = GetComponent<VisualEffect>();
+        p_bounceCount = 0;
+        p_targetBounce = null;
+        p_targetBounceCollider = null;
+        isBouncing = false;
+
+
+
         if (animator != null) { animator.SetTrigger("Reset"); }
 
         if (vFXObject != null && spellProfil.angleRotation != Vector3.zero) vFXObject.transform.rotation = Quaternion.Inverse(Quaternion.Euler(spellProfil.angleRotation));
@@ -443,6 +449,8 @@ public class Projectile : MonoBehaviour
 
     protected virtual void BouncingUpdate()
     {
+       if (spellProfil && !spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Bouncing)) return;
+       
         if (spellProfil && spellProfil.TagList.EqualsSpellParticularity(SpellParticualarity.Bouncing))
             p_bounceCount++;
 

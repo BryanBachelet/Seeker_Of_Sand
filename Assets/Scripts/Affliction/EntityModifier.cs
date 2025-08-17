@@ -310,7 +310,7 @@ public class EntityModifier : MonoBehaviour
 
     public float GetReduceDamageInflicted()
     {
-        return reductionDamageInflict;
+        return 1.0f + reductionDamageInflict;
     }
     #endregion
 

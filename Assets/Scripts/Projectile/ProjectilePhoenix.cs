@@ -11,6 +11,7 @@ public class ProjectilePhoenix : Projectile
 
     public override void SetProjectile(ProjectileData data, CharacterProfile charaProfil)
     {
+       
         base.SetProjectile(data, charaProfil);
         if (spellProfil.currentSpellTier == 3)
         {
