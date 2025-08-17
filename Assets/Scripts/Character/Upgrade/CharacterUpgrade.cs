@@ -197,7 +197,7 @@ namespace GuerhoubaGames.Character
                     m_UiPlayerInfo.UpdateLevelSpell(upgradeChoose.indexSpellLink, spellProfil);
                 }
 
-                if (upgradePoint == 0 && isUpgradeWindowOpen)
+                if (upgradePoint == 0 && isUpgradeWindowOpen && !isLevelUp)
                 {
 
                     CloseUpgradeWindow();
