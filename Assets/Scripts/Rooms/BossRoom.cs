@@ -75,5 +75,7 @@ public class BossRoom : MonoBehaviour
         enemyManager.gsm.UpdateParameter(0.1f, "Intensity");
         enemyManager.m_mainInformationDisplay.DisplayMessage("Twilight sister eradicated", GameResources.instance.textureGradient_Ornement[4]);
         RunManager.instance.StartDay();
+        RunManager.instance.dayStep = DayStep.DAY;
+
     }
 }
