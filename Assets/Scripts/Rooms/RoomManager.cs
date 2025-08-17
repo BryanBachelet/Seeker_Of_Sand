@@ -196,8 +196,12 @@ public class RoomManager : MonoBehaviour
         {
             EnemyManager.instance.ActiveConstantSpawn();
         }
+        if (RunManager.instance.dayStep == DayStep.BOSS)
+        {
+            EnemyManager.instance.DeactiveConstantSpawn();
+        }
 
-        teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
+            teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
         if (previewCamera != null)
             previewCamera.gameObject.SetActive(false);
     }

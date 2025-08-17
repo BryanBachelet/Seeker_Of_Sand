@@ -33,20 +33,23 @@ namespace GuerhoubaGames.VFX
         {
             if (!this.enabled) return;
 
-            
 
-          
-            if(endPointTransform.gameObject.activeSelf) { endPointTransform.position = m_npcAttackComponent.raycastHitPoint; }
+
+
+            if (endPointTransform.gameObject.activeSelf && m_npcAttackComponent)
+            {
+                endPointTransform.position = m_npcAttackComponent.raycastHitPoint;
+            }
 
             if (m_lifeTimer.GetRatio() > 0.98f)
             {
-                vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(0));
+                if (vfx) vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(0));
                 //vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(0) * 0.9f);
                 //vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(0) * 0.65f);
             }
             else
             {
-                vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()));
+                if(vfx) vfx.SetFloat("Thickness_I", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()));
                 //vfx.SetFloat("Thickness_II", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.9f);
                 //vfx.SetFloat("Thickness_III", scaleYInTime.Evaluate(m_lifeTimer.GetRatio()) * 0.65f);
             }
@@ -56,7 +59,7 @@ namespace GuerhoubaGames.VFX
 
             if (m_lifeTimer.UpdateTimer())
             {
-                
+
                 this.gameObject.SetActive(false);
                 m_lifeTimer.DeactivateClock();
             }
@@ -64,7 +67,7 @@ namespace GuerhoubaGames.VFX
 
         private void ActiveCircleVfx()
         {
-            if (m_npcAttackComponent.isStopRotationFirstFrame && !isCircleInstantiate)
+            if (m_npcAttackComponent && m_npcAttackComponent.isStopRotationFirstFrame && !isCircleInstantiate)
             {
                 isCircleInstantiate = true;
                 circleVFX.gameObject.SetActive(isCircleInstantiate);

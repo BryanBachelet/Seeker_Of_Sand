@@ -66,7 +66,7 @@ public class UpgradeManager : MonoBehaviour
         m_sortUpgradeList = new List<UpgradeObject>(upgradeDataSort.upgradeArray);
         m_indexTagUpgradeArray = upgradeDataSort.indexArray;
         string path = Application.dataPath + "\\Resources\\UpgradeTable.csv";
-      //  LoadUpgradeTable(path);
+        //  LoadUpgradeTable(path);
 
         for (int i = 0; i < upgradeList.Length; i++)
         {
@@ -115,7 +115,7 @@ public class UpgradeManager : MonoBehaviour
             int Tier = expSpell / 4;
             float fillAmountPR = ((float)(expSpell - (float)(Tier * 4)) / 4);
             float fillAmoutPNR = (float)((float)(expSpell + 1 - (float)(Tier * 4)) / 4);
-            if(Tier > 0)
+            if (Tier > 0)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -153,10 +153,10 @@ public class UpgradeManager : MonoBehaviour
         }
 
         List<UpgradeObject> listUpgrade = new List<UpgradeObject>();
-        listUpgrade.AddRange( spellUpgradeArrayList[indexSpellEquip]);
+        listUpgrade.AddRange(spellUpgradeArrayList[indexSpellEquip]);
         for (int i = 0; i < upgradeGenerate.Length; i++)
         {
-            UpgradeObject nxtProfil = ChooseUpgrade(indexSpellEquip,listUpgrade);
+            UpgradeObject nxtProfil = ChooseUpgrade(indexSpellEquip, listUpgrade);
             upgradeGenerate[i] = nxtProfil;
             upgradeGenerate[i].indexSpellLink = indexSpellEquip;
         }
@@ -179,7 +179,7 @@ public class UpgradeManager : MonoBehaviour
             int countTagValue = 0;
             for (int j = 0; j < validTagValue.Length; j++)
             {
-                string spellTagString = Regex.Replace(((SpellTagOrder)(Math.Pow(2,j))).ToString(), @"[\d-]", string.Empty);
+                string spellTagString = Regex.Replace(((SpellTagOrder)(Math.Pow(2, j))).ToString(), @"[\d-]", string.Empty);
                 Type enumType = Type.GetType("GuerhoubaGames.GameEnum." + spellTagString.ToString());
                 int myEnumMemberCount = enumType.GetEnumNames().Length - 1;
                 if (validTagValue[j] <= 0)
@@ -418,9 +418,9 @@ public class UpgradeManager : MonoBehaviour
         {
             book_Animator.SetBool("BookOpen", false);
             float timeToClose = book_Animator.GetNextAnimatorStateInfo(0).length;
-            
+
         }
-        StartCoroutine(CloseUIWithDelay(0.25f));
+        StartCoroutine(CloseUIWithDelay(0));
 
         Debug.Log("Close Upgrade interface");
     }
@@ -428,15 +428,17 @@ public class UpgradeManager : MonoBehaviour
     public void SendUpgrade(UpgradeObject upgradeChoose)
     {
 
-
+        countUpgradePointUse++;
         m_characterUpgradeComponent.ApplyUpgrade(upgradeChoose);
         m_upgradeLevelingData.spellState = m_characterUpgradeComponent.m_characterShoot.spellProfils.ToArray();
+
+        if (CharacterUpgrade.upgradePoint == 0) return;
+
         int indexSpellEquip = GenerateSpellIndex(m_upgradeLevelingData.roomElement);
         int indexSpell = m_upgradeLevelingData.capsuleIndex[indexSpellEquip];
         m_upgradeLevelingData.upgradeChoose = GetRandomUpgradesToSpecificSpell(indexSpell, indexSpellEquip, m_upgradeLevelingData.roomElement);
         m_upgradeLevelingData.indexSpellFocus = indexSpellEquip;
         m_upgradeLevelingData.upgradePoint--;
-        countUpgradePointUse++;
         m_upgradeChoosingComponent.SetNewUpgradeData(m_upgradeLevelingData);
 
     }
@@ -462,6 +464,14 @@ public class UpgradeManager : MonoBehaviour
         m_upgradeChoosingComponent.gameObject.SetActive(false);
 
         GuerhoubaTools.LogSystem.LogMsg("Close Spell Choice interface");
+    }
+
+    public void HasToCloseUpgradeUI()
+    {
+
+        if (CharacterUpgrade.upgradePoint == 0)
+            m_characterUpgradeComponent.CloseUpgradeWindow();
+
     }
     #endregion
 

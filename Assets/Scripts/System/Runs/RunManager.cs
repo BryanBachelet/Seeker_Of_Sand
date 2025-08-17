@@ -125,7 +125,7 @@ namespace GuerhoubaGames
                 ScreenDebuggerTool.AddMessage("Remove point. Current point " + currentHoursPoint);
         }
 
-   
+
 
         public void StartNight()
         {
@@ -137,7 +137,7 @@ namespace GuerhoubaGames
 
         public void UpdateNight()
         {
-            if (dayStep != DayStep.NIGHT || !isNightCountdownStarted) return;
+            if (dayStep != DayStep.NIGHT || !isNightCountdownStarted || !GameState.IsPlaying()) return;
 
             ScreenDebuggerTool.AddMessage("Night Time " + currentNightTimeCountdown.ToString(), 10);
             currentNightTimeCountdown -= Time.deltaTime;
@@ -151,7 +151,7 @@ namespace GuerhoubaGames
         public void LaunchNightCountdown()
         {
             if (dayStep != DayStep.NIGHT) return;
-            
+
             OnNightCountdownStart?.Invoke();
             isNightCountdownStarted = true;
             currentNightTimeCountdown = nightDurationSeconds;
@@ -216,7 +216,7 @@ namespace GuerhoubaGames
         #region Reward Functions
         public static GameObject SpawnReward(RewardType rewardType, Vector3 position, GameElement elementReward)
         {
-           return instance._SpawnReward(rewardType, position, elementReward);
+            return instance._SpawnReward(rewardType, position, elementReward);
         }
 
         public static GameObject SpawnRandomReward(Vector3 position)
@@ -230,16 +230,25 @@ namespace GuerhoubaGames
 
             RewardInteraction rewardInteraction = instance.GetComponent<RewardInteraction>();
             rewardInteraction.rewardElement = elementReward;
-            rewardInteraction.rewardType = rewardType;  
+            rewardInteraction.rewardType = rewardType;
 
             return instance;
         }
 
-        private GameObject _SpawnRandomReward( Vector3 position)
+        private GameObject _SpawnRandomReward(Vector3 position, bool includeSpell = false)
         {
             GameObject instance = GameObject.Instantiate(rewardLootPrefab, position, Quaternion.identity);
-       
-            RewardType rewardType = (RewardType)UnityEngine.Random.Range(0, 3);
+
+            RewardType rewardType = RewardType.MERCHANT;
+            if (includeSpell)
+            {
+                rewardType = (RewardType)UnityEngine.Random.Range(0, 3);
+            }
+            else
+            {
+                int indexReward = UnityEngine.Random.Range(0, 1);
+                rewardType = indexReward == 1 ? RewardType.ARTEFACT : RewardType.UPGRADE;
+            }
             GameElement elementReward = GeneralTools.GetRandomBaseElement();
 
             RewardInteraction rewardInteraction = instance.GetComponent<RewardInteraction>();

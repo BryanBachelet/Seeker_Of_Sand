@@ -180,6 +180,10 @@ public class UpgradeChoosing : MonoBehaviour
         rerollText.text = m_upgradeManager.rerollPoint.ToString();
     }
 
+    public void HasToClose()
+    {
+        m_upgradeManager.HasToCloseUpgradeUI();
+    }
 
     public IEnumerator SpellFadeOut(int upgradeNumber, float time)
     {
