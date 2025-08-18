@@ -6,8 +6,6 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour

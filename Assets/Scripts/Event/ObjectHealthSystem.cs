@@ -154,7 +154,6 @@ public class ObjectHealthSystem : MonoBehaviour, IDamageReceiver
         if (miniMap_Icon)
         {
             miniMap_Icon.SetActive(true);
-            if (miniMap_Icon) spriteRenderer = miniMap_Icon.GetComponentInChildren<SpriteRenderer>();
             spriteRenderer.color = Color.red;
         }
     }

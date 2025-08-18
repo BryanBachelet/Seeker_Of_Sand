@@ -1,3 +1,4 @@
+using BorsalinoTools;
 using GuerhoubaGames.Enemies;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
@@ -59,7 +60,7 @@ namespace GuerhoubaGames.Character
         private bool m_isInRange = false;
 
         [HideInInspector] private float aimAssistDistance = 1;
-        [HideInInspector] private float aimClosetEnemyRadiusDetection = 20;
+        [HideInInspector] private float aimClosetEnemyRadiusDetection = 30;
 
         private Vector3 prevAimPosition;
 
@@ -334,9 +335,11 @@ namespace GuerhoubaGames.Character
             FindAimWorldPoint();
             CalculateAimInformation();
             AimFeedback();
+
+
             //projectorVisorObject.transform.position = GetAimFinalPoint();
             prevAimPosition = GetAimFinalPoint();
-            NearestEnemy(m_aimFinalPoint);
+            NearestEnemy(m_rawAimPoint);
             if (m_closestEnemy != null)
             {
                 IDamageReceiver damageReceiver = m_closestEnemy.GetComponent<IDamageReceiver>();
@@ -431,7 +434,11 @@ namespace GuerhoubaGames.Character
         {
             if (ctx.performed)
             {
-                m_aimInputValue = ctx.ReadValue<Vector2>();
+                Vector2 value = ctx.ReadValue<Vector2>();
+                if (value != Vector2.zero)
+                {
+                    m_aimInputValue = value;
+                }
 
                 if (IsGamepad())
                 {
@@ -483,12 +490,15 @@ namespace GuerhoubaGames.Character
             return closestPosition;
         }
 
+
         public void NearestEnemy(Vector3 position)
         {
             Collider[] enemysPos = Physics.OverlapSphere(position, aimClosetEnemyRadiusDetection, m_gameLayer.enemisLayerMask);
 
+
             if (m_closestEnemy)
             {
+
                 int indexObj = Array.IndexOf(enemysPos, m_closestEnemy.GetComponent<Collider>());
 
                 if (indexObj != -1)
@@ -497,6 +507,7 @@ namespace GuerhoubaGames.Character
 
             if (enemysPos.Length == 0)
                 m_closestEnemy = null;
+
 
 
             Vector3 closestPosition = Vector3.zero;
@@ -592,6 +603,7 @@ namespace GuerhoubaGames.Character
                     Gizmos.DrawWireSphere(GetAimFinalPoint(), aimAssistDistance);
                     Gizmos.DrawSphere(prevAimPosition, aimAssistDistance);
                 }
+
 
             }
         }
