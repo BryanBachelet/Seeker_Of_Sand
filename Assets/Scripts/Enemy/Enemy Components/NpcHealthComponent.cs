@@ -339,6 +339,8 @@ namespace GuerhoubaGames.Enemies
 
             if(m_npcInfo.isChampion)
             {
+                Material mat = gameObject.GetComponentInChildren<Renderer>().material;
+                mat.SetColor("_OutlineColor", Color.red);
                 m_healthSystem.Setup(Tools.ApplyIncreasePercent(maxHealthEvolution.Evaluate(playerLevel) ,percentGainHealthAdd));
                 transform.localScale = Tools.ApplyIncreasePercent(transform.localScale, percentGainSize);
             }

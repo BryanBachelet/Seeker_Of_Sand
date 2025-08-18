@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 namespace GuerhoubaGames.Enemies
 {
 
@@ -143,6 +144,8 @@ namespace GuerhoubaGames.Enemies
         {
             OnDeathState();
             manager.TeleportEnemyOut(this);
+            Material mat = gameObject.GetComponentInChildren<Renderer>().material;
+            mat.SetColor("_OutlineColor", new Color(0,0,0,0));
         }
 
         public void ActivateFreezeState()
