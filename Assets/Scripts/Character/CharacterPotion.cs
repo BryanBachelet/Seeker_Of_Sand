@@ -29,6 +29,7 @@ public class CharacterPotion : MonoBehaviour
     public Action<int> OnPotionCancel;
     public Action<int> OnPotionRecharge;
 
+    public Image contourFill_Feedback;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,6 +71,7 @@ public class CharacterPotion : MonoBehaviour
             m_interactionTimer = 0.0f;
             m_IsDrinkIsActive = false;
         }
+        contourFill_Feedback.fillAmount = 1 - m_interactionTimer / m_interactionDuration;
     }
 
     private void ValidatePotionDrink()
@@ -80,11 +82,13 @@ public class CharacterPotion : MonoBehaviour
         if (m_currentCharge <= 0)
         {
             potionImage.sprite = potionsSprite[0];
+            contourFill_Feedback.fillAmount = 0;
         }
         else
         {
 
             potionImage.sprite = potionsSprite[1];
+            contourFill_Feedback.fillAmount = 1;
 
         }
         m_playerHealth.RestoreQuarter(true);
@@ -99,6 +103,7 @@ public class CharacterPotion : MonoBehaviour
             Debug.Log("Potion :  Start to drink");
 
         m_IsDrinkIsActive = true;
+
         m_playerHealth.OnDamage += CancelDrinkPotion;
         OnPotionStartDrink?.Invoke(m_currentCharge);
     }
@@ -116,6 +121,8 @@ public class CharacterPotion : MonoBehaviour
             Debug.Log("Potion : Potion drink cancel by stopping the input");
 
         OnPotionCancel?.Invoke(m_currentCharge);
+        contourFill_Feedback.fillAmount = 1;
+        m_interactionTimer = 0;
     }
 
     public void RechargePotion(int quantity, bool isFullRecharge = false)

@@ -28,6 +28,7 @@ public class SpellAttribution : MonoBehaviour
     [ColorUsage(true, true)][SerializeField] private Color[] colorbackground;
 
     [SerializeField] private Image[] levelDisplayObject = new Image[13];
+    [SerializeField] private Image[] levelDisplayObject_Child = new Image[13];
     [SerializeField] private Material[] materialLevel = new Material[2];
     [SerializeField] private Color color_imageLevel_inactive;
     [SerializeField] private Color[] color_imageLevel = new Color[2];
@@ -44,6 +45,10 @@ public class SpellAttribution : MonoBehaviour
     void OnEnable()
     {
         if (animatorSpell == null) { animatorSpell = this.GetComponentInChildren<Animator>(); }
+        for(int i = 0; i < levelDisplayObject.Length; i++)
+        {
+            levelDisplayObject_Child[i] = levelDisplayObject[i].transform.GetChild(0).GetComponentInChildren<Image>(true);
+        }
         tooltipTrigger = imageSpell.GetComponent<TooltipTrigger>();
         ChangeAnimatorBool();
     }
@@ -180,12 +185,12 @@ public class SpellAttribution : MonoBehaviour
     {
         if(state)
         {
-            levelDisplayObject[indexLevel].transform.parent.gameObject.SetActive(true);
-            levelDisplayObject[indexLevel].color = color_imageLevel[(int)GeneralTools.GetElementalArrayIndex(spell.TagList.element)];
+            levelDisplayObject[indexLevel].transform.gameObject.SetActive(true);
+            levelDisplayObject_Child[indexLevel].color = color_imageLevel[(int)GeneralTools.GetElementalArrayIndex(spell.TagList.element)];
         }
         else
         {
-            levelDisplayObject[indexLevel].color = color_imageLevel_inactive;
+            levelDisplayObject_Child[indexLevel].color = color_imageLevel_inactive;
         }
     }
 }
