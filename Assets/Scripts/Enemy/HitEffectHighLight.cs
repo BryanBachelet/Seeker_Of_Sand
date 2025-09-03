@@ -31,6 +31,7 @@ public class HitEffectHighLight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if(!currentlyApplyEffect) { return; }
         if(currentEffectDuration < effectDuration)
         {

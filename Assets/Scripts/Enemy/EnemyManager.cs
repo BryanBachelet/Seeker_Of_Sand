@@ -469,7 +469,7 @@ namespace GuerhoubaGames.Enemies
             while (countTentative < m_tryCountToSpawnEnemy)
             {
                 countTentative++;
-                enemyIndex = Random.Range(0, enemyTypeNumber - 1);
+                enemyIndex = Random.Range(0, enemyTypeNumber - 2);
 
                 if (!CanEnemySpawn(enemyIndex))
                 {

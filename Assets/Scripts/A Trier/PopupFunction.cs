@@ -34,7 +34,7 @@ public class PopupFunction : MonoBehaviour, IPointerEnterHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         overring = true;
-        spellManager.SpellOverring(popupIndex, this);
+        spellManagerPublic.SpellOverring(popupIndex, this);
     }
 
 

@@ -10,7 +10,7 @@ public enum EventObjectState
     Death,
 }
 
-public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
+public class ObjectHealthSystem : MonoBehaviour, IDamageReceiver
 {
 
     public string nameObject;
@@ -47,7 +47,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     private SpawnerBehavior spawnerbehavior; //A RETIRER A TERME, N'A RIEN A FAIRE LA
     public GameObject miniMap_Icon;
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
 
 
     private AfflictionManager m_afflictionManager;
@@ -57,7 +57,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     private void Start()
     {
 
-      
+
         GameState.AddObject(state);
         healthManager = GameState.m_enemyManager.GetComponent<HealthManager>();
         healthSystem = new HealthSystem();
@@ -66,7 +66,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         m_afflictionManager = GetComponent<AfflictionManager>();
         m_entityModifier = GetComponent<EntityModifier>();
         if (miniMap_Icon) miniMap_Icon.SetActive(true);
-        if(miniMap_Icon) spriteRenderer = miniMap_Icon.GetComponentInChildren<SpriteRenderer>();
+        if (miniMap_Icon) spriteRenderer = miniMap_Icon.transform.GetChild(0).GetComponent<SpriteRenderer>();
         spriteRenderer.color = Color.red;
         if (m_meshRender != null) _matAssociated = m_meshRender.material;
     }
@@ -101,10 +101,10 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         if (healthSystem.health > 0) return;
 
         eventState = EventObjectState.Death;
-        if (miniMap_Icon) miniMap_Icon.SetActive(false);
-        spriteRenderer.color = new Color(0.35f,0.26f,0.26f);
+
+
         animatorAssociated.SetBool("ActiveEvent", false);
-        if (this.GetComponent<SpawnerBehavior>() != null) 
+        if (this.GetComponent<SpawnerBehavior>() != null)
         {
             this.GetComponent<SpawnerBehavior>().SendSpawnerDesactivation();
         }
@@ -119,6 +119,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         if (m_eventLifeUIFeedback == null && m_eventLifeUIFeedbackObj == null) return;
 
         m_eventLifeUIFeedback.fillAmount = 1;
+        spriteRenderer.color = new Color(0.35f, 0.26f, 0.26f);
         m_eventLifeUIFeedbackObj.gameObject.SetActive(false);
         m_eventLifeUIFeedbackObj = null;
         m_eventLifeUIFeedback = null;
@@ -135,11 +136,11 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
         else
         {
             m_invicibleTimer += Time.deltaTime;
-            if(_matAssociated)
+            if (_matAssociated)
             {
                 _matAssociated.SetColor("_MainColor", Color.Lerp(new Color(0.55f, 0.17f, 0.17f), new Color(0.077f, 0.077f, 0.077f), m_invicibleTimer / m_invicibleDuration));
             }
-           
+
         }
     }
 
@@ -151,6 +152,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public void SetMaxHealth(int newMaxHealth)
     {
         healthSystem.SetMaxHealth(newMaxHealth);
+
     }
 
     public void Setup(int maxHealth)
@@ -160,6 +162,11 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
     public void ResetCurrentHealth()
     {
         healthSystem.ChangeCurrentHealth(healthSystem.maxHealth);
+        if (miniMap_Icon)
+        {
+            miniMap_Icon.SetActive(true);
+            spriteRenderer.color = Color.red;
+        }
     }
 
     public bool IsEventActive()
@@ -180,7 +187,7 @@ public class ObjectHealthSystem :MonoBehaviour, IDamageReceiver
 
     public string GetName()
     {
-       return nameObject;
+        return nameObject;
     }
 
     public AfflictionManager GetAfflictionManager()

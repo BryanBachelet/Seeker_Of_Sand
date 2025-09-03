@@ -6,6 +6,7 @@ using SeekerOfSand.Tools;
 using GuerhoubaGames;
 using UnityEngine.VFX;
 using GuerhoubaGames.Artefact;
+using BorsalinoTools;
 
 public enum ArtefactType
 {
@@ -107,11 +108,15 @@ public class ArtefactsInfos : ScriptableObject
     private List<GameObject> additionalEffectToSpawn = new List<GameObject>();
     public int idFamily = 0;
 
+
     [HideInInspector]
     public int damageToApply
     {
         get { return damageArtefact + damageGainPerCount * additionialItemCount; } 
     }
+
+    private int m_drawNumber;
+    private int m_procNumber;
 
     public ArtefactsInfos Clone()
     {
@@ -215,14 +220,20 @@ public class ArtefactsInfos : ScriptableObject
     {
         if (isDebugActive) Debug.Log("Artefact not in range");
 
-        if (entitiesTrigger != tag || distance > radius) return;
+        if (entitiesTrigger != tag) return;
 
         if (isDebugActive) Debug.Log("Artefact in range");
 
+
+
         float change = Random.Range(0, 100);
         float spawnRateValue = spawnRatePerTier[(int)levelTierFragment];
+        m_drawNumber++;
+        ScreenDebuggerTool.AddMessage(nameArtefact + "score draw" + change, 15);
+        ScreenDebuggerTool.AddMessage(nameArtefact + " draw "  + m_drawNumber + " time", 16);
         if (change < spawnRateValue)
         {
+            m_procNumber++;
             if (isDebugActive) Debug.Log("Artefact in launch");
             GameObject obj = GamePullingSystem.SpawnObject(m_artefactToSpawn, position, Quaternion.identity);
             ArtefactData artefactData = obj.GetComponent<ArtefactData>();
@@ -230,6 +241,7 @@ public class ArtefactsInfos : ScriptableObject
             artefactData.OnSpawn?.Invoke();
             activationCount++;
             effectActivation.Play();
+            ScreenDebuggerTool.AddMessage(nameArtefact + "proc. it's the " + m_procNumber+ " times", 14);
             if (!m_HasBeenMergeOnce) return;
             for (int i = 0; i < additionalEffectToSpawn.Count; i++)
             {
@@ -238,6 +250,10 @@ public class ArtefactsInfos : ScriptableObject
                 SetupArtefactData(artefactData, agent);
                 artefactData.OnSpawn?.Invoke();
             }
+        }
+        else
+        {
+            ScreenDebuggerTool.AddMessage(nameArtefact + " doesnt proc", 13);
         }
     }
 

@@ -351,7 +351,7 @@ public class AltarBehaviorComponent : InteractionInterface
     {
         sphereCollider.enabled = false;
         roomInfoUI.DeactivateMajorGoalInterface();
-
+        m_objectHealthSystem.spriteRenderer.color = new Color(0.35f, 0.26f, 0.26f);
         m_isEventOccuring = false;
         m_myAnimator.SetTrigger("FinishOnce");
         m_myAnimator.SetTrigger("Repetition");

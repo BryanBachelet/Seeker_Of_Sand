@@ -6,8 +6,6 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.UI;
 using SeekerOfSand.Tools;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Networking.PlayerConnection;
 using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
@@ -73,6 +71,8 @@ public class TerrainGenerator : MonoBehaviour
     [Header("Room Rewards variable")]
     [SerializeField] private float m_upgradeRewardPercent = 50;
     [SerializeField] private float m_artefactRewardPercent = 50;
+
+    [HideInInspector] public bool isTpTaken;
 
     [Header("Debug Parameter")]
     public bool isOnlyBoss;
@@ -401,6 +401,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public void SelectTerrain(int selectedMapIndex)
     {
+        isTpTaken = true;
         // Deactive previous map
         RoomManager previousRoomManager = currentRoomManager; ;
         currentRoomManager.DeactivateRoom();

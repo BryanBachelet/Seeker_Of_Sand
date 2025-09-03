@@ -59,6 +59,7 @@ public class DayTimeController : MonoBehaviour
     public float tempsChanging = 2;
 
     private RunManager m_runManager;
+    public ui_Display_Timeline displayTimeline;
     void Start()
     {
         isNight = false;
@@ -104,10 +105,14 @@ public class DayTimeController : MonoBehaviour
                 currentHour = Mathf.Lerp(hourPerPhase[currentPhase], hourPerPhase[currentPhase+1], ratio);
                 UpdateTime(currentHour);
             }
+            float ratioDayHour = (currentHour - 8) / (hourPerPhase[9] - 8);
+            displayTimeline.UpdateIndicatorProgress(ratioDayHour);
+
         }
         if(isNight)
         {
             float ratio = 1 - m_runManager.currentNightTimeCountdown / m_runManager.nightDurationSeconds;
+            displayTimeline.UpdateIndicatorProgress( 1 - ratio);
             currentHour = Mathf.Lerp(hourPerPhase[hourPerPhase.Length-2], hourPerPhase[hourPerPhase.Length-1], ratio);
             UpdateTime(currentHour);
         }
@@ -210,6 +215,7 @@ public class DayTimeController : MonoBehaviour
     public void StartDay()
     {
         m_sun.gameObject.SetActive(true);
+        displayTimeline.ChangeDayState();
         //if (dayStartEvent != null) dayStartEvent.Invoke();
         m_sun.shadows = LightShadows.Soft;
         m_moon.shadows = LightShadows.None;
@@ -222,8 +228,8 @@ public class DayTimeController : MonoBehaviour
         m_sun.enabled = true;
         isNight = false;
         isDay = true;
-        currentHour = 7;
         currentPhase = 0;
+        currentHour = hourPerPhase[currentPhase];
         UpdateTime(currentHour);
 
     }
@@ -231,6 +237,7 @@ public class DayTimeController : MonoBehaviour
     public void StartNight()
     {
         m_moon.gameObject.SetActive(true);
+        displayTimeline.ChangeDayState();
         //if (nightStartEvent != null) nightStartEvent.Invoke();
         m_sun.shadows = LightShadows.None;
         m_moon.shadows = LightShadows.Soft;

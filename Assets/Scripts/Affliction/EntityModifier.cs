@@ -176,7 +176,8 @@ public class EntityModifier : MonoBehaviour
     {
         if (!m_afflictionManager.IsCarryAffliction(AfflictionType.LACERATION)
             && !m_afflictionManager.IsCarryAffliction(AfflictionType.BLEEDING)
-            && !m_afflictionManager.IsCarryAffliction(AfflictionType.BURN))
+            && !m_afflictionManager.IsCarryAffliction(AfflictionType.BURN)
+            && !m_afflictionManager.IsCarryAffliction(AfflictionType.POISON))
             return;
 
         m_timerTickDot += Time.deltaTime;

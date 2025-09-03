@@ -19,7 +19,7 @@ public class BossRoom : MonoBehaviour
     // Boss components 
     private NpcHealthComponent m_bossHealth;
     private BossCamera bossCamera;
-
+    public bool bossDone = false;
 
 
     public void Start()
@@ -74,8 +74,7 @@ public class BossRoom : MonoBehaviour
         DayCyclecontroller.m_nightCountGlobal++;
         enemyManager.gsm.UpdateParameter(0.1f, "Intensity");
         enemyManager.m_mainInformationDisplay.DisplayMessage("Twilight sister eradicated", GameResources.instance.textureGradient_Ornement[4]);
-        RunManager.instance.StartDay();
-        RunManager.instance.dayStep = DayStep.DAY;
+        bossDone = true;
 
     }
 }

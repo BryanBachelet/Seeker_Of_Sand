@@ -1,3 +1,4 @@
+using GuerhoubaGames;
 using GuerhoubaGames.Enemies;
 using System.Collections;
 using System.Collections.Generic;
@@ -64,6 +65,12 @@ public class Teleporter : MonoBehaviour
     {
         if (other.tag == "Player" && teleportorIsActive && !isReceiver)
         {
+            if (terrainGen.currentRoomManager.bossRoom != null && terrainGen.currentRoomManager.bossRoom.bossDone == true)
+            {
+                RunManager.instance.StartDay();
+                RunManager.instance.dayStep = DayStep.DAY;
+                terrainGen.currentRoomManager.bossRoom.bossDone = false;
+            }
             if (m_cameraFadeFonction && m_cameraFadeFonction.renderCam)
             {
                 RenderTexture cuustomTexture = m_cameraFadeFonction.renderCam.targetTexture;
@@ -75,9 +82,6 @@ public class Teleporter : MonoBehaviour
 
 
             usedTeleporter = true;
-
-
-
         }
     }
 }

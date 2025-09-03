@@ -20,6 +20,7 @@ public class DissonanceHeartBehavior : InteractionInterface
     [SerializeField] private bool m_activeDissonanceHeartDebug;
 
     [HideInInspector] public RoomManager roomManager;
+    [SerializeField] private Animator m_animator;
 
     public void Start()
     {
@@ -39,6 +40,7 @@ public class DissonanceHeartBehavior : InteractionInterface
         dissonanceHeartState = DissonanceHeartState.BROKEN ;
         if (m_activeDissonanceHeartDebug)
             ScreenDebuggerTool.AddMessage("Dissonance heart is broken");
+        m_animator.SetTrigger("Looted");
         roomManager.ValidateRoom();
         isInteractable = false;
     }

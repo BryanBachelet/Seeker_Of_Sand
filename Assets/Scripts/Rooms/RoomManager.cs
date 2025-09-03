@@ -120,7 +120,8 @@ public class RoomManager : MonoBehaviour
     [HideInInspector] public bool isFirstNightRoom = false;
 
     private int m_currentChampionAlive;
-
+    private RewardInteraction m_rewardGenerateComponent;
+    private bool m_isRewardTaken = false;
     #endregion
 
     [Header("Debug Variables")]
@@ -160,7 +161,7 @@ public class RoomManager : MonoBehaviour
     public void ActivateRoom(Material previousMat)
     {
 
-
+        m_isRewardTaken = false;
         ResetObjectifData();
 
         StartCoroutine(CloseEnterPortal(3.5f));
@@ -201,7 +202,8 @@ public class RoomManager : MonoBehaviour
             EnemyManager.instance.DeactiveConstantSpawn();
         }
 
-            teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
+
+        teleporterFeedback.previewMeshPlane.material = new Material(previousMat);
         if (previewCamera != null)
             previewCamera.gameObject.SetActive(false);
     }
@@ -252,6 +254,7 @@ public class RoomManager : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         teleporterFeedback.GetComponentInParent<Animator>().SetBool("Open", false);
+        terrainGenerator.isTpTaken = false;
     }
 
     public void DeactivateRoom()
@@ -362,6 +365,13 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    public void ValidateRewardRoomTaken()
+    {
+        m_isRewardTaken = true;
+        m_rewardGenerateComponent.OnRewardTaken -= ValidateRewardRoomTaken;
+        m_rewardGenerateComponent = null;
+    }
+
     public int[] GenerateRewardForRoom()
     {
         rewardAssociated = new int[3];
@@ -390,8 +400,12 @@ public class RoomManager : MonoBehaviour
         ActivateRoomAfterDistanceTP();
         if (delayUpdate) return;
         if (!isRoomHasBeenValidate || !isRoomHasBeenDeactivated) return;
-        if (hasEndReward && !rewardGenerated) GiveRoomReward(); rewardGenerated = true;
-        if ((hasEndReward || !hasEndReward) && !isTeleporterActive)
+        if (hasEndReward && !rewardGenerated)
+        {
+            GiveRoomReward();
+            rewardGenerated = true;
+        }
+        if ((hasEndReward && m_isRewardTaken || !hasEndReward) && !isTeleporterActive)
         {
             OpenPortals();
         }
@@ -432,7 +446,7 @@ public class RoomManager : MonoBehaviour
         if (pedestalRoomBehavior)
             pedestalRoomBehavior.ActivatePedestal();
 
-        if (RunManager.IsSpawningMerchantValid())
+        if (RunManager.IsSpawningMerchantValid() && !RunManager.IsNightStarted())
         {
             merchantCarvana = RunManager.SpawnMerchand(objectMerchantSpawnPosition.transform.position, objectMerchantSpawnPosition.transform.rotation);
         }
@@ -464,7 +478,9 @@ public class RoomManager : MonoBehaviour
 
     private void GiveRoomReward()
     {
-        RunManager.SpawnReward(rewardType, rewardPosition.position, element);
+        GameObject rewardInstance = RunManager.SpawnReward(rewardType, rewardPosition.position, element);
+        m_rewardGenerateComponent = rewardInstance.GetComponent<RewardInteraction>();
+        m_rewardGenerateComponent.OnRewardTaken += ValidateRewardRoomTaken;
     }
 
 
