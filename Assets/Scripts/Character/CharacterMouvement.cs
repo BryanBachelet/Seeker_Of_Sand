@@ -243,6 +243,7 @@ namespace GuerhoubaGames.Character
 
         public void MoveInput(InputAction.CallbackContext ctx)
         {
+            if (CameraFadeFunction.isFadeCurrentlyActive) { m_inputDirection = Vector2.zero; return; }
 
             if (ctx.started)
             {

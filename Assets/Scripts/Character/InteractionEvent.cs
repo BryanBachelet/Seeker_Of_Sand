@@ -205,10 +205,13 @@ public class InteractionEvent : MonoBehaviour
         for (int i = 0; i < col.Length; i++)
         {
             float tempDistance = Vector3.Distance(transform.position, col[i].transform.position);
-            InteractionInterface interactionInterface = col[i].GetComponent<InteractionInterface>();
-            if (interactionInterface == null)
+            if (col[i].GetComponent<InteractionInterface>())
             {
-                Debug.LogWarning("This object " + interactionInterface.name + " don't have an InteractionInterface component");
+                InteractionInterface interactionInterface = col[i].GetComponent<InteractionInterface>();
+            }
+            else
+            {
+                Debug.LogWarning("This object " + col[i].name + " don't have an InteractionInterface component");
                 continue;
             }
             if (tempDistance < distance)

@@ -134,6 +134,9 @@ MonoBehaviour:
   m_indexSFX: 23
   m_characterProfil: {fileID: 0}
   m_piercingMax: 1
+  isBouncing: 0
+  bounceRadius: 0
+  bounceMax: 0
   m_deltaTimeMove: 0.15
   isDebugInstance: 0
   vFXObject: {fileID: 0}
@@ -306,7 +309,16 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 0.052
+        m_Name: AC
+        m_Overridden: 1
+      - m_Value: 0
+        m_Name: Ac_Outline
+        m_Overridden: 1
+      - m_Value: 2.35
+        m_Name: Size
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -412,7 +424,7 @@ VFXRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4332740020687581310}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

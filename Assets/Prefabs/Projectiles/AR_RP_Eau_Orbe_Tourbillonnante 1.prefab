@@ -91,8 +91,11 @@ VisualEffect:
       - m_Value: {x: 0.5057111, y: 0.904851, z: 3.0631647, w: 1}
         m_Name: MainColor
         m_Overridden: 1
-      - m_Value: {x: 1, y: 0, z: 0, w: 0}
+      - m_Value: {x: 0.6886792, y: 0.25013348, z: 0.25013348, w: 0}
         m_Name: Outline_Color
+        m_Overridden: 1
+      - m_Value: {x: 0.0070754588, y: 0.17138372, z: 0.5, w: 0}
+        m_Name: Orb_Exterior
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -260,6 +263,9 @@ MonoBehaviour:
   m_indexSFX: 25
   m_characterProfil: {fileID: 0}
   m_piercingMax: 3
+  isBouncing: 0
+  bounceRadius: 0
+  bounceMax: 0
   m_deltaTimeMove: 1
   isDebugInstance: 0
   vFXObject: {fileID: 0}
@@ -683,22 +689,22 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.002
+      - m_Value: 0.024
         m_Name: AlphaClip
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 2.51
         m_Name: Light 1
         m_Overridden: 1
-      - m_Value: 0.033
+      - m_Value: 0.061
         m_Name: AlphaClip 2
         m_Overridden: 1
       - m_Value: 1
         m_Name: Dark
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 5.53
         m_Name: Light
         m_Overridden: 1
-      - m_Value: 0.05
+      - m_Value: 0.188
         m_Name: Dark 1
         m_Overridden: 1
       - m_Value: 78
@@ -716,14 +722,23 @@ VisualEffect:
       - m_Value: {x: 0.1509434, y: 0.1509434, z: 0.1509434, w: 0}
         m_Name: Color 2
         m_Overridden: 1
-      - m_Value: {x: 0.022618666, y: 0.023306761, z: 0.027091283, w: 0}
+      - m_Value: {x: 0.05482378, y: 0.05482378, z: 0.1509434, w: 0}
         m_Name: Black Color
         m_Overridden: 1
-      - m_Value: {x: 0.16037738, y: 0.16037738, z: 0.16037738, w: 1}
+      - m_Value: {x: 0.16620687, y: 0.31350514, z: 0.7830189, w: 1}
         m_Name: Main Color
         m_Overridden: 1
       - m_Value: {x: 0.04672481, y: 0.1112036, z: 0.4716981, w: 1}
         m_Name: Main Color 2
+        m_Overridden: 1
+      - m_Value: {x: 0.9392509, y: 1.0722412, z: 1.5435752, w: 0}
+        m_Name: Gray Color
+        m_Overridden: 1
+      - m_Value: {x: 2.2335722, y: 4.3274364, z: 6.6692576, w: 0}
+        m_Name: Bright Color
+        m_Overridden: 1
+      - m_Value: {x: 1.4557129, y: 1.4478048, z: 1.837932, w: 0}
+        m_Name: White Color
         m_Overridden: 1
     m_Uint:
       m_Array: []
@@ -831,22 +846,22 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.002
+      - m_Value: 0.024
         m_Name: AlphaClip
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 2.51
         m_Name: Light 1
         m_Overridden: 1
-      - m_Value: 0.033
+      - m_Value: 0.061
         m_Name: AlphaClip 2
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0.723
         m_Name: Dark
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 10
         m_Name: Light
         m_Overridden: 1
-      - m_Value: 0.05
+      - m_Value: 0.188
         m_Name: Dark 1
         m_Overridden: 1
       - m_Value: 78
@@ -864,14 +879,23 @@ VisualEffect:
       - m_Value: {x: 0.1509434, y: 0.1509434, z: 0.1509434, w: 0}
         m_Name: Color 2
         m_Overridden: 1
-      - m_Value: {x: 0.022618666, y: 0.023306761, z: 0.027091283, w: 0}
+      - m_Value: {x: 0.05482378, y: 0.05482378, z: 0.1509434, w: 0}
         m_Name: Black Color
         m_Overridden: 1
-      - m_Value: {x: 0.16037738, y: 0.16037738, z: 0.16037738, w: 1}
+      - m_Value: {x: 0.2216981, y: 0.5012122, z: 0.8867924, w: 1}
         m_Name: Main Color
         m_Overridden: 1
       - m_Value: {x: 0.04672481, y: 0.1112036, z: 0.4716981, w: 1}
         m_Name: Main Color 2
+        m_Overridden: 1
+      - m_Value: {x: 0.9392509, y: 1.0722412, z: 1.5435752, w: 0}
+        m_Name: Gray Color
+        m_Overridden: 1
+      - m_Value: {x: 2.7141457, y: 3.41612, z: 4.1999917, w: 0}
+        m_Name: Bright Color
+        m_Overridden: 1
+      - m_Value: {x: 1.4557129, y: 1.4478048, z: 1.837932, w: 0}
+        m_Name: White Color
         m_Overridden: 1
     m_Uint:
       m_Array: []

@@ -288,7 +288,7 @@ public class AltarBehaviorComponent : InteractionInterface
         m_interactionEvent = GameState.s_playerGo.GetComponent<InteractionEvent>();
         m_objectHealthSystem.Setup((int)m_objectHealthSystem.maxHealthEvolution.Evaluate(m_enemyManager.m_characterUpgrade.avatarUpgradeList.Count));
         lostLifeToSpawnWave = (int)(m_objectHealthSystem.healthSystem.maxHealth / 3);
-
+        GlobalSoundManager.instance.UpdateParameter(1.5f, "Intensity");
 
         m_enemyManager.ActiveEvent(transform);
 
@@ -377,6 +377,7 @@ public class AltarBehaviorComponent : InteractionInterface
         OnEventEnd -= RunManager.instance.RemoveHourPoint;
 
         int rewardIndex = transform.parent.GetComponentInChildren<RoomManager>().EventValidate();
+        GlobalSoundManager.instance.UpdateParameter(0.1f, "Intensity");
         SpawnAltarReward(rewardIndex);
 
         m_objectHealthSystem.ChangeState(EventObjectState.Deactive);

@@ -21,10 +21,17 @@ public class DissonanceHeartBehavior : InteractionInterface
 
     [HideInInspector] public RoomManager roomManager;
     [SerializeField] private Animator m_animator;
-
+    [SerializeField] private Transform cristalPartHolder;
+    private Rigidbody[] cristalPartRB;
     public void Start()
     {
         isInteractable = false;
+        int childNumber = cristalPartHolder.childCount;
+        cristalPartRB = new Rigidbody[childNumber];
+        for(int i = 0; i < childNumber; i++)
+        {
+            cristalPartRB[i] = cristalPartHolder.GetChild(i).GetComponent<Rigidbody>();
+        }
     }
 
     public void RemoveProtection()
@@ -40,11 +47,19 @@ public class DissonanceHeartBehavior : InteractionInterface
         dissonanceHeartState = DissonanceHeartState.BROKEN ;
         if (m_activeDissonanceHeartDebug)
             ScreenDebuggerTool.AddMessage("Dissonance heart is broken");
-        m_animator.SetTrigger("Looted");
+        m_animator.enabled = false;
+        GlobalSoundManager.PlayOneShot(60, transform.position);
         roomManager.ValidateRoom();
         isInteractable = false;
     }
 
+    public void DestroyHeart()
+    {
+        for (int i = 0; i < cristalPartRB.Length; i++)
+        {
+            cristalPartRB[i].AddExplosionForce(25, cristalPartHolder.position, 50);
+        }
+    }
     public override void OnInteractionEnd(GameObject player)
     {
         return;

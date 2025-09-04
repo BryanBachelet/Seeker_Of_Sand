@@ -28,6 +28,8 @@ public class CameraFadeFunction : MonoBehaviour
 
     public CameraBehavior cameraBehavior;
     public Camera renderCam;
+
+    public static bool isFadeCurrentlyActive;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +41,8 @@ public class CameraFadeFunction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(fadeInActive || fadeOutActive) { isFadeCurrentlyActive = true; }
+        else { isFadeCurrentlyActive = false; }
         if (manuelFade)
         {
             ChangeFadeAlpha(fadeProgress);
@@ -121,10 +125,12 @@ public class CameraFadeFunction : MonoBehaviour
         if (fadeInActive)
         {
             cameraBehavior.m_distanceToTarget = Mathf.Lerp(150, 15, alphaValue);
+            fadeMat.SetFloat("_Magnification", Mathf.Lerp(0, -4, alphaValue));
         }
         else if (fadeOutActive)
         {
             cameraBehavior.m_distanceToTarget = Mathf.Lerp(150, 450, alphaValue);
+            fadeMat.SetFloat("_Magnification", Mathf.Lerp(0, -4, alphaValue));
         }
 
     }

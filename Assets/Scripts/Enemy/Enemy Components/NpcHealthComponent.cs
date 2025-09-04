@@ -104,11 +104,12 @@ namespace GuerhoubaGames.Enemies
         public float percentGainSize = 100;
 
         private GameObject test;
-
+        public int health_ID = 0;
+        public Vector2 offsetAdditionnel = new Vector2(0, 0); //Offset du damageFeedback
         void Awake()
         {
             InitComponent();
-          if(healthHolder)  healthHolder.SetActive(isHealthDisplay);
+          //if(healthHolder)  healthHolder.SetActive(isHealthDisplay);
         }
         private void InitComponent()
         {
@@ -196,6 +197,7 @@ namespace GuerhoubaGames.Enemies
         public void SetInitialData(HealthManager healthManager, EnemyManager enemyManager)
         {
             m_healthManager = healthManager;
+            health_ID = m_healthManager.GenerateNewDamageFD();
             m_enemyManager = enemyManager;
         }
 
@@ -208,14 +210,14 @@ namespace GuerhoubaGames.Enemies
             GameStats.instance.AddDamageSource(nameDamage, damageStat);
             // VfX feedback
             Vector3 positionOnScreen = transform.position + new Vector3(0,5,0);
-            m_healthManager.CallDamageEvent(positionOnScreen, allDamage, element);
+            m_healthManager.CallDamageEvent(positionOnScreen, allDamage, element, health_ID, offsetAdditionnel);
             if (m_HitEffectHighLight) { m_HitEffectHighLight.ReceiveHit(); }
 
             GameObject vfxHitInstance = GamePullingSystem.SpawnObject(m_vfxHitFeedback, transform.position, Quaternion.identity);
 
             //m_entityAnimator.SetTrigger("TakeDamage");
             GlobalSoundManager.PlayOneShot(12, transform.position);
-            m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
+            //m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
 
             if (m_healthSystem.health > 0) return;
 
@@ -334,15 +336,28 @@ namespace GuerhoubaGames.Enemies
             //m_healthSystem.Setup(maxLife + spawnMinute * gainPerMinute);
             //m_healthSystem.Setup(maxHealthEvolution.Evaluate(TerrainGenerator.roomGeneration_Static));
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
-            m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
+            //m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
             death = false;
 
             if(m_npcInfo.isChampion)
             {
-                Material mat = gameObject.GetComponentInChildren<Renderer>().material;
-                mat.SetColor("_OutlineColor", Color.red);
+                //Material mat = gameObject.GetComponentInChildren<Renderer>().material;
+                for(int i = 0; i < m_materialList.Count; i++)
+                {
+                    m_materialList[i].SetColor("_OutlineColor ", Color.red);
+
+                }
+
                 m_healthSystem.Setup(Tools.ApplyIncreasePercent(maxHealthEvolution.Evaluate(playerLevel) ,percentGainHealthAdd));
                 transform.localScale = Tools.ApplyIncreasePercent(transform.localScale, percentGainSize);
+            }
+            else
+            {
+                for (int i = 0; i < m_materialList.Count; i++)
+                {
+                    m_materialList[i].SetColor("_OutlineColor ", Color.red);
+
+                }
             }
 
 

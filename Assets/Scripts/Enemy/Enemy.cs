@@ -30,6 +30,9 @@ namespace GuerhoubaGames.Enemies
         private float tempsEcouleRefresh = 0;
         public Animator myAnimator;
         [SerializeField] private bool m_ActiveDeathAnim;
+
+        public int health_ID = 0;
+        public Vector2 offsetAdditionnel = new Vector2(0, 0); //Offset du damageFeedback
         private void Start()
         {
             state = new ObjectState();
@@ -106,6 +109,7 @@ namespace GuerhoubaGames.Enemies
         public void SetManager(EnemyManager manager, HealthManager healthManager)
         {
             m_enemyManager = manager;
+            health_ID = m_healthManager.GenerateNewDamageFD();
             m_healthManager = healthManager;
         }
 
@@ -117,7 +121,7 @@ namespace GuerhoubaGames.Enemies
             damage = m_armorSystem.ApplyArmor(damage, m_agentStat.armor);
             m_healthSystem.ChangeCurrentHealth(-damage);
             Vector3 positionOnScreen = transform.position;
-            m_healthManager.CallDamageEvent(positionOnScreen, damage, element);
+            m_healthManager.CallDamageEvent(positionOnScreen, damage, element, health_ID, offsetAdditionnel);
 
 
             if (m_healthSystem.health > 0) return;

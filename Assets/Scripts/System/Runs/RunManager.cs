@@ -20,6 +20,7 @@ namespace GuerhoubaGames
     {
         public static RunManager instance;
 
+        public GlobalSoundManager gsm;
         [Header("Day Variables")]
         public int maxHoursPointPerDay = 0;
         public int currentHoursPoint { get; private set; }
@@ -309,6 +310,7 @@ namespace GuerhoubaGames
         private GameObject _SpawnMerchant(Vector3 position, Quaternion rotation)
         {
             GameObject instance = GameObject.Instantiate(merchandCaravanaPrefab, position, rotation);
+
             return instance;
         }
 

@@ -6,6 +6,7 @@ using FMODUnity;
 
 public class GlobalSoundManager : MonoBehaviour
 {
+
     static EventInstance[] everyEvent;
     public EventInstance[] everyEvent_Attribution;
 
@@ -17,6 +18,9 @@ public class GlobalSoundManager : MonoBehaviour
     public EventReference Globalsound;
     public EventInstance globalinstance;
 
+
+    public EventReference marchandAmbiant;
+    public EventInstance marchandAmbiantInstance;
 
     public EventReference GlobalMusic;
     public EventInstance globalMusicInstance;
@@ -37,13 +41,13 @@ public class GlobalSoundManager : MonoBehaviour
 
     public float delayMusic = 0;
 
-    private static GlobalSoundManager thisGSM;
+    public static GlobalSoundManager instance;
 
     public bool menuMute;
     // Start is called before the first frame update
     void Awake()
     {
-        thisGSM = this.gameObject.GetComponent<GlobalSoundManager>();
+        instance = this.gameObject.GetComponent<GlobalSoundManager>();
         everyEvent = everyEvent_Attribution;
         OneS_Sound = OneS_Sound_Attribution;
 
@@ -109,8 +113,10 @@ public class GlobalSoundManager : MonoBehaviour
             musicIntensityTransitionInstance = RuntimeManager.CreateInstance(musicIntensityTransition);
             musicIntensityTransitionInstance.setVolume(1);
             marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
+            marchandAmbiantInstance = RuntimeManager.CreateInstance(marchandAmbiant);
             //marchandMusicInstance.start();
             marchandMusicInstance.setVolume(0);
+            marchandAmbiantInstance.setVolume(0);
 
         }
         StartAmbiantNoDelay();
@@ -121,6 +127,7 @@ public class GlobalSoundManager : MonoBehaviour
     {
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         globalMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        marchandAmbiantInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntensityInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntensityTransitionInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         canalisationInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -146,21 +153,21 @@ public class GlobalSoundManager : MonoBehaviour
         globalinstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
-    static public void SwitchAmbiantToMarchand(bool activeMarchand)
+    static public void SwitchAmbiantToMarchand(bool activeMarchand, Vector3 position)
     {
         if (activeMarchand)
         {
-            thisGSM.ActiveMarchand();
+            instance.ActiveMarchand(position);
         }
         else
         {
-            thisGSM.DisactiveMarchand();
+            instance.DisactiveMarchand();
         }
     }
 
-    private void ActiveMarchand()
+    private void ActiveMarchand(Vector3 position)
     {
-        StopAmbiantNoDelay();
+        StopAmbiantNoDelay(position);
     }
     private void DisactiveMarchand()
     {
@@ -183,9 +190,12 @@ public class GlobalSoundManager : MonoBehaviour
             UpdateParameter(0.1f, "Intensity");
             musicIntensityTransitionInstance.start();
             musicIntensityTransitionInstance.setVolume(1);
+
             //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
             marchandMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             marchandMusicInstance.setVolume(0);
+            marchandAmbiantInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            marchandAmbiantInstance.setVolume(0);
         }
         //globalinstance = RuntimeManager.CreateInstance(Globalsound);
 
@@ -195,7 +205,7 @@ public class GlobalSoundManager : MonoBehaviour
 
     }
 
-    public void StopAmbiantNoDelay()
+    public void StopAmbiantNoDelay(Vector3 position)
     {
         //globalinstance = RuntimeManager.CreateInstance(Globalsound);
         globalinstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -207,7 +217,10 @@ public class GlobalSoundManager : MonoBehaviour
         musicIntensityInstance.setVolume(0);
         UpdateParameter(0f, "Intensity");
         //marchandMusicInstance = RuntimeManager.CreateInstance(marchandMusic);
-        marchandMusicInstance.start();
-        marchandMusicInstance.setVolume(1);
+       //marchandMusicInstance.start();
+       //marchandMusicInstance.setVolume();
+        marchandAmbiantInstance.start();
+        marchandAmbiantInstance.setVolume(1);
+        marchandAmbiantInstance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
     }
 }

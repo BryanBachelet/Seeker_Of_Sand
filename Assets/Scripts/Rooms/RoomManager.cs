@@ -264,6 +264,7 @@ public class RoomManager : MonoBehaviour
         m_enemyManager.DestroyAllEnemy();
         StartCoroutine(DestroyRoom());
         Destroy(merchantCarvana);
+        GlobalSoundManager.SwitchAmbiantToMarchand(false, Vector3.zero);
 
     }
 
@@ -449,6 +450,7 @@ public class RoomManager : MonoBehaviour
         if (RunManager.IsSpawningMerchantValid() && !RunManager.IsNightStarted())
         {
             merchantCarvana = RunManager.SpawnMerchand(objectMerchantSpawnPosition.transform.position, objectMerchantSpawnPosition.transform.rotation);
+            GlobalSoundManager.SwitchAmbiantToMarchand(true, objectMerchantSpawnPosition.transform.position);
         }
 
         if ((int)currentRoomType < (int)RoomType.Free) currentRoomType = RoomType.Free;

@@ -16,7 +16,7 @@ public class DamageHealthFD : MonoBehaviour
 
     [HideInInspector] private HealthManager healthManager;
     [HideInInspector] private float m_animationTimer;
-
+    [HideInInspector] private float damageAccumulate = 0;
     public void SetupText(HealthManager healthManager)
     {
         this.healthManager = healthManager;
@@ -29,16 +29,31 @@ public class DamageHealthFD : MonoBehaviour
 
     public void StartDamageFeeback(Vector3 position, float damage, Color color)
     {
-        m_active = true;
+        if(m_active)
+        {
+            m_animationTimer = 0;
+            damageAccumulate += damage;
+            m_animation.SetTrigger("SendDamage");
+            gameObject.transform.position = position;
+            gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
+            m_text.text = damageAccumulate.ToString("F0");
+            m_text.color = color;
+        }
+        else
+        {
+            m_active = true;
+            damageAccumulate = 0;
+            gameObject.SetActive(true);
+            damageAccumulate += damage;
+            m_animation.SetTrigger("SendDamage");
+            gameObject.transform.position = position;
+            gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
+            m_text.text = damageAccumulate.ToString("F0");
+            m_text.color = color;
 
-        gameObject.SetActive(true);
-        m_animation.SetTrigger("SendDamage");
-        gameObject.transform.position = position;
-        gameObject.transform.LookAt(transform.position + m_cameraToLook.transform.rotation * Vector3.forward, m_cameraToLook.transform.rotation * Vector3.up);
-        m_text.text = damage.ToString("F0");
-        m_text.color = color;
-      
-        StartCoroutine(Animation());
+            StartCoroutine(Animation());
+        }
+       
     }
 
     public IEnumerator Animation()

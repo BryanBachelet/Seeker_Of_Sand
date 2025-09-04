@@ -34,10 +34,13 @@ public class dummy : MonoBehaviour
     public GameObject deathDestroyVfx;
     public GameObject m_vfxHitFeedback;
     public HealthManager m_healthManager;
+    public int health_ID = 0;
+    public Vector2 offsetAdditionnel = new Vector2(0, 0); //Offset du damageFeedback
     // Start is called before the first frame update
     void Start()
     {
         m_navMeshAgent = GetComponent<NavMeshAgent>();
+        health_ID = m_healthManager.GenerateNewDamageFD();
         currentHP = HPMax;
         percentHP = currentHP / HPMax;
     }
@@ -141,7 +144,7 @@ public class dummy : MonoBehaviour
     {
         // VfX feedback
         Vector3 positionOnScreen = transform.position;
-        m_healthManager.CallDamageEvent(positionOnScreen, damage, element);
+        m_healthManager.CallDamageEvent(positionOnScreen, damage, element, health_ID, offsetAdditionnel);
         Instantiate(m_vfxHitFeedback, transform.position, Quaternion.identity);
         //m_entityAnimator.SetTrigger("TakeDamage");
         GlobalSoundManager.PlayOneShot(12, transform.position);

@@ -54,12 +54,15 @@ public class ObjectHealthSystem : MonoBehaviour, IDamageReceiver
     [SerializeField] private bool m_isObjectifEvent;
     private EntityModifier m_entityModifier;
 
+    public int health_ID = 0;
+    public Vector2 offsetAdditionnel = new Vector2(0, 0); //Offset du damageFeedback
     private void Start()
     {
 
 
         GameState.AddObject(state);
         healthManager = GameState.m_enemyManager.GetComponent<HealthManager>();
+        health_ID = healthManager.GenerateNewDamageFD();
         healthSystem = new HealthSystem();
         maxLife = (int)maxHealthEvolution.Evaluate(healthManager.characterShoot.GetComponent<CharacterUpgrade>().avatarUpgradeList.Count);
         healthSystem.Setup(maxLife);
@@ -89,7 +92,7 @@ public class ObjectHealthSystem : MonoBehaviour, IDamageReceiver
         ratioLife = healthSystem.percentHealth;
         // VfX feedback
         Vector3 positionOnScreen = transform.position + offset_DisplayDamage;
-        healthManager.CallDamageEvent(positionOnScreen, allDamage, element);
+        healthManager.CallDamageEvent(positionOnScreen, allDamage, element, health_ID, offsetAdditionnel);
 
         m_isInvicible = true;
         m_invicibleTimer = 0.0f;
