@@ -239,6 +239,8 @@ namespace GuerhoubaGames.Enemies
             }
             m_npcInfo.state = NpcState.DEATH;
             m_afflictionManager.RemoveAllAffliction();
+            m_afflictionManager.SetImmune();
+
             m_npcInfo.behaviorTreeComponent.isActivate = false;
 
             if (!isMassed)
@@ -303,6 +305,8 @@ namespace GuerhoubaGames.Enemies
             //m_EnemyAnimatorDissolve.SetBool("Dissolve", true)
             yield return new WaitForSeconds(timeBeforeDestruction);
             GamePullingSystem.SpawnObject(death_vfx, transform.position, transform.rotation);
+         
+
             m_npcInfo.TeleportToPool();
 
         }
@@ -338,8 +342,9 @@ namespace GuerhoubaGames.Enemies
             m_healthSystem.Setup(maxHealthEvolution.Evaluate(playerLevel));
             //m_objectHealthDisplay.UpdateLifeBar(m_healthSystem.health / m_healthSystem.maxHealth);
             death = false;
+            m_afflictionManager.RemoveImmune();
 
-            if(m_npcInfo.isChampion)
+            if (m_npcInfo.isChampion)
             {
                 //Material mat = gameObject.GetComponentInChildren<Renderer>().material;
                 for(int i = 0; i < m_materialList.Count; i++)

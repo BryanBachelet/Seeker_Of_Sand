@@ -23,7 +23,7 @@ public class AfflictionManager : MonoBehaviour
 
     [SerializeField] private AfflictionProfil m_afflictionProfil;
     public Affliction[] afflictionArray;
-
+    private bool isImmune = false;
 
 
     [Header("Debug Infos")]
@@ -97,6 +97,8 @@ public class AfflictionManager : MonoBehaviour
 
     public void AddAfflictions(AfflictionDrawData[] afflictionTypes)
     {
+        if(isImmune) return; 
+
         for (int i = 0; i < afflictionTypes.Length; i++)
         {
 
@@ -486,6 +488,9 @@ public class AfflictionManager : MonoBehaviour
             Debug.Log("Affliction : Electrocute object spawn");
         }
     }
+
+    public bool SetImmune() => isImmune = true;
+    public bool RemoveImmune() => isImmune = false;
 
 
     #region Static Functions 

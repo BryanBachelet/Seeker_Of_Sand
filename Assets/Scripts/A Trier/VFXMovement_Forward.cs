@@ -26,9 +26,9 @@ public class VFXMovement_Forward : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(transform.position, nextPosition) < 1)
+        if (Vector3.Distance(transform.position, targetPosition) < .3f)
         {
-
+            Destroy(gameObject);
         }
         else
         {

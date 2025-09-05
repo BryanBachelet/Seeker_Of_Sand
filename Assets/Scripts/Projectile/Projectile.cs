@@ -102,7 +102,7 @@ public class Projectile : MonoBehaviour
             {
                 if (willDestroy)
                 {
-                    if (m_collider) m_collider.enabled = false;
+                    //if (m_collider) m_collider.enabled = false;
                 }
                 else
                 {
