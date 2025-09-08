@@ -28,12 +28,7 @@ namespace SpellSystem
 
         public void SetupStatLevel()
         {
-            gameEffectStats.statTypes = new StatType[gameEffectStats.statDatas.Count];
-
-            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
-            {
-                gameEffectStats.statTypes[i] = gameEffectStats.statDatas[i].stat;
-            }
+            gameEffectStats.InitialisationPlayerStats();
         }
 
         private bool IsStatInt(StatType statsType)

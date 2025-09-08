@@ -81,7 +81,7 @@ public class UpgradeObject : ScriptableObject
 
     public bool HasThisStat(StatType statType)
     {
-        for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
+        for (int i = 0; i < gameEffectStats.statTypes.Count; i++)
         {
             if (gameEffectStats.statTypes[i] == statType) return true;
         }

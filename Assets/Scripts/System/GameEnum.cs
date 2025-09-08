@@ -109,7 +109,6 @@ namespace GuerhoubaGames.GameEnum
     {
         Damage = 1001,
         Projectile = 1002,
-        
         ShootNumber = 1004,
         Piercing = 1005,
         Bounce = 1006,
@@ -123,6 +122,7 @@ namespace GuerhoubaGames.GameEnum
         SpellCount =1014,
         AreaTargetSimulately = 1017,
         AfflictionStack = 1018,
+        Health =1019,
 
 
         LifeTime = 2001,

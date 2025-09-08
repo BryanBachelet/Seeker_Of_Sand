@@ -2,6 +2,7 @@ using GuerhoubaGames.GameEnum;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -203,7 +204,7 @@ public struct TagData
                 if (toAdd)
                 {
                     afflictionTypes.Add((AfflictionType)value);
-                    
+
                 }
                 else
                 {
@@ -393,7 +394,7 @@ namespace SpellSystem
 
         public virtual StatData ConvertStat(StatData data, Type t)
         {
-            if (t ==  typeof(StatDataUpgrade))
+            if (t == typeof(StatDataUpgrade))
             {
                 return new StatDataUpgrade(data);
             }
@@ -403,7 +404,7 @@ namespace SpellSystem
             }
 
             return this;
-            
+
         }
 
         object ICloneable.Clone() => this.Clone();
@@ -411,7 +412,7 @@ namespace SpellSystem
     }
 
     [System.Serializable]
-    public class StatDataLevel : StatData , IStatInterface
+    public class StatDataLevel : StatData, IStatInterface
     {
         public float multiply;
 
@@ -433,7 +434,7 @@ namespace SpellSystem
             multiply = 0;
         }
 
-        public override void ConvertStat(StatData data) 
+        public override void ConvertStat(StatData data)
         {
             val_int = data.val_int;
             val_float = data.val_float;
@@ -446,6 +447,44 @@ namespace SpellSystem
 
         }
     }
+
+    [System.Serializable]
+    public class StatDataArtefact : StatData, IStatInterface
+    {
+        public LevelTier tier;
+
+        public override StatData Clone()
+        {
+            return (StatDataLevel)this.MemberwiseClone();
+        }
+
+        public StatDataArtefact(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+            tier = LevelTier.TIER_0;
+            
+        }
+
+        public override void ConvertStat(StatData data)
+        {
+            val_int = data.val_int;
+            val_float = data.val_float;
+            val_string = data.val_string;
+            val_bool = data.val_bool;
+            isVisible = data.isVisible;
+            nameStat = data.nameStat;
+            stat = data.stat;
+            valueType = data.valueType;
+        }
+    }
+
 
     [System.Serializable]
     public class StatDataUpgrade : StatData, IStatInterface
@@ -494,20 +533,21 @@ namespace SpellSystem
 
         [Space]
         public List<T> statDatas = new List<T>();
-        [HideInInspector] public StatType[] statTypes = new StatType[0];
+        [HideInInspector] public  List<StatType> statTypes = new List<StatType>();
 
 
+        
 
         public PlayerEffectStats<T> Clone()
         {
             PlayerEffectStats<T> stats = new PlayerEffectStats<T>();
-            stats.statTypes = new StatType[statDatas.Count];
+            stats.statTypes = new List<StatType>(statDatas.Count);
             stats.statDatas = new List<T>(statDatas.Count);
-            for (int i = 0; i < stats.statTypes.Length; i++)
+            for (int i = 0; i < statDatas.Count; i++)
             {
-                stats.statTypes[i] = statDatas[i].stat;
                 T statDataInstance = (T)statDatas[i].Clone();
                 stats.statDatas.Add(statDataInstance);
+                stats.statTypes.Add(statDataInstance.stat);
             }
 
             stats.tagData = new TagData();
@@ -535,7 +575,7 @@ namespace SpellSystem
 
         public bool HasStats(StatType statsType)
         {
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -547,7 +587,7 @@ namespace SpellSystem
 
         public int GetStats(StatType statsType, string nameAddional)
         {
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i] && statDatas[i].nameStat == nameAddional)
                 {
@@ -565,7 +605,7 @@ namespace SpellSystem
                 return -1;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -585,7 +625,7 @@ namespace SpellSystem
                 return -1;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
                 {
@@ -605,7 +645,7 @@ namespace SpellSystem
                 return -1;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -624,7 +664,7 @@ namespace SpellSystem
                 return -1;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i] && statDatas[i].nameStat == nameStatToChange)
                 {
@@ -644,7 +684,7 @@ namespace SpellSystem
                 return false; ;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -663,7 +703,7 @@ namespace SpellSystem
                 return "";
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -683,7 +723,7 @@ namespace SpellSystem
                 return;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
                 {
@@ -704,7 +744,7 @@ namespace SpellSystem
                 return;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
                 {
@@ -724,7 +764,7 @@ namespace SpellSystem
                 return;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -743,7 +783,7 @@ namespace SpellSystem
                 return;
             }
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -757,7 +797,7 @@ namespace SpellSystem
         public string GetStatValueToString(StatType statsType)
         {
 
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
                 if (statsType == statTypes[i])
                 {
@@ -775,7 +815,7 @@ namespace SpellSystem
         public string DebugStat()
         {
             string debugStatString = "";
-            for (int i = 0; i < statTypes.Length; i++)
+            for (int i = 0; i < statTypes.Count; i++)
             {
 
                 if (!statDatas[i].isVisible) continue;
@@ -827,12 +867,7 @@ namespace SpellSystem
             ManageStat(StatType.GainPerStack, true);
             ManageStat(StatType.Range, true);
 
-            statTypes = new StatType[statDatas.Count];
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                statTypes[i] = statDatas[i].stat;
-            }
-
+            InitialisationPlayerStats();
 
         }
 
@@ -846,11 +881,7 @@ namespace SpellSystem
             SetupSpellMouvement();
             SetupAfflictionStats(tagData.afflictionTypes.ToArray());
 
-            statTypes = new StatType[statDatas.Count];
-            for (int i = 0; i < statTypes.Length; i++)
-            {
-                statTypes[i] = statDatas[i].stat;
-            }
+            InitialisationPlayerStats();
 
         }
 
@@ -875,12 +906,13 @@ namespace SpellSystem
                 statData.stat = statToCheck;
                 statData.isVisible = isVisible;
                 statDatas.Add((T)statData);
+                statTypes.Add(statToCheck);
             }
 
             return;
         }
 
-        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false) 
+        public void ManageAfflictionStat(StatType statToCheck, bool isAdd, AfflictionType type, bool isVisible = false)
         {
             string nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToLower(type.ToString());
             nameAffliction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nameAffliction);
@@ -906,7 +938,7 @@ namespace SpellSystem
 
 
                 statDatas.Add((T)statData.ConvertStat(statData, typeof(T)));
-             
+                statTypes.Add(statToCheck);
 
             }
 
@@ -1086,7 +1118,7 @@ namespace SpellSystem
         public void ChangeStats<U>(PlayerEffectStats<U> gameEffectStats) where U : StatDataLevel
         {
 
-            for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
+            for (int i = 0; i < gameEffectStats.statTypes.Count; i++)
             {
                 if (IsStatBool(gameEffectStats.statTypes[i]))
                 {
@@ -1114,11 +1146,75 @@ namespace SpellSystem
             }
         }
 
+        public void ChangeStats(PlayerEffectStats<StatData> gameEffectStats)
+        {
+
+            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
+            {
+                if (IsStatBool(gameEffectStats.statDatas[i].stat))
+                {
+                    ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
+                    continue;
+                }
+
+
+                if (IsStatInt(gameEffectStats.statDatas[i].stat))
+                {
+                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    continue;
+                }
+                if (IsStatFloat(gameEffectStats.statDatas[i].stat))
+                {
+                    AddToFloatStats(gameEffectStats.statDatas[i].stat, gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    continue;
+                }
+
+                if (IsStatString(gameEffectStats.statTypes[i]))
+                {
+                    ChangeStringStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_string);
+                    continue;
+                }
+            }
+        }
+
+        public void ChangeStats(PlayerEffectStats<StatDataArtefact> gameEffectStats, LevelTier currentTier)
+        {
+
+            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
+            {
+                if ( gameEffectStats.statDatas[i].tier != currentTier) continue;
+
+                if (IsStatBool(gameEffectStats.statDatas[i].stat) )
+                {
+                    ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
+                    continue;
+                }
+
+                if (IsStatInt(gameEffectStats.statDatas[i].stat))
+                {
+                    
+                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    continue;
+                }
+                if (IsStatFloat(gameEffectStats.statDatas[i].stat))
+                {
+                    AddToFloatStats(gameEffectStats.statDatas[i].stat, gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    continue;
+                }
+
+                if (IsStatString(gameEffectStats.statTypes[i]))
+                {
+                    ChangeStringStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_string);
+                    continue;
+                }
+            }
+        }
+
 
 
         public void ChangeStats(PlayerEffectStats<StatDataUpgrade> gameEffectStats, bool isAdd = false)
         {
-            for (int i = 0; i < gameEffectStats.statTypes.Length; i++)
+            for (int i = 0; i < gameEffectStats.statTypes.Count; i++)
             {
                 bool IsAddingStat = (gameEffectStats.statDatas[i].isOnlyAddWithTag && isAdd) || !gameEffectStats.statDatas[i].isOnlyAddWithTag;
 
@@ -1148,7 +1244,15 @@ namespace SpellSystem
             }
         }
 
+        public void InitialisationPlayerStats()
+        {
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                statTypes.Add(statDatas[i].stat);
+            }
+        }
 
+      
     }
 
 
@@ -1206,6 +1310,7 @@ namespace SpellSystem
             SpellProfil spellProfil = Instantiate(this);
 
             spellProfil.gameEffectStats = gameEffectStats.Clone();
+            spellProfil.gameEffectStats.InitialisationPlayerStats();
 
             if (isSetup)
             {

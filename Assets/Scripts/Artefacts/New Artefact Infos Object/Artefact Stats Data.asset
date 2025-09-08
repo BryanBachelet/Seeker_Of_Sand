@@ -9,14 +9,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9489da611aba9b4fa56c8ebe51dccbc, type: 3}
-  m_Name: T1_Gust
-  m_EditorClassIdentifier: Assembly-CSharp:SpellSystem:StatsLevel
-  LevelType: 0
-  isPermanent: 1
-  nameLevelUprade: <u>Rank 1</u>
-  description: <u>Rank 1</u><br><br>Gain <i>Projectile +3</i>
-  gameEffectStats:
+  m_Script: {fileID: 11500000, guid: d91285cb3e136c74ab9f880f67643ab4, type: 3}
+  m_Name: Artefact Stats Data
+  m_EditorClassIdentifier: 
+  name: 
+  m_id: 0
+  m_idFamily: 0
+  description: 
+  shownDescription: 
+  type: 2
+  element: 0
+  visualData:
+    icon: {fileID: 0}
+  m_isUpgradePossible: 0
+  levelTier: 1
+  m_isReinforcementPossible: 0
+  m_isMergePossible: 0
+  hasCondition: 0
+  conditionsTrigger: 0
+  entitiesTrigger: 0
+  EntitiesTargetSystem: 0
+  hasStat: 1
+  EffectStats:
     tagData:
       element: 0
       type: 0
@@ -34,14 +48,25 @@ MonoBehaviour:
       upgradeSensitivityType: 0
       afflictionTypes: 
     statDatas:
-    - stat: 1002
+    - stat: 1019
       valueType: 0
       nameStat: 
-      val_int: 3
+      val_int: 25
       val_float: 0
       val_string: 
       val_bool: 0
       isVisible: 0
-      multiply: 0
-    statTypes: ea030000ea030000ea030000ea030000ea030000ea030000ea030000
-  customStatBehavior: {fileID: 0}
+      tier: 0
+    - stat: 1019
+      valueType: 0
+      nameStat: 
+      val_int: 50
+      val_float: 0
+      val_string: 
+      val_bool: 0
+      isVisible: 0
+      tier: 1
+    statTypes: 
+  isPermanent: 1
+  isTemporary: 0
+  buffDuration: 0

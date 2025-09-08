@@ -1,8 +1,11 @@
+using GuerhoubaGames.Artefact;
 using GuerhoubaGames.Enemies;
 using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using GuerhoubaTools;
+using SpellSystem;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace GuerhoubaGames.Character
@@ -12,6 +15,7 @@ namespace GuerhoubaGames.Character
     public class CharacterArtefact : MonoBehaviour
     {
         public List<ArtefactsInfos> artefactsList;
+        public List<ArtefactBaseInfos> artefactBaseInfosList;
         [HideInInspector] private Enemies.EnemyManager m_enemyManager;
 
         public bool activeDebug = false;
@@ -57,17 +61,25 @@ namespace GuerhoubaGames.Character
                 AddArtefact(cloneList[i]);
             }
 
+            List<ArtefactBaseInfos> cloneListInfo = new List<ArtefactBaseInfos>(artefactBaseInfosList.ToArray());
+            artefactBaseInfosList.Clear();
+            for (int i = 0; i < cloneListInfo.Count; i++)
+            {
+                AddArtefact(cloneListInfo[i]);
+            }
+
+
         }
 
         private void SetupArtefact(ArtefactsInfos artefacts)
         {
             artefacts.characterGo = gameObject;
-            if (artefacts.artefactType == ArtefactType.Buff)
-            {
-                m_characterProfil.AddStat(artefacts.generalStatData.CharacterStat);
-                m_characterProfil.UpdateStats();
-                return;
-            }
+            //if (artefacts.artefactType == ArtefactType.Buff)
+            //{
+            //    m_characterProfil.AddStat(artefacts.generalStatData.CharacterStat);
+            //    m_characterProfil.UpdateStats();
+            //    return;
+            //}
 
             artefacts.isDebugActive = activeDebug;
             switch (artefacts.conditionsTrigger)
@@ -194,6 +206,54 @@ namespace GuerhoubaGames.Character
             SetupArtefact(clone);
             uiFragmentTooltip.AddNewFragment(clone);
         }
+
+        public void AddArtefact(ArtefactBaseInfos artefactBaseInfos)
+        {
+            for (int i = 0; i < artefactsList.Count; i++)
+            {
+                if (artefactBaseInfosList[i].IsSameFragment(artefactBaseInfos))
+                {
+                    // Implementation Stack Mechanics
+                }
+
+
+            }
+
+            ArtefactBaseInfos clone = artefactBaseInfos.Clone();
+            artefactBaseInfosList.Add(clone);
+
+            // Implementation Pull mechanics
+
+            LogSystem.LogMsg("Artefact add  is " + clone.name);
+            SetupArtefact(clone);
+
+        }
+
+        public void SetupArtefact(ArtefactBaseInfos artefactBaseInfos)
+        {
+            switch (artefactBaseInfos.type)
+            {
+                case ArtefactType.Spawner:
+                    break;
+                case ArtefactType.Effect:
+                    break;
+                case ArtefactType.Stats:
+                    SetupStatsArtefacts((ArtefactStats)artefactBaseInfos);
+                    break;
+            }
+        }
+
+        private void SetupStatsArtefacts(ArtefactStats artefactStats)
+        {
+            if (!artefactStats.IsPermanent()) return;
+
+            artefactStats.EffectStats.InitialisationPlayerStats();
+            CharacterGameStats.instance.GetPlayerStats().ChangeStats(artefactStats.EffectStats,artefactStats.levelTier);
+        }
+
+
+
+
 
         public void CreatePull(ArtefactsInfos instance)
         {

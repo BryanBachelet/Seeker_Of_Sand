@@ -136,3 +136,36 @@ public class StatsSpellUpgradeDrawer : StatsSpellDrawer
         return 50.0f;
     }
 }
+
+[CustomPropertyDrawer(typeof(StatDataArtefact))]
+public class StatArtefactDrawer : StatsSpellDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        Rect basePosition = position;
+
+        GUIContent label2 = new GUIContent();
+
+        BaseDisplay(position, property, label);
+        label2.text = "Tier";
+        EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
+        basePosition.y += 20;
+        basePosition.width = EditorStyles.label.CalcSize(label2).x;
+        basePosition.height = 18.0f;
+
+        label = EditorGUI.BeginProperty(basePosition, label, property);
+        EditorGUI.PrefixLabel(basePosition, label2);
+        basePosition.width -=10;
+        basePosition.x += basePosition.width + 20;
+        basePosition.width += 5f;
+        basePosition.width *= 8f;
+        //basePosition.width *= 0.4f;
+        EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("tier"), GUIContent.none);
+        EditorGUI.EndProperty();
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return 50.0f;
+    }
+}

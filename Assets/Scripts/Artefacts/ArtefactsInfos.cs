@@ -8,12 +8,7 @@ using UnityEngine.VFX;
 using GuerhoubaGames.Artefact;
 using BorsalinoTools;
 
-public enum ArtefactType
-{
-    Spawner = 0,
-    Buff = 1,
-    Behavior = 2,
-}
+
 
 public enum ConditionsTrigger
 {
