@@ -4,6 +4,7 @@ using GuerhoubaGames.GameEnum;
 using GuerhoubaGames.Resources;
 using GuerhoubaTools;
 using SpellSystem;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace GuerhoubaGames.Character
             m_characterDamageComponent = GetComponent<Character.CharacterDamageComponent>();
             m_enemyManager = GameObject.Find("General_Manager").GetComponent<EnemyManager>();
             m_healthComponent = GetComponent<HealthPlayerComponent>();
-            positionRandom = Random.insideUnitSphere * rangeRandom;
+            positionRandom = UnityEngine.Random.insideUnitSphere * rangeRandom;
             m_gameResources = GameResources.instance;
             List<ArtefactsInfos> cloneList = new List<ArtefactsInfos>(artefactsList.ToArray());
             artefactsList.Clear();
@@ -214,6 +215,8 @@ namespace GuerhoubaGames.Character
                 if (artefactBaseInfosList[i].IsSameFragment(artefactBaseInfos))
                 {
                     // Implementation Stack Mechanics
+                    artefactBaseInfosList[i].AddAdditionalArtefact(artefactBaseInfos);
+                  
                 }
 
 
@@ -228,6 +231,8 @@ namespace GuerhoubaGames.Character
             SetupArtefact(clone);
 
         }
+
+
 
         public void SetupArtefact(ArtefactBaseInfos artefactBaseInfos)
         {
@@ -249,6 +254,28 @@ namespace GuerhoubaGames.Character
 
             artefactStats.EffectStats.InitialisationPlayerStats();
             CharacterGameStats.instance.GetPlayerStats().ChangeStats(artefactStats.EffectStats,artefactStats.levelTier);
+            CharacterGameStats.instance.ApplyStatChange();
+        }
+
+        public void UpgradeArtefact(int index)
+        {
+            ArtefactBaseInfos artefactBaseInfos = artefactBaseInfosList[index]; 
+            if(artefactBaseInfos.type == ArtefactType.Stats)
+            {
+                ArtefactStats artefactStats =  (ArtefactStats)artefactBaseInfos;
+                if(artefactStats.IsPermanent())
+                {
+                    CharacterGameStats.instance.GetPlayerStats().RemoveStats(artefactStats.EffectStats, artefactStats.levelTier);
+                    CharacterGameStats.instance.ApplyStatChange();
+
+                }
+
+                artefactStats.UpdateTierFragment();
+
+                CharacterGameStats.instance.GetPlayerStats().ChangeStats(artefactStats.EffectStats, artefactStats.levelTier);
+                CharacterGameStats.instance.ApplyStatChange();
+            }
+            
         }
 
 

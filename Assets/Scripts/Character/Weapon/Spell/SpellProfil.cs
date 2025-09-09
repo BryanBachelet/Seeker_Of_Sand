@@ -533,10 +533,10 @@ namespace SpellSystem
 
         [Space]
         public List<T> statDatas = new List<T>();
-        [HideInInspector] public  List<StatType> statTypes = new List<StatType>();
+        [HideInInspector] public List<StatType> statTypes = new List<StatType>();
 
 
-        
+
 
         public PlayerEffectStats<T> Clone()
         {
@@ -735,7 +735,28 @@ namespace SpellSystem
                 }
             }
         }
-        public void AddToFloatStats(StatType statsType, float val, string nameAdditional, float multiplier = 1)
+        public void SubstractToIntStat(StatType statsType, int val, string nameAdditional = "", float multiplier = 1)
+        {
+            if (!IsStatInt(statsType))
+            {
+                Debug.LogError("This stats isn't an integer");
+                return;
+            }
+
+            for (int i = 0; i < statTypes.Count; i++)
+            {
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_int -= val;
+                    if (multiplier != 0) statData.val_int = (int)(statData.val_int * multiplier);
+                    statDatas[i] = (T)statData;
+                    return;
+                }
+            }
+        }
+
+    public void AddToFloatStats(StatType statsType, float val, string nameAdditional, float multiplier = 1)
         {
 
             if (!IsStatFloat(statsType))
@@ -756,6 +777,27 @@ namespace SpellSystem
                 }
             }
         }
+        public void SubstactToFloatStat(StatType statsType, float val, string nameAdditional, float multiplier = 1)
+        {
+            if (!IsStatFloat(statsType))
+            {
+                Debug.LogError("This stats isn't an float");
+                return;
+            }
+
+            for (int i = 0; i < statTypes.Count; i++)
+            {
+                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_float -= val;
+                    if (multiplier != 0) statData.val_float *= multiplier;
+                    statDatas[i] = (T)statData;
+                    return;
+                }
+            }
+        }
+
         public void ChangBoolValue(StatType statsType, bool val)
         {
             if (!IsStatBool(statsType))
@@ -1243,6 +1285,39 @@ namespace SpellSystem
                 }
             }
         }
+
+        public void RemoveStats(PlayerEffectStats<StatDataArtefact> gameEffectStats, LevelTier currentTier)
+        {
+            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
+            {
+                if (gameEffectStats.statDatas[i].tier != currentTier) continue;
+
+                if (IsStatBool(gameEffectStats.statDatas[i].stat))
+                {
+                    ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
+                    continue;
+                }
+
+                if (IsStatInt(gameEffectStats.statDatas[i].stat))
+                {
+
+                    SubstractToIntStat(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    continue;
+                }
+                if (IsStatFloat(gameEffectStats.statDatas[i].stat))
+                {
+                    SubstactToFloatStat(gameEffectStats.statDatas[i].stat, gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    continue;
+                }
+
+                if (IsStatString(gameEffectStats.statTypes[i]))
+                {
+                    ChangeStringStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_string);
+                    continue;
+                }
+            }
+        }
+
 
         public void InitialisationPlayerStats()
         {

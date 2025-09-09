@@ -44,14 +44,15 @@ namespace GuerhoubaGames.Artefact
         public ArtefactVisualData visualData;
 
         [Header("Upgrade Feature Variable")]
-        [SerializeField] private bool m_isUpgradePossible;
+        [SerializeField] protected bool m_isUpgradePossible;
         public LevelTier levelTier;
 
         [Header("Reinforcement Feature Variable")]
-        [SerializeField] private bool m_isReinforcementPossible;
+        [SerializeField] protected bool m_isReinforcementPossible;
+        [SerializeField] private int m_currentStack;
 
         [Header("Merge Feature Variable")]
-        [SerializeField] private bool m_isMergePossible;
+        [SerializeField] protected bool m_isMergePossible;
         private bool m_hasBeenMergeOnce = false;
 
         [Header("Conditional Variables")]
@@ -81,17 +82,22 @@ namespace GuerhoubaGames.Artefact
 
         public virtual void AddAdditionalArtefact(ArtefactBaseInfos artefactBaseInfos)
         {
-
+            if (!m_isReinforcementPossible) return;
+            m_currentStack++;
         }
 
         public virtual void MergeFragment(ArtefactBaseInfos artefactBaseInfos)
         {
+            if (!m_isMergePossible) return;
 
         }
 
         public virtual void UpdateTierFragment()
         {
 
+            if (!m_isUpgradePossible) return;
+            if ((int)levelTier < 3)
+                levelTier += 1;
         }
 
 

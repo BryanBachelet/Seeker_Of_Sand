@@ -19,6 +19,9 @@ namespace GuerhoubaGames.Artefact
         public ArtefactStats()
         {
             type = ArtefactType.Stats;
+            m_isReinforcementPossible = true;
+            m_isUpgradePossible = true;
+            m_isMergePossible = false;
         }
 
         public new ArtefactStats Clone()
@@ -27,6 +30,19 @@ namespace GuerhoubaGames.Artefact
         }
 
         public bool IsPermanent() { return isPermanent; }
- 
+
+        public override void AddAdditionalArtefact(ArtefactBaseInfos artefactBaseInfos)
+        {
+            base.AddAdditionalArtefact(artefactBaseInfos);
+
+            EffectStats.ChangeStats(artefactBaseInfos.EffectStats,levelTier);
+        }
+
+        public override void UpdateTierFragment()
+        {
+            base.UpdateTierFragment();
+
+        }
+
     }
 }

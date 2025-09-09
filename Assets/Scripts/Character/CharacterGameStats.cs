@@ -1,5 +1,6 @@
 using GuerhoubaGames.GameEnum;
 using SpellSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Tracker;
@@ -17,6 +18,8 @@ namespace GuerhoubaGames.Character
         
         [SerializeField] private PlayerEffectStats<StatData> m_playerStats;
 
+        public Action onChangeStat;
+
         #region Unity Functions
         public void Awake()
         {
@@ -31,6 +34,11 @@ namespace GuerhoubaGames.Character
 
 
         public PlayerEffectStats<StatData> GetPlayerStats() { return m_playerStats; }
+
+        public void ApplyStatChange()
+        {
+            onChangeStat?.Invoke();
+        }
 
 
         #region Static Functions

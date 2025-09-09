@@ -25,7 +25,7 @@ public class HealthPlayerComponent : MonoBehaviour
 
     [Header("Heath Parameters")]
     [SerializeField] private float m_MaxHealthQuantity = 50;
-
+    private float m_currentMaxHealth;
     private float[] m_CurrentQuarterMinHealth;
     private int m_QuarterNumber = 4;
     private float m_QuarterHealthQuantity;
@@ -97,17 +97,22 @@ public class HealthPlayerComponent : MonoBehaviour
 
         m_characterMouvement = GetComponent<CharacterMouvement>();
         m_Profil = this.GetComponent<CharacterProfile>();
-        AugmenteMaxHealth((int)m_Profil.stats.healthMax.totalValue);
+        SetMaxHealth(CharacterGameStats.GetIntData(StatType.Health));
+        CharacterGameStats.instance.onChangeStat += UpdateLifeStat;
+
         m_cameraUsed = Camera.main;
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out colorAdjustments);
         if (this.GetComponent<HitEffectHighLight>() != null) { m_HitEffectHighLight = this.GetComponent<HitEffectHighLight>(); }
+      
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+
         if (activeDeath && m_CurrentHealth <= 0 && !isEndMenuActivate)
         {
             GuerhoubaGames.SaveData.GameData.UpdateFarestRoom(TerrainGenerator.roomGeneration_Static);
@@ -266,11 +271,33 @@ public class HealthPlayerComponent : MonoBehaviour
         m_isLightInvulnerable = false;
     }
 
+    public void UpdateLifeStat()
+    {
+        int lifeDelta = CharacterGameStats.GetIntData(StatType.Health) - (int)m_MaxHealthQuantity;
+        AugmenteMaxHealth(lifeDelta);
+    }
+
+    public void SetMaxHealth(int maxHealthValue)
+    {
+        m_MaxHealthQuantity = maxHealthValue;  
+        m_CurrentHealth = maxHealthValue;
+
+        m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
+        m_currentMaxHealth = m_MaxHealthQuantity;
+
+        uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
+        uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
+    }
+
+
+
     public void AugmenteMaxHealth(int quantity)
     {
+
         m_MaxHealthQuantity += quantity;
         m_CurrentHealth += quantity;
         m_QuarterHealthQuantity = m_MaxHealthQuantity / m_QuarterNumber;
+        m_currentMaxHealth = m_MaxHealthQuantity;
 
         uiHealthPlayer.UpdateLifeBar(m_CurrentHealth / m_MaxHealthQuantity, 1 / m_QuarterNumber * (m_QuarterNumber - m_CurrentQuarter));
         uiHealthPlayer.UpdateLifeData((int)m_CurrentHealth, (int)m_MaxHealthQuantity);
