@@ -154,6 +154,7 @@ namespace GuerhoubaGames.GameEnum
         DirectionSpeed = 2028,
         AfflictionProbility =2029,
         BounceRadius =2030,
+        IncreaseProjectilePercent = 2031,
        
     }
 

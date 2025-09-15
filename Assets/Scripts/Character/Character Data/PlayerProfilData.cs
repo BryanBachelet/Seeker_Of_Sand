@@ -13,7 +13,9 @@ namespace GuerhoubaGames.Character
 
         public PlayerProfilData Clone()
         {
-            return Instantiate(this);
+             PlayerProfilData playerProfilData = Instantiate(this);
+            playerProfilData.stats = stats.Clone();
+            return playerProfilData;
         }
     }
 }

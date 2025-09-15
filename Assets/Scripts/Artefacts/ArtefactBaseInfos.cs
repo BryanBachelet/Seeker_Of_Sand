@@ -1,3 +1,4 @@
+using GuerhoubaGames.Character;
 using GuerhoubaGames.GameEnum;
 using SpellSystem;
 using System.Collections;
@@ -20,6 +21,15 @@ namespace GuerhoubaGames.Artefact
     {
         public Sprite icon;
     }
+
+    [System.Serializable]
+    public struct ConditionData
+    {
+        public GameObject agent;
+        public EntitiesTrigger tag;
+        public GameElement element;
+    }
+
 
     #endregion
 
@@ -66,6 +76,11 @@ namespace GuerhoubaGames.Artefact
         [ShowIf("hasStat", true, true)] public PlayerEffectStats<StatDataArtefact> EffectStats;
 
 
+        [Header("Update Variable")]
+        public bool hasUpdate;
+
+        [HideInInspector] public CharacterArtefact characterArtefact;
+
 
         public ArtefactBaseInfos Clone()
         {
@@ -92,7 +107,7 @@ namespace GuerhoubaGames.Artefact
 
         }
 
-        public virtual void UpdateTierFragment()
+        public virtual void IncreaseTierFragment()
         {
 
             if (!m_isUpgradePossible) return;
@@ -100,6 +115,22 @@ namespace GuerhoubaGames.Artefact
                 levelTier += 1;
         }
 
+
+        #region Conditionnal Functions
+
+        public virtual void ActiveCondition(ConditionData conditionData)
+        {
+            if (entitiesTrigger != conditionData.tag) return;
+
+
+        }
+
+        #endregion
+
+        public virtual void UpdateArtefactItem()
+        {
+            if (!hasUpdate) return;
+        }    
 
         public void ResultString()
         {

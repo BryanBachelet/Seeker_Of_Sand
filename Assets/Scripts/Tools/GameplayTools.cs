@@ -132,6 +132,11 @@ namespace GuerhoubaTools.Gameplay
             return target * ((100 +percent) / 100);
         }
 
+        public static int ApplyIncreasePercent(int target, float percent)
+        {
+            return (int) ( target * ((100 + percent) / 100));
+        }
+
         public static Vector3 ApplyIncreasePercent(Vector3 target, float percent)
         {
            return  target * ((100 + percent) / 100);

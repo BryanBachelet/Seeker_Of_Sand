@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -846,8 +847,9 @@ namespace GuerhoubaGames.Character
            
             float angle = GetShootAngle(spellProfil);
             int mod = GetStartIndexProjectile(spellProfil);
+            int finalProjectileCount = Tools.ApplyIncreasePercent(spellProfil.GetIntStat(StatType.Projectile), CharacterGameStats.GetFloatData(StatType.IncreaseProjectilePercent));
 
-            for (int i = 0; i < spellProfil.GetIntStat(StatType.Projectile); i++)
+            for (int i = 0; i < finalProjectileCount; i++)
             {
                 Transform transformUsed = transform;
 
@@ -1246,7 +1248,7 @@ namespace GuerhoubaGames.Character
 
         private float GetShootAngle(SpellSystem.SpellProfil spellProfil)
         {
-            return spellProfil.GetFloatStat(StatType.ShootAngle) / spellProfil.GetIntStat(StatType.Projectile);
+            return spellProfil.GetFloatStat(StatType.ShootAngle) / Tools.ApplyIncreasePercent(spellProfil.GetIntStat(StatType.Projectile), CharacterGameStats.GetFloatData(StatType.IncreaseProjectilePercent));
         }
 
         /// <summary>
@@ -1256,7 +1258,8 @@ namespace GuerhoubaGames.Character
         /// <returns></returns>
         private int GetStartIndexProjectile(SpellSystem.SpellProfil spellProfil)
         {
-            return spellProfil.GetIntStat(StatType.Projectile) % 2 == 1 ? 0 : 1;
+            int finalProjectileCount = Tools.ApplyIncreasePercent(spellProfil.GetIntStat(StatType.Projectile), CharacterGameStats.GetFloatData(StatType.IncreaseProjectilePercent));
+            return finalProjectileCount % 2 == 1 ? 0 : 1;
         }
 
         public void UpdateMultipleShoot(StatType statType)

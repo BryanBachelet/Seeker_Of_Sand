@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 namespace GuerhoubaGames.Artefact
@@ -14,7 +15,8 @@ namespace GuerhoubaGames.Artefact
         [SerializeField] private bool isPermanent;
         [ShowIf("isPermanent", false, true)] public bool isTemporary;
         [ShowIf("isTemporary", true, true)] public float buffDuration = 0;
-        private float buffTimer;
+        private float m_buffTimer;
+        private bool m_isBuffActive;
 
         public ArtefactStats()
         {
@@ -38,11 +40,43 @@ namespace GuerhoubaGames.Artefact
             EffectStats.ChangeStats(artefactBaseInfos.EffectStats,levelTier);
         }
 
-        public override void UpdateTierFragment()
+        public override void IncreaseTierFragment()
         {
-            base.UpdateTierFragment();
+            base.IncreaseTierFragment();
 
         }
+
+        public override void ActiveCondition(ConditionData conditionData)
+        {
+            base.ActiveCondition(conditionData);
+
+            if (!isTemporary && isPermanent) return;
+            m_isBuffActive = true;
+            m_buffTimer = 0;
+            bool isTemporaryValid = true;
+            characterArtefact.SetupStatsArtefacts(this, isTemporaryValid);
+        }
+
+        #region Specific Functions
+
+        public override void UpdateArtefactItem()
+        {
+            base.UpdateArtefactItem();
+
+            if (!m_isBuffActive) return;
+
+            if(m_buffTimer>buffDuration)
+            {
+                m_isBuffActive = false;
+                characterArtefact.RemoveStatsArtefacts(this);
+            }
+            else
+            {
+                m_buffTimer += Time.deltaTime;
+            }
+        }
+
+        #endregion
 
     }
 }

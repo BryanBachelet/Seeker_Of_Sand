@@ -17,6 +17,7 @@ namespace GuerhoubaGames.Character
     {
         public List<ArtefactsInfos> artefactsList;
         public List<ArtefactBaseInfos> artefactBaseInfosList;
+        private List<ConditionsTrigger> artefactConditionList = new List<ConditionsTrigger>();
         [HideInInspector] private Enemies.EnemyManager m_enemyManager;
 
         public bool activeDebug = false;
@@ -69,7 +70,11 @@ namespace GuerhoubaGames.Character
                 AddArtefact(cloneListInfo[i]);
             }
 
+        }
 
+        public void Update()
+        {
+            UpdateArtefact();
         }
 
         private void SetupArtefact(ArtefactsInfos artefacts)
@@ -208,6 +213,7 @@ namespace GuerhoubaGames.Character
             uiFragmentTooltip.AddNewFragment(clone);
         }
 
+        #region New Artefact Functions
         public void AddArtefact(ArtefactBaseInfos artefactBaseInfos)
         {
             for (int i = 0; i < artefactsList.Count; i++)
@@ -216,14 +222,17 @@ namespace GuerhoubaGames.Character
                 {
                     // Implementation Stack Mechanics
                     artefactBaseInfosList[i].AddAdditionalArtefact(artefactBaseInfos);
-                  
+
                 }
 
 
             }
 
             ArtefactBaseInfos clone = artefactBaseInfos.Clone();
+            clone.characterArtefact = this;
             artefactBaseInfosList.Add(clone);
+
+            artefactConditionList.Add(clone.conditionsTrigger);
 
             // Implementation Pull mechanics
 
@@ -248,37 +257,65 @@ namespace GuerhoubaGames.Character
             }
         }
 
-        private void SetupStatsArtefacts(ArtefactStats artefactStats)
+        public void SetupStatsArtefacts(ArtefactStats artefactStats, bool isTemporaryValid =false)
         {
-            if (!artefactStats.IsPermanent()) return;
+            if (!artefactStats.IsPermanent() && !isTemporaryValid) return;
 
             artefactStats.EffectStats.InitialisationPlayerStats();
-            CharacterGameStats.instance.GetPlayerStats().ChangeStats(artefactStats.EffectStats,artefactStats.levelTier);
+            CharacterGameStats.instance.GetPlayerStats().ChangeStats(artefactStats.EffectStats, artefactStats.levelTier);
+            CharacterGameStats.instance.ApplyStatChange();
+        }
+
+        public void RemoveStatsArtefacts(ArtefactStats artefactStats)
+        {
+            CharacterGameStats.instance.GetPlayerStats().RemoveStats(artefactStats.EffectStats, artefactStats.levelTier);
             CharacterGameStats.instance.ApplyStatChange();
         }
 
         public void UpgradeArtefact(int index)
         {
-            ArtefactBaseInfos artefactBaseInfos = artefactBaseInfosList[index]; 
-            if(artefactBaseInfos.type == ArtefactType.Stats)
+            ArtefactBaseInfos artefactBaseInfos = artefactBaseInfosList[index];
+            if (artefactBaseInfos.type == ArtefactType.Stats)
             {
-                ArtefactStats artefactStats =  (ArtefactStats)artefactBaseInfos;
-                if(artefactStats.IsPermanent())
+                ArtefactStats artefactStats = (ArtefactStats)artefactBaseInfos;
+                if (artefactStats.IsPermanent())
                 {
                     CharacterGameStats.instance.GetPlayerStats().RemoveStats(artefactStats.EffectStats, artefactStats.levelTier);
                     CharacterGameStats.instance.ApplyStatChange();
 
                 }
 
-                artefactStats.UpdateTierFragment();
+                artefactStats.IncreaseTierFragment();
 
                 CharacterGameStats.instance.GetPlayerStats().ChangeStats(artefactStats.EffectStats, artefactStats.levelTier);
                 CharacterGameStats.instance.ApplyStatChange();
             }
-            
+
         }
 
+        public void ActiveCondition(ConditionsTrigger conditionsTrigger, ConditionData conditionData)
+        {
+            for (int i = 0; i < artefactConditionList.Count; i++)
+            {
+                if (conditionsTrigger == artefactConditionList[i])
+                {
+                    artefactBaseInfosList[i].ActiveCondition(conditionData);
+                }
+            }
+        }
 
+        public void UpdateArtefact()
+        {
+            for (int i = 0; i < artefactBaseInfosList.Count; i++)
+            {
+                if (!artefactBaseInfosList[i].hasUpdate) continue;
+
+                artefactBaseInfosList[i].UpdateArtefactItem();  
+                
+            }
+        }
+
+        #endregion
 
 
 

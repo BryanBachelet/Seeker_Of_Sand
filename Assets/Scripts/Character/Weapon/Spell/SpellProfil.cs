@@ -547,7 +547,9 @@ namespace SpellSystem
             {
                 T statDataInstance = (T)statDatas[i].Clone();
                 stats.statDatas.Add(statDataInstance);
-                stats.statTypes.Add(statDataInstance.stat);
+
+               if(!stats.statTypes.Contains(statDataInstance.stat))
+                    stats.statTypes.Add(statDataInstance.stat);
             }
 
             stats.tagData = new TagData();
@@ -948,7 +950,7 @@ namespace SpellSystem
                 statData.stat = statToCheck;
                 statData.isVisible = isVisible;
                 statDatas.Add((T)statData);
-                statTypes.Add(statToCheck);
+               if(!statTypes.Contains(statToCheck)) statTypes.Add(statToCheck);
             }
 
             return;
