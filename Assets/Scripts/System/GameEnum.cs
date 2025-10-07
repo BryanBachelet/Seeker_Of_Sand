@@ -107,6 +107,8 @@ namespace GuerhoubaGames.GameEnum
 
     public enum StatType
     {
+        NONE = 0,
+
         Damage = 1001,
         Projectile = 1002,
         ShootNumber = 1004,
@@ -155,6 +157,7 @@ namespace GuerhoubaGames.GameEnum
         AfflictionProbility =2029,
         BounceRadius =2030,
         IncreaseProjectilePercent = 2031,
+        IncreaseDamagePercent = 2032,
        
     }
 

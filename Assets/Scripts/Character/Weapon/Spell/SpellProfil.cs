@@ -403,8 +403,23 @@ namespace SpellSystem
                 return new StatDataLevel(data);
             }
 
+            if (t == typeof(StatDataArtefact))
+            {
+                return new StatDataArtefact(data);
+            }
+
             return this;
 
+        }
+
+        public static T ConvertStats<T>(StatData data, Type t) where T : StatData
+        { 
+            if (t == typeof(T))
+            {
+                return  (T)data;
+            }
+
+            return null;
         }
 
         object ICloneable.Clone() => this.Clone();
@@ -419,6 +434,19 @@ namespace SpellSystem
         public override StatData Clone()
         {
             return (StatDataLevel)this.MemberwiseClone();
+        }
+
+        public StatDataLevel()
+        {
+            val_int = 0;
+            val_float = 0;
+            val_string = "";
+            val_bool = false;
+            isVisible = false;
+            nameStat = "";
+            stat = StatType.NONE;
+            valueType = 0;
+            multiply = 0;
         }
 
         public StatDataLevel(StatData data)
@@ -452,10 +480,25 @@ namespace SpellSystem
     public class StatDataArtefact : StatData, IStatInterface
     {
         public LevelTier tier;
+        public bool hasMatchingStats;
+        public StatType matchingType;
 
         public override StatData Clone()
         {
             return (StatDataLevel)this.MemberwiseClone();
+        }
+
+        public StatDataArtefact()
+        {
+            val_int = 0;
+            val_float = 0;
+            val_string = "";
+            val_bool = false;
+            isVisible = false;
+            nameStat = "";
+            stat = StatType.NONE;
+            valueType = 0;
+            tier = LevelTier.TIER_0;
         }
 
         public StatDataArtefact(StatData data)
@@ -469,7 +512,7 @@ namespace SpellSystem
             stat = data.stat;
             valueType = data.valueType;
             tier = LevelTier.TIER_0;
-            
+
         }
 
         public override void ConvertStat(StatData data)
@@ -495,6 +538,21 @@ namespace SpellSystem
         {
             return (StatDataUpgrade)this.MemberwiseClone();
         }
+
+
+        public StatDataUpgrade()
+        {
+            val_int = 0;
+            val_float = 0;
+            val_string = "";
+            val_bool = false;
+            isVisible = false;
+            nameStat = "";
+            stat = StatType.NONE;
+            valueType = 0;
+            isOnlyAddWithTag = false;
+        }
+
 
         public StatDataUpgrade(StatData data)
         {
@@ -522,10 +580,48 @@ namespace SpellSystem
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public struct AddingStatsData
+    {
+        public float multiplier;
+        public StatType type;
+        public string nameAdditional;
+        public bool isAddable;
+        public StatType matchingType;
+        public bool hasCheckMatchType;
+        public bool isAffliction;
+        public AfflictionType AfflictionType;
+
+
+        public void BaseInit(StatType typeGive)
+        {
+            type = typeGive;
+            multiplier = 1;
+            nameAdditional = "";
+            isAddable = false;
+            matchingType = StatType.NONE;
+            isAffliction = false;
+        }
+
+        public void BaseInit(StatType typeGive, string nameAdditionalGive)
+        {
+            type = typeGive;
+            multiplier = 1;
+            nameAdditional = nameAdditionalGive;
+            isAddable = false;
+            matchingType = StatType.NONE;
+            isAffliction = false;
+        }
+
+
+
+    }
 
 
     [System.Serializable]
-    public class PlayerEffectStats<T> where T : StatData, IStatInterface
+    public class PlayerEffectStats<T> where T : StatData, IStatInterface, new()
     {
 
         [Header("Tag Parameters")]
@@ -548,7 +644,7 @@ namespace SpellSystem
                 T statDataInstance = (T)statDatas[i].Clone();
                 stats.statDatas.Add(statDataInstance);
 
-               if(!stats.statTypes.Contains(statDataInstance.stat))
+                if (!stats.statTypes.Contains(statDataInstance.stat))
                     stats.statTypes.Add(statDataInstance.stat);
             }
 
@@ -558,7 +654,25 @@ namespace SpellSystem
             return stats;
         }
 
-        public bool IsStatBool(StatType statsType)
+        public void Setup(PlayerEffectStats<StatData> effectStats)
+        {
+            tagData = effectStats.tagData;
+            for (int i = 0;  i < effectStats.statDatas.Count;  i++)
+            {
+                T statData = new T();
+                statDatas.Add(statData);
+                statDatas[i].ConvertStat(effectStats.statDatas[i]);
+               
+            }
+
+            statTypes = effectStats.statTypes;
+        }
+
+
+
+      
+
+         public bool IsStatBool(StatType statsType)
         {
             return (int)statsType - ((0 * 1000)) < 1000;
         }
@@ -615,7 +729,7 @@ namespace SpellSystem
                 }
             }
 
-            Debug.LogError("Didn't find this stat on the spell ");
+          //  Debug.LogError("Didn't find this stat on the spell ");
             return -1;
         }
 
@@ -635,7 +749,7 @@ namespace SpellSystem
                 }
             }
 
-            Debug.LogError("Didn't find this stat on the spell ");
+           // Debug.LogError("Didn't find this stat on the spell ");
             return -1;
         }
 
@@ -655,7 +769,7 @@ namespace SpellSystem
                 }
             }
 
-            Debug.LogError("Didn't find this stat on the spell ");
+           // Debug.LogError("Didn't find this stat on the spell ");
             return -1;
         }
         public float GetFloatStat(StatType statsType, string nameStatToChange)
@@ -717,26 +831,89 @@ namespace SpellSystem
             return "";
         }
 
-        public void AddToIntStats(StatType statsType, int val, string nameAdditional = "", float multiplier = 1)
+        public void AddToIntStats(int val, AddingStatsData addingStatsData)
         {
-            if (!IsStatInt(statsType))
+            if (!IsStatInt(addingStatsData.type))
             {
+
                 Debug.LogError("This stats isn't an integer");
                 return;
             }
 
+            if (GetIntStat(addingStatsData.type) == -1 && addingStatsData.isAddable && addingStatsData.matchingType != StatType.NONE)
+            {
+                if (addingStatsData.hasCheckMatchType && ( GetIntStat(addingStatsData.matchingType) == -1 && GetFloatStat(addingStatsData.matchingType) == -1)) return;
+
+                if (!addingStatsData.isAffliction)
+                    ManageStat(addingStatsData.type, addingStatsData.isAddable);
+                else
+                    ManageAfflictionStat(addingStatsData.type, addingStatsData.isAddable, addingStatsData.AfflictionType, true);
+            }
+
+
             for (int i = 0; i < statTypes.Count; i++)
             {
-                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
+                if (addingStatsData.type == statTypes[i] && statDatas[i].nameStat == addingStatsData.nameAdditional)
                 {
                     StatData statData = statDatas[i];
                     statData.val_int += val;
-                    if (multiplier != 0) statData.val_int = (int)(statData.val_int * multiplier);
+                    if (addingStatsData.multiplier != 0) statData.val_int = (int)(statData.val_int * addingStatsData.multiplier);
                     statDatas[i] = (T)statData;
+
+                    if (typeof(T) == typeof(StatDataArtefact))
+                    {
+                         statData = statDatas[i];
+                        StatDataArtefact statDataArtefact = (StatDataArtefact)statData;
+                        statDataArtefact.matchingType = addingStatsData.matchingType;
+                        statDatas[i] = (T)statDataArtefact.ConvertTo(typeof(StatDataArtefact));
+                    }
+
+
                     return;
                 }
             }
         }
+
+        public void AddToFloatStats(float val, AddingStatsData addingStatsData)
+        {
+
+            if (!IsStatFloat(addingStatsData.type))
+            {
+                Debug.LogError("This stats isn't an float");
+                return;
+            }
+
+            if (GetFloatStat(addingStatsData.type) == -1 && addingStatsData.isAddable && addingStatsData.matchingType != StatType.NONE)
+            {
+                if (addingStatsData.hasCheckMatchType && (GetIntStat(addingStatsData.matchingType) == -1 && GetFloatStat(addingStatsData.matchingType) == -1)) return;
+
+                if (!addingStatsData.isAffliction)
+                    ManageStat(addingStatsData.type, addingStatsData.isAddable);
+                else
+                    ManageAfflictionStat(addingStatsData.type, addingStatsData.isAddable, addingStatsData.AfflictionType, true);
+            }
+
+            for (int i = 0; i < statDatas.Count; i++)
+            {
+                if (addingStatsData.type == statTypes[i] && statDatas[i].nameStat == addingStatsData.nameAdditional)
+                {
+                    StatData statData = statDatas[i];
+                    statData.val_float += val;
+                    if (addingStatsData.multiplier != 0) statData.val_float *= addingStatsData.multiplier;
+                    statDatas[i] = (T)statData;
+
+                    if (typeof(T) == typeof(StatDataArtefact))
+                    {
+                        statData = statDatas[i];
+                        StatDataArtefact statDataArtefact = (StatDataArtefact)statData;
+                        statDataArtefact.matchingType = addingStatsData.matchingType;
+                        statDatas[i] = (T)statDataArtefact.ConvertTo(typeof(StatDataArtefact));
+                    }
+                    return;
+                }
+            }
+        }
+
         public void SubstractToIntStat(StatType statsType, int val, string nameAdditional = "", float multiplier = 1)
         {
             if (!IsStatInt(statsType))
@@ -758,27 +935,7 @@ namespace SpellSystem
             }
         }
 
-    public void AddToFloatStats(StatType statsType, float val, string nameAdditional, float multiplier = 1)
-        {
 
-            if (!IsStatFloat(statsType))
-            {
-                Debug.LogError("This stats isn't an float");
-                return;
-            }
-
-            for (int i = 0; i < statTypes.Count; i++)
-            {
-                if (statsType == statTypes[i] && statDatas[i].nameStat == nameAdditional)
-                {
-                    StatData statData = statDatas[i];
-                    statData.val_float += val;
-                    if (multiplier != 0) statData.val_float *= multiplier;
-                    statDatas[i] = (T)statData;
-                    return;
-                }
-            }
-        }
         public void SubstactToFloatStat(StatType statsType, float val, string nameAdditional, float multiplier = 1)
         {
             if (!IsStatFloat(statsType))
@@ -946,11 +1103,12 @@ namespace SpellSystem
 
             if (isAdd)
             {
-                StatData statData = new StatData();
+                T statData = new T();
                 statData.stat = statToCheck;
                 statData.isVisible = isVisible;
-                statDatas.Add((T)statData);
-               if(!statTypes.Contains(statToCheck)) statTypes.Add(statToCheck);
+                statData.nameStat = "";
+                statDatas.Add(statData);
+                if (!statTypes.Contains(statToCheck)) statTypes.Add(statToCheck);
             }
 
             return;
@@ -1159,7 +1317,7 @@ namespace SpellSystem
             return tagData.HasOneTagSimilar(gameEffectStats.tagData);
         }
 
-        public void ChangeStats<U>(PlayerEffectStats<U> gameEffectStats) where U : StatDataLevel
+        public void ChangeStats<U>(PlayerEffectStats<U> gameEffectStats) where U : StatDataLevel, new()
         {
 
             for (int i = 0; i < gameEffectStats.statTypes.Count; i++)
@@ -1173,12 +1331,16 @@ namespace SpellSystem
 
                 if (IsStatInt(gameEffectStats.statTypes[i]))
                 {
-                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    AddToIntStats(gameEffectStats.statDatas[i].val_int, addingStatsData);
                     continue;
                 }
                 if (IsStatFloat(gameEffectStats.statTypes[i]))
                 {
-                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    AddToFloatStats(gameEffectStats.statDatas[i].val_float, addingStatsData);
                     continue;
                 }
 
@@ -1204,12 +1366,16 @@ namespace SpellSystem
 
                 if (IsStatInt(gameEffectStats.statDatas[i].stat))
                 {
-                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    AddToIntStats(gameEffectStats.statDatas[i].val_int, addingStatsData);
                     continue;
                 }
                 if (IsStatFloat(gameEffectStats.statDatas[i].stat))
                 {
-                    AddToFloatStats(gameEffectStats.statDatas[i].stat, gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    AddToFloatStats(gameEffectStats.statDatas[i].val_float, addingStatsData);
                     continue;
                 }
 
@@ -1226,9 +1392,9 @@ namespace SpellSystem
 
             for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
             {
-                if ( gameEffectStats.statDatas[i].tier != currentTier) continue;
+                if (gameEffectStats.statDatas[i].tier != currentTier) continue;
 
-                if (IsStatBool(gameEffectStats.statDatas[i].stat) )
+                if (IsStatBool(gameEffectStats.statDatas[i].stat))
                 {
                     ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
                     continue;
@@ -1236,13 +1402,21 @@ namespace SpellSystem
 
                 if (IsStatInt(gameEffectStats.statDatas[i].stat))
                 {
-                    
-                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    addingStatsData.isAddable = true;
+                    addingStatsData.matchingType = gameEffectStats.statDatas[i].matchingType;
+                    AddToIntStats(gameEffectStats.statDatas[i].val_int, addingStatsData);
+                   
                     continue;
                 }
                 if (IsStatFloat(gameEffectStats.statDatas[i].stat))
                 {
-                    AddToFloatStats(gameEffectStats.statDatas[i].stat, gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    addingStatsData.isAddable = true;
+                    addingStatsData.matchingType = gameEffectStats.statDatas[i].matchingType;
+                    AddToFloatStats(gameEffectStats.statDatas[i].val_float, addingStatsData);
                     continue;
                 }
 
@@ -1253,6 +1427,49 @@ namespace SpellSystem
                 }
             }
         }
+
+        // Can't be use when adding artefact
+        public void ChangeStats(PlayerEffectStats<StatDataArtefact> gameEffectStats)
+        {
+            for (int i = 0; i < gameEffectStats.statDatas.Count; i++)
+            {
+               
+
+                if (IsStatBool(gameEffectStats.statDatas[i].stat))
+                {
+                    ChangBoolValue(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_bool);
+                    continue;
+                }
+
+                if (IsStatInt(gameEffectStats.statDatas[i].stat))
+                {
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    addingStatsData.isAddable = true;
+                    addingStatsData.matchingType = gameEffectStats.statDatas[i].matchingType;
+                    addingStatsData.hasCheckMatchType = true;
+                    AddToIntStats(gameEffectStats.statDatas[i].val_int, addingStatsData);
+                    continue;
+                }
+                if (IsStatFloat(gameEffectStats.statDatas[i].stat))
+                {
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    addingStatsData.isAddable = true;
+                    addingStatsData.matchingType = gameEffectStats.statDatas[i].matchingType;
+                    addingStatsData.hasCheckMatchType = true;
+                    AddToFloatStats(gameEffectStats.statDatas[i].val_float, addingStatsData);
+                    continue;
+                }
+
+                if (IsStatString(gameEffectStats.statTypes[i]))
+                {
+                    ChangeStringStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_string);
+                    continue;
+                }
+            }
+        }
+
 
 
 
@@ -1271,12 +1488,16 @@ namespace SpellSystem
 
                 if (IsStatInt(gameEffectStats.statTypes[i]) && IsAddingStat)
                 {
-                    AddToIntStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_int, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    AddToIntStats(gameEffectStats.statDatas[i].val_int, addingStatsData);
                     continue;
                 }
                 if (IsStatFloat(gameEffectStats.statTypes[i]) && IsAddingStat)
                 {
-                    AddToFloatStats(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].val_float, gameEffectStats.statDatas[i].nameStat);
+                    AddingStatsData addingStatsData = new AddingStatsData();
+                    addingStatsData.BaseInit(gameEffectStats.statTypes[i], gameEffectStats.statDatas[i].nameStat);
+                    AddToFloatStats(gameEffectStats.statDatas[i].val_float, addingStatsData);
                     continue;
                 }
 
@@ -1329,7 +1550,7 @@ namespace SpellSystem
             }
         }
 
-      
+
     }
 
 
@@ -1387,7 +1608,7 @@ namespace SpellSystem
             SpellProfil spellProfil = Instantiate(this);
 
             spellProfil.gameEffectStats = gameEffectStats.Clone();
-            spellProfil.gameEffectStats.InitialisationPlayerStats();
+          //  spellProfil.gameEffectStats.InitialisationPlayerStats();
 
             if (isSetup)
             {

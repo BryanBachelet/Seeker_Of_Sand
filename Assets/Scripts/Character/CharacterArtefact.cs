@@ -216,7 +216,7 @@ namespace GuerhoubaGames.Character
         #region New Artefact Functions
         public void AddArtefact(ArtefactBaseInfos artefactBaseInfos)
         {
-            for (int i = 0; i < artefactsList.Count; i++)
+            for (int i = 0; i < artefactBaseInfosList.Count; i++)
             {
                 if (artefactBaseInfosList[i].IsSameFragment(artefactBaseInfos))
                 {

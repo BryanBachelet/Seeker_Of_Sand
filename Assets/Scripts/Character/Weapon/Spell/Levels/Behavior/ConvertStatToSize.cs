@@ -13,9 +13,17 @@ namespace SpellSystem
             int projectile = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.Projectile);
             int shootCount = spellProfil.GetIntStat(GuerhoubaGames.GameEnum.StatType.ShootNumber);
 
-            spellProfil.gameEffectStats.AddToFloatStats(GuerhoubaGames.GameEnum.StatType.SizeExplosion, (projectile + shootCount),"");
-            spellProfil.gameEffectStats.AddToIntStats(GuerhoubaGames.GameEnum.StatType.Projectile, (-projectile + 1));
-            spellProfil.gameEffectStats.AddToIntStats(GuerhoubaGames.GameEnum.StatType.ShootNumber, (-shootCount +1));
+
+            AddingStatsData addingStatsData = new AddingStatsData();
+
+            addingStatsData.BaseInit(GuerhoubaGames.GameEnum.StatType.SizeExplosion);
+            spellProfil.gameEffectStats.AddToFloatStats((projectile + shootCount),addingStatsData);
+
+            addingStatsData.BaseInit(GuerhoubaGames.GameEnum.StatType.Projectile);
+            spellProfil.gameEffectStats.AddToIntStats( (-projectile + 1), addingStatsData);
+
+            addingStatsData.BaseInit(GuerhoubaGames.GameEnum.StatType.ShootNumber);
+            spellProfil.gameEffectStats.AddToIntStats((-shootCount +1), addingStatsData);
         }
     }
 }

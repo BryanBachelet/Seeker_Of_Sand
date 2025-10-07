@@ -835,6 +835,10 @@ namespace GuerhoubaGames.Character
 
              SpellSystem.SpellProfil spellProfil = currentCloneSpellProfil;
             PlayerEffectStats<StatData> stats = spellProfil.gameEffectStats;
+
+            // Call Character Artefact
+            stats.ChangeStats(CharacterGameStats.instance.GetPlayerStats());
+
             BehaviorLevel[] behaviorLevels;
             {
                 BehaviorLevel[] behaviorLevels1 = spellProfil.GetBehaviorsLevels();

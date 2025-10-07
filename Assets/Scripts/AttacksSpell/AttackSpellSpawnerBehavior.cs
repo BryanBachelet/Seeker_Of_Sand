@@ -18,12 +18,12 @@ public class AttackSpellSpawnerBehavior : MonoBehaviour
     [SerializeField] private CharacterObjectType characterObjectType;
 
     [SerializeField] private float areaSpawnerRadius = 1.0f;
-       
+
 
     private SpellProfil attackProfil;
 
     [Header("Debug Infos")]
-    [SerializeField]  private bool m_activeAttackSpawnGizmoDebug;
+    [SerializeField] private bool m_activeAttackSpawnGizmoDebug;
 
 
     #region Unity Functions
@@ -39,7 +39,7 @@ public class AttackSpellSpawnerBehavior : MonoBehaviour
 
     private void UpdateAttackSpawner()
     {
-        if(timeCounter > totalDuration)
+        if (timeCounter > totalDuration)
         {
             Destroy(this.gameObject);
             return;
@@ -49,21 +49,21 @@ public class AttackSpellSpawnerBehavior : MonoBehaviour
             timeCounter += Time.deltaTime;
         }
 
-        if(timeCounterAttack > frequenceAttack)
+        if (timeCounterAttack > frequenceAttack)
         {
 
             timeCounterAttack = 0;
-            Vector3 positionToSpawn = this.transform.position + new Vector3(UnityEngine.Random.Range(-areaSpawnerRadius, areaSpawnerRadius),0, UnityEngine.Random.Range(-areaSpawnerRadius, areaSpawnerRadius));  
+            Vector3 positionToSpawn = this.transform.position + new Vector3(UnityEngine.Random.Range(-areaSpawnerRadius, areaSpawnerRadius), 0, UnityEngine.Random.Range(-areaSpawnerRadius, areaSpawnerRadius));
             SpawnArea(positionToSpawn);
         }
         else
         {
             timeCounterAttack += Time.deltaTime;
         }
-      
+
     }
-    
-    public void InitializeObject(float fullDuration,float newFrequenceAttack,float spawnerRadius,GameObject attackToSpawn)
+
+    public void InitializeObject(float fullDuration, float newFrequenceAttack, float spawnerRadius, GameObject attackToSpawn)
     {
         totalDuration = fullDuration;
         frequenceAttack = newFrequenceAttack;
@@ -80,8 +80,12 @@ public class AttackSpellSpawnerBehavior : MonoBehaviour
         attackProfil.gameEffectStats.tagData.spellMovementBehavior = SpellMovementBehavior.Fix;
         attackProfil.UpdateStatistics();
 
-        attackProfil.gameEffectStats.AddToIntStats(StatType.Damage, damage);
-        attackProfil.gameEffectStats.AddToFloatStats(StatType.Size, radius,"");
+        AddingStatsData addingStatsData = new AddingStatsData();
+        addingStatsData.BaseInit(StatType.Damage);
+        attackProfil.gameEffectStats.AddToIntStats( damage, addingStatsData);
+
+        addingStatsData.BaseInit(StatType.Size);
+        attackProfil.gameEffectStats.AddToFloatStats(radius,addingStatsData);
 
 
     }

@@ -147,25 +147,54 @@ public class StatArtefactDrawer : StatsSpellDrawer
         GUIContent label2 = new GUIContent();
 
         BaseDisplay(position, property, label);
+
+
         label2.text = "Tier";
         EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
-        basePosition.y += 20;
         basePosition.width = EditorStyles.label.CalcSize(label2).x;
+        basePosition.y += 20;
         basePosition.height = 18.0f;
-
+        
         label = EditorGUI.BeginProperty(basePosition, label, property);
         EditorGUI.PrefixLabel(basePosition, label2);
-        basePosition.width -=10;
-        basePosition.x += basePosition.width + 20;
-        basePosition.width += 5f;
-        basePosition.width *= 8f;
-        //basePosition.width *= 0.4f;
+        float offset = basePosition.width + 20;
+        basePosition.x += offset;
+        basePosition.width = position.width - EditorStyles.label.CalcSize(label2).x - 20; 
         EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("tier"), GUIContent.none);
+        basePosition.x -= offset;
+
         EditorGUI.EndProperty();
+        label = EditorGUI.BeginProperty(basePosition, label, property);
+        label2.text = "HasMatchingStats";
+        EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
+        basePosition.width = EditorStyles.label.CalcSize(label2).x;
+        basePosition.y += 20;
+       
+        EditorGUI.PrefixLabel(basePosition, label2);
+
+        offset = basePosition.width + 20;
+        basePosition.x += offset;
+        EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("hasMatchingStats"), GUIContent.none);
+        basePosition.x -= offset;
+        EditorGUI.EndProperty();
+
+        if (property.FindPropertyRelative("hasMatchingStats").boolValue)
+        {
+            basePosition.y += 20;
+            label2.text = "Matching Types";
+            EditorGUIUtility.labelWidth = EditorStyles.label.CalcSize(label2).x;
+            basePosition.width = EditorStyles.label.CalcSize(label2).x;
+            EditorGUI.PrefixLabel(basePosition, label2);
+            basePosition.x += offset;
+            basePosition.width *= 3;
+            EditorGUI.PropertyField(basePosition, property.FindPropertyRelative("matchingType"), GUIContent.none);
+            basePosition.x -= offset;
+        }
+       
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        return 50.0f;
+        return 100.0f;
     }
 }

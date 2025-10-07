@@ -340,7 +340,7 @@ public class Projectile : MonoBehaviour
 
             if (enemyTouch == null) return;
                 
-            m_damageCalculComponent.damageStats.AddDamage(m_damage, (GameElement)elementIndex, DamageType.TEMPORAIRE);
+            m_damageCalculComponent.damageStats.AddDamage((int)Tools.ApplyIncreasePercent( m_damage,spellProfil.GetFloatStat(StatType.IncreaseDamagePercent)) , (GameElement)elementIndex, DamageType.TEMPORAIRE);
             DamageStatData[] damageStatDatas = m_damageCalculComponent.CalculDamage((GameElement)elementIndex, objectType, enemyTouch.GetGameObject(), spellProfil);
 
             if (IsEntityActive(other.gameObject.tag, enemyTouch)) return;

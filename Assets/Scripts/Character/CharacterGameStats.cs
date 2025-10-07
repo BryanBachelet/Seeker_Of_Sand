@@ -16,7 +16,7 @@ namespace GuerhoubaGames.Character
         [Header("References")]
         [SerializeField] private PlayerProfilData m_playerProfilData;
         
-        [SerializeField] private PlayerEffectStats<StatData> m_playerStats;
+        [SerializeField] private PlayerEffectStats<StatDataArtefact> m_playerStats;
 
         public Action onChangeStat;
 
@@ -26,14 +26,14 @@ namespace GuerhoubaGames.Character
             if (instance == null)
                 instance = this;
 
-            PlayerProfilData playerProfilDataClone = m_playerProfilData.Clone(); 
-            m_playerStats = playerProfilDataClone.stats;
-            m_playerStats.InitialisationPlayerStats();
+            PlayerProfilData playerProfilDataClone = m_playerProfilData.Clone();
+            m_playerStats.Setup(playerProfilDataClone.stats);
+           // m_playerStats.InitialisationPlayerStats();
         }
         #endregion
 
 
-        public PlayerEffectStats<StatData> GetPlayerStats() { return m_playerStats; }
+        public PlayerEffectStats<StatDataArtefact> GetPlayerStats() { return m_playerStats; }
 
         public void ApplyStatChange()
         {
